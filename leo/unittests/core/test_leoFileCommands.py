@@ -61,9 +61,6 @@ class TestFileCommands(LeoUnitTest):
         # Tests...
         val = p.archivedPosition(root_p=p)
         self.assertEqual(val, [0])
-        for i, z in enumerate(list(p.parent().children_iter())):
-            val = z.archivedPosition(root_p=p.parent())
-            self.assertEqual(val, [0, i])
         for i, z in enumerate(list(p.children_iter())):
             val = z.archivedPosition(root_p=p)
             self.assertEqual(val, [0, i])
@@ -96,13 +93,13 @@ class TestFileCommands(LeoUnitTest):
         self.assertEqual(s, expected)
     #@+node:ekr.20210905052021.32: *3* TestFileCommands.test_fast_readWithElementTree
     def test_fast_readWithElementTree(self):
-        # Test the translation table and associated logic.
+        # Test that readWithElementTree strips all control characters except '\t\r\n'.
         c = self.c
-        table = leoFileCommands.FastRead(c, {}).translate_table
-        s = chr(0) + "a" + chr(0) + "b"
-        self.assertEqual(len(s), 4)
-        s = s.translate(table)
-        self.assertEqual(len(s), 2)
+        s = chr(0) + 'a' + chr(12) + 'b' + '\t\r\n' + 'c'
+        self.assertEqual(len(s), 8)
+        d = leoFileCommands.FastRead(c, {}).translate_dict
+        s2 = s.translate(d)
+        self.assertEqual(s2, 'ab\t\r\nc')
     #@-others
 #@-others
 #@-leo

@@ -41,9 +41,8 @@ class TestColorizer(LeoUnitTest):
     def test_bc_scanLanguageDirectives(self):
         c = self.c
         c.target_language = 'python'  # Set the default.
-        wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        x = leoColorizer.JEditColorizer(c, widget, wrapper)
+        x = leoColorizer.JEditColorizer(c, widget)
         child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = (
@@ -60,9 +59,8 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.4: *3* TestColorizer.test_bc_useSyntaxColoring
     def test_bc_useSyntaxColoring(self):
         c = self.c
-        wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        x = leoColorizer.JEditColorizer(c, widget, wrapper)
+        x = leoColorizer.JEditColorizer(c, widget)
         child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = [
@@ -613,27 +611,27 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent("""\
             # From a perl tutorial.
 
-            print 'Hello world.';		# Print a message
+            print 'Hello world.';               # Print a message
 
-            $a = $b;	# Assign $b to $a
+            $a = $b;    # Assign $b to $a
 
             @food  = ("apples", "pears", "eels");
 
-            $grub = pop(@food);	# Now $grub = "eels"
+            $grub = pop(@food); # Now $grub = "eels"
 
             $#food
 
             @lines = <INFO>;
 
             #!/usr/local/bin/perl
-            print "Password? ";		# Ask for input
-            $a = <STDIN>;			# Get input
-            chop $a;			# Remove the newline at end
-            while ($a ne "fred")		# While input is wrong...
+            print "Password? ";         # Ask for input
+            $a = <STDIN>;                       # Get input
+            chop $a;                    # Remove the newline at end
+            while ($a ne "fred")                # While input is wrong...
             {
-                print "sorry. Again? ";	# Ask again
-                $a = <STDIN>;		# Get input again
-                chop $a;			# Chop off newline again
+                print "sorry. Again? "; # Ask again
+                $a = <STDIN>;           # Get input again
+                chop $a;                        # Chop off newline again
             }
 
             if ($sentence =~ /under/)
@@ -651,17 +649,17 @@ class TestColorizer(LeoUnitTest):
                 print "Somebody is $age\\n";
             }
 
-            &mysubroutine;		# Call the subroutine
-            &mysubroutine($_);	# Call it with a parameter
-            &mysubroutine(1+2, $_);	# Call it with two parameters
+            &mysubroutine;              # Call the subroutine
+            &mysubroutine($_);  # Call it with a parameter
+            &mysubroutine(1+2, $_);     # Call it with two parameters
 
             sub inside
             {
-                local($a, $b);			# Make local variables
-                ($a, $b) = ($_[0], $_[1]);	# Assign values
-                $a =~ s/ //g;			# Strip spaces from
-                $b =~ s/ //g;			#   local variables
-                ($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
+                local($a, $b);                  # Make local variables
+                ($a, $b) = ($_[0], $_[1]);      # Assign values
+                $a =~ s/ //g;                   # Strip spaces from
+                $b =~ s/ //g;                   #   local variables
+                ($a =~ /$b/ || $b =~ /$a/);     # Is $b inside $a
                                 #   or $a inside $b?
             }
     """)
@@ -1102,7 +1100,7 @@ class TestColorizer(LeoUnitTest):
 
         text = textwrap.dedent('''\
             """This creates a free-floating copy of v's tree for undo.
-            The copied trees must use different tnodes than the original."""
+            The copied trees must use different vnodes than the original."""
 
             def copyTree(self,root):
                 c = self
@@ -1111,7 +1109,7 @@ class TestColorizer(LeoUnitTest):
                 # Copy the headline and icon values v.copyNode(root,v)
                 # Copy the rest of tree.
                 v.copyTree(root,v)
-                # Replace all tnodes in v by copies.
+                # Replace all vnodes in v by copies.
                 assert(v.nodeAfterTree() == None)
                 while v:
                     v = leoNodes.VNode(c)

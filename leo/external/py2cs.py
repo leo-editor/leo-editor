@@ -491,10 +491,8 @@ class CoffeeScriptTraverser:
         result.append('{')
         self.level += 1
         for i, key in enumerate(node.keys):
-            head = self.leading_lines(key)
-                # Prevents leading lines from being handled again.
-            head = [z for z in head if z.strip()]
-                # Ignore blank lines.
+            head = self.leading_lines(key)  # Prevents leading lines from being handled again.
+            head = [z for z in head if z.strip()]  # Ignore blank lines.
             if head:
                 items.extend('\n' + ''.join(head))
             tail = self.trailing_comment(node.values[i])
@@ -1096,7 +1094,6 @@ class LeoGlobals:
 
         def __init__(self, s):
             self.lines = s.splitlines(True) if s else []
-                # g.splitLines(s)
             self.i = 0
 
         def next(self):
@@ -1216,7 +1213,7 @@ class LeoGlobals:
                 print("toUnicode: Error converting %s... from %s encoding to unicode" % (
                     s[:200], encoding))
         return s
-    #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py) 
+    #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py)
     def trace(self, *args, **keys):
         try:
             from leo.core import leoGlobals as leo_g
@@ -1264,7 +1261,7 @@ class MakeCoffeeScriptController:
         base_fn = os.path.basename(fn)
         out_fn = os.path.join(self.output_directory, base_fn)
         out_fn = os.path.normpath(out_fn)
-        out_fn = out_fn[: -3] + '.coffee'
+        out_fn = out_fn[:-3] + '.coffee'
         dir_ = os.path.dirname(out_fn)
         if os.path.exists(out_fn) and not self.overwrite:
             print('file exists: %s' % out_fn)
@@ -1386,9 +1383,9 @@ class MakeCoffeeScriptController:
                 print('output directory not found: %s\n' % output_dir)
                 self.output_directory = None  # inhibit run().
         if 'prefix_lines' in parser.options('Global'):
+            # The parser does not preserve leading whitespace.
             prefix = parser.get('Global', 'prefix_lines')
             self.prefix_lines = prefix.split('\n')
-                # The parser does not preserve leading whitespace.
         #
         # self.def_patterns = self.scan_patterns('Def Name Patterns')
         # self.general_patterns = self.scan_patterns('General Patterns')
@@ -1435,7 +1432,7 @@ class MakeCoffeeScriptController:
 
         s = s.strip()
         if s.startswith('[') and s.endswith(']'):
-            s = munge(s[1 : -1])
+            s = munge(s[1:-1])
             for s2 in self.section_names:
                 if s == munge(s2):
                     return True
@@ -1633,7 +1630,7 @@ class TokenSync:
             while n < len(self.lines):
                 s = self.lines[n]
                 if s.endswith('\\'):
-                    aList.append(s[: -1])
+                    aList.append(s[:-1])
                     n += 1
                 else:
                     aList.append(s)

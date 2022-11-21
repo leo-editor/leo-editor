@@ -11,7 +11,7 @@
 #@+node:bob.20180206123613.2: ** << imports >>
 import os
 import time
-# import traceback
+from typing import List
 
 from leo.core import leoGlobals as leoG
 assert leoG
@@ -22,16 +22,16 @@ version = '1.0'
 #@-<< version >>
 
 #@+others
-#@+node:bob.20180206123725.1: ** class IdleTime
+#@+node:bob.20180206123725.1: ** class IdleTime (leo_babel)
 class IdleTime:
     """ This is an implementation of the Leo-Editor
     class IdleTime() for use with Leo-Bridge.
     """
+    list_active: List = list()
+    list_inactive: List = list()
+
     #@+others
-    #@+node:bob.20180206125732.1: *3* Class Parameters
-    list_active = list()
-    list_inactive = list()
-    #@+node:bob.20180206123842.1: *3* __init__()
+    #@+node:bob.20180206123842.1: *3* IdleTime.__init__
     def __init__(self, handler, delay=500, tag=None):
         """ Create an Idle Time Object Instance
 
@@ -53,7 +53,7 @@ class IdleTime:
         #traceStk = [lix.strip() for lix in traceback.format_stack()]
         #leoG.trace('Trace: {0}'.format(traceStk[-2]))
         #leoG.trace('IdleTime() {0}'.format(id(self)))
-    #@+node:bob.20180206124140.1: *3* start()
+    #@+node:bob.20180206124140.1: *3* IdleTime.start()
     def start(self):
         """ Start an Idle Time Instance
 
@@ -69,7 +69,7 @@ class IdleTime:
         self._nexttime = time.process_time()
         IdleTime.list_active.insert(0, self)
         self._active = True
-    #@+node:bob.20180206125022.1: *3* stop()
+    #@+node:bob.20180206125022.1: *3* IdleTime.stop()
     def stop(self):
         """ Stop an Idle Time Instance
 
@@ -85,7 +85,7 @@ class IdleTime:
             IdleTime.list_active.remove(self)
             IdleTime.list_inactive.append(self)
             self._active = False
-    #@+node:bob.20180206123934.1: *3* idle() Class method
+    #@+node:bob.20180206123934.1: *3* IdelTime.idle (classmethod)
     @classmethod
     def idle(cls):
         """ Application idle -- Except for Idle Time

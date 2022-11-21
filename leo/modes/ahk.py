@@ -1099,7 +1099,7 @@ rulesDict1 = {
     "#": [ahk_rule15,],
     "$": [ahk_rule15,],
     "*": [ahk_rule9,],
-    "+": [ahk_rule7,ahk_rule15,],
+    "+": [ahk_rule7, ahk_rule15,],
     "-": [ahk_rule8,],
     "/": [ahk_rule10,],
     "0": [ahk_rule15,],
@@ -1112,11 +1112,11 @@ rulesDict1 = {
     "7": [ahk_rule15,],
     "8": [ahk_rule15,],
     "9": [ahk_rule15,],
-    ":": [ahk_rule12,ahk_rule13,ahk_rule14,],
+    ":": [ahk_rule12, ahk_rule13, ahk_rule14,],
     ";": [ahk_rule0,],
-    "<": [ahk_rule1,ahk_rule2,ahk_rule6,],
+    "<": [ahk_rule1, ahk_rule2, ahk_rule6,],
     "=": [ahk_rule5,],
-    ">": [ahk_rule3,ahk_rule4,],
+    ">": [ahk_rule3, ahk_rule4,],
     "@": [ahk_rule15,],
     "A": [ahk_rule15,],
     "B": [ahk_rule15,],
@@ -1186,4 +1186,3 @@ rulesDictDict = {
 
 # Import dict for ahk mode.
 importDict = {}
-

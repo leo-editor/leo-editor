@@ -12,8 +12,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20111104210837.9688: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = g.unitTesting
-        # Unpleasant for unit testing.
+    ok = g.unitTesting  # Unpleasant for unit testing.
     if ok:
         # Register the handlers...
         g.registerHandler("menu2", onMenu)

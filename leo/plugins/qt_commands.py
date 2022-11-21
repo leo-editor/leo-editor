@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
+#@@first
 """Leo's Qt-related commands defined by @g.command."""
 from typing import List
 from leo.core import leoGlobals as g
@@ -105,8 +107,8 @@ def showColorNames(event=None):
 
         c.frame.iconBar.addWidget(box)
         setattr(c, ivar, True)
+        # Do this last, so errors don't prevent re-execution.
         g.es('created color picker in icon area')
-            # Do this last, so errors don't prevent re-execution.
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
 def showColorWheel(self, event=None):
@@ -189,8 +191,8 @@ def style_reload(event):
     """
     c = event.get('c')
     if c and c.styleSheetManager:
+        # Call ssm.reload_settings after reloading all settings.
         c.reloadSettings()
-            # Call ssm.reload_settings after reloading all settings.
 #@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):

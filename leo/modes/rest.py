@@ -126,7 +126,7 @@ def rest_rule21(colorer, s, i):
 def rest_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="``", end="``",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rest_rule23(colorer, s, i):
@@ -149,16 +149,16 @@ def rest_rule26(colorer, s, i):
 rulesDict1 = {
     "\"": [rest_rule7,],
     "#": [rest_rule6,],
-    "*": [rest_rule10,rest_rule14,rest_rule15,],
-    "+": [rest_rule9,rest_rule25,rest_rule26,],
+    "*": [rest_rule10, rest_rule14, rest_rule15,],
+    "+": [rest_rule9, rest_rule25, rest_rule26,],
     "-": [rest_rule3,],
-    ".": [rest_rule1,rest_rule11,rest_rule13,rest_rule16,],
+    ".": [rest_rule1, rest_rule11, rest_rule13, rest_rule16,],
     ":": [rest_rule24,],
     "=": [rest_rule2,],
-    "[": [rest_rule18,rest_rule19,rest_rule20,rest_rule21,],
+    "[": [rest_rule18, rest_rule19, rest_rule20, rest_rule21,],
     "^": [rest_rule8,],
     "_": [rest_rule0,],
-    "`": [rest_rule5,rest_rule17,rest_rule22,rest_rule23,],
+    "`": [rest_rule5, rest_rule17, rest_rule22, rest_rule23,],
     "|": [rest_rule12,],
     "~": [rest_rule4,],
 }
@@ -170,4 +170,3 @@ rulesDictDict = {
 
 # Import dict for rest mode.
 importDict = {}
-

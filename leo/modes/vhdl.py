@@ -158,7 +158,7 @@ keywordsDictDict = {
 def vhdl_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def vhdl_rule1(colorer, s, i):
@@ -168,7 +168,7 @@ def vhdl_rule1(colorer, s, i):
 def vhdl_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def vhdl_rule3(colorer, s, i):
@@ -261,11 +261,11 @@ rulesDict1 = {
     "\"": [vhdl_rule0,],
     "%": [vhdl_rule17,],
     "&": [vhdl_rule18,],
-    "'": [vhdl_rule1,vhdl_rule2,],
-    "*": [vhdl_rule15,vhdl_rule16,],
+    "'": [vhdl_rule1, vhdl_rule2,],
+    "*": [vhdl_rule15, vhdl_rule16,],
     "+": [vhdl_rule12,],
-    "-": [vhdl_rule3,vhdl_rule13,],
-    "/": [vhdl_rule5,vhdl_rule14,],
+    "-": [vhdl_rule3, vhdl_rule13,],
+    "/": [vhdl_rule5, vhdl_rule14,],
     "0": [vhdl_rule23,],
     "1": [vhdl_rule23,],
     "2": [vhdl_rule23,],
@@ -276,10 +276,10 @@ rulesDict1 = {
     "7": [vhdl_rule23,],
     "8": [vhdl_rule23,],
     "9": [vhdl_rule23,],
-    ":": [vhdl_rule7,vhdl_rule22,],
-    "<": [vhdl_rule10,vhdl_rule11,],
+    ":": [vhdl_rule7, vhdl_rule22,],
+    "<": [vhdl_rule10, vhdl_rule11,],
     "=": [vhdl_rule4,],
-    ">": [vhdl_rule8,vhdl_rule9,],
+    ">": [vhdl_rule8, vhdl_rule9,],
     "@": [vhdl_rule23,],
     "A": [vhdl_rule23,],
     "B": [vhdl_rule23,],
@@ -346,4 +346,3 @@ rulesDictDict = {
 
 # Import dict for vhdl mode.
 importDict = {}
-

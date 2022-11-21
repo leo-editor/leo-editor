@@ -1,73 +1,59 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
+#@@first
 """@auto importer for cython."""
 import re
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-import leo.plugins.importers.python as py_importer
-Importer = linescanner.Importer
-Target = linescanner.Target
-# Use Python's scan state
-Cython_ScanState = py_importer.Python_ScanState
+from typing import Optional
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
+from leo.plugins.importers.python import Python_Importer
 #@+others
-#@+node:ekr.20200619141201.2: ** class Cython_Importer(Importer)
-class Cython_Importer(py_importer.Py_Importer):
+#@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
+class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
 
-    starts_pattern = re.compile(r'\s*(class|def|cdef|cpdef)\s+')
-    # Matches lines that apparently start a class or def.
+    def __init__(self, c: Cmdr) -> None:
+        """Cython_Importer.ctor."""
+        super().__init__(c, language='cython')
+        self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
+
 
     #@+others
-    #@+node:ekr.20200619144343.1: *3* cy_i.ctor
-    def __init__(self, importCommands, **kwargs):
-        """Cython_Importer.ctor."""
-        super().__init__(
-            importCommands,
-            language='cython',
-            state_class=Cython_ScanState,
-            strict=True,
-        )
-        self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
-    #@+node:ekr.20200619141201.3: *3* cy_i.clean_headline
-    def clean_headline(self, s, p=None):
-        """Return a cleaned up headline s."""
-        if p:  # Called from clean_all_headlines:
-            return self.get_decorator(p) + p.h
-        # Handle def, cdef, cpdef.
-        m = re.match(r'\s*(cpdef|cdef|def)\s+(\w+)', s)
-        if m:
-            return m.group(2)
-        # Handle classes.
-        m = re.match(r'\s*class\s+(\w+)\s*(\([\w.]+\))?', s)
-        if m:
-            return 'class %s%s' % (m.group(1), m.group(2) or '')
-        return s.strip()
+    #@+node:ekr.20220806173547.1: *3* cython_i.new_starts_block
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    # m.group(2) might not be the def name!
+    # compute_headline must handle the complications.
+    def_pat_s = r'\s*\b(cdef|cpdef|def)\s+([\w_]+)'
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
+
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        lines, line_states = self.lines, self.line_states
+        line = lines[i]
+        if line.isspace() or line_states[i].context:
+            return None  # pragma: no cover (mysterious)
+        m = self.class_pat.match(line) or self.def_pat.match(line)
+        if not m:
+            return None  # pragma: no cover (mysterious)
+        newlines = m.group(0).count('\n')
+        return i + newlines + 1
     #@-others
-#@+node:ekr.20211121065103.1: ** class CythonTarget
-class CythonTarget:
-    """
-    A class describing a target node p.
-    state is used to cut back the stack.
-    """
-    # Same as the legacy PythonTarget class, except for the class name.
-
-    def __init__(self, p, state):
-        self.at_others_flag = False  # True: @others has been generated for this target.
-        self.kind = 'None'  # in ('None', 'class', 'def')
-        self.p = p
-        self.state = state
-
-    def __repr__(self):
-        return 'CythonTarget: %s kind: %s @others: %s p: %s' % (
-            self.state,
-            self.kind,
-            int(self.at_others_flag),
-            g.shortFileName(self.p.h),
-        )
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for cython."""
+    Cython_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'class': Cython_Importer,
     'extensions': ['.pyx',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

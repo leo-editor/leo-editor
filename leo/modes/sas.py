@@ -291,13 +291,13 @@ keywordsDictDict = {
 def sas_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sas_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sas_rule2(colorer, s, i):
@@ -372,8 +372,8 @@ rulesDict1 = {
     "*": [sas_rule15,],
     "+": [sas_rule14,],
     "-": [sas_rule13,],
-    ".": [sas_rule12,sas_rule17,],
-    "/": [sas_rule0,sas_rule11,],
+    ".": [sas_rule12, sas_rule17,],
+    "/": [sas_rule0, sas_rule11,],
     "0": [sas_rule17,],
     "1": [sas_rule17,],
     "2": [sas_rule17,],
@@ -385,10 +385,10 @@ rulesDict1 = {
     "8": [sas_rule17,],
     "9": [sas_rule17,],
     "<": [sas_rule3,],
-    "=": [sas_rule2,sas_rule17,],
+    "=": [sas_rule2, sas_rule17,],
     ">": [sas_rule4,],
     "?": [sas_rule10,],
-    "@": [sas_rule9,sas_rule17,],
+    "@": [sas_rule9, sas_rule17,],
     "A": [sas_rule17,],
     "B": [sas_rule17,],
     "C": [sas_rule17,],
@@ -416,7 +416,7 @@ rulesDict1 = {
     "Y": [sas_rule17,],
     "Z": [sas_rule17,],
     "^": [sas_rule8,],
-    "_": [sas_rule5,sas_rule17,],
+    "_": [sas_rule5, sas_rule17,],
     "a": [sas_rule17,],
     "b": [sas_rule17,],
     "c": [sas_rule17,],
@@ -454,4 +454,3 @@ rulesDictDict = {
 
 # Import dict for sas mode.
 importDict = {}
-

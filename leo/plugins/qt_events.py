@@ -35,6 +35,7 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
+import sys
 from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -61,17 +62,17 @@ class LossageData:
         return (
             f"keynum: {self.keynum:>7x} "
             f"binding: {self.binding}"
-        )
             # f"ch: {self.ch:>7s} "
             # f"= {self.actual_ch!r}"
             # f"mods: {self.mods}, {self.mods2}, {self.mods3}\n"
             # f"stroke: {self.stroke!r}\n"
             # f"text: {self.text!r}\n"
             # f"toString: {self.toString!r}\n"
+        )
 
     __str__ = __repr__
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
-class LeoQtEventFilter(QtCore.QObject):
+class LeoQtEventFilter(QtCore.QObject):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
@@ -122,7 +123,7 @@ class LeoQtEventFilter(QtCore.QObject):
         try:
             binding, ch, lossage = self.toBinding(event)
             if not binding:
-                return False  # Not the correct event type.
+                return False  # Let Qt handle the key.
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -138,16 +139,15 @@ class LeoQtEventFilter(QtCore.QObject):
             c.outerUpdate()
         except Exception:
             g.es_exception()
-        return True
-            # Whatever happens, suppress all other Qt key handling.
+        return True  # Whatever happens, suppress all other Qt key handling.
     #@+node:ekr.20110605195119.16937: *4* filter.createKeyEvent
     def createKeyEvent(self, event, c, w, ch, binding):
 
         return leoGui.LeoKeyEvent(
             c=self.c,
+            # char = None doesn't work at present.
+            # But really, the binding should suffice.
             char=ch,
-                # char = None doesn't work at present.
-                # But really, the binding should suffice.
             event=event,
             binding=binding,
             w=w,
@@ -173,8 +173,8 @@ class LeoQtEventFilter(QtCore.QObject):
                     c.frame.top.lineEdit.restore_selection()
         elif eventType == Type.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
+        # Return True unless we have a key event.
         return eventType not in (Type.ShortcutOverride, Type.KeyPress, Type.KeyRelease)
-            # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
         """
@@ -187,9 +187,16 @@ class LeoQtEventFilter(QtCore.QObject):
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
+            # QLineEdit: ignore all key events except keyRelease events.
             return t != Type.KeyRelease
-                # QLineEdit: ignore all key events except keyRelease events.
         if t == Type.KeyPress:
+            # Hack Alert!
+            # On some Linux systems (Kubuntu, Debian, the Win or SHIFT-Win keys
+            # insert garbage symbols into editing areas.  Filter out these
+            # key events.  NOTE - this is a *magic number* - who knows if
+            # it could change in the future?
+            if event.key() == 0x1000053 and sys.platform == 'linux':
+                return True
             return False  # Never ignore KeyPress events.
         # This doesn't work. Two shortcut-override events are generated!
             # if t == ev.ShortcutOverride and event.text():
@@ -365,8 +372,8 @@ class LeoQtEventFilter(QtCore.QObject):
             (KeyboardModifier.ControlModifier, 'Control'),
             (KeyboardModifier.MetaModifier, 'Meta'),
             (KeyboardModifier.ShiftModifier, 'Shift'),
+            # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
             (KeyboardModifier.KeypadModifier, 'KeyPad'),
-                # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         # pylint: disable=superfluous-parens.
         mods = [b for a, b in mod_table if (modifiers & a)]
@@ -378,10 +385,10 @@ class LeoQtEventFilter(QtCore.QObject):
             return
         e = QtCore.QEvent
         key_events = {
-            e.KeyPress: 'key-press',  # 6
-            e.KeyRelease: 'key-release',  # 7
-            e.Shortcut: 'shortcut',  # 117
-            e.ShortcutOverride: 'shortcut-override',  # 51
+            e.Type.KeyPress: 'key-press',  # 6
+            e.Type.KeyRelease: 'key-release',  # 7
+            e.Type.Shortcut: 'shortcut',  # 117
+            e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
         kind = key_events.get(event.type())
         if kind:
@@ -407,87 +414,87 @@ class LeoQtEventFilter(QtCore.QObject):
         # http://doc.qt.io/qt-5/qevent.html
         show: List[Any] = []
         ignore = [
-            e.MetaCall,  # 43
-            e.Timer,  # 1
-            e.ToolTip,  # 110
+            e.Type.MetaCall,  # 43
+            e.Type.Timer,  # 1
+            e.Type.ToolTip,  # 110
         ]
         activate_events = (
-            (e.Close, 'close'),  # 19
-            (e.WindowActivate, 'window-activate'),  # 24
-            (e.WindowBlocked, 'window-blocked'),  # 103
-            (e.WindowUnblocked, 'window-unblocked'),  # 104
-            (e.WindowDeactivate, 'window-deactivate'),  # 25
+            (e.Type.Close, 'close'),  # 19
+            (e.Type.WindowActivate, 'window-activate'),  # 24
+            (e.Type.WindowBlocked, 'window-blocked'),  # 103
+            (e.Type.WindowUnblocked, 'window-unblocked'),  # 104
+            (e.Type.WindowDeactivate, 'window-deactivate'),  # 25
         )
         focus_events = [
-            (e.Enter, 'enter'),  # 10
-            (e.Leave, 'leave'),  # 11
-            (e.FocusIn, 'focus-in'),  # 8
-            (e.FocusOut, 'focus-out'),  # 9
-            (e.ShowToParent, 'show-to-parent'),  # 26
+            (e.Type.Enter, 'enter'),  # 10
+            (e.Type.Leave, 'leave'),  # 11
+            (e.Type.FocusIn, 'focus-in'),  # 8
+            (e.Type.FocusOut, 'focus-out'),  # 9
+            (e.Type.ShowToParent, 'show-to-parent'),  # 26
         ]
         if hasattr(e, 'FocusAboutToChange'):
             # pylint: disable=no-member
             focus_events.extend([
-                (e.FocusAboutToChange, 'focus-about-to-change'),  # 23
+                (e.Type.FocusAboutToChange, 'focus-about-to-change'),  # 23
             ])
         hide_events = (
-            (e.Hide, 'hide'),  # 18
-            (e.HideToParent, 'hide-to-parent'),  # 27
-            # (e.LeaveEditFocus,'leave-edit-focus'), # 151
-            (e.Show, 'show'),  # 17
+            (e.Type.Hide, 'hide'),  # 18
+            (e.Type.HideToParent, 'hide-to-parent'),  # 27
+            # (e.Type.LeaveEditFocus,'leave-edit-focus'), # 151
+            (e.Type.Show, 'show'),  # 17
         )
         hover_events = (
-            (e.HoverEnter, 'hover-enter'),  # 127
-            (e.HoverLeave, 'hover-leave'),  # 128
-            (e.HoverMove, 'hover-move'),  # 129
+            (e.Type.HoverEnter, 'hover-enter'),  # 127
+            (e.Type.HoverLeave, 'hover-leave'),  # 128
+            (e.Type.HoverMove, 'hover-move'),  # 129
         )
         key_events = [
-            (e.KeyPress, 'key-press'),  # 6
-            (e.KeyRelease, 'key-release'),  # 7
-            (e.Shortcut, 'shortcut'),  # 117
-            (e.ShortcutOverride, 'shortcut-override'),  # 51
+            (e.Type.KeyPress, 'key-press'),  # 6
+            (e.Type.KeyRelease, 'key-release'),  # 7
+            (e.Type.Shortcut, 'shortcut'),  # 117
+            (e.Type.ShortcutOverride, 'shortcut-override'),  # 51
         ]
         if hasattr(e, 'InputMethodQuery'):
             # pylint: disable=no-member
             key_events.extend([
-                (e.InputMethodQuery, 'input-method-query'),  # 207
+                (e.Type.InputMethodQuery, 'input-method-query'),  # 207
             ])
         layout_events = [
-            (e.ChildAdded, 'child-added'),  # 68
-            (e.ChildRemoved, 'child-removed'),  # 71
-            (e.DynamicPropertyChange, 'dynamic-property-change'),  # 170
-            (e.FontChange, 'font-change'),  # 97
-            (e.LayoutRequest, 'layout-request'),  # 76
-            (e.Move, 'move'),  # 13 widget's position changed.
-            (e.Resize, 'resize'),  # 14
-            (e.StyleChange, 'style-change'),  # 100
-            (e.ZOrderChange, 'z-order-change'),  # 126
+            (e.Type.ChildAdded, 'child-added'),  # 68
+            (e.Type.ChildRemoved, 'child-removed'),  # 71
+            (e.Type.DynamicPropertyChange, 'dynamic-property-change'),  # 170
+            (e.Type.FontChange, 'font-change'),  # 97
+            (e.Type.LayoutRequest, 'layout-request'),  # 76
+            (e.Type.Move, 'move'),  # 13 widget's position changed.
+            (e.Type.Resize, 'resize'),  # 14
+            (e.Type.StyleChange, 'style-change'),  # 100
+            (e.Type.ZOrderChange, 'z-order-change'),  # 126
         ]
         if hasattr(e, 'CloseSoftwareInputPanel'):
             layout_events.extend([
-                (e.CloseSoftwareInputPanel, 'close-sip'),  # 200
+                (e.Type.CloseSoftwareInputPanel, 'close-sip'),  # 200
             ])
         mouse_events = (
-            (e.MouseMove, 'mouse-move'),  # 155
-            (e.MouseButtonPress, 'mouse-press'),  # 2
-            (e.MouseButtonRelease, 'mouse-release'),  # 3
-            (e.Wheel, 'mouse-wheel'),  # 31
+            (e.Type.MouseMove, 'mouse-move'),  # 155
+            (e.Type.MouseButtonPress, 'mouse-press'),  # 2
+            (e.Type.MouseButtonRelease, 'mouse-release'),  # 3
+            (e.Type.Wheel, 'mouse-wheel'),  # 31
         )
         paint_events = [
-            (e.ChildPolished, 'child-polished'),  # 69
-            (e.PaletteChange, 'palette-change'),  # 39
-            (e.ParentChange, 'parent-change'),  # 21
-            (e.Paint, 'paint'),  # 12
-            (e.Polish, 'polish'),  # 75
-            (e.PolishRequest, 'polish-request'),  # 74
+            (e.Type.ChildPolished, 'child-polished'),  # 69
+            (e.Type.PaletteChange, 'palette-change'),  # 39
+            (e.Type.ParentChange, 'parent-change'),  # 21
+            (e.Type.Paint, 'paint'),  # 12
+            (e.Type.Polish, 'polish'),  # 75
+            (e.Type.PolishRequest, 'polish-request'),  # 74
         ]
         if hasattr(e, 'RequestSoftwareInputPanel'):
             paint_events.extend([
-                (e.RequestSoftwareInputPanel, 'sip'),  # 199
+                (e.Type.RequestSoftwareInputPanel, 'sip'),  # 199
             ])
         update_events = (
-            (e.UpdateLater, 'update-later'),  # 78
-            (e.UpdateRequest, 'update'),  #	77
+            (e.Type.UpdateLater, 'update-later'),  # 78
+            (e.Type.UpdateRequest, 'update'),  #     77
         )
         option_table = (
             (traceActivate, activate_events),
@@ -516,7 +523,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 )
                 if traceKey:
                     g.trace(
-                        f"{kind:-25} {self.tag:-25} "
+                        f"{kind:>25} {self.tag:25} "
                         f"in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
                 return
         if eventType not in ignore:
@@ -524,81 +531,80 @@ class LeoQtEventFilter(QtCore.QObject):
                 obj.objectName() if hasattr(obj, 'objectName')
                 else f"id: {id(obj)}, {obj.__class__.__name__}"
             )
-            g.trace(f"{eventType:-25} {self.tag:-25} {tag}")
+            g.trace(f"{eventType:>25} {self.tag:25} {tag}")
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         """Show unexpected events in unusual widgets."""
-        verbose = False
-            # Not good for --trace-events
+        verbose = False  # Not good for --trace-events
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         ignore_d = {
-            e.ChildAdded: 'child-added',  # 68
-            e.ChildPolished: 'child-polished',  # 69
-            e.ChildRemoved: 'child-removed',  # 71
-            e.Close: 'close',  # 19
-            e.CloseSoftwareInputPanel: 'close-software-input-panel',  # 200
+            e.Type.ChildAdded: 'child-added',  # 68
+            e.Type.ChildPolished: 'child-polished',  # 69
+            e.Type.ChildRemoved: 'child-removed',  # 71
+            e.Type.Close: 'close',  # 19
+            e.Type.CloseSoftwareInputPanel: 'close-software-input-panel',  # 200
             178: 'contents-rect-change',  # 178
-            # e.DeferredDelete:'deferred-delete', # 52 (let's trace this)
-            e.DynamicPropertyChange: 'dynamic-property-change',  # 170
-            e.FocusOut: 'focus-out',  # 9 (We don't care if we are leaving an unknown widget)
-            e.FontChange: 'font-change',  # 97
-            e.Hide: 'hide',  # 18
-            e.HideToParent: 'hide-to-parent',  # 27
-            e.HoverEnter: 'hover-enter',  # 127
-            e.HoverLeave: 'hover-leave',  # 128
-            e.HoverMove: 'hover-move',  # 129
-            e.KeyPress: 'key-press',  # 6
-            e.KeyRelease: 'key-release',  # 7
-            e.LayoutRequest: 'layout-request',  # 76
-            e.Leave: 'leave',  # 11 (We don't care if we are leaving an unknown widget)
-            # e.LeaveEditFocus:'leave-edit-focus', # 151
-            e.MetaCall: 'meta-call',  # 43
-            e.Move: 'move',  # 13 widget's position changed.
-            e.MouseButtonPress: 'mouse-button-press',  # 2
-            e.MouseButtonRelease: 'mouse-button-release',  # 3
-            e.MouseButtonDblClick: 'mouse-button-double-click',  # 4
-            e.MouseMove: 'mouse-move',  # 5
-            e.MouseTrackingChange: 'mouse-tracking-change',  # 105
-            e.Paint: 'paint',  # 12
-            e.PaletteChange: 'palette-change',  # 39
-            e.ParentChange: 'parent-change',  # 21
-            e.Polish: 'polish',  # 75
-            e.PolishRequest: 'polish-request',  # 74
-            e.RequestSoftwareInputPanel: 'request-software-input-panel',  # 199
-            e.Resize: 'resize',  # 14
-            e.ShortcutOverride: 'shortcut-override',  # 51
-            e.Show: 'show',  # 17
-            e.ShowToParent: 'show-to-parent',  # 26
-            e.StyleChange: 'style-change',  # 100
-            e.StatusTip: 'status-tip',  # 112
-            e.Timer: 'timer',  # 1
-            e.ToolTip: 'tool-tip',  # 110
-            e.WindowBlocked: 'window-blocked',  # 103
-            e.WindowUnblocked: 'window-unblocked',  # 104
-            e.ZOrderChange: 'z-order-change',  # 126
+            # e.Type.DeferredDelete:'deferred-delete', # 52 (let's trace this)
+            e.Type.DynamicPropertyChange: 'dynamic-property-change',  # 170
+            e.Type.FocusOut: 'focus-out',  # 9 (We don't care if we are leaving an unknown widget)
+            e.Type.FontChange: 'font-change',  # 97
+            e.Type.Hide: 'hide',  # 18
+            e.Type.HideToParent: 'hide-to-parent',  # 27
+            e.Type.HoverEnter: 'hover-enter',  # 127
+            e.Type.HoverLeave: 'hover-leave',  # 128
+            e.Type.HoverMove: 'hover-move',  # 129
+            e.Type.KeyPress: 'key-press',  # 6
+            e.Type.KeyRelease: 'key-release',  # 7
+            e.Type.LayoutRequest: 'layout-request',  # 76
+            e.Type.Leave: 'leave',  # 11 (We don't care if we are leaving an unknown widget)
+            # e.Type.LeaveEditFocus:'leave-edit-focus', # 151
+            e.Type.MetaCall: 'meta-call',  # 43
+            e.Type.Move: 'move',  # 13 widget's position changed.
+            e.Type.MouseButtonPress: 'mouse-button-press',  # 2
+            e.Type.MouseButtonRelease: 'mouse-button-release',  # 3
+            e.Type.MouseButtonDblClick: 'mouse-button-double-click',  # 4
+            e.Type.MouseMove: 'mouse-move',  # 5
+            e.Type.MouseTrackingChange: 'mouse-tracking-change',  # 105
+            e.Type.Paint: 'paint',  # 12
+            e.Type.PaletteChange: 'palette-change',  # 39
+            e.Type.ParentChange: 'parent-change',  # 21
+            e.Type.Polish: 'polish',  # 75
+            e.Type.PolishRequest: 'polish-request',  # 74
+            e.Type.RequestSoftwareInputPanel: 'request-software-input-panel',  # 199
+            e.Type.Resize: 'resize',  # 14
+            e.Type.ShortcutOverride: 'shortcut-override',  # 51
+            e.Type.Show: 'show',  # 17
+            e.Type.ShowToParent: 'show-to-parent',  # 26
+            e.Type.StyleChange: 'style-change',  # 100
+            e.Type.StatusTip: 'status-tip',  # 112
+            e.Type.Timer: 'timer',  # 1
+            e.Type.ToolTip: 'tool-tip',  # 110
+            e.Type.WindowBlocked: 'window-blocked',  # 103
+            e.Type.WindowUnblocked: 'window-unblocked',  # 104
+            e.Type.ZOrderChange: 'z-order-change',  # 126
         }
         focus_d = {
-            e.DeferredDelete: 'deferred-delete',  # 52
-            e.Enter: 'enter',  # 10
-            e.FocusIn: 'focus-in',  # 8
-            e.WindowActivate: 'window-activate',  # 24
-            e.WindowDeactivate: 'window-deactivate',  # 25
+            e.Type.DeferredDelete: 'deferred-delete',  # 52
+            e.Type.Enter: 'enter',  # 10
+            e.Type.FocusIn: 'focus-in',  # 8
+            e.Type.WindowActivate: 'window-activate',  # 24
+            e.Type.WindowDeactivate: 'window-deactivate',  # 25
         }
         line_edit_ignore_d = {
-            e.Enter: 'enter',  # 10 (mouse over)
-            e.Leave: 'leave',  # 11 (mouse over)
-            e.FocusOut: 'focus-out',  # 9
-            e.WindowActivate: 'window-activate',  # 24
-            e.WindowDeactivate: 'window-deactivate',  # 25
+            e.Type.Enter: 'enter',  # 10 (mouse over)
+            e.Type.Leave: 'leave',  # 11 (mouse over)
+            e.Type.FocusOut: 'focus-out',  # 9
+            e.Type.WindowActivate: 'window-activate',  # 24
+            e.Type.WindowDeactivate: 'window-deactivate',  # 25
         }
         none_ignore_d = {
-            e.Enter: 'enter',  # 10 (mouse over)
-            e.Leave: 'leave',  # 11 (mouse over)
-            e.FocusOut: 'focus-out',  # 9
-            e.WindowActivate: 'window-activate',  # 24
+            e.Type.Enter: 'enter',  # 10 (mouse over)
+            e.Type.Leave: 'leave',  # 11 (mouse over)
+            e.Type.FocusOut: 'focus-out',  # 9
+            e.Type.WindowActivate: 'window-activate',  # 24
         }
         if et in ignore_d:
             return

@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2794: * @file leoColor.py
-#@+<< docstring >>
-#@+node:bob.20080115083029: ** << docstring >>
+#@@first
+#@+<< leoColor docstring >>
+#@+node:bob.20080115083029: ** << leoColor docstring >>
 """A color database for Leo.
 
 leo_color_database is a dictionary of color names mapped onto the
@@ -30,11 +32,8 @@ Use these functions as follows::
 If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
-#@-<< docstring >>
-from leo.core import leoGlobals as g
-assert g
-# import re
-# import string
+#@-<< leoColor docstring >>
+from typing import Tuple
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
 #@@language rest
@@ -734,7 +733,7 @@ leo_color_database = {
     "yellowgreen": "#9ACD32"
 }
 #@-<< define leo_color_database >>
-#
+
 # Check that all keys are normalized.
 # This is essential for Leo's jEdit-based colorizers.
 for key in leo_color_database:
@@ -743,7 +742,7 @@ for key in leo_color_database:
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor
-def getColor(name, default=None):
+def getColor(name: str, default: str=None) -> str:
     """ Translate a named color into #rrggbb' format.
 
     if 'name' is not a string it is returned unchanged.
@@ -767,7 +766,7 @@ def getColor(name, default=None):
 
 get = getColor
 #@+node:bob.20080115070511.4: *3* getRGB / getColorRGB
-def getColorRGB(name, default=None):
+def getColorRGB(name: str, default: str=None) -> Tuple[int, int, int]:
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
@@ -778,7 +777,7 @@ def getColorRGB(name, default=None):
 
 getRGB = getColorRGB
 #@+node:bob.20080115072302: *3* getCairo / getColorCairo
-def getColorCairo(name, default=None):
+def getColorCairo(name: str, default: str=None) -> Tuple[float, float, float]:
     """Convert a named color into a cairo color tuple."""
     # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)

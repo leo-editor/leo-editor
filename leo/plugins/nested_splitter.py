@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
+#@@first
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
@@ -12,7 +14,7 @@ def init():
     # but it should never be necessary to do so.
     return True
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
-class NestedSplitterTopLevel(QtWidgets.QWidget):
+class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
     """A QWidget to wrap a NestedSplitter to allow it to live in a top
     level window and handle close events properly.
 
@@ -67,7 +69,7 @@ class NestedSplitterTopLevel(QtWidgets.QWidget):
             event.ignore()
     #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
-class NestedSplitterChoice(QtWidgets.QWidget):
+class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
     """When a new pane is opened in a nested splitter layout, this widget
     presents a button, labled 'Action', which provides a popup menu
     for the user to select what to do in the new pane"""
@@ -86,7 +88,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):
         button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
-class NestedSplitterHandle(QtWidgets.QSplitterHandle):
+class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
     """Show the context menu on a NestedSplitter splitter-handle to access
     NestedSplitter's special features"""
     #@+others
@@ -341,6 +343,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
 
         :param QMouseEvent event: mouse event
         """
+        super().mousePressEvent(event)
         self.splitter()._splitter_clicked(self, event, release=False, double=False)
 
     def mouseReleaseEvent(self, event):
@@ -349,6 +352,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
 
         :param QMouseEvent event: mouse event
         """
+        super().mouseReleaseEvent(event)
         self.splitter()._splitter_clicked(self, event, release=True, double=False)
 
     def mouseDoubleClickEvent(self, event):
@@ -357,14 +361,14 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
 
         :param QMouseEvent event: mouse event
         """
+        super().mouseDoubleClickEvent(event)
         self.splitter()._splitter_clicked(self, event, release=True, double=True)
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-class NestedSplitter(QtWidgets.QSplitter):
+class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
+    # Allow special behavior to be turned of at import stage.
+    # useful if other code must run to set up callbacks, that other code can re-enable.
     enabled = True
-        # allow special behavior to be turned of at import stage
-        # useful if other code must run to set up callbacks, that
-        # other code can re-enable
     other_orientation = {
         Orientation.Vertical: Orientation.Horizontal,
         Orientation.Horizontal: Orientation.Vertical,
@@ -384,8 +388,8 @@ class NestedSplitter(QtWidgets.QSplitter):
         """Ctor for NestedSplitter class."""
         if orientation is None:
             orientation = Orientation.Horizontal
+        # This creates a NestedSplitterHandle.
         super().__init__(orientation, parent)
-            # This creates a NestedSplitterHandle.
         if root is None:
             root = self.top(local=True)
             if root == self:

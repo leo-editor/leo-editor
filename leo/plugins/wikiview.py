@@ -69,7 +69,7 @@ def cmd_toggle(event):
     """wikiview: toggle active flag"""
     c = event.get('c')
     c._wikiview.active = not c._wikiview.active
-    if  c._wikiview.active:
+    if c._wikiview.active:
         g.es("WikiView active")
         cmd_hide_all(event)
     else:
@@ -103,13 +103,13 @@ class WikiView:
         if hasattr(self.colorizer, 'set_wikiview_patterns'):
             self.colorizer.set_wikiview_patterns(leadins, self.urlpats)
         self.select = 'select3'  # Leo hook to hide text
-        self.pts=1  # hidden text size (0.1 does not work!)
-        self.pct=1  # hidden text letter spacing
+        self.pts = 1  # hidden text size (0.1 does not work!)
+        self.pct = 1  # hidden text letter spacing
         self.reloadSettings()
         w = c.frame.body.widget
         if not w:
-            return # w may not exist during unit testing.
-        g.registerHandler(self.select,self.hide)
+            return  # w may not exist during unit testing.
+        g.registerHandler(self.select, self.hide)
         w.cursorPositionChanged.connect(self.unhide)
         # size to restore text to when unhiding,
         # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
@@ -121,9 +121,11 @@ class WikiView:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
+        # This setting is True by default, so the redundancy is harmless.
         self.active = c.config.getBool('wikiview-active')
-            # This setting is True by default, so the redundancy is harmless.
-    #@+node:ekr.20170205071315.1: *3* parse_options & helper
+    #@+node:ekr.20170205071315.1: *3* parse_options
+    leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
+
     def parse_options(self):
         """Return leadins, patterns from @data wikiview-link-patterns"""
         c = self.c
@@ -131,20 +133,14 @@ class WikiView:
         data = c.config.getData('wikiview-link-patterns')
         leadins, patterns = [], []
         for s in data:
-            leadin = self.get_leadin(s)
+            m = self.leadin_pattern.match(s)
+            leadin = m and m.group(3)
             if leadin:
                 leadins.append(leadin)
                 patterns.append(re.compile(s, re.IGNORECASE))
             else:
                 g.trace('bad leadin:', repr(s))
         return leadins, patterns
-    #@+node:ekr.20170205160357.1: *4* get_leadin
-    leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
-
-    def get_leadin(self, s):
-        """Return the leadin of the given pattern s, or None if there is an error."""
-        m = self.leadin_pattern.match(s)
-        return m and m.group(3)
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
         """Hide all wikiview tags. Now done in the colorizer."""
@@ -159,14 +155,13 @@ class WikiView:
                 for group_n, group in enumerate(m.groups()):
                     if group is None:
                         continue
-                    cursor.setPosition(m.start(group_n+1))
-                    cursor.setPosition(m.end(group_n+1), MoveMode.KeepAnchor)
+                    cursor.setPosition(m.start(group_n + 1))
+                    cursor.setPosition(m.end(group_n + 1), MoveMode.KeepAnchor)
                     cfmt = cursor.charFormat()
                     cfmt.setFontPointSize(self.pts)
                     cfmt.setFontLetterSpacing(self.pct)
                     # cfmt._is_hidden = True  # gets lost
-                    cursor.setCharFormat(cfmt)
-                        # Triggers a recolor.
+                    cursor.setCharFormat(cfmt)  # Triggers a recolor.
     #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
         c = self.c
@@ -198,8 +193,7 @@ class WikiView:
             # Common code.
             cfmt.setFontPointSize(self.size)
             cfmt.setFontLetterSpacing(100)
-            cursor.setCharFormat(cfmt)
-                # Triggers a recolor.
+            cursor.setCharFormat(cfmt)  # Triggers a recolor.
     #@-others
 #@-others
 #@@language python

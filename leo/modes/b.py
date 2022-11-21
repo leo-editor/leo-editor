@@ -159,25 +159,25 @@ keywordsDictDict = {
 def b_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*?", end="?*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def b_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def b_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def b_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def b_rule4(colorer, s, i):
@@ -308,7 +308,7 @@ rulesDict1 = {
     ",": [b_rule24,],
     "-": [b_rule21,],
     ".": [b_rule23,],
-    "/": [b_rule0,b_rule1,b_rule4,b_rule15,],
+    "/": [b_rule0, b_rule1, b_rule4, b_rule15,],
     "0": [b_rule31,],
     "1": [b_rule31,],
     "2": [b_rule31,],
@@ -385,7 +385,7 @@ rulesDict1 = {
     "{": [b_rule28,],
     "|": [b_rule20,],
     "}": [b_rule27,],
-    "~": [b_rule17,b_rule31,],
+    "~": [b_rule17, b_rule31,],
 }
 
 # x.rulesDictDict for b mode.
@@ -395,4 +395,3 @@ rulesDictDict = {
 
 # Import dict for b mode.
 importDict = {}
-

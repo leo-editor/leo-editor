@@ -1,22 +1,30 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210407011013.1: * @file leoQt6.py
+#@@first
 """
 Import wrapper for pyQt6.
 
 For Qt6, plugins are responsible for loading all optional modules.
 
 """
+
+# For now, suppress all mypy checks
+# type: ignore
+
 # pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
-#
+
 # Required imports
+from typing import Any
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
-from PyQt6.QtGui import QAction, QActionGroup
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 from PyQt6.QtCore import pyqtSignal as Signal
 #
 # For pyflakes.
 assert QtCore and QtGui and QtWidgets
 assert QAction and QActionGroup
+assert QCloseEvent
 assert Qt and QUrl and Signal
 #
 # Standard abbreviations.
@@ -24,6 +32,19 @@ QtConst = Qt
 qt_version = QtCore.QT_VERSION_STR
 #
 # Optional imports: #2005
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt6 import QtWebEngineWidgets
+    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # 2866: This message pollutes leoserver.py.
+        # print('No Qt6 QtWebEngineWidgets')
+        # print('pip install PyQt6-WebEngine')
+    pass
+
 try:
     from PyQt6 import QtPrintSupport as printsupport
 except Exception:
@@ -64,63 +85,74 @@ if 0:
 # Enumerations, with (sheesh) variable spellings.
 try:
     # New spellings (6.1+): mostly singular.
-    Alignment = QtCore.Qt.AlignmentFlag
+    Alignment = Qt.AlignmentFlag
     ControlType = QtWidgets.QSizePolicy.ControlType
-    DropAction = QtCore.Qt.DropAction
-    ItemFlag = QtCore.Qt.ItemFlag
-    KeyboardModifier = QtCore.Qt.KeyboardModifier
-    Modifier = QtCore.Qt.Modifier
-    MouseButton = QtCore.Qt.MouseButton
-    Orientation = QtCore.Qt.Orientation
+    DropAction = Qt.DropAction
+    ItemFlag = Qt.ItemFlag
+    KeyboardModifier = Qt.KeyboardModifier
+    Modifier = Qt.Modifier
+    MouseButton = Qt.MouseButton
+    Orientation = Qt.Orientation
     StandardButton = QtWidgets.QDialogButtonBox.StandardButton
-    TextInteractionFlag = QtCore.Qt.TextInteractionFlag
-    ToolBarArea = QtCore.Qt.ToolBarArea
-    WindowType = QtCore.Qt.WindowType
-    WindowState = QtCore.Qt.WindowState
+    TextInteractionFlag = Qt.TextInteractionFlag
+    ToolBarArea = Qt.ToolBarArea
+    WidgetAttribute = Qt.WidgetAttribute  # #2347
+    WindowType = Qt.WindowType
+    WindowState = Qt.WindowState
 except AttributeError:
     # Old spellings (6.0): mostly plural.
-    Alignment = QtCore.Qt.Alignment
-    ControlType = QtWidgets.QSizePolicy.ControlTypes
-    DropAction = QtCore.Qt.DropActions
-    ItemFlag = QtCore.Qt.ItemFlags
-    KeyboardModifier = QtCore.Qt.KeyboardModifiers
-    Modifier = QtCore.Qt.Modifiers
-    MouseButton = QtCore.Qt.MouseButtons
-    Orientation = QtCore.Qt.Orientations
-    StandardButton = QtWidgets.QDialog.StandardButtons
-    TextInteractionFlag = QtCore.Qt.TextInteractionFlags
-    ToolBarArea = QtCore.Qt.ToolBarAreas
-    WindowType = QtCore.Qt.WindowFlags
-    WindowState = QtCore.Qt.WindowStates
+    Alignment = Qt.Alignment  # type:ignore
+    ControlType = QtWidgets.QSizePolicy.ControlTypes  # type:ignore
+    DropAction = Qt.DropActions  # type:ignore
+    ItemFlag = Qt.ItemFlags  # type:ignore
+    KeyboardModifier = Qt.KeyboardModifiers  # type:ignore
+    Modifier = Qt.Modifiers  # type:ignore
+    MouseButton = Qt.MouseButtons  # type:ignore
+    Orientation = Qt.Orientations  # type:ignore
+    StandardButton = QtWidgets.QDialog.StandardButtons  # type:ignore
+    TextInteractionFlag = Qt.TextInteractionFlags  # type:ignore
+    ToolBarArea = Qt.ToolBarAreas  # type:ignore
+    WindowType = Qt.WindowFlags  # type:ignore
+    WindowState = Qt.WindowStates  # type:ignore
 #
 # Other enums.
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
-ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy
+ContextMenuPolicy = Qt.ContextMenuPolicy
 DialogCode = QtWidgets.QDialog.DialogCode
 EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
-FocusPolicy = QtCore.Qt.FocusPolicy
-FocusReason = QtCore.Qt.FocusReason
+FocusPolicy = Qt.FocusPolicy
+FocusReason = Qt.FocusReason
 Format = QtGui.QImage.Format
-GlobalColor = QtCore.Qt.GlobalColor
+GlobalColor = Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
-Information = QtWidgets.QMessageBox.Icon.Information
-Key = QtCore.Qt.Key
+Information = Icon.Information
+ItemDataRole = Qt.ItemDataRole  # 2347
+Key = Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-QStyle = QtWidgets.QStyle.StandardPixmap
-ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
+ScrollBarPolicy = Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
 SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
 Shadow = QtWidgets.QFrame.Shadow
 Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
+SolidLine = Qt.PenStyle.SolidLine
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
 Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+QWebEngineSettings: Any
+WebEngineAttribute: Any
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
+
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
 #@-leo

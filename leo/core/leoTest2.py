@@ -11,14 +11,30 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
+#@+<< leoTest2 imports >>
+#@+node:ekr.20220901083840.1: ** << leoTest2 imports >>
 import time
 import unittest
+import warnings
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
+#@-<< leoTest2 imports >>
+#@+<< leoTest2 annotations >>
+#@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+#@-<< leoTest2 annotations >>
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app
-def create_app(gui_name='null'):
+def create_app(gui_name: str='null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
 
@@ -28,12 +44,12 @@ def create_app(gui_name='null'):
     """
     trace = False
     t1 = time.process_time()
-    #
     # Set g.unitTesting *early*, for guards, to suppress the splash screen, etc.
     g.unitTesting = True
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
-    # Late imports.
+    # Do late imports.
+    warnings.simplefilter("ignore")
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
@@ -44,23 +60,21 @@ def create_app(gui_name='null'):
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
     lm.computeStandardDirectories()
-    if not g.app.setLeoID(useDialog=False, verbose=True):
-        raise ValueError("unable to set LeoID.")
+    g.app.leoID = 'TestLeoId'  # Use a standard user id for all tests.
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
-    g.app.db = g.NullObject('g.app.db')
-    g.app.pluginsController = g.NullObject('g.app.pluginsController')
-    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
+    # Disable dangerous code.
+    g.app.db = g.NullObject('g.app.db')  # type:ignore
+    g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
+    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
     elif gui_name == 'qt':
         g.app.gui = LeoQtGui()
-    else:
+    else:  # pragma: no cover
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
-    # Create a dummy commander, to do the imports in c.initObjects.
-    # Always use a null gui to avoid screen flash.
-    # setUp will create another commander.
+    # Create the commander, for c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # Create minimal config dictionaries.
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
@@ -75,7 +89,7 @@ def create_app(gui_name='null'):
     #         gui: 0.000
     #   commander: 0.469
     #       total: 0.484
-    if trace and t4 - t3 > 0.1:
+    if trace and t4 - t3 > 0.1:  # pragma: no cover
         print('create_app:\n'
             f"  imports: {(t2-t1):.3f}\n"
             f"      gui: {(t3-t2):.3f}\n"
@@ -92,34 +106,37 @@ class LeoUnitTest(unittest.TestCase):
     #@+others
     #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
-        Create a commander using a **null** gui, regardless of g.app.gui.
+        Create a commander using g.app.gui.
         Create the nodes in the commander.
         """
         # Do the import here to avoid circular dependencies.
         from leo.core import leoCommands
-        from leo.core.leoGui import NullGui
+
         # Set g.unitTesting *early*, for guards.
         g.unitTesting = True
+
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=NullGui())
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()
         self.root_p.h = 'root'
         self.settings_p = self.root_p.insertAfter()
         self.settings_p.h = '@settings'
+
         # Select the 'root' node.
         c.selectPosition(self.root_p)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.c = None
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
-    def create_test_outline(self):
+    def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
         #
@@ -161,6 +178,29 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
+    #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
+    def dump_string(self, s: str, tag: str=None) -> None:
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
+    def dump_headlines(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+        """Dump root's tree just as as Importer.dump_tree."""
+        print('')
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('level:', p.level(), p.h)
+    #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
+    def dump_tree(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+        """Dump root's tree just as as Importer.dump_tree."""
+        print('')
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('')
+            print('level:', p.level(), p.h)
+            g.printObj(g.splitLines(p.v.b))
     #@-others
 #@-others
 #@-leo

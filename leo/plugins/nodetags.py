@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:peckj.20140804114520.9427: * @file ../plugins/nodetags.py
-#@+<< docstring >>
-#@+node:peckj.20140804103733.9242: ** << docstring >>
+#@@first
+#@+<< nodetags docstring >>
+#@+node:peckj.20140804103733.9242: ** << nodetags docstring >>
 """Provides node tagging capabilities to Leo
 
 By Jacob M. Peck
@@ -93,30 +95,46 @@ nodes with tags containing the special search characters, `&|-^`. The UI also
 cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
 """
-#@-<< docstring >>
+#@-<< nodetags docstring >>
+#@+<< nodetags imports >>
+#@+node:ekr.20220828131647.1: ** << nodetags imports >>
 import re
+from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import MouseButton
+#@-<< nodetags imports >>
+#@+<< nodetags annotations >>
+#@+node:ekr.20220828131716.1: ** << nodetags annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+Widget = Any
+#@-<< nodetags annotations >>
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
-def init():
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     # 2031: Allow this plugin to run without Qt.
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:peckj.20140804103733.9245: ** onCreate (nodetags.py)
-def onCreate(tag, keys):
+def onCreate(tag: str, keys: Any) -> None:
 
     c = keys.get('c')
     if c:
         c.theTagController = TagController(c)
 #@+node:ekr.20201030095215.1: ** show-all-tags
 @g.command('show-all-tags')
-def show_all_tags(event):
-    """Simulate a control-click at the cursor."""
+def show_all_tags(event: Event) -> None:
+    """Show all tags, organized by node."""
     c = event.get('c')
     if not c:
         return
@@ -132,10 +150,10 @@ class TagController:
 
     #@+others
     #@+node:peckj.20140804103733.9262: *3* tag_c.__init__
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
 
         self.c = c
-        self.taglist = []
+        self.taglist: List[str] = []
         self.initialize_taglist()
         c.theTagController = self
         # #2031: Init the widgets only if we are using Qt.
@@ -144,7 +162,7 @@ class TagController:
             c.frame.log.createTab('Tags', widget=self.ui)
             self.ui.update_all()
     #@+node:peckj.20140804103733.9263: *3* tag_c.initialize_taglist
-    def initialize_taglist(self):
+    def initialize_taglist(self) -> None:
         taglist = []
         for p in self.c.all_unique_positions():
             for tag in self.get_tags(p):
@@ -154,14 +172,15 @@ class TagController:
 
     #@+node:peckj.20140804103733.9264: *3* tag_c.outline-level
     #@+node:peckj.20140804103733.9268: *4* tag_c.get_all_tags
-    def get_all_tags(self):
+    def get_all_tags(self) -> List[str]:
         """ return a list of all tags in the outline """
         return self.taglist
     #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
-    def show_all_tags(self):
+    def show_all_tags(self) -> None:
         """Show all tags, organized by node."""
         c, tc = self.c, self
-        d = {}
+        aList: List[str]
+        d: Dict[str, List[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))
@@ -180,7 +199,7 @@ class TagController:
                 print(f"no tags in {c.shortFileName()}")
 
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
-    def update_taglist(self, tag):
+    def update_taglist(self, tag: str) -> None:
         """ ensures the outline's taglist is consistent with the state of the nodes in the outline """
         if tag not in self.taglist:
             self.taglist.append(tag)
@@ -190,9 +209,9 @@ class TagController:
         if hasattr(self, 'ui'):
             self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
-    def get_tagged_nodes(self, tag):
+    def get_tagged_nodes(self, tag: str) -> List[Position]:
         """ return a list of *positions* of nodes containing the tag, with * as a wildcard """
-        nodelist = []
+        nodelist: List[Position] = []
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)
@@ -203,7 +222,7 @@ class TagController:
                     break
         return nodelist
     #@+node:vitalije.20170811150914.1: *4* tag_c.get_tagged_gnxes
-    def get_tagged_gnxes(self, tag):
+    def get_tagged_gnxes(self, tag: str) -> Generator:
         c = self.c
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)
@@ -213,14 +232,14 @@ class TagController:
                     yield p.v.gnx
     #@+node:peckj.20140804103733.9265: *3* tag_c.individual nodes
     #@+node:peckj.20140804103733.9259: *4* tag_c.get_tags
-    def get_tags(self, p):
+    def get_tags(self, p: Position) -> List[str]:
         """ returns a list of tags applied to position p."""
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
             return list(tags)
         return []
     #@+node:peckj.20140804103733.9260: *4* tag_c.add_tag
-    def add_tag(self, p, tag):
+    def add_tag(self, p: Position, tag: str) -> None:
         """ adds 'tag' to the taglist of v """
         # cast to set() incase JSON storage (leo_cloud plugin) converted to list
         tags = set(p.v.u.get(self.TAG_LIST_KEY, set([])))
@@ -229,28 +248,28 @@ class TagController:
         self.c.setChanged()
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* tag_c.remove_tag
-    def remove_tag(self, p, tag):
+    def remove_tag(self, p: Position, tag: str) -> None:
         """ removes 'tag' from the taglist of position p. """
         v = p.v
+        # In case JSON storage (leo_cloud plugin) converted to list.
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
-            # in case JSON storage (leo_cloud plugin) converted to list.
         if tag in tags:
             tags.remove(tag)
         if tags:
             v.u[self.TAG_LIST_KEY] = tags
         else:
-            del v.u[self.TAG_LIST_KEY]
             # prevent a few corner cases, and conserve disk space
+            del v.u[self.TAG_LIST_KEY]
         self.c.setChanged()
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
 if QtWidgets:
 
-    class LeoTagWidget(QtWidgets.QWidget):
+    class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c, parent=None):
+        def __init__(self, c: Cmdr, parent: Widget=None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
@@ -260,10 +279,11 @@ if QtWidgets:
             self.search_re = r'(&|\||-|\^)'
             self.custom_searches = []
             g.registerHandler('select2', self.select2_hook)
-            g.registerHandler('create-node', self.command2_hook)  # fix tag jumplist positions after new node insertion
+            # fix tag jumplist positions after new node insertion
+            g.registerHandler('create-node', self.command2_hook)
             g.registerHandler('command2', self.command2_hook)
         #@+node:peckj.20140804114520.15202: *4* tag_w.initUI
-        def initUI(self):
+        def initUI(self) -> None:
             """create GUI components."""
             self.setObjectName("LeoTagWidget")
             #
@@ -326,7 +346,7 @@ if QtWidgets:
             self.verticalLayout_2.addLayout(self.verticalLayout)
             QtCore.QMetaObject.connectSlotsByName(self)
         #@+node:peckj.20140804114520.15203: *4* tag_w.registerCallbacks
-        def registerCallbacks(self):
+        def registerCallbacks(self) -> None:
             """Connect events to widgets."""
             self.listWidget.itemSelectionChanged.connect(self.item_selected)
             self.listWidget.itemClicked.connect(self.item_selected)
@@ -334,7 +354,7 @@ if QtWidgets:
             self.pushButton.clicked.connect(self.add_tag)
         #@+node:peckj.20140804114520.15204: *3* tag_w:updates + interaction
         #@+node:peckj.20140804114520.15205: *4* tag_w.item_selected
-        def item_selected(self):
+        def item_selected(self) -> None:
             c = self.c
             key = id(self.listWidget.currentItem())
             v = self.mapping[key]
@@ -345,7 +365,7 @@ if QtWidgets:
             c.selectPosition(p)
             c.redraw()
         #@+node:peckj.20140804192343.6568: *5* tag_w.update_current_tags
-        def update_current_tags(self, p):
+        def update_current_tags(self, p: Position) -> None:
             #
             # Clear horizontalLayout2
             layout = self.horizontalLayout2
@@ -366,10 +386,10 @@ if QtWidgets:
                 layout.addWidget(label)
                 label.mouseReleaseEvent = self.callback_factory(tag)
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
-        def callback_factory(self, tag):
+        def callback_factory(self, tag: str) -> Callable:
             c = self.c
 
-            def callback(event):
+            def callback(event: Event) -> None:
                 p = c.p
                 tc = c.theTagController
                 ui = tc.ui
@@ -384,14 +404,14 @@ if QtWidgets:
 
             return callback
         #@+node:peckj.20140804114520.15206: *4* tag_w.update_combobox
-        def update_combobox(self):
+        def update_combobox(self) -> None:
             self.comboBox.clear()
             tags = self.tc.get_all_tags()
             self.comboBox.addItems(tags)
             self.comboBox.addItems(self.custom_searches)
 
         #@+node:peckj.20140804114520.15207: *4* tag_w.update_list
-        def update_list(self):
+        def update_list(self) -> None:
             c = self.c
             gnxDict = c.fileCommands.gnxDict
             key = str(self.comboBox.currentText()).strip()
@@ -436,7 +456,7 @@ if QtWidgets:
             self.label.clear()
             self.label.setText("Total: %s nodes" % count)
         #@+node:peckj.20140804114520.15208: *4* tag_w.update_all
-        def update_all(self):
+        def update_all(self) -> None:
             """ updates the tag GUI """
             key = str(self.comboBox.currentText())
             self.update_combobox()
@@ -450,7 +470,7 @@ if QtWidgets:
             self.update_list()
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806145948.6579: *4* tag_w.add_tag
-        def add_tag(self, event=None):
+        def add_tag(self, event: Event=None) -> None:
             p = self.c.p
             tag = str(self.comboBox.currentText()).strip()
             if not tag:
@@ -461,14 +481,14 @@ if QtWidgets:
             self.tc.add_tag(p, tag)
         #@+node:peckj.20140811082039.6623: *3* tag_w:event hooks
         #@+node:peckj.20140804195456.13487: *4* tag_w.select2_hook
-        def select2_hook(self, tag, keywords):
+        def select2_hook(self, tag: str, keywords: Any) -> None:
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806101020.14006: *4* tag_w.command2_hook
-        def command2_hook(self, tag, keywords):
+        def command2_hook(self, tag: str, keywords: Any) -> None:
             paste_cmds = [
                 'paste-node',
+                # strange that this one isn't canonicalized
                 'pasteOutlineRetainingClones',
-                    # strange that this one isn't canonicalized
                 'paste-retaining-clones',
             ]
             if keywords.get('label') in paste_cmds:

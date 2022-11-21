@@ -65,61 +65,61 @@ keywordsDictDict = {
 def rhtml_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<%#", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="ruby::main",exclude_match=False,
+        delegate="ruby::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="ruby::main",exclude_match=False,
+        delegate="ruby::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript",exclude_match=False,
+        delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rhtml::tags",exclude_match=False,
+        delegate="rhtml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for rhtml_main ruleset.
 rulesDict1 = {
     "&": [rhtml_rule8,],
-    "<": [rhtml_rule0,rhtml_rule1,rhtml_rule2,rhtml_rule3,rhtml_rule4,rhtml_rule5,rhtml_rule6,rhtml_rule7,],
+    "<": [rhtml_rule0, rhtml_rule1, rhtml_rule2, rhtml_rule3, rhtml_rule4, rhtml_rule5, rhtml_rule6, rhtml_rule7,],
 }
 
 # Rules for rhtml_tags ruleset.
@@ -127,25 +127,25 @@ rulesDict1 = {
 def rhtml_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<%#", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rhtml::tags_literal",exclude_match=False,
+        delegate="rhtml::tags_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rhtml::tags_literal",exclude_match=False,
+        delegate="rhtml::tags_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule13(colorer, s, i):
@@ -156,7 +156,7 @@ def rhtml_rule13(colorer, s, i):
 rulesDict2 = {
     "\"": [rhtml_rule11,],
     "'": [rhtml_rule12,],
-    "<": [rhtml_rule9,rhtml_rule10,],
+    "<": [rhtml_rule9, rhtml_rule10,],
     "=": [rhtml_rule13,],
 }
 
@@ -165,18 +165,18 @@ rulesDict2 = {
 def rhtml_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rhtml_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for rhtml_tags_literal ruleset.
 rulesDict3 = {
-    "<": [rhtml_rule14,rhtml_rule15,],
+    "<": [rhtml_rule14, rhtml_rule15,],
 }
 
 # x.rulesDictDict for rhtml mode.
@@ -188,4 +188,3 @@ rulesDictDict = {
 
 # Import dict for rhtml mode.
 importDict = {}
-

@@ -98,6 +98,7 @@ These commands attempt to deal with all of this.
 
 import os
 import traceback  # for XML parse error display
+from typing import Any, Dict
 from lxml import etree
 from leo.core import leoGlobals as g
 
@@ -115,7 +116,7 @@ table = [
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP = {}
+NSMAP: Dict[str, Any] = {}
 
 #@+node:tbrown.20110428102237.20325: ** append_element
 def append_element(xml_node, to_leo_node):

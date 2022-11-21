@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:felix.20210621233316.1: * @file leoserver.py
+#@@first
 #@@language python
 #@@tabwidth -4
 """
@@ -7,20 +9,29 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
+#@+<< leoserver imports >>
+#@+node:felix.20210621233316.2: ** << leoserver imports >>
 # pylint: disable=import-self,raise-missing-from,wrong-import-position
-#@+<< imports >>
-#@+node:felix.20210621233316.2: ** << imports >>
 import argparse
 import asyncio
+import fnmatch
 import inspect
+import itertools
 import json
 import os
+import re
 import sys
 import socket
 import textwrap
 import time
-import tkinter as Tk
+from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
+import warnings
+
 # Third-party.
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 # #2300
 try:
     import websockets
@@ -33,32 +44,58 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.append(leo_path)
 # Leo
-from leo.core.leoNodes import Position
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
-#@-<< imports >>
-version_tuple = (1, 0, 0)
+#@-<< leoserver imports >>
+#@+<< leoserver annotations >>
+#@+node:ekr.20220820155747.1: ** << leoserver annotations >>
+Event = Any  # More than one kind of Event!
+Loop = Any
+Match = re.Match
+Match_Iter = Iterator[re.Match[str]]
+Package = Dict[str, Any]
+Param = Dict[str, Any]
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+Response = str  # See _make_response.
+Socket = Any
+
+#@-<< leoserver annotations >>
+#@+<< leoserver version >>
+#@+node:ekr.20220820160619.1: ** << leoserver version >>
+version_tuple = (1, 0, 5)
+# Version History
+# 1.0.1 Initial commit
+# 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
+# 1.0.3 July 2022: Fixed original node selection upon opening a file.
+# 1.0.4 September 2022: Full type checking
+# 1.0.5 October 2022: Fixed node commands when used from client's context menu
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
+#@-<< leoserver version >>
+#@+<< leoserver globals >>
+#@+node:ekr.20220820160701.1: ** << leoserver globals >>
 g = None  # The bridge's leoGlobals module.
-
 # Server defaults
-SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
-connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
-connectionsTotal = 0 # Current connected client total
+SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
+# Websocket connections (to be sent 'notify' messages)
+connectionsPool: Set[Any] = set()
+connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces = []
+traces: List[str] = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
 wsHost = "localhost"
 wsPort = 32125
-
+#@-<< leoserver globals >>
 #@+others
-#@+node:felix.20210712224107.1: ** setup JSON encoder
+#@+node:felix.20210712224107.1: ** class SetEncoder
 class SetEncoder(json.JSONEncoder):
-    def default(self, obj):
+
+    def default(self, obj: Any) -> Any:
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
@@ -81,28 +118,28 @@ class ServerExternalFilesController(ExternalFilesController):
 
     #@+others
     #@+node:felix.20210626222905.2: *3* sefc.ctor
-    def __init__(self):
-        """Ctor for ExternalFiles class."""
+    def __init__(self) -> None:
+        """Ctor for ServerExternalFiles class."""
         super().__init__()
 
         self.on_idle_count = 0
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+        self.yesno_all_time: float = 0.0  # time of answer (previous yes/no to all answer)
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
-        self.infoMessage = None
+        self.infoMessage: str = None
         # False or "detected", "refreshed" or "ignored"
 
         g.app.idleTimeManager.add_callback(self.on_idle)
 
         self.waitingForAnswer = False
-        self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
-        self.lastCommander = None
+        self.lastPNode: Position = None  # last p node that was asked for if not set to "AllYes\AllNo"
+        self.lastCommander: Cmdr = None
     #@+node:felix.20210626222905.6: *3* sefc.clientResult
-    def clientResult(self, p_result):
+    def clientResult(self, p_result: Response) -> None:
         """Received result from connected client that was 'asked' yes/no/... """
         # Got the result to an asked question/warning from the client
         if not self.waitingForAnswer:
@@ -136,7 +173,7 @@ class ServerExternalFilesController(ExternalFilesController):
             if bool(p_result and 'yes' in p_result.lower()):
                 # self.lastCommander.close() Stops too much if last file closed
                 g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
-                g.leoServer.open_file({"filename":path }) # ignore returned value
+                g.leoServer.open_file({"filename": path})  # ignore returned value
 
         # Always update the path & time to prevent future warnings for this path.
         if path:
@@ -149,14 +186,14 @@ class ServerExternalFilesController(ExternalFilesController):
             self.idle_check_commander(self.lastCommander)
     #@+node:felix.20210714205425.1: *3* sefc.entries
     #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
-    def check_overwrite(self, c, path):
+    def check_overwrite(self, c: Cmdr, path: str) -> bool:
         if self.has_changed(path):
-            package = {"async": "info", "message": "Overwritten "+ path}
+            package = {"async": "info", "message": "Overwritten " + path}
             g.leoServer._send_async_output(package, True)
         return True
 
     #@+node:felix.20210714205604.1: *4* sefc.on_idle & helpers
-    def on_idle(self):
+    def on_idle(self) -> None:
         """
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
@@ -185,7 +222,7 @@ class ServerExternalFilesController(ExternalFilesController):
                 z for z in g.app.commanders() if self.is_enabled(z)
             ]
     #@+node:felix.20210626222905.4: *5* sefc.idle_check_commander
-    def idle_check_commander(self, c):
+    def idle_check_commander(self, c: Cmdr) -> None:
         """
         Check all external files corresponding to @<file> nodes in c for
         changes.
@@ -209,7 +246,7 @@ class ServerExternalFilesController(ExternalFilesController):
             package = {"async": "info", "message": self.infoMessage}
             g.leoServer._send_async_output(package, True)
     #@+node:felix.20210627013530.1: *5* sefc.idle_check_leo_file
-    def idle_check_leo_file(self, c):
+    def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
         path = c.fileName()
         if not self.has_changed(path):
@@ -222,9 +259,9 @@ class ServerExternalFilesController(ExternalFilesController):
             #reload Commander
             # self.lastCommander.close() Stops too much if last file closed
             g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
-            g.leoServer.open_file({"filename":path }) # ignore returned value
+            g.leoServer.open_file({"filename": path})  # ignore returned value
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
-    def idle_check_at_file_node(self, c, p):
+    def idle_check_at_file_node(self, c: Cmdr, p: Position) -> None:
         """Check the @<file> node at p for external changes."""
         trace = False
         path = g.fullPath(c, p)
@@ -237,26 +274,26 @@ class ServerExternalFilesController(ExternalFilesController):
                 # Fix #1081: issue a warning.
                 self.warn(c, path, p=p)
             elif self.ask(c, path, p=p):
-                old_p = c.p # To restore selection if refresh option set to yes-all & is descendant of at-file
+                old_p = c.p  # To restore selection if refresh option set to yes-all & is descendant of at-file
                 c.selectPosition(self.lastPNode)
-                c.refreshFromDisk() # Ends with selection on new c.p which is the at-file node
+                c.refreshFromDisk()  # Ends with selection on new c.p which is the at-file node
                 # check with leoServer's config first, and if new c.p is ancestor of old_p
                 if g.leoServer.leoServerConfig:
-                    if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()=='yes-all':
+                    if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all':
                         if c.positionExists(old_p) and c.p.isAncestorOf(old_p):
                             c.selectPosition(old_p)
-
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
     #@+node:felix.20210626222905.18: *4* sefc.open_with
-    def open_with(self, c, d):
+    def open_with(self, c: Cmdr, d: Dict[str, str]) -> None:
         """open-with is bypassed in leoserver (for now)"""
         return
 
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
-    def ask(self, c, path, p=None):
+    # The base class returns str.
+    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:  # type:ignore
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -278,7 +315,7 @@ class ServerExternalFilesController(ExternalFilesController):
             self.yesno_all_time = time.time()  # Still reloading?  Extend time
             # if yesAll/noAll forced, then just show info message
             yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
-            return yesno_all_bool # We already have our answer here, so return it
+            return yesno_all_bool  # We already have our answer here, so return it
         if not p:
             where = 'the outline node'
         else:
@@ -300,11 +337,11 @@ class ServerExternalFilesController(ExternalFilesController):
         package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
                      "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
 
-        g.leoServer._send_async_output(package) # Ask the connected client
-        self.waitingForAnswer = True # Block the loop and further checks until 'clientResult'
-        return False # return false so as not to refresh until 'clientResult' says so
+        g.leoServer._send_async_output(package)  # Ask the connected client
+        self.waitingForAnswer = True  # Block the loop and further checks until 'clientResult'
+        return False  # return false so as not to refresh until 'clientResult' says so
     #@+node:felix.20210626222905.13: *4* sefc.is_enabled
-    def is_enabled(self, c):
+    def is_enabled(self, c: Cmdr) -> bool:
         """Return the cached @bool check_for_changed_external_file setting."""
         # check with the leoServer config first
         if g.leoServer.leoServerConfig:
@@ -316,7 +353,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # let original function resolve
         return super().is_enabled(c)
     #@+node:felix.20210626222905.16: *4* sefc.warn
-    def warn(self, c, path, p):
+    def warn(self, c: Cmdr, path: str, p: Position) -> None:
         """
         Warn that an @asis or @nosent node has been changed externally.
 
@@ -352,12 +389,451 @@ class ServerExternalFilesController(ExternalFilesController):
         g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
     #@-others
+#@+node:felix.20220225003906.1: ** class QuickSearchController (leoserver.py)
+class QuickSearchController:
+
+    #@+others
+    #@+node:felix.20220225003906.2: *3* QSC.__init__
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
+        self.lw: List = []  # empty list
+        # Keys are id(w),values are either tuples in tuples (w (p,Position)) or tuples (w, f)
+        self.its: Dict[int, Any] = {}
+        self.fileDirectives = [
+            "@asis", "@auto",
+            "@auto-md", "@auto-org", "@auto-otl", "@auto-rst",
+            "@clean", "@file", "@edit",
+        ]
+        self._search_patterns: List[str] = []
+        self.navText = ''
+        self.showParents = True
+        self.isTag = False  # added concept to combine tag pane functionality
+        self.searchOptions = 0
+        self.searchOptionsStrings = ["All", "Subtree", "File", "Chapter", "Node"]
+    #@+node:ekr.20220818080756.1: *3* QSC: entries
+    #@+node:felix.20220225003906.14: *4* QSC.qsc_search & helpers
+    def qsc_search(self, pat: str) -> None:
+        hitBase = False
+        c = self.c
+        flags: RegexFlag
+        self.clear()
+        self.pushSearchHistory(pat)
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+            # in python 3.6 there is no (?ms) at the end
+            # only \Z
+            bpat = bpat.replace(r'\Z', '')
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            bpat = pat[2:]
+            flags = 0
+        combo = self.searchOptionsStrings[self.searchOptions]
+        bNodes: Iterable[Position]
+        hNodes: Iterable[Position]
+        if combo == "All":
+            hNodes = c.all_positions()
+            bNodes = c.all_positions()
+        elif combo == "Subtree":
+            hNodes = c.p.self_and_subtree()
+            bNodes = c.p.self_and_subtree()
+        elif combo == "File":
+            found = False
+            node = c.p
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h in self.fileDirectives:
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            hNodes = node.self_and_subtree()
+            bNodes = node.self_and_subtree()
+        elif combo == "Chapter":
+            found = False
+            node = c.p
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h == "@chapter":
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            if hitBase:
+                # If I hit the base then revert to all positions
+                # this is basically the "main" chapter
+                hitBase = False  #reset
+                hNodes = c.all_positions()
+                bNodes = c.all_positions()
+            else:
+                hNodes = node.self_and_subtree()
+                bNodes = node.self_and_subtree()
+        else:
+            hNodes = [c.p]
+            bNodes = [c.p]
+
+        if not hitBase:
+            # hNodes = list(hNodes)
+            # bNodes = list(bNodes)
+            hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
+            bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
+            bm_keys = [match[0].key() for match in bm]
+            numOfHm = len(hm)  #do this before trim to get accurate count
+            hm = [match for match in hm if match[0].key() not in bm_keys]
+            if self.showParents:
+                # Was: parents = OrderedDefaultDict(list)
+                parents: Dict[str, List[Tuple[Position, Match_Iter]]] = {}
+
+                for nodeList in [hm, bm]:
+                    for node in nodeList:
+                        key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
+                        aList: List[Tuple[Position, Match_Iter]] = parents.get(key, [])
+                        aList.append(node)
+                        parents[key] = aList
+                lineMatchHits = self.addParentMatches(parents)
+            else:
+                self.addHeadlineMatches(hm)
+                lineMatchHits = self.addBodyMatches(bm)
+
+            hits = numOfHm + lineMatchHits
+            self.lw.insert(0, f"{hits} hits")
+
+        else:
+            if combo == "File":
+                self.lw.insert(0, 'External file directive not found during search')
+    #@+node:ekr.20220818083736.1: *5* QSC.pushSearchHistory
+    def pushSearchHistory(self, pat: str) -> None:
+        if pat in self._search_patterns:
+            return
+        self._search_patterns = ([pat] + self._search_patterns)[:30]
+
+    #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
+    def addBodyMatches(self, positions: List[Tuple[Position, Match_Iter]]) -> int:
+        lineMatchHits = 0
+        for p in positions:
+            it = {"type": "headline", "label": p[0].h}
+            if self.addItem(it, (p[0], None)):
+                return lineMatchHits
+            ms = self.matchlines(p[0].b, p[1])
+            for ml, pos in ms:
+                lineMatchHits += 1
+                it = {"type": "body", "label": ml}
+                if self.addItem(it, (p[0], pos)):
+                    return lineMatchHits
+        return lineMatchHits
+
+
+    #@+node:felix.20220225003906.11: *4* QSC.qsc_search_history & helper (not used)
+    def qsc_search_history(self) -> None:
+
+        self.clear()
+
+        def sHistSelect(x: str) -> Callable:
+            def _f() -> None:
+                # self.widgetUI.lineEdit.setText(x)
+                scon: QuickSearchController = self.c.patched_quicksearch_controller
+                scon.navText = x
+                self.qsc_search(x)
+            return _f
+
+        for pat in self._search_patterns:
+            self.addGeneric(pat, sHistSelect(pat))
+    #@+node:felix.20220225003906.7: *5* QSC.addGeneric
+    def addGeneric(self, text: str, f: Callable) -> Dict:
+        """ Add generic callback """
+        it = {"type": "generic", "label": text}
+        self.its[id(it)] = (it, f)
+        return it
+
+    #@+node:felix.20220225003906.12: *4* QSC.qsc_sort_by_gnx
+    def qsc_sort_by_gnx(self) -> None:
+        """Return positions by gnx."""
+        c = self.c
+        timeline: List[Tuple[Position, Match_Iter]] = [
+            (p.copy(), None) for p in c.all_unique_positions()
+        ]
+        timeline.sort(key=lambda x: x[0].gnx, reverse=True)
+        self.clear()
+        self.addHeadlineMatches(timeline)
+    #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
+    def qsc_background_search(self, pat: str) -> Tuple[
+        List[Tuple[Position, Match_Iter]],
+        List[Position]
+    ]:
+
+        flags: RegexFlag
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            flags = 0
+        combo = self.searchOptionsStrings[self.searchOptions]
+        hNodes: Iterable[Position]
+        if combo == "All":
+            hNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+        else:
+            hNodes = [self.c.p]
+        hm = self.find_h(hpat, list(hNodes), flags)
+        # Update the real quicksearch controller.
+        self.clear()
+        self.addHeadlineMatches(hm)
+        return hm, []
+    #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
+    def qsc_find_changed(self) -> None:
+        c = self.c
+        changed: List[Tuple[Position, Match_Iter]] = [
+            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
+        ]
+        self.clear()
+        self.addHeadlineMatches(changed)
+    #@+node:felix.20220313183922.1: *4* QSC.qsc_find_tags & helpers
+    def qsc_find_tags(self, pat: str) -> None:
+        """
+        Search for tags: outputs position list
+        If empty pattern, list tags *strings* instead
+        """
+        if not pat:
+            # No pattern! list all tags as string
+            c = self.c
+            self.clear()
+            d: Dict[str, Any] = {}
+            for p in c.all_unique_positions():
+                u = p.v.u
+                tags = set(u.get('__node_tags', set([])))
+                for tag in tags:
+                    aList = d.get(tag, [])
+                    aList.append(p.h)
+                    d[tag] = aList
+            if d:
+                for key in sorted(d):
+                    # key is unique tag
+                    self.addTag(key)
+            return
+        # else: non empty pattern, so find tag!
+        hm = self.find_tag(pat)
+        self.clear()  # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
+    #@+node:felix.20220318222437.1: *5* QSC.addTag
+    def addTag(self, text: str) -> Dict:
+        """ add Tag label """
+        it = {"type": "tag", "label": text}
+        self.its[id(it)] = (it, None)
+        return it
+
+    #@+node:felix.20220313185430.1: *5* QSC.find_tag
+    def find_tag(self, pat: str) -> List[Tuple[Position, Match_Iter]]:
+        """
+        Return list of all positions that have matching tags
+        """
+        #  USE update_list(self) from @file ../plugins/nodetags.py
+        c = self.c
+
+        tc = getattr(c, 'theTagController', None)
+        if not tc:
+            print("In find_tag: No 'theTagController' on commander.")
+            print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+            print("", flush=True)
+            return []
+
+        gnxDict = c.fileCommands.gnxDict
+        key = pat.strip()
+
+        query = re.split(r'(&|\||-|\^)', key)
+        tags = []
+        operations = []
+        for i, s in enumerate(query):
+            if i % 2 == 0:
+                tags.append(s.strip())
+            else:
+                operations.append(s.strip())
+        tags.reverse()
+        operations.reverse()
+
+        resultset: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+        while operations:
+            op = operations.pop()
+            nodes: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+            if op == '&':
+                resultset &= nodes
+            elif op == '|':
+                resultset |= nodes
+            elif op == '-':
+                resultset -= nodes
+            elif op == '^':
+                resultset ^= nodes
+        aList: List[Tuple[Position, Match_Iter]] = []
+        for gnx in resultset:
+            n = gnxDict.get(gnx)
+            if n is not None:
+                p = c.vnode2position(n)
+                aList.append((p.copy(), None))
+        return aList
+    #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
+    def qsc_get_history(self) -> None:
+        headlines: List[Tuple[Position, Match_Iter]] = [
+            (po[0].copy(), None) for po in self.c.nodeHistory.beadList
+        ]
+        headlines.reverse()
+        self.clear()
+        self.addHeadlineMatches(headlines)
+    #@+node:felix.20220225003906.18: *4* QSC.qsc_show_marked
+    def qsc_show_marked(self) -> None:
+        self.clear()
+        c = self.c
+        self.addHeadlineMatches([
+            (z.copy(), None) for z in c.all_positions() if z.isMarked()
+        ])
+    #@+node:ekr.20220818083228.1: *3* QSC: helpers
+    #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
+    def addHeadlineMatches(self,
+        position_list: List[Tuple[Position, Match_Iter]]
+    ) -> None:
+        for p in position_list:
+            it = {"type": "headline", "label": p[0].h}
+            if self.addItem(it, (p[0], None)):
+                return
+    #@+node:felix.20220225003906.4: *4* QSC.addItem
+    def addItem(self, it: Any, val: Any) -> bool:
+        self.its[id(it)] = (it, val)
+        # changed to 999 from 3000 to replace old threadutil behavior
+        return len(self.its) > 999  # Limit to 999 for now
+    #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
+    def addParentMatches(self,
+        parent_list: Dict[str, List[Tuple[Position, Match_Iter]]],
+    ) -> int:
+        lineMatchHits = 0
+        for parent_key, parent_value in parent_list.items():
+            if isinstance(parent_key, str):
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                it = {"type": "parent", "label": h}
+            else:
+                it = {"type": "parent", "label": parent_key[0].h}
+            if self.addItem(it, (parent_key, None)):
+                return lineMatchHits
+            for p, m in parent_value:
+                it = {"type": "headline", "label": p.h}
+                if self.addItem(it, (p, None)):
+                    return lineMatchHits
+                if m is not None:  #p might not have body matches
+                    ms = self.matchlines(p.b, m)
+                    for match_list, pos in ms:
+                        lineMatchHits += 1
+                        it = {"type": "body", "label": match_list}
+                        if self.addItem(it, (p, pos)):
+                            return lineMatchHits
+
+        return lineMatchHits
+
+    #@+node:felix.20220225003906.9: *4* QSC.clear
+    def clear(self) -> None:
+        self.its = {}
+        self.lw.clear()
+
+    #@+node:felix.20220225003906.17: *4* QSC.find_b
+    def find_b(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+    ) -> List[Tuple[Position, Match_Iter]]:
+        """
+        Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
+        """
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return []
+
+        aList: List[Tuple[Position, Match_Iter]] = []
+        for p in positions:
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                t1.__next__()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            aList.append((pc, t2))
+
+        return aList
+    #@+node:felix.20220225003906.16: *4* QSC.find_h
+    def find_h(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE,
+    ) -> List[Tuple[Position, Match_Iter]]:
+        """
+        Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
+        """
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return []
+        return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
+    #@+node:felix.20220225224130.1: *4* QSC.matchlines
+    def matchlines(self, b: str, miter: Match_Iter) -> List[Tuple[str, Tuple[int, int]]]:
+        aList = []
+        for m in miter:
+            st, en = g.getLine(b, m.start())
+            li = b[st:en].strip()
+            aList.append((li, (m.start(), m.end())))
+        return aList
+
+    #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
+    def onSelectItem(self, it: Any, it_prev: Any=None) -> None:  # it_prev not used. Hard to annotate.
+        c = self.c
+        tgt = self.its.get(it)
+        if not tgt:
+            if not g.unitTesting:
+                print("onSelectItem: no target found for 'it' as key:" + str(it))
+            return
+
+        # generic callable
+        try:
+            if callable(tgt[1]):
+                tgt()
+            elif len(tgt[1]) == 2:
+                p, pos = tgt[1]
+                if hasattr(p, 'v'):  # p might be "Root"
+                    if not c.positionExists(p):
+                        g.es("Node moved or deleted.\nMaybe re-do search.",
+                            color='red')
+                        return
+                    c.selectPosition(p)
+                    if pos is not None:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, False, 0, p)
+                        st, en = pos
+                        w = c.frame.body.wrapper
+                        w.setSelectionRange(st, en)
+                        w.seeInsertPoint()
+                        c.bodyWantsFocus()
+                        c.bodyWantsFocusNow()
+                    else:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, True, 0, p)
+        except Exception:
+            raise ServerError("QuickSearchController onSelectItem error")
+    #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
     """Leo Server Controller"""
     #@+others
     #@+node:felix.20210621233316.5: *3* server.__init__
-    def __init__(self, testing=False):
+    def __init__(self, testing: bool=False) -> None:
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -366,10 +842,10 @@ class LeoServer:
         t1 = time.process_time()
         #
         # Init ivars first.
-        self.c = None  # Currently Selected Commander.
-        self.dummy_c = None  # Set below, after we set g.
-        self.action = None
-        self.bad_commands_list = []  # Set below.
+        self.c: Cmdr = None  # Currently Selected Commander.
+        self.dummy_c: Cmdr = None  # Set below, after we set g.
+        self.action: str = None
+        self.bad_commands_list: List[str] = []  # Set below.
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -378,21 +854,23 @@ class LeoServer:
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
-            loadPlugins=True,   # True: attempt to load plugins.
+            loadPlugins=True,  # True: attempt to load plugins.
             readSettings=True,  # True: read standard settings files.
-            silent=True,         # True: don't print signon messages.
-            verbose=False,       # True: prints messages that would be sent to the log pane.
+            silent=True,  # True: don't print signon messages.
+            verbose=False,  # True: prints messages that would be sent to the log pane.
         )
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
-        self.leoServerConfig = None
+        self.leoServerConfig: Param = None
+        #
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
+        g.es_print = self._es  # Also like es, because es_print would double strings in client
         #
         # Set in _init_connection
-        self.web_socket = None # Main Control Client
-        self.loop = None
+        self.web_socket = None  # Main Control Client
+        self.loop: Loop = None
         #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
@@ -416,9 +894,9 @@ class LeoServer:
         t2 = time.process_time()
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
-    #@+node:felix.20210622235127.1: *3* server:leo overridden methods
-    #@+node:felix.20210711194729.1: *4* _runAskOkDialog
-    def _runAskOkDialog(self, c, title, message=None, text="Ok"):
+    #@+node:felix.20210622235127.1: *3* server.leo overridden methods
+    #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -427,8 +905,14 @@ class LeoServer:
             s = title
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
-    #@+node:felix.20210711194736.1: *4* _runAskYesNoDialog
-    def _runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
+    #@+node:felix.20210711194736.1: *4* LeoServer._runAskYesNoDialog
+    def _runAskYesNoDialog(self,
+        c: Cmdr,
+        title: str,
+        message: str=None,
+        yes_all: bool=False,
+        no_all: bool=False,
+    ) -> str:
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
         # used in revert with title: 'Revert'
@@ -438,32 +922,39 @@ class LeoServer:
         if title.startswith('Overwrite'):
             s = "@<file> tree was overwritten"
         elif title.startswith('Revert'):
-            s= "Leo outline reverted to last saved contents"
+            s = "Leo outline reverted to last saved contents"
         elif title.startswith('Create'):
-            s= "myLeoSettings.leo created"
+            s = "myLeoSettings.leo created"
         elif title.startswith('Move'):
-            s= "Marked nodes were moved"
+            s = "Marked nodes were moved"
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210711194745.1: *4* _runAskYesNoCancelDialog
-    def _runAskYesNoCancelDialog(self, c, title,
-        message=None, yesMessage="Yes", noMessage="No",
-        yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
-    ):
+    #@+node:felix.20210711194745.1: *4* LeoServer._runAskYesNoCancelDialog
+    def _runAskYesNoCancelDialog(
+        self,
+        c: Cmdr,
+        title: str,
+        message: str=None,
+        yesMessage: str="Yes",
+        noMessage: str="No",
+        yesToAllMessage: str=None,
+        defaultButton: str="Yes",
+        cancelMessage: str=None,
+    ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
         # used in prompt for save with title: 'Confirm'
         s = "runAskYesNoCancelDialog called"
         if title.startswith('Overwrite'):
-            s= "File Overwritten"
+            s = "File Overwritten"
         elif title.startswith('Confirm'):
-            s= "File Saved"
+            s = "File Saved"
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210622235209.1: *4* _es
-    def _es(self, * args, **keys):  # pragma: no cover (tested in client).
+    #@+node:felix.20210622235209.1: *4* LeoServer._es
+    def _es(self, *args: Any, **keys: Any) -> None:  # pragma: no cover (tested in client).
         """Output to the Log Pane"""
         d = {
             'color': None,
@@ -481,12 +972,15 @@ class LeoServer:
         if color:
             package["color"] = color
         self._send_async_output(package, True)
-    #@+node:felix.20210626002856.1: *4* _getScript
-    def _getScript(self, c, p,
-                   useSelectedText=True,
-                   forcePythonSentinels=True,
-                   useSentinels=True,
-                   ):
+    #@+node:felix.20210626002856.1: *4* LeoServer._getScript
+    def _getScript(
+        self,
+        c: Cmdr,
+        p: Position,
+        useSelectedText: bool=True,
+        forcePythonSentinels: bool=True,
+        useSentinels: bool=True,
+    ) -> str:
         """
         Return the expansion of the selected text of node p.
         Return the expansion of all of node p's body text if
@@ -511,25 +1005,33 @@ class LeoServer:
             g.es_exception()
             script = ''
         return script
-    #@+node:felix.20210627004238.1: *4* _asyncIdleLoop
-    async def _asyncIdleLoop(self, seconds, func):
+    #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
+    async def _asyncIdleLoop(self, seconds: Union[int, float], func: Callable) -> None:
         while True:
             await asyncio.sleep(seconds)
             func(self)
-    #@+node:felix.20210627004039.1: *4* _idleTime
-    def _idleTime(self, fn, delay, tag):
-        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
-    #@+node:felix.20210626003327.1: *4* _show_find_success
-    def _show_find_success(self, c, in_headline, insert, p):
+    #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
+    def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
+
+        warnings.simplefilter("ignore")
+
+        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
+    #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
+    def _show_find_success(self,
+        c: Cmdr,
+        in_headline: bool,
+        insert: Any,
+        p: Position,
+    ) -> None:
         """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-    #@+node:felix.20210621233316.6: *3* server:public commands
-    #@+node:felix.20210621233316.7: *4* server:button commands
+    #@+node:felix.20210621233316.6: *3* server.public commands
+    #@+node:felix.20210621233316.7: *4* server.button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:felix.20210621233316.8: *5* _check_button_command
-    def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
+    def _check_button_command(self, tag: str) -> Dict:  # pragma: no cover (no scripting controller)
         """
         Check that a button command is possible.
         Raise ServerError if not. Otherwise, return sc.buttonsDict.
@@ -540,8 +1042,19 @@ class LeoServer:
             # This will happen unless mod_scripting is loaded!
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
+    #@+node:felix.20220220203658.1: *5* _get_rclickTree
+    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict[str, Any]]:
+        rclickList: List[Dict[str, Any]] = []
+        for rc in rclicks:
+            children = []
+            if rc.children:
+                children = self._get_rclickTree(rc.children)
+            rclickList.append({"name": rc.position.h, "children": children})
+        return rclickList
+
+
     #@+node:felix.20210621233316.9: *5* server.click_button
-    def click_button(self, param):  # pragma: no cover (no scripting controller)
+    def click_button(self, param: Param) -> Response:  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
         index = param.get("index")
@@ -558,34 +1071,60 @@ class LeoServer:
             raise ServerError(f"{tag}: button {index!r} does not exist")
 
         try:
-            button.command()
+            w_rclick = param.get("rclick", False)
+            if w_rclick and hasattr(button, 'rclicks'):
+                # not zero
+                toChooseFrom = button.rclicks
+                for i_rc in w_rclick:
+                    w_rclickChosen = toChooseFrom[i_rc]
+                    toChooseFrom = w_rclickChosen.children
+                if w_rclickChosen:
+                    c = self._check_c()
+                    sc = getattr(c, "theScriptingController", None)
+                    sc.executeScriptFromButton(button, "", w_rclickChosen.position, "")
+
+            else:
+                button.command()
         except Exception as e:
             raise ServerError(f"{tag}: exception clicking button {index!r}: {e}")
         # Tag along a possible return value with info sent back by _make_response
         return self._make_response()
     #@+node:felix.20210621233316.10: *5* server.get_buttons
-    def get_buttons(self, param):  # pragma: no cover (no scripting controller)
+    def get_buttons(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """
         Gets the currently opened file's @buttons list
         as an array of dict.
 
-        Typescript interface:
+        Typescript RClick recursive interface:
+        RClick: {name: string, children: RClick[]}
+
+        Typescript return interface:
             {
                 name: string;
                 index: string;
+                rclicks: RClick[];
             }[]
         """
         d = self._check_button_command('get_buttons')
+
         buttons = []
         # Some button keys are objects so we have to convert first
         for key in d:
-            entry = {"name": d[key], "index": str(key)}
+            rclickList = []
+            if hasattr(key, 'rclicks'):
+                rclickList = self._get_rclickTree(key.rclicks)
+                # buttonRClicks = key.rclicks
+                # for rc in buttonRClicks:
+                #     rclickList.append(rc.position.h)
+
+            entry = {"name": d[key], "index": str(key), "rclicks": rclickList}
             buttons.append(entry)
+
         return self._make_minimal_response({
             "buttons": buttons
         })
     #@+node:felix.20210621233316.11: *5* server.remove_button
-    def remove_button(self, param):  # pragma: no cover (no scripting controller)
+    def remove_button(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """Remove button by index 'key string'."""
         tag = 'remove_button'
         index = param.get("index")
@@ -599,7 +1138,7 @@ class LeoServer:
                 key = i_key
         if key:
             try:
-                del d [key]
+                del d[key]
             except Exception as e:
                 raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
         else:
@@ -607,7 +1146,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20211016235830.1: *5* server.goto_script
-    def goto_script(self, param):  # pragma: no cover (no scripting controller)
+    def goto_script(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """Goto the script this button originates."""
         tag = 'goto_script'
         index = param.get("index")
@@ -638,9 +1177,9 @@ class LeoServer:
             raise ServerError(f"{tag}: button {index!r} does not exist")
 
         return self._make_response()
-    #@+node:felix.20210621233316.12: *4* server:file commands
+    #@+node:felix.20210621233316.12: *4* server.file commands
     #@+node:felix.20210621233316.13: *5* server.open_file
-    def open_file(self, param):
+    def open_file(self, param: Param) -> Response:
         """
         Open a leo file with the given filename.
         Create a new document if no name.
@@ -655,15 +1194,18 @@ class LeoServer:
             c = self.bridge.openLeoFile(filename)
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
+            cc = QuickSearchController(c)
+            # Patch up quick-search controller to the commander
+            setattr(c, 'patched_quicksearch_controller', cc)
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        c.selectPosition(c.rootPosition())  # Required.
+        # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
         # Check the outline!
-        c.recreateGnxDict() # refresh c.fileCommands.gnxDict used in ap_to_p
+        c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
@@ -672,7 +1214,7 @@ class LeoServer:
 
         return self._make_response(result)
     #@+node:felix.20210621233316.14: *5* server.open_files
-    def open_files(self, param):
+    def open_files(self, param: Param) -> Response:
         """
         Opens an array of leo files.
         Returns an object with total opened files
@@ -688,7 +1230,7 @@ class LeoServer:
         result = {"total": total, "filename": filename}
         return self._make_response(result)
     #@+node:felix.20210621233316.15: *5* server.set_opened_file
-    def set_opened_file(self, param):
+    def set_opened_file(self, param: Param) -> Response:
         """
         Choose the new active commander from array of opened files.
         Returns an object with total opened files
@@ -706,7 +1248,7 @@ class LeoServer:
             return self._make_response(result)
         raise ServerError(f"{tag}: commander at index {index} does not exist")
     #@+node:felix.20210621233316.16: *5* server.close_file
-    def close_file(self, param):
+    def close_file(self, param: Param) -> Response:
         """
         Closes an outline opened with open_file.
         Use a 'forced' flag to force close.
@@ -720,13 +1262,14 @@ class LeoServer:
                 if c.fileName():
                     c.revert()
                 else:
-                    c.changed = False # Needed in g.app.closeLeoWindow
+                    c.changed = False  # Needed in g.app.closeLeoWindow
             # Then, if still possible, close it.
             if forced or not c.changed:
                 # c.close() # Stops too much if last file closed
                 g.app.closeLeoWindow(c.frame, finish_quit=False)
             else:
-                # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
+                # Cannot close, return empty response without 'total'
+                # (ask to save, ignore or cancel)
                 return self._make_response()
         # New 'c': Select the first open outline, if any.
         commanders = g.app.commanders()
@@ -737,7 +1280,7 @@ class LeoServer:
             result = {"total": 0}
         return self._make_response(result)
     #@+node:felix.20210621233316.17: *5* server.save_file
-    def save_file(self, param):  # pragma: no cover (too dangerous).
+    def save_file(self, param: Param) -> Response:  # pragma: no cover (too dangerous).
         """Save the leo outline."""
         tag = 'save_file'
         c = self._check_c()
@@ -753,7 +1296,7 @@ class LeoServer:
 
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20210621233316.18: *5* server.import_any_file
-    def import_any_file(self, param):
+    def import_any_file(self, param: Param) -> Response:
         """
         Import file(s) from array of file names
         """
@@ -805,28 +1348,353 @@ class LeoServer:
                     # Experimental: attempt to use permissive section ref logic.
                 )
         return self._make_response()  # Just send empty as 'ok'
+    #@+node:felix.20220808210033.1: *4* server.export commands
+    #@+node:felix.20220808211111.2: *5* server.export-headlines
+    def export_headlines(self, param: Param) -> Response:
+        """
+        Export Outline (export headlines)
+        """
+        tag = 'export_headlines'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.exportHeadlines(fileName)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+
+        return self._make_response()
+    #@+node:felix.20220808211111.4: *5* server.flatten-outline
+    def flatten_outline(self, param: Param) -> Response:
+        """
+        Flatten Selected Outline
+        """
+        tag = 'flatten_outline'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.flattenOutline(fileName)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220808211111.5: *5* server.outline-to-cweb
+    def outline_to_cweb(self, param: Param) -> Response:
+        """
+        Outline To CWEB
+        """
+        tag = 'outline_to_cweb'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.outlineToWeb(fileName, "cweb")
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220808211111.6: *5* server.outline-to-noweb
+
+    def outline_to_noweb(self, param: Param) -> Response:
+        """
+        Outline To Noweb
+        """
+        tag = 'outline_to_noweb'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.outlineToWeb(fileName, "noweb")
+                    c.outlineToNowebDefaultFileName = fileName
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220808211111.7: *5* server.remove-sentinels
+    def remove_sentinels(self, param: Param) -> Response:
+        """
+        Remove Sentinels
+        """
+        tag = 'remove_sentinels'
+        c = self._check_c()
+        if c and "names" in param:
+            try:
+                names = param.get("names")
+                if names:
+                    g.chdir(names[0])
+                    c.importCommands.removeSentinelsCommand(names)
+
+            except Exception as e:
+                print(f"{tag} Error while running remove_sentinels", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220808211111.8: *5* server.weave
+    def weave(self, param: Param) -> Response:
+        """
+        Weave
+        """
+        tag = 'weave'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.weave(fileName)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220808221351.1: *5* server.write-file-from-node
+    def write_file_from_node(self, param: Param) -> Response:
+        """
+        Write file from node
+        """
+        tag = 'write_file_from_node'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    p = c.p
+                    s = p.b
+                    with open(fileName, 'w') as f:
+                        g.chdir(fileName)
+                        if s.startswith('@nocolor\n'):
+                            s = s[len('@nocolor\n') :]
+                        f.write(s)
+                        f.flush()
+                        g.blue('wrote:', fileName)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+    #@+node:felix.20220810001309.1: *5* server.read-file-into-node
+    def read_file_into_node(self, param: Param) -> Response:
+        """
+        Read a file into a single node.
+        """
+        tag = 'read_file_into_node'
+        undoType = 'Read File Into Node'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    s, e = g.readFileIntoString(fileName)
+                    if s is None:
+                        return None
+                    g.chdir(fileName)  # TODO : IS THIS NEEDED
+                    s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
+                    p = c.insertHeadline(op_name=undoType)
+                    p.setHeadString('@read-file-into-node ' + fileName)
+                    p.setBodyString(s)
+            except Exception as err:
+                print(f"{tag} Error while reading {param['name']}", flush=True)
+                print(err, flush=True)
+        return self._make_response()
+
+
+    #@+node:felix.20220309010334.1: *4* server.nav commands
+    #@+node:felix.20220714000930.1: *5* server.chapter_main
+    def chapter_main(self, param: Param) -> Response:
+        tag = 'chapter_main'
+        c = self._check_c()
+        try:
+            cc = c.chapterController
+            cc.selectChapterByName('main')
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting main chapter: {e}")
+        return self._make_response()
+    #@+node:felix.20220714000942.1: *5* server.chapter_select
+    def chapter_select(self, param: Param) -> Response:
+        tag = 'chapter_select'
+        c = self._check_c()
+        try:
+            cc = c.chapterController
+            chapter = param.get('name', 'main')
+            cc.selectChapterByName(chapter)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a chapter: {chapter}, {e}")
+
+        return self._make_response()
+    #@+node:felix.20220305211743.1: *5* server.nav_headline_search
+    def nav_headline_search(self, param: Param) -> Response:
+        """
+        Performs nav 'headline only' search and fills results of go to panel
+        Triggered by just typing in nav input box
+        """
+        tag = 'nav_headline_search'
+        c = self._check_c()
+        # Tag search override!
+        try:
+            scon: QuickSearchController = c.patched_quicksearch_controller
+            inp = scon.navText
+            if scon.isTag:
+                scon.qsc_find_tags(inp)
+            else:
+                exp = inp.replace(" ", "*")
+                scon.qsc_background_search(exp)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav headline search: {e}")
+        return self._make_response()
+
+
+    #@+node:felix.20220305211828.1: *5* server.nav_clear
+    def nav_clear(self, param: Param) -> Response:
+        """
+        Clear goto pane (nav/tag) content
+        """
+        tag = 'nav_clear'
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        try:
+            scon.clear()
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav clear: {e}")
+        return self._make_response()
+
+    #@+node:felix.20220925180823.1: *5* server.nav_search
+    def nav_search(self, param: Param) -> Response:
+        """
+        Performs nav search and fills results of go to panel
+        Triggered by pressing 'Enter' in the nav input box
+        """
+        tag = 'nav_search'
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        # Tag search override!
+        try:
+            inp = scon.navText
+            if scon.isTag:
+                scon.qsc_find_tags(inp)
+            else:
+                scon.qsc_search(inp)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav search: {e}")
+        return self._make_response()
+
+
+    #@+node:felix.20220305215239.1: *5* server.get_goto_panel
+    def get_goto_panel(self, param: Param) -> Response:
+        """
+        Gets the content of the goto panel
+        """
+        tag = 'get_goto_panel'
+        c = self._check_c()
+        try:
+            scon: QuickSearchController = c.patched_quicksearch_controller
+            result: Dict[str, Any] = {}
+            navlist = [
+                {
+                    "key": k,
+                    "h": scon.its[k][0]["label"],
+                    "t": scon.its[k][0]["type"]
+                } for k in scon.its.keys()
+            ]
+            result["navList"] = navlist
+            result["messages"] = scon.lw
+            result["navText"] = scon.navText
+            result["navOptions"] = {"isTag": scon.isTag, "showParents": scon.showParents}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav search: {e}")
+        return self._make_response(result)
+
+
+    #@+node:felix.20220309010558.1: *5* server.find_quick_timeline
+    def find_quick_timeline(self, param: Param) -> Response:
+        """Fill with nodes ordered by gnx."""
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        scon.qsc_sort_by_gnx()
+        return self._make_response()
+
+    #@+node:felix.20220309010607.1: *5* server.find_quick_changed
+    def find_quick_changed(self, param: Param) -> Response:
+        # fill with list of all dirty nodes
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        scon.qsc_find_changed()
+        return self._make_response()
+    #@+node:felix.20220309010647.1: *5* server.find_quick_history
+    def find_quick_history(self, param: Param) -> Response:
+        # fill with list from history
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        scon.qsc_get_history()
+        return self._make_response()
+    #@+node:felix.20220309010704.1: *5* server.find_quick_marked
+    def find_quick_marked(self, param: Param) -> Response:
+        # fill with list of marked nodes
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        scon.qsc_show_marked()
+        return self._make_response()
+
+    #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
+    def goto_nav_entry(self, param: Param) -> Response:
+        # activate entry in scon.its
+        tag = 'goto_nav_entry'
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        try:
+            it = param.get('key')
+            scon.onSelectItem(it)
+            focus = self._get_focus()
+            result = {"focus": focus}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a nav entry: {e}")
+        return self._make_response(result)
+
     #@+node:felix.20210621233316.19: *4* server.search commands
     #@+node:felix.20210621233316.20: *5* server.get_search_settings
-    def get_search_settings(self, param):
+    def get_search_settings(self, param: Param) -> Response:
         """
         Gets search options
         """
         tag = 'get_search_settings'
         c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
         try:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
             result = {"searchSettings": settings.__dict__}
+            result["searchSettings"]["nav_text"] = scon.navText
+            result["searchSettings"]["show_parents"] = scon.showParents
+            result["searchSettings"]["is_tag"] = scon.isTag
+            result["searchSettings"]["search_options"] = scon.searchOptions
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
     #@+node:felix.20210621233316.21: *5* server.set_search_settings
-    def set_search_settings(self, param):
+    def set_search_settings(self, param: Param) -> Response:
         """
         Sets search options. Init widgets and ivars from param.searchSettings
         """
         tag = 'set_search_settings'
         c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
         find = c.findCommands
         ftm = c.findCommands.ftm
         searchSettings = param.get('searchSettings')
@@ -834,6 +1702,12 @@ class LeoServer:
             raise ServerError(f"{tag}: searchSettings object is missing")
         # Try to set the search settings
         try:
+            # nav settings
+            scon.navText = searchSettings.get('nav_text')
+            scon.showParents = searchSettings.get('show_parents')
+            scon.isTag = searchSettings.get('is_tag')
+            scon.searchOptions = searchSettings.get('search_options')
+
             # Find/change text boxes.
             table = (
                 ('find_findbox', 'find_text', ''),
@@ -845,7 +1719,7 @@ class LeoServer:
                 w.clear()
                 w.insert(s)
             # Check boxes.
-            table = (
+            table2 = (
                 ('ignore_case', 'check_box_ignore_case'),
                 ('mark_changes', 'check_box_mark_changes'),
                 ('mark_finds', 'check_box_mark_finds'),
@@ -854,19 +1728,20 @@ class LeoServer:
                 ('search_headline', 'check_box_search_headline'),
                 ('whole_word', 'check_box_whole_word'),
             )
-            for setting_name, widget_ivar in table:
+            for setting_name, widget_ivar in table2:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name)
                 setattr(find, setting_name, val)
                 if val != w.isChecked():
                     w.toggle()
             # Radio buttons
-            table = (
+            table3 = (
                 ('node_only', 'node_only', 'radio_button_node_only'),
+                ('file_only', 'file_only', 'radio_button_file_only'),
                 ('entire_outline', None, 'radio_button_entire_outline'),
                 ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
             )
-            for setting_name, ivar, widget_ivar in table:
+            for setting_name, ivar, widget_ivar in table3:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name, False)
                 if ivar is not None:
@@ -876,7 +1751,10 @@ class LeoServer:
                         w.toggle()
             # Ensure one radio button is set.
             w = ftm.radio_button_entire_outline
-            if not searchSettings.get('node_only', False) and not searchSettings.get('suboutline_only', False):
+            nodeOnly = searchSettings.get('node_only', False)
+            fileOnly = searchSettings.get('file_only', False)
+            suboutlineOnly = searchSettings.get('suboutline_only', False)
+            if not nodeOnly and not suboutlineOnly and not fileOnly:
                 setattr(find, 'entire_outline', True)
                 if not w.isChecked():
                     w.toggle()
@@ -895,7 +1773,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
     #@+node:felix.20210621233316.22: *5* server.find_all
-    def find_all(self, param):
+    def find_all(self, param: Param) -> Response:
         """Run Leo's find all command and return results."""
         tag = 'find_all'
         c = self._check_c()
@@ -908,7 +1786,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.23: *5* server.find_next
-    def find_next(self, param):
+    def find_next(self, param: Param) -> Response:
         """Run Leo's find-next command and return results."""
         tag = 'find_next'
         c = self._check_c()
@@ -925,7 +1803,6 @@ class LeoServer:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
-            # w = c.frame.body.wrapper
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
@@ -947,7 +1824,7 @@ class LeoServer:
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.24: *5* server.find_previous
-    def find_previous(self, param):
+    def find_previous(self, param: Param) -> Response:
         """Run Leo's find-previous command and return results."""
         tag = 'find_previous'
         c = self._check_c()
@@ -985,7 +1862,7 @@ class LeoServer:
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.25: *5* server.replace
-    def replace(self, param):
+    def replace(self, param: Param) -> Response:
         """Run Leo's replace command and return results."""
         tag = 'replace'
         c = self._check_c()
@@ -999,7 +1876,7 @@ class LeoServer:
         result = {"found": True, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.26: *5* server.replace_then_find
-    def replace_then_find(self, param):
+    def replace_then_find(self, param: Param) -> Response:
         """Run Leo's replace then find next command and return results."""
         tag = 'replace_then_find'
         c = self._check_c()
@@ -1012,7 +1889,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.27: *5* server.replace_all
-    def replace_all(self, param):
+    def replace_all(self, param: Param) -> Response:
         """Run Leo's replace all command and return results."""
         tag = 'replace_all'
         c = self._check_c()
@@ -1025,7 +1902,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.28: *5* server.clone_find_all
-    def clone_find_all(self, param):
+    def clone_find_all(self, param: Param) -> Response:
         """Run Leo's clone-find-all command and return results."""
         tag = 'clone_find_all'
         c = self._check_c()
@@ -1038,7 +1915,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.29: *5* server.clone_find_all_flattened
-    def clone_find_all_flattened(self, param):
+    def clone_find_all_flattened(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened command and return results."""
         tag = 'clone_find_all_flattened'
         c = self._check_c()
@@ -1051,7 +1928,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.30: *5* server.find_var
-    def find_var(self, param):
+    def find_var(self, param: Param) -> Response:
         """Run Leo's find-var command and return results."""
         tag = 'find_var'
         c = self._check_c()
@@ -1063,7 +1940,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010004.1: *5* server.clone_find_all_flattened_marked
-    def clone_find_all_flattened_marked(self, param):
+    def clone_find_all_flattened_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened-marked command."""
         tag = 'clone_find_all_flattened_marked'
         c = self._check_c()
@@ -1075,7 +1952,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010005.1: *5* server.clone_find_all_marked
-    def clone_find_all_marked(self, param):
+    def clone_find_all_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-marked command """
         tag = 'clone_find_all_marked'
         c = self._check_c()
@@ -1087,7 +1964,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.31: *5* server.find_def
-    def find_def(self, param):
+    def find_def(self, param: Param) -> Response:
         """Run Leo's find-def command and return results."""
         tag = 'find_def'
         c = self._check_c()
@@ -1099,7 +1976,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.32: *5* server.goto_global_line
-    def goto_global_line(self, param):
+    def goto_global_line(self, param: Param) -> Response:
         """Run Leo's goto-global-line command and return results."""
         tag = 'goto_global_line'
         c = self._check_c()
@@ -1112,7 +1989,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": found, "focus": focus})
     #@+node:felix.20210621233316.33: *5* server.clone_find_tag
-    def clone_find_tag(self, param):
+    def clone_find_tag(self, param: Param) -> Response:
         """Run Leo's clone-find-tag command and return results."""
         tag = 'clone_find_tag'
         c = self._check_c()
@@ -1129,7 +2006,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_response({"n": n})
     #@+node:felix.20210621233316.34: *5* server.tag_children
-    def tag_children(self, param):
+    def tag_children(self, param: Param) -> Response:
         """Run Leo's tag-children command"""
         # This is not a find command!
         tag = 'tag_children'
@@ -1141,9 +2018,74 @@ class LeoServer:
         # Unlike find commands, do_tag_children does not use a settings dict.
         fc.do_tag_children(c.p, tag_param)
         return self._make_response()
-    #@+node:felix.20210621233316.35: *4* server:getter commands
+    #@+node:felix.20220313215348.1: *5* server.tag_node
+    def tag_node(self, param: Param) -> Response:
+        """Set tag on selected node"""
+        # This is not a find command!
+        tag = 'tag_node'
+        c = self._check_c()
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        try:
+            p = self._get_p(param)
+            tc = getattr(c, 'theTagController', None)
+            if not tc:
+                print("In tag_node. No 'theTagController' on commander.")
+                print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                print("", flush=True)
+            if hasattr(tc, 'add_tag'):
+                tc.add_tag(p, tag_param)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
+        return self._make_response()
+    #@+node:felix.20220313215353.1: *5* server.remove_tag
+    def remove_tag(self, param: Param) -> Response:
+        """Remove specific tag on selected node"""
+        # This is not a find command!
+        tag = 'remove_tag'
+        c = self._check_c()
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        try:
+            p = self._get_p(param)
+            v = p.v
+            tc = getattr(c, 'theTagController', None)
+            if not tc:
+                print("In remove_tag. No 'theTagController' on commander.")
+                print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                print("", flush=True)
+            if hasattr(tc, 'remove_tag'):
+                if v.u and '__node_tags' in v.u:
+                    tc.remove_tag(p, tag_param)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
+        return self._make_response()
+    #@+node:felix.20220313220807.1: *5* server.remove_tags
+    def remove_tags(self, param: Param) -> Response:
+        """Remove all tags on selected node"""
+        # This is not a find command!
+        tag = 'remove_tags'
+        c = self._check_c()
+        try:
+            p = self._get_p(param)
+            v = p.v
+            if v.u and '__node_tags' in v.u:
+                del v.u['__node_tags']
+                tc = getattr(c, 'theTagController', None)
+                if not tc:
+                    print("In remove_tags. No 'theTagController' on commander.")
+                    print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                    print("", flush=True)
+                if hasattr(tc, 'initialize_taglist'):
+                    tc.initialize_taglist()  # reset tag list: some may have been removed
+        except Exception as e:
+            raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
+        return self._make_response()
+    #@+node:felix.20210621233316.35: *4* server.getter commands
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
-    def get_all_open_commanders(self, param):
+    def get_all_open_commanders(self, param: Param) -> Response:
         """Return array describing each commander in g.app.commanders()."""
         files = [
             {
@@ -1154,7 +2096,7 @@ class LeoServer:
         ]
         return self._make_minimal_response({"files": files})
     #@+node:felix.20210621233316.37: *5* server.get_all_positions
-    def get_all_positions(self, param):
+    def get_all_positions(self, param: Param) -> Response:
         """
         Return a list of position data for all positions.
 
@@ -1165,16 +2107,40 @@ class LeoServer:
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_minimal_response({"position-data-list": result})
+    #@+node:felix.20220617184559.1: *5* server.get_structure
+    def get_structure(self, param: Param) -> Response:
+        """
+        Returns an array of ap's, the direct descendants of the hidden root node.
+        Each having required 'children' array, to give the whole structure of ap's.
+        """
+        c = self._check_c()
+        result = []
+        p = c.rootPosition()  # first child of hidden root node as first item in top array
+        while p:
+            result.append(self._get_position_d(p, includeChildren=True))
+            p.moveToNodeAfterTree()
+        # return selected node either ways
+        return self._make_minimal_response({"structure": result})
+
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
-    def get_all_gnx(self, param):
+    def get_all_gnx(self, param: Param) -> Response:
         """Get gnx array from all unique nodes"""
         if self.log_flag:  # pragma: no cover
             print('\nget_all_gnx\n', flush=True)
         c = self._check_c()
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx})
+    #@+node:felix.20221031010236.1: *5* server.get_branch
+    def get_branch(self, param: Param) -> Response:
+        """
+        Return the branch and commit of the currently opened document, if any.
+        """
+        c = self._check_c()
+        fileName = c.fileName()
+        branch, commit = g.gitInfoForFile(fileName)
+        return self._make_minimal_response({"branch": branch, "commit": commit})
     #@+node:felix.20210621233316.39: *5* server.get_body
-    def get_body(self, param):
+    def get_body(self, param: Param) -> Response:
         """
         Return the body content body specified via GNX.
         """
@@ -1187,7 +2153,7 @@ class LeoServer:
         # Support asking for unknown gnx when client switches rapidly
         return self._make_minimal_response({"body": body})
     #@+node:felix.20210621233316.40: *5* server.get_body_length
-    def get_body_length(self, param):
+    def get_body_length(self, param: Param) -> Response:
         """
         Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
         """
@@ -1199,7 +2165,7 @@ class LeoServer:
             return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
         return self._make_minimal_response({"len": 0})  # empty as default
     #@+node:felix.20210621233316.41: *5* server.get_body_states
-    def get_body_states(self, param):
+    def get_body_states(self, param: Param) -> Response:
         """
         Return body data for p, where p is c.p if param["ap"] is missing.
         The cursor positions are given as {"line": line, "col": col, "index": i}
@@ -1209,17 +2175,17 @@ class LeoServer:
         p = self._get_p(param)
         wrapper = c.frame.body.wrapper
 
-        def row_col_wrapper_dict(i):
+        def row_col_wrapper_dict(i: int) -> Dict:
             if not i:
-                i = 0 # prevent none type
+                i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
-            junk, line, col = wrapper.toPythonIndexRowCol(i)
+            line, col = wrapper.toPythonIndexRowCol(i)
             return {"line": line, "col": col, "index": i}
 
-        def row_col_pv_dict(i, s):
+        def row_col_pv_dict(i: int, s: str) -> Dict:
             if not i:
-                i = 0 # prevent none type
+                i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
             line, col = g.convertPythonIndexToRowCol(s, i)
@@ -1274,46 +2240,65 @@ class LeoServer:
                 }
             }
         return self._make_minimal_response(states)
+    #@+node:felix.20220714001051.1: *5* server.get_chapters
+    def get_chapters(self, param: Param) -> Response:
+        c = self._check_c()
+        cc = c.chapterController
+        chapters = []
+        if cc:
+            chapters = cc.setAllChapterNames()
+        return self._make_minimal_response({"chapters": chapters})
     #@+node:felix.20210621233316.42: *5* server.get_children
-    def get_children(self, param):
+    def get_children(self, param: Param) -> Response:
         """
         Return the node data for children of p,
         where p is root if param.ap is missing
         """
         c = self._check_c()
-        children = [] # default empty array
+        children = []  # default empty array
         if param.get("ap"):
             # Maybe empty param, for tree-root children(s).
-            # _get_p called with the strict=True parameter because
+            # Call _get_optional_p:
             # we don't want c.p. after switch to another document while refreshing.
-            p = self._get_p(param, True)
+            p = self._get_optional_p(param)
             if p and p.hasChildren():
                 children = [self._get_position_d(child) for child in p.children()]
         else:
             if c.hoistStack:
-                # Always start hoisted tree with single hoisted root node
-                children = [self._get_position_d(c.hoistStack[-1].p)]
+                topHoistPos = c.hoistStack[-1].p
+                if g.match_word(topHoistPos.h, 0, '@chapter'):
+                    children = [self._get_position_d(child) for child in topHoistPos.children()]
+                else:
+                    # start hoisted tree with single hoisted root node
+                    children = [self._get_position_d(topHoistPos)]
             else:
                 # this outputs all Root Children
                 children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
         return self._make_minimal_response({"children": children})
     #@+node:felix.20210621233316.43: *5* server.get_focus
-    def get_focus(self, param):
+    def get_focus(self, param: Param) -> Response:
         """
         Return a representation of the focused widget,
         one of ("body", "tree", "headline", repr(the_widget)).
         """
         return self._make_minimal_response({"focus": self._get_focus()})
     #@+node:felix.20210621233316.44: *5* server.get_parent
-    def get_parent(self, param):
-        """Return the node data for the parent of position p, where p is c.p if param["ap"] is missing."""
-        self._check_c()
+    def get_parent(self, param: Param) -> Response:
+        """
+        Return the node data for the parent of position p,
+        where p is c.p if param["ap"] is missing.
+        """
+        c = self._check_c()
         p = self._get_p(param)
-        parent = p.parent()
+        parent: Optional[Position] = p.parent()
+        if c.hoistStack:
+            topHoistPos = c.hoistStack[-1].p
+            if parent == topHoistPos:
+                parent = None
         data = self._get_position_d(parent) if parent else None
         return self._make_minimal_response({"node": data})
     #@+node:felix.20210621233316.45: *5* server.get_position_data
-    def get_position_data(self, param):
+    def get_position_data(self, param: Param) -> Response:
         """
         Return a dict of position data for all positions.
 
@@ -1326,7 +2311,7 @@ class LeoServer:
         }
         return self._make_minimal_response({"position-data-dict": result})
     #@+node:felix.20210621233316.46: *5* server.get_ua
-    def get_ua(self, param):
+    def get_ua(self, param: Param) -> Response:
         """Return p.v.u, making sure it can be serialized."""
         self._check_c()
         p = self._get_p(param)
@@ -1337,29 +2322,72 @@ class LeoServer:
         except Exception:  # pragma: no cover
             response = {"ua": repr(p.v.u)}
         # _make_response adds all the cheap redraw data.
-        return self._make_response(response)
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.48: *5* server.get_ui_states
-    def get_ui_states(self, param):
+    def get_ui_states(self, param: Param) -> Response:
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
-        c = self._check_c()
         tag = 'get_ui_states'
+        c = self._check_c()
+        p = self._get_p(param)
+
+        w_canHoist = True
+        if c.hoistStack:
+            bunch = c.hoistStack[len(c.hoistStack) - 1]
+            w_ph = bunch.p
+            if p == w_ph:
+            # p is already the hoisted node
+                w_canHoist = False
+        else:
+            # not hoisted, was it the single top child of the real root?
+            if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
+                w_canHoist = False
+
+        inChapter = False
+        topHoistChapter = False
+        if c.config.getBool('use-chapters') and c.chapterController:
+            cc = c.chapterController
+            inChapter = cc.inChapter()
+            if c.hoistStack:
+                bunch = c.hoistStack[len(c.hoistStack) - 1]
+                if g.match_word(bunch.p.h, 0, '@chapter'):
+                    topHoistChapter = True
+
         try:
             states = {
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
+                "canGoBack": c and c.nodeHistory.beadPointer > 0,
+                "canGoNext": c and c.nodeHistory.beadPointer + 1 < len(c.nodeHistory.beadList),
                 "canDemote": c and c.canDemote(),
                 "canPromote": c and c.canPromote(),
                 "canDehoist": c and c.canDehoist(),
+                "canHoist": w_canHoist,
+                "inChapter": inChapter,
+                "topHoistChapter": topHoistChapter
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_minimal_response({"states": states})
-    #@+node:felix.20210621233316.49: *4* server:node commands
+    #@+node:felix.20211210213603.1: *5* server.get_undos
+    def get_undos(self, param: Param) -> Response:
+        """Return list of undo operations"""
+        c = self._check_c()
+        undoer = c.undoer
+        undos = []
+        try:
+            for bead in undoer.beads:
+                undos.append(bead.undoType)
+            response = {"bead": undoer.bead, "undos": undos}
+        except Exception:  # pragma: no cover
+            response = {"bead": 0, "undos": []}
+        # _make_response adds all the cheap redraw data.
+        return self._make_minimal_response(response)
+    #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
-    def clone_node(self, param):
+    def clone_node(self, param: Param) -> Response:
         """
         Clone a node.
         Try to keep selection, then return the selected node that remains.
@@ -1374,43 +2402,105 @@ class LeoServer:
             c.clone()
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+
         # return selected node either ways
         return self._make_response()
 
     #@+node:felix.20210621233316.51: *5* server.contract_node
-    def contract_node(self, param):
+    def contract_node(self, param: Param) -> Response:
         """
         Contract (Collapse) the node at position p, where p is c.p if p is missing.
         """
         p = self._get_p(param)
         p.contract()
         return self._make_response()
-    #@+node:felix.20210621233316.52: *5* server.cut_node
-    def cut_node(self, param):  # pragma: no cover (too dangerous, for now)
+    #@+node:felix.20210621233316.52: *5* server.copy_node
+    def copy_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+        """
+        Copy a node, don't select it.
+        Also supports 'asJSON' parameter to get as JSON
+        Try to keep selection, then return the selected node.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+
+        copyMethod = c.copyOutline
+        if hasattr(param, "asJSON"):
+            if param["asJSON"]:
+                copyMethod = c.copyOutlineAsJSON
+
+        if p == c.p:
+            s = copyMethod()
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            s = copyMethod()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+        g.app.gui.replaceClipboardWith(s)
+        return self._make_response({"string": s})
+
+    #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
+    def copy_node_as_json(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+        """
+        Copy a node as JSON, don't select it.
+        Also supports 'asJSON' parameter to get as JSON
+        Try to keep selection, then return the selected node.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+        if p == c.p:
+            s = c.copyOutlineAsJSON()
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            s = c.copyOutlineAsJSON()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+        g.app.gui.replaceClipboardWith(s)
+        return self._make_response({"string": s})
+
+    #@+node:felix.20220222172507.1: *5* server.cut_node
+    def cut_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Cut a node, don't select it.
         Try to keep selection, then return the selected node that remains.
         """
         c = self._check_c()
         p = self._get_p(param)
+        copyMethod = c.copyOutline
+        if hasattr(param, "asJSON"):
+            if param["asJSON"]:
+                copyMethod = c.copyOutlineAsJSON
         if p == c.p:
+            s = copyMethod()
             c.cutOutline()  # already on this node, so cut it
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
+            s = copyMethod()
             c.cutOutline()
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex-1
+                oldPosition._childIndex = oldPosition._childIndex - 1
                 # Try again with childIndex decremented
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
-        return self._make_response()
+        g.app.gui.replaceClipboardWith(s)
+        return self._make_response({"string": s})
     #@+node:felix.20210621233316.53: *5* server.delete_node
-    def delete_node(self, param):  # pragma: no cover (too dangerous, for now)
+    def delete_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Delete a node, don't select it.
         Try to keep selection, then return the selected node that remains.
@@ -1427,14 +2517,14 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex-1
+                oldPosition._childIndex = oldPosition._childIndex - 1
                 # Try again with childIndex decremented
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20210621233316.54: *5* server.expand_node
-    def expand_node(self, param):
+    def expand_node(self, param: Param) -> Response:
         """
         Expand the node at position p, where p is c.p if p is missing.
         """
@@ -1442,45 +2532,83 @@ class LeoServer:
         p.expand()
         return self._make_response()
     #@+node:felix.20210621233316.55: *5* server.insert_node
-    def insert_node(self, param):
+    def insert_node(self, param: Param) -> Response:
         """
-        Insert a node at given node, then select it once created, and finally return it
+        Insert a node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline()  # Handles undo, sets c.p
+
+        if p == c.p:
+            c.insertHeadline()  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline()  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
-    def insert_child_node(self, param):
+    def insert_child_node(self, param: Param) -> Response:
         """
-        Insert a child node at given node, then select it once created, and finally return it
+        Insert a child node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline(op_name='Insert Child', as_child=True)
+
+        if p == c.p:
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
-    def insert_named_node(self, param):
+    def insert_named_node(self, param: Param) -> Response:
         """
-        Insert a node at given node, set its headline, select it and finally return it
+        Insert a node at given node, set its headline. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
+        oldPosition: Optional[Position] = None if p == c.p else c.p
+
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', bunch)
+        c.setChanged()
+        c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
+
         c.selectPosition(newNode)
+        if oldPosition:
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+
         c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
-    def insert_child_named_node(self, param):
+    def insert_child_named_node(self, param: Param) -> Response:
         """
         Insert a child node at given node, set its headline, select it and finally return it
         """
@@ -1492,43 +2620,184 @@ class LeoServer:
             newNode = p.insertAsLastChild()
         else:
             newNode = p.insertAsNthChild(0)
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
+        c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
         return self._make_response()
-    #@+node:felix.20210621233316.57: *5* server.page_down
-    def page_down(self, param):
+    #@+node:felix.20220616010755.1: *5* server.scroll_top
+    def scroll_top(self, param: Param) -> Response:
         """
-        Selects a node "n" steps down in the tree to simulate page down.
+        Utility method for connected clients to simulate scroll to the top
         """
         c = self._check_c()
-        n = param.get("n", 3)
-        for z in range(n):
-            c.selectVisNext()
+        p = c.firstVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
+    #@+node:felix.20220616010756.1: *5* server.scroll_bottom
+    def scroll_bottom(self, param: Param) -> Response:
+        """
+        Utility method for connected clients to simulate scroll to bottom
+        """
+        c = self._check_c()
+        p = c.lastVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
+    #@+node:felix.20210621233316.57: *5* server.page_down
+    def page_down(self, param: Param) -> Response:
+        """
+        Tree page-down command:
+        If no 'n steps' are passed, this selects last sibling or next vis if already last sibling.
+        Otherwise selects a node "n" steps down in the tree to simulate page down.
+        """
+        c = self._check_c()
+        n = param.get("n", 0)
+        if n:
+            for z in range(n):
+                c.selectVisNext()
+        else:
+            parent = c.p.parent()
+            if not parent:
+                c.goToLastSibling()
+                return self._make_response()
+
+            siblings = [* parent.children(copy=True)]
+            lastSibling = siblings[-1]
+            if lastSibling == c.p:
+                c.selectVisNext()  # already last sibling
+            else:
+                c.goToLastSibling()
+
         return self._make_response()
     #@+node:felix.20210621233316.58: *5* server.page_up
-    def page_up(self, param):
+    def page_up(self, param: Param) -> Response:
         """
-        Selects a node "N" steps up in the tree to simulate page up.
+        Tree page-up command:
+        If no 'n steps' are passed, this selects first sibling, or previous vis if already first sibling.
+        Otherwise selects a node "N" steps up in the tree to simulate page up.
         """
         c = self._check_c()
-        n = param.get("n", 3)
-        for z in range(n):
-            c.selectVisBack()
+        n = param.get("n", 0)
+        if n:
+            for z in range(n):
+                c.selectVisBack()
+        else:
+            parent = c.p.parent()
+            if not parent:
+                c.goToFirstSibling()
+                return self._make_response()
+
+            siblings = [* parent.children(copy=True)]
+            firstSibling = siblings[0]
+            if firstSibling == c.p:
+                c.selectVisBack()  # already first sibling
+            else:
+                c.goToFirstSibling()
+
+        return self._make_response()
+    #@+node:felix.20220222173659.1: *5* server.paste_node
+    def paste_node(self, param: Param) -> Response:
+        """
+        Pastes a node,
+        Try to keep selection, then return the selected node.
+        """
+        tag = 'paste_node'
+        c = self._check_c()
+        p = self._get_p(param)
+        s = param.get('name')
+        if s is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
+        if p == c.p:
+            c.pasteOutline(s=s)
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.pasteOutline(s=s)
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with higher childIndex
+                    c.selectPosition(oldPosition)
+        return self._make_response()
+    #@+node:felix.20220222173707.1: *5* server.paste_as_clone_node
+    def paste_as_clone_node(self, param: Param) -> Response:
+        """
+        Pastes a node as a clone,
+        Try to keep selection, then return the selected node.
+        """
+        tag = 'paste_as_clone_node'
+        c = self._check_c()
+        p = self._get_p(param)
+        s = param.get('name')
+        if s is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
+        if p == c.p:
+            c.pasteOutlineRetainingClones(s=s)
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.pasteOutlineRetainingClones(s=s)
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with higher childIndex
+                    c.selectPosition(oldPosition)
+        return self._make_response()
+    #@+node:felix.20220815220429.1: *5* server.paste_as_template
+    def paste_as_template(self, param: Param) -> Response:
+        """
+        Paste as template clones only nodes that were already clones
+        """
+        tag = 'paste_as_template'
+        c = self._check_c()
+        p = self._get_p(param)
+        s = param.get('name')
+        if s is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
+        if p == c.p:
+            c.pasteAsTemplate()
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.pasteAsTemplate()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with higher childIndex
+                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20210621233316.59: *5* server.redo
-    def redo(self, param):
-        """Undo last un-doable operation"""
+    def redo(self, param: Param) -> Response:
+        """Undo last un-doable operation with optional redo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canRedo():
-            u.redo()
+        total = param.get('repeat', 1)  # Facultative repeat redo count
+        for i in range(total):
+            if u.canRedo():
+                u.redo()
         return self._make_response()
     #@+node:felix.20210621233316.60: *5* server.set_body
-    def set_body(self, param):
+    def set_body(self, param: Param) -> Response:
         """
         Undoably set body text of a v node.
         (Only if new string is different from actual existing body string)
@@ -1542,7 +2811,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no body given")
         for p in c.all_positions():
             if p.v.gnx == gnx:
-                if body==p.v.b:
+                if body == p.v.b:
                     return self._make_response()
                     # Just exit if there is no need to change at all.
                 bunch = u.beforeChangeNodeContents(p)
@@ -1562,7 +2831,7 @@ class LeoServer:
                 v.b = body
         return self._make_response()
     #@+node:felix.20210621233316.61: *5* server.set_current_position
-    def set_current_position(self, param):
+    def set_current_position(self, param: Param) -> Response:
         """Select position p. Or try to get p with gnx if not found."""
         tag = "set_current_position"
         c = self._check_c()
@@ -1583,20 +2852,25 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
-    def set_headline(self, param):
+    def set_headline(self, param: Param) -> Response:
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
         """
         c = self._check_c()
         p = self._get_p(param)
         u = c.undoer
-        h = param.get('name', '')
+        h: str = param.get('name', '')
+        oldH: str = p.h
+        if h == oldH:
+            return self._make_response()
         bunch = u.beforeChangeNodeContents(p)
+        p.setDirty()
+        c.setChanged()
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:felix.20210621233316.63: *5* server.set_selection
-    def set_selection(self, param):
+    def set_selection(self, param: Param) -> Response:
         """
         Set the selection range for p.b, where p is c.p if package["ap"] is missing.
 
@@ -1620,7 +2894,7 @@ class LeoServer:
         convert = g.convertRowColToPythonIndex
         start = param.get('start', 0)
         end = param.get('end', 0)
-        active = param.get('insert', 0) # temp var to check if int.
+        active = param.get('insert', 0)  # temp var to check if int.
         scroll = param.get('scroll', 0)
         # If sent as number, use 'as is'
         if isinstance(active, int):
@@ -1646,7 +2920,7 @@ class LeoServer:
         v.selectionLength = abs(startSel - endSel)
         return self._make_response()
     #@+node:felix.20211114202046.1: *5* server.set_ua_member
-    def set_ua_member(self, param):
+    def set_ua_member(self, param: Param) -> Response:
         """
         Set a single member of a node's ua.
         """
@@ -1660,7 +2934,7 @@ class LeoServer:
             p.v.u[name] = value
         return self._make_response()
     #@+node:felix.20211114202058.1: *5* server.set_ua
-    def set_ua(self, param):
+    def set_ua(self, param: Param) -> Response:
         """
         Replace / set the whole user attribute dict of a node.
         """
@@ -1670,7 +2944,7 @@ class LeoServer:
         p.v.u = ua
         return self._make_response()
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
-    def toggle_mark(self, param):
+    def toggle_mark(self, param: Param) -> Response:
         """
         Toggle the mark at position p.
         Try to keep selection, then return the selected node that remains.
@@ -1688,7 +2962,7 @@ class LeoServer:
         # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.65: *5* server.mark_node
-    def mark_node(self, param):
+    def mark_node(self, param: Param) -> Response:
         """
         Mark a node.
         Try to keep selection, then return the selected node that remains.
@@ -1702,7 +2976,7 @@ class LeoServer:
             return self.toggle_mark(param)
 
     #@+node:felix.20210621233316.66: *5* server.unmark_node
-    def unmark_node(self, param):
+    def unmark_node(self, param: Param) -> Response:
         """
         Unmark a node.
         Try to keep selection, then return the selected node that remains.
@@ -1715,30 +2989,61 @@ class LeoServer:
         else:
             return self.toggle_mark(param)
     #@+node:felix.20210621233316.67: *5* server.undo
-    def undo(self, param):
-        """Undo last un-doable operation"""
+    def undo(self, param: Param) -> Response:
+        """Undo last un-doable operation with optional undo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canUndo():
-            u.undo()
+        total = param.get('repeat', 1)  # Facultative repeat undo count
+        for i in range(total):
+            if u.canUndo():
+                u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
-    #@+node:felix.20210621233316.68: *4* server:server commands
+    #@+node:felix.20210621233316.68: *4* server.server commands
     #@+node:felix.20210914230846.1: *5* server.get_version
-    def get_version(self, param):
+    def get_version(self, param: Param) -> Response:
         """
         Return this server program name and version as a string representation
         along with the three version members as numbers 'major', 'minor' and 'patch'.
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
-        result = {"version": __version__ , "major": v1, "minor": v2, "patch": v3}
+        result = {"version": __version__, "major": v1, "minor": v2, "patch": v3}
         return self._make_minimal_response(result)
+    #@+node:felix.20220326190000.1: *5* server.get_leoid
+    def get_leoid(self, param: Param) -> Response:
+        """
+        Returns g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        result = {"leoID": g.app.leoID}
+        return self._make_minimal_response(result)
+    #@+node:felix.20220326190008.1: *5* server.set_leoid
+    def set_leoid(self, param: Param) -> Response:
+        """
+        Sets g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        leoID = param.get('leoID', '')
+        # Same test/fix as in Leo
+        if leoID:
+            try:
+                leoID = leoID.replace('.', '').replace(',', '').replace('"', '').replace("'", '')
+                # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
+                leoID = ''.join(leoID.split())
+            except Exception:
+                g.es_exception()
+                leoID = 'None'
+            if len(leoID) > 2:
+                g.app.leoID = leoID
+                g.app.nodeIndices.defaultId = leoID
+                g.app.nodeIndices.userId = leoID
+        return self._make_response()
     #@+node:felix.20210818012827.1: *5* server.do_nothing
-    def do_nothing(self, param):
+    def do_nothing(self, param: Param) -> Response:
         """Simply return states from _make_response"""
         return self._make_response()
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
-    def set_ask_result(self, param):
+    def set_ask_result(self, param: Param) -> Response:
         """Got the result to an asked question/warning from client"""
         tag = "set_ask_result"
         result = param.get("result")
@@ -1747,21 +3052,21 @@ class LeoServer:
         g.app.externalFilesController.clientResult(result)
         return self._make_response()
     #@+node:felix.20210621233316.70: *5* server.set_config
-    def set_config(self, param):
+    def set_config(self, param: Param) -> Response:
         """Got auto-reload's config from client"""
-        self.leoServerConfig = param # PARAM IS THE CONFIG-DICT
+        self.leoServerConfig = param  # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
-    def error(self, param):
+    def error(self, param: Param) -> None:
         """For unit testing. Raise ServerError"""
         raise ServerError("error called")
     #@+node:felix.20210621233316.72: *5* server.get_all_leo_commands & helper
-    def get_all_leo_commands(self, param):
+    def get_all_leo_commands(self, param: Param) -> Response:
         """Return a list of all commands that make sense for connected clients."""
         tag = 'get_all_leo_commands'
         # #173: Use the present commander to get commands created by @button and @command.
         c = self.c
-        d = c.commandsDict if c else {}  # keys are command names, values are functions.
+        d: Dict = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
@@ -1788,7 +3093,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
-    def _bad_commands(self, c):
+    def _bad_commands(self, c: Cmdr) -> List[str]:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
@@ -1812,16 +3117,20 @@ class LeoServer:
             'delete-last-icon',
             'delete-node-icons',
             'insert-icon',
-            'set-ua', # TODO : Should be easy to implement
-            'export-headlines', # export TODO
-            'export-jupyter-notebook', # export TODO
-            'outline-to-cweb', # export TODO
-            'outline-to-noweb', # export TODO
-            'remove-sentinels', # import TODO
+
+            'count-region',  # Uses wrapper, already available in client
+
+            'export-headlines',  # (overridden by client)
+            'export-jupyter-notebook',  # (overridden by client)
+            'flatten-outline',  # (overridden by client)
+            'outline-to-cweb',  # (overridden by client)
+            'outline-to-noweb',  # (overridden by client)
+            'remove-sentinels',  # (overridden by client)
+            'weave',  # (overridden by client)
+            'write-file-from-node',  # (overridden by client)
 
             'save-all',
             'save-file-as-zipped',
-            'write-file-from-node',
             'edit-setting',
             'edit-shortcut',
             'goto-line',
@@ -1847,7 +3156,7 @@ class LeoServer:
             'help-for-regular-expressions',
             'help-for-scripting',
             'help-for-settings',
-            'join-leo-irc', # Some online irc - parameters not working anymore
+            'join-leo-irc',  # Some online irc - parameters not working anymore
 
             'print-body',
             'print-cmd-docstrings',
@@ -1868,7 +3177,7 @@ class LeoServer:
             'save-buffers-kill-leo',
             'screen-capture-5sec',
             'screen-capture-now',
-            'set-reference-file', # TODO : maybe offer this
+            'set-reference-file',  # TODO : maybe offer this
             'show-style-sheet',
             'sort-recent-files',
             'view-lossage',
@@ -1919,11 +3228,11 @@ class LeoServer:
             'my-leo-settings',
             'open-my-leo-settings',
             'open-my-leo-settings-leo',
-            'leo-settings'
+            'leo-settings',
             'open-quickstart-leo',
-            'leo-quickstart-leo'
+            'leo-quickstart-leo',
             'open-scripts-leo',
-            'leo-scripts-leo'
+            'leo-scripts-leo',
             'open-unittest-leo',
             'leo-unittest-leo',
 
@@ -1981,6 +3290,8 @@ class LeoServer:
             'file-delete',
             'file-diff-files',
             'file-insert',
+            'file-save-by-name',  # only body pane to file (confusing w/ save as...)
+            'save-file-by-name',  # only body pane to file (confusing w/ save as...)
             #'file-new',
             #'file-open-by-name',
 
@@ -2149,6 +3460,9 @@ class LeoServer:
             'iconify-frame',
 
             'find-tab-hide',
+            'help-for-highlight-current-line',
+            'help-for-right-margin-guide',
+
             #'find-tab-open',
 
             'hide-body-dock',
@@ -2191,6 +3505,8 @@ class LeoServer:
             'history',
 
             'insert-file-name',
+            'insert-jupyter-toc',
+            'insert-markdown-toc',
 
             'justify-toggle-auto',
 
@@ -2247,7 +3563,6 @@ class LeoServer:
             'show-fonts',
 
             'show-invisibles',
-            'show-next-tip',
             'show-node-uas',
             'show-outline-dock',
             'show-plugin-handlers',
@@ -2256,6 +3571,7 @@ class LeoServer:
             'show-settings-outline',
             'show-spell-info',
             'show-stats',
+            'show-tips',
 
             'style-set-selected',
 
@@ -2341,11 +3657,18 @@ class LeoServer:
             'vs-dump',
             'vs-reset',
             'vs-update',
+
             # Connected client's text editing commands should cover all of these...
             'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
             'align-eq-signs',
+            'always-indent-region',
+            'capitalize-words-or-selection',
+            'cls',
+            'reformat-body',
+            'reformat-paragraph',
+            'reformat-selection',
 
             'back-char',
             'back-char-extend-selection',
@@ -2535,7 +3858,7 @@ class LeoServer:
         result = list(sorted(bad))
         return result
     #@+node:felix.20210621233316.74: *6* server._good_commands
-    def _good_commands(self):
+    def _good_commands(self) -> List[str]:
         """Defined commands that should be available in a connected client"""
         good_list = [
 
@@ -2649,19 +3972,13 @@ class LeoServer:
 
             #'insert-icon', # ? maybe move to bad commands?
 
-            #'set-ua',
+            'set-ua',
 
             'show-all-uas',
             'show-bindings',
             'show-clone-ancestors',
             'show-clone-parents',
 
-            # Export files...
-            #'export-headlines', # export
-            #'export-jupyter-notebook', # export
-            #'outline-to-cweb', # export
-            #'outline-to-noweb', # export
-            #'remove-sentinels', # import
             'typescript-to-py',
 
             # Import files... # done through import all
@@ -2686,15 +4003,13 @@ class LeoServer:
             # Save Files.
             'file-save',
             'file-save-as',
-            'file-save-as-unzipped',
-            'file-save-by-name',
+            #'file-save-by-name',
             'file-save-to',
             'save',
             'save-as',
             'save-file',
             'save-file-as',
-            'save-file-as-unzipped',
-            'save-file-by-name',
+            #'save-file-by-name',
             'save-file-to',
             'save-to',
 
@@ -2776,7 +4091,7 @@ class LeoServer:
 
             'beautify-c',
 
-            'cls',
+            # 'cls',
             'c-to-python',
             'c-to-python-clean-docs',
             'check-derived-file',
@@ -2787,7 +4102,7 @@ class LeoServer:
             'convert-all-tabs',
             'count-children',
             'count-pages',
-            'count-region',
+            # 'count-region',
 
             #'desktop-integration-leo',
 
@@ -2799,7 +4114,7 @@ class LeoServer:
             'find-long-lines',
             'find-missing-docstrings',
             'flake8-files',
-            'flatten-outline',
+            #'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
 
@@ -2828,8 +4143,8 @@ class LeoServer:
 
             'insert-body-time',  # ?
             'insert-headline-time',
-            'insert-jupyter-toc',
-            'insert-markdown-toc',
+            #'insert-jupyter-toc',
+            #'insert-markdown-toc',
 
             'find-var',
 
@@ -2872,8 +4187,8 @@ class LeoServer:
 
             #'quit-leo',
 
-            'reformat-body',
-            'reformat-paragraph',
+            #'reformat-body',
+            #'reformat-paragraph',
             'refresh-from-disk',
             'reload-settings',
             #'reload-style-sheets',
@@ -2896,8 +4211,6 @@ class LeoServer:
 
             #'view-lossage',  # ?
 
-            'weave',
-
             # Dubious commands (to do)...
             'act-on-node',
 
@@ -2918,13 +4231,12 @@ class LeoServer:
 
             'chapter-back',
             'chapter-next',
-            'chapter-select',
-            'chapter-select-main',
-            'create-def-list',  # ?
+            #'chapter-select', #
+            'chapter-select-main'
         ]
         return good_list
     #@+node:felix.20210621233316.75: *5* server.get_all_server_commands & helpers
-    def get_all_server_commands(self, param):
+    def get_all_server_commands(self, param: Param) -> Response:
         """
         Public server method:
         Return the names of all callable public methods of the server.
@@ -2937,7 +4249,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_response({"server-commands": names})
     #@+node:felix.20210914231602.1: *6* _get_all_server_commands
-    def _get_all_server_commands(self):
+    def _get_all_server_commands(self) -> List[str]:
         """
         Private server method:
         Return the names of all callable public methods of the server.
@@ -2946,7 +4258,7 @@ class LeoServer:
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
     #@+node:felix.20210621233316.76: *5* server.init_connection
-    def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
+    def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
         global connectionsTotal
         if connectionsTotal == 1:
@@ -2955,18 +4267,18 @@ class LeoServer:
             self.loop = asyncio.get_event_loop()
         else:
             # already exist, so "spectator-clients" setup
-            pass # nothing for now
+            pass  # nothing for now
     #@+node:felix.20210621233316.77: *5* server.shut_down
-    def shut_down(self, param):
+    def shut_down(self, param: Param) -> None:
         """Shut down the server."""
         tag = 'shut_down'
         n = len(g.app.commanders())
         if n:  # pragma: no cover
             raise ServerError(f"{tag}: {n} open outlines")
         raise TerminateServer("client requested shut down")
-    #@+node:felix.20210621233316.78: *3* server:server utils
+    #@+node:felix.20210621233316.78: *3* server.server utils
     #@+node:felix.20210621233316.79: *4* server._ap_to_p
-    def _ap_to_p(self, ap):
+    def _ap_to_p(self, ap: Dict[str, Any]) -> Optional[Position]:
         """
         Convert ap (archived position, a dict) to a valid Leo position.
 
@@ -2984,14 +4296,15 @@ class LeoServer:
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-            #
-            def d_to_childIndex_v (d):
+
+            def d_to_childIndex_v(d: Dict[str, str]) -> Tuple[int, VNode]:
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
-                childIndex = d.get('childIndex')
-                if childIndex is None:  # pragma: no cover.
+                childIndex: int
+                childIndex_s: str = d.get('childIndex')
+                if childIndex_s is None:
                     raise ServerError(f"{tag}: no childIndex in {d}")
                 try:
-                    childIndex = int(childIndex)
+                    childIndex = int(childIndex_s)
                 except Exception:  # pragma: no cover.
                     raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
                 gnx = d.get('gnx')
@@ -3001,16 +4314,16 @@ class LeoServer:
                 if v is None:  # pragma: no cover.
                     raise ServerError(f"{tag}: gnx not found: {gnx!r}")
                 return childIndex, v
-            #
+
             # Compute p.childIndex and p.v.
             childIndex, v = d_to_childIndex_v(ap)
-            #
+
             # Create p.stack.
             stack = []
             for stack_d in outer_stack:
                 stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
                 stack.append((stack_v, stack_childIndex))
-            #
+
             # Make p and check p.
             p = Position(v, childIndex, stack)
             if not c.positionExists(p):  # pragma: no cover.
@@ -3019,13 +4332,12 @@ class LeoServer:
             if self.log_flag or traces:
                 print(
                     f"{tag}: Bad ap: {ap!r}\n"
-                    # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
                     f"{tag}: stack: {stack!r}", flush=True)
-            return False # Return false on any error so caller can react
+            return None  # Return None on any error so caller can react.
         return p
     #@+node:felix.20210621233316.80: *4* server._check_c
-    def _check_c(self):
+    def _check_c(self) -> Cmdr:
         """Return self.c or raise ServerError if self.c is None."""
         tag = '_check_c'
         c = self.c
@@ -3033,14 +4345,14 @@ class LeoServer:
             raise ServerError(f"{tag}: no open commander")
         return c
     #@+node:felix.20210621233316.81: *4* server._check_outline
-    def _check_outline(self, c):
+    def _check_outline(self, c: Cmdr) -> None:
         """Check self.c for consistency."""
         # Check that all positions exist.
         self._check_outline_positions(c)
         # Test round-tripping.
         self._test_round_trip_positions(c)
     #@+node:felix.20210621233316.82: *4* server._check_outline_positions
-    def _check_outline_positions(self, c):
+    def _check_outline_positions(self, c: Cmdr) -> None:
         """Verify that all positions in c exist."""
         tag = '_check_outline_positions'
         for p in c.all_positions(copy=False):
@@ -3050,7 +4362,7 @@ class LeoServer:
                 self._dump_position(p)
                 raise ServerError(message)
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
-    def _do_leo_command_by_name(self, command_name, param):
+    def _do_leo_command_by_name(self, command_name: str, param: Param) -> Response:
         """
         Generic call to a command in Leo's Commands class or any subcommander class.
 
@@ -3075,31 +4387,31 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = c.commandsDict.get(command_name) # Getting from kebab-cased 'Command Name'
+        func = c.commandsDict.get(command_name)  # Getting from kebab-cased 'Command Name'
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
 
         p = self._get_p(param)
         try:
             if p == c.p:
-                value = func(event={"c":c})  # no need for re-selection
+                value = func(event={"c": c})  # no need for re-selection
             else:
                 old_p = c.p  # preserve old position
                 c.selectPosition(p)  # set position upon which to perform the command
-                value = func(event={"c":c})
+                value = func(event={"c": c})
                 if keepSelection and c.positionExists(old_p):
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
-            return self._make_response() # Return empty on error
+            return self._make_response()  # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:ekr.20210722184932.1: *4* server._do_leo_function_by_name
-    def _do_leo_function_by_name(self, function_name, param):
+    def _do_leo_function_by_name(self, function_name: str, param: Param) -> Response:
         """
         Generic call to a method in Leo's Commands class or any subcommander class.
 
@@ -3121,31 +4433,31 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = self._get_commander_method(function_name) # GET FUNC
+        func = self._get_commander_method(function_name)  # GET FUNC
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {function_name!r}")
 
         p = self._get_p(param)
         try:
             if p == c.p:
-                value = func(event={"c":c})  # no need for re-selection
+                value = func(event={"c": c})  # no need for re-selection
             else:
                 old_p = c.p  # preserve old position
                 c.selectPosition(p)  # set position upon which to perform the command
-                value = func(event={"c":c})
+                value = func(event={"c": c})
                 if keepSelection and c.positionExists(old_p):
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
-            return self._make_response() # Return empty on error
+            return self._make_response()  # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:felix.20210621233316.85: *4* server._do_message
-    def _do_message(self, d):
+    def _do_message(self, d: Dict[str, Any]) -> Response:
         """
         Handle d, a python dict representing the incoming request.
         The d dict must have the three (3) following keys:
@@ -3167,9 +4479,11 @@ class LeoServer:
         global traces
         tag = '_do_message'
         trace, verbose = 'request' in traces, 'verbose' in traces
+        func: Callable
+        action: Optional[str]
 
         # Require "id" and "action" keys
-        id_ = d.get("id")
+        id_: Optional[int] = d.get("id")
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         action = d.get("action")
@@ -3177,11 +4491,10 @@ class LeoServer:
             raise ServerError(f"{tag}: no action")
 
         # TODO : make/force always an object from the client connected.
-        param = d.get('param', {}) # Can be none or a string
+        param: Optional[Dict] = d.get('param', {})
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
-            pass
         else:
             param = {}
 
@@ -3205,10 +4518,10 @@ class LeoServer:
 
         # Execute the requested action.
         if action[0] == "!":
-            action = action[1:] # Remove exclamation point "!"
+            action = action[1:]  # Remove exclamation point "!"
             func = self._do_server_command  # Server has this method.
         elif action[0] == '-':
-            action = action[1:] # Remove dash "-"
+            action = action[1:]  # Remove dash "-"
             func = self._do_leo_command_by_name  # It's a command name.
         else:
             func = self._do_leo_function_by_name  # It's the name of a method in some commander.
@@ -3217,7 +4530,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no response: {action!r}")
         return result
     #@+node:felix.20210621233316.86: *4* server._do_server_command
-    def _do_server_command(self, action, param):
+    def _do_server_command(self, action: str, param: Param) -> Response:
         tag = '_do_server_command'
         # Disallow hidden methods.
         if action.startswith('_'):  # pragma: no cover
@@ -3230,7 +4543,7 @@ class LeoServer:
             raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
         return func(param)
     #@+node:felix.20210621233316.87: *4* server._dump_*
-    def _dump_outline(self, c):  # pragma: no cover
+    def _dump_outline(self, c: Cmdr) -> None:  # pragma: no cover
         """Dump the outline."""
         tag = '_dump_outline'
         print(f"{tag}: {c.shortFileName()}...\n", flush=True)
@@ -3238,11 +4551,11 @@ class LeoServer:
             self._dump_position(p)
         print('', flush=True)
 
-    def _dump_position(self, p):  # pragma: no cover
+    def _dump_position(self, p: Position) -> None:  # pragma: no cover
         level_s = ' ' * 2 * p.level()
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}", flush=True)
     #@+node:felix.20210624160812.1: *4* server._emit_signon
-    def _emit_signon(self):
+    def _emit_signon(self) -> None:
         """Simulate the Initial Leo Log Entry"""
         tag = 'emit_signon'
         if self.loop:
@@ -3255,7 +4568,7 @@ class LeoServer:
         else:
             raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@+node:felix.20210625230236.1: *4* server._get_commander_method
-    def _get_commander_method(self, command):
+    def _get_commander_method(self, command: str) -> Callable:
         """ Return the given method (p_command) in the Commands class or subcommanders."""
         # First, try the commands class.
         c = self._check_c()
@@ -3285,7 +4598,6 @@ class LeoServer:
             'printingController',
             'queryReplaceCommands',
             'rectangleCommands',
-            'searchCommands',
             'spellCommands',
             'vimCommands',  # Not likely to be useful.
         )
@@ -3297,7 +4609,7 @@ class LeoServer:
                     return func
         return None
     #@+node:felix.20210621233316.91: *4* server._get_focus
-    def _get_focus(self):
+    def _get_focus(self) -> str:
         """Server helper method to get the focused panel name string"""
         tag = '_get_focus'
         try:
@@ -3306,11 +4618,27 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
         return focus
-    #@+node:felix.20210621233316.90: *4* server._get_p
-    def _get_p(self, param, strict = False):
+    #@+node:ekr.20220817091731.1: *4* server._get_optional_p
+    def _get_optional_p(self, param: Dict) -> Optional[Position]:
         """
-        Return _ap_to_p(param["ap"]) or c.p.,
-        or False if the strict flag is set
+        Return _ap_to_p(param["ap"]) or None.
+        """
+        tag = '_get_ap'
+        c = self.c
+        if not c:  # pragma: no cover
+            raise ServerError(f"{tag}: no c")
+        ap = param.get("ap")
+        if ap:
+            p = self._ap_to_p(ap)  # Conversion
+            if p:
+                if not c.positionExists(p):  # pragma: no cover
+                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+                return p  # Return the position
+        return None
+    #@+node:felix.20210621233316.90: *4* server._get_p
+    def _get_p(self, param: Dict) -> Position:
+        """
+        Return _ap_to_p(param["ap"]) or c.p.
         """
         tag = '_get_ap'
         c = self.c
@@ -3319,20 +4647,17 @@ class LeoServer:
 
         ap = param.get("ap")
         if ap:
-            p = self._ap_to_p(ap)  # Convertion
+            p = self._ap_to_p(ap)  # Conversion
             if p:
                 if not c.positionExists(p):  # pragma: no cover
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
                 return p  # Return the position
-        if strict:
-            return False
         # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
-
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p):
+    def _get_position_d(self, p: Position, includeChildren: bool=False) -> Dict:
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -3341,18 +4666,38 @@ class LeoServer:
         """
         d = self._p_to_ap(p)
         d['headline'] = p.h
-        d['level'] = p.level()
         if p.v.u:
-            if g.leoServer.leoServerConfig and g.leoServer.leoServerConfig.get("uAsBoolean", False):
-                # uAsBoolean is 'thruthy'
-                d['u'] = True
+            # tags quantity first if any ua's present
+            tagsQty = len(p.v.u.get("__node_tags", []))
+            # Tags only if there are some present.
+            if tagsQty > 0:
+                d['nodeTags'] = tagsQty
+
+            # Check for flag to send ua quantity instead of full ua's
+            uAsBoolean = False
+            uAsNumber = False
+            if g.leoServer.leoServerConfig:
+                uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
+                uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
+            if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
+                uaQty = len(p.v.u)  # number will be 'true' if any keys are present
+                if tagsQty > 0 and uaQty > 0:
+                    uaQty = uaQty - 1
+                # set number pre-decremented if __node_tags were present
+                d['u'] = uaQty
             else:
-                # Normal output if no options set
+                # Normal output if no tags set
                 d['u'] = p.v.u
         if bool(p.b):
             d['hasBody'] = True
         if p.hasChildren():
             d['hasChildren'] = True
+            # includeChildren flag is used by get_structure
+            if includeChildren:
+                d['children'] = [
+                    self._get_position_d(child, includeChildren=True) for child in p.children()
+                ]
+
         if p.isCloned():
             d['cloned'] = True
         if p.isDirty():
@@ -3367,14 +4712,14 @@ class LeoServer:
             d['selected'] = True
         return d
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
-    def _is_jsonable(self, x):
+    def _is_jsonable(self, x: int) -> bool:
         try:
             json.dumps(x, cls=SetEncoder)
             return True
-        except (TypeError, OverflowError):
+        except(TypeError, OverflowError):
             return False
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package=None):
+    def _make_minimal_response(self, package: Package=None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -3395,11 +4740,11 @@ class LeoServer:
             package = {}
 
         # Always add id.
-        package ["id"] = self.current_id
+        package["id"] = self.current_id
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package=None):
+    def _make_response(self, package: Package=None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -3427,7 +4772,7 @@ class LeoServer:
             package = {}
         p = package.get("p")
         if p:
-            del package ["p"]
+            del package["p"]
         # Raise an *internal* error if checks fail.
         if isinstance(package, str):  # pragma: no cover
             raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
@@ -3441,21 +4786,21 @@ class LeoServer:
             raise InternalServerError(f"{tag}: empty c.p")
 
         # Always add id
-        package ["id"] = self.current_id
+        package["id"] = self.current_id
 
         # The following keys are relevant only if there is an open commander.
         if c:
             # Allow commands, especially _get_redraw_d, to specify p!
             p = p or c.p
-            package ["commander"] = {
+            package["commander"] = {
                 "changed": c.isChanged(),
-                "fileName": c.fileName(), # Can be None for new files.
+                "fileName": c.fileName(),  # Can be None for new files.
             }
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
-            package ["node"] = redraw_d
+            package["node"] = redraw_d
 
         # Handle traces.
         if trace and verbose:  # pragma: no cover
@@ -3468,7 +4813,7 @@ class LeoServer:
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
-    def _p_to_ap(self, p):
+    def _p_to_ap(self, p: Position) -> Dict:
         """
         * From Leo plugin leoflexx.py *
 
@@ -3486,15 +4831,15 @@ class LeoServer:
             'stack': stack,
         }
     #@+node:felix.20210621233316.96: *4* server._positionFromGnx
-    def _positionFromGnx(self, gnx):
+    def _positionFromGnx(self, gnx: str) -> Optional[Position]:
         """Return first p node with this gnx or false"""
         c = self._check_c()
         for p in c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
-        return False
+        return None
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package, toAll = False):
+    def _send_async_output(self, package: Package, toAll: bool=False) -> None:
         """
         Send data asynchronously to the client
         """
@@ -3507,14 +4852,19 @@ class LeoServer:
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json, toAll = False):  # pragma: no cover (tested in server)
+    async def _async_output(self,
+        json: str,
+        toAll: bool=False,
+    ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
         tag = '_async_output'
         outputBytes = bytes(json, 'utf-8')
         if toAll:
             if connectionsPool:  # asyncio.wait doesn't accept an empty list
-                await asyncio.wait([asyncio.create_task(client.send(outputBytes)) for client in connectionsPool])
+                await asyncio.wait([
+                    asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
+                ])
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
@@ -3523,7 +4873,7 @@ class LeoServer:
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
     #@+node:felix.20210621233316.97: *4* server._test_round_trip_positions
-    def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
+    def _test_round_trip_positions(self, c: Cmdr) -> None:  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
         tag = '_test_round_trip_positions'
         for p in c.all_unique_positions():
@@ -3533,7 +4883,7 @@ class LeoServer:
                 self._dump_outline(c)
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
     #@+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
-    def _yieldAllRootChildren(self):
+    def _yieldAllRootChildren(self) -> Generator:
         """Return all root children P nodes"""
         c = self._check_c()
         p = c.rootPosition()
@@ -3542,9 +4892,10 @@ class LeoServer:
             p.moveToNext()
 
     #@-others
-#@+node:felix.20210621233316.105: ** function: main & helpers
-def main():  # pragma: no cover (tested in client)
+#@+node:felix.20210621233316.105: ** main & helpers
+def main() -> None:  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
+    # pylint: disable=used-before-assignment
     global websockets
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
     if not websockets:
@@ -3554,7 +4905,7 @@ def main():  # pragma: no cover (tested in client)
 
     #@+others
     #@+node:felix.20210807214524.1: *3* function: cancel_tasks
-    def cancel_tasks(to_cancel, loop):
+    def cancel_tasks(to_cancel: Any, loop: Loop) -> None:
         if not to_cancel:
             return
 
@@ -3575,18 +4926,18 @@ def main():  # pragma: no cover (tested in client)
                     }
                 )
     #@+node:ekr.20210825115746.1: *3* function: center_tk_frame
-    def center_tk_frame(top):
+    def center_tk_frame(top: Any) -> None:
         """Center the top-level Frame."""
         # https://stackoverflow.com/questions/3352918
         top.update_idletasks()
         screen_width = top.winfo_screenwidth()
         screen_height = top.winfo_screenheight()
         size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
-        x = screen_width/2 - size[0]/2
-        y = screen_height/2 - size[1]/2
+        x = screen_width / 2 - size[0] / 2
+        y = screen_height / 2 - size[1] / 2
         top.geometry("+%d+%d" % (x, y))
     #@+node:felix.20210804130751.1: *3* function: close_server
-    def close_Server():
+    def close_Server() -> None:
         """
         Close the server by stopping the loop
         """
@@ -3597,15 +4948,15 @@ def main():  # pragma: no cover (tested in client)
             print('Loop was not running', flush=True)
     #@+node:ekr.20210825172913.1: *3* function: general_yes_no_dialog & helpers
     def general_yes_no_dialog(
-        c,
-        title,  # Not used.
-        message=None,  # Must exist.
-        yesMessage="&Yes",  # Not used.
-        noMessage="&No",  # Not used.
-        yesToAllMessage=None,  # Not used.
-        defaultButton="Yes",  # Not used
-        cancelMessage=None,  # Not used.
-    ):
+        c: Cmdr,
+        title: str,  # Not used.
+        message: str=None,  # Must exist.
+        yesMessage: str="&Yes",  # Not used.
+        noMessage: str="&No",  # Not used.
+        yesToAllMessage: str=None,  # Not used.
+        defaultButton: str="Yes",  # Not used
+        cancelMessage: str=None,  # Not used.
+    ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
         offering *only* Yes/No buttons.
@@ -3616,7 +4967,7 @@ def main():  # pragma: no cover (tested in client)
         """
         #@+others  # define all helper functions.
         #@+node:ekr.20210801175921.1: *4* function: tk_runAskYesNoCancelDialog & helpers
-        def tk_runAskYesNoCancelDialog(c):
+        def tk_runAskYesNoCancelDialog(c: Cmdr) -> str:
             """
             Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
             """
@@ -3625,7 +4976,7 @@ def main():  # pragma: no cover (tested in client)
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
-            def create_yes_no_frame(message, top):
+            def create_yes_no_frame(message: str, top: Any) -> None:
                 """Create the dialog's frame."""
                 frame = Tk.Frame(top)
                 frame.pack(side="top", expand=1, fill="both")
@@ -3639,14 +4990,14 @@ def main():  # pragma: no cover (tested in client)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
             #@+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event=None):
+            def noButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event=None):
+            def yesButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -3678,7 +5029,7 @@ def main():  # pragma: no cover (tested in client)
             root.destroy()
             return val
         #@+node:ekr.20210825170952.1: *4* function: qt_runAskYesNoCancelDialog
-        def qt_runAskYesNoCancelDialog(c):
+        def qt_runAskYesNoCancelDialog(c: Cmdr) -> str:
             """
             Qt version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
             """
@@ -3704,7 +5055,7 @@ def main():  # pragma: no cover (tested in client)
             # None of these grabs focus from the console window.
             dialog.raise_()
             dialog.setFocus()
-            app.processEvents()
+            g.app.processEvents()
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
             val = dialog.exec() if isQt6 else dialog.exec_()
@@ -3716,26 +5067,29 @@ def main():  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            if 1:  # Prefer Qt.
-                from leo.core.leoQt import isQt6, QtGui, QtWidgets
-                from leo.core.leoQt import ButtonRole, Information
-                if QtGui and QtWidgets:
-                    app = QtWidgets.QApplication([])
-                    assert app
-                    val = qt_runAskYesNoCancelDialog(c)
-                    assert val in ('yes', 'no')
-                    return val
+            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import ButtonRole, Information
+            if QtGui and QtWidgets:
+                app = QtWidgets.QApplication([])
+                assert app
+                val = qt_runAskYesNoCancelDialog(c)
+                assert val in ('yes', 'no')
+                return val
         except Exception:
             pass
-        return tk_runAskYesNoCancelDialog(c)
+        if Tk:
+            return tk_runAskYesNoCancelDialog(c)
+        # #2512: There is no way to raise a dialog.
+        return 'yes'  # Just save the file!
+
     #@+node:felix.20210621233316.107: *3* function: get_args
-    def get_args():  # pragma: no cover
+    def get_args() -> None:  # pragma: no cover
         """
         Get arguments from the command line and sets them globally.
         """
         global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
 
-        def leo_file(s):
+        def leo_file(s: str) -> str:
             if os.path.exists(s):
                 return s
             print(f"\nNot a .leo file: {s!r}")
@@ -3752,7 +5106,8 @@ def main():  # pragma: no cover (tested in client)
             "  - leo.core.leoclient is an example client written in python.\n",
             "  - leoInteg (https://github.com/boltex/leointeg) is written in typescript.\n"
         ])
-        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        # Usage:
+        # leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]
         usage = 'python leo.core.leoserver [options...]'
         trace_s = 'request,response,verbose'
         valid_traces = [z.strip() for z in trace_s.split(',')]
@@ -3764,7 +5119,7 @@ def main():  # pragma: no cover (tested in client)
         add('-p', '--port', dest='wsPort', type=int, default=wsPort, metavar='N',
             help='port number. Defaults to ' + str(wsPort))
         add('-l', '--limit', dest='wsLimit', type=int, default=wsLimit, metavar='N',
-            help='maximum number of clients. Defaults to '+ str(wsLimit))
+            help='maximum number of clients. Defaults to ' + str(wsLimit))
         add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
             help='open a .leo file at startup')
         add('--persist', dest='wsPersist', action='store_true',
@@ -3802,11 +5157,11 @@ def main():  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action, excludedConn = None):
+    async def notify_clients(action: str, excludedConn: Any=None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
-            opened = bool(controller.c) # c can be none if no files opened
-            m =  json.dumps({
+            opened = bool(controller.c)  # c can be none if no files opened
+            m = json.dumps({
                 "async": "refresh",
                 "action": action,
                 "opened": opened,
@@ -3816,15 +5171,16 @@ def main():  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
-
+                await asyncio.wait([
+                    asyncio.create_task(client.send(m)) for client in clientSetCopy
+                ])
     #@+node:felix.20210803174312.2: *3* function: register_client
-    async def register_client(websocket):
+    async def register_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
     #@+node:felix.20210807160828.1: *3* function: save_dirty
-    def save_dirty():
+    def save_dirty() -> None:
         """
         Ask the user about dirty files if any remained opened.
         """
@@ -3834,14 +5190,14 @@ def main():  # pragma: no cover (tested in client)
         commanders = g.app.commanders()
         for commander in commanders:
             if commander.isChanged() and commander.fileName():
-                commander.close() # Patched 'ask' methods will open dialog
+                commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
-    async def unregister_client(websocket):
+    async def unregister_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket, path):
+    async def ws_handler(websocket: Socket, path: str) -> None:
         """
         The web socket handler: server.ws_server.
 
@@ -3859,15 +5215,15 @@ def main():  # pragma: no cover (tested in client)
                 print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
                 await websocket.close(1001)
                 return
-            connected = True # local variable
-            connectionsTotal += 1 # global variable
+            connected = True  # local variable
+            connectionsTotal += 1  # global variable
             print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
             # If first connection set it as the main client connection
             controller._init_connection(websocket)
             await register_client(websocket)
             # Start by sending empty as 'ok'.
             n = 0
-            await websocket.send(controller._make_response())
+            await websocket.send(controller._make_response({"leoID": g.app.leoID}))
             controller._emit_signon()
 
             # Websocket connection message handling loop
@@ -3882,7 +5238,8 @@ def main():  # pragma: no cover (tested in client)
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
+                    # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
+                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e.__str__())
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
@@ -3917,7 +5274,7 @@ def main():  # pragma: no cover (tested in client)
         finally:
             if connected:
                 connectionsTotal -= 1
-                await  unregister_client(websocket)
+                await unregister_client(websocket)
                 print(f"{tag} connection finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
             # Check for persistence flag if all connections are closed
             if connectionsTotal == 0 and not wsPersist:
@@ -3925,23 +5282,23 @@ def main():  # pragma: no cover (tested in client)
                 # Preemptive closing of tasks
                 for task in asyncio.all_tasks():
                     task.cancel()
-                close_Server() # Stops the run_forever loop
+                close_Server()  # Stops the run_forever loop
     #@-others
 
     # Make the first real line of output more visible.
     print("", flush=True)
 
     # Sets sHost, wsPort, wsLimit, wsPersist, wsSkipDirty fileArg and traces
-    get_args() # Set global values from the command line arguments
-    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
+    get_args()  # Set global values from the command line arguments
+    print(f"Starting LeoBridge Server {v1}.{v2}.{v3} (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
-    controller = LeoServer() # Single instance of LeoServer, i.e., an instance of leoBridge
+    controller = LeoServer()  # Single instance of LeoServer, i.e., an instance of leoBridge
     if argFile:
         # Open specified file argument
         try:
             print(f"Opening file: {argFile}", flush=True)
-            controller.open_file({"filename":argFile})
+            controller.open_file({"filename": argFile})
         except Exception:
             print("Opening file failed", flush=True)
 
@@ -3950,12 +5307,12 @@ def main():  # pragma: no cover (tested in client)
 
     try:
         try:
-            server = websockets.serve(ws_handler, wsHost, wsPort)  # pylint: disable=no-member
+            server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
         except OSError as e:
             print(e)
             print("Trying with IPv4 Family", flush=True)
-            server = websockets.serve(ws_handler, wsHost, wsPort, family=socket.AF_INET)  # pylint: disable=no-member
+            server = websockets.serve(ws_handler, wsHost, wsPort, family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
 
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
@@ -3973,7 +5330,7 @@ def main():  # pragma: no cover (tested in client)
         print("Process interrupted", flush=True)
 
     finally:
-        # Execution continues here after server is interupted (e.g. with ctrl+c)
+        # Execution continues here after server is interrupted (e.g. with ctrl+c)
         realtime_server.close()
         if not wsSkipDirty:
             print("Checking for changed commanders...", flush=True)

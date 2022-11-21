@@ -327,15 +327,14 @@ def pr(*args, **keys):  # (codewise!)
         encoding = sys.stdout.encoding
     else:
         encoding = 'utf-8'
+    # Translates everything to unicode.
     s = translateArgs(args, d)
-        # Translates everything to unicode.
     s = toUnicode(s, encoding=encoding, reportErrors=False)
     if newline:
         s += u('\n')
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
-    sys.stdout.write(s)
-        # Codewise: unit tests do not change sys.stdout.
+    sys.stdout.write(s)  # Unit tests do not change sys.stdout.
 #@+node:ekr.20180311193230.1: *5* shortFileName (codewise)
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''

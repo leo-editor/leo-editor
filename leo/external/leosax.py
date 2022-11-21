@@ -1,21 +1,20 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120519121124.9919: * @file ../external/leosax.py
-#@@language python
-#@@killbeautify
-#@+others
-#@+node:ekr.20120519121124.9920: ** leosax declarations
-"""Read .leo files into a simple python data structure with
+"""
+Read .leo files into a simple python data structure with
 h, b, u (unknown attribs), gnx and children information.
 Clones and derived files are ignored.  Useful for scanning
 multiple .leo files quickly.
 """
-
 from binascii import unhexlify
 from pickle import loads
+from typing import Any, Dict
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 from leo.core import leoGlobals as g
 
+#@+others
+#@+node:ekr.20120519121124.9920: ** leosax declarations
 #@+node:ekr.20120519121124.9921: ** class LeoNode
 class LeoNode:
     """Representation of a Leo node.  Root node has itself as parent.
@@ -41,7 +40,7 @@ class LeoNode:
     def __init__(self):
         """Set ivars"""
         self.children = []
-        self.u = {}
+        self.u: Dict = {}
         self.unknownAttributes = self.u  # for compatibility
         self.h = []
         self.b = []
@@ -120,12 +119,11 @@ class LeoReader(ContentHandler):
     def __init__(self, *args, **kwargs):
         """Set ivars"""
         super().__init__(*args, **kwargs)
-        self.root = LeoNode()
-
+        self.root: Any = LeoNode()
         self.root.h = 'ROOT'
         # changes type from [] to str, done by endElement() for other vnodes
 
-        self.cur = self.root
+        self.cur: Any = self.root
         self.idx = {}
         self.in_ = None
         self.in_attrs = {}
@@ -200,9 +198,6 @@ def get_leo_data(source):
     return parser.root
 
 #@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 
 if __name__ == '__main__':
     import sys
@@ -214,4 +209,10 @@ if __name__ == '__main__':
         )
     leo_data = get_leo_data(g.readFileIntoUnicodeString(wb))
     print(leo_data)
+
+#@@language python
+#@@killbeautify
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

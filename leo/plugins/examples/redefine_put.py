@@ -8,8 +8,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20111104210837.9690: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = not g.unitTesting
-        # Not for unit testing: overrides core methods.
+    ok = not g.unitTesting  # Not for unit testing: overrides core methods.
     if ok:
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
@@ -38,8 +37,8 @@ def newPut(self, s, color="black"):
     s = s.upper()
     t = self.logCtrl
     if t:
-        t.insert("end", s)
-        t.see("end")
+        t.insert(len(t.getAllText()), s)
+        t.see(len(t.getAllText()))
     else:
         g.pr(s, newline=False)
 # Same as frame.putnl except writes two newlines.
@@ -50,8 +49,8 @@ def newPutNl(self):
         return
     t = self.logCtrl
     if t:
-        t.insert("end", "\n\n")
-        t.see("end")
+        t.insert(len(t.getAllText()), "\n\n")
+        t.see(len(t.getAllText()))
     else:
         g.pr('')
 #@-others

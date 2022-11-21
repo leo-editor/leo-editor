@@ -154,13 +154,13 @@ def inform_rule0(colorer, s, i):
 def inform_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inform::informinnertext",exclude_match=False,
+        delegate="inform::informinnertext", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inform_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inform_rule3(colorer, s, i):
@@ -286,7 +286,7 @@ def inform_rule32(colorer, s, i):
 
 # Rules dict for inform_main ruleset.
 rulesDict1 = {
-    "!": [inform_rule0,inform_rule4,],
+    "!": [inform_rule0, inform_rule4,],
     "\"": [inform_rule1,],
     "#": [inform_rule3,],
     "$": [inform_rule12,],
@@ -296,8 +296,8 @@ rulesDict1 = {
     "(": [inform_rule29,],
     "*": [inform_rule14,],
     "+": [inform_rule10,],
-    "-": [inform_rule11,inform_rule28,],
-    ".": [inform_rule26,inform_rule27,],
+    "-": [inform_rule11, inform_rule28,],
+    ".": [inform_rule26, inform_rule27,],
     "/": [inform_rule13,],
     "0": [inform_rule32,],
     "1": [inform_rule32,],
@@ -309,10 +309,10 @@ rulesDict1 = {
     "7": [inform_rule32,],
     "8": [inform_rule32,],
     "9": [inform_rule32,],
-    ":": [inform_rule30,inform_rule31,],
-    "<": [inform_rule8,inform_rule16,],
-    "=": [inform_rule5,inform_rule6,],
-    ">": [inform_rule7,inform_rule15,],
+    ":": [inform_rule30, inform_rule31,],
+    "<": [inform_rule8, inform_rule16,],
+    "=": [inform_rule5, inform_rule6,],
+    ">": [inform_rule7, inform_rule15,],
     "@": [inform_rule32,],
     "A": [inform_rule32,],
     "B": [inform_rule32,],
@@ -373,7 +373,7 @@ rulesDict1 = {
     "{": [inform_rule23,],
     "|": [inform_rule19,],
     "}": [inform_rule22,],
-    "~": [inform_rule9,inform_rule21,],
+    "~": [inform_rule9, inform_rule21,],
 }
 
 # Rules for inform_informinnertext ruleset.
@@ -400,7 +400,7 @@ def inform_rule37(colorer, s, i):
 
 # Rules dict for inform_informinnertext ruleset.
 rulesDict2 = {
-    "@": [inform_rule35,inform_rule37,],
+    "@": [inform_rule35, inform_rule37,],
     "\\": [inform_rule36,],
     "^": [inform_rule33,],
     "~": [inform_rule34,],
@@ -414,4 +414,3 @@ rulesDictDict = {
 
 # Import dict for inform mode.
 importDict = {}
-

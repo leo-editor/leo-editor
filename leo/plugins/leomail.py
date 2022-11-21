@@ -87,8 +87,8 @@ def strip_tags(obj):
     if isinstance(obj, list):
         # Python 3: obj may be an email.message object.
         # https://docs.python.org/2/library/email.message.html
+        # False: don't include headers.
         s = ''.join([z.as_string(False) for z in obj])
-            # False: don't include headers.
     else:
         s = obj
     stripper.feed(s)

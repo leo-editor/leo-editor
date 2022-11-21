@@ -15,7 +15,7 @@ except ImportError:
 #@+node:ekr.20080112150934.1:init
 def init():
 
-    if g.app.unitTesting: # Not Ok for unit testing!
+    if g.app.unitTesting:  # Not Ok for unit testing!
         return False
 
     if not gtk:

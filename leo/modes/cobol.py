@@ -672,13 +672,13 @@ def cobol_rule0(colorer, s, i):
 def cobol_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cobol_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cobol_rule3(colorer, s, i):
@@ -744,7 +744,7 @@ def cobol_rule17(colorer, s, i):
 def cobol_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="EXEC SQL", end="END-EXEC",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cobol_rule19(colorer, s, i):
@@ -752,13 +752,13 @@ def cobol_rule19(colorer, s, i):
 
 # Rules dict for cobol_main ruleset.
 rulesDict1 = {
-    " ": [cobol_rule4,cobol_rule5,cobol_rule11,cobol_rule12,cobol_rule14,],
+    " ": [cobol_rule4, cobol_rule5, cobol_rule11, cobol_rule12, cobol_rule14,],
     "\"": [cobol_rule1,],
     "%": [cobol_rule13,],
     "'": [cobol_rule2,],
-    "*": [cobol_rule0,cobol_rule9,cobol_rule10,],
+    "*": [cobol_rule0, cobol_rule9, cobol_rule10,],
     "+": [cobol_rule6,],
-    "-": [cobol_rule7,cobol_rule19,],
+    "-": [cobol_rule7, cobol_rule19,],
     "/": [cobol_rule8,],
     "0": [cobol_rule19,],
     "1": [cobol_rule19,],
@@ -776,7 +776,7 @@ rulesDict1 = {
     "B": [cobol_rule19,],
     "C": [cobol_rule19,],
     "D": [cobol_rule19,],
-    "E": [cobol_rule18,cobol_rule19,],
+    "E": [cobol_rule18, cobol_rule19,],
     "F": [cobol_rule19,],
     "G": [cobol_rule19,],
     "H": [cobol_rule19,],
@@ -838,4 +838,3 @@ rulesDictDict = {
 
 # Import dict for cobol mode.
 importDict = {}
-

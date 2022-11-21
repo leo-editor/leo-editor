@@ -1,17 +1,16 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.5: * @file ../plugins/editpane/leotextedit.py
-#@+<<leotextedit.py imports >>
-#@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
-# import re
+#@@first
+#@+<<leotextedit imports >>
+#@+node:tbrown.20171028115508.1: ** <<leotextedit imports >>
 from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
-from leo.plugins import qt_text
 
-# import time  # temporary for debugging
 
-#@-<<leotextedit.py imports >>
+#@-<<leotextedit imports >>
 #@+others
 #@+node:tbrown.20171028115508.2: ** DBG
 def DBG(text):
@@ -35,12 +34,7 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
-        self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
-        self.wrapper.widget = self
-        self.highlighter = JEditColorizer(c, self, self.wrapper)
-
-        # maybe need to go in this direction, but this is insufficient by iteself
-        # g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
+        self.highlighter = JEditColorizer(c, self)
     #@+node:tbrown.20171028115508.5: *3* focusInEvent
     def focusInEvent(self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)

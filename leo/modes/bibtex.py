@@ -924,187 +924,187 @@ def bibtex_rule0(colorer, s, i):
 def bibtex_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@article{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::article",exclude_match=False,
+        delegate="bibtex::article", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@article(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::article",exclude_match=False,
+        delegate="bibtex::article", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@book{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::book",exclude_match=False,
+        delegate="bibtex::book", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@book(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::book",exclude_match=False,
+        delegate="bibtex::book", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@booklet{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::booklet",exclude_match=False,
+        delegate="bibtex::booklet", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@booklet(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::booklet",exclude_match=False,
+        delegate="bibtex::booklet", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@conference{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::conference",exclude_match=False,
+        delegate="bibtex::conference", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@conference(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::conference",exclude_match=False,
+        delegate="bibtex::conference", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@inbook{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::inbook",exclude_match=False,
+        delegate="bibtex::inbook", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@inbook(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::inbook",exclude_match=False,
+        delegate="bibtex::inbook", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@incollection{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::incollection",exclude_match=False,
+        delegate="bibtex::incollection", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@incollection(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::incollection",exclude_match=False,
+        delegate="bibtex::incollection", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@inproceedings{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::inproceedings",exclude_match=False,
+        delegate="bibtex::inproceedings", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@inproceedings(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::inproceedings",exclude_match=False,
+        delegate="bibtex::inproceedings", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@manual{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::manual",exclude_match=False,
+        delegate="bibtex::manual", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@manual(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::manual",exclude_match=False,
+        delegate="bibtex::manual", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@mastersthesis{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::mastersthesis",exclude_match=False,
+        delegate="bibtex::mastersthesis", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@mastersthesis(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::mastersthesis",exclude_match=False,
+        delegate="bibtex::mastersthesis", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@misc{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::misc",exclude_match=False,
+        delegate="bibtex::misc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@misc(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::misc",exclude_match=False,
+        delegate="bibtex::misc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule21(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@phdthesis{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::phdthesis",exclude_match=False,
+        delegate="bibtex::phdthesis", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@phdthesis(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::phdthesis",exclude_match=False,
+        delegate="bibtex::phdthesis", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule23(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@proceedings{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::proceedings",exclude_match=False,
+        delegate="bibtex::proceedings", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule24(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@proceedings(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::proceedings",exclude_match=False,
+        delegate="bibtex::proceedings", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule25(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@techreport{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::techreport",exclude_match=False,
+        delegate="bibtex::techreport", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@techreport(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::techreport",exclude_match=False,
+        delegate="bibtex::techreport", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule27(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@unpublished{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::unpublished",exclude_match=False,
+        delegate="bibtex::unpublished", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@unpublished(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::unpublished",exclude_match=False,
+        delegate="bibtex::unpublished", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule29(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@string{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::string",exclude_match=False,
+        delegate="bibtex::string", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@string(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::string",exclude_match=False,
+        delegate="bibtex::string", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for bibtex_main ruleset.
 rulesDict1 = {
     "%": [bibtex_rule0,],
-    "@": [bibtex_rule1,bibtex_rule2,bibtex_rule3,bibtex_rule4,bibtex_rule5,bibtex_rule6,bibtex_rule7,bibtex_rule8,bibtex_rule9,bibtex_rule10,bibtex_rule11,bibtex_rule12,bibtex_rule13,bibtex_rule14,bibtex_rule15,bibtex_rule16,bibtex_rule17,bibtex_rule18,bibtex_rule19,bibtex_rule20,bibtex_rule21,bibtex_rule22,bibtex_rule23,bibtex_rule24,bibtex_rule25,bibtex_rule26,bibtex_rule27,bibtex_rule28,bibtex_rule29,bibtex_rule30,],
+    "@": [bibtex_rule1, bibtex_rule2, bibtex_rule3, bibtex_rule4, bibtex_rule5, bibtex_rule6, bibtex_rule7, bibtex_rule8, bibtex_rule9, bibtex_rule10, bibtex_rule11, bibtex_rule12, bibtex_rule13, bibtex_rule14, bibtex_rule15, bibtex_rule16, bibtex_rule17, bibtex_rule18, bibtex_rule19, bibtex_rule20, bibtex_rule21, bibtex_rule22, bibtex_rule23, bibtex_rule24, bibtex_rule25, bibtex_rule26, bibtex_rule27, bibtex_rule28, bibtex_rule29, bibtex_rule30,],
 }
 
 # Rules for bibtex_article ruleset.
@@ -1112,13 +1112,13 @@ rulesDict1 = {
 def bibtex_rule31(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule32(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule33(colorer, s, i):
@@ -1173,15 +1173,15 @@ rulesDict2 = {
     "\"": [bibtex_rule31,],
     ",": [bibtex_rule34,],
     "0": [bibtex_rule44,],
-    "1": [bibtex_rule35,bibtex_rule44,],
-    "2": [bibtex_rule36,bibtex_rule44,],
-    "3": [bibtex_rule37,bibtex_rule44,],
-    "4": [bibtex_rule38,bibtex_rule44,],
-    "5": [bibtex_rule39,bibtex_rule44,],
-    "6": [bibtex_rule40,bibtex_rule44,],
-    "7": [bibtex_rule41,bibtex_rule44,],
-    "8": [bibtex_rule42,bibtex_rule44,],
-    "9": [bibtex_rule43,bibtex_rule44,],
+    "1": [bibtex_rule35, bibtex_rule44,],
+    "2": [bibtex_rule36, bibtex_rule44,],
+    "3": [bibtex_rule37, bibtex_rule44,],
+    "4": [bibtex_rule38, bibtex_rule44,],
+    "5": [bibtex_rule39, bibtex_rule44,],
+    "6": [bibtex_rule40, bibtex_rule44,],
+    "7": [bibtex_rule41, bibtex_rule44,],
+    "8": [bibtex_rule42, bibtex_rule44,],
+    "9": [bibtex_rule43, bibtex_rule44,],
     "=": [bibtex_rule33,],
     "@": [bibtex_rule44,],
     "A": [bibtex_rule44,],
@@ -1244,13 +1244,13 @@ rulesDict2 = {
 def bibtex_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule46(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule47(colorer, s, i):
@@ -1305,15 +1305,15 @@ rulesDict3 = {
     "\"": [bibtex_rule45,],
     ",": [bibtex_rule48,],
     "0": [bibtex_rule58,],
-    "1": [bibtex_rule49,bibtex_rule58,],
-    "2": [bibtex_rule50,bibtex_rule58,],
-    "3": [bibtex_rule51,bibtex_rule58,],
-    "4": [bibtex_rule52,bibtex_rule58,],
-    "5": [bibtex_rule53,bibtex_rule58,],
-    "6": [bibtex_rule54,bibtex_rule58,],
-    "7": [bibtex_rule55,bibtex_rule58,],
-    "8": [bibtex_rule56,bibtex_rule58,],
-    "9": [bibtex_rule57,bibtex_rule58,],
+    "1": [bibtex_rule49, bibtex_rule58,],
+    "2": [bibtex_rule50, bibtex_rule58,],
+    "3": [bibtex_rule51, bibtex_rule58,],
+    "4": [bibtex_rule52, bibtex_rule58,],
+    "5": [bibtex_rule53, bibtex_rule58,],
+    "6": [bibtex_rule54, bibtex_rule58,],
+    "7": [bibtex_rule55, bibtex_rule58,],
+    "8": [bibtex_rule56, bibtex_rule58,],
+    "9": [bibtex_rule57, bibtex_rule58,],
     "=": [bibtex_rule47,],
     "@": [bibtex_rule58,],
     "A": [bibtex_rule58,],
@@ -1376,13 +1376,13 @@ rulesDict3 = {
 def bibtex_rule59(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule60(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule61(colorer, s, i):
@@ -1437,15 +1437,15 @@ rulesDict4 = {
     "\"": [bibtex_rule59,],
     ",": [bibtex_rule62,],
     "0": [bibtex_rule72,],
-    "1": [bibtex_rule63,bibtex_rule72,],
-    "2": [bibtex_rule64,bibtex_rule72,],
-    "3": [bibtex_rule65,bibtex_rule72,],
-    "4": [bibtex_rule66,bibtex_rule72,],
-    "5": [bibtex_rule67,bibtex_rule72,],
-    "6": [bibtex_rule68,bibtex_rule72,],
-    "7": [bibtex_rule69,bibtex_rule72,],
-    "8": [bibtex_rule70,bibtex_rule72,],
-    "9": [bibtex_rule71,bibtex_rule72,],
+    "1": [bibtex_rule63, bibtex_rule72,],
+    "2": [bibtex_rule64, bibtex_rule72,],
+    "3": [bibtex_rule65, bibtex_rule72,],
+    "4": [bibtex_rule66, bibtex_rule72,],
+    "5": [bibtex_rule67, bibtex_rule72,],
+    "6": [bibtex_rule68, bibtex_rule72,],
+    "7": [bibtex_rule69, bibtex_rule72,],
+    "8": [bibtex_rule70, bibtex_rule72,],
+    "9": [bibtex_rule71, bibtex_rule72,],
     "=": [bibtex_rule61,],
     "@": [bibtex_rule72,],
     "A": [bibtex_rule72,],
@@ -1508,13 +1508,13 @@ rulesDict4 = {
 def bibtex_rule73(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule74(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule75(colorer, s, i):
@@ -1569,15 +1569,15 @@ rulesDict5 = {
     "\"": [bibtex_rule73,],
     ",": [bibtex_rule76,],
     "0": [bibtex_rule86,],
-    "1": [bibtex_rule77,bibtex_rule86,],
-    "2": [bibtex_rule78,bibtex_rule86,],
-    "3": [bibtex_rule79,bibtex_rule86,],
-    "4": [bibtex_rule80,bibtex_rule86,],
-    "5": [bibtex_rule81,bibtex_rule86,],
-    "6": [bibtex_rule82,bibtex_rule86,],
-    "7": [bibtex_rule83,bibtex_rule86,],
-    "8": [bibtex_rule84,bibtex_rule86,],
-    "9": [bibtex_rule85,bibtex_rule86,],
+    "1": [bibtex_rule77, bibtex_rule86,],
+    "2": [bibtex_rule78, bibtex_rule86,],
+    "3": [bibtex_rule79, bibtex_rule86,],
+    "4": [bibtex_rule80, bibtex_rule86,],
+    "5": [bibtex_rule81, bibtex_rule86,],
+    "6": [bibtex_rule82, bibtex_rule86,],
+    "7": [bibtex_rule83, bibtex_rule86,],
+    "8": [bibtex_rule84, bibtex_rule86,],
+    "9": [bibtex_rule85, bibtex_rule86,],
     "=": [bibtex_rule75,],
     "@": [bibtex_rule86,],
     "A": [bibtex_rule86,],
@@ -1640,13 +1640,13 @@ rulesDict5 = {
 def bibtex_rule87(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule88(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule89(colorer, s, i):
@@ -1701,15 +1701,15 @@ rulesDict6 = {
     "\"": [bibtex_rule87,],
     ",": [bibtex_rule90,],
     "0": [bibtex_rule100,],
-    "1": [bibtex_rule91,bibtex_rule100,],
-    "2": [bibtex_rule92,bibtex_rule100,],
-    "3": [bibtex_rule93,bibtex_rule100,],
-    "4": [bibtex_rule94,bibtex_rule100,],
-    "5": [bibtex_rule95,bibtex_rule100,],
-    "6": [bibtex_rule96,bibtex_rule100,],
-    "7": [bibtex_rule97,bibtex_rule100,],
-    "8": [bibtex_rule98,bibtex_rule100,],
-    "9": [bibtex_rule99,bibtex_rule100,],
+    "1": [bibtex_rule91, bibtex_rule100,],
+    "2": [bibtex_rule92, bibtex_rule100,],
+    "3": [bibtex_rule93, bibtex_rule100,],
+    "4": [bibtex_rule94, bibtex_rule100,],
+    "5": [bibtex_rule95, bibtex_rule100,],
+    "6": [bibtex_rule96, bibtex_rule100,],
+    "7": [bibtex_rule97, bibtex_rule100,],
+    "8": [bibtex_rule98, bibtex_rule100,],
+    "9": [bibtex_rule99, bibtex_rule100,],
     "=": [bibtex_rule89,],
     "@": [bibtex_rule100,],
     "A": [bibtex_rule100,],
@@ -1772,13 +1772,13 @@ rulesDict6 = {
 def bibtex_rule101(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule102(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule103(colorer, s, i):
@@ -1833,15 +1833,15 @@ rulesDict7 = {
     "\"": [bibtex_rule101,],
     ",": [bibtex_rule104,],
     "0": [bibtex_rule114,],
-    "1": [bibtex_rule105,bibtex_rule114,],
-    "2": [bibtex_rule106,bibtex_rule114,],
-    "3": [bibtex_rule107,bibtex_rule114,],
-    "4": [bibtex_rule108,bibtex_rule114,],
-    "5": [bibtex_rule109,bibtex_rule114,],
-    "6": [bibtex_rule110,bibtex_rule114,],
-    "7": [bibtex_rule111,bibtex_rule114,],
-    "8": [bibtex_rule112,bibtex_rule114,],
-    "9": [bibtex_rule113,bibtex_rule114,],
+    "1": [bibtex_rule105, bibtex_rule114,],
+    "2": [bibtex_rule106, bibtex_rule114,],
+    "3": [bibtex_rule107, bibtex_rule114,],
+    "4": [bibtex_rule108, bibtex_rule114,],
+    "5": [bibtex_rule109, bibtex_rule114,],
+    "6": [bibtex_rule110, bibtex_rule114,],
+    "7": [bibtex_rule111, bibtex_rule114,],
+    "8": [bibtex_rule112, bibtex_rule114,],
+    "9": [bibtex_rule113, bibtex_rule114,],
     "=": [bibtex_rule103,],
     "@": [bibtex_rule114,],
     "A": [bibtex_rule114,],
@@ -1904,13 +1904,13 @@ rulesDict7 = {
 def bibtex_rule115(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule116(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule117(colorer, s, i):
@@ -1965,15 +1965,15 @@ rulesDict8 = {
     "\"": [bibtex_rule115,],
     ",": [bibtex_rule118,],
     "0": [bibtex_rule128,],
-    "1": [bibtex_rule119,bibtex_rule128,],
-    "2": [bibtex_rule120,bibtex_rule128,],
-    "3": [bibtex_rule121,bibtex_rule128,],
-    "4": [bibtex_rule122,bibtex_rule128,],
-    "5": [bibtex_rule123,bibtex_rule128,],
-    "6": [bibtex_rule124,bibtex_rule128,],
-    "7": [bibtex_rule125,bibtex_rule128,],
-    "8": [bibtex_rule126,bibtex_rule128,],
-    "9": [bibtex_rule127,bibtex_rule128,],
+    "1": [bibtex_rule119, bibtex_rule128,],
+    "2": [bibtex_rule120, bibtex_rule128,],
+    "3": [bibtex_rule121, bibtex_rule128,],
+    "4": [bibtex_rule122, bibtex_rule128,],
+    "5": [bibtex_rule123, bibtex_rule128,],
+    "6": [bibtex_rule124, bibtex_rule128,],
+    "7": [bibtex_rule125, bibtex_rule128,],
+    "8": [bibtex_rule126, bibtex_rule128,],
+    "9": [bibtex_rule127, bibtex_rule128,],
     "=": [bibtex_rule117,],
     "@": [bibtex_rule128,],
     "A": [bibtex_rule128,],
@@ -2036,13 +2036,13 @@ rulesDict8 = {
 def bibtex_rule129(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule130(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule131(colorer, s, i):
@@ -2097,15 +2097,15 @@ rulesDict9 = {
     "\"": [bibtex_rule129,],
     ",": [bibtex_rule132,],
     "0": [bibtex_rule142,],
-    "1": [bibtex_rule133,bibtex_rule142,],
-    "2": [bibtex_rule134,bibtex_rule142,],
-    "3": [bibtex_rule135,bibtex_rule142,],
-    "4": [bibtex_rule136,bibtex_rule142,],
-    "5": [bibtex_rule137,bibtex_rule142,],
-    "6": [bibtex_rule138,bibtex_rule142,],
-    "7": [bibtex_rule139,bibtex_rule142,],
-    "8": [bibtex_rule140,bibtex_rule142,],
-    "9": [bibtex_rule141,bibtex_rule142,],
+    "1": [bibtex_rule133, bibtex_rule142,],
+    "2": [bibtex_rule134, bibtex_rule142,],
+    "3": [bibtex_rule135, bibtex_rule142,],
+    "4": [bibtex_rule136, bibtex_rule142,],
+    "5": [bibtex_rule137, bibtex_rule142,],
+    "6": [bibtex_rule138, bibtex_rule142,],
+    "7": [bibtex_rule139, bibtex_rule142,],
+    "8": [bibtex_rule140, bibtex_rule142,],
+    "9": [bibtex_rule141, bibtex_rule142,],
     "=": [bibtex_rule131,],
     "@": [bibtex_rule142,],
     "A": [bibtex_rule142,],
@@ -2168,13 +2168,13 @@ rulesDict9 = {
 def bibtex_rule143(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule144(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule145(colorer, s, i):
@@ -2229,15 +2229,15 @@ rulesDict10 = {
     "\"": [bibtex_rule143,],
     ",": [bibtex_rule146,],
     "0": [bibtex_rule156,],
-    "1": [bibtex_rule147,bibtex_rule156,],
-    "2": [bibtex_rule148,bibtex_rule156,],
-    "3": [bibtex_rule149,bibtex_rule156,],
-    "4": [bibtex_rule150,bibtex_rule156,],
-    "5": [bibtex_rule151,bibtex_rule156,],
-    "6": [bibtex_rule152,bibtex_rule156,],
-    "7": [bibtex_rule153,bibtex_rule156,],
-    "8": [bibtex_rule154,bibtex_rule156,],
-    "9": [bibtex_rule155,bibtex_rule156,],
+    "1": [bibtex_rule147, bibtex_rule156,],
+    "2": [bibtex_rule148, bibtex_rule156,],
+    "3": [bibtex_rule149, bibtex_rule156,],
+    "4": [bibtex_rule150, bibtex_rule156,],
+    "5": [bibtex_rule151, bibtex_rule156,],
+    "6": [bibtex_rule152, bibtex_rule156,],
+    "7": [bibtex_rule153, bibtex_rule156,],
+    "8": [bibtex_rule154, bibtex_rule156,],
+    "9": [bibtex_rule155, bibtex_rule156,],
     "=": [bibtex_rule145,],
     "@": [bibtex_rule156,],
     "A": [bibtex_rule156,],
@@ -2300,13 +2300,13 @@ rulesDict10 = {
 def bibtex_rule157(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule158(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule159(colorer, s, i):
@@ -2361,15 +2361,15 @@ rulesDict11 = {
     "\"": [bibtex_rule157,],
     ",": [bibtex_rule160,],
     "0": [bibtex_rule170,],
-    "1": [bibtex_rule161,bibtex_rule170,],
-    "2": [bibtex_rule162,bibtex_rule170,],
-    "3": [bibtex_rule163,bibtex_rule170,],
-    "4": [bibtex_rule164,bibtex_rule170,],
-    "5": [bibtex_rule165,bibtex_rule170,],
-    "6": [bibtex_rule166,bibtex_rule170,],
-    "7": [bibtex_rule167,bibtex_rule170,],
-    "8": [bibtex_rule168,bibtex_rule170,],
-    "9": [bibtex_rule169,bibtex_rule170,],
+    "1": [bibtex_rule161, bibtex_rule170,],
+    "2": [bibtex_rule162, bibtex_rule170,],
+    "3": [bibtex_rule163, bibtex_rule170,],
+    "4": [bibtex_rule164, bibtex_rule170,],
+    "5": [bibtex_rule165, bibtex_rule170,],
+    "6": [bibtex_rule166, bibtex_rule170,],
+    "7": [bibtex_rule167, bibtex_rule170,],
+    "8": [bibtex_rule168, bibtex_rule170,],
+    "9": [bibtex_rule169, bibtex_rule170,],
     "=": [bibtex_rule159,],
     "@": [bibtex_rule170,],
     "A": [bibtex_rule170,],
@@ -2432,13 +2432,13 @@ rulesDict11 = {
 def bibtex_rule171(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule172(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule173(colorer, s, i):
@@ -2493,15 +2493,15 @@ rulesDict12 = {
     "\"": [bibtex_rule171,],
     ",": [bibtex_rule174,],
     "0": [bibtex_rule184,],
-    "1": [bibtex_rule175,bibtex_rule184,],
-    "2": [bibtex_rule176,bibtex_rule184,],
-    "3": [bibtex_rule177,bibtex_rule184,],
-    "4": [bibtex_rule178,bibtex_rule184,],
-    "5": [bibtex_rule179,bibtex_rule184,],
-    "6": [bibtex_rule180,bibtex_rule184,],
-    "7": [bibtex_rule181,bibtex_rule184,],
-    "8": [bibtex_rule182,bibtex_rule184,],
-    "9": [bibtex_rule183,bibtex_rule184,],
+    "1": [bibtex_rule175, bibtex_rule184,],
+    "2": [bibtex_rule176, bibtex_rule184,],
+    "3": [bibtex_rule177, bibtex_rule184,],
+    "4": [bibtex_rule178, bibtex_rule184,],
+    "5": [bibtex_rule179, bibtex_rule184,],
+    "6": [bibtex_rule180, bibtex_rule184,],
+    "7": [bibtex_rule181, bibtex_rule184,],
+    "8": [bibtex_rule182, bibtex_rule184,],
+    "9": [bibtex_rule183, bibtex_rule184,],
     "=": [bibtex_rule173,],
     "@": [bibtex_rule184,],
     "A": [bibtex_rule184,],
@@ -2564,13 +2564,13 @@ rulesDict12 = {
 def bibtex_rule185(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule186(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule187(colorer, s, i):
@@ -2625,15 +2625,15 @@ rulesDict13 = {
     "\"": [bibtex_rule185,],
     ",": [bibtex_rule188,],
     "0": [bibtex_rule198,],
-    "1": [bibtex_rule189,bibtex_rule198,],
-    "2": [bibtex_rule190,bibtex_rule198,],
-    "3": [bibtex_rule191,bibtex_rule198,],
-    "4": [bibtex_rule192,bibtex_rule198,],
-    "5": [bibtex_rule193,bibtex_rule198,],
-    "6": [bibtex_rule194,bibtex_rule198,],
-    "7": [bibtex_rule195,bibtex_rule198,],
-    "8": [bibtex_rule196,bibtex_rule198,],
-    "9": [bibtex_rule197,bibtex_rule198,],
+    "1": [bibtex_rule189, bibtex_rule198,],
+    "2": [bibtex_rule190, bibtex_rule198,],
+    "3": [bibtex_rule191, bibtex_rule198,],
+    "4": [bibtex_rule192, bibtex_rule198,],
+    "5": [bibtex_rule193, bibtex_rule198,],
+    "6": [bibtex_rule194, bibtex_rule198,],
+    "7": [bibtex_rule195, bibtex_rule198,],
+    "8": [bibtex_rule196, bibtex_rule198,],
+    "9": [bibtex_rule197, bibtex_rule198,],
     "=": [bibtex_rule187,],
     "@": [bibtex_rule198,],
     "A": [bibtex_rule198,],
@@ -2696,13 +2696,13 @@ rulesDict13 = {
 def bibtex_rule199(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule200(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule201(colorer, s, i):
@@ -2757,15 +2757,15 @@ rulesDict14 = {
     "\"": [bibtex_rule199,],
     ",": [bibtex_rule202,],
     "0": [bibtex_rule212,],
-    "1": [bibtex_rule203,bibtex_rule212,],
-    "2": [bibtex_rule204,bibtex_rule212,],
-    "3": [bibtex_rule205,bibtex_rule212,],
-    "4": [bibtex_rule206,bibtex_rule212,],
-    "5": [bibtex_rule207,bibtex_rule212,],
-    "6": [bibtex_rule208,bibtex_rule212,],
-    "7": [bibtex_rule209,bibtex_rule212,],
-    "8": [bibtex_rule210,bibtex_rule212,],
-    "9": [bibtex_rule211,bibtex_rule212,],
+    "1": [bibtex_rule203, bibtex_rule212,],
+    "2": [bibtex_rule204, bibtex_rule212,],
+    "3": [bibtex_rule205, bibtex_rule212,],
+    "4": [bibtex_rule206, bibtex_rule212,],
+    "5": [bibtex_rule207, bibtex_rule212,],
+    "6": [bibtex_rule208, bibtex_rule212,],
+    "7": [bibtex_rule209, bibtex_rule212,],
+    "8": [bibtex_rule210, bibtex_rule212,],
+    "9": [bibtex_rule211, bibtex_rule212,],
     "=": [bibtex_rule201,],
     "@": [bibtex_rule212,],
     "A": [bibtex_rule212,],
@@ -2828,13 +2828,13 @@ rulesDict14 = {
 def bibtex_rule213(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule214(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule215(colorer, s, i):
@@ -2889,15 +2889,15 @@ rulesDict15 = {
     "\"": [bibtex_rule213,],
     ",": [bibtex_rule216,],
     "0": [bibtex_rule226,],
-    "1": [bibtex_rule217,bibtex_rule226,],
-    "2": [bibtex_rule218,bibtex_rule226,],
-    "3": [bibtex_rule219,bibtex_rule226,],
-    "4": [bibtex_rule220,bibtex_rule226,],
-    "5": [bibtex_rule221,bibtex_rule226,],
-    "6": [bibtex_rule222,bibtex_rule226,],
-    "7": [bibtex_rule223,bibtex_rule226,],
-    "8": [bibtex_rule224,bibtex_rule226,],
-    "9": [bibtex_rule225,bibtex_rule226,],
+    "1": [bibtex_rule217, bibtex_rule226,],
+    "2": [bibtex_rule218, bibtex_rule226,],
+    "3": [bibtex_rule219, bibtex_rule226,],
+    "4": [bibtex_rule220, bibtex_rule226,],
+    "5": [bibtex_rule221, bibtex_rule226,],
+    "6": [bibtex_rule222, bibtex_rule226,],
+    "7": [bibtex_rule223, bibtex_rule226,],
+    "8": [bibtex_rule224, bibtex_rule226,],
+    "9": [bibtex_rule225, bibtex_rule226,],
     "=": [bibtex_rule215,],
     "@": [bibtex_rule226,],
     "A": [bibtex_rule226,],
@@ -2960,19 +2960,19 @@ rulesDict15 = {
 def bibtex_rule227(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="\\{", end="\\}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule228(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule229(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule230(colorer, s, i):
@@ -2982,7 +2982,7 @@ def bibtex_rule230(colorer, s, i):
 # Rules dict for bibtex_textbraced ruleset.
 rulesDict16 = {
     "\"": [bibtex_rule229,],
-    "\\": [bibtex_rule227,bibtex_rule230,],
+    "\\": [bibtex_rule227, bibtex_rule230,],
     "{": [bibtex_rule228,],
 }
 
@@ -2991,13 +2991,13 @@ rulesDict16 = {
 def bibtex_rule231(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="\\{", end="\\}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule232(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule233(colorer, s, i):
@@ -3006,7 +3006,7 @@ def bibtex_rule233(colorer, s, i):
 
 # Rules dict for bibtex_textquoted ruleset.
 rulesDict17 = {
-    "\\": [bibtex_rule231,bibtex_rule233,],
+    "\\": [bibtex_rule231, bibtex_rule233,],
     "{": [bibtex_rule232,],
 }
 
@@ -3015,19 +3015,19 @@ rulesDict17 = {
 def bibtex_rule234(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textquoted",exclude_match=False,
+        delegate="bibtex::textquoted", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule235(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bibtex::textbraced",exclude_match=False,
+        delegate="bibtex::textbraced", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule236(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="\\{", end="\\}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bibtex_rule237(colorer, s, i):
@@ -3047,7 +3047,7 @@ rulesDict18 = {
     "\"": [bibtex_rule234,],
     ",": [bibtex_rule238,],
     "=": [bibtex_rule237,],
-    "\\": [bibtex_rule236,bibtex_rule239,],
+    "\\": [bibtex_rule236, bibtex_rule239,],
     "{": [bibtex_rule235,],
 }
 
@@ -3075,4 +3075,3 @@ rulesDictDict = {
 
 # Import dict for bibtex mode.
 importDict = {}
-

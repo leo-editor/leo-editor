@@ -272,13 +272,13 @@ def bcel_rule0(colorer, s, i):
 def bcel_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="bcel::javadoc",exclude_match=False,
+        delegate="bcel::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bcel_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bcel_rule3(colorer, s, i):
@@ -289,13 +289,13 @@ def bcel_rule3(colorer, s, i):
 def bcel_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def bcel_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def bcel_rule6(colorer, s, i):
@@ -327,7 +327,7 @@ rulesDict1 = {
     "#": [bcel_rule7,],
     "%": [bcel_rule6,],
     "'": [bcel_rule4,],
-    "/": [bcel_rule0,bcel_rule1,bcel_rule2,bcel_rule3,],
+    "/": [bcel_rule0, bcel_rule1, bcel_rule2, bcel_rule3,],
     "0": [bcel_rule11,],
     "1": [bcel_rule11,],
     "2": [bcel_rule11,],
@@ -404,4 +404,3 @@ rulesDictDict = {
 
 # Import dict for bcel mode.
 importDict = {}
-

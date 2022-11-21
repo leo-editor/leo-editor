@@ -112,31 +112,31 @@ keywordsDictDict = {
 def rust_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rust_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rust_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rust_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rust_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rust_rule5(colorer, s, i):
@@ -236,7 +236,7 @@ def rust_rule27(colorer, s, i):
 rulesDict1 = {
     "!": [rust_rule9,],
     "\"": [rust_rule3,],
-    "#": [rust_rule5,rust_rule6,],
+    "#": [rust_rule5, rust_rule6,],
     "%": [rust_rule18,],
     "&": [rust_rule19,],
     "'": [rust_rule4,],
@@ -244,7 +244,7 @@ rulesDict1 = {
     "*": [rust_rule15,],
     "+": [rust_rule12,],
     "-": [rust_rule13,],
-    "/": [rust_rule0,rust_rule1,rust_rule2,rust_rule7,rust_rule14,],
+    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14,],
     "0": [rust_rule27,],
     "1": [rust_rule27,],
     "2": [rust_rule27,],
@@ -256,9 +256,9 @@ rulesDict1 = {
     "8": [rust_rule27,],
     "9": [rust_rule27,],
     ":": [rust_rule25,],
-    "<": [rust_rule11,rust_rule17,],
+    "<": [rust_rule11, rust_rule17,],
     "=": [rust_rule8,],
-    ">": [rust_rule10,rust_rule16,],
+    ">": [rust_rule10, rust_rule16,],
     "@": [rust_rule27,],
     "A": [rust_rule27,],
     "B": [rust_rule27,],
@@ -328,4 +328,3 @@ rulesDictDict = {
 
 # Import dict for rust mode.
 importDict = {}
-

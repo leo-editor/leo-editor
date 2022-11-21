@@ -23,10 +23,10 @@ class SimpleOptionForm(fmForm.Form):
     #@+others
     #@+node:ekr.20170428084207.53: *3* create
     def create(self,):
-        self.wOptionList = self.add(OptionListDisplay, )
+        self.wOptionList = self.add(OptionListDisplay,)
 
     #@+node:ekr.20170428084207.54: *3* beforeEditing
-    def beforeEditing(self, ):
+    def beforeEditing(self,):
         try:
             self.wOptionList.values = self.value.options
         except AttributeError:
@@ -80,32 +80,32 @@ class OptionList:
     #@+others
     #@+node:ekr.20170428084207.65: *3* __init__
     def __init__(self, filename=None):
-        self.options  = []
+        self.options = []
         self.filename = filename
         self.define_serialize_functions()
 
     #@+node:ekr.20170428084207.66: *3* define_serialize_functions
     def define_serialize_functions(self):
         self.SERIALIZE_FUNCTIONS = {
-            OptionFreeText:         self.save_text,
-            OptionSingleChoice:     self.save_text,
-            OptionMultiChoice:      self.save_multi_text,
-            OptionMultiFreeText:    self.save_text,
-            OptionBoolean:          self.save_bool,
-            OptionFilename:         self.save_text,
-            OptionDate:             self.save_date,
-            OptionMultiFreeList:    self.save_list,
+            OptionFreeText: self.save_text,
+            OptionSingleChoice: self.save_text,
+            OptionMultiChoice: self.save_multi_text,
+            OptionMultiFreeText: self.save_text,
+            OptionBoolean: self.save_bool,
+            OptionFilename: self.save_text,
+            OptionDate: self.save_date,
+            OptionMultiFreeList: self.save_list,
         }
 
         self.UNSERIALIZE_FUNCTIONS = {
-            OptionFreeText:         self.reload_text,
-            OptionSingleChoice:     self.reload_text,
-            OptionMultiChoice:      self.load_multi_text,
-            OptionMultiFreeText:    self.reload_text,
-            OptionBoolean:          self.load_bool,
-            OptionFilename:         self.reload_text,
-            OptionDate:             self.load_date,
-            OptionMultiFreeList:    self.load_list,
+            OptionFreeText: self.reload_text,
+            OptionSingleChoice: self.reload_text,
+            OptionMultiChoice: self.load_multi_text,
+            OptionMultiFreeText: self.reload_text,
+            OptionBoolean: self.load_bool,
+            OptionFilename: self.reload_text,
+            OptionDate: self.load_date,
+            OptionMultiFreeList: self.load_list,
         }
 
     #@+node:ekr.20170428084207.67: *3* get
@@ -131,11 +131,11 @@ class OptionList:
         fn = fn or self.filename
         with open(fn, 'r', encoding="utf-8") as f:
             for line in f.readlines():
-                 line = line.strip()
-                 name, value = line.split("=", maxsplit=1)
-                 for option in self.options:
-                     if option.get_real_name() == name:
-                         option.set(self.deserialize_option_value(option, value.encode('ascii')))
+                line = line.strip()
+                name, value = line.split("=", maxsplit=1)
+                for option in self.options:
+                    if option.get_real_name() == name:
+                        option.set(self.deserialize_option_value(option, value.encode('ascii')))
 
     #@+node:ekr.20170428084207.70: *3* serialize_option_value
     def serialize_option_value(self, option):
@@ -174,9 +174,9 @@ class OptionList:
     #@+node:ekr.20170428084207.77: *3* load_bool
     def load_bool(self, txt):
         txt = txt.decode()
-        if txt in ('True', ):
+        if txt in ('True',):
             return True
-        elif txt in ('False', ):
+        elif txt in ('False',):
             return False
         else:
             raise ValueError("Could not decode %s" % txt)
@@ -240,8 +240,8 @@ class Option:
                     value=None,
                     documentation=None,
                     short_explanation=None,
-                    option_widget_keywords = None,
-                    default = None,
+                    option_widget_keywords=None,
+                    default=None,
                     ):
         self.name = name
         self.default = default or self.DEFAULT
@@ -302,7 +302,7 @@ class Option:
 
         option_widget = option_changing_form.add(self.WIDGET_TO_USE,
                                                     name=self.get_name_user(),
-                                                    **self.option_widget_keywords
+                                                    ** self.option_widget_keywords
                                                 )
         option_changing_form.OPTION_WIDGET = option_widget
         self._set_up_widget_values(option_changing_form, option_widget)
@@ -329,7 +329,7 @@ class OptionLimitedChoices(Option):
 
     #@+node:ekr.20170428084207.99: *3* _set_up_widget_values
     def _set_up_widget_values(self, option_form, main_option_widget):
-        main_option_widget.value  = []
+        main_option_widget.value = []
         main_option_widget.values = self.getChoices()
         for x in range(len(main_option_widget.values)):
             if self.value and main_option_widget.values[x] in self.value:

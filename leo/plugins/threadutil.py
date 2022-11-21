@@ -7,13 +7,12 @@ import logging
 import sys
 import time
 import traceback
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-
-log = None  # log = logging.getLogger("out")
+log = None
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level
 #@+node:ekr.20121126095734.12432: *3* async_syscmd
@@ -55,7 +54,7 @@ def leo_echo_cb(out, err, code, ent):
         g.es_error(err)
 
 #@+node:ekr.20121126095734.12430: *3* log_filedes
-garbage = []
+garbage: List[Any] = []
 
 def log_filedes(f, level):
 
@@ -94,18 +93,17 @@ def main():
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others
-    #@+node:ekr.20121126095734.12434: *3* __init__
-
+    #@+node:ekr.20121126095734.12434: *3* NowOrLater.__init__
     def __init__(self, worker, gran=1.0):
         """ worker takes list of tasks, does something for it """
 
         self.w = worker
         self.l = []
-        self.lasttime = 1
+        self.lasttime = 1.0
         self.granularity = gran
         self.scheduled = False
 
-    #@+node:ekr.20121126095734.12435: *3* add
+    #@+node:ekr.20121126095734.12435: *3* NowOrLater.add
     def add(self, task):
         now = time.time()
         self.l.append(task)
@@ -130,21 +128,18 @@ class NowOrLater:
                 self.scheduled = False
 
         if (now - self.lasttime) > self.granularity:
-            #print "now"
             callit()
         else:
             if not self.scheduled:
-                #print "later"
-                QtCore.QTimer.singleShot(self.granularity * 1000, callit)
+                QtCore.QTimer.singleShot(int(self.granularity * 1000), callit)  # #2402
                 self.scheduled = True
             else:
                 pass
-                #print "already sched"
 
 
     #@-others
 #@+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):
+class Repeater(QtCore.QThread):  # type:ignore
     """ execute f forever, signal on every run """
 
     fragment = QtCore.pyqtSignal(object)
@@ -177,7 +172,7 @@ class Repeater(QtCore.QThread):
 
     #@-others
 #@+node:ekr.20121126095734.12424: ** class RRunner
-class RRunner(QtCore.QThread):
+class RRunner(QtCore.QThread):  # type:ignore
     #@+others
     #@+node:ekr.20121126095734.12425: *3* __init__
     def __init__(self, f, parent=None):
@@ -265,7 +260,7 @@ class ThreadQueue:
 
     #@-others
 #@+node:ekr.20121126095734.12436: ** class UnitWorker
-class UnitWorker(QtCore.QThread):
+class UnitWorker(QtCore.QThread):  # type:ignore
     """ Work on one work item at a time, start new one when it's done """
 
     resultReady = QtCore.pyqtSignal()

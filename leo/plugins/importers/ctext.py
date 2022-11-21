@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
-#@@language python
-#@@tabwidth -4
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+#@@first
+import re
+from typing import Dict, List
+from leo.core import leoGlobals as g  # Required
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:tbrown.20140801105909.47551: ** class CText_Importer
 class CText_Importer(Importer):
@@ -35,72 +39,63 @@ class CText_Importer(Importer):
 
     """
     #@-<< ctext docstring >>
-    #@+others
-    #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
-    def __init__(self, importCommands, **kwargs):
+
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(
-            importCommands,
-            language='ctext',
-            state_class=None,
-            strict=False
+            c,
+            language='plain',  # A reasonable default.
         )
-        self.fileType = importCommands.fileType
-    #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines
-    def write_lines(self, node, lines):
-        """write the body lines to body normalizing whitespace"""
-        node.b = '\n'.join(lines).strip('\n') + '\n'
-        lines[:] = []
-    #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
-    def run(self, s, parent, parse_body=False):
-        """Override Importer.run()"""
-        # c = self.c
+
+    #@+others
+    #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
+    def import_from_string(self, parent: Position, s: str) -> None:
+        """CText_Importer.import_from_string()"""
+        c = self.c
         root = parent.copy()
-        cchar = '#'
-        if self.fileType.lower() == '.tex':
-            cchar = '%'
-        if self.fileType.lower() == '.sql':
-            cchar = '-'
-        if self.fileType.lower() == '.js':
-            cchar = '/'
-        level = -1
-        nd = parent.copy()
-        lines = []
-        for line in s.split('\n'):
-            if line.startswith(cchar * 3):
-                word = line.split()
-                if word[0].strip(cchar) == '':
-                    self.write_lines(nd, lines)
-                    new_level = len(word[0]) - 3
-                    if new_level > level:
-                        # go down one level
-                        level = new_level
-                        nd = nd.insertAsLastChild()
-                        nd.h = ' '.join(word[1:]).strip(cchar + ' ')
-                    else:
-                        # go up zero or more levels
-                        while level > new_level and level > 0:
-                            level -= 1
-                            nd = nd.parent()
-                        nd = nd.insertAfter()
-                        nd.h = ' '.join(word[1:]).strip(cchar + ' ')
+        ft = c.importCommands.fileType.lower()
+        cchar = (
+            '#' if g.unitTesting else
+            '%' if ft == '.sql' else
+            '-' if ft == '.sql' else
+            '/' if ft == '.js' else '#'
+        )
+        header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
+        lines_dict: Dict[VNode, List[str]] = {root.v: []}
+        parents: List[Position] = [root]
+        for line in g.splitLines(s):
+            m = header_pat.match(line)
+            if m:
+                level = len(m.group(1)) - 2
+                assert level >= 1, m.group(1)
+                parents = parents[:level]
+                self.create_placeholders(level, lines_dict, parents)
+                parent = parents[-1]
+                child = parent.insertAsLastChild()
+                child.h = m.group(2).strip()
+                lines_dict[child.v] = []
+                parents.append(child)
             else:
-                lines.append(line)
-        self.write_lines(nd, lines)
-        # It's always useless for an an import to dirty the outline.
+                parent = parents[-1]
+                lines_dict[parent.v].append(line)
+
+        for p in root.self_and_subtree():
+            p.b = ''.join(lines_dict[p.v])
+
+        # Importers should dirty neither nodes nor the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        # #1451: The caller should be responsible for this.
-            # if changed:
-                # c.setChanged()
-            # else:
-                # c.clearChanged()
-        return True
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for ctext."""
+    CText_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    '@auto': ['@auto-ctext',],
-    'class': CText_Importer,
+    '@auto': ['@auto-ctext'],
+    'extensions': ['.ctext'],  # A made-up extension for unit tests.
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

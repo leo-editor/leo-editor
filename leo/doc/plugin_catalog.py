@@ -74,9 +74,9 @@ def err(s):
     sys.stderr.flush()
 #@+node:ekr.20111018061632.15913: ** class PluginCatalog
 class PluginCatalog(object):
-    
+
     """see module docs. and make_parser()"""
-    
+
     #@+others
     #@+node:ekr.20111018061632.15906: *3* __init__
     def __init__(self, opt):
@@ -123,7 +123,7 @@ class PluginCatalog(object):
 
         doc_strings = []
         cnt = 0
-        opt = self.opt  
+        opt = self.opt
 
         for loc in opt.location:
 
@@ -172,10 +172,10 @@ class PluginCatalog(object):
         return doc_strings
     #@+node:ekr.20111018061632.15908: *3* make_document
     def make_document(self, doc_strings):
-        
+
         """make doctree representation of collected fragments"""
 
-        opt = self.opt  
+        opt = self.opt
 
         big_doc = publish_doctree("")
         self.document = big_doc
@@ -195,7 +195,7 @@ class PluginCatalog(object):
         last_alpha = ''
 
         for doc in doc_strings:
-            
+
             section = nodes.section()
             big_doc += section
             section += nodes.title(text=doc[0])
@@ -224,7 +224,7 @@ class PluginCatalog(object):
             for element in doc[2]:
                 # if the docstring has titles, we need another level
                 if element.tagname == 'title':
-                    subsection = nodes.section() 
+                    subsection = nodes.section()
                     section += subsection
                     section = subsection
                     break
@@ -245,7 +245,7 @@ class PluginCatalog(object):
             transform.apply()
 
         return big_doc
-        
+
     #@+node:ekr.20111018061632.15905: *3* make_parser
     @staticmethod
     def make_parser():
@@ -259,7 +259,7 @@ class PluginCatalog(object):
             help="Use this CSS file in the HTML output")
         parser.add_option("--max-files", type="int",
             help="Stop after this many files, mainly for testing")
-        parser.add_option("--include-contents", action="store_true", 
+        parser.add_option("--include-contents", action="store_true",
             default=False,
             help="Include table of contents (the summary is more useful)")
         parser.add_option("--no-summary", action="store_true", default=False,
@@ -277,7 +277,7 @@ class PluginCatalog(object):
 
         """run with the supplied options, see make_parser()"""
 
-        opt = self.opt  
+        opt = self.opt
 
         doc_strings = self.get_doc_strings()
 
@@ -302,9 +302,9 @@ class PluginCatalog(object):
     #@-others
 #@+node:ekr.20111018061632.15912: ** main
 def main():
-    
+
     """create and run a PluginCatalog"""
-    
+
     opts, args = PluginCatalog.make_parser().parse_args()
 
     if args and not opts.output:

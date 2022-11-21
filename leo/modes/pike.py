@@ -179,7 +179,7 @@ keywordsDictDict = {
 def pike_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pike::comment",exclude_match=False,
+        delegate="pike::comment", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pike_rule1(colorer, s, i):
@@ -199,19 +199,19 @@ def pike_rule3(colorer, s, i):
 def pike_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pike::string_literal",exclude_match=False,
+        delegate="pike::string_literal", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pike_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="#\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pike::string_literal",exclude_match=False,
+        delegate="pike::string_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pike_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pike_rule7(colorer, s, i):
@@ -317,16 +317,16 @@ def pike_rule31(colorer, s, i):
 rulesDict1 = {
     "!": [pike_rule15,],
     "\"": [pike_rule4,],
-    "#": [pike_rule5,pike_rule7,],
+    "#": [pike_rule5, pike_rule7,],
     "%": [pike_rule22,],
     "&": [pike_rule23,],
     "'": [pike_rule6,],
-    "(": [pike_rule8,pike_rule10,pike_rule12,pike_rule30,],
-    "*": [pike_rule1,pike_rule19,],
+    "(": [pike_rule8, pike_rule10, pike_rule12, pike_rule30,],
+    "*": [pike_rule1, pike_rule19,],
     "+": [pike_rule16,],
     "-": [pike_rule17,],
     ".": [pike_rule29,],
-    "/": [pike_rule0,pike_rule2,pike_rule3,pike_rule18,],
+    "/": [pike_rule0, pike_rule2, pike_rule3, pike_rule18,],
     "0": [pike_rule31,],
     "1": [pike_rule31,],
     "2": [pike_rule31,],
@@ -339,8 +339,8 @@ rulesDict1 = {
     "9": [pike_rule31,],
     "<": [pike_rule21,],
     "=": [pike_rule14,],
-    ">": [pike_rule13,pike_rule20,],
-    "@": [pike_rule27,pike_rule31,],
+    ">": [pike_rule13, pike_rule20,],
+    "@": [pike_rule27, pike_rule31,],
     "A": [pike_rule31,],
     "B": [pike_rule31,],
     "C": [pike_rule31,],
@@ -483,13 +483,13 @@ def pike_rule33(colorer, s, i):
 def pike_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="@xml{", end="@}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pike_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="function", begin="@[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pike_rule36(colorer, s, i):
@@ -516,7 +516,7 @@ rulesDict3 = {
     "7": [pike_rule37,],
     "8": [pike_rule37,],
     "9": [pike_rule37,],
-    "@": [pike_rule33,pike_rule34,pike_rule35,pike_rule36,pike_rule37,pike_rule38,],
+    "@": [pike_rule33, pike_rule34, pike_rule35, pike_rule36, pike_rule37, pike_rule38,],
     "A": [pike_rule37,],
     "B": [pike_rule37,],
     "C": [pike_rule37,],
@@ -597,4 +597,3 @@ rulesDictDict = {
 
 # Import dict for pike mode.
 importDict = {}
-

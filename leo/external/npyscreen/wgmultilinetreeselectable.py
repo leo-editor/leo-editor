@@ -12,10 +12,10 @@ class TreeLineSelectable(wgmultilinetree.TreeLine):
     # NB - as print is currently defined, it is assumed that these will
     # NOT contain multi-width characters, and that len() will correctly
     # give an indication of the correct offset
-    CAN_SELECT              = '[ ]'
-    CAN_SELECT_SELECTED     = '[*]'
-    CANNOT_SELECT           = '   '
-    CANNOT_SELECT_SELECTED  = ' * '
+    CAN_SELECT = '[ ]'
+    CAN_SELECT_SELECTED = '[*]'
+    CANNOT_SELECT = '   '
+    CANNOT_SELECT_SELECTED = ' * '
 
     #@+others
     #@+node:ekr.20170428084208.216: *3* _print_select_controls
@@ -47,10 +47,10 @@ class TreeLineSelectable(wgmultilinetree.TreeLine):
 
 
         self.add_line(self.rely,
-                      self.left_margin+self.relx,
+                      self.left_margin + self.relx,
                       SELECT_DISPLAY,
                       self.make_attributes_list(SELECT_DISPLAY, attribute_list),
-                      self.width-self.left_margin,
+                      self.width - self.left_margin,
         )
 
         return len(SELECT_DISPLAY)
@@ -61,14 +61,14 @@ class TreeLineSelectable(wgmultilinetree.TreeLine):
         if not hasattr(self._tree_real_value, 'selected'):
             return None
         self.left_margin = left_margin
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.bkgdset(' ', curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
 
         self.left_margin += self._print_select_controls() + 1
 
 
         if self.highlight:
-            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+            self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         super(wgmultilinetree.TreeLine, self)._print()
 
 
@@ -81,15 +81,15 @@ class TreeLineSelectableAnnotated(TreeLineSelectable, wgmultilinetree.TreeLineAn
         if not hasattr(self._tree_real_value, 'selected'):
             return None
         self.left_margin = left_margin
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.bkgdset(' ', curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         self.left_margin += self._print_select_controls() + 1
         if self.do_colors():
-            self.left_margin += self.annotationColor(self.left_margin+self.relx)
+            self.left_margin += self.annotationColor(self.left_margin + self.relx)
         else:
-            self.left_margin += self.annotationNoColor(self.left_margin+self.relx)
+            self.left_margin += self.annotationNoColor(self.left_margin + self.relx)
         if self.highlight:
-            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+            self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         super(wgmultilinetree.TreeLine, self)._print()
 
 

@@ -226,6 +226,7 @@ import select
 import shutil
 import socket
 import time
+from typing import List
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
@@ -357,7 +358,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         # pylint: disable=super-init-not-called
         self._map = asyncore.socket_map
         self.socket = sock
-        self.socket.setblocking(0)
+        self.socket.setblocking(False)
         self.closed = 1  # compatibility with SocketServer
         self.buffer = []
     #@+node:EKR.20040517080250.6: *3* write
@@ -370,8 +371,8 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self.out_buffer = b''.join(aList)
         del self.buffer
         self.set_socket(self.socket, None)
-        self.socket.setblocking(0)
-        self.connected = 1
+        self.socket.setblocking(False)
+        self.connected = True
         try:
             self.addr = self.socket.getpeername()
         except socket.error:
@@ -490,9 +491,9 @@ class leo_interface:
 
         f.write('<div class="bodypane">')
         f.write('<pre class="body-text">')
+        # This isn't correct when put in a triple string.
+        # We might be able to use textwrap.dedent, but this works.
         f.write('<code class="body-code">%s</code>' % escape(p.b))
-            # This isn't correct when put in a triple string.
-            # We might be able to use textwrap.dedent, but this works.
         f.write('</pre></div>')
     #@+node:ekr.20161001121838.1: *5* write_head
     def write_head(self, f, headString, window):
@@ -663,10 +664,10 @@ class leo_interface:
         if result:
             result2 = result[:-1]
             if result2:
-                result2 = ' / '.join(result2)
+                result2_s = ' / '.join(result2)
                 f.write("<p>\n")
                 f.write("<br />\n")
-                f.write(escape(result2))
+                f.write(escape(result2_s))
                 f.write("<br />\n")
                 f.write("</p>\n")
             f.write("<h2>")
@@ -700,7 +701,7 @@ class LeoActions:
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)
+            one_tab_links = json.loads(one_tab_links)  # type:ignore
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -713,7 +714,7 @@ class LeoActions:
             if c:
                 g.es_print("Opened '%s' for bookmarks" % path)
                 if parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                    g.findUNL(parsed.fragment.split("-->"), c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
                     previous = parent.getFirstChild()
@@ -742,7 +743,7 @@ class LeoActions:
     <p>Bookmark saved</p></body>""")
             if using_root:
                 nd = parent.insertAfter()
-                nd.moveToRoot(c.rootPosition())
+                nd.moveToRoot()
             else:
                 nd = parent.insertAsNthChild(0)
             if g.pluginIsLoaded('leo.plugins.bookmarks'):
@@ -926,7 +927,7 @@ class ExecHandler:
         if parsed_url.path.startswith('/_/exec/commanders/'):
             ans = [i.fileName() for i in g.app.commanders()]
             if enc != 'json':
-                ans = '\n'.join(ans)
+                ans = '\n'.join(ans)  # type:ignore
         else:
             ans = self.proc_cmds()
 
@@ -992,7 +993,7 @@ class RequestHandler(
         self.client_address = addr
         self.connection = conn
         self.server = server
-        self.wfile = delayedSocketStream(self.socket)
+        self.wfile = delayedSocketStream(self.socket)  # type:ignore
         # Sets the terminator. When it is received, this means that the
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
@@ -1049,13 +1050,13 @@ class RequestHandler(
         bytesToRead = int(self.headers.getheader('content-length'))
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
-        self.buffer = StringIO()
+        self.buffer = StringIO()  # type:ignore
         # control will be passed to a new found_terminator
-        self.found_terminator = self.handle_post_data
+        self.found_terminator = self.handle_post_data  # type:ignore
     #@+node:EKR.20040517080250.19: *3* handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
-        self.rfile = StringIO(self.buffer.getvalue())
+        self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
         self.do_POST()
         self.finish()
     #@+node:EKR.20040517080250.31: *3* do_GET
@@ -1108,7 +1109,7 @@ class RequestHandler(
         if self.path.find('?') >= 0:
             self.qs = self.path[self.path.find('?') + 1 :]
             self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))
+        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
         if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method = "do_" + self.command
@@ -1227,8 +1228,11 @@ def poll(timeout=0.0):
     map = asyncore.socket_map
     if not map:
         return False
+    e: List
+    r: List = []
+    w: List
     while 1:
-        e, r, w = [], [], []
+        e = w = []
         for fd, obj in map.items():
             if obj.readable():
                 r.append(fd)
@@ -1239,7 +1243,7 @@ def poll(timeout=0.0):
         for s in sockets_to_close:
             s.close()
         sockets_to_close = []
-    if [] == r == w == e:
+    if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
         time.sleep(timeout)
     else:
         #@+<< try r, w, e = select.select >>
@@ -1247,10 +1251,6 @@ def poll(timeout=0.0):
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error:  # as err:
-            # if err[0] != EINTR:
-                # raise
-            # else:
-                # return False
             return False  # EKR: EINTR is undefined.
         #@-<< try r, w, e = select.select >>
     for fd in r:

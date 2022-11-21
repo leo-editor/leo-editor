@@ -13,7 +13,7 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
     #@+node:ekr.20170428084207.621: *3* __init__
     def __init__(self, *args, **keywords):
         super(FormControlCheckbox, self).__init__(*args, **keywords)
-        self._visibleWhenSelected    = []
+        self._visibleWhenSelected = []
         self._notVisibleWhenSelected = []
 
     #@+node:ekr.20170428084207.622: *3* addVisibleWhenSelected
@@ -47,18 +47,18 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
         # This doesn't yet work.
         if self.value:
             for w in self._visibleWhenSelected:
-                w.hidden    = False
-                w.editable  = True
+                w.hidden = False
+                w.editable = True
             for w in self._notVisibleWhenSelected:
-                w.hidden    =  True
-                w.editable  =  False
+                w.hidden = True
+                w.editable = False
         else:
             for w in self._visibleWhenSelected:
-                w.hidden    = True
-                w.editable  = False
+                w.hidden = True
+                w.editable = False
             for w in self._notVisibleWhenSelected:
-                w.hidden    =  False
-                w.editable  =  True
+                w.hidden = False
+                w.editable = True
         self.parent.display()
 
     #@+node:ekr.20170428084207.626: *3* h_toggle

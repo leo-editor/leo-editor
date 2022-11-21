@@ -62,6 +62,7 @@ BibTeX file.
 
 """
 #@-<< docstring >>
+from typing import List, Tuple
 from leo.core import leoGlobals as g
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 # 2017/02/23: Rewritten by EKR
@@ -174,14 +175,17 @@ def readBibTexFileIntoTree(c, fn, p):
     """Import a BibTeX file into a @bibtex tree."""
     root = p.copy()
     g.es('reading:', fn)
-    s = g.readFileIntoEncodedString(fn)
-        # Read the encoded bytes for g.getEncodingAt()
-    if not s or not s.strip():
+    # Read the encoded bytes for g.getEncodingAt()
+    s_b = g.readFileIntoEncodedString(fn)
+    if not s_b:
         return
-    encoding = g.getEncodingAt(p, s)
-    s = g.toUnicode(s, encoding=encoding)
-    aList, entries, strings = [], [], []
-        # aList is a list of tuples (h,b).
+    encoding: str = g.getEncodingAt(p, s_b)
+    s = g.toUnicode(s_b, encoding=encoding)
+    if not s.strip():
+        return
+    aList: List[Tuple] = []  # A list of tuples (h, b).
+    strings: List[str] = []
+    entries: List[Tuple] = []
     s = '\n' + ''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
         kind, rest = line[:6], line[7:].strip()

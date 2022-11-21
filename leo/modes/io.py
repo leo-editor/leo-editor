@@ -83,19 +83,19 @@ def io_rule1(colorer, s, i):
 def io_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def io_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def io_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def io_rule5(colorer, s, i):
@@ -191,7 +191,7 @@ def io_rule27(colorer, s, i):
 
 # Rules dict for io_main ruleset.
 rulesDict1 = {
-    "\"": [io_rule3,io_rule4,],
+    "\"": [io_rule3, io_rule4,],
     "#": [io_rule0,],
     "$": [io_rule9,],
     "%": [io_rule10,],
@@ -199,7 +199,7 @@ rulesDict1 = {
     "*": [io_rule13,],
     "+": [io_rule15,],
     "-": [io_rule14,],
-    "/": [io_rule1,io_rule2,io_rule16,],
+    "/": [io_rule1, io_rule2, io_rule16,],
     "0": [io_rule27,],
     "1": [io_rule27,],
     "2": [io_rule27,],
@@ -214,7 +214,7 @@ rulesDict1 = {
     "=": [io_rule17,],
     ">": [io_rule24,],
     "?": [io_rule26,],
-    "@": [io_rule7,io_rule8,io_rule27,],
+    "@": [io_rule7, io_rule8, io_rule27,],
     "A": [io_rule27,],
     "B": [io_rule27,],
     "C": [io_rule27,],
@@ -285,4 +285,3 @@ rulesDictDict = {
 
 # Import dict for io mode.
 importDict = {}
-

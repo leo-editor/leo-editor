@@ -94,7 +94,7 @@ class ironPythonGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.92: *4* finishCreate
     def finishCreate (self):
 
-       pass # g.trace('ironPython gui')
+        pass # g.trace('ironPython gui')
     #@+node:ekr.20081121105001.93: *4* killGui
     def killGui(self,exitFlag=True):
 
@@ -217,7 +217,7 @@ class ironPythonGui(leoGui.leoGui):
             file = d.GetFilename()
             return file
         else:
-            return None 
+            return None
     #@+node:ekr.20081121105001.106: *4* runSaveFileDialog
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
@@ -252,8 +252,8 @@ class ironPythonGui(leoGui.leoGui):
             return "*.leo"
 
         if 1: # Too bad: this is sooo wimpy.
-                a,b = filetypes[0] 
-                return b
+            a,b = filetypes[0]
+            return b
 
         else: # This _sometimes_ works: wxWindows is driving me crazy!
 
@@ -324,7 +324,7 @@ class ironPythonGui(leoGui.leoGui):
     #@+at These are by design not compatible with unicode characters.
     # If you want to get a unicode character from a key event use
     # wxKeyEvent::GetUnicodeKey instead.
-    # 
+    #
     # WXK_START   = 300
     # WXK_LBUTTON
     # WXK_RBUTTON
@@ -390,13 +390,13 @@ class ironPythonGui(leoGui.leoGui):
     # WXK_NUMPAD_SUBTRACT,
     # WXK_NUMPAD_DECIMAL,
     # WXK_NUMPAD_DIVIDE,
-    # 
+    #
     # // the following key codes are only generated under Windows currently
     # WXK_WINDOWS_LEFT,
     # WXK_WINDOWS_RIGHT,
     # WXK_WINDOWS_MENU,
     # WXK_COMMAND,
-    # 
+    #
     # // Hardware-specific buttons
     # WXK_SPECIAL1 = 193,
     # WXK_SPECIAL2,
@@ -536,7 +536,7 @@ class ironPythonGui(leoGui.leoGui):
         The event may be a wx event a converted Leo event or a manufactured event (a g.Bunch).'''
 
         if isinstance(event,self.leoKeyEvent): # a leoKeyEvent.
-            return event.widget 
+            return event.widget
         elif isinstance(event,g.Bunch): # A manufactured event.
             if hasattr(event,'c'):
                 return event.c.frame.body.bodyCtrl
@@ -708,10 +708,10 @@ class ironPythonGui(leoGui.leoGui):
                 #@+<< try to use the PIL and tkIcon packages to draw the icon >>
                 #@+node:ekr.20081121105001.140: *6* << try to use the PIL and tkIcon packages to draw the icon >>
                 #@+at This code requires Fredrik Lundh's PIL and tkIcon packages:
-                # 
+                #
                 # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
                 # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-                # 
+                #
                 # Many thanks to Jonathan M. Gilligan for suggesting this code.
                 #@@c
 

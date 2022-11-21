@@ -76,8 +76,12 @@ where the extra information is the name of the linked node's parent.
 # - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB. Revised for Qt6 by EKR.
+from typing import List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
+try:  # #2343
+    from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
+except Exception:
+    QtGui = QtWidgets = None
 #@+others
 #@+node:ekr.20140920145803.17995: ** top-level
 #@+node:ekr.20090616105756.3940: *3* init
@@ -86,7 +90,7 @@ warning_given = False
 def init():
     """Return True if the plugin has loaded successfully."""
     global warning_given
-    ok = 'qt' in g.app.gui.guiName()  # #2197.
+    ok = QtGui and g.app.gui.guiName() == 'qt'  # #2197.
     if not ok:
         return False
     g.registerHandler('after-create-leo-frame', onCreate)
@@ -208,18 +212,16 @@ class backlinkController:
         g.es(url)
         # UNL detection copied from g.handleUrl()
         if (
-            url.lower().startswith('unl:' + '//') or
+            url.lower().startswith('unl://') or
             url.lower().startswith('file://') and url.find('-->') > -1 or
             url.startswith('#')
         ):
-            our_unl = 'unl://' + self.c.p.get_UNL(with_index=False)
-            # don't use .get_UNL(with_proto=True), that
-            # unecessarily does ' ' -> %20 conversion
+            our_unl = 'unl://' + self.c.p.get_UNL()
             new_c = g.handleUnl(url, self.c)
             if new_c and hasattr(new_c, 'backlinkController'):
-                unl = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
-                found, _, new_p = g.recursiveUNLFind(unl, new_c)
-                if not found:
+                unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
+                new_p = g.findUNL(unlList, new_c)
+                if not new_p:
                     g.es("No perfect match, not creating backlink")
                     return
                 new_c.backlinkController.initBacklink(new_p.v)
@@ -348,7 +350,7 @@ class backlinkController:
         self.updateTabInt()
     #@+node:ekr.20090616105756.3953: *3* bc.linksFrom
     def linksFrom(self, v, type_='S'):
-        ans = []
+        ans: List = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             return ans
 
@@ -494,7 +496,7 @@ class backlinkController:
         """
 
         c = self.c
-        hits = [[]]  # hits/including before the current node
+        hits: List[List] = [[]]  # hits/including before the current node
 
         current = c.p.v
 
@@ -577,9 +579,9 @@ class backlinkController:
                     dests.append((linkType, otherP))
             if dests:
                 g.es("- link info -")
-                for i in dests:
-                    g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[i[0]],
-                        i[1].h))
+                for dest in dests:
+                    g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[dest[0]],
+                        dest[1].h))
     #@+node:ekr.20090616105756.3965: *3* bc.showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
@@ -624,7 +626,7 @@ class backlinkController:
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             links = v.u['_bklnk']['links']
-            dests = []
+            dests: List = []
             self.dests = dests
             for data in links[:]:  # Must use a copy.
                 linkType, other = data
@@ -688,89 +690,91 @@ class backlinkController:
         return self.c.vnode2position(v)
     #@-others
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
-class backlinkQtUI(QtWidgets.QWidget):
-    #@+others
-    #@+node:ekr.20140920145803.17987: *3* __init__
-    def __init__(self, owner):
-        """Ctor for backlinkQtUI class."""
-        self.owner = owner
-        super().__init__()
-        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
-        form_class, base_class = uic.loadUiType(uiPath)
-        self.owner.c.frame.log.createTab('Links', widget=self)
-        self.UI = form_class()
-        self.UI.setupUi(self)
-        u = self.UI
-        o = self.owner
-        # Compatible with PyQt5
-        u.markBtn.clicked.connect(o.mark)
-        u.swapBtn.clicked.connect(o.swap)
-        u.linkBtn.clicked.connect(self.linkClicked)
-        u.rescanBtn.clicked.connect(o.loadLinksInt)
-        u.dirLeftBtn.clicked.connect(self.dirClicked)
-        u.dirRightBtn.clicked.connect(self.dirClicked)
-        u.linkList.itemClicked.connect(self.listClicked)
-        u.deleteBtn.stateChanged.connect(o.deleteSet)
-        u.nextBtn.clicked.connect(o.nextLink)
-    #@+node:ekr.20140920145803.17988: *3* ui.dirClicked
-    def dirClicked(self):
+if QtWidgets:
 
-        ui = self.UI
-        if ui.dirLeftBtn.text() == "from":
-            ui.dirLeftBtn.setText("to")
-            ui.dirRightBtn.setText("from")
-        else:
-            ui.dirLeftBtn.setText("from")
-            ui.dirRightBtn.setText("to")
-    #@+node:ekr.20140920145803.17989: *3* ui.listClicked
-    def listClicked(self):
+    class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
+        #@+others
+        #@+node:ekr.20140920145803.17987: *3* __init__
+        def __init__(self, owner):
+            """Ctor for backlinkQtUI class."""
+            self.owner = owner
+            super().__init__()
+            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
+            form_class, base_class = uic.loadUiType(uiPath)
+            self.owner.c.frame.log.createTab('Links', widget=self)
+            self.UI = form_class()
+            self.UI.setupUi(self)
+            u = self.UI
+            o = self.owner
+            # Compatible with PyQt5
+            u.markBtn.clicked.connect(o.mark)
+            u.swapBtn.clicked.connect(o.swap)
+            u.linkBtn.clicked.connect(self.linkClicked)
+            u.rescanBtn.clicked.connect(o.loadLinksInt)
+            u.dirLeftBtn.clicked.connect(self.dirClicked)
+            u.dirRightBtn.clicked.connect(self.dirClicked)
+            u.linkList.itemClicked.connect(self.listClicked)
+            u.deleteBtn.stateChanged.connect(o.deleteSet)
+            u.nextBtn.clicked.connect(o.nextLink)
+        #@+node:ekr.20140920145803.17988: *3* ui.dirClicked
+        def dirClicked(self):
 
-        self.owner.linkClicked(self.UI.linkList.currentRow())
-    #@+node:ekr.20140920145803.17990: *3* ui.linkClicked
-    def linkClicked(self):
-        ui = self.UI
-        if ui.whatSel.currentText() == "mark, undirected":
-            self.owner.linkAction('undirected')
-            return
-
-        if ui.whatSel.currentText() == "URL / UNL":
-            self.owner.linkAction('url')
-            return
-
-        newChild = ui.whatSel.currentText() == "new child of mark"
-        if ui.dirLeftBtn.text() == "from":
-            self.owner.linkAction('from', newChild=newChild)
-        else:
-            self.owner.linkAction('to', newChild=newChild)
-    #@+node:ekr.20140920145803.17991: *3* ui.loadList
-    def loadList(self, lst):
-        ui = self.UI
-        ui.linkList.clear()
-        for item in lst:
-            if isinstance(item, (tuple, list)):
-                list_item = QtWidgets.QListWidgetItem(item[0])
-                list_item.setToolTip(item[1])
-                ui.linkList.addItem(list_item)
+            ui = self.UI
+            if ui.dirLeftBtn.text() == "from":
+                ui.dirLeftBtn.setText("to")
+                ui.dirRightBtn.setText("from")
             else:
-                ui.linkList.addItem(item)
-    #@+node:ekr.20140920145803.17992: *3* ui.showMessage
-    def showMessage(self, msg, color):
-        """Show the message in the label area."""
-        ui = self.UI
-        fg = QtGui.QColor(color)
-        pal = QtGui.QPalette(ui.label.palette())
-        if isQt6:
-            pal.setColor(pal.ColorRole.Window, fg)  # #2197
-        else:
-            pal.setColor(QtGui.QPalette.WindowText, fg)
-        ui.label.setPalette(pal)
-        ui.label.setText(msg)
-    #@+node:ekr.20140920145803.17993: *3* ui.enableDelete
-    def enableDelete(self, enable):
-        ui = self.UI
-        ui.deleteBtn.setChecked(False)
-        ui.deleteBtn.setEnabled(enable)
-    #@-others
+                ui.dirLeftBtn.setText("from")
+                ui.dirRightBtn.setText("to")
+        #@+node:ekr.20140920145803.17989: *3* ui.listClicked
+        def listClicked(self):
+
+            self.owner.linkClicked(self.UI.linkList.currentRow())
+        #@+node:ekr.20140920145803.17990: *3* ui.linkClicked
+        def linkClicked(self):
+            ui = self.UI
+            if ui.whatSel.currentText() == "mark, undirected":
+                self.owner.linkAction('undirected')
+                return
+
+            if ui.whatSel.currentText() == "URL / UNL":
+                self.owner.linkAction('url')
+                return
+
+            newChild = ui.whatSel.currentText() == "new child of mark"
+            if ui.dirLeftBtn.text() == "from":
+                self.owner.linkAction('from', newChild=newChild)
+            else:
+                self.owner.linkAction('to', newChild=newChild)
+        #@+node:ekr.20140920145803.17991: *3* ui.loadList
+        def loadList(self, lst):
+            ui = self.UI
+            ui.linkList.clear()
+            for item in lst:
+                if isinstance(item, (tuple, list)):
+                    list_item = QtWidgets.QListWidgetItem(item[0])
+                    list_item.setToolTip(item[1])
+                    ui.linkList.addItem(list_item)
+                else:
+                    ui.linkList.addItem(item)
+        #@+node:ekr.20140920145803.17993: *3* ui.enableDelete
+        def enableDelete(self, enable):
+            ui = self.UI
+            ui.deleteBtn.setChecked(False)
+            ui.deleteBtn.setEnabled(enable)
+        #@+node:ekr.20140920145803.17992: *3* ui.showMessage
+        def showMessage(self, msg, color):
+            """Show the message in the label area."""
+            ui = self.UI
+            fg = QtGui.QColor(color)
+            pal = QtGui.QPalette(ui.label.palette())
+            if isQt6:
+                pal.setColor(pal.ColorRole.Window, fg)  # #2197
+            else:
+                pal.setColor(QtGui.QPalette.WindowText, fg)
+            ui.label.setPalette(pal)
+            ui.label.setText(msg)
+        #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -102,9 +102,9 @@ plugins. Here are some points of interest:
 """
 #@-<< docstring >>
 # Written by TNB.
-
+from typing import Any, List, Tuple
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
 #
 # Fail fast, right after all imports.
@@ -129,7 +129,7 @@ def onCreate(tag, key):
 #@+node:tbrown.20091103080354.1400: ** class AttributeGetter
 class AttributeGetter:
 
-    implementations = []
+    implementations: List[Any] = []
 
     typeMap = {
         '_int': int,
@@ -212,7 +212,7 @@ class AttributeGetterUA(AttributeGetter):
         v.uA['inventory']['_edit']['_int']['cars'] respectively
         """
 
-        ans = []
+        ans: List[Tuple] = []
         d = v.u
 
         self.recSearch(d, [], ans)
@@ -412,7 +412,7 @@ class AttributeGetterColon(AttributeGetter):
 
 AttributeGetter.register(AttributeGetterColon)
 #@+node:tbrown.20091028131637.1353: ** class ListDialog
-class ListDialog(QtWidgets.QDialog):
+class ListDialog(QtWidgets.QDialog):  # type:ignore
 
     #@+others
     #@+node:tbrown.20091028131637.1354: *3* __init__ (attrib_edit.py)
@@ -431,7 +431,7 @@ class ListDialog(QtWidgets.QDialog):
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setChecked(True if isQt6 else QtConst.Checked)
+                cb.setChecked(True)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
@@ -440,9 +440,9 @@ class ListDialog(QtWidgets.QDialog):
         ok = QtWidgets.QPushButton("Ok")
         cancel = QtWidgets.QPushButton("Cancel")
         ok.clicked.connect(self.writeBack)
+        # QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
+        # QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
         cancel.clicked.connect(self.reject)
-            # QtCore.QObject.connect(ok, QtCore.SIGNAL('clicked(bool)'), self.writeBack)
-            # QtCore.QObject.connect(cancel, QtCore.SIGNAL('clicked(bool)'), self.reject)
         hbox.addWidget(ok)
         hbox.addWidget(cancel)
         vbox.addLayout(hbox)

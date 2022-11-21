@@ -14,7 +14,7 @@ import re
 import sys
 import traceback
 # Third-part tools.
-import setuptools # Prefer setuptools over distutils.
+import setuptools  # Prefer setuptools over distutils.
 #@-<< imports >>
 #@+<< define classifiers >>
 #@+node:maphew.20141126230535.4: ** << define classifiers >>
@@ -36,7 +36,7 @@ classifiers = [
 #@+<< define install_requires >>
 #@+node:maphew.20171120133429.1: ** << define install_requires >>
 install_requires = [
-    'PyQt5 >= 5.12',  # v5.12+ to close #1217
+    'PyQt5 >= 5.15',  # #2884: reuire v5.15. #1217: require v5.12+.
     'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
     'build >= 0.6.0',  # simple PEP 517 package builder
@@ -45,8 +45,10 @@ install_requires = [
     'meta',  # for livecode.py plugin, which is enabled by default
     'nbformat',  # for Jupyter notebook integration
     'pylint', 'pyflakes', 'black',  # coding syntax standards
+    'pyenchant',  # The spell tab.
     'pyshortcuts >= 1.7',  # desktop integration (#1243)
     'sphinx',  # rST plugin
+    'tk',  # tkinter.
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
 ]
 #@-<< define install_requires >>
@@ -116,8 +118,8 @@ def test_is_valid_version():
     However, `python -m setup` won't work :-)
     """
     table = (
-        '1.2', '3.4.5', '6.7b1', '8.9rc3', # good.
-        'v1.2', '3.4a1', '5.6-b1', # bad
+        '1.2', '3.4.5', '6.7b1', '8.9rc3',  # good.
+        'v1.2', '3.4a1', '5.6-b1',  # bad
     )
     for s in table:
         ok = is_valid_version(s)
@@ -126,7 +128,7 @@ def test_is_valid_version():
 production = True
 testing = False
 # Dashes are not allowed.
-version = '6.6b1'  ##version Should match version in leoVersion.py
+version = '6.7.1'  ##version Should match version in leoVersion.py
 entry_points = define_entry_points()
 long_description = get_readme_contents()
 assert is_valid_version(version), version
@@ -152,7 +154,7 @@ if production:
         setup_requires=[],  # No longer needed with PEP-518 and pip >v10.
         install_requires=install_requires,
         entry_points=entry_points,
-        python_requires='>=3.6',
+        python_requires='>=3.9',
     )
 print('setup.py: done')
 #@@language python

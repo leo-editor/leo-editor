@@ -352,25 +352,25 @@ keywordsDictDict = {
 def netrexx_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::javadoc",exclude_match=False,
+        delegate="java::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def netrexx_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def netrexx_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def netrexx_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def netrexx_rule4(colorer, s, i):
@@ -462,9 +462,9 @@ rulesDict1 = {
     "'": [netrexx_rule3,],
     "*": [netrexx_rule13,],
     "+": [netrexx_rule9,],
-    "-": [netrexx_rule4,netrexx_rule10,],
+    "-": [netrexx_rule4, netrexx_rule10,],
     ".": [netrexx_rule12,],
-    "/": [netrexx_rule0,netrexx_rule1,netrexx_rule11,],
+    "/": [netrexx_rule0, netrexx_rule1, netrexx_rule11,],
     "0": [netrexx_rule23,],
     "1": [netrexx_rule23,],
     "2": [netrexx_rule23,],
@@ -475,9 +475,9 @@ rulesDict1 = {
     "7": [netrexx_rule23,],
     "8": [netrexx_rule23,],
     "9": [netrexx_rule23,],
-    "<": [netrexx_rule8,netrexx_rule15,],
+    "<": [netrexx_rule8, netrexx_rule15,],
     "=": [netrexx_rule5,],
-    ">": [netrexx_rule7,netrexx_rule14,],
+    ">": [netrexx_rule7, netrexx_rule14,],
     "@": [netrexx_rule23,],
     "A": [netrexx_rule23,],
     "B": [netrexx_rule23,],
@@ -545,4 +545,3 @@ rulesDictDict = {
 
 # Import dict for netrexx mode.
 importDict = {}
-

@@ -183,21 +183,21 @@ class TreeData:
         #key = operator.methodcaller('getContent',)
 
         if self.sort_function_wrapper and sort_function:
-           # def wrapped_sort_function(the_item):
-           #     if the_item:
-           #         the_real_item = the_item.getContent()
-           #         return sort_function(the_real_item)
-           #     else:
-           #         return the_item
-           # _this_sort_function = wrapped_sort_function
-           _this_sort_function = self.create_wrapped_sort_function(sort_function)
+            # def wrapped_sort_function(the_item):
+            #     if the_item:
+            #         the_real_item = the_item.getContent()
+            #         return sort_function(the_real_item)
+            #     else:
+            #         return the_item
+            # _this_sort_function = wrapped_sort_function
+            _this_sort_function = self.create_wrapped_sort_function(sort_function)
         else:
             _this_sort_function = sort_function
 
         key = _this_sort_function
         if not ignore_root:
             yield self
-        nodes_to_yield = collections.deque() # better memory management than a list for pop(0)
+        nodes_to_yield = collections.deque()  # better memory management than a list for pop(0)
         if self.expanded or not only_expanded:
             if sort:
                 # This and the similar block below could be combined into a nested function

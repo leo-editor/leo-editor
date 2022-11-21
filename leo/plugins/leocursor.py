@@ -12,9 +12,10 @@ See .../plugins/examples/leocursorexample.leo for application.
 """
 
 import re
+from typing import Any
 
 #@+others
-#@+node:tbrown.20100206093439.5452: ** class AttribManager
+#@+node:tbrown.20100206093439.5452: ** class AttribManager(AttribManager)
 class AttribManager:
 
     """Class responsible for reading / writing attributes from
@@ -68,6 +69,8 @@ class AM_Colon(AttribManager):
 
     def getAttrib(self, v, what):
 
+        m: Any
+
         for i in v.b.split('\n'):
 
             m = self.pattern.match(i)
@@ -77,7 +80,8 @@ class AM_Colon(AttribManager):
                 if m:
                     m = m.strip()
                 else:
-                    m = ''  # don't return None
+                    # don't return None
+                    m = ''
                 return m
 
         raise self.NotPresent()
@@ -96,12 +100,12 @@ class AM_Colon(AttribManager):
             if m and m.group(1) == what:
                 return True
         return False
-#@+node:tbrown.20100206093439.5455: ** class AM_CapColon
+#@+node:tbrown.20100206093439.5455: ** class AM_CapColon(AM_Colon)
 class AM_CapColon(AM_Colon):
 
     """Like AM_Colon, but first letter must be capital."""
 
-    pattern = r"^([A-Z][A-Za-z0-9_]*:)(\s+(\S.*))*$"
+    pattern = re.compile(r"^([A-Z][A-Za-z0-9_]*:)(\s+(\S.*))*$")  # 2022/09/16
 #@+node:tbrown.20100206093439.5451: ** class LeoCursor
 class LeoCursor:
 

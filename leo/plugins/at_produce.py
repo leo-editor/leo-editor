@@ -51,11 +51,11 @@ def addMenu(tag, keywords):
     if not c:
         return
     mc = c.frame.menu
-    m = mc.createNewMenu('Produce', parentName="outline", before=None)
-    c.add_command(m,
+    menu = mc.createNewMenu('Produce', parentName="outline", before=None)
+    c.add_command(menu,
         label="Execute All Produce",
         command=lambda c=c: run(c, all=True))
-    c.add_command(m,
+    c.add_command(menu,
         label="Execute Tree Produce",
         command=lambda c=c: run(c, all=False))
 #@+node:ekr.20140920173002.17965: ** at-produce commands
@@ -90,7 +90,7 @@ def run(c, all):
         # runList uses c only to update c.at_produce_command.
         runList(c, aList)
     t = threading.Thread(target=thread_target)
-    t.setDaemon(True)
+    t.setDaemon(True)  # pylint: disable=deprecated-method
     t.start()
     timer = g.IdleTime(handler=None, delay=500, tag='at-produce')
     c._at_produce_max = 20

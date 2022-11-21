@@ -170,8 +170,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         super().__init__(
             stdin=stdin_q,
             stdout=stdout_q,
-            readrc=False,
-                # Don't read a .rc file.
+            readrc=False,  # Don't read a .rc file.
         )
         sys.stdout = stdout_q
         self.daemon = True
@@ -181,9 +180,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.saved_traceback = None
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20190108040329.1: *4* xdb.checkline (overrides Pdb)
-    def checkline(self, path, n):
-        # pylint: disable=arguments-differ
-            # filename, lineno
+    def checkline(self, path: str, n: int):
         try:
             return pdb.Pdb.checkline(self, path, n)
         except AttributeError:
@@ -203,18 +200,15 @@ class Xdb(pdb.Pdb, threading.Thread):
             else:
                 self.stdout.write(self.prompt)
                 self.stdout.flush()
-                line = self.stdin.readline()
-                    # QueueStdin.readline.
-                    # Get the input from Leo's main thread.
+                # Get the input from Leo's main thread.
+                line = self.stdin.readline()  # QueueStdin.readline:
                 line = line.rstrip('\r\n') if line else 'EOF'
-            line = self.precmd(line)
-                # Pdb.precmd.
-            stop = self.onecmd(line)
-                # Pdb.onecmd.
+            line = self.precmd(line)  # Pdb.precmd.
+            stop = self.onecmd(line)  # Pdb.onecmd.
             # Show the line in Leo.
             if stop:
                 self.select_line(self.saved_frame, self.saved_traceback)
-    #@+node:ekr.20180701050839.6: *4* xdb.do_clear (overides Pdb)
+    #@+node:ekr.20180701050839.6: *4* xdb.do_clear (overrides Pdb)
     def do_clear(self, arg=None):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
         With a space separated list of breakpoint numbers, clear
@@ -273,8 +267,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.write('End xdb\n')
         self._user_requested_quit = True
         self.set_quit()
+        # Kill xdb *after* all other messages have been sent.
         self.qr.put(['stop-xdb'])
-            # Kill xdb *after* all other messages have been sent.
         return 1
 
     do_q = do_quit
@@ -285,8 +279,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.saved_frame = frame
         self.saved_traceback = traceback
         self.select_line(frame, traceback)
+        # Call the base class method.
         pdb.Pdb.interaction(self, frame, traceback)
-            # Call the base class method.
     #@+node:ekr.20180701050839.10: *4* xdb.set_continue (overrides Bdb)
     def set_continue(self):
         """ override Bdb.set_continue"""
@@ -349,9 +343,9 @@ class Xdb(pdb.Pdb, threading.Thread):
         stack, curindex = self.get_stack(frame, traceback)
         frame, lineno = stack[curindex]
         filename = frame.f_code.co_filename
+        # Select the line in the main thread.
+        # xdb.show_line finalizes the file name.
         self.qr.put(['select-line', lineno, filename])
-            # Select the line in the main thread.
-            # xdb.show_line finalizes the file name.
     #@+node:ekr.20181007044254.1: *3* xdb.write
     def write(self, s):
         """Write s to the output stream."""
@@ -612,10 +606,10 @@ def xdb_command(event):
         # Start the debugger in a separate thread.
         g.app.xdb = xdb = Xdb(path)
         xdb.start()
+        # This is Threading.start().
+        # It runs the debugger in a separate thread.
+        # It also selects the start of the file.
         xdb.qr.put(['clear-stdout'])
-            # This is Threading.start().
-            # It runs the debugger in a separate thread.
-            # It also selects the start of the file.
 #@-others
 #@@language python
 #@@tabwidth -4

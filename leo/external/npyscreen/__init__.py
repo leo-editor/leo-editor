@@ -10,7 +10,7 @@ from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_te
 from .npyssafewrapper           import wrapper, wrapper_basic
 
 from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
-from   . import npysThemes      as     Themes 
+from   . import npysThemes      as     Themes
 from   .apNPSApplication        import NPSApp
 from   .apNPSApplicationManaged import NPSAppManaged
 from   .proto_fm_screen_area    import setTheme
@@ -156,7 +156,7 @@ assert (DEBUG, DISABLE_RESIZE_SYSTEM, TEST_SETTINGS) != (ExhaustedTestInput,
     OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, StandardApp,
     Event, ActionFormV2WithMenus, SplitFormWithMenus, FormBaseNewWithMenus,
     FormMuttActiveWithMenus, FormMuttActive, FormMultiPageActionWithMenus,
-    FormMultiPageWithMenus, TitleMultiSelectFixed, MultiSelectAction, 
+    FormMultiPageWithMenus, TitleMultiSelectFixed, MultiSelectAction,
     OptionBoolean, OptionMultiFreeText, OptionFilename, OptionDate)
 #@-others
 #@@language python

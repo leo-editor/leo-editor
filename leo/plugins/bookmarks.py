@@ -216,6 +216,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
 import hashlib
+from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
 from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
@@ -425,7 +426,7 @@ def cmd_bookmark_find_flat(event):
     for nd in nodes[:40]:
         new = container.insertAsLastChild()
         new.h = nd.h
-        new.b = c.vnode2position(nd).get_UNL(with_proto=True)
+        new.b = c.vnode2position(nd).get_UNL()
     bm.show_list(bm.get_list())
     if len(nodes) > 40:
         g.es("Stopped after 40 hits")
@@ -478,7 +479,7 @@ def cmd_use_other_outline(event):
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 
 #@+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
-class FlowLayout(QtWidgets.QLayout):
+class FlowLayout(QtWidgets.QLayout):  # type:ignore
     """
     from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/
     PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py
@@ -822,7 +823,7 @@ class BookMarkDisplay:
         text = g.toEncodedString(text, 'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
         add = int('bb', 16) if not dark else int('33', 16)
-        x = tuple(int(x[2 * i : 2 * i + 2], 16) // 4 + add for i in range(3))
+        x = tuple(int(x[2 * i : 2 * i + 2], 16) // 4 + add for i in range(3))  # type:ignore
         x = '%02x%02x%02x' % x
         return x
     #@+node:tbrown.20131227100801.23856: *3* find_node
@@ -874,7 +875,7 @@ class BookMarkDisplay:
                 s = s[4:]
             return s.strip()
 
-        result = []
+        result: List = []
 
         def recurse_bm(node, result, ancestors=None):
 
@@ -894,7 +895,7 @@ class BookMarkDisplay:
                     url = url.replace(' ', '%20')
                 h = self.fix_text(p.h)
 
-                children = []
+                children: List = []
                 bm = self.Bookmark(
                     h, url, ancestors, result, children, p.v)
 
@@ -1197,8 +1198,8 @@ class BookMarkDisplayProvider:
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
 
-                    ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
-                    if ok:
+                    other_p = g.findUNL(UNL.split('-->'), other_c)
+                    if other_p:
                         v = other_p.v
                     else:
                         g.es("Couldn't find '%s'" % gnx)

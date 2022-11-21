@@ -119,7 +119,7 @@ def ada95_rule0(colorer, s, i):
 def ada95_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ada95_rule2(colorer, s, i):
@@ -553,7 +553,7 @@ def ada95_rule108(colorer, s, i):
 def ada95_rule109(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ada95_rule110(colorer, s, i):
@@ -563,14 +563,14 @@ def ada95_rule110(colorer, s, i):
 rulesDict1 = {
     "\"": [ada95_rule1,],
     "&": [ada95_rule17,],
-    "'": [ada95_rule23,ada95_rule24,ada95_rule25,ada95_rule26,ada95_rule27,ada95_rule28,ada95_rule29,ada95_rule30,ada95_rule31,ada95_rule32,ada95_rule33,ada95_rule34,ada95_rule35,ada95_rule36,ada95_rule37,ada95_rule38,ada95_rule39,ada95_rule40,ada95_rule41,ada95_rule42,ada95_rule43,ada95_rule44,ada95_rule45,ada95_rule46,ada95_rule47,ada95_rule48,ada95_rule49,ada95_rule50,ada95_rule51,ada95_rule52,ada95_rule53,ada95_rule54,ada95_rule55,ada95_rule56,ada95_rule57,ada95_rule58,ada95_rule59,ada95_rule60,ada95_rule61,ada95_rule62,ada95_rule63,ada95_rule64,ada95_rule65,ada95_rule66,ada95_rule67,ada95_rule68,ada95_rule69,ada95_rule70,ada95_rule71,ada95_rule72,ada95_rule73,ada95_rule74,ada95_rule75,ada95_rule76,ada95_rule77,ada95_rule78,ada95_rule79,ada95_rule80,ada95_rule81,ada95_rule82,ada95_rule83,ada95_rule84,ada95_rule85,ada95_rule86,ada95_rule87,ada95_rule88,ada95_rule89,ada95_rule90,ada95_rule91,ada95_rule92,ada95_rule93,ada95_rule94,ada95_rule95,ada95_rule96,ada95_rule97,ada95_rule98,ada95_rule99,ada95_rule100,ada95_rule101,ada95_rule102,ada95_rule103,ada95_rule104,ada95_rule105,ada95_rule106,ada95_rule107,ada95_rule108,ada95_rule109,],
+    "'": [ada95_rule23, ada95_rule24, ada95_rule25, ada95_rule26, ada95_rule27, ada95_rule28, ada95_rule29, ada95_rule30, ada95_rule31, ada95_rule32, ada95_rule33, ada95_rule34, ada95_rule35, ada95_rule36, ada95_rule37, ada95_rule38, ada95_rule39, ada95_rule40, ada95_rule41, ada95_rule42, ada95_rule43, ada95_rule44, ada95_rule45, ada95_rule46, ada95_rule47, ada95_rule48, ada95_rule49, ada95_rule50, ada95_rule51, ada95_rule52, ada95_rule53, ada95_rule54, ada95_rule55, ada95_rule56, ada95_rule57, ada95_rule58, ada95_rule59, ada95_rule60, ada95_rule61, ada95_rule62, ada95_rule63, ada95_rule64, ada95_rule65, ada95_rule66, ada95_rule67, ada95_rule68, ada95_rule69, ada95_rule70, ada95_rule71, ada95_rule72, ada95_rule73, ada95_rule74, ada95_rule75, ada95_rule76, ada95_rule77, ada95_rule78, ada95_rule79, ada95_rule80, ada95_rule81, ada95_rule82, ada95_rule83, ada95_rule84, ada95_rule85, ada95_rule86, ada95_rule87, ada95_rule88, ada95_rule89, ada95_rule90, ada95_rule91, ada95_rule92, ada95_rule93, ada95_rule94, ada95_rule95, ada95_rule96, ada95_rule97, ada95_rule98, ada95_rule99, ada95_rule100, ada95_rule101, ada95_rule102, ada95_rule103, ada95_rule104, ada95_rule105, ada95_rule106, ada95_rule107, ada95_rule108, ada95_rule109,],
     "(": [ada95_rule3,],
     ")": [ada95_rule2,],
-    "*": [ada95_rule21,ada95_rule22,],
+    "*": [ada95_rule21, ada95_rule22,],
     "+": [ada95_rule18,],
-    "-": [ada95_rule0,ada95_rule19,],
-    ".": [ada95_rule4,ada95_rule5,],
-    "/": [ada95_rule7,ada95_rule20,],
+    "-": [ada95_rule0, ada95_rule19,],
+    ".": [ada95_rule4, ada95_rule5,],
+    "/": [ada95_rule7, ada95_rule20,],
     "0": [ada95_rule110,],
     "1": [ada95_rule110,],
     "2": [ada95_rule110,],
@@ -582,9 +582,9 @@ rulesDict1 = {
     "8": [ada95_rule110,],
     "9": [ada95_rule110,],
     ":": [ada95_rule6,],
-    "<": [ada95_rule10,ada95_rule11,ada95_rule14,ada95_rule16,],
-    "=": [ada95_rule8,ada95_rule9,],
-    ">": [ada95_rule12,ada95_rule13,ada95_rule15,],
+    "<": [ada95_rule10, ada95_rule11, ada95_rule14, ada95_rule16,],
+    "=": [ada95_rule8, ada95_rule9,],
+    ">": [ada95_rule12, ada95_rule13, ada95_rule15,],
     "@": [ada95_rule110,],
     "A": [ada95_rule110,],
     "B": [ada95_rule110,],
@@ -648,4 +648,3 @@ rulesDictDict = {
 
 # Import dict for ada95 mode.
 importDict = {}
-

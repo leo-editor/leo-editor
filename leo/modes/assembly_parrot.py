@@ -138,7 +138,7 @@ keywordsDictDict = {
 def assembly_parrot_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_parrot_rule1(colorer, s, i):
@@ -198,17 +198,17 @@ rulesDict1 = {
     "F": [assembly_parrot_rule8,],
     "G": [assembly_parrot_rule8,],
     "H": [assembly_parrot_rule8,],
-    "I": [assembly_parrot_rule4,assembly_parrot_rule8,],
+    "I": [assembly_parrot_rule4, assembly_parrot_rule8,],
     "J": [assembly_parrot_rule8,],
     "K": [assembly_parrot_rule8,],
     "L": [assembly_parrot_rule8,],
     "M": [assembly_parrot_rule8,],
-    "N": [assembly_parrot_rule6,assembly_parrot_rule8,],
+    "N": [assembly_parrot_rule6, assembly_parrot_rule8,],
     "O": [assembly_parrot_rule8,],
-    "P": [assembly_parrot_rule7,assembly_parrot_rule8,],
+    "P": [assembly_parrot_rule7, assembly_parrot_rule8,],
     "Q": [assembly_parrot_rule8,],
     "R": [assembly_parrot_rule8,],
-    "S": [assembly_parrot_rule5,assembly_parrot_rule8,],
+    "S": [assembly_parrot_rule5, assembly_parrot_rule8,],
     "T": [assembly_parrot_rule8,],
     "U": [assembly_parrot_rule8,],
     "V": [assembly_parrot_rule8,],
@@ -252,4 +252,3 @@ rulesDictDict = {
 
 # Import dict for assembly_parrot mode.
 importDict = {}
-

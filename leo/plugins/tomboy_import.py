@@ -18,8 +18,7 @@ Usage:
 import html.parser as HTMLParser
 import xml.etree.ElementTree as ET
 from leo.core import leoGlobals as g
-from leo.core import leoPlugins
-    # Uses leoPlugins.TryNext
+from leo.core import leoPlugins  # Uses leoPlugins.TryNext
 #@-<< imports >>
 #@+others
 #@+node:ville.20090503124249.5: ** init
@@ -60,7 +59,7 @@ def parsenote(cont):
     title = tree.findtext('{http://beatniksoftware.com/tomboy}title')
     # EKR: I'm not sure that finditer is correct, but geiterator no longer exists.
     # body  = tree.getiterator('{http://beatniksoftware.com/tomboy}note-content')[0]
-    body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]
+    body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]  # type:ignore
     b = ET.tostring(body)
     b = strip_tags(b)
     return title, b

@@ -44,6 +44,7 @@ import os
 import subprocess
 import threading
 import time
+from typing import Any, List
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< globals >>
@@ -57,7 +58,7 @@ else:
 
 # misc global variables...
 RunNode = None
-RunList = None
+RunList: List[Any] = None  # List of Positions.
 WorkDir = None
 ExitCode = None
 
@@ -167,7 +168,7 @@ def OnIdle(tag, keywords):
     else:
         OwnIdleHook = False
         g.disableIdleTimeHook()
-#@+node:ekr.20040910070811.15: *3* OnQuit
+#@+node:ekr.20040910070811.15: *3* OnQuit (run_nodes.py)
 def OnQuit(tag, keywords=None):
 
     global RunNode, RunList
@@ -311,17 +312,10 @@ def OpenProcess(p):
     OutThread = readingThread()
     ErrThread = readingThread()
 
-    # In,OutThread.File,ErrThread.File	= os.popen3(command,"t")
-    # OutThread.File,In,ErrThread.File = os.popen3(command,"t")
-    # PIPE = subprocess.PIPE
     proc = subprocess.Popen(command, shell=True)
-        # bufsize=bufsize,
-        # stdin=PIPE,
-        # stdout=PIPE,
-        # stderr=PIPE) ,close_fds=True)
     In = proc.stdin
-    OutThread.File = proc.stdout
-    ErrThread.File = proc.stderr
+    OutThread.File = proc.stdout  # type:ignore
+    ErrThread.File = proc.stderr  # type:ignore
     OutThread.start()
     ErrThread.start()
     # Mark and select the node.

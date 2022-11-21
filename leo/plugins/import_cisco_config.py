@@ -27,6 +27,7 @@ All created sections are alphabetically ordered.
 
 """
 #@-<< docstring >>
+from typing import Dict
 from leo.core import leoGlobals as g
 
 #@+others
@@ -95,7 +96,7 @@ def importCiscoConfig(c):
                     'ip community-list', 'access-list', 'snmp-server', 'ntp',
                     'boot', 'service', 'logging']
     out = []
-    blocks = {}
+    blocks: Dict = {}
     children = []
     lines = len(linelist)
     i = 0
@@ -187,11 +188,9 @@ def importCiscoConfig(c):
                     subchild = child.insertAsNthChild(0)
                     subchild.h = value[0]
                     subchild.b = '\n'.join(value)
-            # child.sortChildren()
         else:
             # this should never happen
             g.es("Unknown key: %s" % key)
-    # p.sortChildren()
     current.expand()
     c.redraw()
     #@-<< complete outline >>

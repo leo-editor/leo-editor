@@ -127,25 +127,25 @@ def aspect_j_rule0(colorer, s, i):
 def aspect_j_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::javadoc",exclude_match=False,
+        delegate="java::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def aspect_j_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def aspect_j_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def aspect_j_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def aspect_j_rule5(colorer, s, i):
@@ -247,8 +247,8 @@ rulesDict1 = {
     "*": [aspect_j_rule14,],
     "+": [aspect_j_rule10,],
     "-": [aspect_j_rule11,],
-    ".": [aspect_j_rule13,aspect_j_rule26,],
-    "/": [aspect_j_rule0,aspect_j_rule1,aspect_j_rule2,aspect_j_rule5,aspect_j_rule12,],
+    ".": [aspect_j_rule13, aspect_j_rule26,],
+    "/": [aspect_j_rule0, aspect_j_rule1, aspect_j_rule2, aspect_j_rule5, aspect_j_rule12,],
     "0": [aspect_j_rule26,],
     "1": [aspect_j_rule26,],
     "2": [aspect_j_rule26,],
@@ -260,9 +260,9 @@ rulesDict1 = {
     "8": [aspect_j_rule26,],
     "9": [aspect_j_rule26,],
     ":": [aspect_j_rule24,],
-    "<": [aspect_j_rule9,aspect_j_rule16,],
+    "<": [aspect_j_rule9, aspect_j_rule16,],
     "=": [aspect_j_rule6,],
-    ">": [aspect_j_rule8,aspect_j_rule15,],
+    ">": [aspect_j_rule8, aspect_j_rule15,],
     "@": [aspect_j_rule26,],
     "A": [aspect_j_rule26,],
     "B": [aspect_j_rule26,],
@@ -330,4 +330,3 @@ rulesDictDict = {
 
 # Import dict for aspect_j mode.
 importDict = {}
-

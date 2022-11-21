@@ -45,13 +45,13 @@ import re
 
 __revision__ = re.sub(r'^\D+([\d\.]+)\D+$', r'\1', "$Revision: 1.1 $")
 
-__version__ = '%s'% __revision__
+__version__ = '%s' % __revision__
 
 #@<< version history >>
 #@+node:bob.20071231115213.1:<< version history >>
 #@@killcolor
 #@+at
-# 
+#
 # 0.1 plumloco: initial version
 # 0.2 plumloco:
 # - leofied file adding docstring and verison info
@@ -66,9 +66,9 @@ __version__ = '%s'% __revision__
 colors = {
 
     # leo colors
-    "leoblue": "#F0F8FF", #alice blue
+    "leoblue": "#F0F8FF",  #alice blue
     "leoyellow": "#ffffec",
-    "leopink":  "#FFE4E1", # misty rose
+    "leopink": "#FFE4E1",  # misty rose
 
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",

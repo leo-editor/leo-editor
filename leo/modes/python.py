@@ -191,7 +191,7 @@ python_main_keywords_dict = {
     "as": "keyword1",
     "assert": "keyword1",
     "async": "keyword1",  # Python 3.7
-    "await": "keyword1", # Python 3.7.
+    "await": "keyword1",  # Python 3.7.
     "basestring": "keyword2",  # Only in Python 2.
     "bool": "keyword2",
     "break": "keyword1",
@@ -199,7 +199,7 @@ python_main_keywords_dict = {
     "callable": "keyword2",
     "chr": "keyword2",
     "class": "keyword1",
-    "@classmethod": "keyword2", # Bug fix: 5/14/2016
+    "@classmethod": "keyword2",  # Bug fix: 5/14/2016
     "cmp": "keyword2",
     "coerce": "keyword2",
     "compile": "keyword2",
@@ -273,7 +273,7 @@ python_main_keywords_dict = {
     "setattr": "keyword2",
     "slice": "keyword2",
     "sorted": "keyword2",
-    "@staticmethod": "keyword2", # Bug fix: 5/14/2016
+    "@staticmethod": "keyword2",  # Bug fix: 5/14/2016
     "str": "keyword2",
     "sum": "keyword2",
     "super": "keyword2",
@@ -284,7 +284,7 @@ python_main_keywords_dict = {
     "unicode": "keyword2",
     "vars": "keyword2",
     "while": "keyword1",
-    "with": "keyword1", # Fix bug 1174532: Python mode file missing 'with' keyword
+    "with": "keyword1",  # Fix bug 1174532: Python mode file missing 'with' keyword
     "xrange": "keyword2",
     "yield": "keyword1",
     "zip": "keyword2",
@@ -305,25 +305,25 @@ def python_rule0(colorer, s, i):
 def python_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def python_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def python_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def python_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def python_rule5(colorer, s, i):
@@ -401,18 +401,18 @@ if url:
     f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
     def python_rule_h_url(colorer, s, i):
-        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=h_url_regex,
-            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex,
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-    def python_rule_f_url(colorer,s,i):
-        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=f_url_regex,
-            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
+    def python_rule_f_url(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex,
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 else:
     # Always fail.
     def python_rule_h_url(colorer, s, i):
         return 0
 
-    def python_rule_f_url(colorer,s,i):
+    def python_rule_f_url(colorer, s, i):
         return 0
 
 # Rules dict for python_main ruleset.
@@ -438,18 +438,18 @@ rulesDict1 = {
     "7": [python_rule21,],
     "8": [python_rule21,],
     "9": [python_rule21,],
-    "<": [python_rule8,python_rule14,],
+    "<": [python_rule8, python_rule14,],
     "=": [python_rule5,],
-    ">": [python_rule7,python_rule13,],
+    ">": [python_rule7, python_rule13,],
     "@": [python_rule21,],
     "A": [python_rule21,],
     "B": [python_rule21,],
     "C": [python_rule21,],
     "D": [python_rule21,],
     "E": [python_rule21,],
-    "F": [python_rule_f_url,python_rule21,],
+    "F": [python_rule_f_url, python_rule21,],
     "G": [python_rule21,],
-    "H": [ python_rule_h_url,python_rule21,],
+    "H": [python_rule_h_url, python_rule21,],
     "I": [python_rule21,],
     "J": [python_rule21,],
     "K": [python_rule21,],
@@ -475,9 +475,9 @@ rulesDict1 = {
     "c": [python_rule21,],
     "d": [python_rule21,],
     "e": [python_rule21,],
-    "f": [python_rule_f_url,python_rule21,],
+    "f": [python_rule_f_url, python_rule21,],
     "g": [python_rule21,],
-    "h": [python_rule_h_url,python_rule21,],
+    "h": [python_rule_h_url, python_rule21,],
     "i": [python_rule21,],
     "j": [python_rule21,],
     "k": [python_rule21,],
@@ -507,4 +507,3 @@ rulesDictDict = {
 
 # Import dict for python mode.
 importDict = {}
-

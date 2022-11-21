@@ -37,6 +37,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import os
 import sys
+from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
@@ -68,15 +69,13 @@ def global_search_f(event):
     """
     c = event['c']
     if hasattr(g.app, '_global_search'):
+        # Use the per-commander setting.
         g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
-            # Use the per-commander setting.
         g.app._global_search.show()
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init():
     """Return True if the plugin has loaded successfully."""
     # Fix #1114: Don't require QtWebKitWidgets here.
-        # if not QtWebKitWidgets:
-            # return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
@@ -103,10 +102,10 @@ class BigDash:
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
         if (
+            # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
             not QtWebKitWidgets
-                # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
             or isQt5 and sys.platform.startswith('win')
-                # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
         ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:
@@ -193,8 +192,8 @@ class GlobalSearch:
     #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
     def __init__(self):
         """Ctor for GlobalSearch class."""
+        # A default: will be overridden by the global-search command.
         self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
-            # A default: will be overridden by the global-search command.
         self.bd = BigDash()
         self.gnxcache = GnxCache()
         #self.bd.show()
@@ -229,7 +228,7 @@ class GlobalSearch:
         """]
         fts_max_hits = self.fts_max_hits
         res = fts.search(q, fts_max_hits)
-        outlines = {}
+        outlines: Dict = {}
         for r in res:
             if '#' in r["parent"]:
                 file_name, junk = r["parent"].split('#', 1)
@@ -340,7 +339,7 @@ class GlobalSearch:
             c.bringToFront()
             return
         g.es_print("Not found in any open document: %s" % l)
-    #@+node:ekr.20140919160020.17903: *3* do_search
+    #@+node:ekr.20140919160020.17903: *3* do_search (bigdash.py)
     def do_search(self, tgt, qs):
 
         ss = str(qs)
@@ -355,18 +354,18 @@ class GlobalSearch:
         for ndxc, c2 in enumerate(g.app.commanders()):
             hits = c2.find_b(s)
             for ndxh, h in enumerate(hits):
-                b = h.b
-                mlines = self.matchlines(b, h.matchiter)
+                b = h[0].b
+                mlines = self.matchlines(b, h[1])  # [1] Contains matchiter
                 key = "c%dh%d" % (ndxc, ndxh)
-                self.anchors[key] = (c2, h.copy())
-                em('<p><a href="%s">%s</a></p>' % (key, h.h))
+                self.anchors[key] = (c2, h[0].copy())
+                em('<p><a href="%s">%s</a></p>' % (key, h[0].h))
                 for line, (st, en), (pre, post) in mlines:
                     em("<pre>")
                     em(pre)
                     em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
                     em(post)
                     em("</pre>")
-                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
+                em("""<p><small><i>%s</i></small></p>""" % h[0].get_UNL())
         html = "".join(hitparas)
         tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link)
@@ -392,24 +391,22 @@ class GlobalSearch:
 
             res.append((li, (m.start() - st, m.end() - st), (spre, spost)))
         return res
-    #@+node:ekr.20140919160020.17919: *3* open_unl
+    #@+node:ekr.20140919160020.17919: *3* open_unl (bigdash)
     def open_unl(self, unl):
 
         parts = unl.split("#", 1)
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
             segs = parts[1].split("-->")
-            g.recursiveUNLSearch(segs, c)
+            g.findUNL(segs, c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""
         self.bd.w.show()
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
-if QtCore:
-
-    class LeoConnector(QtCore.QObject):
-        pass
+class LeoConnector(QtCore.QObject):  # type:ignore
+    pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
 class LeoFts:
     #@+others

@@ -535,17 +535,20 @@
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use-chapter-tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
+<v t="ekr.20220718105957.1"><vh>@bool chapter-dropdown-left = False</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20210506073820.1"><vh>@bool allow-text-zoom = True</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
+<v t="ekr.20220624062948.1"><vh>@bool redirect-execute-script-output-to-log_pane = False</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
-<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
@@ -586,11 +589,6 @@
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
-</v>
-<v t="ekr.20210728045642.1"><vh>mypy settings</vh>
-<v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
-<v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
-<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=''</vh></v>
 </v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
@@ -637,20 +635,6 @@
 <v t="ekr.20060524151415.1"><vh>@string debugger-kind = winpdb</vh></v>
 <v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
 </v>
-<v t="ekr.20171121100639.1"><vh>Declutter</vh>
-<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
-<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
-<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
-<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
-<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
-</v>
-<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
-<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
-<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
-<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
-<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
-</v>
-</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
@@ -666,6 +650,7 @@
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
+<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -726,10 +711,10 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
+<v t="ekr.20211209060458.1"><vh>@bool put-class-in-imported-headlines = True</vh></v>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
-<v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
@@ -744,7 +729,7 @@
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
-<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = False</vh></v>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
@@ -792,8 +777,6 @@
 <v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
-<v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
 <v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
 <v t="ekr.20140721165014.19169"><vh>@mode tree-undo</vh></v>
@@ -1018,10 +1001,10 @@
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
+<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
 <v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
-<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
@@ -1062,13 +1045,11 @@
 <v t="ekr.20161006072143.1"><vh>@item import-free-mind-files</vh></v>
 <v t="ekr.20161006093610.1"><vh>@item import-mind-jet-files</vh></v>
 <v t="ekr.20161006102148.1"><vh>@item import-MORE-files</vh></v>
-<v t="ekr.20161007090350.1"><vh>@item import-jupyter-notebook</vh></v>
 <v t="ekr.20161006072041.1"><vh>@item import-tabbed-files</vh></v>
 <v t="ekr.20161006093513.1"><vh>@item import-zim-folder</vh></v>
 </v>
 <v t="ekr.20131213135427.21863"><vh>@menu &amp;Export Files</vh>
 <v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
-<v t="ekr.20161007090445.1"><vh>@item export-jupyter-notebook</vh></v>
 <v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
 <v t="ekr.20131213135427.21866"><vh>@item outline-to-cweb</vh></v>
 <v t="ekr.20131213135427.21867"><vh>@item outline-to-noweb</vh></v>
@@ -1478,7 +1459,6 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
@@ -1534,9 +1514,11 @@
 <v t="ekr.20131213135427.22361"><vh>@item help-for-&amp;debugging-commands</vh></v>
 <v t="ekr.20180403100800.1"><vh>@item help-for-&amp;dynamic-abbreviations</vh></v>
 <v t="ekr.20131213135427.22362"><vh>@item help-for-&amp;find-commands</vh></v>
+<v t="tom.20220424213334.1"><vh>@item help-for-&amp;highlight-current-line</vh></v>
 <v t="ekr.20180403100839.1"><vh>@item help-for-&amp;keystroke</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item help-for-&amp;minibuffer</vh></v>
 <v t="ekr.20180403100900.1"><vh>@item help-for-&amp;python</vh></v>
+<v t="tom.20220424213426.1"><vh>@item help-for-&amp;right-margin-guide</vh></v>
 <v t="ekr.20131215083347.18148"><vh>@item help-for-&amp;scripting</vh></v>
 <v t="ekr.20180403100919.1"><vh>@item help-for-&amp;regular-expressions</vh></v>
 <v t="ekr.20180403100935.1"><vh>@item help-for-&amp;settings</vh></v>
@@ -1899,8 +1881,7 @@
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh>
-<v t="ekr.20201016081803.1"><vh>Alphabetica list</vh></v>
-<v t="ekr.20201016081718.1"><vh>Not recommended</vh></v>
+<v t="ekr.20220915162805.1"><vh>Alphabetica list of plugins</vh></v>
 </v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
@@ -2050,7 +2031,8 @@
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
 <v t="ekr.20201021105344.1"><vh>viewrendered3 plugin</vh>
-<v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = False</vh></v>
+<v t="ekr.20220224094744.1"><vh>@bool vr3-md-style-auto  = True</vh></v>
+<v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = True</vh></v>
 <v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
 <v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
 <v t="ekr.20201021110503.1"><vh>@bool vr3-prefer-asciidoc3 = False</vh></v>
@@ -2090,6 +2072,7 @@
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
+<v t="ekr.20220524035531.1"><vh>@int rguide-col = 80</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
@@ -2200,6 +2183,7 @@
 <v t="nh910.20110621123823.3423"><vh>@bool collapse-nodes-after-move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse-nodes-during-finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse-nodes-while-spelling = True</vh></v>
+<v t="felix.20220506230435.1"><vh>@bool collapse-on-goto-first-last-visible = True</vh></v>
 <v t="ekr.20111109104336.12503"><vh>@bool collapse-on-lt-arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
@@ -2214,6 +2198,20 @@
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline-nav-extend-delay = 2.0</vh></v>
 <v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
+<v t="ekr.20171121100639.1"><vh>Declutter</vh>
+<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
+<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
+<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
+</v>
+<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
+<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
+<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
+<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
+<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
@@ -3386,6 +3384,7 @@ replace-all                         = None  # Not recommended to bind this to a 
 replace-then-find                   = Ctrl--
 
 set-find-everywhere                 = Alt-Ctrl-e
+set-find-file-only                  = Alt-Ctrl-l
 set-find-node-only                  = Alt-Ctrl-n
 set-find-suboutline-only            = Alt-Ctrl-s
 toggle-find-ignore-case-option      = Alt-Ctrl-i
@@ -3396,9 +3395,8 @@ toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
-# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
-# universal-argument    = Alt-u   # Usually Ctrl-u, conflicts with move-outline-up.
+
 
 
 
@@ -3515,22 +3513,18 @@ forward-sentence-extend-selection   = None # Alt-Shift-e
 forward-word                        = None # Alt-f
 forward-word-extend-selection       = None # Alt-Shift-f
 goto-global-line                    = Alt-g
-# match-brackets                    = Ctrl-K    # kill-line
 move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
 move-past-close-extend-selection    = None
 
-# Brian Theado
 # next-or-end-of-line                 ! text = Down
 # next-or-end-of-line-extend-selection ! text = Shift-Down
-
 # next-line                         = Ctrl-N
 # next-line-extend-selection        = Ctrl-Shift-N
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
-
-# Brian Theado
 # previous-or-beginning-of-line                   ! text = Up
 # previous-or-beginning-of-line-extend-selection  ! text = Shift-Up
+
 select-all                          = Ctrl-a</t>
 <t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
 # expand-pane         = Alt-Ctrl-=
@@ -3550,7 +3544,7 @@ edit-setting        = Ctrl+Key-0
 </t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 chapter-select              = None
-contract-node               = None
+contract-node               = Alt-[
 copy-node                   = Shift-Ctrl-c
 cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
@@ -3599,7 +3593,6 @@ indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
 newline-and-indent                  = Ctrl-j
-### newline-and-indent              !text = Tab
 focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
@@ -3759,21 +3752,14 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # **Important**: to change these defaults, put
 # an @enabled-plugins node in myLeoSettings.leo.
 
-# Highly-recommended plugins:
+# Standard plugins...
 
-plugins_menu.py
-free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
-    
-# Recommended plugins:
-
+plugins_menu.py     # Adds 'Plugins' menu.
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
-leo_to_html.py
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
-screen_capture.py
-stickynotes.py
 todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
@@ -4045,10 +4031,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2"># cycle-focus                       = None
-# cycle-all-focus                   = Ctrl-Shift-tab
-
-back-word                           = Ctrl-LtArrow
+<t tx="ekr.20080510072134.2">back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
 beginning-of-buffer                 = Ctrl-Home
 beginning-of-buffer-extend-selection= Ctrl-Shift-Home
@@ -4066,7 +4049,7 @@ end-of-buffer                       = Keypad+Ctrl-End
 end-of-buffer-extend-selection      = Keypad+Ctrl-Shift-End
 forward-word                        = Keypad+Ctrl-RtArrow
 forward-word-extend-selection       = Keypad+Ctrl-Shift-RtArrow
-
+#
 # beginning-of-line                   = Home
 back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
@@ -5484,9 +5467,9 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21833"></t>
 <t tx="ekr.20131213135427.21834">&amp;Save...</t>
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
-<t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
-<t tx="ekr.20131213135427.21837">Save As &amp;Zipped...</t>
-<t tx="ekr.20131213135427.21838">Save &amp;To...</t>
+<t tx="ekr.20131213135427.21836">Save As .leo (&amp;XML)...</t>
+<t tx="ekr.20131213135427.21837">Save As .leojs (&amp;JSON)...</t>
+<t tx="ekr.20131213135427.21838">Save A &amp;Copy...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
@@ -5830,7 +5813,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
 <t tx="ekr.20131213135427.22340"></t>
-<t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
 <t tx="ekr.20131213135427.22343"></t>
 <t tx="ekr.20131213135427.22344"></t>
@@ -5898,7 +5880,6 @@ beginning-of-line                   = Alt-Up
 beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = None
 capitalize-word                     = Alt-c
-cascade-windows                     = None
 center-line                         = Alt-s
 center-region                       = None
 check-outline                       = None
@@ -5981,7 +5962,6 @@ find-next                           = F3
 find-prev                           = F2
 find-tab-open                       = None
 flatten-outline                     = None
-flush-lines                         = None
 focus-to-body                       = None
 focus-to-find                       = None
 focus-to-log                        = None
@@ -6039,7 +6019,6 @@ isearch-backward                    = Ctrl-R
 isearch-backward-regexp             = Alt-Ctrl-r
 isearch-forward                     = Ctrl-S
 isearch-forward-regexp              = Alt-Ctrl-s
-keep-lines                          = None
 keyboard-quit                       = Ctrl-g
 kill-line                           = Ctrl-k
 kill-paragraph                      = None
@@ -6069,7 +6048,6 @@ open-leo-docs-leo               = None
 open-leo-dist-leo               = None
 open-leo-settings               = None
 open-scripts-leo                = None
-open-offline-tutorial           = None
 open-online-home                = None
 open-outline                    = None         # Ctrl-O conflicts with insert-newline
 open-python-window              = None         # Removed Alt-P: not useful enough.
@@ -6117,15 +6095,15 @@ scroll-up-page                  = Alt-v
 search-backward                 = None
 search-forward                  = None
 # select-all                    = Ctrl-a # Was beginning-of-line.
-set-colors                      = None
+# set-colors                    = None
 set-comment-column              = None
 set-extend-mode                 = None
 set-fill-column                 = None
 set-fill-prefix                 = None
-set-find-everywhere                 = None
-set-find-node-only                  = None
-set-find-suboutline-only            = None
-set-font                        = None
+set-find-everywhere             = None
+set-find-node-only              = None
+set-find-suboutline-only        = None
+# set-font                      = None
 set-command-state               = None
 set-insert-state                = None
 # set-mark-command              = Ctrl-Shift-at
@@ -6253,7 +6231,6 @@ beginning-of-buffer-extend-selection= None
 beginning-of-line                   = None
 beginning-of-line-extend-selection  = None
 capitalize-word                     = None
-cascade-windows                     = None
 center-line                         = None
 center-region                       = None
 chapter-select                      = None
@@ -6385,7 +6362,6 @@ find-tab-open                       = None
 find-word                           = None
 find-word-in-line                   = None
 flatten-outline                     = None
-flush-lines                         = None
 focus-to-body                       = None
 focus-to-log                        = None
 focus-to-find                       = None
@@ -6475,7 +6451,6 @@ isearch-backward                    = None
 isearch-backward-regexp             = None
 isearch-forward                     = None
 isearch-forward-regexp              = None
-keep-lines                          = None
 keyboard-quit                       = None
 kill-line                           = None
 kill-paragraph                      = None
@@ -6512,7 +6487,6 @@ open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-settings                   = None
 open-scripts-leo                    = None
-open-offline-tutorial               = None
 open-online-home                    = None
 open-outline                        = None
 open-python-window                  = None
@@ -6578,15 +6552,16 @@ scroll-up-page                      = None
 search-backward                     = None
 search-forward                      = None
 select-all                          = None
-set-colors                          = None
+# set-colors                        = None
 set-comment-column                  = None
 set-extend-mode                     = None
 set-fill-column                     = None
 set-fill-prefix                     = None
+set-find-file-only                  = None
 set-find-everywhere                 = None
 set-find-node-only                  = None
 set-find-suboutline-only            = None
-set-font                            = None
+# set-font                          = None
 set-command-state                   = None
 set-insert-state                    = None
 # set-mark-command                  = None
@@ -7113,13 +7088,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
-False: Body pane gets focus when a new window is opened.</t>
-<t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
-
-If this is False it will be harder to use the arrow keys in the headline.
-    
-False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20140721165014.19168">#Miscellaneous vi commands
 #---------------------------------
 
@@ -9930,8 +9898,6 @@ code {
 <t tx="ekr.20161006093513.1">Import &amp;Zim Folder...</t>
 <t tx="ekr.20161006093610.1">Import &amp;MindJet Files...</t>
 <t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
-<t tx="ekr.20161007090350.1">Import &amp;Jupyter Notebook...</t>
-<t tx="ekr.20161007090445.1">Export &amp;Jupyter Notebook</t>
 <t tx="ekr.20161011130632.1">/*
     The main .css stylesheet for the mod_http.py plugin.
     From Chris George:
@@ -10664,10 +10630,6 @@ if 0: # The base class
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20170617135317.1">True: The python importer will copy the first decorator preceding a
-      function/method into the headline of the imported node.
-      
-**Note**: The importer will copy only the first line of a multiline decorator.</t>
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
@@ -11411,20 +11373,171 @@ PaperLightTheme.leo
 ZephyrDarkTheme.leo</t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
 </t>
-<t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.
+<t tx="ekr.20201021105344.1"></t>
+<t tx="ekr.20201021105651.1">Path to ``asciidoc`` directory</t>
+<t tx="ekr.20201021105654.1">Default for rendering type: asciidoc, md or rst.</t>
+<t tx="ekr.20201021105654.2">Enable RsT MathJax math rendering</t>
+<t tx="ekr.20201021105654.3">MathJax script URL (both RsT and MD). Typically:
 
-# leo_pdf.py
-# leo_to_rtf.py
-# mnplugins.py
-# mod_speedups.py
-# run_nodes.py
-# settings_finder.py
-# stickynotes_plus.py
-# viewrendered2.py</t>
-<t tx="ekr.20201016081803.1"># Alphabetical list of plugins.
+file:///D:/utility/mathjax/es5/tex-chtml.js
+https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML</t>
+<t tx="ekr.20201021110324.1">True: Render node headline as top heading.</t>
+<t tx="ekr.20201021110420.1">True: Enable MD MathJax math rendering.</t>
+<t tx="ekr.20201021110503.1">True: Use ``asciidoc3`` if available.
+False: Use ``asciidoc``</t>
+<t tx="ekr.20201021110638.1"></t>
+<t tx="ekr.20201021110716.1">"URL for MD stylesheet</t>
+<t tx="ekr.20201021110839.1">Name of external asciidoctor processor program
+</t>
+<t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
+<t tx="ekr.20201118055941.1"></t>
+<t tx="ekr.20201118060235.1"></t>
+<t tx="ekr.20210324162150.1">Save As .db (&amp;SQLite)...</t>
+<t tx="ekr.20210327192658.1"></t>
+<t tx="ekr.20210327193058.1"></t>
+<t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
 
-# Note: This list may be out of date. leo/plugins contains all official plugins.
-# Note: Leo loads all qt_*.py files automatically when the qt gui is in effect.
+True: Docutils will embed a the stylesheet in the output file.
+False: Docutils will link to an external stylesheet file.</t>
+<t tx="ekr.20210327193736.1"></t>
+<t tx="ekr.20210327193806.1"></t>
+<t tx="ekr.20210327193854.1"></t>
+<t tx="ekr.20210327194119.1"></t>
+<t tx="ekr.20210412113510.1">default-keyboard: No late alterations.
+
+german:  Remove *plain* Shift modifier for colon and semicolon.
+spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
+<t tx="ekr.20210506073820.1">True: allow scroll-wheel zooming.</t>
+<t tx="ekr.20210530064911.1"># This node contains the commands needed to execute a program in a particular language.
+
+# Format: language-name: command
+
+# Create a temporary file if c.p is not any kind of @&lt;file&gt; node.
+
+# Compute the final command as follows:
+
+# 1. If command contains &lt;FILE&gt;, replace &lt;FILE&gt; with the full path to the external file.
+# 2. If command contains &lt;NO-FILE&gt;, just remove &lt;NO-FILE&gt;.
+# 3. Otherwise, append the full path to the external file to the command.
+
+go: go run . &lt;NO-FILE&gt;
+python: python
+rust: rustc
+</t>
+<t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
+# Format: language-name: regex pattern
+#
+# Patterns must define two groups, in either order:
+# One group, containing only digits, defines the line number.
+# The other group defines the file name.
+
+go: ^\s*(.*):([0-9]+):([0-9]+):.+$
+python: ^\s*File "(.+)", line ([0-9]+), in .+$
+rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
+<t tx="ekr.20210823172721.1"></t>
+<t tx="ekr.20210823172729.1"></t>
+<t tx="ekr.20210823172944.1"></t>
+<t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
+<t tx="ekr.20210823173736.1">Path to external editor.</t>
+<t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
+<t tx="ekr.20210914081311.1"></t>
+<t tx="ekr.20210914081428.1"></t>
+<t tx="ekr.20211014064402.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Commands
+ch, character
+gnx, string
+d, dictionary
+i, number
+j, number
+k, number
+n, number
+p, Position
+s, string
+v, VNode</t>
+<t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
+<t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+
+# Note: add-mypy-annotations can automatically annotate kwargs initialized to 
+#       bool, float, int or string constants.
+
+# Define default annotations for arguments and return types...
+
+DEFAULT, Any
+DEFAULT_RETURN, None
+
+# Naming conventions used in Leo...
+
+aBool, bool
+aList, List
+args, Any
+c, Cmdr
+callback, Callable
+ch, str
+changed, bool
+char, str
+d, Dict[str, str]
+ev, Event
+event, Event
+fileName, str
+fn, str
+frac, float
+frame, Widget
+gnx, str
+handler, Callable
+i, int
+i1, int
+i2, int
+index, int
+idx, int
+j, int
+j1, int
+j2, int
+k, int
+k1, int
+k2, int
+kwargs, Any
+menu, Wrapper
+message, str
+n, int
+n1, int
+n2, int
+name, str
+obj, Any
+p, Position
+p1, Position
+p2, Position
+parentFrame, Wrapper
+path, str
+ratio, float
+ratio2, float
+root, Position
+s, str
+s1, str
+s2, str
+script, str
+tag, str
+v, VNode
+w, Wrapper
+widget, Widget
+wrapper, Wrapper
+x, int
+y, int
+</t>
+<t tx="ekr.20220224094744.1">True: Attempt to use a dark-vs-light theme according to whether the Leo
+      theme is marked dark or not.
+
+False: Use the default stylesheet at leo/plugins/viewrendered3.
+       If not present, create a default stylesheet and write it to a file
+       at that place.</t>
+<t tx="ekr.20220524035531.1">Column number for right margin guidelines.</t>
+<t tx="ekr.20220624062948.1"></t>
+<t tx="ekr.20220718105957.1">True: Position the Chapters drop-down at the left of the icon bar.</t>
+<t tx="ekr.20220915162805.1"># Alphabetical list of plugins.
+
+# Notes:
+# - This list may be out of date. The leo/plugins folders contains all official plugins.
+# - Plugins in the leo/plugins/experimental folder are not recommended and are not in this list.
+# - Leo automatically loads all qt_*.py files when the qt gui is in effect.
 
 # active_path.py
 # add_directives.py
@@ -11514,7 +11627,6 @@ ZephyrDarkTheme.leo</t>
 # script_io_to_body.py
 # scripts_menu.py
 # setHomeDirectory.py
-# settings_finder.py
 # sftp.py
 # slideshow.py
 # spydershell.py
@@ -11539,97 +11651,13 @@ ZephyrDarkTheme.leo</t>
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
-<t tx="ekr.20201021105344.1"></t>
-<t tx="ekr.20201021105651.1">Path to ``asciidoc`` directory</t>
-<t tx="ekr.20201021105654.1">Default for rendering type: asciidoc, md or rst.</t>
-<t tx="ekr.20201021105654.2">Enable RsT MathJax math rendering</t>
-<t tx="ekr.20201021105654.3">MathJax script URL (both RsT and MD). Typically:
+<t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
-file:///D:/utility/mathjax/es5/tex-chtml.js
-https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML</t>
-<t tx="ekr.20201021110324.1">True: Render node headline as top heading.</t>
-<t tx="ekr.20201021110420.1">True: Enable MD MathJax math rendering.</t>
-<t tx="ekr.20201021110503.1">True: Use ``asciidoc3`` if available.
-False: Use ``asciidoc``</t>
-<t tx="ekr.20201021110638.1"></t>
-<t tx="ekr.20201021110716.1">"URL for MD stylesheet</t>
-<t tx="ekr.20201021110839.1">Name of external asciidoctor processor program
-</t>
-<t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
-<t tx="ekr.20201118055941.1"></t>
-<t tx="ekr.20201118060235.1"></t>
-<t tx="ekr.20210324162150.1"></t>
-<t tx="ekr.20210327192658.1"></t>
-<t tx="ekr.20210327193058.1"></t>
-<t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
+False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
+<t tx="felix.20220628162804.1">This option dictates that the clipboard content is to be generated as JSON
+(In the same format as the .leojs file format)
 
-True: Docutils will embed a the stylesheet in the output file.
-False: Docutils will link to an external stylesheet file.</t>
-<t tx="ekr.20210327193736.1"></t>
-<t tx="ekr.20210327193806.1"></t>
-<t tx="ekr.20210327193854.1"></t>
-<t tx="ekr.20210327194119.1"></t>
-<t tx="ekr.20210412113510.1">default-keyboard: No late alterations.
-
-german:  Remove *plain* Shift modifier for colon and semicolon.
-spanish: Remove *plain* Shift modifier for colon and semicolon.</t>
-<t tx="ekr.20210506073820.1">True: allow scroll-wheel zooming.</t>
-<t tx="ekr.20210530064911.1"># This node contains the commands needed to execute a program in a particular language.
-
-# Format: language-name: command
-
-# Create a temporary file if c.p is not any kind of @&lt;file&gt; node.
-
-# Compute the final command as follows:
-
-# 1. If command contains &lt;FILE&gt;, replace &lt;FILE&gt; with the full path to the external file.
-# 2. If command contains &lt;NO-FILE&gt;, just remove &lt;NO-FILE&gt;.
-# 3. Otherwise, append the full path to the external file to the command.
-
-go: go run . &lt;NO-FILE&gt;
-python: python
-rust: rustc
-</t>
-<t tx="ekr.20210530064922.1"># This node contains the regex pattern to determine the line number in error messages.
-# Format: language-name: regex pattern
-#
-# Patterns must define two groups, in either order:
-# One group, containing only digits, defines the line number.
-# The other group defines the file name.
-
-go: ^\s*(.*):([0-9]+):([0-9]+):.+$
-python: ^\s*File "(.+)", line ([0-9]+), in .+$
-rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
-<t tx="ekr.20210728045642.1"></t>
-<t tx="ekr.20210728045723.1"># Arguments to mypy.api, excluding the file name.
-
-# --disable-error-code=attr-defined
-# --disallow-untyped-defs
-# --follow-imports=skip</t>
-<t tx="ekr.20210728045750.1"># 0 means no limit.</t>
-<t tx="ekr.20210802064734.1">Path to .mypy.ini file.
-
-Relative paths are resolved starting from the location of the file being checked.</t>
-<t tx="ekr.20210823172721.1"></t>
-<t tx="ekr.20210823172729.1"></t>
-<t tx="ekr.20210823172944.1"></t>
-<t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
-<t tx="ekr.20210823173736.1">Path to external editor.</t>
-<t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
-<t tx="ekr.20210914081311.1"></t>
-<t tx="ekr.20210914081428.1"></t>
-<t tx="ekr.20211014064402.1"># comma-separated pairs of strings: (argument-name, typescript-type)
-c, Commands
-ch, character
-gnx, string
-d, dictionary
-i, number
-j, number
-k, number
-n, number
-p, Position
-s, string
-v, VNode</t>
+Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -11978,10 +12006,10 @@ c.k.simulateCommand('show-fonts')
 # `Python &lt;file://www.python.org/&gt;`_ 
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
-<t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications
+<t tx="tbrown.20150807123339.1">Set to True to enable node appearance modifications
 See tree-declutter-patterns
 </t>
-<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># **Decluttering** replaces controls custom formatting of headlines, including:
+<t tx="tbrown.20150807123421.1"># **Decluttering** replaces controls custom formatting of headlines, including:
 
 # - Hiding or changing headline text,
 # - Adding icons to headlines,
@@ -12264,6 +12292,8 @@ AltControlShift hoist
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
+<t tx="tom.20220424213334.1"></t>
+<t tx="tom.20220424213426.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

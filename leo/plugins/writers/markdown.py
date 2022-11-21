@@ -1,25 +1,25 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
+#@@first
 """The @auto write code for markdown."""
-# pylint: disable=unused-import
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:ekr.20140726091031.18075: ** class MarkdownWriter
+#@+node:ekr.20140726091031.18075: ** class MarkdownWriter(BaseWriter)
 class MarkdownWriter(basewriter.BaseWriter):
     """The writer class for markdown files."""
-    # def __init__(self,c):
-        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18076: *3* mdw.write
-    def write(self, root):
+    def write(self, root: Position) -> None:
         """Write all the *descendants* of an @auto-markdown node."""
         # Fix bug 66: errors inhibited read @auto foo.md.
         # New in Leo 5.5: Skip !headlines. Convert all others to '#' sections.
         self.root = root
         self.write_root(root)
         for p in root.subtree():
-            if hasattr(self.at, 'force_sentinels'):
+            if g.app.force_at_auto_sentinels:  # pragma: no cover
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             self.write_headline(p)
             # Ensure that every section ends with exactly two newlines.
@@ -29,9 +29,8 @@ class MarkdownWriter(basewriter.BaseWriter):
                 if not g.isDirective(s):
                     self.put(s)
         root.setVisited()
-        return True
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
-    def write_headline(self, p):
+    def write_headline(self, p: Position) -> None:
         """
         Write or skip the headline.
 
@@ -43,22 +42,19 @@ class MarkdownWriter(basewriter.BaseWriter):
         assert level > 0, p.h
         kind = p.h and p.h[0]
         if kind == '!':
-            pass # The signal for a declaration node.
-        # elif kind in '=-':
-            # self.put(p.h)
-            # self.put(kind*max(4,len(p.h)))
+            pass  # The signal for a declaration node.
         else:
-            self.put('%s %s' % ('#'*level, p.h))
+            self.put(f"{'#' * level} {p.h.lstrip()}")  # Leo 6.6.4: preserve spacing.
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
-    def write_root(self, root):
+    def write_root(self, root: Position) -> None:
         """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
-        for s in lines:
+        for s in lines:  # pragma: no cover (the root node usually contains no extra text).
             self.put(s)
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-md','@auto-markdown',],
+    '@auto': ['@auto-md', '@auto-markdown',],
     'class': MarkdownWriter,
     'extensions': ['.md',],
 }

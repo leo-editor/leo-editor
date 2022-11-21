@@ -124,13 +124,14 @@ different namespaces, while keeping namespaces generally separate.
 #@-<< docstring >>
 # By Ville M. Vainio and Terry N. Brown.
 
-#@+<< imports >>
-#@+node:ville.20110403115003.10351: ** << imports >>
+#@+<< valuespace imports >>
+#@+node:ville.20110403115003.10351: ** << valuespace imports >>
 import pprint
 import os
 import re
 import json
 from io import BytesIO
+from typing import Any, Dict, Sequence
 try:
     import yaml
 except ImportError:
@@ -138,11 +139,10 @@ except ImportError:
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.external.stringlist import SList
-    # Uses leoPlugins.TryNext.
-#@-<< imports >>
-controllers = {}
-    # Keys are c.hash(), values are ValueSpaceControllers.
+from leo.external.stringlist import SList  # Uses leoPlugins.TryNext.
+#@-<< valuespace imports >>
+# Keys are c.hash(), values are ValueSpaceControllers.
+controllers: Dict[str, Any] = {}
 
 # pylint: disable=eval-used
 # Eval is essential to this plugin.
@@ -393,7 +393,9 @@ class ValueSpaceController:
                 #print "set to yaml", `val`
                 sio = BytesIO(val)
                 try:
-                    d = yaml.load(sio)
+                    # Both mypy and pylint complaint.
+                    # pylint: disable=no-value-for-parameter
+                    d = yaml.load(sio)  # type:ignore
                 except Exception:
                     g.es_exception()
                     g.es("yaml error for: " + var)
@@ -415,7 +417,7 @@ class ValueSpaceController:
 
         body = self.untangle(p)  # body is the script in p's body.
         self.d['p'] = p.copy()
-        backop = []
+        backop: Sequence = []
         segs = re.finditer('^(@x (.*))$', body, re.MULTILINE)
         for mo in segs:
             op = mo.group(2).strip()

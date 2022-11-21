@@ -13,9 +13,9 @@ import logging.handlers
 import pickle
 import select
 try:
-    import SocketServer # Python 2
+    import SocketServer  # Python 2
 except ImportError:
-    import socketserver as SocketServer # Python 3
+    import socketserver as SocketServer  # Python 3
 import struct
 #@-<< pdb_listener imports >>
 #@+others
@@ -100,7 +100,7 @@ class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
 #@+node:ekr.20180628055640.10: ** start
 def start():
     '''Start the log listener.'''
-    format='%(message)s' # To mimic g.trace.
+    format = '%(message)s'  # To mimic g.trace.
     logging.basicConfig(format=format)
     tcpserver = LogRecordSocketReceiver()
     print('Starting TCP server...')

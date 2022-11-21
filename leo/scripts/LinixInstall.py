@@ -10,8 +10,8 @@ import commands,os,sys # commands module is for Unix only.
 
 # We must be root to use this script.
 if os.getuid() != 0:
-	print("You need to run this install script as root")
-	sys.exit(1)
+    print("You need to run this install script as root")
+    sys.exit(1)
 
 # Create /usr/lib/leo and copy all files there.
 print("***** Installing Leo to /usr/lib/leo...")

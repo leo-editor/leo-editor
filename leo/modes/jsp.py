@@ -125,97 +125,97 @@ keywordsDictDict = {
 def jsp_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%@", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::directives",exclude_match=False,
+        delegate="jsp::directives", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<jsp:directive>", end="</jsp:directive>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::directives",exclude_match=False,
+        delegate="jsp::directives", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<jsp:expression>", end="</jsp:expression>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%!", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<jsp:declaration>", end="</jsp:declaration>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<jsp:scriptlet>", end="</jsp:scriptlet>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::comment",exclude_match=False,
+        delegate="jsp::comment", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript",exclude_match=False,
+        delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::tags",exclude_match=False,
+        delegate="jsp::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for jsp_main ruleset.
 rulesDict1 = {
     "&": [jsp_rule14,],
-    "<": [jsp_rule0,jsp_rule1,jsp_rule2,jsp_rule3,jsp_rule4,jsp_rule5,jsp_rule6,jsp_rule7,jsp_rule8,jsp_rule9,jsp_rule10,jsp_rule11,jsp_rule12,jsp_rule13,],
+    "<": [jsp_rule0, jsp_rule1, jsp_rule2, jsp_rule3, jsp_rule4, jsp_rule5, jsp_rule6, jsp_rule7, jsp_rule8, jsp_rule9, jsp_rule10, jsp_rule11, jsp_rule12, jsp_rule13,],
 }
 
 # Rules for jsp_comment ruleset.
@@ -223,24 +223,24 @@ rulesDict1 = {
 def jsp_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for jsp_comment ruleset.
 rulesDict2 = {
-    "<": [jsp_rule15,jsp_rule16,jsp_rule17,],
+    "<": [jsp_rule15, jsp_rule16, jsp_rule17,],
 }
 
 # Rules for jsp_directives ruleset.
@@ -248,19 +248,19 @@ rulesDict2 = {
 def jsp_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::attrvalue",exclude_match=False,
+        delegate="jsp::attrvalue", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::attrvalue",exclude_match=False,
+        delegate="jsp::attrvalue", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule21(colorer, s, i):
@@ -293,7 +293,7 @@ rulesDict3 = {
     "7": [jsp_rule24,],
     "8": [jsp_rule24,],
     "9": [jsp_rule24,],
-    ":": [jsp_rule22,jsp_rule23,],
+    ":": [jsp_rule22, jsp_rule23,],
     "<": [jsp_rule18,],
     "@": [jsp_rule24,],
     "A": [jsp_rule24,],
@@ -355,25 +355,25 @@ rulesDict3 = {
 def jsp_rule25(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule27(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::attrvalue",exclude_match=False,
+        delegate="jsp::attrvalue", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="jsp::attrvalue",exclude_match=False,
+        delegate="jsp::attrvalue", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def jsp_rule29(colorer, s, i):
@@ -393,8 +393,8 @@ rulesDict4 = {
     "\"": [jsp_rule27,],
     "'": [jsp_rule28,],
     "/": [jsp_rule29,],
-    ":": [jsp_rule30,jsp_rule31,],
-    "<": [jsp_rule25,jsp_rule26,],
+    ":": [jsp_rule30, jsp_rule31,],
+    "<": [jsp_rule25, jsp_rule26,],
 }
 
 # Rules for jsp_attrvalue ruleset.
@@ -402,7 +402,7 @@ rulesDict4 = {
 def jsp_rule32(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::main",exclude_match=False,
+        delegate="java::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for jsp_attrvalue ruleset.
@@ -421,4 +421,3 @@ rulesDictDict = {
 
 # Import dict for jsp mode.
 importDict = {}
-

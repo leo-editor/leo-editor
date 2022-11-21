@@ -61,15 +61,14 @@ QPlainTextEdit {
 
 def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
+    # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     g.app.gui.attachLeoIcon(w)
-        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 
 #@+node:ekr.20100103100944.5393: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
     ok = markdown is not None and g.app.gui.guiName() == "qt"
-        # Markdown fails on Python 3k at present.
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
@@ -342,7 +341,8 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
     def keyPressEvent__(self, event):
-        # needed because text edit is not going to recognize short cuts because will do something with control key
+        # needed because text edit is not going to recognize short cuts
+        # because will do something with control key
         # not needed if have global shortcuts
         if event.modifiers() & KeyboardModifier.ControlModifier:
             handled = False

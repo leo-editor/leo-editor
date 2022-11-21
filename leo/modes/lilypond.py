@@ -161,7 +161,7 @@ keywordsDictDict = {
 def lilypond_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="%{", end="%}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lilypond_rule1(colorer, s, i):
@@ -204,7 +204,7 @@ def lilypond_rule9(colorer, s, i):
 def lilypond_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scheme::main",exclude_match=False,
+        delegate="scheme::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lilypond_rule11(colorer, s, i):
@@ -246,7 +246,7 @@ def lilypond_rule19(colorer, s, i):
 def lilypond_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lilypond_rule21(colorer, s, i):
@@ -1548,22 +1548,22 @@ def lilypond_rule344(colorer, s, i):
 rulesDict1 = {
     "\"": [lilypond_rule20,],
     "#": [lilypond_rule10,],
-    "%": [lilypond_rule0,lilypond_rule1,],
+    "%": [lilypond_rule0, lilypond_rule1,],
     "'": [lilypond_rule22,],
     ",": [lilypond_rule23,],
-    "-": [lilypond_rule17,lilypond_rule18,lilypond_rule21,],
-    "0": [lilypond_rule36,lilypond_rule344,],
-    "1": [lilypond_rule27,lilypond_rule344,],
-    "2": [lilypond_rule28,lilypond_rule344,],
-    "3": [lilypond_rule29,lilypond_rule344,],
-    "4": [lilypond_rule30,lilypond_rule344,],
-    "5": [lilypond_rule31,lilypond_rule344,],
-    "6": [lilypond_rule32,lilypond_rule344,],
-    "7": [lilypond_rule33,lilypond_rule344,],
-    "8": [lilypond_rule34,lilypond_rule344,],
-    "9": [lilypond_rule35,lilypond_rule344,],
+    "-": [lilypond_rule17, lilypond_rule18, lilypond_rule21,],
+    "0": [lilypond_rule36, lilypond_rule344,],
+    "1": [lilypond_rule27, lilypond_rule344,],
+    "2": [lilypond_rule28, lilypond_rule344,],
+    "3": [lilypond_rule29, lilypond_rule344,],
+    "4": [lilypond_rule30, lilypond_rule344,],
+    "5": [lilypond_rule31, lilypond_rule344,],
+    "6": [lilypond_rule32, lilypond_rule344,],
+    "7": [lilypond_rule33, lilypond_rule344,],
+    "8": [lilypond_rule34, lilypond_rule344,],
+    "9": [lilypond_rule35, lilypond_rule344,],
     "<": [lilypond_rule15,],
-    "=": [lilypond_rule8,lilypond_rule9,],
+    "=": [lilypond_rule8, lilypond_rule9,],
     ">": [lilypond_rule16,],
     "@": [lilypond_rule344,],
     "A": [lilypond_rule344,],
@@ -1583,7 +1583,7 @@ rulesDict1 = {
     "O": [lilypond_rule344,],
     "P": [lilypond_rule344,],
     "Q": [lilypond_rule344,],
-    "R": [lilypond_rule25,lilypond_rule344,],
+    "R": [lilypond_rule25, lilypond_rule344,],
     "S": [lilypond_rule344,],
     "T": [lilypond_rule344,],
     "U": [lilypond_rule344,],
@@ -1593,7 +1593,7 @@ rulesDict1 = {
     "Y": [lilypond_rule344,],
     "Z": [lilypond_rule344,],
     "[": [lilypond_rule13,],
-    "\\": [lilypond_rule2,lilypond_rule3,lilypond_rule4,lilypond_rule5,lilypond_rule6,lilypond_rule7,lilypond_rule37,lilypond_rule38,lilypond_rule39,lilypond_rule40,lilypond_rule41,lilypond_rule42,lilypond_rule43,lilypond_rule44,lilypond_rule45,lilypond_rule46,lilypond_rule47,lilypond_rule48,lilypond_rule49,lilypond_rule50,lilypond_rule51,lilypond_rule52,lilypond_rule53,lilypond_rule54,lilypond_rule55,lilypond_rule56,lilypond_rule57,lilypond_rule58,lilypond_rule59,lilypond_rule60,lilypond_rule61,lilypond_rule62,lilypond_rule63,lilypond_rule64,lilypond_rule65,lilypond_rule66,lilypond_rule67,lilypond_rule68,lilypond_rule69,lilypond_rule70,lilypond_rule71,lilypond_rule72,lilypond_rule73,lilypond_rule74,lilypond_rule75,lilypond_rule76,lilypond_rule77,lilypond_rule78,lilypond_rule79,lilypond_rule80,lilypond_rule81,lilypond_rule82,lilypond_rule83,lilypond_rule84,lilypond_rule85,lilypond_rule86,lilypond_rule87,lilypond_rule88,lilypond_rule89,lilypond_rule90,lilypond_rule91,lilypond_rule92,lilypond_rule93,lilypond_rule94,lilypond_rule95,lilypond_rule96,lilypond_rule97,lilypond_rule98,lilypond_rule99,lilypond_rule100,lilypond_rule101,lilypond_rule102,lilypond_rule103,lilypond_rule104,lilypond_rule105,lilypond_rule106,lilypond_rule107,lilypond_rule108,lilypond_rule109,lilypond_rule110,lilypond_rule111,lilypond_rule112,lilypond_rule113,lilypond_rule114,lilypond_rule115,lilypond_rule116,lilypond_rule117,lilypond_rule118,lilypond_rule119,lilypond_rule120,lilypond_rule121,lilypond_rule122,lilypond_rule123,lilypond_rule124,lilypond_rule125,lilypond_rule126,lilypond_rule127,lilypond_rule128,lilypond_rule129,lilypond_rule130,lilypond_rule131,lilypond_rule132,lilypond_rule133,lilypond_rule134,lilypond_rule135,lilypond_rule136,lilypond_rule137,lilypond_rule138,lilypond_rule139,lilypond_rule140,lilypond_rule141,lilypond_rule142,lilypond_rule143,lilypond_rule144,lilypond_rule145,lilypond_rule146,lilypond_rule147,lilypond_rule148,lilypond_rule149,lilypond_rule150,lilypond_rule151,lilypond_rule152,lilypond_rule153,lilypond_rule154,lilypond_rule155,lilypond_rule156,lilypond_rule157,lilypond_rule158,lilypond_rule159,lilypond_rule160,lilypond_rule161,lilypond_rule162,lilypond_rule163,lilypond_rule164,lilypond_rule165,lilypond_rule166,lilypond_rule167,lilypond_rule168,lilypond_rule169,lilypond_rule170,lilypond_rule171,lilypond_rule172,lilypond_rule173,lilypond_rule174,lilypond_rule175,lilypond_rule176,lilypond_rule177,lilypond_rule178,lilypond_rule179,lilypond_rule180,lilypond_rule181,lilypond_rule182,lilypond_rule183,lilypond_rule184,lilypond_rule185,lilypond_rule186,lilypond_rule187,lilypond_rule188,lilypond_rule189,lilypond_rule190,lilypond_rule191,lilypond_rule192,lilypond_rule193,lilypond_rule194,lilypond_rule195,lilypond_rule196,lilypond_rule197,lilypond_rule198,lilypond_rule199,lilypond_rule200,lilypond_rule201,lilypond_rule202,lilypond_rule203,lilypond_rule204,lilypond_rule205,lilypond_rule206,lilypond_rule207,lilypond_rule208,lilypond_rule209,lilypond_rule210,lilypond_rule211,lilypond_rule212,lilypond_rule213,lilypond_rule214,lilypond_rule215,lilypond_rule216,lilypond_rule217,lilypond_rule218,lilypond_rule219,lilypond_rule220,lilypond_rule221,lilypond_rule222,lilypond_rule223,lilypond_rule224,lilypond_rule225,lilypond_rule226,lilypond_rule227,lilypond_rule228,lilypond_rule229,lilypond_rule230,lilypond_rule231,lilypond_rule232,lilypond_rule233,lilypond_rule234,lilypond_rule235,lilypond_rule236,lilypond_rule237,lilypond_rule238,lilypond_rule239,lilypond_rule240,lilypond_rule241,lilypond_rule242,lilypond_rule243,lilypond_rule244,lilypond_rule245,lilypond_rule246,lilypond_rule247,lilypond_rule248,lilypond_rule249,lilypond_rule250,lilypond_rule251,lilypond_rule252,lilypond_rule253,lilypond_rule254,lilypond_rule255,lilypond_rule256,lilypond_rule257,lilypond_rule258,lilypond_rule259,lilypond_rule260,lilypond_rule261,lilypond_rule262,lilypond_rule263,lilypond_rule264,lilypond_rule265,lilypond_rule266,lilypond_rule267,lilypond_rule268,lilypond_rule269,lilypond_rule270,lilypond_rule271,lilypond_rule272,lilypond_rule273,lilypond_rule274,lilypond_rule275,lilypond_rule276,lilypond_rule277,lilypond_rule278,lilypond_rule279,lilypond_rule280,lilypond_rule281,lilypond_rule282,lilypond_rule283,lilypond_rule284,lilypond_rule285,lilypond_rule286,lilypond_rule287,lilypond_rule288,lilypond_rule289,lilypond_rule290,lilypond_rule291,lilypond_rule292,lilypond_rule293,lilypond_rule294,lilypond_rule295,lilypond_rule296,lilypond_rule297,lilypond_rule298,lilypond_rule299,lilypond_rule300,lilypond_rule301,lilypond_rule302,lilypond_rule303,lilypond_rule304,lilypond_rule305,lilypond_rule306,lilypond_rule307,lilypond_rule308,lilypond_rule309,lilypond_rule310,lilypond_rule311,lilypond_rule312,lilypond_rule313,lilypond_rule314,lilypond_rule315,lilypond_rule316,lilypond_rule317,lilypond_rule318,lilypond_rule319,lilypond_rule320,lilypond_rule321,lilypond_rule322,lilypond_rule323,lilypond_rule324,lilypond_rule325,lilypond_rule326,lilypond_rule327,lilypond_rule328,lilypond_rule329,lilypond_rule330,lilypond_rule331,lilypond_rule332,lilypond_rule333,lilypond_rule334,lilypond_rule335,lilypond_rule336,lilypond_rule337,lilypond_rule338,lilypond_rule339,lilypond_rule340,lilypond_rule341,lilypond_rule342,lilypond_rule343,],
+    "\\": [lilypond_rule2, lilypond_rule3, lilypond_rule4, lilypond_rule5, lilypond_rule6, lilypond_rule7, lilypond_rule37, lilypond_rule38, lilypond_rule39, lilypond_rule40, lilypond_rule41, lilypond_rule42, lilypond_rule43, lilypond_rule44, lilypond_rule45, lilypond_rule46, lilypond_rule47, lilypond_rule48, lilypond_rule49, lilypond_rule50, lilypond_rule51, lilypond_rule52, lilypond_rule53, lilypond_rule54, lilypond_rule55, lilypond_rule56, lilypond_rule57, lilypond_rule58, lilypond_rule59, lilypond_rule60, lilypond_rule61, lilypond_rule62, lilypond_rule63, lilypond_rule64, lilypond_rule65, lilypond_rule66, lilypond_rule67, lilypond_rule68, lilypond_rule69, lilypond_rule70, lilypond_rule71, lilypond_rule72, lilypond_rule73, lilypond_rule74, lilypond_rule75, lilypond_rule76, lilypond_rule77, lilypond_rule78, lilypond_rule79, lilypond_rule80, lilypond_rule81, lilypond_rule82, lilypond_rule83, lilypond_rule84, lilypond_rule85, lilypond_rule86, lilypond_rule87, lilypond_rule88, lilypond_rule89, lilypond_rule90, lilypond_rule91, lilypond_rule92, lilypond_rule93, lilypond_rule94, lilypond_rule95, lilypond_rule96, lilypond_rule97, lilypond_rule98, lilypond_rule99, lilypond_rule100, lilypond_rule101, lilypond_rule102, lilypond_rule103, lilypond_rule104, lilypond_rule105, lilypond_rule106, lilypond_rule107, lilypond_rule108, lilypond_rule109, lilypond_rule110, lilypond_rule111, lilypond_rule112, lilypond_rule113, lilypond_rule114, lilypond_rule115, lilypond_rule116, lilypond_rule117, lilypond_rule118, lilypond_rule119, lilypond_rule120, lilypond_rule121, lilypond_rule122, lilypond_rule123, lilypond_rule124, lilypond_rule125, lilypond_rule126, lilypond_rule127, lilypond_rule128, lilypond_rule129, lilypond_rule130, lilypond_rule131, lilypond_rule132, lilypond_rule133, lilypond_rule134, lilypond_rule135, lilypond_rule136, lilypond_rule137, lilypond_rule138, lilypond_rule139, lilypond_rule140, lilypond_rule141, lilypond_rule142, lilypond_rule143, lilypond_rule144, lilypond_rule145, lilypond_rule146, lilypond_rule147, lilypond_rule148, lilypond_rule149, lilypond_rule150, lilypond_rule151, lilypond_rule152, lilypond_rule153, lilypond_rule154, lilypond_rule155, lilypond_rule156, lilypond_rule157, lilypond_rule158, lilypond_rule159, lilypond_rule160, lilypond_rule161, lilypond_rule162, lilypond_rule163, lilypond_rule164, lilypond_rule165, lilypond_rule166, lilypond_rule167, lilypond_rule168, lilypond_rule169, lilypond_rule170, lilypond_rule171, lilypond_rule172, lilypond_rule173, lilypond_rule174, lilypond_rule175, lilypond_rule176, lilypond_rule177, lilypond_rule178, lilypond_rule179, lilypond_rule180, lilypond_rule181, lilypond_rule182, lilypond_rule183, lilypond_rule184, lilypond_rule185, lilypond_rule186, lilypond_rule187, lilypond_rule188, lilypond_rule189, lilypond_rule190, lilypond_rule191, lilypond_rule192, lilypond_rule193, lilypond_rule194, lilypond_rule195, lilypond_rule196, lilypond_rule197, lilypond_rule198, lilypond_rule199, lilypond_rule200, lilypond_rule201, lilypond_rule202, lilypond_rule203, lilypond_rule204, lilypond_rule205, lilypond_rule206, lilypond_rule207, lilypond_rule208, lilypond_rule209, lilypond_rule210, lilypond_rule211, lilypond_rule212, lilypond_rule213, lilypond_rule214, lilypond_rule215, lilypond_rule216, lilypond_rule217, lilypond_rule218, lilypond_rule219, lilypond_rule220, lilypond_rule221, lilypond_rule222, lilypond_rule223, lilypond_rule224, lilypond_rule225, lilypond_rule226, lilypond_rule227, lilypond_rule228, lilypond_rule229, lilypond_rule230, lilypond_rule231, lilypond_rule232, lilypond_rule233, lilypond_rule234, lilypond_rule235, lilypond_rule236, lilypond_rule237, lilypond_rule238, lilypond_rule239, lilypond_rule240, lilypond_rule241, lilypond_rule242, lilypond_rule243, lilypond_rule244, lilypond_rule245, lilypond_rule246, lilypond_rule247, lilypond_rule248, lilypond_rule249, lilypond_rule250, lilypond_rule251, lilypond_rule252, lilypond_rule253, lilypond_rule254, lilypond_rule255, lilypond_rule256, lilypond_rule257, lilypond_rule258, lilypond_rule259, lilypond_rule260, lilypond_rule261, lilypond_rule262, lilypond_rule263, lilypond_rule264, lilypond_rule265, lilypond_rule266, lilypond_rule267, lilypond_rule268, lilypond_rule269, lilypond_rule270, lilypond_rule271, lilypond_rule272, lilypond_rule273, lilypond_rule274, lilypond_rule275, lilypond_rule276, lilypond_rule277, lilypond_rule278, lilypond_rule279, lilypond_rule280, lilypond_rule281, lilypond_rule282, lilypond_rule283, lilypond_rule284, lilypond_rule285, lilypond_rule286, lilypond_rule287, lilypond_rule288, lilypond_rule289, lilypond_rule290, lilypond_rule291, lilypond_rule292, lilypond_rule293, lilypond_rule294, lilypond_rule295, lilypond_rule296, lilypond_rule297, lilypond_rule298, lilypond_rule299, lilypond_rule300, lilypond_rule301, lilypond_rule302, lilypond_rule303, lilypond_rule304, lilypond_rule305, lilypond_rule306, lilypond_rule307, lilypond_rule308, lilypond_rule309, lilypond_rule310, lilypond_rule311, lilypond_rule312, lilypond_rule313, lilypond_rule314, lilypond_rule315, lilypond_rule316, lilypond_rule317, lilypond_rule318, lilypond_rule319, lilypond_rule320, lilypond_rule321, lilypond_rule322, lilypond_rule323, lilypond_rule324, lilypond_rule325, lilypond_rule326, lilypond_rule327, lilypond_rule328, lilypond_rule329, lilypond_rule330, lilypond_rule331, lilypond_rule332, lilypond_rule333, lilypond_rule334, lilypond_rule335, lilypond_rule336, lilypond_rule337, lilypond_rule338, lilypond_rule339, lilypond_rule340, lilypond_rule341, lilypond_rule342, lilypond_rule343,],
     "]": [lilypond_rule14,],
     "_": [lilypond_rule344,],
     "a": [lilypond_rule344,],
@@ -1613,8 +1613,8 @@ rulesDict1 = {
     "o": [lilypond_rule344,],
     "p": [lilypond_rule344,],
     "q": [lilypond_rule344,],
-    "r": [lilypond_rule24,lilypond_rule344,],
-    "s": [lilypond_rule26,lilypond_rule344,],
+    "r": [lilypond_rule24, lilypond_rule344,],
+    "s": [lilypond_rule26, lilypond_rule344,],
     "t": [lilypond_rule344,],
     "u": [lilypond_rule344,],
     "v": [lilypond_rule344,],
@@ -1634,4 +1634,3 @@ rulesDictDict = {
 
 # Import dict for lilypond mode.
 importDict = {}
-

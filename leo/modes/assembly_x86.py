@@ -829,13 +829,13 @@ def assembly_x86_rule0(colorer, s, i):
 def assembly_x86_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_x86_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_x86_rule3(colorer, s, i):
@@ -909,7 +909,7 @@ def assembly_x86_rule19(colorer, s, i):
 rulesDict1 = {
     "!": [assembly_x86_rule15,],
     "\"": [assembly_x86_rule2,],
-    "%": [assembly_x86_rule3,assembly_x86_rule4,assembly_x86_rule10,],
+    "%": [assembly_x86_rule3, assembly_x86_rule4, assembly_x86_rule10,],
     "&": [assembly_x86_rule13,],
     "'": [assembly_x86_rule1,],
     "*": [assembly_x86_rule9,],
@@ -999,4 +999,3 @@ rulesDictDict = {
 
 # Import dict for assembly_x86 mode.
 importDict = {}
-

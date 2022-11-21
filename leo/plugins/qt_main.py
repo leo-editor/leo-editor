@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
         self.tab.setObjectName("tab")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.textBrowser = QtWidgets.QTextBrowser(self.tab) # Was QtGui.QTextBrowser.
+        self.textBrowser = QtWidgets.QTextBrowser(self.tab)  # Was QtGui.QTextBrowser.
         self.textBrowser.setObjectName("textBrowser")
         self.verticalLayout_3.addWidget(self.textBrowser)
         self.tabWidget.addTab(self.tab, "")
@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setSpacing(6)
         self.verticalLayout_4.setMargin(0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.richTextEdit = QtWidgets.QTextEdit(self.page_2) # Was QtGui.QTextEdit.
+        self.richTextEdit = QtWidgets.QTextEdit(self.page_2)  # Was QtGui.QTextEdit.
         self.richTextEdit.setFrameShape(QtGui.QFrame.NoFrame)
         self.richTextEdit.setFrameShadow(QtGui.QFrame.Plain)
         self.richTextEdit.setLineWidth(0)

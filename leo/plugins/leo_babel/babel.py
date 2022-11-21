@@ -35,12 +35,12 @@ with open(os.path.join(os.path.dirname(__file__), 'doc', 'Leo-Babel.rst'), 'r') 
 
 #@+others
 #@+node:bob.20170720150451.1: ** init()
-def init ():
+def init():
     leoG.registerHandler('after-create-leo-frame', onCreate)
     leoG.plugin_signon(__name__)
     return True
 #@+node:bob.20170720150504.1: ** onCreate()
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     cmdr = keys.get('c')
     if not cmdr: return

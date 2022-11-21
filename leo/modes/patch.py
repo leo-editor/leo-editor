@@ -83,8 +83,8 @@ def patch_rule9(colorer, s, i):
 rulesDict1 = {
     "!": [patch_rule7,],
     "*": [patch_rule9,],
-    "+": [patch_rule0,patch_rule3,],
-    "-": [patch_rule1,patch_rule5,],
+    "+": [patch_rule0, patch_rule3,],
+    "-": [patch_rule1, patch_rule5,],
     "<": [patch_rule6,],
     ">": [patch_rule4,],
     "@": [patch_rule8,],
@@ -98,4 +98,3 @@ rulesDictDict = {
 
 # Import dict for patch mode.
 importDict = {}
-

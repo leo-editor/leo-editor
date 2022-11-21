@@ -28,23 +28,18 @@ search.
 #@+<< ctagscompleter imports >>
 #@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>
 import os
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
-if isQt5 or isQt6:
-    QCompleter = QtWidgets.QCompleter
-    QStringListModel = QtCore.QStringListModel
-else:
-    QCompleter = QtGui.QCompleter
-    QStringListModel = QtWidgets.QStringListModel
-#
+from leo.core.leoQt import QtCore, QtWidgets
+QCompleter = QtWidgets.QCompleter
+QStringListModel = QtCore.QStringListModel
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ctagscompleter imports >>
 # Global variables
-controllers = {}
-    # Keys are commanders, values are controllers.
-tagLines = []
-    # The saved contents of the tags file.
+controllers: Dict[Any, Any] = {}  # Keys are commanders, values are controllers.
+tagLines: List[str] = []  # The saved contents of the tags file.
 
 #@+others
 #@+node:ekr.20110307092028.14155: ** Top-level functions

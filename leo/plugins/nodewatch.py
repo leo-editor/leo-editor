@@ -143,7 +143,7 @@ class NodewatchController:
         self.watchlists[key] = list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
-class LeoNodewatchWidget(QtWidgets.QWidget):
+class LeoNodewatchWidget(QtWidgets.QWidget):  # type:ignore
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self, c, parent=None):
@@ -258,10 +258,9 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         nodes = []
         for node in self.c.all_unique_nodes():
             if node.h.startswith('@nodewatch'):
-                poslist = self.c.vnode2allPositions(node)
                 parentheads = []
-                for n in poslist:
-                    for parent in n.parents():
+                for p in self.c.vnode2allPositions(node):
+                    for parent in p.parents():
                         parentheads.append(parent.h)
                 settings = '@settings' in parentheads
                 ignore = False

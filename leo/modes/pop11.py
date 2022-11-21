@@ -193,7 +193,7 @@ keywordsDictDict = {
 def pop11_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::comment",exclude_match=False,
+        delegate="pop11::comment", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule1(colorer, s, i):
@@ -204,37 +204,37 @@ def pop11_rule1(colorer, s, i):
 def pop11_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string",exclude_match=False,
+        delegate="pop11::string", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pop11_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string",exclude_match=False,
+        delegate="pop11::string", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pop11_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string",exclude_match=False,
+        delegate="pop11::string", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pop11_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="![", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule8(colorer, s, i):
@@ -340,16 +340,16 @@ def pop11_rule32(colorer, s, i):
 rulesDict1 = {
     "!": [pop11_rule7,],
     "\"": [pop11_rule3,],
-    "#": [pop11_rule10,pop11_rule12,],
+    "#": [pop11_rule10, pop11_rule12,],
     "'": [pop11_rule2,],
-    "(": [pop11_rule8,pop11_rule14,],
+    "(": [pop11_rule8, pop11_rule14,],
     ")": [pop11_rule13,],
     "*": [pop11_rule31,],
     "+": [pop11_rule28,],
     ",": [pop11_rule16,],
     "-": [pop11_rule30,],
     ".": [pop11_rule15,],
-    "/": [pop11_rule0,pop11_rule29,],
+    "/": [pop11_rule0, pop11_rule29,],
     "0": [pop11_rule32,],
     "1": [pop11_rule32,],
     "2": [pop11_rule32,],
@@ -360,12 +360,12 @@ rulesDict1 = {
     "7": [pop11_rule32,],
     "8": [pop11_rule32,],
     "9": [pop11_rule32,],
-    ":": [pop11_rule9,pop11_rule20,],
-    ";": [pop11_rule1,pop11_rule17,],
-    "<": [pop11_rule24,pop11_rule25,pop11_rule27,],
+    ":": [pop11_rule9, pop11_rule20,],
+    ";": [pop11_rule1, pop11_rule17,],
+    "<": [pop11_rule24, pop11_rule25, pop11_rule27,],
     "=": [pop11_rule22,],
-    ">": [pop11_rule11,pop11_rule23,pop11_rule26,],
-    "@": [pop11_rule19,pop11_rule32,],
+    ">": [pop11_rule11, pop11_rule23, pop11_rule26,],
+    "@": [pop11_rule19, pop11_rule32,],
     "A": [pop11_rule32,],
     "B": [pop11_rule32,],
     "C": [pop11_rule32,],
@@ -431,43 +431,43 @@ rulesDict1 = {
 def pop11_rule33(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="![", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list",exclude_match=False,
+        delegate="pop11::list", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule36(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string",exclude_match=False,
+        delegate="pop11::string", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pop11_rule37(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string",exclude_match=False,
+        delegate="pop11::string", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pop11_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="null", begin="%", end="%",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::main",exclude_match=False,
+        delegate="pop11::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule39(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::comment",exclude_match=False,
+        delegate="pop11::comment", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pop11_rule40(colorer, s, i):
@@ -499,7 +499,7 @@ rulesDict2 = {
     "'": [pop11_rule36,],
     "/": [pop11_rule39,],
     ";": [pop11_rule40,],
-    "=": [pop11_rule41,pop11_rule42,],
+    "=": [pop11_rule41, pop11_rule42,],
     "?": [pop11_rule44,],
     "[": [pop11_rule33,],
     "^": [pop11_rule43,],
@@ -537,4 +537,3 @@ rulesDictDict = {
 
 # Import dict for pop11 mode.
 importDict = {}
-

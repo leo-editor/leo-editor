@@ -21,11 +21,6 @@ class TestConfig(LeoUnitTest):
     def test_c_config_printSettings(self):
         c = self.c
         c.config.printSettings()
-    #@+node:ekr.20210909194336.22: *3* TestConfig.test_local_settings_c_page_width_
-    def test_local_settings_c_page_width_(self):
-        c = self.c
-        assert c.page_width
-        self.assertEqual(c.page_width, c.config.getInt('page_width'))
     #@-others
 #@-others
 #@-leo

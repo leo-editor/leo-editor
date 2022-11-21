@@ -246,7 +246,7 @@ def controller(c):
 #@+node:ekr.20120913110135.10603: *3* init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
@@ -359,9 +359,9 @@ class ScreenCastController:
         """Execute the command whose name is given and update the screen immediately."""
         m = self
         c = m.c
+        # Named commands handle their own undo!
+        # The undo handling in m.next should suffice.
         c.k.simulateCommand(command_name)
-            # Named commands handle their own undo!
-            # The undo handling in m.next should suffice.
         c.redraw()
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
@@ -482,8 +482,8 @@ class ScreenCastController:
         """Activate the indicated *top-level* menu."""
         m = self
         c = m.c
+        # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
             if 0:  # None of this works.
@@ -664,8 +664,8 @@ class ScreenCastController:
         m.clear_state()
         p.contract()
         c.redraw(p)
+        # Clear widgets left over from previous, unfinished, slideshows.
         m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
     #@+node:ekr.20170128184559.1: *4* sc.start_commands (new)
     def start_commands(self, commands):
@@ -685,8 +685,8 @@ class ScreenCastController:
         m.clear_state()
         # p.contract()
         # c.redraw(p)
+        # Clear widgets left over from previous, unfinished, slideshows.
         m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
     #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):

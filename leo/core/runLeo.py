@@ -1,6 +1,8 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2605: * @file runLeo.py
+#@@first
 #@@first
 """Entry point for Leo in Python."""
 #@+<< imports and inits >>
@@ -70,8 +72,8 @@ def profile_leo():
     from leo.core import leoGlobals as g
     theDir = os.getcwd()
     # On Windows, name must be a plain string.
+    # This is a binary file.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
-        # This is a binary file.
     print(f"profiling binary stats to {name}")
     profile.run('import leo ; leo.run()', name)
     p = pstats.Stats(name)
@@ -81,7 +83,7 @@ def profile_leo():
 
 prof = profile_leo
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
-def run(fileName=None, pymacs=None, *args, **keywords):
+def run(fileName=None, pymacs: bool=None, *args, **keywords):
     """Initialize and run Leo"""
     # #1403: sys.excepthook doesn't help.
     # sys.excepthook = leo_excepthook

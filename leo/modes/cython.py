@@ -47,7 +47,7 @@ cython_main_keywords_dict = {
     "IF": "keyword4",
     "ELIF": "keyword4",
     "ELSE": "keyword4",
-    
+
     # New types, hightlighted as builtins (keyword3).
     "NULL": "keyword3",
     "bint": "keyword3",
@@ -340,25 +340,25 @@ def cython_rule0(colorer, s, i):
 def cython_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cython_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cython_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cython_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cython_rule5(colorer, s, i):
@@ -427,36 +427,36 @@ def cython_rule20(colorer, s, i):
 
 def cython_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
-    
+
 url = False
-    
+
 if url:
     h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
     f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
     def cython_rule_h_url(colorer, s, i):
-        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=h_url_regex,
-            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
-        
-    def cython_rule_f_url(colorer,s,i):
-        return colorer.match_seq_regexp (s,i,kind="keyword",regexp=f_url_regex,
-            at_line_start = False,at_whitespace_end = False,at_word_start = False,delegate = "")
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex,
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+    def cython_rule_f_url(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex,
+            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 else:
     # Always fail.
     def cython_rule_h_url(colorer, s, i):
         return 0
-        
-    def cython_rule_f_url(colorer,s,i):
+
+    def cython_rule_f_url(colorer, s, i):
         return 0
-    
+
 # Rules dict for cython_main ruleset.
 rulesDict1 = {
     "!": [cython_rule6,],
-    "\"": [cython_rule1,cython_rule3,],
+    "\"": [cython_rule1, cython_rule3,],
     "#": [cython_rule0,],
     "%": [cython_rule15,],
     "&": [cython_rule16,],
-    "'": [cython_rule2,cython_rule4,],
+    "'": [cython_rule2, cython_rule4,],
     "(": [cython_rule20,],
     "*": [cython_rule12,],
     "+": [cython_rule9,],
@@ -472,18 +472,18 @@ rulesDict1 = {
     "7": [cython_rule21,],
     "8": [cython_rule21,],
     "9": [cython_rule21,],
-    "<": [cython_rule8,cython_rule14,],
+    "<": [cython_rule8, cython_rule14,],
     "=": [cython_rule5,],
-    ">": [cython_rule7,cython_rule13,],
+    ">": [cython_rule7, cython_rule13,],
     "@": [cython_rule21,],
     "A": [cython_rule21,],
     "B": [cython_rule21,],
     "C": [cython_rule21,],
     "D": [cython_rule21,],
     "E": [cython_rule21,],
-    "F": [cython_rule_f_url,cython_rule21,],
+    "F": [cython_rule_f_url, cython_rule21,],
     "G": [cython_rule21,],
-    "H": [ cython_rule_h_url,cython_rule21,],
+    "H": [cython_rule_h_url, cython_rule21,],
     "I": [cython_rule21,],
     "J": [cython_rule21,],
     "K": [cython_rule21,],
@@ -509,9 +509,9 @@ rulesDict1 = {
     "c": [cython_rule21,],
     "d": [cython_rule21,],
     "e": [cython_rule21,],
-    "f": [cython_rule_f_url,cython_rule21,],
+    "f": [cython_rule_f_url, cython_rule21,],
     "g": [cython_rule21,],
-    "h": [cython_rule_h_url,cython_rule21,],
+    "h": [cython_rule_h_url, cython_rule21,],
     "i": [cython_rule21,],
     "j": [cython_rule21,],
     "k": [cython_rule21,],

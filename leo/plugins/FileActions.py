@@ -96,10 +96,10 @@ def onIconDoubleClick(tag, keywords):
     # This generates a slightly confusing warning if there are no dirty nodes.
     c.fileCommands.writeDirtyAtFileNodes()
     if doFileAction(filename, c):
+        # Action was taken - Stop other double-click handlers from running
         return True
-            # Action was taken - Stop other double-click handlers from running
+    # No action taken - Let other double-click handlers run
     return None
-        # No action taken - Let other double-click handlers run
 
 #@+node:ekr.20040915105758.15: ** doFileAction
 def doFileAction(filename, c):
@@ -124,18 +124,15 @@ def doFileAction(filename, c):
 def applyFileAction(p, filename, c):
 
     script = g.getScript(c, p)
+    redirect = c.config.getBool('redirect-execute-script-output-to-log_pane')
     if script:
         working_directory = os.getcwd()
         file_directory = c.frame.openDirectory
         os.chdir(file_directory)
         script += '\n'
-        #@+<< redirect output >>
-        #@+node:ekr.20040915105758.17: *3* << redirect output >>
-        if c.config.redirect_execute_script_output_to_log_pane:
-
-            g.redirectStdout()  # Redirect stdout
-            g.redirectStderr()  # Redirect stderr
-        #@-<< redirect output >>
+        if redirect:
+            g.redirectStdout()
+            g.redirectStderr()
         try:
             namespace = {
                 'c': c, 'g': g,
@@ -143,24 +140,13 @@ def applyFileAction(p, filename, c):
                 'shellScriptInWindow': shellScriptInWindow}
             # exec script in namespace
             exec(script, namespace)
-            #@+<< unredirect output >>
-            #@+node:ekr.20040915105758.18: *3* << unredirect output >>
-            if c.config.redirect_execute_script_output_to_log_pane:
-
-                g.restoreStderr()
-                g.restoreStdout()
-            #@-<< unredirect output >>
         except Exception:
-            #@+<< unredirect output >>
-            #@+node:ekr.20040915105758.18: *3* << unredirect output >>
-            if c.config.redirect_execute_script_output_to_log_pane:
-
-                g.restoreStderr()
-                g.restoreStdout()
-            #@-<< unredirect output >>
             g.es("exception in FileAction plugin")
             g.es_exception(full=False, c=c)
-
+        finally:
+            if redirect:
+                g.restoreStderr()
+                g.restoreStdout()
         os.chdir(working_directory)
 #@+node:ekr.20040915105758.20: ** shellScriptInWindow
 def shellScriptInWindow(c, script):

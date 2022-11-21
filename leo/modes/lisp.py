@@ -1001,7 +1001,7 @@ keywordsDictDict = {
 def lisp_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="#|", end="|#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lisp_rule1(colorer, s, i):
@@ -1051,7 +1051,7 @@ def lisp_rule10(colorer, s, i):
 def lisp_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lisp_rule12(colorer, s, i):
@@ -1063,7 +1063,7 @@ rulesDict1 = {
     "#": [lisp_rule0,],
     "%": [lisp_rule6,],
     "&": [lisp_rule3,],
-    "'": [lisp_rule1,lisp_rule2,],
+    "'": [lisp_rule1, lisp_rule2,],
     "*": [lisp_rule12,],
     "+": [lisp_rule12,],
     "-": [lisp_rule12,],
@@ -1078,11 +1078,11 @@ rulesDict1 = {
     "7": [lisp_rule12,],
     "8": [lisp_rule12,],
     "9": [lisp_rule12,],
-    ";": [lisp_rule7,lisp_rule8,lisp_rule9,lisp_rule10,],
+    ";": [lisp_rule7, lisp_rule8, lisp_rule9, lisp_rule10,],
     "<": [lisp_rule12,],
     "=": [lisp_rule12,],
     ">": [lisp_rule12,],
-    "@": [lisp_rule5,lisp_rule12,],
+    "@": [lisp_rule5, lisp_rule12,],
     "A": [lisp_rule12,],
     "B": [lisp_rule12,],
     "C": [lisp_rule12,],
@@ -1145,4 +1145,3 @@ rulesDictDict = {
 
 # Import dict for lisp mode.
 importDict = {}
-

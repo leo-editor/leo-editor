@@ -90,7 +90,7 @@ rulesDict1 = {
     "X": [ptl_rule2,],
     "Y": [ptl_rule2,],
     "Z": [ptl_rule2,],
-    "[": [ptl_rule0,ptl_rule1,],
+    "[": [ptl_rule0, ptl_rule1,],
     "_": [ptl_rule2,],
     "a": [ptl_rule2,],
     "b": [ptl_rule2,],
@@ -129,4 +129,3 @@ rulesDictDict = {
 importDict = {
     "ptl_main": ["python::main",],
 }
-

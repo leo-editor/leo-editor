@@ -6,14 +6,14 @@ Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
 """
+from typing import Any, Dict
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtDeclarative, QtGui
+from leo.core.leoQt import QtCore, QtDeclarative, QtGui
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
-controllers = {}
-    # keys are c.hash(), values are NavControllers
+controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 
 #@+others
 #@+node:ville.20120604212857.4219: ** init
@@ -93,10 +93,7 @@ class NbController:
         ctx.setContextProperty("nodesModel", self.mw.model)
         path = g.os_path_join(g.computeLeoDir(), 'plugins', 'qmlnb', 'qml', 'leonbmain.qml')
         view.setSource(QtCore.QUrl(path))
-        if isQt5 or isQt6:
-            mode = view.SizeRootObjectToView
-        else:
-            mode = QtDeclarative.QDeclarativeView.SizeRootObjectToView
+        mode = view.SizeRootObjectToView
         view.setResizeMode(mode)
         # Display the user interface and allow the user to interact with it.
         view.hide()

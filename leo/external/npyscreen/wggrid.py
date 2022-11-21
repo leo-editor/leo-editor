@@ -5,24 +5,24 @@
 #@+others
 #@+node:ekr.20170428084208.2: ** Declarations
 import curses
-from . import wgwidget   as widget
-from . import wgtextbox  as textbox
+from . import wgwidget as widget
+from . import wgtextbox as textbox
 
 
 #@+node:ekr.20170428084208.3: ** class SimpleGrid
 class SimpleGrid(widget.Widget):
-    _contained_widgets    = textbox.Textfield
+    _contained_widgets = textbox.Textfield
     default_column_number = 4
-    additional_y_offset   = 0
-    additional_x_offset   = 0
+    additional_y_offset = 0
+    additional_x_offset = 0
     #@+others
     #@+node:ekr.20170428084208.4: *3* SimpleGrid.__init__
-    def __init__(self, screen, columns = None,
-            column_width = None, col_margin=1, row_height = 1,
-            values = None,
-            always_show_cursor = False,
-            select_whole_line = False,
-            on_select_callback = None,
+    def __init__(self, screen, columns=None,
+            column_width=None, col_margin=1, row_height=1,
+            values=None,
+            always_show_cursor=False,
+            select_whole_line=False,
+            on_select_callback=None,
             **keywords):
         super(SimpleGrid, self).__init__(screen, **keywords)
         self.col_margin = col_margin
@@ -50,9 +50,9 @@ class SimpleGrid(widget.Widget):
     def set_grid_values_from_flat_list(self, new_values, max_cols=None, reset_cursor=True):
         if not max_cols:
             max_cols = self.columns
-        grid_values = [ [], ]
-        col_number        = 0
-        row_number        = 0
+        grid_values = [[],]
+        col_number = 0
+        row_number = 0
         for f in new_values:
             if col_number >= max_cols:
                 col_number = 0
@@ -62,7 +62,7 @@ class SimpleGrid(widget.Widget):
             col_number += 1
         self.values = grid_values
         if reset_cursor:
-            self.edit_cell = [0,0]
+            self.edit_cell = [0, 0]
 
     #@+node:ekr.20170428084208.6: *3* SimpleGrid.resize
     def resize(self):
@@ -82,12 +82,12 @@ class SimpleGrid(widget.Widget):
         column_width -= self.col_margin
         self._column_width = column_width
         if column_width < 1: raise Exception("Too many columns for space available")
-        for h in range( (self.height - self.additional_y_offset) // self.row_height ):
+        for h in range((self.height - self.additional_y_offset) // self.row_height):
             h_coord = h * self.row_height
             row = []
             for cell in range(self.columns):
                 x_offset = cell * (self._column_width + self.col_margin)
-                row.append(self._contained_widgets(self.parent, rely=h_coord+self.rely + self.additional_y_offset, relx = self.relx + x_offset + self.additional_x_offset, width=column_width, height=self.row_height))
+                row.append(self._contained_widgets(self.parent, rely=h_coord + self.rely + self.additional_y_offset, relx=self.relx + x_offset + self.additional_x_offset, width=column_width, height=self.row_height))
             self._my_widgets.append(row)
 
     #@+node:ekr.20170428084208.8: *3* SimpleGrid.display_value
@@ -99,7 +99,7 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.9: *3* SimpleGrid.calculate_area_needed
     def calculate_area_needed(self):
-        return 0,0
+        return 0, 0
 
     #@+node:ekr.20170428084208.10: *3* SimpleGrid.update
     def update(self, clear=True):
@@ -110,13 +110,13 @@ class SimpleGrid(widget.Widget):
         if self.begin_row_display_at < 0:
             self.begin_row_display_at = 0
         if (self.editing or self.always_show_cursor) and not self.edit_cell:
-            self.edit_cell = [0,0]
+            self.edit_cell = [0, 0]
         row_indexer = self.begin_row_display_at
         for widget_row in self._my_widgets:
             column_indexer = self.begin_col_display_at
             for cell in widget_row:
                 cell.grid_current_value_index = (row_indexer, column_indexer)
-                self._print_cell(cell, )
+                self._print_cell(cell,)
                 column_indexer += 1
             row_indexer += 1
 
@@ -159,7 +159,7 @@ class SimpleGrid(widget.Widget):
 
         self.custom_print_cell(cell, cell_value)
 
-        cell.update() # <-------------------- WILL NEED TO OPTIMIZE THIS
+        cell.update()  # <-------------------- WILL NEED TO OPTIMIZE THIS
 
     #@+node:ekr.20170428084208.12: *3* SimpleGrid.custom_print_cell
     def custom_print_cell(self, actual_cell, cell_display_value):
@@ -195,30 +195,30 @@ class SimpleGrid(widget.Widget):
         '''SimpleGrid.set_up_handlers.'''
         super(SimpleGrid, self).set_up_handlers()
         self.handlers = {
-            curses.KEY_UP:      self.h_move_line_up,
-            curses.KEY_LEFT:    self.h_move_cell_left,
-            curses.KEY_DOWN:    self.h_move_line_down,
-            curses.KEY_RIGHT:   self.h_move_cell_right,
-            "k":                self.h_move_line_up,
-            "h":                self.h_move_cell_left,
-            "j":                self.h_move_line_down,
-            "l":                self.h_move_cell_right,
-            curses.KEY_NPAGE:   self.h_move_page_down,
-            curses.KEY_PPAGE:   self.h_move_page_up,
-            curses.KEY_HOME:    self.h_show_beginning,
-            curses.KEY_END:     self.h_show_end,
-            ord('g'):           self.h_show_beginning,
-            ord('G'):           self.h_show_end,
-            curses.ascii.TAB:   self.h_exit,
-            curses.KEY_BTAB:     self.h_exit_up,
-            '^P':               self.h_exit_up,
-            '^N':               self.h_exit_down,
+            curses.KEY_UP: self.h_move_line_up,
+            curses.KEY_LEFT: self.h_move_cell_left,
+            curses.KEY_DOWN: self.h_move_line_down,
+            curses.KEY_RIGHT: self.h_move_cell_right,
+            "k": self.h_move_line_up,
+            "h": self.h_move_cell_left,
+            "j": self.h_move_line_down,
+            "l": self.h_move_cell_right,
+            curses.KEY_NPAGE: self.h_move_page_down,
+            curses.KEY_PPAGE: self.h_move_page_up,
+            curses.KEY_HOME: self.h_show_beginning,
+            curses.KEY_END: self.h_show_end,
+            ord('g'): self.h_show_beginning,
+            ord('G'): self.h_show_end,
+            curses.ascii.TAB: self.h_exit,
+            curses.KEY_BTAB: self.h_exit_up,
+            '^P': self.h_exit_up,
+            '^N': self.h_exit_down,
             #curses.ascii.NL:    self.h_exit,
             #curses.ascii.SP:    self.h_exit,
             #ord('x'):       self.h_exit,
-            ord('q'):       self.h_exit,
-            curses.ascii.ESC:   self.h_exit,
-            curses.KEY_MOUSE:    self.h_exit_mouse,
+            ord('q'): self.h_exit,
+            curses.ascii.ESC: self.h_exit,
+            curses.KEY_MOUSE: self.h_exit_mouse,
         }
         self.complex_handlers = []
     #@+node:ekr.20170428084208.18: *3* SimpleGrid.getValuesFlatList
@@ -232,14 +232,14 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.19: *3* SimpleGrid.ensure_cursor_on_display_down_right
     def ensure_cursor_on_display_down_right(self, inpt=None):
-        while self.begin_row_display_at  + len(self._my_widgets) - 1 < self.edit_cell[0]:
+        while self.begin_row_display_at + len(self._my_widgets) - 1 < self.edit_cell[0]:
             self.h_scroll_display_down(inpt)
         while self.edit_cell[1] > self.begin_col_display_at + self.columns - 1:
             self.h_scroll_right(inpt)
 
     #@+node:ekr.20170428084208.20: *3* SimpleGrid.ensure_cursor_on_display_up
     def ensure_cursor_on_display_up(self, inpt=None):
-        while self.begin_row_display_at  >  self.edit_cell[0]:
+        while self.begin_row_display_at > self.edit_cell[0]:
             self.h_scroll_display_up(inpt)
 
     #@+node:ekr.20170428084208.21: *3* SimpleGrid.h_show_beginning
@@ -251,7 +251,7 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.22: *3* SimpleGrid.h_show_end
     def h_show_end(self, inpt):
-        self.edit_cell = [len(self.values) - 1 , len(self.values[-1]) - 1]
+        self.edit_cell = [len(self.values) - 1, len(self.values[-1]) - 1]
         self.ensure_cursor_on_display_down_right()
         self.on_select(inpt)
 
@@ -266,7 +266,7 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.24: *3* SimpleGrid.h_move_cell_right
     def h_move_cell_right(self, inpt):
-        if self.edit_cell[1] <= len(self.values[self.edit_cell[0]]) -2:   # Only allow move to end of current line
+        if self.edit_cell[1] <= len(self.values[self.edit_cell[0]]) - 2:  # Only allow move to end of current line
             self.edit_cell[1] += 1
 
         if self.edit_cell[1] > self.begin_col_display_at + self.columns - 1:
@@ -275,10 +275,10 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.25: *3* SimpleGrid.h_move_line_down
     def h_move_line_down(self, inpt):
-        if self.edit_cell[0] <= (len(self.values) -2) \
-        and (len(self.values[self.edit_cell[0]+1]) > self.edit_cell[1]):
+        if self.edit_cell[0] <= (len(self.values) - 2) \
+        and (len(self.values[self.edit_cell[0] + 1]) > self.edit_cell[1]):
             self.edit_cell[0] += 1
-        if self.begin_row_display_at  + len(self._my_widgets) - 1 < self.edit_cell[0]:
+        if self.begin_row_display_at + len(self._my_widgets) - 1 < self.edit_cell[0]:
             self.h_scroll_display_down(inpt)
         self.on_select(inpt)
 
@@ -324,7 +324,7 @@ class SimpleGrid(widget.Widget):
     def h_move_page_up(self, inpt):
         self.edit_cell[0] -= len(self._my_widgets)
         if self.edit_cell[0] < 0:
-             self.edit_cell[0] = 0
+            self.edit_cell[0] = 0
         self.ensure_cursor_on_display_up()
         self.on_select(inpt)
 
@@ -332,7 +332,7 @@ class SimpleGrid(widget.Widget):
     def h_move_page_down(self, inpt):
         self.edit_cell[0] += len(self._my_widgets)
         if self.edit_cell[0] > len(self.values) - 1:
-             self.edit_cell[0] = len(self.values) -1
+            self.edit_cell[0] = len(self.values) - 1
 
         self.ensure_cursor_on_display_down_right()
         self.on_select(inpt)

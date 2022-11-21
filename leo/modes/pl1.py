@@ -555,19 +555,19 @@ keywordsDictDict = {
 def pl1_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pl1_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pl1_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pl1_rule3(colorer, s, i):
@@ -652,14 +652,14 @@ rulesDict1 = {
     "%": [pl1_rule21,],
     "&": [pl1_rule12,],
     "'": [pl1_rule1,],
-    "(": [pl1_rule18,pl1_rule20,],
+    "(": [pl1_rule18, pl1_rule20,],
     ")": [pl1_rule17,],
-    "*": [pl1_rule3,pl1_rule7,],
+    "*": [pl1_rule3, pl1_rule7,],
     "+": [pl1_rule5,],
     ",": [pl1_rule15,],
     "-": [pl1_rule6,],
     ".": [pl1_rule14,],
-    "/": [pl1_rule0,pl1_rule8,],
+    "/": [pl1_rule0, pl1_rule8,],
     "0": [pl1_rule21,],
     "1": [pl1_rule21,],
     "2": [pl1_rule21,],
@@ -739,4 +739,3 @@ rulesDictDict = {
 
 # Import dict for pl1 mode.
 importDict = {}
-

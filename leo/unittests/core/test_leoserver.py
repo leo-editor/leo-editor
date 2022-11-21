@@ -34,10 +34,10 @@ class TestLeoServer(LeoUnitTest):
         global g_leoserver, g_server
         try:
             g_server.shut_down({})
-            print('===== server did not terminate properly ====')
+            print('===== server did not terminate properly ====')  # pragma:no cover
         except g_leoserver.TerminateServer:
             pass
-        except leoserver.ServerError:
+        except leoserver.ServerError:  # pragma:no cover
             pass
 
     def setUp(self):
@@ -65,7 +65,7 @@ class TestLeoServer(LeoUnitTest):
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
         if log_flag:
-            g.printObj(answer, tag=f"response to {action!r}")
+            g.printObj(answer, tag=f"response to {action!r}")  # pragma: no cover
         return answer
     #@+node:felix.20210621233316.102: *3* TestLeoServer.test_most_public_server_methods
     def test_most_public_server_methods(self):
@@ -74,6 +74,7 @@ class TestLeoServer(LeoUnitTest):
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        # Remove all uA's.
         methods = server._get_all_server_commands()
         # Ensure that some methods happen at the end.
         for z in ('toggle_mark', 'undo', 'redo'):
@@ -89,8 +90,11 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             # Other methods
+            'remove_tag', 'tag_node',
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+            'paste_node', 'paste_as_clone_node',  # New exclusion.
+            'paste_as_template',  # New exclusion.
             'save_file',  # way too dangerous!
             # 'set_selection',  # Not ready yet.
             'open_file', 'close_file',  # Done by hand.
@@ -104,15 +108,26 @@ class TestLeoServer(LeoUnitTest):
         ]
         expected = ['error']
         param_d = {
+            # "remove_tag": {"tag": "testTag"},
+            # "tag_node": {"tag": "testTag"},
             # "apply_config": {"config": {"whatever": True}},
             "get_focus": {"log": False},
             "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
             "set_headline": {"name": "new headline"},
             "get_all_server_commands": {"log": False},
             "get_all_leo_commands": {"log": False},
+            # "paste_node": {"name", "paste-node-name"},
+            # "paste_as_clone_node": {"name", "paste-node-name"},
         }
         # First open a test file & performa all tests.
         server.open_file({"filename": test_dot_leo})  # A real file.
+        # Remove all uA's that can't be serialized.
+        file_c = g.openWithFileName(test_dot_leo)
+        for p in file_c.all_positions():
+            try:
+                json.dumps(p.u, skipkeys=True)
+            except TypeError:
+                p.u = None
         try:
             id_ = 0
             for method_name in methods:
@@ -131,7 +146,7 @@ class TestLeoServer(LeoUnitTest):
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in {tag}: {method_name!r} {e}")
+                            print(f"Exception in {tag}: {method_name!r} {e}")  # pragma:no cover
         finally:
             server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
@@ -177,25 +192,25 @@ class TestLeoServer(LeoUnitTest):
         for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
-                g.printObj(answer, tag=f"{tag}:{method}: answer")
+                g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
         #
         # Find commands that may select text: The answer is (p, pos, newpos).
         for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
-                g.printObj(answer, tag=f"{tag}:{method}: answer")
+                g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
         #
         # Change commands: The answer is a count of changed nodes.
         for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log:
-                g.printObj(answer, tag=f"{tag}:{method}: answer")
+                g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
         #
         # Tag commands. Why they are in leoFind.py??
         for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})
             if log:
-                g.printObj(answer, tag=f"{tag}:{method}: answer")
+                g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
 
     #@-others
 #@-others

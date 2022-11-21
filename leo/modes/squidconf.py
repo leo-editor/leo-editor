@@ -324,4 +324,3 @@ rulesDictDict = {
 
 # Import dict for squidconf mode.
 importDict = {}
-

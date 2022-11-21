@@ -13,6 +13,7 @@ Revised by EKR February 6-7, 2017.
 #@+<< demo.py imports >>
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
+from typing import List
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -20,6 +21,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< demo.py imports >>
+
 # pylint: disable=no-member,not-callable
 #@@language python
 #@@tabwidth -4
@@ -54,7 +56,7 @@ def demo_end(self, event=None, chain=False):
 #@+node:ekr.20170128213103.5: *3* init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         # g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
@@ -68,43 +70,38 @@ class Demo:
         self.c = c
         # pylint: disable=import-self
         from leo.plugins import demo as module
-        #
+        # True: start calls next until finished.
         self.auto_run = False
-            # True: start calls next until finished.
+        # True: Exceptions call self.end(). Good for debugging.
         self.end_on_exception = False
-            # True: Exceptions call self.end(). Good for debugging.
+        # For converting arguments to demo.key...
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
-            # For converting arguments to demo.key...
+        # The original size of the top-level Leo window. Restored in demo.end()
         self.initial_geometry = None
-            # The original size of the top-level Leo window.
-            # Restored in demo.end()
+        # Speed multiplier for simulated typing.
         self.key_speed = 1.0
-            # Speed multiplier for simulated typing.
+        # The leo.plugins.demo module.
         self.module = module
-            # The leo.plugins.demo module.
+        # Default minimal typing delay, in seconds.
         self.n1 = 0.02
-            # Default minimal typing delay, in seconds.
+        # Default maximum typing delay, in seconds.
         self.n2 = 0.175
-            # Default maximum typing delay, in seconds.
+        # The namespace for all demo script.
+        # Set in init_namespace, which subclasses may override.
         self.namespace = {}
-            # The namespace for all demo script.
-            # Set in init_namespace, which subclasses may override.
+        # List of widgets *not* to be deleted by delete_widgets.
         self.retained_widgets = []
-            # List of widgets *not* to be deleted by delete_widgets.
+        # For find_node: The outline to be searched for nodes.
         self.root = None
-            # For find_node: The outline to be searched for nodes.
+        # The root of the script tree.
         self.script_root = None
-            # The root of the script tree.
+        # Index into self.script_list.
         self.script_i = 0
-            # Index into self.script_list.
+        # A list of strings (scripts). Scripts are removed when executed.
         self.script_list = []
-            # A list of strings (scripts).
-            # Scripts are removed when executed.
-        self.user_dict = {}
-            # For use by scripts.
-        self.widgets = []
-            # References to all widgets created by this class.
-        #
+        self.speed: float = None
+        self.user_dict = {}  # For use by scripts.
+        self.widgets = []  # References to all widgets created by this class.
         # Init...
         self.init()
         self.init_namespace()
@@ -216,8 +213,7 @@ class Demo:
             script = self.script_list[self.script_i]
             self.setup_script()
             self.exec_node(script)
-            self.script_i += 1
-                # Restore invariant, and make net change = -1.
+            self.script_i += 1  # Restore invariant, and make net change = -1.
             self.teardown_script()
 
     prev_command = prev
@@ -260,8 +256,7 @@ class Demo:
         self.script_root = script_tree and script_tree.copy()
         self.delete_widgets()
         self.auto_run = auto_run
-        self.initial_geometry = self.get_top_geometry()
-            # Setup may change this.
+        self.initial_geometry = self.get_top_geometry()  # Setup may change this.
         if isinstance(p, leoNodes.Position):
             if p:
                 self.script_list = self.create_script_list(p, delim)
@@ -273,8 +268,8 @@ class Demo:
                         self.end()
                     if auto_run:
                         while self.script_i < len(self.script_list):
+                            # Helps, but widgets are not deleted.
                             g.app.gui.qtApp.processEvents()
-                                # Helps, but widgets are not deleted.
                             self.next()
                     else:
                         self.next()
@@ -320,7 +315,7 @@ class Demo:
         Return a list of strings.
         """
         aList = []
-        lines = []
+        lines: List[str] = []
         for s in g.splitLines(script_string):
             if s.startswith(delim):
                 if lines:
@@ -338,7 +333,7 @@ class Demo:
             aList.append(''.join(lines))
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
-    def key_wait(self, speed=None, n1=None, n2=None):
+    def key_wait(self, speed: float=None, n1=None, n2=None):
         """Wait for an interval between n1 and n2, in seconds."""
         if n1 is None:
             n1 = self.n1
@@ -490,8 +485,8 @@ class Demo:
     def open_menu(self, menu_name):
         """Activate the indicated *top-level* menu."""
         c = self.c
+        # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
         return menu
@@ -506,7 +501,7 @@ class Demo:
             p = g.findNodeAnywhere(c, headline)
         return p
     #@+node:ekr.20170211045602.1: *4* demo.insert_node
-    def insert_node(self, headline, end=True, keys=False, speed=None):
+    def insert_node(self, headline, end=True, keys=False, speed: float=None):
         """Helper for inserting a node."""
         c = self.c
         p = c.insertHeadline()
@@ -720,7 +715,7 @@ class Demo:
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes & helpers
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label(QtWidgets.QLabel):
+class Label(QtWidgets.QLabel):  # type:ignore
     """A class for user-defined callouts in demo.py."""
 
     def __init__(self, text,
@@ -793,8 +788,7 @@ class Callout(Label):
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image(QtWidgets.QLabel):
-
+class Image(QtWidgets.QLabel):  # type:ignore
     def __init__(self, fn,
         pane=None, magnification=None, position=None, size=None):
         """Image.__init__."""
@@ -840,8 +834,8 @@ class Image(QtWidgets.QLabel):
             demo.set_position(widget, position)
         widget.setPixmap(pixmap)
     #@-others
-#@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
-class Text(QtWidgets.QPlainTextEdit):
+#@+node:ekr.20170208095240.1: *3* class Text (QPlainTextEdit)
+class Text(QtWidgets.QPlainTextEdit):  # type:ignore
 
     def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None

@@ -27,10 +27,8 @@ def maximize_window(tag, keywords):
 
     if c and c.exists and c.frame and not c.frame.isNullFrame:
         gui = g.app.gui.guiName()
-        if gui in ('qt','qttabs'):
+        if gui == 'qt':
             c.frame.top.showMaximized()
-        # elif gui == 'tkinter':
-            # c.frame.resizeToScreen()
 #@-others
 #@@language python
 #@@tabwidth -4

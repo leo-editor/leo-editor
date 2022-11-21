@@ -14,6 +14,7 @@ This plugin is active only if::
 
 # By Paul Paterson. Rewritten by EKR.
 import time
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 #
@@ -21,14 +22,13 @@ from leo.core.leoQt import QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #
 # The global settings dict.
-gDict = {}  # Keys are commanders, values are settings dicts.
+gDict: Dict[Any, Any] = {}  # Keys are commanders, values are settings dicts.
 
 #@+others
 #@+node:ekr.20060108123141.2: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = not g.unitTesting
-        # Don't want autosave after unit testing.
+    ok = not g.unitTesting  # Don't want autosave after unit testing.
     if ok:
         # Register the handlers...
         g.registerHandler('after-create-leo-frame', onCreate)
@@ -82,7 +82,7 @@ def onIdle(tag, keywords):
                 if time.time() - last >= interval:
                     g.es_print("Autosave: %s" % time.ctime(), color="orange")
                     c.fileCommands.save(c.mFileName)
-                    c.set_focus(w, force=True)
+                    c.set_focus(w)
                     d['last'] = time.time()
                     gDict[c.hash()] = d
         else:

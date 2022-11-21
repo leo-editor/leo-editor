@@ -170,13 +170,13 @@ def elixir_rule0(colorer, s, i):
 def elixir_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def elixir_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def elixir_rule3(colorer, s, i):
@@ -335,14 +335,14 @@ def elixir_rule40(colorer, s, i):
 rulesDict1 = {
     "!": [elixir_rule27,],
     "\"": [elixir_rule1,],
-    "#": [elixir_rule0,elixir_rule17,],
+    "#": [elixir_rule0, elixir_rule17,],
     # "$": [elixir_rule5,],
     "'": [elixir_rule2,],
     "(": [elixir_rule3,],
     "*": [elixir_rule19,],
     "+": [elixir_rule18,],
     ",": [elixir_rule25,],
-    "-": [elixir_rule10,elixir_rule40,],
+    "-": [elixir_rule10, elixir_rule40,],
     ".": [elixir_rule12,],
     "/": [elixir_rule15,],
     "0": [elixir_rule40,],
@@ -355,7 +355,7 @@ rulesDict1 = {
     "7": [elixir_rule40,],
     "8": [elixir_rule40,],
     "9": [elixir_rule40,],
-    ":": [elixir_rule4,elixir_rule20,],
+    ":": [elixir_rule4, elixir_rule20,],
     ";": [elixir_rule13,],
     "<": [elixir_rule11,],
     "=": [elixir_rule14,],
@@ -390,12 +390,12 @@ rulesDict1 = {
     "[": [elixir_rule23,],
     "]": [elixir_rule24,],
     "_": [elixir_rule40,],
-    "a": [elixir_rule36,elixir_rule40,],
-    "b": [elixir_rule6,elixir_rule32,elixir_rule33,elixir_rule34,elixir_rule35,elixir_rule37,elixir_rule39,elixir_rule40,],
+    "a": [elixir_rule36, elixir_rule40,],
+    "b": [elixir_rule6, elixir_rule32, elixir_rule33, elixir_rule34, elixir_rule35, elixir_rule37, elixir_rule39, elixir_rule40,],
     "c": [elixir_rule40,],
-    "d": [elixir_rule28,elixir_rule40,],
+    "d": [elixir_rule28, elixir_rule40,],
     "e": [elixir_rule40,],
-    "f": [elixir_rule8,elixir_rule40,],
+    "f": [elixir_rule8, elixir_rule40,],
     "g": [elixir_rule40,],
     "h": [elixir_rule40,],
     "i": [elixir_rule40,],
@@ -403,17 +403,17 @@ rulesDict1 = {
     "k": [elixir_rule40,],
     "l": [elixir_rule40,],
     "m": [elixir_rule40,],
-    "n": [elixir_rule7,elixir_rule38,elixir_rule40,],
-    "o": [elixir_rule30,elixir_rule40,],
+    "n": [elixir_rule7, elixir_rule38, elixir_rule40,],
+    "o": [elixir_rule30, elixir_rule40,],
     "p": [elixir_rule40,],
     "q": [elixir_rule40,],
-    "r": [elixir_rule29,elixir_rule40,],
+    "r": [elixir_rule29, elixir_rule40,],
     "s": [elixir_rule40,],
-    "t": [elixir_rule9,elixir_rule40,],
+    "t": [elixir_rule9, elixir_rule40,],
     "u": [elixir_rule40,],
     "v": [elixir_rule40,],
     "w": [elixir_rule40,],
-    "x": [elixir_rule31,elixir_rule40,],
+    "x": [elixir_rule31, elixir_rule40,],
     "y": [elixir_rule40,],
     "z": [elixir_rule40,],
     "{": [elixir_rule21,],
@@ -428,4 +428,3 @@ rulesDictDict = {
 
 # Import dict for elixir mode.
 importDict = {}
-

@@ -25,9 +25,9 @@ class TestPlugins(LeoUnitTest):
             tree = compile(s + '\n', filename, 'exec')
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
-        except SyntaxError:
+        except SyntaxError:  # pragma: no cover
             raise
-        except Exception:
+        except Exception:  # pragma: no cover
             self.fail(f"unexpected error in: {filename}")
 
     #@+node:ekr.20210907082746.1: *3*  TestPlugins.get_plugins
@@ -74,7 +74,7 @@ class TestPlugins(LeoUnitTest):
         for fn in files:
             with open(fn, 'r') as f:
                 s = f.read()
-            self.assertTrue('def init():' in s or 'def init ():' in s, msg=fn)
+            self.assertTrue('def init()' in s or 'def init ()' in s, msg=fn)
     #@+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
     def test_all_qt_plugins_call_g_assertUi_qt_(self):
         files = self.get_plugins()
@@ -85,7 +85,7 @@ class TestPlugins(LeoUnitTest):
             'nodetags.py',  # #2031: Qt imports are optional.
             'picture_viewer.py',  # Special case.
             'pyplot_backend.py',
-            # 'free_layout.py',
+            'remove_duplicate_pictures.py'  # Special case.
         )
         pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
         for fn in files:
@@ -126,7 +126,7 @@ class TestPlugins(LeoUnitTest):
         for filename in files:
             self.check_syntax(filename)
     #@+node:ekr.20210909165720.1: *3* TestPlugins.xx_test_import_all_plugins
-    def xx_test_import_of_all_plugins(self):
+    def xx_test_import_of_all_plugins(self):  # pragma: no cover
         # This works, but is slow.
         files = self.get_plugins()
         for filename in files:

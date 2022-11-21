@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171029210211.1: * @file ../plugins/editpane/clicky_splitter.py
+#@@first
 #@@language python
 """
 clicky_splitter.py - a QSplitter which allows flipping / rotating of
@@ -12,7 +14,7 @@ from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import MouseButton, Orientation
 
 
-class ClickySplitterHandle(QtWidgets.QSplitterHandle):
+class ClickySplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
     """Handle which notifies splitter when it's clicked"""
 
     def mouseReleaseEvent(self, event):
@@ -26,7 +28,7 @@ class ClickySplitterHandle(QtWidgets.QSplitterHandle):
         self.splitter().flip_spin()
 
 
-class ClickySplitter(QtWidgets.QSplitter):
+class ClickySplitter(QtWidgets.QSplitter):  # type:ignore
     """Splitter that rotates / flips when its handle's clicked"""
 
     def __init__(self, *args, **kwargs):

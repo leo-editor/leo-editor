@@ -156,25 +156,25 @@ def java_rule0(colorer, s, i):
 def java_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::javadoc",exclude_match=False,
+        delegate="java::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def java_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def java_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def java_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def java_rule5(colorer, s, i):
@@ -281,7 +281,7 @@ rulesDict1 = {
     "+": [java_rule10,],
     "-": [java_rule11,],
     ".": [java_rule13,],
-    "/": [java_rule0,java_rule1,java_rule2,java_rule5,java_rule12,],
+    "/": [java_rule0, java_rule1, java_rule2, java_rule5, java_rule12,],
     "0": [java_rule27,],
     "1": [java_rule27,],
     "2": [java_rule27,],
@@ -293,10 +293,10 @@ rulesDict1 = {
     "8": [java_rule27,],
     "9": [java_rule27,],
     ":": [java_rule24,],
-    "<": [java_rule9,java_rule16,],
+    "<": [java_rule9, java_rule16,],
     "=": [java_rule6,],
-    ">": [java_rule8,java_rule15,],
-    "@": [java_rule26,java_rule27,],
+    ">": [java_rule8, java_rule15,],
+    "@": [java_rule26, java_rule27,],
     "A": [java_rule27,],
     "B": [java_rule27,],
     "C": [java_rule27,],
@@ -369,7 +369,7 @@ def java_rule29(colorer, s, i):
 def java_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def java_rule31(colorer, s, i):
@@ -387,7 +387,7 @@ def java_rule33(colorer, s, i):
 def java_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def java_rule35(colorer, s, i):
@@ -406,7 +406,7 @@ rulesDict2 = {
     "7": [java_rule35,],
     "8": [java_rule35,],
     "9": [java_rule35,],
-    "<": [java_rule30,java_rule31,java_rule32,java_rule33,java_rule34,],
+    "<": [java_rule30, java_rule31, java_rule32, java_rule33, java_rule34,],
     "@": [java_rule35,],
     "A": [java_rule35,],
     "B": [java_rule35,],
@@ -471,4 +471,3 @@ rulesDictDict = {
 
 # Import dict for java mode.
 importDict = {}
-

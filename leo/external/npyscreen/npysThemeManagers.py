@@ -30,47 +30,47 @@ class ThemeManager:
     _colors_to_define = (
      # DO NOT DEFINE THE WHITE_BLACK COLOR - THINGS BREAK
      #('WHITE_BLACK',      DO_NOT_DO_THIS,      DO_NOT_DO_THIS),
-     ('BLACK_WHITE',      curses.COLOR_BLACK,      curses.COLOR_WHITE),
+     ('BLACK_WHITE', curses.COLOR_BLACK, curses.COLOR_WHITE),
      #('BLACK_ON_DEFAULT', curses.COLOR_BLACK,      -1),
      #('WHITE_ON_DEFAULT', curses.COLOR_WHITE,      -1),
-     ('BLUE_BLACK',       curses.COLOR_BLUE,       curses.COLOR_BLACK),
-     ('CYAN_BLACK',       curses.COLOR_CYAN,       curses.COLOR_BLACK),
-     ('GREEN_BLACK',      curses.COLOR_GREEN,      curses.COLOR_BLACK),
-     ('MAGENTA_BLACK',    curses.COLOR_MAGENTA,    curses.COLOR_BLACK),
-     ('RED_BLACK',        curses.COLOR_RED,        curses.COLOR_BLACK),
-     ('YELLOW_BLACK',     curses.COLOR_YELLOW,     curses.COLOR_BLACK),
-     ('BLACK_RED',        curses.COLOR_BLACK,      curses.COLOR_RED),
-     ('BLACK_GREEN',      curses.COLOR_BLACK,      curses.COLOR_GREEN),
-     ('BLACK_YELLOW',     curses.COLOR_BLACK,      curses.COLOR_YELLOW),
-     ('BLACK_CYAN',       curses.COLOR_BLACK,       curses.COLOR_CYAN),
-     ('BLUE_WHITE',       curses.COLOR_BLUE,       curses.COLOR_WHITE),
-     ('CYAN_WHITE',       curses.COLOR_CYAN,       curses.COLOR_WHITE),
-     ('GREEN_WHITE',      curses.COLOR_GREEN,      curses.COLOR_WHITE),
-     ('MAGENTA_WHITE',    curses.COLOR_MAGENTA,    curses.COLOR_WHITE),
-     ('RED_WHITE',        curses.COLOR_RED,        curses.COLOR_WHITE),
-     ('YELLOW_WHITE',     curses.COLOR_YELLOW,     curses.COLOR_WHITE),
-)
+     ('BLUE_BLACK', curses.COLOR_BLUE, curses.COLOR_BLACK),
+     ('CYAN_BLACK', curses.COLOR_CYAN, curses.COLOR_BLACK),
+     ('GREEN_BLACK', curses.COLOR_GREEN, curses.COLOR_BLACK),
+     ('MAGENTA_BLACK', curses.COLOR_MAGENTA, curses.COLOR_BLACK),
+     ('RED_BLACK', curses.COLOR_RED, curses.COLOR_BLACK),
+     ('YELLOW_BLACK', curses.COLOR_YELLOW, curses.COLOR_BLACK),
+     ('BLACK_RED', curses.COLOR_BLACK, curses.COLOR_RED),
+     ('BLACK_GREEN', curses.COLOR_BLACK, curses.COLOR_GREEN),
+     ('BLACK_YELLOW', curses.COLOR_BLACK, curses.COLOR_YELLOW),
+     ('BLACK_CYAN', curses.COLOR_BLACK, curses.COLOR_CYAN),
+     ('BLUE_WHITE', curses.COLOR_BLUE, curses.COLOR_WHITE),
+     ('CYAN_WHITE', curses.COLOR_CYAN, curses.COLOR_WHITE),
+     ('GREEN_WHITE', curses.COLOR_GREEN, curses.COLOR_WHITE),
+     ('MAGENTA_WHITE', curses.COLOR_MAGENTA, curses.COLOR_WHITE),
+     ('RED_WHITE', curses.COLOR_RED, curses.COLOR_WHITE),
+     ('YELLOW_WHITE', curses.COLOR_YELLOW, curses.COLOR_WHITE),
+    )
 
     default_colors = {
-        'DEFAULT'     : 'WHITE_BLACK',
-        'FORMDEFAULT' : 'WHITE_BLACK',
-        'NO_EDIT'     : 'BLUE_BLACK',
-        'STANDOUT'    : 'CYAN_BLACK',
-        'CURSOR'      : 'WHITE_BLACK',
+        'DEFAULT': 'WHITE_BLACK',
+        'FORMDEFAULT': 'WHITE_BLACK',
+        'NO_EDIT': 'BLUE_BLACK',
+        'STANDOUT': 'CYAN_BLACK',
+        'CURSOR': 'WHITE_BLACK',
         'CURSOR_INVERSE': 'BLACK_WHITE',
-        'LABEL'       : 'GREEN_BLACK',
-        'LABELBOLD'   : 'WHITE_BLACK',
-        'CONTROL'     : 'YELLOW_BLACK',
-        'IMPORTANT'   : 'GREEN_BLACK',
-        'SAFE'        : 'GREEN_BLACK',
-        'WARNING'     : 'YELLOW_BLACK',
-        'DANGER'      : 'RED_BLACK',
-        'CRITICAL'    : 'BLACK_RED',
-        'GOOD'        : 'GREEN_BLACK',
-        'GOODHL'      : 'GREEN_BLACK',
-        'VERYGOOD'    : 'BLACK_GREEN',
-        'CAUTION'     : 'YELLOW_BLACK',
-        'CAUTIONHL'   : 'BLACK_YELLOW',
+        'LABEL': 'GREEN_BLACK',
+        'LABELBOLD': 'WHITE_BLACK',
+        'CONTROL': 'YELLOW_BLACK',
+        'IMPORTANT': 'GREEN_BLACK',
+        'SAFE': 'GREEN_BLACK',
+        'WARNING': 'YELLOW_BLACK',
+        'DANGER': 'RED_BLACK',
+        'CRITICAL': 'BLACK_RED',
+        'GOOD': 'GREEN_BLACK',
+        'GOODHL': 'GREEN_BLACK',
+        'VERYGOOD': 'BLACK_GREEN',
+        'CAUTION': 'YELLOW_BLACK',
+        'CAUTIONHL': 'BLACK_YELLOW',
     }
     #@+others
     #@+node:ekr.20170428084207.382: *3* __init__
@@ -78,7 +78,7 @@ class ThemeManager:
         #curses.use_default_colors()
         self.define_colour_numbers()
         self._defined_pairs = {}
-        self._names         = {}
+        self._names = {}
         try:
             self._max_pairs = curses.COLOR_PAIRS - 1
             do_color = True
@@ -103,7 +103,7 @@ class ThemeManager:
         if not curses.has_colors() or npysGlobalOptions.DISABLE_ALL_COLORS:
             return False
 
-        if request=='DEFAULT':
+        if request == 'DEFAULT':
             request = caller.color
         # Locate the requested colour pair.  Default to default if not found.
         try:
@@ -132,12 +132,12 @@ class ThemeManager:
 
     #@+node:ekr.20170428084207.387: *3* initialize_names
     def initialize_names(self):
-           self._names.update(self.__class__.default_colors)
+        self._names.update(self.__class__.default_colors)
 
     #@+node:ekr.20170428084207.388: *3* initalize_pair
     def initalize_pair(self, name, fg, bg):
         # Initialize a color_pair for the required colour and return the number. Raise an exception if this is not possible.
-        if (len(list(self._defined_pairs.keys()))+1) == self._max_pairs:
+        if (len(list(self._defined_pairs.keys())) + 1) == self._max_pairs:
             raise Exception("Too many colours")
 
         _this_pair_number = len(list(self._defined_pairs.keys())) + 1

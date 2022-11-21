@@ -134,6 +134,7 @@ Tags
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
+from typing import Any, List, Sequence, Tuple
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
@@ -203,7 +204,7 @@ class quickMove:
        creating buttons, and creates buttons as needed
     """
 
-    flavors = [
+    flavors: List[Tuple] = [
       # name   first/last  long  short
       ('move', True, "Move", "to"),
       ('copy', True, "Copy", "to"),
@@ -250,17 +251,18 @@ class quickMove:
             ("Clear ALL Permanent Buttons Here", None, self.clearButton),
         )
 
-        self.recent_moves = []  # recent move/copy/bookmark to commands for
-                                # top level context menu entries
-
-        self.imps = []  # implementations, (func,name,text)
-        self.txts = {}  # get short from name, for permanent buttons
-                        # filled in below
+        # recent move/copy/bookmark to commands for
+        # top level context menu entries
+        self.recent_moves = []
+        # implementations, (func,name,text)
+        self.imps = []
+        # get short from name, for permanent buttons. filled in below
+        self.txts = {}
 
         # build callables for imp list
-
+        todo: Sequence[Any]
         for name, first_last, long, short in quickMove.flavors:
-
+            # pylint: disable=undefined-loop-variable
             self.txts[name] = short
 
             if first_last:
@@ -328,7 +330,7 @@ class quickMove:
 
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
-        self.local_imps = []  # make table for createMenuItemsFromTable()
+        self.local_imps: List[Tuple] = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
 
@@ -384,7 +386,7 @@ class quickMove:
             b = sc.createIconButton(
                 args=None,
                 text=text,
-                command=mb.moveCurrentNodeToTarget,
+                command = mb.moveCurrentNodeToTarget,
                 statusLine='%s current node to %s child of %s' % (
                     type_.title(), which, v.h),
                 kind="quick-move"
@@ -414,8 +416,8 @@ class quickMove:
                     but = b.button
                     rc = QAction(txt, but)
                     rc.triggered.connect(cb)
+                    # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
-                        # insert rc before Remove Button
 
         self.buttons.append((mb, b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton
@@ -492,10 +494,15 @@ class quickMove:
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
+
                 def cb(c2=c2, cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(checked, cb=cb, name=txt.strip('.') + ' top of ' + g.os_path_basename(c2.fileName())):
+
+                def wrap(checked, cb=cb,
+                    name=txt.strip('.') + ' top of ' + g.os_path_basename(c2.fileName())
+                ):
                     self.do_wrap(cb, name)
+
                 a.triggered.connect(wrap)
         # bookmark to other outline
         sub = pathmenu.addMenu("Bookmark to...")
@@ -549,6 +556,7 @@ class quickMove:
         need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
         current_kind = None
         current_submenu = None
+        todo: Any
         for name, first_last, long, short in quickMove.flavors:
             if first_last:
                 todo = 'first child', 'last child', 'next sibling', 'prev sibling'
@@ -665,8 +673,8 @@ class quickMove:
         if c2 is None:
             return
 
-        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
-                                        # invalidating p
+        # in case nd was created in this outline, invalidating p
+        p = self.c.vnode2position(p_v)
 
         self.copy_recursively(p, nd)
 
@@ -706,8 +714,8 @@ class quickMove:
         if c2 is None:
             return
 
-        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
-                                        # invalidating p
+        # in case nd was created in this outline, invalidating p
+        p = self.c.vnode2position(p_v)
 
         in_bookmarks = False
         for i in nd.parents():
@@ -730,7 +738,7 @@ class quickMove:
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
-    #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
+    #@+node:tbrown.20120620073922.33740: *3* unl_to_pos (quickmove.py)
     def unl_to_pos(self, c2, for_p, bookmark=False):
         """"c2 may be an outline (like c) or an UNL (string)
 
@@ -747,14 +755,11 @@ class quickMove:
             path, unl = full_path.split('#', 1)
             c2 = g.openWithFileName(path, old_c=self.c)
             self.c.bringToFront(c2=self.c)
-            found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
-
-            if found:
-
+            maxp = g.findUNL(unl.split('-->'), c2)
+            if maxp:
                 if not bookmark and (for_p == maxp or for_p.isAncestorOf(maxp)):
                     g.es("Invalid move")
                     return None, None
-
                 nd = maxp.insertAsNthChild(0)
             else:
                 g.es("Could not find '%s'" % full_path)
@@ -975,7 +980,7 @@ class quickMoveButton:
     def computeUNL(self, p):
 
         p = p.copy()
-        heads = []
+        heads: List[str] = []
         while p:
             heads.insert(0, p.h)
             p = p.parent()

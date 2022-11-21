@@ -83,7 +83,7 @@ quoteList = (
     #(six.u("'"), six.u('%27')),
     )
 
-if False:   # Currently unused.
+if False:  # Currently unused.
     def otpQuote(otp):
         """
         Apply just enough "URL quoting" to make Leo-Editor URL coloring color all
@@ -133,7 +133,7 @@ def unlSplit(unl):
     if not unl:
         return None, None
     if unl.startswith('unl://'):
-        unl = otpUnquote(unl[len('unl://'):])
+        unl = otpUnquote(unl[len('unl://') :])
     idx = unl.find('#')
     if idx == 0:
         # "#" is first character.
@@ -144,7 +144,7 @@ def unlSplit(unl):
         nodePart = None
     else:
         pathname = unl[:idx]
-        nodePart = unl[idx + 1:]
+        nodePart = unl[idx + 1 :]
     pathname = os.path.realpath(pathname)
     return pathname, nodePart
 #@+node:bob.20170812164857.1: ** unl2pos()
@@ -182,7 +182,7 @@ def unl2pos(unl, cmdr=None):
     else:
         cmdrUnl = cmdr
     unlList = _unlParseNodePart(nodePart)
-    return  cmdrUnl, _descendHdl(cmdrUnl, unlList)
+    return cmdrUnl, _descendHdl(cmdrUnl, unlList)
 #@+node:bob.20170812171044.1: *3* _unlParseNodePart()
 def _unlParseNodePart(nodePart):
     """
@@ -259,21 +259,21 @@ class MenuPopUp(QtWidgets.QMenu):
             None
 
         """
-        LabelActionHint = collections.namedtuple('labelActionHint', 'label action hint')
+        LabelActionHint = collections.namedtuple('LabelActionHint', 'label action hint')
 
         super(MenuPopUp, self).__init__(parent=parent)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setWindowTitle('LeoPopUp') # I configure i3 to run all windows named LeoPopUp as floating
+        self.setWindowTitle('LeoPopUp')  # I configure i3 to run all windows named LeoPopUp as floating
         self.hovered.connect(self._actionHovered)
 
         actTDL = QtWidgets.QAction('Leo-Babel Menu', self)
         self.addAction(actTDL)
         actTDL.setToolTip('Menu of Leo-Babel Commands')
-        actTDL.triggered.connect(lambda x : self._info(
+        actTDL.triggered.connect(lambda x: self._info(
             'The menu title is "Leo-Babel Menu"'))
         for eidx, labelActionHint in enumerate((
         LabelActionHint('&Copy UNL to clipboard',
-        (lambda : unl2clipboard(babelG)),
+        (lambda: unl2clipboard(babelG)),
         'Copy the UNL of the current position to the clipboard.'),)):
             actTDL = QtWidgets.QAction(labelActionHint.label, self)
             self.addAction(actTDL)
@@ -300,7 +300,7 @@ class MenuPopUp(QtWidgets.QMenu):
     def _info(self, what):
         QtWidgets.QMessageBox.information(self, 'Information Only', what)
         self.exec_(QtWidgets.QApplication.desktop().screen().rect().center() -
-            self.rect().center())
+            self.rect().center())  # type:ignore
     #@-others
 
 #@+node:bob.20170726143458.15: ** babelMenu()
@@ -408,11 +408,11 @@ def babelExec(event):
         elif langx == 'shell':
             interpreter = gld.get('babel_shell')
             if not interpreter:
-                interpreter =  babelCmdr.interpreterShell
+                interpreter = babelCmdr.interpreterShell
             cmdList = [interpreter]
         else:
             babelCmdr.babelExecCnt += 1
-            raise  babelG.babel_api.BABEL_LANGUAGE('Unknown language "{0}"'.format(langx))
+            raise babelG.babel_api.BABEL_LANGUAGE('Unknown language "{0}"'.format(langx))
 
         script = getScript(cmdrScr, scriptRoot, useSelectedText=False, language=langx)
 
@@ -442,7 +442,7 @@ def babelExec(event):
         subPscript = subprocess.Popen(cmdList, cwd=cwd, stdout=wro, stderr=wre)
         subPbabKill = subprocess.Popen([babelG.pathBabelKill, str(subPscript.pid)])
 
-        babelCmdr.reo = reo     # Kludge to allow itf() to determine which output it polls
+        babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
         itOut = leoG.IdleTime((lambda ito: itf(babelCmdr.colorStdout, reo, babelCmdr)), delay=1000)
         itErr = leoG.IdleTime((lambda ito: itf(babelCmdr.colorStderr, ree, babelCmdr)), delay=1000)
         if (not itOut) or (not itErr):
@@ -478,14 +478,14 @@ def babelExec(event):
             Ignore all lines under control of any other @language directive.
             '''
             if leoG.unitTesting:
-                return s # Regretable, but necessary.
+                return s  # Regretable, but necessary.
 
             langCur = language
             pattern = re.compile(r'\s*@language\s+(\w+)')
             result = []
             for line in leoG.splitLines(s):
                 m = pattern.match(line)
-                if m: # Found an @language directive.
+                if m:  # Found an @language directive.
                     langCur = m.group(1)
                 elif langCur == language:
                     result.append(line)
@@ -499,7 +499,7 @@ def babelExec(event):
                 script = c.atFileCommands.stringToString(p.copy(), s,
                     forcePythonSentinels=forcePythonSentinels,
                     sentinels=sentinels)
-                script = script.replace("\r\n", "\n") # Use brute force.
+                script = script.replace("\r\n", "\n")  # Use brute force.
                 # Important, the script is an **encoded string**, not a unicode string.
                 return script
             else:
@@ -615,7 +615,7 @@ def babelExec(event):
 
         """
 
-        undoer = cmdrRes.undoer ; undoType = 'Leo-Babel Add Nodes'
+        undoer = cmdrRes.undoer; undoType = 'Leo-Babel Add Nodes'
         undoData = undoer.beforeInsertNode(babelRoot)
 
         # posET
@@ -702,7 +702,7 @@ def babelExec(event):
                 hours, minutes = divmod(minutes, 60)
                 babelCmdr.etMsg = '{hr:02d}:{mi:02d}:{se:02d} Elapsed Time. {end} End Time'.format(
                     hr=hours, mi=minutes, se=secs,
-                    end = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                    end=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     #@-others
 
     babelG = leoG.user_dict['leo_babel']

@@ -4,14 +4,14 @@
 
 import leo.core.leoGlobals as g
 
-def onStart(tag,keywords):
+def onStart(tag, keywords):
     pass
 
 # pylint: disable=unused-import
 try:
     import xyzzy
 except ImportError:
-    g.cantImport('xyzzy',pluginName='failed_import')
+    g.cantImport('xyzzy', pluginName='failed_import')
 
 def init():
     '''Return True if the plugin has loaded successfully.'''

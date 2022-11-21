@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
+#@@first
 """Support for the edit-pane-test-open command and window."""
-#@+<<editpane.py imports>>
-#@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
+#@+<<editpane imports>>
+#@+node:tbrown.20171028115438.1: ** << editpane imports >>
 from collections import defaultdict
 from importlib import import_module
 import os
@@ -14,13 +16,14 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
+from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
-#@-<<editpane.py imports>>
+#@-<<editpane imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
 def DBG(text):
@@ -68,7 +71,7 @@ def edit_pane_csv(event):
         w = w.parent()
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
-class LeoEditPane(QtWidgets.QWidget):
+class LeoEditPane(QtWidgets.QWidget):  # type:ignore
     """
     Leo node body editor / viewer
     """
@@ -76,7 +79,7 @@ class LeoEditPane(QtWidgets.QWidget):
     #@+node:tbrown.20171028115438.5: *3* __init__
     def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
         update=True, recurse=False, lep_type=None, *args, **kwargs):
-        """__init__ - bind to outline
+        """LeoEditPane.__init__ - bind to outline
 
         :param outline c: outline to bind to
         :param position p: initial position
@@ -91,7 +94,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         DBG("__init__ LEP")
         super().__init__(*args, **kwargs)
-        self.setAttribute(QtConst.WA_DeleteOnClose)
+        self.setAttribute(WidgetAttribute.WA_DeleteOnClose)  # #2347.
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
         if isinstance(lep_type, str):

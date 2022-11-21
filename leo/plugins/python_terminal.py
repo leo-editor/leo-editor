@@ -21,8 +21,8 @@ By Jacob M. Peck
 
 Usage
 =====
-Enabling this plugin will add a new tab to the Log pane, labeled "Python Console".  This is a fully interactive
-python command shell, with access to `g`, `c`, and `p` included!
+Enabling this plugin will add a new tab to the Log pane, labeled "Python Console".
+This is a fully interactive python command shell, with access to `g`, `c`, and `p` included!
 
 Features:
 - Includes support for g, c, and p
@@ -50,40 +50,39 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
 
+# A workaround for #1212: segfaults at startup when importing this file.
+# True: enable tab completion, at the risk of segfaults.
 use_rlcompleter = False
-    # A workaround for #1212: segfaults at startup when importing this file.
-    # True: enable tab completion, at the risk of segfaults.
 
 # Third-party imports.
 if use_rlcompleter:
     from rlcompleter import Completer
 else:
-    Completer = None
-#
+    Completer = None  # type:ignore
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
 #@+others
 #@+node:peckj.20150428142729.3: ** class MyInterpreter
-if QtWidgets:
+class MyInterpreter(QtWidgets.QWidget):  # type:ignore
 
-    class MyInterpreter(QtWidgets.QWidget):
-
-        def __init__(self, parent, c):
-            super().__init__(parent)
-            hBox = QtWidgets.QHBoxLayout()
-            self.setLayout(hBox)
-            self.textEdit = PyInterp(self, c)
-            # this is how you pass in locals to the interpreter
-            self.textEdit.initInterpreter(locals())
-            hBox.addWidget(self.textEdit)
-            hBox.setContentsMargins(0, 0, 0, 0)
-            hBox.setSpacing(0)
+    def __init__(self, parent, c):
+        super().__init__(parent)
+        hBox = QtWidgets.QHBoxLayout()
+        self.setLayout(hBox)
+        self.textEdit = PyInterp(self, c)
+        # this is how you pass in locals to the interpreter
+        self.textEdit.initInterpreter(locals())
+        hBox.addWidget(self.textEdit)
+        hBox.setContentsMargins(0, 0, 0, 0)
+        hBox.setSpacing(0)
 #@+node:peckj.20150428142729.6: ** class InteractiveInterpreter (code.InteractiveInterpreter)
 class InteractiveInterpreter(code.InteractiveInterpreter):
     #@+others
@@ -105,7 +104,7 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
 
-    class PyInterp(QtWidgets.QTextEdit):
+    class PyInterp(QtWidgets.QTextEdit):  # type:ignore
         #@+others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
@@ -240,11 +239,13 @@ if QtWidgets:
             return False
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
+
+            completer: Any
             try:
                 # #1212: Disable this by default.
                 if use_rlcompleter and event.key() == Key.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
-                    completer = Completer(self.interpreter.locals)
+                    completer = Completer(self.interpreter.locals)  # type:ignore
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
                         self.insertPlainText(suggestion[len(line) :])
@@ -292,8 +293,6 @@ if QtWidgets:
                 super().keyPressEvent(event)
             except Exception:
                 g.es_exception()
-
-
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             """Handle the <return> key."""
@@ -346,7 +345,7 @@ if QtWidgets:
             position = len(self.document().toPlainText())
             textCursor.setPosition(position)
             self.setTextCursor(textCursor)
-            lines = []
+            lines: List[str] = []
             block = self.document().lastBlock()
             #
             # Scan backward, looking for lines.
@@ -382,7 +381,9 @@ if QtWidgets:
                 return
             #
             # Execute lines in groups, delimited by indentation.
-            indent, ok, exec_lines = 0, True, []
+            indent: int = 0
+            ok: bool = True
+            exec_lines: List = []
             for line in lines:
                 indent = compute_indent(line) if exec_lines else 0
                 if indent > 0 or not exec_lines:
@@ -421,8 +422,8 @@ def init():
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
         # g.registerHandler(('new','open2'),onCreate)
+        # Fail: g.app.log does not exist.
         g.registerHandler('after-create-leo-frame', onCreate)
-            # Fail: g.app.log does not exist.
         g.plugin_signon(__name__)
     else:
         g.es('Plugin %s not loaded.' % __name__, color='red')

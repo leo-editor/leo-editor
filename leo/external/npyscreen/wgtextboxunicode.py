@@ -11,17 +11,17 @@ import unicodedata
 
 #@+node:ekr.20170428084208.356: ** class TextfieldUnicode
 class TextfieldUnicode(wgtextbox.Textfield):
-    width_mapping = {'F':2, 'H': 1, 'W': 2, 'Na': 1, 'N': 1}
+    width_mapping = {'F': 2, 'H': 1, 'W': 2, 'Na': 1, 'N': 1}
     #@+others
     #@+node:ekr.20170428084208.357: *3* find_apparent_cursor_position
-    def find_apparent_cursor_position(self, ):
-        string_to_print = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+    def find_apparent_cursor_position(self,):
+        string_to_print = self.display_value(self.value)[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
         cursor_place_in_visible_string = self.cursor_position - self.begin_at
         counter = 0
         columns = 0
         while counter < cursor_place_in_visible_string:
-             columns += self.find_width_of_char(string_to_print[counter])
-             counter += 1
+            columns += self.find_width_of_char(string_to_print[counter])
+            counter += 1
         return columns
 
     #@+node:ekr.20170428084208.358: *3* TextfieldUnicode.find_width_of_char

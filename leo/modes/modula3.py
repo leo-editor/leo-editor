@@ -149,25 +149,25 @@ keywordsDictDict = {
 def modula3_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<*", end="*>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def modula3_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def modula3_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def modula3_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def modula3_rule4(colorer, s, i):
@@ -245,10 +245,10 @@ rulesDict1 = {
     "8": [modula3_rule17,],
     "9": [modula3_rule17,],
     ":": [modula3_rule6,],
-    "<": [modula3_rule0,modula3_rule8,modula3_rule10,modula3_rule12,],
+    "<": [modula3_rule0, modula3_rule8, modula3_rule10, modula3_rule12,],
     "=": [modula3_rule7,],
-    ">": [modula3_rule9,modula3_rule11,],
-    "@": [modula3_rule5,modula3_rule17,],
+    ">": [modula3_rule9, modula3_rule11,],
+    "@": [modula3_rule5, modula3_rule17,],
     "A": [modula3_rule17,],
     "B": [modula3_rule17,],
     "C": [modula3_rule17,],
@@ -311,4 +311,3 @@ rulesDictDict = {
 
 # Import dict for modula3 mode.
 importDict = {}
-

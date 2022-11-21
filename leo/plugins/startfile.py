@@ -36,8 +36,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20100128073941.5379: ** init (startfile.py)
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = hasattr(os, "startfile")
-        # Ok for unit testing, but may be icondclick1 conflicts.
+    ok = hasattr(os, "startfile")  # Ok for unit testing, but may be icondclick1 conflicts.
     if ok:
         # Register the handlers...
         g.registerHandler("icondclick1", onIconDoubleClick)
@@ -86,8 +85,7 @@ def start_file(c, p):
                 # Warning: os.startfile usually does not throw exceptions.
                 # pylint: disable=no-member
                 # Previous code checks that os.startfile exists.
-                os.startfile(filename)
-                    # This may not work for all file types.
+                os.startfile(filename)  # This may not work for all file types.
             except Exception:
                 g.es(filename + ' - file not found in ' + startdir)
                 g.es_exception()

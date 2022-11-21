@@ -172,7 +172,7 @@ keywordsDictDict = {
 def interlis_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def interlis_rule1(colorer, s, i):
@@ -183,13 +183,13 @@ def interlis_rule1(colorer, s, i):
 def interlis_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def interlis_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="//", end="//",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def interlis_rule4(colorer, s, i):
@@ -373,17 +373,17 @@ def interlis_rule48(colorer, s, i):
 
 # Rules dict for interlis_main ruleset.
 rulesDict1 = {
-    "!": [interlis_rule1,interlis_rule18,],
+    "!": [interlis_rule1, interlis_rule18,],
     "\"": [interlis_rule2,],
     "#": [interlis_rule19,],
     "%": [interlis_rule20,],
-    "(": [interlis_rule15,interlis_rule21,],
-    ")": [interlis_rule16,interlis_rule22,],
-    "*": [interlis_rule12,interlis_rule23,],
-    ",": [interlis_rule8,interlis_rule24,],
-    "-": [interlis_rule4,interlis_rule25,interlis_rule26,interlis_rule27,interlis_rule28,],
-    ".": [interlis_rule6,interlis_rule7,interlis_rule29,interlis_rule30,],
-    "/": [interlis_rule0,interlis_rule3,interlis_rule31,],
+    "(": [interlis_rule15, interlis_rule21,],
+    ")": [interlis_rule16, interlis_rule22,],
+    "*": [interlis_rule12, interlis_rule23,],
+    ",": [interlis_rule8, interlis_rule24,],
+    "-": [interlis_rule4, interlis_rule25, interlis_rule26, interlis_rule27, interlis_rule28,],
+    ".": [interlis_rule6, interlis_rule7, interlis_rule29, interlis_rule30,],
+    "/": [interlis_rule0, interlis_rule3, interlis_rule31,],
     "0": [interlis_rule48,],
     "1": [interlis_rule48,],
     "2": [interlis_rule48,],
@@ -394,11 +394,11 @@ rulesDict1 = {
     "7": [interlis_rule48,],
     "8": [interlis_rule48,],
     "9": [interlis_rule48,],
-    ":": [interlis_rule11,interlis_rule32,interlis_rule33,],
-    ";": [interlis_rule10,interlis_rule34,],
-    "<": [interlis_rule5,interlis_rule35,interlis_rule36,interlis_rule37,],
-    "=": [interlis_rule9,interlis_rule38,interlis_rule39,],
-    ">": [interlis_rule17,interlis_rule40,interlis_rule41,],
+    ":": [interlis_rule11, interlis_rule32, interlis_rule33,],
+    ";": [interlis_rule10, interlis_rule34,],
+    "<": [interlis_rule5, interlis_rule35, interlis_rule36, interlis_rule37,],
+    "=": [interlis_rule9, interlis_rule38, interlis_rule39,],
+    ">": [interlis_rule17, interlis_rule40, interlis_rule41,],
     "@": [interlis_rule48,],
     "A": [interlis_rule48,],
     "B": [interlis_rule48,],
@@ -426,9 +426,9 @@ rulesDict1 = {
     "X": [interlis_rule48,],
     "Y": [interlis_rule48,],
     "Z": [interlis_rule48,],
-    "[": [interlis_rule13,interlis_rule42,],
+    "[": [interlis_rule13, interlis_rule42,],
     "\\": [interlis_rule43,],
-    "]": [interlis_rule14,interlis_rule44,],
+    "]": [interlis_rule14, interlis_rule44,],
     "a": [interlis_rule48,],
     "b": [interlis_rule48,],
     "c": [interlis_rule48,],
@@ -467,4 +467,3 @@ rulesDictDict = {
 
 # Import dict for interlis mode.
 importDict = {}
-

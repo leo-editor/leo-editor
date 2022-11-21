@@ -339,7 +339,7 @@ keywordsDictDict = {
 def vbscript_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def vbscript_rule1(colorer, s, i):
@@ -433,7 +433,7 @@ def vbscript_rule21(colorer, s, i):
 # Rules dict for vbscript_main ruleset.
 rulesDict1 = {
     "\"": [vbscript_rule0,],
-    "#": [vbscript_rule1,vbscript_rule2,vbscript_rule3,],
+    "#": [vbscript_rule1, vbscript_rule2, vbscript_rule3,],
     "&": [vbscript_rule19,],
     "'": [vbscript_rule4,],
     "*": [vbscript_rule15,],
@@ -452,9 +452,9 @@ rulesDict1 = {
     "8": [vbscript_rule21,],
     "9": [vbscript_rule21,],
     ":": [vbscript_rule20,],
-    "<": [vbscript_rule6,vbscript_rule7,vbscript_rule11,],
+    "<": [vbscript_rule6, vbscript_rule7, vbscript_rule11,],
     "=": [vbscript_rule10,],
-    ">": [vbscript_rule8,vbscript_rule9,],
+    ">": [vbscript_rule8, vbscript_rule9,],
     "@": [vbscript_rule21,],
     "A": [vbscript_rule21,],
     "B": [vbscript_rule21,],
@@ -501,7 +501,7 @@ rulesDict1 = {
     "o": [vbscript_rule21,],
     "p": [vbscript_rule21,],
     "q": [vbscript_rule21,],
-    "r": [vbscript_rule5,vbscript_rule21,],
+    "r": [vbscript_rule5, vbscript_rule21,],
     "s": [vbscript_rule21,],
     "t": [vbscript_rule21,],
     "u": [vbscript_rule21,],
@@ -519,4 +519,3 @@ rulesDictDict = {
 
 # Import dict for vbscript mode.
 importDict = {}
-

@@ -135,31 +135,31 @@ keywordsDictDict = {
 def c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def c_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def c_rule5(colorer, s, i):
@@ -259,7 +259,7 @@ def c_rule27(colorer, s, i):
 rulesDict1 = {
     "!": [c_rule9,],
     "\"": [c_rule3,],
-    "#": [c_rule5,c_rule6,],
+    "#": [c_rule5, c_rule6,],
     "%": [c_rule18,],
     "&": [c_rule19,],
     "'": [c_rule4,],
@@ -267,7 +267,7 @@ rulesDict1 = {
     "*": [c_rule15,],
     "+": [c_rule12,],
     "-": [c_rule13,],
-    "/": [c_rule0,c_rule1,c_rule2,c_rule7,c_rule14,],
+    "/": [c_rule0, c_rule1, c_rule2, c_rule7, c_rule14,],
     "0": [c_rule27,],
     "1": [c_rule27,],
     "2": [c_rule27,],
@@ -279,9 +279,9 @@ rulesDict1 = {
     "8": [c_rule27,],
     "9": [c_rule27,],
     ":": [c_rule25,],
-    "<": [c_rule11,c_rule17,],
+    "<": [c_rule11, c_rule17,],
     "=": [c_rule8,],
-    ">": [c_rule10,c_rule16,],
+    ">": [c_rule10, c_rule16,],
     "@": [c_rule27,],
     "A": [c_rule27,],
     "B": [c_rule27,],
@@ -348,7 +348,7 @@ rulesDict1 = {
 def c_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def c_rule29(colorer, s, i):
@@ -408,7 +408,7 @@ rulesDict2 = {
     "f": [c_rule30,],
     "g": [c_rule30,],
     "h": [c_rule30,],
-    "i": [c_rule29,c_rule30,],
+    "i": [c_rule29, c_rule30,],
     "j": [c_rule30,],
     "k": [c_rule30,],
     "l": [c_rule30,],
@@ -442,4 +442,3 @@ rulesDictDict = {
 
 # Import dict for c mode.
 importDict = {}
-

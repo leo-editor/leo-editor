@@ -17,11 +17,12 @@ class TestGlobals(LeoUnitTest):
     #@+others
     #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
     def test_getLastTracebackFileAndLineNumber(self):
+        fn = ''
         try:
             assert False
         except AssertionError:
             fn, n = g.getLastTracebackFileAndLineNumber()
-        self.assertEqual(fn, __file__)
+        self.assertEqual(fn.lower(), __file__.lower())
 
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
@@ -225,25 +226,45 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
+        # Part 1: general urls, paying attention to trailing ')' and '.'.
+        #         See the hacks in jedit.match_any_url and g.handleUrl.
+        table1 = (
+            (
+                "http://leoeditor.com/preface.html).",
+                "http://leoeditor.com/preface.html",
+            ),
+            (
+                "http://leoeditor.com/leo_toc.html)",
+                "http://leoeditor.com/leo_toc.html",
+            ),
+            (
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+            ),
+        )
+        for url, expected in table1:
+            got = g.handleUrl(c=c, p=c.p, url=url)
+            self.assertEqual(expected.lower(), got, msg=url)
+        # Part 2: file-oriented urls.
         if sys.platform.startswith('win'):
-            file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+            file_, http, unl1 = 'file://', 'http://', 'unl://'
             fn1 = 'LeoDocs.leo#'
             fn2 = 'doc/LeoDocs.leo#'
             unl2 = '@settings-->Plugins-->wikiview plugin'
             unl3 = '@settings-->Plugins-->wikiview%20plugin'
-            table = (
+            table2 = (
                 (http + 'writemonkey.com/index.php', ['browser']),
                 (file_ + 'x.py', ['os_startfile']),
-                (file_ + fn1, ['g.recursiveUNLSearch']),
-                (file_ + fn2, ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl3, ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl3, ['g.recursiveUNLSearch']),
-                (unl1 + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + unl3, ['g.recursiveUNLSearch']),
+                (file_ + fn1, ['g.findUNL']),
+                (file_ + fn2, ['g.findUNL']),
+                (unl1 + fn1 + unl2, ['g.findUNL']),
+                (unl1 + fn1 + unl3, ['g.findUNL']),
+                (unl1 + '#' + unl2, ['g.findUNL']),
+                (unl1 + '#' + unl3, ['g.findUNL']),
+                (unl1 + unl2, ['g.findUNL']),
+                (unl1 + unl3, ['g.findUNL']),
             )
-            for url, aList in table:
+            for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
@@ -384,9 +405,9 @@ class TestGlobals(LeoUnitTest):
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
         if sys.platform.startswith('win'):
-            self.assertEqual(s, '\r\n')
+            self.assertEqual(s, '\r\n')  # pragma: no cover
         else:
-            self.assertEqual(s, '\n')
+            self.assertEqual(s, '\n')  # pragma: no cover
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -548,11 +569,11 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         fc = c.fileCommands
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
-        if os.path.exists(path):
+        if os.path.exists(path):  # pragma: no cover
             os.chmod(path, stat.S_IREAD)
             fc.warnOnReadOnlyFiles(path)
             assert fc.read_only
-        else:
+        else:  # pragma: no cover
             fc.warnOnReadOnlyFiles(path)
     #@-others
 #@-others

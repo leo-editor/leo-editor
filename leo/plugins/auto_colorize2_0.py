@@ -51,7 +51,9 @@ def init_dict(c):
         g.es_trace("This outline has no Headline Formats node\n" + str(e))
         return
     try:
-        formats = yaml.load(fbody)
+        # There is something wrong. Both pylint and mypy complain.
+        # pylint: disable=no-value-for-parameter
+        formats = yaml.load(fbody)  # type:ignore
     except Exception as e:
         g.es_trace("Could not parse Headline Format yaml file\n" + str(e))
         return
@@ -95,35 +97,9 @@ def colorize(c, p, item):
                     font.setBold(True)
             except Exception:
                 pass
-            #icon
-            # if f['icon']:
-                # com = c.editCommands
-                # allIcons = com.getIconList(p)
-                # icons = [i for i in allIcons if f['icon'] not in i]
-                # in_list = False
-                # for i in icons:
-                    # print("%s : %s" % (f['icon'], i))
-                    # if f['icon'] in i:
-                        # in_list = True
-                        # break
-
-                # if in_list != True:
-                    # com.appendImageDictToList(icons, f['icon_dir'], f['icon'], 1)
-                    # com.setIconList(p, icons, True)
         if k == p.h:
             format_one(f)
-        # else:
-            # if "++" in p.h:
-                # color = "#999999"
-            # try:
-                # item.setForeground(0, QBrush(QColor(color)))
-            # except:
-                # pass
     item.setFont(0, font)
-
-
-
-
 
 
 

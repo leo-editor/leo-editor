@@ -11,8 +11,9 @@ Usage: Create node with a headline like:
 
 (or somesuch).
 
-Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires "feedparser" python module
+Do alt-x act-on-node on that node to populate the subtree from the feed data.
 
+Requires "feedparser" python module.
 """
 #@-<< docstring >>
 # By Ville M. Vainio.
@@ -23,8 +24,7 @@ import html.parser as HTMLParser
 import feedparser
 # Leo imports.
 from leo.core import leoGlobals as g
-from leo.core import leoPlugins
-    # Uses leoPlugins.TryNext
+from leo.core import leoPlugins  # Uses leoPlugins.TryNext
 #@-<< imports >>
 
 #@+others

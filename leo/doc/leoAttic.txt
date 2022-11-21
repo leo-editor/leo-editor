@@ -29,7 +29,539 @@ An explanation/discussion
     is understanding-oriented
     explains
     provides background and context
-#@+node:ekr.20211014154538.1: ** Abandoned classes
+#@+node:ekr.20211014154538.1: ** Abandoned classes (do not delete)
+#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
+class SyntaxSanitizer:
+
+    << SyntaxSanitizer docstring >>
+
+    def __init__(self, c, keep_comments):
+        self.c = c
+        self.keep_comments = keep_comments
+
+    @others
+#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
+r"""
+This class converts section references, @others and Leo directives to
+comments. This allows ast.parse to handle the result.
+
+Within section references, these comments must *usually* be executable:
+    
+BEFORE:
+    if condition:
+        <\< do something >\>
+AFTER:
+    if condition:
+        pass # do something
+        
+Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
+    
+BEFORE:
+    tips = [
+        <\< define tips >\>
+        ]
+
+AFTER:
+    tips = [
+        pass # define tips
+    ]
+    
+This fails because tips = [pass] is a SyntaxError.
+
+The beautify* and black* commands clearly report such failures.
+"""
+#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
+def comment_leo_lines(self, p=None, s0=None):
+    """
+    Replace lines containing Leonine syntax with **special comment lines** of the form:
+        
+        {lws}#{lws}{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    This convention allows uncomment_special_lines to restore these lines.
+    """
+    # Choose a marker that appears nowhere in s.
+    if p:
+        s0 = p.b
+    n = 5
+    while('#'+ ('!'*n)) in s0:
+        n += 1
+    comment = '#' + ('!' * n)
+    # Create a dict of directives.
+    d = {z: True for z in g.globalDirectiveList}
+    # Convert all Leonine lines to special comments.
+    i, lines, result = 0, g.splitLines(s0), []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        s_lstrip = s.lstrip()
+        # Comment out any containing a section reference.
+        j = s.find('<<')
+        k = s.find('>>') if j > -1 else -1
+        if -1 < j < k:
+            result.append(comment+s)
+            # Generate a properly-indented pass line.
+            j2 = g.skip_ws(s, 0)
+            result.append(f'{" "*j2}pass\n')
+        elif s_lstrip.startswith('@'):
+            # Comment out all other Leonine constructs.
+            if self.starts_doc_part(s):
+                # Comment the entire doc part, until @c or @code.
+                result.append(comment+s)
+                i += 1
+                while i < len(lines):
+                    s = lines[i]
+                    result.append(comment+s)
+                    i += 1
+                    if self.ends_doc_part(s):
+                        break
+            else:
+                j = g.skip_ws(s, 0)
+                assert s[j] == '@'
+                j += 1
+                k = g.skip_id(s, j, chars='-')
+                if k > j:
+                    word = s[j : k]
+                    if word == 'others':
+                        # Remember the original @others line.
+                        result.append(comment+s)
+                        # Generate a properly-indented pass line.
+                        result.append(f'{" "*(j-1)}pass\n')
+                    else:
+                        # Comment only Leo directives, not decorators.
+                        result.append(comment+s if word in d else s)
+                else:
+                    result.append(s)
+        elif s_lstrip.startswith('#') and self.keep_comments:
+            # A leading comment.
+            # Bug fix: Preserve lws in comments, too.
+            j2 = g.skip_ws(s, 0)
+            result.append(" "*j2+comment+s)
+        else:
+            # A plain line.
+            result.append(s)
+        if i == progress:
+            i += 1
+    return comment, ''.join(result)
+#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
+def starts_doc_part(self, s):
+    """Return True if s word matches @ or @doc."""
+    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
+
+def ends_doc_part(self, s):
+    """Return True if s word matches @c or @code."""
+    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
+#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
+def uncomment_leo_lines(self, comment, p, s0):
+    """Reverse the effect of comment_leo_lines."""
+    lines = g.splitLines(s0)
+    i, result = 0, []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        i += 1
+        if comment in s:
+            # One or more special lines.
+            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
+        else:
+            # A regular line.
+            result.append(s)
+        assert progress < i
+    return ''.join(result).rstrip() + '\n'
+#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
+def uncomment_special_lines(self, comment, i, lines, p, result, s):
+    """
+    This method restores original lines from the special comment lines
+    created by comment_leo_lines. These lines have the form:
+        
+        {lws}#{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    s is a line containing the comment delim.
+    i points at the *next* line.
+    Handle one or more lines, appending stripped lines to result.
+    """
+    #
+    # Delete the lws before the comment.
+    # This works because the tail contains the original whitespace.
+    assert comment in s
+    s = s.lstrip().replace(comment, '')
+    #
+    # Here, s is the original line.
+    if comment in s:
+        g.trace(f"can not happen: {s!r}")
+        return i
+    if self.starts_doc_part(s):
+        result.append(s)
+        while i < len(lines):
+            s = lines[i].lstrip().replace(comment, '')
+            i += 1
+            result.append(s)
+            if self.ends_doc_part(s):
+                break
+        return i
+    j = s.find('<<')
+    k = s.find('>>') if j > -1 else -1
+    if -1 < j < k or '@others' in s:
+        #
+        # A section reference line or an @others line.
+        # Such lines are followed by a pass line.
+        #
+        # The beautifier may insert blank lines before the pass line.
+        kind = 'section ref' if -1 < j < k else '@others'
+        # Restore the original line, including leading whitespace.
+        result.append(s)
+        # Skip blank lines.
+        while i < len(lines) and not lines[i].strip():
+            i += 1
+        # Skip the pass line.
+        if i < len(lines) and lines[i].lstrip().startswith('pass'):
+            i += 1
+        else:
+            g.trace(f"*** no pass after {kind}: {p.h}")
+    else:
+        # A directive line or a comment line.
+        result.append(s)
+    return i
+#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
+class TokenSync:
+    """A class to sync and remember tokens."""
+    # To do: handle comments, line breaks...
+    @others
+#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
+def __init__(self, s, tokens):
+    """Ctor for TokenSync class."""
+    assert isinstance(tokens, list)  # Not a generator.
+    self.s = s
+    self.first_leading_line = None
+    self.lines = [z.rstrip() for z in g.splitLines(s)]
+    # Order is important from here on...
+    self.nl_token = self.make_nl_token()
+    self.line_tokens = self.make_line_tokens(tokens)
+    self.blank_lines = self.make_blank_lines()
+    self.string_tokens = self.make_string_tokens()
+    self.ignored_lines = self.make_ignored_lines()
+#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
+def make_blank_lines(self):
+    """Return of list of line numbers of blank lines."""
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        # if any([self.token_kind(z) == 'nl' for z in aList]):
+        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
+            result.append(i)
+    return result
+#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
+def make_ignored_lines(self):
+    """
+    Return a copy of line_tokens containing ignored lines,
+    that is, full-line comments or blank lines.
+    These are the lines returned by leading_lines().
+    """
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        for z in aList:
+            if self.is_line_comment(z):
+                result.append(z)
+                break
+        else:
+            if i in self.blank_lines:
+                result.append(self.nl_token)
+            else:
+                result.append(None)
+    assert len(result) == len(self.line_tokens)
+    for i, aList in enumerate(result):
+        if aList:
+            self.first_leading_line = i
+            break
+    else:
+        self.first_leading_line = len(result)
+    return result
+#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
+def make_line_tokens(self, tokens):
+    """
+    Return a list of lists of tokens for each list in self.lines.
+    The strings in self.lines may end in a backslash, so care is needed.
+    """
+    import token as tm
+    n, result = len(self.lines), []
+    for i in range(0, n+1):
+        result.append([])
+    for token in tokens:
+        t1, t2, t3, t4, t5 = token
+        kind = tm.tok_name[t1].lower()
+        srow, scol = t3
+        erow, ecol = t4
+        line = erow - 1 if kind == 'string' else srow - 1
+        result[line].append(token)
+    assert len(self.lines) + 1 == len(result), len(result)
+    return result
+#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
+def make_nl_token(self):
+    """Return a newline token with '\n' as both val and raw_val."""
+    import token as tm
+    t1 = tm.NEWLINE
+    t2 = '\n'
+    t3 = (0, 0)  # Not used.
+    t4 = (0, 0)  # Not used.
+    t5 = '\n'
+    return t1, t2, t3, t4, t5
+#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
+def make_string_tokens(self):
+    """Return a copy of line_tokens containing only string tokens."""
+    result = []
+    for aList in self.line_tokens:
+        result.append([z for z in aList if self.token_kind(z) == 'string'])
+    assert len(result) == len(self.line_tokens)
+    return result
+#@+node:ekr.20160225102931.8: *4* ts.check_strings
+def check_strings(self):
+    """Check that all strings have been consumed."""
+    for i, aList in enumerate(self.string_tokens):
+        if aList:
+            g.trace(f"warning: line {i}. unused strings: {aList}")
+#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
+def is_line_comment(self, token):
+    """Return True if the token represents a full-line comment."""
+    import token as tm
+    t1, t2, t3, t4, t5 = token
+    kind = tm.tok_name[t1].lower()
+    raw_val = t5
+    return kind == 'comment' and raw_val.lstrip().startswith('#')
+#@+node:ekr.20160225102931.12: *4* ts.last_node
+def last_node(self, node):
+    """Return the node of node's tree with the largest lineno field."""
+
+    class LineWalker(ast.NodeVisitor):
+
+        def __init__(self):
+            """Ctor for LineWalker class."""
+            self.node = None
+            self.lineno = -1
+
+        def visit(self, node):
+            """LineWalker.visit."""
+            if hasattr(node, 'lineno'):
+                if node.lineno > self.lineno:
+                    self.lineno = node.lineno
+                    self.node = node
+            if isinstance(node, list):
+                for z in node:
+                    self.visit(z)
+            else:
+                self.generic_visit(node)
+
+    w = LineWalker()
+    w.visit(node)
+    return w.node
+#@+node:ekr.20160225102931.13: *4* ts.leading_lines
+def leading_lines(self, node):
+    """Return a list of the preceding comment and blank lines"""
+    # This can be called on arbitrary nodes.
+    leading = []
+    if hasattr(node, 'lineno'):
+        i, n = self.first_leading_line, node.lineno
+        while i < n:
+            token = self.ignored_lines[i]
+            if token:
+                s = self.token_raw_val(token).rstrip() + '\n'
+                leading.append(s)
+            i += 1
+        self.first_leading_line = i
+    return leading
+#@+node:ekr.20160225102931.14: *4* ts.leading_string
+def leading_string(self, node):
+    """Return a string containing all lines preceding node."""
+    return ''.join(self.leading_lines(node))
+#@+node:ekr.20160225102931.15: *4* ts.line_at
+def line_at(self, node, continued_lines=True):
+    """Return the lines at the node, possibly including continuation lines."""
+    n = getattr(node, 'lineno', None)
+    if n is None:
+        return f'<no line> for %s' % node.__class__.__name__
+    if continued_lines:
+        aList, n = [], n - 1
+        while n < len(self.lines):
+            s = self.lines[n]
+            if s.endswith('\\'):
+                aList.append(s[:-1])
+                n += 1
+            else:
+                aList.append(s)
+                break
+        return ''.join(aList)
+    return self.lines[n - 1]
+#@+node:ekr.20160225102931.16: *4* ts.sync_string
+def sync_string(self, node):
+    """Return the spelling of the string at the given node."""
+    n = node.lineno
+    tokens = self.string_tokens[n - 1]
+    if tokens:
+        token = tokens.pop(0)
+        self.string_tokens[n - 1] = tokens
+        return self.token_val(token)
+    g.trace('===== underflow', n, node.s)
+    return node.s
+#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
+def tokens_for_statement(self, node):
+    assert isinstance(node, ast.AST), node
+    name = node.__class__.__name__
+    if hasattr(node, 'lineno'):
+        tokens = self.line_tokens[node.lineno - 1]
+        g.trace(' '.join([self.dump_token(z) for z in tokens]))
+    else:
+        g.trace('no lineno', name)
+#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
+def trailing_comment(self, node):
+    """
+    Return a string containing the trailing comment for the node, if any.
+    The string always ends with a newline.
+    """
+    if hasattr(node, 'lineno'):
+        return self.trailing_comment_at_lineno(node.lineno)
+    g.trace('no lineno', node.__class__.__name__, g.callers())
+    return '\n'
+#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
+def trailing_comment_at_lineno(self, lineno):
+    """Return any trailing comment at the given node.lineno."""
+    tokens = self.line_tokens[lineno - 1]
+    for token in tokens:
+        if self.token_kind(token) == 'comment':
+            raw_val = self.token_raw_val(token).rstrip()
+            if not raw_val.strip().startswith('#'):
+                val = self.token_val(token).rstrip()
+                s = f' %s\n' % val
+                return s
+    return '\n'
+#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
+def trailing_lines(self):
+    """return any remaining ignored lines."""
+    trailing = []
+    i = self.first_leading_line
+    while i < len(self.ignored_lines):
+        token = self.ignored_lines[i]
+        if token:
+            s = self.token_raw_val(token).rstrip() + '\n'
+            trailing.append(s)
+        i += 1
+    self.first_leading_line = i
+    return trailing
+#@+node:ekr.20191122105543.1: *4* ts:dumps
+#@+node:ekr.20160225102931.9: *5* ts.dump_token
+def dump_token(self, token, verbose=False):
+    """Dump the token. It is either a string or a 5-tuple."""
+    import token as tm
+    if isinstance(token, str):
+        return token
+    t1, t2, t3, t4, t5 = token
+    kind = g.toUnicode(tm.tok_name[t1].lower())
+    # raw_val = g.toUnicode(t5)
+    val = g.toUnicode(t2)
+    if verbose:
+        return f'token: %10s %r' % (kind, val)
+    return val
+#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
+def token_kind(self, token):
+    """Return the token's type."""
+    t1, t2, t3, t4, t5 = token
+    import token as tm
+    return g.toUnicode(tm.tok_name[t1].lower())
+
+def token_raw_val(self, token):
+    """Return the value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t5)
+
+def token_val(self, token):
+    """Return the raw value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t2)
+#@+node:ekr.20160225102931.11: *5* ts.join
+def join(self, aList, sep=','):
+    """return the items of the list joined by sep string."""
+    tokens = []
+    for i, token in enumerate(aList or []):
+        tokens.append(token)
+        if i < len(aList) - 1:
+            tokens.append(sep)
+    return tokens
+#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
+def scan_for_values(self):  # pragma: no cover
+    """
+    **Important**: This method is not used. It shows how to "parse"
+    the RHS of an % operator using tokens instead of a parse tree. 
+    
+    This is a recursive descent parser. It is comprable in complexity
+    to fs.scan_format_string.
+    
+    Return a list of possibly parenthesized values for the format string.
+    
+    This method never actually consumes tokens.
+    
+    If all goes well, we'll skip all tokens in the tokens list.
+    """
+
+    # pylint: disable=no-member # This is example code.
+    # Skip the '%'
+    new_token = self.new_token
+    assert self.look_ahead(0) == ('op', '%')
+    token_i, tokens = self.skip_ahead(0, 'op', '%')
+    # Skip '(' if it's next
+    include_paren = self.look_ahead(token_i) == ('op', '(')
+    if include_paren:
+        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+        tokens.extend(skipped_tokens)
+    # Find all tokens up to the first ')' or 'for'
+    values, value_list = [], []
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        token = self.tokens[token_i]
+        token_i += 1
+        tokens.append(token)
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('newline', 'nl'):
+            if include_paren or val.endswith('\\\n'):
+                # Continue scanning, ignoring the newline.
+                continue
+            # The newline ends the scan.
+            values.append(value_list)  # Retain the tokens!
+            if not include_paren:  # Bug fix.
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('op', ')'):
+            values.append(value_list)
+            if not include_paren:
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('name', 'for'):
+            self.add_trailing_ws = True
+            tokens.pop()  # Rescan the 'for'
+            values.append(value_list)
+            break
+        if (kind, val) == ('op', ','):
+            values.append(value_list)
+            value_list = []
+        elif kind == 'op' and val in '([{':
+            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
+            value_list.extend(values_list2)
+            tokens.extend(self.tokens[token_i:token_i2])
+            token_i = token_i2
+        elif kind == 'name':
+            # Ensure separation of names.
+            value_list.append(new_token(kind, val))
+            value_list.append(new_token('ws', ' '))
+        else:
+            value_list.append(new_token(kind, val))
+    return values, tokens
 #@+node:ekr.20200729081252.1: *3* FullTraverser classes
 #@+node:ekr.20141012064706.18399: *4* class AstFormatter
 class AstFormatter:
@@ -241,8 +773,7 @@ def do_Call(self, node):
         args.append(f'**%s' % (self.visit(node.kwargs)))
     args = [z for z in args if z]  # Kludge: Defensive coding.
     s = f'%s(%s)' % (func, ','.join(args))
-    return s if self.in_expr else self.indent(s+'\n')
-        # 2017/12/15.
+    return s if self.in_expr else self.indent(s+'\n')  # 2017/12/15.
 #@+node:ekr.20141012064706.18421: *7* f.keyword
 # keyword = (identifier arg, expr value)
 
@@ -1436,8 +1967,7 @@ def __init__(self, debug=False):
     """Ctor for the NewHTMLReportTraverser class."""
     self.code_list = []
     self.debug = debug
-    self.div_stack = []
-        # A check to ensure matching div/end_div.
+    self.div_stack = []  # A check to ensure matching div/end_div.
     self.last_doc = None
     # List of divs & spans to generate...
     self.enable_list = [
@@ -2499,539 +3029,6 @@ def do_YieldFrom(self, node):
     self.keyword('yield from')
     self.visit(node.value)
     self.end_div('statement')
-#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
-class TokenSync:
-    """A class to sync and remember tokens."""
-    # To do: handle comments, line breaks...
-    @others
-#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
-def __init__(self, s, tokens):
-    """Ctor for TokenSync class."""
-    assert isinstance(tokens, list)  # Not a generator.
-    self.s = s
-    self.first_leading_line = None
-    self.lines = [z.rstrip() for z in g.splitLines(s)]
-    # Order is important from here on...
-    self.nl_token = self.make_nl_token()
-    self.line_tokens = self.make_line_tokens(tokens)
-    self.blank_lines = self.make_blank_lines()
-    self.string_tokens = self.make_string_tokens()
-    self.ignored_lines = self.make_ignored_lines()
-#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
-def make_blank_lines(self):
-    """Return of list of line numbers of blank lines."""
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        # if any([self.token_kind(z) == 'nl' for z in aList]):
-        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
-            result.append(i)
-    return result
-#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
-def make_ignored_lines(self):
-    """
-    Return a copy of line_tokens containing ignored lines,
-    that is, full-line comments or blank lines.
-    These are the lines returned by leading_lines().
-    """
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        for z in aList:
-            if self.is_line_comment(z):
-                result.append(z)
-                break
-        else:
-            if i in self.blank_lines:
-                result.append(self.nl_token)
-            else:
-                result.append(None)
-    assert len(result) == len(self.line_tokens)
-    for i, aList in enumerate(result):
-        if aList:
-            self.first_leading_line = i
-            break
-    else:
-        self.first_leading_line = len(result)
-    return result
-#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
-def make_line_tokens(self, tokens):
-    """
-    Return a list of lists of tokens for each list in self.lines.
-    The strings in self.lines may end in a backslash, so care is needed.
-    """
-    import token as tm
-    n, result = len(self.lines), []
-    for i in range(0, n+1):
-        result.append([])
-    for token in tokens:
-        t1, t2, t3, t4, t5 = token
-        kind = tm.tok_name[t1].lower()
-        srow, scol = t3
-        erow, ecol = t4
-        line = erow - 1 if kind == 'string' else srow - 1
-        result[line].append(token)
-    assert len(self.lines) + 1 == len(result), len(result)
-    return result
-#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
-def make_nl_token(self):
-    """Return a newline token with '\n' as both val and raw_val."""
-    import token as tm
-    t1 = tm.NEWLINE
-    t2 = '\n'
-    t3 = (0, 0)  # Not used.
-    t4 = (0, 0)  # Not used.
-    t5 = '\n'
-    return t1, t2, t3, t4, t5
-#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
-def make_string_tokens(self):
-    """Return a copy of line_tokens containing only string tokens."""
-    result = []
-    for aList in self.line_tokens:
-        result.append([z for z in aList if self.token_kind(z) == 'string'])
-    assert len(result) == len(self.line_tokens)
-    return result
-#@+node:ekr.20160225102931.8: *4* ts.check_strings
-def check_strings(self):
-    """Check that all strings have been consumed."""
-    for i, aList in enumerate(self.string_tokens):
-        if aList:
-            g.trace(f"warning: line {i}. unused strings: {aList}")
-#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
-def is_line_comment(self, token):
-    """Return True if the token represents a full-line comment."""
-    import token as tm
-    t1, t2, t3, t4, t5 = token
-    kind = tm.tok_name[t1].lower()
-    raw_val = t5
-    return kind == 'comment' and raw_val.lstrip().startswith('#')
-#@+node:ekr.20160225102931.12: *4* ts.last_node
-def last_node(self, node):
-    """Return the node of node's tree with the largest lineno field."""
-
-    class LineWalker(ast.NodeVisitor):
-
-        def __init__(self):
-            """Ctor for LineWalker class."""
-            self.node = None
-            self.lineno = -1
-
-        def visit(self, node):
-            """LineWalker.visit."""
-            if hasattr(node, 'lineno'):
-                if node.lineno > self.lineno:
-                    self.lineno = node.lineno
-                    self.node = node
-            if isinstance(node, list):
-                for z in node:
-                    self.visit(z)
-            else:
-                self.generic_visit(node)
-
-    w = LineWalker()
-    w.visit(node)
-    return w.node
-#@+node:ekr.20160225102931.13: *4* ts.leading_lines
-def leading_lines(self, node):
-    """Return a list of the preceding comment and blank lines"""
-    # This can be called on arbitrary nodes.
-    leading = []
-    if hasattr(node, 'lineno'):
-        i, n = self.first_leading_line, node.lineno
-        while i < n:
-            token = self.ignored_lines[i]
-            if token:
-                s = self.token_raw_val(token).rstrip() + '\n'
-                leading.append(s)
-            i += 1
-        self.first_leading_line = i
-    return leading
-#@+node:ekr.20160225102931.14: *4* ts.leading_string
-def leading_string(self, node):
-    """Return a string containing all lines preceding node."""
-    return ''.join(self.leading_lines(node))
-#@+node:ekr.20160225102931.15: *4* ts.line_at
-def line_at(self, node, continued_lines=True):
-    """Return the lines at the node, possibly including continuation lines."""
-    n = getattr(node, 'lineno', None)
-    if n is None:
-        return f'<no line> for %s' % node.__class__.__name__
-    if continued_lines:
-        aList, n = [], n - 1
-        while n < len(self.lines):
-            s = self.lines[n]
-            if s.endswith('\\'):
-                aList.append(s[:-1])
-                n += 1
-            else:
-                aList.append(s)
-                break
-        return ''.join(aList)
-    return self.lines[n - 1]
-#@+node:ekr.20160225102931.16: *4* ts.sync_string
-def sync_string(self, node):
-    """Return the spelling of the string at the given node."""
-    n = node.lineno
-    tokens = self.string_tokens[n - 1]
-    if tokens:
-        token = tokens.pop(0)
-        self.string_tokens[n - 1] = tokens
-        return self.token_val(token)
-    g.trace('===== underflow', n, node.s)
-    return node.s
-#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
-def tokens_for_statement(self, node):
-    assert isinstance(node, ast.AST), node
-    name = node.__class__.__name__
-    if hasattr(node, 'lineno'):
-        tokens = self.line_tokens[node.lineno - 1]
-        g.trace(' '.join([self.dump_token(z) for z in tokens]))
-    else:
-        g.trace('no lineno', name)
-#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
-def trailing_comment(self, node):
-    """
-    Return a string containing the trailing comment for the node, if any.
-    The string always ends with a newline.
-    """
-    if hasattr(node, 'lineno'):
-        return self.trailing_comment_at_lineno(node.lineno)
-    g.trace('no lineno', node.__class__.__name__, g.callers())
-    return '\n'
-#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
-def trailing_comment_at_lineno(self, lineno):
-    """Return any trailing comment at the given node.lineno."""
-    tokens = self.line_tokens[lineno - 1]
-    for token in tokens:
-        if self.token_kind(token) == 'comment':
-            raw_val = self.token_raw_val(token).rstrip()
-            if not raw_val.strip().startswith('#'):
-                val = self.token_val(token).rstrip()
-                s = f' %s\n' % val
-                return s
-    return '\n'
-#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
-def trailing_lines(self):
-    """return any remaining ignored lines."""
-    trailing = []
-    i = self.first_leading_line
-    while i < len(self.ignored_lines):
-        token = self.ignored_lines[i]
-        if token:
-            s = self.token_raw_val(token).rstrip() + '\n'
-            trailing.append(s)
-        i += 1
-    self.first_leading_line = i
-    return trailing
-#@+node:ekr.20191122105543.1: *4* ts:dumps
-#@+node:ekr.20160225102931.9: *5* ts.dump_token
-def dump_token(self, token, verbose=False):
-    """Dump the token. It is either a string or a 5-tuple."""
-    import token as tm
-    if isinstance(token, str):
-        return token
-    t1, t2, t3, t4, t5 = token
-    kind = g.toUnicode(tm.tok_name[t1].lower())
-    # raw_val = g.toUnicode(t5)
-    val = g.toUnicode(t2)
-    if verbose:
-        return f'token: %10s %r' % (kind, val)
-    return val
-#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
-def token_kind(self, token):
-    """Return the token's type."""
-    t1, t2, t3, t4, t5 = token
-    import token as tm
-    return g.toUnicode(tm.tok_name[t1].lower())
-
-def token_raw_val(self, token):
-    """Return the value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t5)
-
-def token_val(self, token):
-    """Return the raw value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t2)
-#@+node:ekr.20160225102931.11: *5* ts.join
-def join(self, aList, sep=','):
-    """return the items of the list joined by sep string."""
-    tokens = []
-    for i, token in enumerate(aList or []):
-        tokens.append(token)
-        if i < len(aList) - 1:
-            tokens.append(sep)
-    return tokens
-#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
-class SyntaxSanitizer:
-
-    << SyntaxSanitizer docstring >>
-
-    def __init__(self, c, keep_comments):
-        self.c = c
-        self.keep_comments = keep_comments
-
-    @others
-#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
-r"""
-This class converts section references, @others and Leo directives to
-comments. This allows ast.parse to handle the result.
-
-Within section references, these comments must *usually* be executable:
-    
-BEFORE:
-    if condition:
-        <\< do something >\>
-AFTER:
-    if condition:
-        pass # do something
-        
-Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
-    
-BEFORE:
-    tips = [
-        <\< define tips >\>
-        ]
-
-AFTER:
-    tips = [
-        pass # define tips
-    ]
-    
-This fails because tips = [pass] is a SyntaxError.
-
-The beautify* and black* commands clearly report such failures.
-"""
-#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
-def comment_leo_lines(self, p=None, s0=None):
-    """
-    Replace lines containing Leonine syntax with **special comment lines** of the form:
-        
-        {lws}#{lws}{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    This convention allows uncomment_special_lines to restore these lines.
-    """
-    # Choose a marker that appears nowhere in s.
-    if p:
-        s0 = p.b
-    n = 5
-    while('#'+ ('!'*n)) in s0:
-        n += 1
-    comment = '#' + ('!' * n)
-    # Create a dict of directives.
-    d = {z: True for z in g.globalDirectiveList}
-    # Convert all Leonine lines to special comments.
-    i, lines, result = 0, g.splitLines(s0), []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        s_lstrip = s.lstrip()
-        # Comment out any containing a section reference.
-        j = s.find('<<')
-        k = s.find('>>') if j > -1 else -1
-        if -1 < j < k:
-            result.append(comment+s)
-            # Generate a properly-indented pass line.
-            j2 = g.skip_ws(s, 0)
-            result.append(f'{" "*j2}pass\n')
-        elif s_lstrip.startswith('@'):
-            # Comment out all other Leonine constructs.
-            if self.starts_doc_part(s):
-                # Comment the entire doc part, until @c or @code.
-                result.append(comment+s)
-                i += 1
-                while i < len(lines):
-                    s = lines[i]
-                    result.append(comment+s)
-                    i += 1
-                    if self.ends_doc_part(s):
-                        break
-            else:
-                j = g.skip_ws(s, 0)
-                assert s[j] == '@'
-                j += 1
-                k = g.skip_id(s, j, chars='-')
-                if k > j:
-                    word = s[j : k]
-                    if word == 'others':
-                        # Remember the original @others line.
-                        result.append(comment+s)
-                        # Generate a properly-indented pass line.
-                        result.append(f'{" "*(j-1)}pass\n')
-                    else:
-                        # Comment only Leo directives, not decorators.
-                        result.append(comment+s if word in d else s)
-                else:
-                    result.append(s)
-        elif s_lstrip.startswith('#') and self.keep_comments:
-            # A leading comment.
-            # Bug fix: Preserve lws in comments, too.
-            j2 = g.skip_ws(s, 0)
-            result.append(" "*j2+comment+s)
-        else:
-            # A plain line.
-            result.append(s)
-        if i == progress:
-            i += 1
-    return comment, ''.join(result)
-#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
-def starts_doc_part(self, s):
-    """Return True if s word matches @ or @doc."""
-    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
-
-def ends_doc_part(self, s):
-    """Return True if s word matches @c or @code."""
-    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
-#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
-def uncomment_leo_lines(self, comment, p, s0):
-    """Reverse the effect of comment_leo_lines."""
-    lines = g.splitLines(s0)
-    i, result = 0, []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        i += 1
-        if comment in s:
-            # One or more special lines.
-            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
-        else:
-            # A regular line.
-            result.append(s)
-        assert progress < i
-    return ''.join(result).rstrip() + '\n'
-#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
-def uncomment_special_lines(self, comment, i, lines, p, result, s):
-    """
-    This method restores original lines from the special comment lines
-    created by comment_leo_lines. These lines have the form:
-        
-        {lws}#{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    s is a line containing the comment delim.
-    i points at the *next* line.
-    Handle one or more lines, appending stripped lines to result.
-    """
-    #
-    # Delete the lws before the comment.
-    # This works because the tail contains the original whitespace.
-    assert comment in s
-    s = s.lstrip().replace(comment, '')
-    #
-    # Here, s is the original line.
-    if comment in s:
-        g.trace(f"can not happen: {s!r}")
-        return i
-    if self.starts_doc_part(s):
-        result.append(s)
-        while i < len(lines):
-            s = lines[i].lstrip().replace(comment, '')
-            i += 1
-            result.append(s)
-            if self.ends_doc_part(s):
-                break
-        return i
-    j = s.find('<<')
-    k = s.find('>>') if j > -1 else -1
-    if -1 < j < k or '@others' in s:
-        #
-        # A section reference line or an @others line.
-        # Such lines are followed by a pass line.
-        #
-        # The beautifier may insert blank lines before the pass line.
-        kind = 'section ref' if -1 < j < k else '@others'
-        # Restore the original line, including leading whitespace.
-        result.append(s)
-        # Skip blank lines.
-        while i < len(lines) and not lines[i].strip():
-            i += 1
-        # Skip the pass line.
-        if i < len(lines) and lines[i].lstrip().startswith('pass'):
-            i += 1
-        else:
-            g.trace(f"*** no pass after {kind}: {p.h}")
-    else:
-        # A directive line or a comment line.
-        result.append(s)
-    return i
-#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
-def scan_for_values(self):  # pragma: no cover
-    """
-    **Important**: This method is not used. It shows how to "parse"
-    the RHS of an % operator using tokens instead of a parse tree. 
-    
-    This is a recursive descent parser. It is comprable in complexity
-    to fs.scan_format_string.
-    
-    Return a list of possibly parenthesized values for the format string.
-    
-    This method never actually consumes tokens.
-    
-    If all goes well, we'll skip all tokens in the tokens list.
-    """
-
-    # pylint: disable=no-member # This is example code.
-    # Skip the '%'
-    new_token = self.new_token
-    assert self.look_ahead(0) == ('op', '%')
-    token_i, tokens = self.skip_ahead(0, 'op', '%')
-    # Skip '(' if it's next
-    include_paren = self.look_ahead(token_i) == ('op', '(')
-    if include_paren:
-        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
-        tokens.extend(skipped_tokens)
-    # Find all tokens up to the first ')' or 'for'
-    values, value_list = [], []
-    while token_i < len(self.tokens):
-        # Don't use look_ahead here: handle each token exactly once.
-        token = self.tokens[token_i]
-        token_i += 1
-        tokens.append(token)
-        kind, val = token.kind, token.value
-        if kind == 'ws':
-            continue
-        if kind in ('newline', 'nl'):
-            if include_paren or val.endswith('\\\n'):
-                # Continue scanning, ignoring the newline.
-                continue
-            # The newline ends the scan.
-            values.append(value_list)
-                # Retain the tokens!
-            if not include_paren:  # Bug fix.
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('op', ')'):
-            values.append(value_list)
-            if not include_paren:
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('name', 'for'):
-            self.add_trailing_ws = True
-            tokens.pop()  # Rescan the 'for'
-            values.append(value_list)
-            break
-        if (kind, val) == ('op', ','):
-            values.append(value_list)
-            value_list = []
-        elif kind == 'op' and val in '([{':
-            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
-            value_list.extend(values_list2)
-            tokens.extend(self.tokens[token_i:token_i2])
-            token_i = token_i2
-        elif kind == 'name':
-            # Ensure separation of names.
-            value_list.append(new_token(kind, val))
-            value_list.append(new_token('ws', ' '))
-        else:
-            value_list.append(new_token(kind, val))
-    return values, tokens
 #@+node:ekr.20211014154452.1: ** Abandoned files
 #@+node:ekr.20160517182239.1: *3* ../../flake8-leo.py
 """
@@ -3079,9 +3076,9 @@ def main(files):
 #@+node:ekr.20160517222900.1: *5* get_home
 def get_home():
     """Returns the user's home directory."""
+    # Windows searches the HOME, HOMEPATH and HOMEDRIVE
+    # environment vars, then gives up.
     home = g.os_path_expanduser("~")
-        # Windows searches the HOME, HOMEPATH and HOMEDRIVE
-        # environment vars, then gives up.
     if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
         # Get the indirect reference to the true home.
         home = os.getenv(home[1:-1], default=None)
@@ -3173,476 +3170,927 @@ def scanOptions():
     else:
         scope = 'all'
     return scope
-#@+node:ekr.20211014154406.1: ** Abandoned plugins
-#@+node:ekr.20211011021921.1: *3* From backlink plugin
-#@+node:ekr.20140920145803.17994: *4* class backlinkTkUI
-if g.app.gui.guiName() == "tkinter":
+#@+node:ekr.20100221142603.5638: *3* ../../pylint-leo.py
+"""
+This file runs pylint on predefined lists of files.
 
-    Tk = g.import_module('tkinter')
+The -r option no longer exists. Instead, use Leo's pylint command to run
+pylint on all Python @<file> nodes in a given tree.
 
-    class backlinkTkUI:
-        # pylint: disable=no-member
-        # This is old code.
-        @others
-#@+node:ekr.20140920145803.17975: *5* __init__
-def __init__(self, owner):
-    '''Ctor for backlinkTkUI class.'''
-    self.owner = owner
-    self.c = c = self.owner.c
-    c.frame.log.createTab('Links', createText=False)
-    w = c.frame.log.frameDict['Links']
-    f = Tk.Frame(w)
-    scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
-    self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
-    scrollbar.config(command=self.listbox.yview)
-    scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
-    self.listbox.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=True)
-    f.pack(side=Tk.TOP, fill=Tk.BOTH, expand=True)
-    self.listbox.bind("<ButtonRelease-1>", self.tkListClicked)
-    commands = [
-        ('Mark source', self.owner.markSrc),
-        ('Mark  dest.', self.owner.markDst),
-        ('Link source', self.owner.linkSrc),
-        ('Link dest.', self.owner.linkDst),
-        ('Undirected link', self.owner.linkUnd),
-        ('Rescan links', self.owner.loadLinksInt),
-    ]
-    comms = iter(commands)
-    for i in range(3):
-        f = Tk.Frame(w)
-        for j in range(2):
-            txt, com = comms.next()
-            b = Tk.Button(f, text=txt, width=10,
-                height=1, command=com)
-            b.pack(side=Tk.LEFT, fill=Tk.BOTH)
-        f.pack(side=Tk.TOP, fill=Tk.BOTH)
-    f = Tk.Frame(w)
-    self.message = Tk.Label(f, text='no msg.')
-    self.message.pack(side=Tk.LEFT)
-    self.delete = Tk.IntVar()
-    self.deleteButton = Tk.Checkbutton(f,
-        text='Delete link', variable=self.delete,
-        command=self.tkDeleteClicked)
-    self.deleteButton.pack(side=Tk.RIGHT)
-    f.pack(side=Tk.TOP, fill=Tk.BOTH)
-#@+node:ekr.20140920145803.17976: *5* loadList
-def loadList(self, lst):
-    self.listbox.delete(0, Tk.END)
-    for i in lst:
-        self.listbox.insert(Tk.END, i)
-#@+node:ekr.20140920145803.17977: *5* enableDelete
-def enableDelete(self, enable):
-    self.delete.set(0)
-    if enable:
-        self.deleteButton.configure(state=Tk.NORMAL)
-    else:
-        self.deleteButton.configure(state=Tk.DISABLED)
-#@+node:ekr.20140920145803.17978: *5* showMessage
-def showMessage(self, msg, color='black', optional=False):
-    """Show the message using whatever u.i. is available"""
-    self.message.configure(text=msg, fg=color)
-#@+node:ekr.20140920145803.17979: *5* tkListClicked
-def tkListClicked(self, event):
+On windows, the following .bat file runs this file::
+    python pylint-leo.py %*
 
-    selected = self.listbox.curselection()  # list of selected indexes
-    if not selected:
-        return  # click on empty list of unlinked node
-    selected = int(selected[0])  # not some fancy smancy Tk value
-    self.owner.linkClicked(selected)
-#@+node:ekr.20140920145803.17980: *5* tkDeleteClicked
-def tkDeleteClicked(self):
-
-    self.owner.deleteSet(self.delete.get())
-#@+node:ekr.20140920145803.17981: *5* updateTkTab
-def updateTkTab(self, tag, k):
-    # deprecated
-    if k['c'] != self.c:
-        return  # not our problem
-
-    self.updateTkTabInt()
-#@+node:ekr.20140920145803.17982: *5* updateTkTabInt
-def updateTkTabInt(self):
-    # deprecated
-    c = self.c
-    p = c.p
-    v = p.v
-    self.listbox.delete(0, Tk.END)
-    self.messageUsed = False
-    self.delete.set(0)
-    self.deleteButton.configure(state=Tk.DISABLED)
-    self.showMessage('', optional=True)
-    if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-        i = 0
-        links = v.unknownAttributes['_bklnk']['links']
-        dests = []
-        while i < len(links):
-            linkType, other = links[i]
-            otherV = self.vnode[other]
-            otherP = self.vnodePosition(otherV)
-            if not self.c.positionExists(otherP):
-                self.showMessage('Lost link(s) deleted', color='red')
-                del links[i]
-            else:
-                i += 1
-                dests.append((linkType, otherP))
-        if dests:
-            self.deleteButton.configure(state=Tk.NORMAL)
-            self.showMessage('Click a link to follow it', optional=True)
-            for i in dests:
-
-                def goThere(where=i[1]):
-                    c.selectPosition(where)
-
-                txt = {'S': '->', 'D': '<-', 'U': '--'}[i[0]] + ' ' + i[1].h
-                self.listbox.insert(Tk.END, txt)
-                def delLink(on=v,
-                    to=i[1].v.gnx,
-                    type_=i[0]): self.deleteLink(on, to, type_)
-            self.dests = dests
-#@+node:ekr.20090616105756.3964: *4* showMenu
-def showMenu(self, tag, k):
-
-    if k['c'] != self.c:
-        return  # not our problem
-    p = k['p']
-    self.c.selectPosition(p)
-    v = p.v
-    c = self.c
-
-    # Create the menu.
-    menu = Tk.Menu(None, tearoff=0, takefocus=0)
-
-    commands = [
-        (True, 'Mark as link source', self.markSrc),
-        (True, 'Mark as link dest.', self.markDst),
-        (True, 'Link to source', self.linkSrc),
-        (True, 'Link to dest.', self.linkDst),
-        (True, 'Undirected link', self.linkUnd),
-        (True, 'Rescan links', self.loadLinksInt),
-    ]
-    if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-        i = 0
-        links = v.unknownAttributes['_bklnk']['links']
-        dests = []
-        while i < len(links):
-            linkType, other = links[i]
-            otherV = self.vnode[other]
-            otherP = self.vnodePosition(otherV)
-            if not self.c.positionExists(otherP):
-                g.es('Deleting lost link')
-                del links[i]
-            else:
-                i += 1
-                dests.append((linkType, otherP))
-        if dests:
-            smenu = Tk.Menu(menu, tearoff=0, takefocus=1)
-            for i in dests:
-
-                def goThere(where=i[1]):
-                    c.selectPosition(where)
-
-                c.add_command(menu,
-                    label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
-                    underline=0, command=goThere)
-                def delLink(on=v,
-                    to=i[1].v.unknownAttributes['_bklnk']['id'],
-                    type_=i[0]): self.deleteLink(on, to, type_)
-                c.add_command(smenu,
-                    label={'S': '->', 'D': '<-', 'U': '--'}[i[0]] + i[1].h,
-                    underline=0, command=delLink)
-            menu.add_cascade(label='Delete link', menu=smenu, underline=1)
-            menu.add_separator()
-
-    for command in commands:
-        available, text, com = command
-        if not available:
-            continue
-        c.add_command(menu, label=text,
-            underline=0, command=com)
-    #
-    # Show the menu.
-    event = k['event']
-    g.app.gui.postPopupMenu(self.c, menu, event.x_root, event.y_root)
-#@+node:ekr.20181028052650.1: *3* ../plugins/leowapp.py
-@first # -*- coding: utf-8 -*-
-'''
-This file is deprecated/obsolete. It may be removed soon.
-
-leoflexx.py implements LeoWapp using flexx.
-
-'''
-<< imports >>
-<< config >>
-# browser_encoding = 'utf-8'
-    # To do: query browser: var x = document.characterSet;
-@others
+On Ubuntu, the following alias runs this file::
+    pylint="python pylint-leo.py"
+"""
 @language python
-@tabwidth -4
-#@+node:ekr.20181028052650.3: *4* << imports >>
+# pylint: disable=invalid-name
+    # pylint-leo isn't a valid module name, but it isn't a module.
+import shlex
+import optparse
+import os
+import subprocess
 import sys
-try:
-    import websockets
-    assert websockets
-except ImportError:
-    websockets = None
-    print('leowapp.py requires websockets')
-    print('>pip install websockets')
-import xml.sax.saxutils as saxutils
+import time
 from leo.core import leoGlobals as g
-from leo.core import leoFrame
-from leo.core import leoGui
-#@+node:ekr.20181029070405.1: *4* << config >>
-class Config:
-
-    # ip = g.app.config.getString("leowapp-ip") or '127.0.0.1'
-    # port = g.app.config.getInt("leowapp-port") or 8100
-    # timeout = g.app.config.getInt("leowapp-timeout") or 0
-    # if timeout > 0: timeout = timeout / 1000.0
-
-    ip = '127.0.0.1'
-    port = 5678
-    # port = 8100
-    timeout = 0
-
-# Create a singleton instance.
-# The initial values probably should not be changed.
-config = Config()
-#@+node:ekr.20181030103048.2: *4* escape
-def escape(s):
-    '''
-    Do the standard xml escapes, and replace newlines and tabs.
-    '''
-    return saxutils.escape(s, {
-        '\n': '<br />',
-        '\t': '&nbsp;&nbsp;&nbsp;&nbsp;',
-    })
-#@+node:ekr.20181028052650.5: *4* init (leowapp.py)
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    if not websockets:
-        return False
-    # ws_server hangs Leo!
-    # ws_server()
-    g.plugin_signon(__name__)
-    return True
-#@+node:ekr.20181031162039.1: *4* class BrowserGui (leoGui.LeoGui)
-class BrowserGui(leoGui.NullGui):
-    @others
-#@+node:ekr.20181031160042.1: *5* bg.__getattr__
-def __getattr__(self, attr):
-    '''Handle an missing attribute.'''
-    if attr in (
-        'frameFactory',
-        'set_minibuffer_label',
-    ):
-        # These are optional ivars.
-        raise AttributeError
-    return self.message(attr)
-#@+node:ekr.20181031162620.1: *5* bg.__init__
-def __init__(self):
-
-    g.trace('===== (BrowserGui)')
-    leoGui.NullGui.__init__(self, guiName='browser')
-    self.styleSheetManagerClass = g.NullObject
-    self.log = leoFrame.NullLog()
-#@+node:ekr.20181101034427.1: *5* bg.createLeoFrame
-def createLeoFrame(self, c, title):
-
-    return leoFrame.NullFrame(c, title='NullFrame', gui=self)
-#@+node:ekr.20181101025053.1: *5* bg.message
-def message(self, func):
-    '''
-    Send a message to the framework.
-    '''
-    g.trace('=====', func, g.callers())
-#@+node:ekr.20181031162454.1: *5* bg.runMainLoop
-def runMainLoop(self, fileName=None):
-    '''The main loop for the browser gui.'''
-    # pylint: disable=arguments-differ
-    if fileName:
-        print('LeoWapp running: %s...' % g.shortFileName(fileName))
-    else:
-        print('LeoWapp running...')
-    if 0:  # Run all unit tests.
-        path = g.os_path_finalize_join(
-            g.app.loadDir, '..', 'test', 'unittest.leo')
-        c = g.openWithFileName(path, gui=self)
-        c.findCommands.ftm = g.NullObject()
-            # A hack. Maybe the NullGui should do this.
-        c.debugCommands.runAllUnitTestsLocally()
-    print('calling sys.exit(0)')
-    sys.exit(0)
-#@+node:ekr.201811100000000.1: *3* leoflexx_js.py
-@first # -*- coding: utf-8 -*-
+@others
 @language python
 @tabwidth -4
+@pagewidth 70
+@nobeautify
+g_option_fn = None
+scope, verbose = scanOptions()
+if scope == 'version':
+    report_version()
+else:
+    files = g.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files, verbose)
+@beautify
+
+#@+node:ekr.20140331201252.16859: *4* main (pylint-leo.py)
+def main(files, verbose):
+    """Call run on all tables in tables_table."""
+    n = len(files)
+    print(f"pylint: {n} file{g.plural(n)}")
+    try:
+        from pylint import lint
+        assert lint
+    except ImportError:
+        print('pylint-leo.py: can not import pylint')
+        return
+    t1 = time.time()
+    for fn in files:
+        run(fn, verbose)
+        if not verbose and sys.platform.startswith('win'):
+            print('.', sep='', end='')
+    t2 = time.time()
+    print(f"{n} file{g.plural(n)}, time: {t2-t1:5.2f} sec.")
+#@+node:ekr.20100221142603.5644: *4* run (pylint-leo.py)
+@nobeautify
+
+def run(fn, verbose):
+    """Run pylint on fn."""
+    # theDir is empty for the -f option.
+    from pylint import lint
+    assert lint
+    # Note: g.app does not exist.
+    base_dir = os.path.dirname(__file__)
+    home_dir = os.path.expanduser('~')
+    rc_fn = 'pylint-leo-rc.txt'
+    table = (
+        os.path.abspath(os.path.join(home_dir, '.leo', rc_fn)),
+        os.path.abspath(os.path.join(base_dir, 'leo', 'test', rc_fn)),
+    )
+    for rc_fn in table:
+        if os.path.exists(rc_fn):
+            break
+    else:
+        print(f"pylint-leo.py: {rc_fn!r} not found in leo/test or ~/.leo")
+        return
+    if not os.path.exists(fn):
+        print(f"pylint-leo.py: file not found: {fn}")
+        return
+    if verbose:
+        path = g.os_path_dirname(fn)
+        dirs = path.split(os.sep)
+        theDir = dirs and dirs[-1] or ''
+        print(f"pylint-leo.py: {theDir}{os.sep}{g.shortFileName(fn)}")
+    # Call pylint in a subprocess so Pylint doesn't abort *this* process.
+    # Escaping args is harder here because we are creating an args array.
+    is_win = sys.platform.startswith('win')
+    args =  ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
+    if is_win:
+        args = args.replace('\\','\\\\')
+    command = f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"'
+    if not is_win:
+        command = shlex.split(command)
+    # If shell is True, it is recommended to pass args as a string rather than as a sequence.
+    proc = subprocess.Popen(command, shell=False)
+    proc.communicate()  # Wait: Not waiting is confusing for the user.
+#@+node:ekr.20140526142452.17594: *4* report_version (pylint-leo.py)
+def report_version():
+    try:
+        from pylint import lint
+    except ImportError:
+        g.trace('can not import pylint')
+        return
+    table = (
+        os.path.abspath(os.path.expanduser('~/.leo/pylint-leo-rc.txt')),
+        os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt')),
+    )
+    for rc_fn in table:
+        try:
+            rc_fn = rc_fn.replace('\\', '/')
+            lint.Run([f"--rcfile={rc_fn}", '--version',])
+        except OSError:
+            pass
+    g.trace('no rc file found in')
+    g.printList(table)
+#@+node:ekr.20120307142211.9886: *4* scanOptions (pylint-leo.py)
+def scanOptions():
+    """Handle all options, remove them from sys.argv."""
+    global g_option_fn
+    # This automatically implements the -h (--help) option.
+    parser = optparse.OptionParser()
+    add = parser.add_option
+    add('-a', action='store_true', help='all')
+    add('-c', action='store_true', help='core')
+    add('-e', action='store_true', help='external')
+    add('-f', dest='filename', help='filename, relative to leo folder')
+    add('-g', action='store_true', help='gui plugins')
+    add('-m', action='store_true', help='modes')
+    add('-p', action='store_true', help='plugins')
+    add('-t', action='store_true', help='unit tests')
+    add('-u', action='store_true', help='user commands')
+    add('-v', action='store_true', help='report pylint version')
+    add('--verbose', action='store_true', help='verbose output')
+    # Parse the options.
+    options, args = parser.parse_args()
+    if options.v:
+        # -v anywhere just prints the version.
+        return 'version', False
+    verbose = options.verbose
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
+    elif options.filename:
+        fn = options.filename
+        if fn.startswith('='):
+            fn = fn[1:]
+        g_option_fn = fn.strip('"')
+        scope = 'file'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
+    elif options.t:
+        scope = 'tests'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
+    return scope, verbose
+#@+node:ekr.20160518000549.1: *3* ../../pyflakes-leo.py
 """
-A Stand-alone prototype for Leo using flexx.
+This file runs pyflakes on predefined lists of files.
+
+On windows, the following .bat file runs this file::
+    python pyflakes-leo.py %*
+
+On Ubuntu, the following alias runs this file::
+    pyflake="python pyflake-leo.py"
 """
-from flexx import flx
+@language python
+@tabwidth -4
+# pylint: disable=invalid-name
+    # pyflakes-leo isn't a valid module name, but it isn't a module.
+import optparse
+import sys
+import time
+try:
+    # pylint: disable=import-error
+    from pyflakes import api, reporter
+except ImportError:
+    api = reporter = None
 from leo.core import leoGlobals as g
-assert g
+from leo.core import leoTest
 @others
+g_option_fn = None
+scope = scanOptions()
+if scope == 'version':
+    report_version()
+else:
+    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files)
+#@+node:ekr.20160518000549.10: *4* main (pyflakes-leo.py)
+def main(files):
+    """Call main in all given files."""
+    t1 = time.time()
+    for fn in files:
+        # Report the file name.
+        assert g.os_path_exists(fn), fn
+        sfn = g.shortFileName(fn)
+        s = g.readFileIntoEncodedString(fn)
+        if s and s.strip():
+            r = reporter.Reporter(errorStream=sys.stderr, warningStream=sys.stderr)
+            api.check(s, sfn, r)
+    t2 = time.time()
+    n = len(files)
+    print(f"{n} file{g.plural(n)}, time: {t2 - t1:5.2f} sec.")
+#@+node:ekr.20160518000549.14: *4* report_version
+def report_version():
+    try:
+        # pylint: disable=import-error
+        import flake8
+        print(f"flake8 version: {flake8.__version__}")
+    except Exception:
+        g.trace('can not import flake8')
+#@+node:ekr.20160518000549.15: *4* scanOptions (pyflakes)
+def scanOptions():
+    """Handle all options, remove them from sys.argv."""
+    global g_option_fn
+    # This automatically implements the -h (--help) option.
+    parser = optparse.OptionParser()
+    add = parser.add_option
+    add('-a', action='store_true', help='all (default)')
+    add('-c', action='store_true', help='core')
+    add('-e', action='store_true', help='external')
+    add('-f', dest='filename', help='filename, relative to leo folder')
+    add('-g', action='store_true', help='gui plugins')
+    add('-m', action='store_true', help='modes')
+    add('-p', action='store_true', help='plugins')
+    # add('-s', action='store_true', help='silent')
+    add('-u', action='store_true', help='user commands')
+    add(
+        '-v', '--version', dest='v', action='store_true', help='report pyflakes version'
+    )
+    # Parse the options.
+    options, args = parser.parse_args()
+    # silent = options.s
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
+    elif options.filename:
+        fn = options.filename
+        if fn.startswith('='):
+            fn = fn[1:]
+        g_option_fn = fn.strip('"')
+        scope = 'file'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
+    # elif options.s: scope = 'silent'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
+    return scope
+#@+node:vitalije.20170704194046.1: *3* ../external/sax2db.py
+# 2022/08/23: Converted from python 2 code, but not tested.
+import sys
+import re
+import pprint
+import pickle
+import sqlite3
+# Leo imports.
+import leo.core.leoGlobals as g
+# Third-party imports.
+from .leosax import get_leo_data
+@others
+
+def main(src, dest):
+    print('src', src)
+    print('dest', dest)
+    root = get_leo_data(g.readFileIntoEncodedString(src))
+    root.gnx = 'hidden-root-vnode-gnx'
+    vns, seq = walk_tree(root)
+    data = vnode_data(vns, seq[1:])  # skip hidden root
+    with sqlite3.connect(dest) as conn:
+        resetdb(conn)
+        conn.executemany(sqls('insert-vnode'), data)
+        conn.commit()
+    acc = []
+    settings_harvester(root, [], acc)
+    for gnx, kind, name, value, cond in acc:
+        if kind == 'data':
+            value = repr(value)[:30]
+
+        print(cond or "always", kind, name, pprint.pformat(value))
+
 if __name__ == '__main__':
-    flx.launch(LeoMainWindow)
-    flx.run()
-        # # Runs in browser.
-        # # `python -m flexx stop 49190` stops the server.
-        # flx.App(LeoWapp).launch('firefox-browser')
-        # flx.start()
-#@+node:ekr.20181110170337.1: *4*  init
-def init():
-    # At present, leoflexx is not a true plugin.
-    # I am executing leoflexx.py from an external script.
-    return False
-#@+node:ekr.20181104134654.1: *4* class G
-# class G (flx.PyComponent):
-
-    # def trace(*args, **kwargs):
-        # print('g.trace', ', '.join(args))
-
-# g = G()
-#@+node:ekr.20181110170220.1: *4* class LeoBody
-base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
-flx.assets.associate_asset(__name__, base_url + 'ace.js')
-flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
-flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
-
-class LeoBody(flx.Widget):
-
-    """ A CodeEditor widget based on Ace.
-    """
-
-    CSS = """
-    .flx-CodeEditor > .ace {
-        width: 100%;
-        height: 100%;
+    src = g.os_path_finalize_join(g.os_path_dirname(__file__),
+         '../config/myLeoSettings.leo')
+    if len(sys.argv) > 1:
+        src = sys.argv[1]
+    dest = src[:-3] + 'db'
+    main(src, dest)
+    print('ok')
+#@+node:vitalije.20170706071146.1: *4* SQL
+#@+node:vitalije.20170704195230.1: *5* sqls
+def sqls(k=None):
+    _sqls = {
+        'drop-vnodes': 'drop table if exists vnodes',
+        'drop-settings': 'drop table if exists settings',
+        'create-vnodes': '''create table vnodes(gnx primary key,
+                                    head,
+                                    body,
+                                    children,
+                                    parents,
+                                    iconVal,
+                                    statusBits,
+                                    ua)''',
+        'create-extra-infos':
+            '''create table if not exists extra_infos(name primary key, value)''',
+        'create-settings': '''create table settings(name primary key,
+                                    value, level, source)''',
+        'insert-vnode': 'replace into vnodes values(?,?,?,?,?,?,?,?)',
+        'insert-setting': 'replace into settings values(?,?,?,?)'
     }
+    if k is None:
+        return _sqls
+    return _sqls.get(k)
+#@+node:vitalije.20170704195351.1: *5* resetdb
+def resetdb(conn):
+    conn.execute(sqls('drop-vnodes'))
+    conn.execute(sqls('create-vnodes'))
+    conn.execute(sqls('create-extra-infos'))
+    #conn.execute(sqls('drop-settings'))
+    #conn.execute(sqls('create-settings'))
+#@+node:vitalije.20170706070756.1: *4* Settings...
+#@+node:vitalije.20170706070938.1: *5* __ kinds of settings
+simple_settings = (
+    'bool color directory int ints float path ratio string strings data enabledplugins'
+).split()
+super_simple_settings = ('directory path string').split()
+condition_settings = ('ifenv ifhostname ifplatform').split()
+complex_settings = (
+    'buttons commands font menus mode menuat openwith outlinedata popup shortcuts'
+).split()
+#@+node:vitalije.20170706070818.1: *5* descend & descend_f
+def descend(node, conds, acc):
+    descend_f(settings_harvester, node, conds, acc)
+
+def descend_f(f, node, conds, acc):
+    for child in node.children:
+        f(child, conds, acc)
+#@+node:vitalije.20170706070953.1: *5* isComplexSetting
+def isComplexSetting(node):
+    kind, name, val = parseHeadline(node.h)
+    return kind in complex_settings
+#@+node:vitalije.20170706070955.1: *5* isCondition
+def isCondition(node):
+    kind, name, val = parseHeadline(node.h)
+    return kind in condition_settings
+#@+node:vitalije.20170706070951.1: *5* isSimpleSetting
+def isSimpleSetting(node):
+    kind, name, val = parseHeadline(node.h)
+    return kind in simple_settings
+#@+node:vitalije.20170705141951.1: *5* parseHeadline
+def parseHeadline(s):
     """
-
-    def init(self):
-        # pylint: disable=undefined-variable
-        global window
-        # https://ace.c9.io/#nav=api
-        self.ace = window.ace.edit(self.node, "editor")
-        self.ace.setValue("import os\n\ndirs = os.walk")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-        self.ace.getSession().setMode("ace/mode/python")
-
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
-#@+node:ekr.20181104174357.1: *4* class LeoGui (can't instantiate)
-class LeoGui(flx.PyComponent):
-
-    def runMainLoop(self):
-        """The main loop for the flexx gui."""
-
-        # print('LeoFlex running...')
-        # c = g.app.log.c
-        # assert g.app.gui.guiName() == 'browser'
-        # if 0: # Run all unit tests.
-            # g.app.failFast = True
-            # path = g.os_path_finalize_join(
-                # g.app.loadDir, '..', 'test', 'unittest.leo')
-            # c = g.openWithFileName(path, gui=self)
-            # c.findCommands.ftm = g.NullObject()
-                # # A hack. Some other class should do this.
-                # # This looks like a bug.
-            # c.debugCommands.runAllUnitTestsLocally()
-                # # This calls sys.exit(0)
-        # print('calling sys.exit(0)')
-        # sys.exit(0)
-
-#@+node:ekr.20181110170235.1: *4* class LeoLog
-class LeoLog(flx.Widget):
-
-    CSS = """
-    .flx-CodeEditor > .ace {
-        width: 100%;
-        height: 100%;
-    }
+    Parse a headline of the form @kind:name=val
+    Return (kind,name,val).
+    Leo 4.11.1: Ignore everything after @data name.
     """
+    kind = name = val = None
+    if g.match(s, 0, '@'):
+        i = g.skip_id(s, 1, chars='-')
+        i = g.skip_ws(s, i)
+        kind = s[1:i].strip()
+        if kind:
+            # name is everything up to '='
+            if kind == 'data':
+                # i = g.skip_ws(s,i)
+                j = s.find(' ', i)
+                if j == -1:
+                    name = s[i:].strip()
+                else:
+                    name = s[i:j].strip()
+            else:
+                j = s.find('=', i)
+                if j == -1:
+                    name = s[i:].strip()
+                else:
+                    name = s[i:j].strip()
+                    # val is everything after the '='
+                    val = s[j + 1 :].strip()
+    # g.trace("%50s %10s %s" %(name,kind,val))
+    return kind, name, val
+#@+node:vitalije.20170706124002.1: *5* harvest_one_setting
+def harvest_one_setting(gnx, kind, name, value, conds, acc):
+    cond = '|#|'.join((x.h for x in conds[1:]))
+    acc.append((gnx, kind, name, value, cond))
+#@+node:vitalije.20170706213544.1: *5* get_data
+def subtree(node):
+    for child in node.children:
+        yield child
+        for x in subtree(child):
+            yield x
+def blines(node):
+    return g.splitLines(''.join(node.b))
+def get_data(node):
+    data = blines(node)
+    for x in subtree(node):
+        if x.b and not x.h.startswith('@'):
+            data.extend(blines(x))
+            if not x.b[-1].endswith('\n'):
+                data.append('\n')
+    return data
 
-    def init(self):
-        # pylint: disable=undefined-variable
-        global window
-        # https://ace.c9.io/#nav=api
-        self.ace = window.ace.edit(self.node, "editor")
-            # self.ace.setValue("import os\n\ndirs = os.walk")
-        self.ace.navigateFileEnd()  # otherwise all lines highlighted
-        self.ace.setTheme("ace/theme/solarized_dark")
-            # self.ace.getSession().setMode("ace/mode/python")
-        print('window', window)
+#@+node:vitalije.20170707152323.1: *5* get_menus_list
+def get_menu_items(node):
+    aList = []
+    for child in node.children:
+        for tag in ('@menu', '@item'):
+            if child.h.startswith(tag):
+                name = child.h[len(tag) + 1 :].strip()
+                if tag == '@menu':
+                    aList.append(('%s %s' % (tag, name), get_menu_items(child), None))
+                else:
+                    b = g.splitLines(''.join(child.b))
+                    aList.append((tag, name, b[0] if b else ''))
+                break
+    return aList
 
-    @flx.reaction('size')
-    def __on_size(self, *events):
-        self.ace.resize()
-#@+node:ekr.20181110170304.1: *4* class LeoMainWindow
-class LeoMainWindow(flx.Widget):
-
-    def init(self):
-        with flx.VBox():
-            with flx.HBox(flex=1):
-                flx.Label(text='Tree')
-                self.tree = LeoTree(flex=1)
-                flx.Label(text='Log')
-                self.log = LeoLog(flex=1)
-            flx.Label(text='Body')
-            LeoBody(flex=1)
-            flx.Label(text='Minibuffer')
-            LeoMiniBuffer()
-            flx.Label(text='Status Line')
-            LeoStatusLine()
-        # print('tree', self.tree)
-        # print('log', self.log)
-#@+node:ekr.20181110170402.1: *4* class LeoMiniBuffer
-class LeoMiniBuffer(flx.LineEdit):
-    pass
-#@+node:ekr.20181110170409.1: *4* class LeoStatusLine
-class LeoStatusLine(flx.LineEdit):
-    pass
-#@+node:ekr.20181110170328.1: *4* class LeoTree
-class LeoTree(flx.Widget):
-
-    CSS = '''
-    .flx-TreeWidget {
-        background: #000;
-        color: #afa;
+def get_menus_list(node):
+    aList = []
+    tag = '@menu'
+    taglen = len(tag) + 1
+    for child in node.children:
+        if child.h.startswith(tag):
+            menuName = child.h[taglen:].strip()
+            aList.append(('%s %s' % (tag, menuName), get_menu_items(child), None))
+    with open('/tmp/menus', 'w') as out:
+        out.write(pprint.pformat(aList))
+    return aList
+#@+node:vitalije.20170707131941.1: *5* get_enabled_plugins
+def get_enabled_plugins(node):
+    s = node.b
+    aList = []
+    for s in g.splitLines(s):
+        i = s.find('#')
+        if i > -1:
+            s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
+        if s.strip():
+            aList.append(s.lstrip())
+    return ''.join(aList)
+#@+node:vitalije.20170707132425.1: *5* get_font
+def get_font(node, values):
+    '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
+    d = parseFont(node)
+    # Set individual settings.
+    for key in ('family', 'size', 'slant', 'weight'):
+        data = d.get(key)
+        if data is not None:
+            name, val = data
+            values.append((key, name, val))
+#@+node:vitalije.20170707132535.1: *6* parseFont & helper
+def parseFont(node):
+    d = {
+        'comments': [],
+        'family': None,
+        'size': None,
+        'slant': None,
+        'weight': None,
     }
-    '''
+    lines = node.b
+    for line in lines:
+        parseFontLine(line, d)
+    comments = d.get('comments')
+    d['comments'] = '\n'.join(comments)
+    return d
+#@+node:vitalije.20170707132535.2: *7* parseFontLine
+def parseFontLine(line, d):
+    s = line.strip()
+    if not s:
+        return
+    if g.match(s, 0, '#'):
+        s = s[1:].strip()
+        comments = d.get('comments')
+        comments.append(s)
+        d['comments'] = comments
+    else:
+        # name is everything up to '='
+        i = s.find('=')
+        if i == -1:
+            name = s
+            val = None
+        else:
+            name = s[:i].strip()
+            val = s[i + 1 :].strip()
+            val = val.lstrip('"').rstrip('"')
+            val = val.lstrip("'").rstrip("'")
+        if name.endswith(('_family', '_size', '_slant', '_weight')):
+            d[name.rsplit('_', 1)[1]] = name, val
+#@+node:vitalije.20170707140753.1: *5* get_ints
+get_ints_items_pattern = re.compile('\\[\\d+(,\\d+)*\\]')
+get_ints_name_pattern = re.compile('[a-zA-Z_\\-]+')
 
+def get_ints(name, val):
+    '''We expect either:
+    @ints [val1,val2,...]aName=val
+    @ints aName[val1,val2,...]=val'''
+    m = get_ints_items_pattern.search(name)
+    if m:
+        kind = 'ints' + m.group(0)
+
+        if ',%s,' % val not in m.group(0).replace('[', ',').replace(']', ','):
+            g.pr("%s is not in %s in %s" % (val, kind, name))
+            return None
+    else:
+        valueError('ints', name, val)
+        return None
+    try:
+        value = int(val)
+    except ValueError:
+        valueError('int', name, val)
+        return None
+    return kind, name, value
+
+#@+node:vitalije.20170707160403.1: *5* get_strings
+get_strings_pattern = re.compile('\\[([^\\]]+)\\]')
+def get_strings(name, value):
+    m = get_strings_pattern.search(name)
+    if m:
+        items = [x.strip() for x in m.group(1).split(',')]
+        nm = name.replace(m.group(0), '').strip()
+        if value not in items:
+            raise ValueError('%s value %s not in valid values [%s]' % (nm, value, items))
+        return 'strings[%s]' % (','.join(items)), nm, value
+    raise ValueError("%s is not a valid strings for %s" % (value, name))
+#@+node:vitalije.20170706123951.1: *5* harvest_one_simple_setting
+def harvest_one_simple_setting(node, conds, acc):
+    kind, name, value = parseHeadline(node.h)
     @others
-#@+node:ekr.20181110170328.2: *5* tree.init
-def init(self):
-    with flx.HSplit():
-        with flx.TreeWidget(flex=1, max_selected=1) as self.tree:
-            for t in ['foo', 'bar', 'spam', 'eggs']:
-                with flx.TreeItem(text=t, checked=None):
-                    for i in range(4):
-                        item2 = flx.TreeItem(text=t + ' %i' % i, checked=False)
-                        if i == 2:
-                            with item2:
-                                flx.TreeItem(title='A', text='more info on A')
-                                flx.TreeItem(title='B', text='more info on B')
+    else:
+        raise ValueError('unhandled kind %s' % node.h)
+    harvest_one_setting(node.gnx, kind, name, value, conds, acc)
+#@+node:vitalije.20170707155128.1: *6* if supersimple
+if kind in super_simple_settings:
+    pass
+#@+node:vitalije.20170706213248.1: *6* elif bool
+elif kind == 'bool':
+    if value in ('True', 'true', '1'):
+        value = True
+    elif value in ('False', 'false', '0'):
+        value = False
+    elif value in ('None', '', 'none'):
+        value = None
+    else:
+        valueError(kind, name, value)
+        return
+#@+node:vitalije.20170706213427.1: *6* elif color
+elif kind == 'color':
+    value = value.lstrip('"').rstrip('"')
+    value = value.lstrip("'").rstrip("'")
+#@+node:vitalije.20170706214722.1: *6* elif data
+elif kind == 'data':
+    value = get_data(node)
+#@+node:vitalije.20170707132224.1: *6* elif enabled_plugins
+elif kind == 'enabled_plugins':
+    value = get_enabled_plugins(node)
+#@+node:vitalije.20170707132301.1: *6* elif float
+elif kind == 'float':
+    try:
+        value = float(value)
+    except ValueError:
+        valueError(kind, name, value)
+        return
+#@+node:vitalije.20170707140655.1: *6* elif int
+elif kind == 'int':
+    try:
+        value = int(value)
+    except ValueError:
+        valueError(kind, name, value)
+        return
+#@+node:vitalije.20170707143252.1: *6* elif ints
+elif kind == 'ints':
+    try:
+        (kind, name, value) = get_ints(name, value)
+    except ValueError:
+        # error reported in get_ints
+        return
+#@+node:vitalije.20170707154737.1: *6* elif ratio
+elif kind == 'ratio':
+    try:
+        value = float(value)
+        if value < 0 or value > 1.0:
+            raise ValueError
+    except ValueError:
+        valueError(kind, name, value)
+        return
+#@+node:vitalije.20170707160350.1: *6* elif strings
+elif kind == 'strings':
+    try:
+        kind, name, value = get_strings(name, value)
+    except ValueError as e:
+        print(e)
+        return
+#@+node:vitalije.20170706123955.1: *5* harvest_one_complex_setting
+def harvest_one_complex_setting(node, conds, acc):
+    kind, name, value = parseHeadline(node.h)
+    values = []
+    @others
+    for (kind, name, value) in values:
+        harvest_one_setting(node.gnx, kind, name, value, conds, acc)
 
-
-#@+node:ekr.20181110170328.3: *5* tree.on_event
-@flx.reaction(
-    'tree.children**.checked',
-    'tree.children**.selected',
-    'tree.children**.collapsed',
-)
-def on_event(self, *events):
-    for ev in events:
-        # print(ev.source, ev.type)
-        id_ = ev.source.title or ev.source.text
-        kind = '' if ev.new_value else 'un-'
-        text = '%10s: %s' % (id_, kind + ev.type)
-        assert text
-        # self.label.set_html(text + '<br />' + self.label.html)
+#@+node:vitalije.20170707140157.1: *6* if font
+if kind == 'font':
+    get_font(node, values)
+#@+node:vitalije.20170707151859.1: *6* elif menus
+elif kind == 'menus':
+    menusList = get_menus_list(node)
+    if menusList:
+        values.append(('menus', 'menus', menusList))
+    else:
+        valueError('menus', name, value or node.h)
+#@+node:vitalije.20170707161612.1: *6* elif buttons
+elif kind == 'buttons':
+    raise ValueError('buttons')
+#@+node:vitalije.20170707161622.1: *6* elif commands
+elif kind == 'commands':
+    raise ValueError('commands')
+#@+node:vitalije.20170707161716.1: *6* elif mode
+elif kind == 'mode':
+    raise ValueError('mode')
+#@+node:vitalije.20170707161742.1: *6* elif menuat
+elif kind == 'menuat':
+    raise ValueError('menuat')
+#@+node:vitalije.20170707161803.1: *6* elif openwith
+elif kind == 'openwith':
+    raise ValueError('openwith')
+#@+node:vitalije.20170707161900.1: *6* elif outlinedata
+elif kind == 'openwith':
+    raise ValueError('openwith')
+#@+node:vitalije.20170707162334.1: *6* elif popup
+elif kind == 'popup':
+    raise ValueError('popup')
+#@+node:vitalije.20170707161820.1: *6* elif shortcuts
+elif kind == 'shortcuts':
+    raise ValueError('shortcuts')
+#@+node:vitalije.20170706071117.1: *5* settings_harvester
+def settings_harvester(node, conds, acc):
+    if conds:
+        if isSimpleSetting(node):
+            harvest_one_simple_setting(node, conds, acc)
+        elif isCondition(node):
+            descend(node, conds + [node], acc)
+        elif isComplexSetting(node):
+            harvest_one_complex_setting(node, conds, acc)
+        elif node.h.startswith('@ignore'):
+            pass
+        else:
+            descend(node, conds, acc)
+    elif node.h.startswith('@ignore'):
+        pass
+    elif node.h.startswith('@settings'):
+        descend(node, [True], acc)
+    else:
+        descend(node, conds, acc)
+#@+node:vitalije.20170706214907.1: *5* valueError
+def valueError(kind, name, value):
+    """Give an error: val is not valid for kind."""
+    g.pr("%s is not a valid %s for %s" % (value, kind, name))
+#@+node:vitalije.20170704202637.1: *4* vnode_data
+def vnode_data(vns, seq):
+    for gnx in seq:
+        v = vns[gnx]
+        yield(gnx, v[0], v[1], v[2], ' '.join(v[3]), v[4], 0, v[5])
+#@+node:vitalije.20170704202015.1: *4* walk_tree
+def walk_tree(node, vns=None, seq=None):
+    if vns is None:
+        vns = {}
+    if seq is None:
+        seq = []
+    if not node.gnx in seq:
+        seq.append(node.gnx)
+    pgnx = node.parent.gnx
+    v = vns.get(node.gnx,
+        (
+            node.h,
+            ''.join(node.b),
+            ' '.join(n.gnx for n in node.children),
+            [],
+            1 if node.b else 0,
+            pickle.dumps(node.u)
+        ))
+    v[3].append(pgnx)
+    vns[node.gnx] = v
+    for n in node.children:
+        walk_tree(n, vns, seq)
+    return vns, seq
 #@+node:ekr.20190412154439.1: ** Abandoned projects
+#@+node:ekr.20211226081112.1: *3* script: iterative traverse
+# See ENB: Recent studies and thoughts.
+# https://groups.google.com/g/leo-editor/c/cqI2EhLKUMk
+g.cls()
+import ast
+import os
+import textwrap
+import time
+@others
+<< define contents >>
+p1 = p.copy()
+try:
+    IterativeTraverser().traverse(contents)
+except Exception:
+    g.es_exception()
+c.redraw(p1)
+#@+node:ekr.20211227203717.1: *4* << define contents >>
+if 1:
+    contents = textwrap.dedent('''
+        << contents >>
+    ''')
+else:
+    filename = os.path.abspath(os.path.join(g.app.loadDir, 'leoAst.py'))
+    with open(filename) as f:
+        contents = f.read()
+#@+node:ekr.20211227203236.1: *5* << contents >>
+# global g
+a = b
+# c = d
+#@+node:ekr.20211228143727.1: *4* class Action
+class Action:
+    
+    def __init__(self, func, args):
+        self.func = func
+        self.args = args
+
+    def __str__(self):
+        result = [f"Action: {self.func.__name__} args: "]
+        if isinstance(self.args, tuple):
+            for z in self.args:
+                if isinstance(z, ast.AST):
+                    result.append(f"node: {z.__class__.__name__} {id(z)}")
+                else:
+                    result.append(repr(z))
+        elif isinstance(self.args, ast.AST):
+            z = self.args
+            result.append(f"node: {z.__class__.__name__} {id(z)}")
+        else:
+            result.append(repr(self.args))
+        return ''.join(result)
+
+    __repr__ = __str__
+    
+#@+node:ekr.20211228144225.1: *4* class StackEntry
+class StackEntry:
+    
+    def __init__(self, parent, action_list):
+        self.parent = parent
+        assert isinstance(action_list, list)
+        self.action_list = action_list.copy()  # Don't change the action dict!
+        assert all(isinstance(z, Action) for z in action_list)
+        
+    def __str__(self):
+        parent_s = self.parent.__class__.__name__ if self.parent else '<no parent>'
+        action_list_s = g.objToString(self.action_list)
+        return f"Stack Entry: parent: {parent_s} {action_list_s}"
+        
+    __repr__ = __str__
+#@+node:ekr.20211226160128.1: *4* class IterativeTraverser
+class IterativeTraverser:
+    """
+    An abandoned prototype of an iterative generator. In effect, this class
+    shows how to simulate generators without using recursion.
+    
+    Imo, the scheme could be made to work as a complete replacement for the
+    Token Order Generator (TOG) class in leoAst.py. However, the result
+    would be slower and less clear than the TOG class.
+    """
+    @others
+#@+node:ekr.20211228143252.1: *5* it.dump_stack
+def dump_stack(self):
+    print('From', g.caller(), 'Stack:')
+    for z in self.stack:
+        print(z)
+    print('')
+#@+node:ekr.20211227160522.1: *5* it.sync*
+# These methods correspond to the gen_name, gen_op and gen_token methods
+# of the TokenOrderTraverser class. They must be called in the correcto order.
+
+def sync_name(self, s):
+    g.trace(s)
+    
+def sync_op(self, s):
+    g.trace(s)
+    
+def sync_token(self, token):
+    g.trace(token)
+#@+node:ekr.20211226082555.1: *5* it.traverse
+def traverse(self, contents):
+    """Completely traverse the ast tree for the given file."""
+    << define action_dict >>
+    t1 = time.process_time()
+    self.node = root = ast.parse(contents)
+    t2 = time.process_time()
+    action_list = self.action_dict.get(root.__class__.__name__, []).copy()
+    self.stack = [StackEntry(None, action_list)]
+    total_actions = 0
+    trace = False
+    while self.stack:
+        if trace:
+            self.dump_stack()
+            g.printObj(action_list, tag='LOOP: action_list')
+        if action_list:
+            action = action_list.pop(0)
+            assert isinstance(action, Action), repr(action)
+            total_actions += 1
+            action.func(action.args)
+        else:
+            entry = self.stack.pop()
+            assert isinstance(entry, StackEntry)
+            self.node = entry.parent
+            action_list = entry.action_list
+            if trace:
+                g.trace('POP')
+                self.dump_stack()
+    t3 = time.process_time()
+    print('Stats...\n',
+        f"   nodes: {sum(1 for z in ast.walk(root))}\n",
+        f" actions: {total_actions}\n",
+        f"   parse: {float(t2-t1):<5.3} sec.\n",
+        f"traverse: {float(t3-t2):<5.3} sec.",
+    )
+    # print('actions:', ', '.join(sorted(self.actions_set)))
+    # print('Dummies:', ', '.join(sorted(self.do_nothing_set)))
+#@+node:ekr.20211227103216.1: *6* << define action_dict >>
+# Keys are strings (ast node names); values are zero or more arguments.
+#
+# To do: This table should contain:
+# - Entries for all ast nodes
+# - Entries for int, str, and possibly tuple and list.
+# - Entries for node-specific specializations of ast nodes.
+#   In effect, these specializations split TOG generators into pieces.
+sync_name, sync_op = self.sync_name, self.sync_op
+visit, visit_if = self.visit, self.visit_if
+self.action_dict = {
+    'alias': [
+        # (visit, 'name'),
+        # (visit_if, 'asname', []),
+    ],
+    'Assign': [
+        Action(visit, 'targets'),
+        Action(visit, 'value'),
+    ],
+    'Global': [
+        Action(sync_name, 'global'),
+        Action(visit, 'names'),
+    ],
+    'If': [
+        Action(visit, 'value',),  # visit_if_value
+        Action(visit, 'test'),    # visit_if_test
+        Action(visit, 'body'),    # visit_if_body
+        Action(visit, 'orelse'),  # visit_if_orelse
+    ],
+    'Import': [
+         Action(sync_name, 'import'),
+         Action(visit, 'names'),
+    ],
+    'Module': [
+        Action(visit, 'body')
+    ],
+    'Name':[]
+}
+#@+node:ekr.20211227103957.1: *5* it.visit
+def visit(self, field):
+    child = getattr(self.node, field, None)
+    g.trace(self.node.__class__.__name__, child.__class__.__name__)
+    if not child:
+        g.trace('no child!')
+        return
+    if isinstance(child, str):
+        # Should be part of an action list!
+        g.trace('ignore node!', child.__class__.__name__)
+        return
+    if isinstance(child, (list, tuple)):
+        # Do *not* change self.node.
+        for z in child:
+            self.stack.append(StackEntry(self.node, [Action(self.visit_list, z)]))
+        return
+    assert isinstance(child, ast.AST), repr(child)
+    action_list = self.action_dict.get(child.__class__.__name__, None)
+    if not action_list:
+        if action_list is None:
+            print(f"visit: Missing: {child.__class__.__name__}")
+        return
+    self.stack.append(StackEntry(self.node, action_list.copy()))
+    # *Do* change self.node.
+    self.node = child
+#@+node:ekr.20211227160615.1: *5* it.visit_if
+def visit_if(self, field, action_list):
+    val = getattr(self.node, field, None)
+    if val:
+        self.action_stack.extend(list(reversed(action_list)))
+#@+node:ekr.20211229075058.1: *5* it.visit_list
+def visit_list(self, node):
+    # Nested lists never happen.
+    assert isinstance(node, ast.AST), repr(node)
+    g.trace(node.__class__.__name__)
+    action_list = self.action_dict.get(node.__class__.__name__, None)
+    if not action_list:
+        if action_list is None:
+            print(f"visit_list: Missing in action_dict: {node.__class__.__name__}")
+        return
+    self.node = node
+    g.printObj(action_list, tag='visit_list: append action list')
+    self.stack.append(StackEntry(self.node, action_list.copy()))
+    ### self.dump_stack()  ###
 #@+node:ekr.20180813063846.1: *3* Fast-draw branches
 #@+node:ekr.20180808075509.1: *4* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
@@ -3907,8 +4355,9 @@ class OrganizerData:
         self.organized_nodes = [] # The list of positions organized by this od node.
         self.parent_od = None # The parent od node of this od node. (None is valid.)
         self.p = None # The position of this od node.
-        self.parent = None # The original parent position of all nodes organized by this od node.
-            # If parent_od is None, this will be the parent position of the od node.
+        # The original parent position of all nodes organized by this od node.
+        # If parent_od is None, this will be the parent position of the od node.
+        self.parent = None
         self.source_unl = None # The unl of self.parent.
         self.unl = unl # The unl of this od node.
         self.unls = unls # The unls contained in this od node.
@@ -3945,47 +4394,41 @@ def init(self):
     Init all ivars of this class.
     Unit tests may call this method to ensure that this class is re-inited properly.
     '''
-    self.all_ods = []
-        # List of all od nodes.
+    self.all_ods = []  # List of all od nodes.
+    # Keys are anchoring positions, values are sorted lists of ods.
     self.anchors_d = {}
-        # Keys are anchoring positions, values are sorted lists of ods.
+    # Keys are anchoring positions, values are ints.
     self.anchor_offset_d = {}
-        # Keys are anchoring positions, values are ints.
+    # List of od instances corresponding to @existing-organizer: nodes.
     self.existing_ods = []
-        # List of od instances corresponding to @existing-organizer: nodes.
+    # List of organizers that have no parent organizer node.
+    # This list excludes existing organizer nodes.
     self.global_bare_organizer_node_list = []
-        # List of organizers that have no parent organizer node.
-        # This list excludes existing organizer nodes.
+    # Keys are vnodes; values are list of child headlines.
     self.headlines_dict = {}
-        # Keys are vnodes; values are list of child headlines.
+    # The list of nodes that have children on entry, such as class nodes.
     self.imported_organizers_list = []
-        # The list of nodes that have children on entry, such as class nodes.
-    self.n_nodes_scanned = 0
-        # Number of nodes scanned by demote.
+    self.n_nodes_scanned = 0  # Number of nodes scanned by demote.
+    # List of od instances corresponding to @organizer: nodes.
     self.organizer_ods = []
-        # List of od instances corresponding to @organizer: nodes.
+    # The list of od.unl for all od instances in self.organizer_ods.
     self.organizer_unls = []
-        # The list of od.unl for all od instances in self.organizer_ods.
-    self.root = None
-        # The position of the @auto node.
+    self.root = None  # The position of the @auto node.
+    # The list of nodes pending to be added to an organizer.
     self.pending = []
-        # The list of nodes pending to be added to an organizer.
+    # The stack containing real and virtual parent nodes during the main loop.
     self.stack = []
-        # The stack containing real and virtual parent nodes during the main loop.
-    self.temp_node = None
-        # The parent position of all holding cells.
-    self.trail_write_1 = None
-        # The trial write on entry.
-    self.views_node = None
-        # The position of the @views node.
+    self.temp_node = None  # The parent position of all holding cells.
+    self.trail_write_1 = None  # The trial write on entry.
+    self.views_node = None  # The position of the @views node.
+    # A gloal list of (parent,child) tuples for all nodes that are
+    # to be moved to **non-existing** organizer nodes.
+    # **Important**: Nodes are moved in the order they appear in this list:
+    # the tuples contain no childIndex component!
+    # This list is the "backbone" of this class:
+    # - The front end (demote and its helpers) adds items to this list.
+    # - The back end (move_nodes and its helpers) moves nodes using this list.
     self.work_list = []
-        # A gloal list of (parent,child) tuples for all nodes that are
-        # to be moved to **non-existing** organizer nodes.
-        # **Important**: Nodes are moved in the order they appear in this list:
-        # the tuples contain no childIndex component!
-        # This list is the "backbone" of this class:
-        # - The front end (demote and its helpers) adds items to this list.
-        # - The back end (move_nodes and its helpers) moves nodes using this list.
 #@+node:ekr.20150312225028.35: *5* vc.Entry points
 #@+node:ekr.20150312225028.36: *6* vc.convert_at_file_to_at_auto
 def convert_at_file_to_at_auto(self,root):
@@ -4158,9 +4601,9 @@ def pack(self):
     if not vc.has_at_views_node():
         changed = True
         bunch = u.beforeInsertNode(c.rootPosition())
+        # Creates the @views node as the *last* top-level node
+        # so that no positions become invalid as a result.
         views = vc.find_at_views_node()
-            # Creates the @views node as the *last* top-level node
-            # so that no positions become invalid as a result.
         u.afterInsertNode(views,'create-views-node',bunch)
     # Prepend @view if need.
     if not root.h.strip().startswith('@'):
@@ -4383,8 +4826,7 @@ def update_after_read_at_auto_file(self,root):
         if ok:
             vc.update_headlines_after_read(root)
         t7 = time.clock()
-        c.setChanged(old_changed if ok else False)
-            # To do: revert if not ok.
+        c.setChanged(old_changed if ok else False)  # To do: revert if not ok.
     except Exception:
         g.es_exception()
         n = 0
@@ -4478,20 +4920,17 @@ def create_organizer_nodes(self,at_organizers,root):
     c = vc.c
     trace = False and not g.unitTesting
     t1 = time.clock()
-    vc.pre_move_comments(root)
-        # Merge comment nodes with the next node.
+    vc.pre_move_comments(root)  # Merge comment nodes with the next node.
     t2 = time.clock()
+    # Init all data required for reading.
     vc.precompute_all_data(at_organizers,root)
-        # Init all data required for reading.
     t3 = time.clock()
-    vc.demote(root)
-        # Traverse root's tree, adding nodes to vc.work_list.
+    vc.demote(root)  # Traverse root's tree, adding nodes to vc.work_list.
     t4 = time.clock()
-    vc.move_nodes()
-        # Move nodes on vc.work_list to their final locations.
+    vc.move_nodes()  # Move nodes on vc.work_list to their final locations.
     t5 = time.clock()
+    # Move merged comments to parent organizer nodes.
     vc.post_move_comments(root)
-        # Move merged comments to parent organizer nodes.
     t6 = time.clock()
     if trace: g.trace(
         '\n  pre_move_comments:   %4.2f sec' % (t2-t1),
@@ -4535,25 +4974,25 @@ def precompute_all_data(self,at_organizers,root):
     trace = False and not g.unitTesting
     vc = self
     t1 = time.clock() 
+    # Put all nodes with children on vc.imported_organizer_node_list
     vc.find_imported_organizer_nodes(root)
-        # Put all nodes with children on vc.imported_organizer_node_list
     t2 = time.clock()
+    # Create OrganizerData objects for all @organizer:
+    # and @existing-organizer: nodes.
     vc.create_organizer_data(at_organizers,root)
-        # Create OrganizerData objects for all @organizer:
-        # and @existing-organizer: nodes.
     t3 = time.clock()
+    # Create the organizer nodes in holding cells so positions remain valid.
     vc.create_actual_organizer_nodes()
-        # Create the organizer nodes in holding cells so positions remain valid.
     t4 = time.clock()
+    # Set od.parent_od, od.children & od.descendants for all ods.
     vc.create_tree_structure(root)
-        # Set od.parent_od, od.children & od.descendants for all ods.
     t5 = time.clock()
+    # Compute the positions organized by each organizer.
+    # ** Most of the time is spent here **.
     vc.compute_all_organized_positions(root)
-        # Compute the positions organized by each organizer.
-        # ** Most of the time is spent here **.
     t6 = time.clock()
+    # Create the dictionary that associates positions with ods.
     vc.create_anchors_d()
-        # Create the dictionary that associates positions with ods.
     t7 = time.clock()
     if trace: g.trace(
         '\n  find_imported_organizer_nodes:   %4.2f sec' % (t2-t1),
@@ -4915,9 +5354,9 @@ def add_to_bare_list(self,data,tag):
     vc.global_bare_organizer_node_list.append(data)
     if trace:
         anchor,p,n = data
+        # '\n  anchor:',anchor.h,
+        # '\n  p:',p.h)
         g.trace('=====',tag,'n:',n,anchor.h,'==>',p.h)
-            # '\n  anchor:',anchor.h,
-            # '\n  p:',p.h)
 #@+node:ekr.20150312225028.71: *7* vc.add_to_pending
 def add_to_pending(self,active,p):
     trace = False # and not g.unitTesting
@@ -5145,8 +5584,7 @@ def move_bare_organizers(self,trace):
 def copy_tree_to_last_child_of(self,p,parent):
     '''Copy p's tree to the last child of parent.'''
     vc = self
-    assert p != parent,p
-        # A failed assert leads to unbounded recursion.
+    assert p != parent,p  # A failed assert leads to unbounded recursion.
     # print('copy_tree_to_last_child_of',p.h,parent.h)
     root = parent.insertAsLastChild()
     root.b,root.h = p.b,p.h
@@ -5297,8 +5735,7 @@ def pre_move_comments(self,root):
             next = p.next()
             if p.b: next.b = p.b + next.b
     # g.trace([z.h for z in aList])
-    c.deletePositionsInList(aList)
-        # This sets c.changed.
+    c.deletePositionsInList(aList)  # This sets c.changed.
 #@+node:ekr.20150312225028.94: *6* vc.find...
 # The find commands create the node if not found.
 #@+node:ekr.20150312225028.95: *7* vc.find_absolute_unl_node
@@ -5605,8 +6042,8 @@ def has_at_views_node(self):
 #@+node:ekr.20150312225028.111: *7* vc.is_at_auto_node
 def is_at_auto_node(self,p):
     '''Return True if p is an @auto node.'''
+    # Does not match @auto-rst, etc.
     return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
-        # Does not match @auto-rst, etc.
 
 def is_at_file_node(self,p):
     '''Return True if p is an @file node.'''
@@ -5952,13 +6389,13 @@ def prepass(self, root):
 def regularize_node(self, p, scanner):
     '''Regularize node p so that it will not cause problems.'''
     c = self.c
+    # The scanner is a callback returned by g.app.scanner_for_ext.
+    # It must have a c argument.
     ok = scanner(atAuto=True, c=c, parent=p, s=p.b)
-        # The scanner is a callback returned by g.app.scanner_for_ext.
-        # It must have a c argument.
     if not ok:
         g.es_print('please regularize:', p.h)
     return ok
-#@+node:ekr.20190813161639.1: *3* pyzo_in_leo.py
+#@+node:ekr.20190813161639.1: *3* pyzo_in_leo
 @first # -*- coding: utf-8 -*-
 """pyzo_in_leo.py: Experimental plugin that adds all of pyzo's features to Leo."""
 #
@@ -6027,8 +6464,8 @@ def init(): # pyzo_in_leo.py
     g.plugin_signon(__name__)
     #
     # This replaces MainWindow.closeEvent.
+    # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.app.pyzo_close_handler = close_handler
-        # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
 #@+node:ekr.20190928061911.1: *5* onCreate
@@ -6194,17 +6631,15 @@ def init_pyzo_menu(self, c):
     Copyright (C) 2013-2019 by Almar Klein.
     """
     dw = c.frame.top
+    # Create the Pyzo menu in *Leo's* per-commander menu bar.
     leo_menu_bar = dw.leo_menubar
-        # Create the Pyzo menu in *Leo's* per-commander menu bar.
-    menuBar = pyzo.main.menuBar()
-        # Use *pyzo's* main menuBar to get data.
+    menuBar = pyzo.main.menuBar()  # Use *pyzo's* main menuBar to get data.
 
     # EKR:change-new imports.
     from pyzo import translate
-    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
-        # Testing.
+    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu  # Testing.
+    # Permanent.
     from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
-        # Permanent.
 
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = leo_menu_bar.addMenu("Pyzo")
@@ -6223,8 +6658,7 @@ def init_pyzo_menu(self, c):
     menuBar._menumap = {}
     menuBar._menus = menus
     for menu in menuBar._menus:
-        pyzoMenu.addMenu(menu)
-            # menuBar.addMenu(menu)
+        pyzoMenu.addMenu(menu)  # menuBar.addMenu(menu)
         menuName = menu.__class__.__name__.lower().split('menu')[0]
         menuBar._menumap[menuName] = menu
 
@@ -6370,9 +6804,9 @@ def main_window_ctor(self):
     # EKR:change.
     # Load icons and fonts
     main.loadIcons()
+    # loadIcons()
+    # loadFonts()
     main.loadFonts()
-        # loadIcons()
-        # loadFonts()
 
     # EKR:change.
         # # Set qt style and test success
@@ -6385,8 +6819,7 @@ def main_window_ctor(self):
             # time.sleep(0.05)
     # EKR:change.
     # Populate the window (imports more code)
-    self.main_window_populate()
-        # self._populate()
+    self.main_window_populate()  # self._populate()
         
     # EKR:change: new code.
     self.load_all_pyzo_docks()
@@ -6414,8 +6847,8 @@ def main_window_ctor(self):
         # if not pyzo.config.shellConfigs2:
             # from pyzo.core.kernelbroker import KernelInfo
             # pyzo.config.shellConfigs2.append( KernelInfo() )
+    # pyzo.config.shellConfigs2.append( KernelInfo() )
     from pyzo.core.kernelbroker import KernelInfo
-        # pyzo.config.shellConfigs2.append( KernelInfo() )
     pyzo.config.shellConfigs2 = [KernelInfo()]
 
     # EKR:change Set background.
@@ -6476,8 +6909,8 @@ def main_window_populate(self):
     pyzo.editors = EditorTabs(None)
     
     # EKR:change. Create an Editors dock.
+    # self.setCentralWidget(pyzo.editors)
     self.make_global_dock('Editors', pyzo.editors)
-        # self.setCentralWidget(pyzo.editors)
 
     # Create floater for shell
     # EKR:change: use a global *Leo* dock
@@ -6493,12 +6926,11 @@ def main_window_populate(self):
             # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
         # else:
             # dock.setFeatures(dock.DockWidgetMovable)
-    dock.setObjectName('shells')
-        # dock.setWindowTitle('Shells')
+    dock.setObjectName('shells')  # dock.setWindowTitle('Shells')
     
     # EKR:change: Make the dock a *global* dock.
+    # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
     main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-        # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
     # EKR:change. Use None, not self.
@@ -6564,9 +6996,9 @@ def pyzo_start(self):
     """
     
     # Do some imports
+    # EKK: All print statements after this will appear in the Logger dock.
+    # Unless we change pyzoLogging itself, this import will happen soon anyway.
     from pyzo.core import pyzoLogging  # to start logging asap
-        # EKK: All print statements after this will appear in the Logger dock.
-        # Unless we change pyzoLogging itself, this import will happen soon anyway.
     assert pyzoLogging
 
     # print('\nBEGIN pyzo_start\n')
@@ -6586,10 +7018,10 @@ def pyzo_start(self):
     QtWidgets.QApplication.setDesktopSettingsAware(True)
 
     # EKR-change: the only remaining code from my_app_ctor.
+    # Instantiate the application.
+    # QtWidgets.qApp = MyApp(sys.argv)
+    # my_app_ctor(sys.argv)
     sys.argv = sys.argv[:1]
-        # Instantiate the application.
-        # QtWidgets.qApp = MyApp(sys.argv)
-        # my_app_ctor(sys.argv)
 
     # EKR:change.
         # # Choose language, get locale
@@ -6604,323 +7036,1849 @@ def pyzo_start(self):
         # QtWidgets.qApp.exec_()
 
     # print('END pyzo_start\n')
-#@+node:ekr.20211014154344.1: ** Test stuff
-#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
-tm = c.testManager
-path = g.os_path_join(g.app.loadDir,"..","core")
-exclude = ['leoIPython.py',]
-    # leoIPython.py will give an annoying error if IPython can't be imported.
-modules = tm.importAllModulesInPath(path,exclude=exclude)
-suite   = tm.createUnitTestsFromDoctests(modules)
-#@+node:ekr.20210902013852.1: *3* Converter classes for @test
-# Classes to convert @test nodes to proper unit tests.
-#@+node:ekr.20201202083003.1: *4* class ConvertAtTests
-class ConvertAtTests:
+#@+node:ekr.20190410171646.1: *4* Unused: pyzo_support.py
+@first # -*- coding: utf-8 -*-
+"""
+pyzo_support.py: Will probably be deleted.
+"""
+<< copyright >>
+from leo.core import leoGlobals as g
+assert g
+@others
+#@+node:ekr.20190412042616.1: *5* << copyright >>
+@
+This file uses code from pyzo. Here is the pyzo copyright notice:
+
+Copyright (C) 2013-2018, the Pyzo development team
+
+Pyzo is distributed under the terms of the (new) BSD License.
+The full license can be found in 'license.txt'.
+
+Yoton is distributed under the terms of the (new) BSD License.
+The full license can be found in 'license.txt'.
+#@+node:ekr.20190410171905.1: *5* init (pyzo_support.py)
+def init():
+    print('pyzo_support.py is not a real plugin')
+    return False
+#@+node:ekr.20190418161712.1: *5* class PyzoInterface
+class PyzoInterface:
     """
-    A class that converts @test nodes to proper unit tests.
+    A class representing the singleton running instance of pyzo.
 
-    Subclasses specialize the convert method.
-
-    These scripts know nothing about the unit tests they create. They just
-    pass the data from the old tests to the new tests using args in the
-    run_test method.
+    Instantiated in the top-level init() function.
     """
-
-    class_name = "TestXXX"  # Later, change headlines with search/replace!
 
     @others
-#@+node:ekr.20201130075024.2: *5* ConvertAtTests.body
-def body(self, after_p, after_sel, before_p, before_sel, command_name):
-    """Return the body of the test"""
-    real_command_name = command_name.split(' ')[0]
-    sel11, sel12 = before_sel.split(',')
-    sel21, sel22 = after_sel.split(',')
-    delim = "'''" if '"""' in before_p.b else '"""'
-    return (
-        f"def test_{self.function_name(command_name)}(self):\n"
-        f'    """Test case for {command_name}"""\n'
-        f'    c = self.c\n'
-        f'    before_b = {delim}\\\n'
-        f"{before_p.b}"
-        f'{delim}\n'
-        f'    after_b = {delim}\\\n'
-        f"{after_p.b}"
-        f'{delim}\n'
-        f"    self.run_test(\n"
-        f"        before_b=before_b,\n"
-        f"        after_b=after_b,\n"
-        f'        before_sel=("{sel11}", "{sel12}"),\n'
-        f'        after_sel=("{sel21}", "{sel22}"),\n'
-        f'        command_name="{real_command_name}",\n'
-        f"    )\n"
+#@+node:ekr.20190803175344.1: *6* pyzo_x.patch_pyzo
+def patch_pyzo(self):
+    """
+    Called at the end of pyzo.start to embed Leo into pyzo.
+    """
+#@+node:ekr.20190805022257.1: *4* Unused: pyzo_file_browser.py
+@first # -*- coding: utf-8 -*-
+"""pyzo_file_browser.py: Experimental plugin that adds pyzo's file browser dock to Leo."""
+<< pyzo_file_browser imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20190809093446.1: *5*  << pyzo_file_browser imports >>
+import sys
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore
+#
+# Must patch sys.path here.
+plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+sys.path.insert(0, plugins_dir)
+#
+# Start pyzo, de-fanged.
+import pyzo
+# pylint: disable=no-member
+#@+node:ekr.20190809093459.1: *5*  top-level Leo functions
+#@+node:ekr.20190809093459.3: *6* init (pyzo_file_browser)
+init_warning_given = False
+
+def init(): # pyzo_file_browser.py
+    """Return True if this plugin can be loaded."""
+
+    def oops(message):
+        global init_warning_given
+        if not init_warning_given:
+            init_warning_given = True
+            print('%s %s' % (__name__, message))
+        return False
+
+    if g.app.gui.guiName() != "qt":
+        return oops('requires Qt gui')
+     if not getattr(g.app, 'dock'):
+        return oops('requires Qt Docks')
+    g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame', onCreate)
+    return True
+#@+node:ekr.20190809093459.4: *6* onCreate
+def onCreate(tag, keys): # pyzo_file_browser.py
+    """Create a pyzo file browser in c's outline."""
+    c = keys.get('c')
+    dw = c and c.frame and c.frame.top
+    if not dw:
+        return
+    pyzo.start_pyzo_in_leo(c, pyzo)
+    from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
+    make_dock(c,
+        name="File Browser",
+        widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20210829142807.1: *5* ConvertAtTests.clean_headline
-def clean_headline(self, p):
-    """Make p.h suitable as a function.name."""
-    h = p.h
-    if h.startswith('@test'):
-        h = h[len('@test') :]
-    h = h.strip()
-    result = []
-    for ch in h:
-        if ch.isalnum():
-            result.append(ch)
-        else:
-            result.append('_')
-    return ''.join(result).replace('__', '_')
-#@+node:ekr.20210902014405.1: *5* ConvertAtTests.convert_nodes
-def convert_nodes(self, c, root):
-    """
-    Use converter.convert() to convert all the @test nodes in the
-    root's tree to children a new last top-level node.
-    """
-    if not root:
-        print('no root')
-        return
-    last = c.lastTopLevel()
-    target = last.insertAfter()
-    target.h = 'Converted nodes'
-    count = 0
-    for p in root.subtree():
-        if p.h.startswith('@test'):
-            self.convert_node(c, p, target)
-            count += 1
-    target.expand()
-    c.redraw(target)
-    print(f"converted {count} @test nodes")
-#@+node:ekr.20210829142231.2: *5* ConvertAtTests.convert_node
-def convert_node(self, c, p, target):
-    """
-    Convert p, an @test node, creating a new node as the last child of
-    target.
+#@+node:ekr.20220917052530.1: ** Old code
+#@+node:ekr.20220728055642.1: *3* Old importer code
+@nosearch
+@language plain
 
-    May be overridden in subclasses.
+Summary of deleted methods:
+
+- All cut_stack, adjust_parent, end_block, create_child_node, find_parent, start_block, start_new_block methods.
+- All promote_last_lines methods.
+- All get_new_dict methods.
+- All post_pass methods.
+- The Target class.
+- Importer: i.gen_lines, i.generate_nodes, i.undent*, i.indent*, i.finish (The old api), i.check.
+
+@language python
+#@+node:ekr.20161105140842.5: *4* js_i.scan_line
+def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
     """
-    # Calculate the headline and body text.
-    test_name = f"test_{self.clean_headline(p)}"
-    body = textwrap.indent(p.b, ' ' * 4).rstrip()
-    # Create the new node.
-    test_node = target.insertAsLastChild()
-    test_node.h = f"{self.class_name}.{test_name}"
-    test_node.b = f"def {test_name}(self):\n    c = self.c\n{body}\n"
-#@+node:ekr.20210907154923.1: *5* ConvertAtTests.copy_children
-def copy_children(self, c, p, target):
-    """Copy all children of p to the target."""
-    for child in p.children():
-        target2 = target.insertAsLastChild()
-        target2.h = child.h
-        target2.b = child.b
-        self.copy_children(c, child, target2)
-#@+node:ekr.20201130075024.5: *5* ConvertAtTests.function_name
-def function_name(self, command_name):
-    """Convert a command name into a test function."""
-    result = []
-    parts = command_name.split('-')
-    for part in parts:
-        s = part.replace('(', '').replace(')', '')
-        inner_parts = s.split(' ')
-        result.append('_'.join(inner_parts))
-    return '_'.join(result)
-#@+node:ekr.20210905151425.1: *4* class ConvertColorizerTests (ConvertAtTests)
-class ConvertColorizerTests(ConvertAtTests):
-    """Convert @test nodes for colorizer commands."""
+    Update the scan state at the *end* of the line.
+    Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
+
+    This code uses JsLex to scan the tokens, which scans strings and regexs properly.
+
+    This code also handles *partial* tokens: tokens continued from the
+    previous line or continued to the next line.
+    """
+    context = prev_state.context
+    curlies, parens = prev_state.curlies, prev_state.parens
+    # Scan tokens, updating context and counts.
+    prev_val = None
+    for kind, val in JsLexer().lex(s):
+        if context:
+            if context in ('"', "'") and kind in ('other', 'punct') and val == context:
+                context = ''  # pragma: no cover (mysterious)
+            elif (
+                context == '/*'
+                and kind in ('other', 'punct')
+                and prev_val == '*'
+                and val == '/'
+            ):
+                context = ''
+        elif kind in ('other', 'punct') and val in ('"', "'"):
+            context = val
+        elif kind in ('other', 'punct') and val == '*' and prev_val == '/':
+            context = '/*'
+        elif kind in ('other', 'punct'):
+            if val == '*' and prev_val == '/':
+                # TestJavascript.test_comments casts doubt on whether this case is possible.
+                context = '/*'  # pragma: no cover (mysterious)
+            elif val == '{':
+                curlies += 1
+            elif val == '}':
+                curlies -= 1
+            elif val == '(':
+                parens += 1
+            elif val == ')':
+                parens -= 1
+        prev_val = val
+    d = {'context': context, 'curlies': curlies, 'parens': parens}
+    state = JS_ScanState(d)
+    return state
+#@+node:ekr.20171224145755.1: *4* js_i.starts_block
+func_patterns = [
+    re.compile(r'.*?\)\s*=>\s*\{'),
+    re.compile(r'\s*class\b'),
+    re.compile(r'\s*function\b'),
+    re.compile(r'.*?[(=,]\s*function\b'),
+]
+
+def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
+    """True if the new state starts a block."""
+    if new_state.level() <= prev_state.level():
+        return False
+    # Remove strings and regexs from the line before applying the patterns.
+    cleaned_line = []
+    for kind, val in JsLexer().lex(lines[i]):
+        if kind not in ('string', 'regex'):
+            cleaned_line.append(val)
+    # Search for any of the patterns.
+    line = ''.join(cleaned_line)
+    for pattern in self.func_patterns:
+        if pattern.match(line) is not None:
+            return True
+    return False
+#@+node:ekr.20170530035601.1: *4* lua_i.starts_block (not used)
+# The function must be an "outer" function, without indentation.
+function_pattern = re.compile(r'^(local\s+)?function')
+function_pattern2 = re.compile(r'(local\s+)?function')
+
+def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
+    """True if the new state starts a block."""
+
+    def end(line: str) -> int:
+        # Buggy: 'end' could appear in a string or comment.
+        # However, this code is much better than before.
+        i = line.find('end')
+        return i if i > -1 and g.match_word(line, i, 'end') else -1
+
+    if prev_state.context:
+        return False
+    line = lines[i]
+    m = self.function_pattern.match(line)
+    if m and end(line) < m.start():
+        self.start_stack.append('function')
+        return True
+    # Don't create separate nodes for assigned functions,
+    # but *do* push 'function2' on the start_stack for the later 'end' statement.
+    m = self.function_pattern2.search(line)
+    if m and end(line) < m.start():
+        self.start_stack.append('function2')
+        return False
+    # Not a function. Handle constructs ending with 'end'.
+    line = line.strip()
+    if end(line) == -1:
+        for z in ('do', 'for', 'if', 'while',):
+            if g.match_word(line, 0, z):
+                self.start_stack.append(z)
+                break
+    return False
+#@+node:ekr.20161129213808.1: *4* php_i.get_new_dict
+@nobeautify
+
+def get_new_dict(self, context: str) -> Dict:
+    """
+    Return a *general* state dictionary for the given context.
+    Subclasses may override...
+    """
+    comment, block1, block2 = self.single_comment, self.block1, self.block2
+    assert (comment, block1, block2) == ('//', '/*', '*/'), f"php: {comment!r} {block1!r} {block2!r}"
+
+    d: Dict[str, List[Any]]
+
+    if context:
+        d = {
+            # key    kind   pattern  ends?
+            '\\':   [('len+1', '\\', None)],
+            '"':    [('len', '"',    context == '"')],
+            "'":    [('len', "'",    context == "'")],
+            '*':    [('len', '*/', True)],  # #1717.
+        }
+    else:
+        # Not in any context.
+        d = {
+            # key    kind pattern new-ctx  deltas
+            '/':    [
+                ('all', '//', context, None),
+                ('len', '/*', '/*', None),
+            ],
+            '\\':   [('len+1', '\\', context, None)],
+            '<':    [('<<<', '<<<', '<<<', None)],
+            '"':    [('len', '"', '"',     None)],
+            "'":    [('len', "'", "'",     None)],
+            '{':    [('len', '{', context, (1,0,0))],
+            '}':    [('len', '}', context, (-1,0,0))],
+            '(':    [('len', '(', context, (0,1,0))],
+            ')':    [('len', ')', context, (0,-1,0))],
+            '[':    [('len', '[', context, (0,0,1))],
+            ']':    [('len', ']', context, (0,0,-1))],
+        }
+    return d
+#@+node:ekr.20161129214803.1: *4* php_i.scan_dict (supports here docs)
+def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
+    """
+    i.scan_dict: Scan at position i of s with the give context and dict.
+    Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
+    """
+    found = False
+    delta_c = delta_p = delta_s = 0
+    if self.here_doc_target:
+        assert i == 0, repr(i)
+        n = len(self.here_doc_target)
+        if self.here_doc_target.lower() == s[:n].lower():
+            self.here_doc_target = None
+            i = n
+            return scan_tuple('', i, 0, 0, 0, False)
+        # Skip the rest of the line
+        return scan_tuple('', len(s), 0, 0, 0, False)
+    ch = s[i]  # For traces.
+    aList = d.get(ch)
+    if aList and context:
+        # In context.
+        for data in aList:
+            kind, pattern, ends = data
+            if self.match(s, i, pattern):
+                if ends is None:
+                    found = True
+                    new_context = context
+                    break
+                elif ends:
+                    found = True
+                    new_context = ''
+                    break
+                else:
+                    pass  # Ignore this match.
+    elif aList:
+        # Not in context.
+        for data in aList:
+            kind, pattern, new_context, deltas = data
+            if self.match(s, i, pattern):
+                found = True
+                if deltas:
+                    delta_c, delta_p, delta_s = deltas
+                break
+    if found:
+        if kind == 'all':
+            i = len(s)
+        elif kind == 'len+1':
+            i += (len(pattern) + 1)
+        elif kind == '<<<':  # Special flag for here docs.
+            new_context = context  # here_doc_target is a another kind of context.
+            m = self.here_doc_pattern.match(s[i:])
+            if m:
+                i = len(s)  # Skip the rest of the line.
+                self.here_doc_target = '%s;' % m.group(1)
+            else:
+                i += 3
+        else:
+            assert kind == 'len', (kind, self.name)
+            i += len(pattern)
+        bs_nl = pattern == '\\\n'
+        return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
+    #
+    # No match: stay in present state. All deltas are zero.
+    new_context = context
+    return scan_tuple(new_context, i + 1, 0, 0, 0, False)
+#@+node:ekr.20200203060718.1: *4* TestJavascript.test_scan_line
+def test_scan_line(self):
+
+    c = self.c
+    table = (
+        # result        prev_context    s
+        ((0, 0, '"'), "", r'"string'),
+        ((0, 0, '/*'), "", r'/* line 1'),
+        ((0, 0, '/*'), "/*", r'line 2'),  # New.
+        ((0, 0, ''), "/*", r'line 3 */'),  # New.
+        ((0, 0, ''), "", r'a + b // /*'),
+        ((0, 1, ''), "", r'(function'),
+        ((1, 1, ''), "", r'(function(a) {'),
+        ((0, 0, ''), "", r'var x = /abc/'),
+        ((0, 0, ''), "", r'var x = /a"c/'),
+        ((0, 0, ''), "", r'var x = /a\//'),
+        ((0, 0, ''), "", r'var x = /a\//'),
+        ((0, 1, ''), "", r'var x = (0,'),
+    )
+    for result, prev_context, s in table:
+        importer = JS_Importer(c)
+        prev_state = JS_ScanState()
+        prev_state.context = prev_context
+        new_state = importer.scan_line(s, prev_state)
+        curlies, parens, context = result
+        ok = (
+            new_state.curlies == curlies and
+            new_state.parens == parens and
+            new_state.context == context)
+        assert ok, (
+                f"\n"
+                f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
+                f"new_state: {new_state}\n"
+                f"        s: {s!r}")
+#@+node:ekr.20210904065459.54: *4* TestPerl.test_regex_1
+def test_regex_1(self):
+
+    # ('len',   'tr///', '/',       context,  0,       0,       0),
+    # ('len',   's///',  '/',       context,  0,       0,       0),
+    # ('len',   'm//',   '/',       context,  0,       0,       0),
+    # ('len',   '/',     '/',       '',       0,       0,       0),
+    s = """
+        #!/usr/bin/perl
+
+        sub test1 {
+            s = /{/g;
+        }
+
+        sub test2 {
+            s = m//{/;
+        }
+
+        sub test3 {
+            s = s///{/;
+        }
+
+        sub test4 {
+            s = tr///{/;
+        }
+    """
+    self.run_test(s)
+
+#@+node:ekr.20161118093751.2: *4* ts_i.skip_possible_regex
+def skip_possible_regex(self, s: str, i: int) -> int:
+    """look ahead for a regex /"""
+    assert s[i] in '=(', repr(s[i])
+    i += 1
+    while i < len(s) and s[i] in ' \t':
+        i += 1
+    if i < len(s) and s[i] == '/':
+        i += 1
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if ch == '\\':
+                i += 2
+            elif ch == '/':
+                i += 1
+                break
+            else:
+                i += 1
+            assert progress < i
+
+    return i - 1
+#@+node:ekr.20220825080908.1: *3* Old scripts
+#@+node:ekr.20210309083845.1: *4* script: old check-leoPy.leo
+"""
+Issue https://github.com/leo-editor/leo-editor/issues/1789
+"""
+g.cls()
+import glob
+
+def munge(s):
+    return s.replace('\\','/').lower()
+    
+ignore = [
+    # Core...
+    'format-code.py',       # Script.
+    # External...
+    'leoftsindex.py',       # User contributed.
+    'stringlist.py',        # User contributed.
+    # Plugins...
+    'baseNativeTree.py',    # No longer used. To be deleted?
+    'leofts.py',            # User contributed.
+    'qt_main.py',           # Created by Qt designer. Not used.
+    'rst3.py',              # To be deleted?
+]
+ignore = [munge(z) for z in ignore]
+# Find all paths for @<file> nodes.
+seen = {}
+for p in c.all_positions():
+    if p.isAnyAtFileNode():
+        path = munge(g.fullPath(c, p))
+        seen [path] = path
+# Check all .py files.  
+for module in ('core', 'external', 'plugins'):
+    print(f"checking {module}...")
+    pat = g.os_path_finalize_join(g.app.loadDir, '..', module, '*.py')
+    paths = glob.glob(pat)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    paths = [munge(z) for z in paths]
+    # g.printObj(paths, tag=f"\n{len(paths)} files in {module}")
+    for path in paths:
+        if path not in seen and g.shortFileName(path) not in ignore:
+            print(f"Missing: {path}")
+    print('')
+print('done')
+#@+node:ekr.20210709045755.1: *4* script: wax_off.py
+@first # -*- coding: utf-8 -*-
+<< docstring >>
+import argparse
+import difflib
+import glob
+import os
+import re
+import sys
+
+# Match class definitions.
+class_pat = re.compile(r'^[ ]*class\s+[\w_]+.*?:', re.MULTILINE)
+
+# Match function/method definitions.
+def_pat = re.compile(r'^([ ]*)def\s+([\w_]+)\s*\((.*?)\)(.*?):', re.MULTILINE + re.DOTALL)
+
+__version__ = 'wax_off.py version 1.0'
+
+class WaxOff:
+    diff = False
+    trace = False
     @others
-#@+node:ekr.20210905151425.2: *5* ConvertColorizerTests.convert_node
-def convert_node(self, c, p, target):
-    """Convert one @test node, creating a new node."""
-    indent = ' ' * 4
-    # Create the new node.
-    test_node = target.insertAsLastChild()
-    # Set the headline.
-    test_name = f"test_{self.clean_headline(p)}"
-    test_node.h = f"{self.class_name}.{test_name}"
-    # Compute the start of the body text.
-    result = [
-        f"def {test_name}(self):\n",
-        f"{indent}c = self.c\n",
-    ]
-    # Compute the data, if there is a child node.
-    child = p.firstChild()
-    if child:
-        child_s = child.b.rstrip()
-        pat = re.compile(r'@language (\w+)\s*\n')
-        m = pat.search(child.b)
-        if m:
-            # g.trace(child.h, m.group(0).rstrip())
-            child_s = child_s.replace(m.group(0), '')
-            language_name = m.group(1)
-            result.append(f'''{indent}text = textwrap.dedent("""\\\n''')
-            result.append(child_s.rstrip() + '\n')
-            result.append('''""")\n''')
-            result.append(f"{indent}self.color('{language_name}', text)\n")
-            test_node.b = ''.join(result)
-            # result.append(f"{indent}language_name = '{m.group(1)}'\n")
+
+if __name__ == '__main__':
+    WaxOff().main()
+#@+node:ekr.20210710050822.1: *5* << docstring >>
+"""
+The "wax-off" utility.
+
+Create stub files from existing annotation, then remove all function annotations.
+
+So called because having created annotations in the python sources (wax-on)
+we now want to remove them again (wax-off).
+
+**Important**: In most cases it will be better to use make_stub_files (msb)
+to create stub files. Unlike simplistic wax-on scripts, msb does a good job
+of annotating the return values of functions.
+
+Stub files provide the benefits of mypy with minimal clutter. The remaining
+"clutter" (annotations of var types) turns out to be excellent
+documentation.
+
+**Tweaking the stub files**
+
+The wax_off script knows very little about python. wax_off is just a
+pattern matcher. wax_off moves def lines (and class lines) to the stub file
+with the *existing* indentation. So mypy may complain about syntax errors
+in the stub file:
+
+1. If a class (like an exception class) has no methods, the class line
+   should be followed by '...'. You must do that yourself.
+
+2. If a function/method contains an inner def, mypy will also complain. You
+   can just comment out those inner defs. They aren't needed anyway: mypy
+   handles local attributes very well.
+
+**Summary**
+
+The wax_off script allows you to add full annotations for functions and
+methods directly in the source files. When mypy is happy, just run wax_off
+to move the def lines into stub files. wax_off then "declutters" the def
+lines.
+"""
+#@+node:ekr.20210709065306.1: *5* wax_off.do_file
+def do_file(self, input_fn):
+    """Handle one file"""
+    # Define output files.
+    short_input_fn = os.path.basename(input_fn)
+    stub_fn = os.path.join(self.output_directory, short_input_fn + 'i')
+    new_fn = os.path.join(self.output_directory, short_input_fn)
+    # Read the input file.
+    with open(input_fn, 'r') as f:
+        contents = f.read()
+    # Find all the class defs.
+    n = 0
+    file_stubs, replacements = [], []
+    for m in class_pat.finditer(contents):
+        class_stub = m.group(0).rstrip() + '\n'
+        file_stubs.append((m.start(), class_stub))
+    # Find all the defs.
+    for m in def_pat.finditer(contents):
+        n += 1
+        stub = f"{m.group(0)} ...\n"
+        lws = m.group(1)
+        name = m.group(2)
+        args = self.stripped_args(m.group(3))
+        # ret = m.group(4)
+        stripped = f"{lws}def {name}({args}):"
+        assert not stripped.startswith('\n'), stripped
+        if 0:
+            print(f"{n:>3} original: {m.group(0).rstrip()}")
+            print(f"{n:>3}     stub: {stub.rstrip()}")
+            print(f"{n:>3} stripped: {stripped}")
+            print('')
+        # Append the results.
+        replacements.append((m.start(), m.group(0), stripped))
+        file_stubs.append((m.start(), stub))
+    # Dump the replacements:
+    if 0:
+        for i, data in enumerate(replacements):
+            start, old, new = data
+            print(i, start)
+            print(f"{old!r}")
+            print(f"{new!r}")
+    # Sort the stubs.
+    file_stubs.sort()
+    # Dump the sorted stubs.
+    if 0:
+        for data in file_stubs:
+            start, s = data
+            print(s.rstrip())
+    # Write the stub file.
+    print(f"\nWriting {stub_fn}")
+    with open(stub_fn, 'w') as f:
+        f.write(''.join(z[1] for z in file_stubs))
+    # Compute the new contents.
+    new_contents = contents
+    for data in reversed(replacements):
+        start, old, new = data
+        assert new_contents[start:].startswith(old), (start, old, new_contents[start : start + 50])
+        new_contents = new_contents[:start] + new + new_contents[start + len(old) :]
+    # Diff or write the file.
+    if self.diff:  # Diff the old and new contents.
+        lines = list(difflib.unified_diff(
+            contents.splitlines(True), new_contents.splitlines(True),
+            fromfile=input_fn, tofile=new_fn, n=0))
+        print(f"Diff: {new_fn}")
+        for line in lines:
+            print(repr(line))
+    else:  # Write the new file.
+        print(f"Writing: {new_fn}")
+        with open(new_fn, 'w') as f:
+            f.write(new_contents)
+    print(f"{len(replacements)} replacements")
+#@+node:ekr.20210709052929.3: *5* wax_off.get_next_arg
+name_pat = re.compile(r'\s*([\w_]+)\s*')
+
+def get_next_arg(self, s, i):
+    """
+    Scan the next argument, retaining initializers, stripped of annotations.
+
+    Return (arg, i):
+    - arg: The next argument.
+    - i:   The index of the character after arg.
+    """
+    assert i < len(s), (i, len(s))
+    m = self.name_pat.match(s[i:])
+    if not m:
+        return (None, len(s))
+    name = m.group(0).strip()
+    i += len(m.group(0))
+    if i >= len(s):
+        return (name, i)
+    if s[i] == ':':
+        # Skip the annotation.
+        i += 1
+        j = self.skip_to_outer_delim(s, i, delims="=,")
+        i = self.skip_ws(s, j)
+    if i >= len(s):
+        return name, i
+    if s[i] == ',':
+        return name, i + 1
+    # Skip the initializer.
+    assert s[i] == '=', (i, s[i:])
+    i += 1
+    j = self.skip_to_outer_delim(s, i, delims=",")
+    initializer = s[i:j].strip()
+    if j < len(s) and s[j] == ',':
+        j += 1
+    i = self.skip_ws(s, j)
+    return f"{name}={initializer}", i
+
+#@+node:ekr.20210709102722.1: *5* wax_off.main
+def main(self):
+    """The main line of the wax_off script."""
+    # Handle command-line options & set ivars.
+    self.scan_options()
+    # Handle each file.
+    for fn in self.files:
+        path = os.path.join(self.input_directory, fn)
+        self.do_file(path)
+#@+node:ekr.20210709055018.1: *5* wax_off.scan_options
+def scan_options(self):
+    """Run commands specified by sys.argv."""
+
+    def dir_path(s):
+        if os.path.isdir(s):
+            return s
+        print(f"\nNot a directory: {s!r}")
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(
+        description="wax_off.py: create stub files, then remove function annotations")
+    add = parser.add_argument
+    add('FILES', nargs='*', help='list of files or directories')
+    add('-d', '--diff', dest='d', action='store_true', help='Show diff without writing files')
+    add('-i', '--input-directory', dest='i_dir', metavar="DIR", type=dir_path, help='Input directory')
+    add('-o', '--output-directory', dest='o_dir', metavar="DIR", type=dir_path, help='Output directory')
+    add('-t', '--trace', dest='t', action='store_true', help='Show debug traces')
+    add('-v', '--version', dest='v', action='store_true', help='show version and exit')
+    args = parser.parse_args()
+    # Handle all args.
+    if args.v:
+        print(__version__)
+        sys.exit(0)
+    # Set flags.
+    self.diff = bool(args.d)
+    self.trace = bool(args.t)
+    # Compute directories. They are known to exist.
+    self.input_directory = args.i_dir or os.getcwd()
+    self.output_directory = args.o_dir or os.getcwd()
+    # Get files.
+    files = []
+    for fn in args.FILES:
+        path = os.path.join(self.input_directory, fn)
+        files.extend(glob.glob(path))
+    # Warn if files do not exist.
+    self.files = []
+    for path in files:
+        if not path.endswith('.py'):
+            print(f"Not a .py file: {path}")
+        elif os.path.exists(path):
+            self.files.append(path)
+        else:
+            print(f"File not found: {path}")
+    # Trace, if requested.
+    if self.trace:
+        print('')
+        print(f"  Input directory: {self.input_directory}")
+        print(f" Output directory: {self.output_directory}")
+        print('')
+        print('Files...')
+        for fn in self.files:
+            print(f"  {fn}")
+        print('')
+    # Check the arguments.
+    if not self.files:
+        print('No input files')
+        sys.exit(1)
+
+#@+node:ekr.20210709052929.4: *5* wax_off.skip_to_outer_delim & helpers
+def skip_to_outer_delim(self, s, i, delims):
+    """
+    Skip to next *outer*, ignoring inner delimis contained in strings, etc.
+
+    It is valid to reach the end of s before seeing the expected delim.
+
+    Return i, the character after the delim, or len(s) if the delim has not been seen.
+    """
+    assert i < len(s), i
+    # Type annotations only use [], but initializers can use anything.
+    c_level, p_level, s_level = 0, 0, 0  # Levels for {}, (), []
+    while i < len(s):
+        ch = s[i]
+        progress = i
+        i += 1
+        if ch in delims:
+            if (c_level, p_level, s_level) == (0, 0, 0):
+                return i - 1  # Let caller handle ending delim.
+        elif ch == '{':
+            c_level += 1
+        elif ch == '}':
+            c_level -= 1
+        elif ch == '(':
+            p_level += 1
+        elif ch == ')':
+            p_level -= 1
+        elif ch == '[':
+            s_level += 1
+        elif ch == ']':
+            s_level -= 1
+        elif ch in "'\"":
+            i = self.skip_string(s, i - 1)
+        elif ch == "#":
+            i = self.skip_comment(s, i - 1)
+        else:
+            pass
+        assert progress < i, (i, repr(s[i:]))
+    assert(c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
+    return len(s)
+#@+node:ekr.20210709052929.5: *6* wax_off.skip_comment
+def skip_comment(self, s, i):
+    """Scan forward to the end of a comment."""
+    assert s[i] == '#'
+    while i < len(s) and s[i] != '\n':
+        i += 1
+    return i
+#@+node:ekr.20210709052929.6: *6* wax_off.skip_string
+def skip_string(self, s, i):
+    """Scan forward to the end of a string."""
+    delim = s[i]
+    i += 1
+    assert(delim == '"' or delim == '\'')
+    n = len(s)
+    while i < n and s[i] != delim:
+        if s[i] == '\\':
+            i += 2
+        else:
+            i += 1
+    assert i < len(s) and s[i] == delim, (i, delim)
+    i += 1
+    return i
+#@+node:ekr.20210709053410.1: *6* wax_off.skip_ws
+def skip_ws(self, s, i):
+    while i < len(s) and s[i] in ' \t':
+        i += 1
+    return i
+#@+node:ekr.20210709052929.2: *5* wax_off.stripped_args
+def stripped_args(self, s):
+    """
+    s is the argument list, without parens, possibly containing annotations.
+
+    Return the argument list without annotations.
+    """
+    s = s.replace('\n', ' ').replace('  ', '').rstrip().rstrip(',')
+    args, i = [], 0
+    while i < len(s):
+        progress = i
+        arg, i = self.get_next_arg(s, i)
+        if not arg:
+            break
+        args.append(arg)
+        assert progress < i, (i, repr(s[i:]))
+    return ', '.join(args)
+#@+node:ekr.20220913064923.2: *3* qtree.drawVisible & helpers (not used)
+def drawVisible(self, p: Position) -> None:
+    """
+    Add only the visible nodes to the outline.
+
+    Not used, as this causes scrolling issues.
+    """
+    t1 = time.process_time()
+    c = self.c
+    parents: List[Any] = []
+    # Clear the widget.
+    w = self.treeWidget
+    w.clear()
+    # Clear the dicts.
+    self.initData()
+    if c.hoistStack:
+        first_p = c.hoistStack[-1].p
+        target_p = first_p.nodeAfterTree().visBack(c)
+    else:
+        first_p = c.rootPosition()
+        target_p = None
+    n = 0
+    for p in self.yieldVisible(first_p, target_p):
+        n += 1
+        level = p.level()
+        parent_item = w if level == 0 else parents[level - 1]
+        item = QtWidgets.QTreeWidgetItem(parent_item)
+        item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
+        item.setChildIndicatorPolicy(
+            item.ShowIndicator if p.hasChildren()
+            else item.DontShowIndicator)
+        item.setExpanded(bool(p.hasChildren() and p.isExpanded()))
+        self.items.append(item)
+        # Update parents.
+        parents = [] if level == 0 else parents[:level]
+        parents.append(item)
+        # Update the dicts.
+        itemHash = self.itemHash(item)
+        self.item2positionDict[itemHash] = p.copy()
+        self.item2vnodeDict[itemHash] = p.v
+        self.position2itemDict[p.key()] = item
+        d = self.vnode2itemsDict
+        v = p.v
+        aList = d.get(v, [])
+        aList.append(item)
+        d[v] = aList
+        # Enter the headline.
+        item.setText(0, p.h)
+        if self.use_declutter:
+            item._real_text = p.h
+        # Draw the icon.
+        icon = self.getCompositeIconImage(p.v)
+        if icon:
+            self.setItemIcon(item, icon)
+        # Set current item.
+        if p == c.p:
+            w.setCurrentItem(item)
+    # Useful, for now.
+    t2 = time.process_time()
+    if t2 - t1 > 0.1:
+        g.trace(f"{n} nodes, {t2 - t1:5.2f} sec")
+#@+node:ekr.20220913064923.3: *4* qtree.yieldVisible (not used)
+def yieldVisible(self, first_p: Position, target_p: Position=None) -> Generator:
+    """
+    A generator yielding positions from first_p to target_p.
+    """
+    c = self.c
+    p = first_p.copy()
+    yield p
+    while p:
+        if p == target_p:
             return
-    # Default:
-    # Compute the tail.
-    body = textwrap.indent(p.b, ' ' * 4).rstrip()
-    result.append(f"{body}\n")
-    # Set the body text!
-    test_node.b = ''.join(result)
-#@+node:ekr.20201202083553.1: *4* class ConvertEditCommandsTests (ConvertAtTests)
-class ConvertEditCommandsTests(ConvertAtTests):
-    """Convert @edit nodes for edit commands."""
-    @others
-#@+node:ekr.20201130075024.4: *5* ConvertEditCommandsTests.convert_node
-def convert_node(self, c, p, target):
-    """Convert one @test node, creating a new node."""
-    after_p, before_p = None, None
-    after_sel, before_sel = None, None
-    assert p.h.startswith('@test')
-    command_name = p.h[len('@test') :].strip()
-    for child in p.children():
-        if child.h.startswith('after'):
-            after_p = child.copy()
-            after_sel = child.h[len('after') :].strip()
-            after_sel = after_sel.replace('sel=', '').strip()
-        elif child.h.startswith('before'):
-            before_p = child.copy()
-            before_sel = child.h[len('before') :].strip()
-            before_sel = before_sel.replace('sel=', '').strip()
-    assert before_p and after_p
-    assert before_sel and after_sel
-    new_child = target.insertAsLastChild()
-    new_child.h = command_name
-    new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
-#@+node:ekr.20210908062600.1: *4* class ConvertShadowTests (ConvertAtTests)
-class ConvertShadowTests(ConvertAtTests):
-    """Convert @test nodes for @shadow commands."""
-    @others
-#@+node:ekr.20210908062651.1: *5* ConvertShadowTests.convert_node
-def convert_node(self, c, p, target):
-    """Convert one @test node, creating a new node."""
-    assert p.h.startswith('@test')
-    old_p = g.findNodeInChildren(c, p, 'old')
-    assert old_p, p.h
-    new_p = g.findNodeInChildren(c, p, 'new')
-    assert new_p, p.h
-    # Create the new node and init the headline.
-    indent = ' ' * 4
-    test_node = target.insertAsLastChild()
-    test_name = f"test_{self.clean_headline(p)}"
-    test_node.h = f"{self.class_name}.{test_name}"
-    # Calculate old_s.
-    old_list = []
-    for z in g.splitLines(old_p.b.rstrip()):
-        old_list.append(f"{indent}{indent}{z.rstrip()}\n")
-    for child in old_p.children():
-        for z in g.splitLines(child.b.rstrip()):
-            old_list.append(f"{indent}{indent}{z.rstrip()}\n")
-    old_s = ''.join(old_list)
-    # Calculate new_s.
-    new_list = []
-    for z in g.splitLines(new_p.b.rstrip()):
-        new_list.append(f"{indent}{indent}{z.rstrip()}\n")
-    for child in new_p.children():
-        for z in g.splitLines(child.b.rstrip()):
-            new_list.append(f"{indent}{indent}{z.rstrip()}\n")
-    new_s = ''.join(new_list)
-    # Set the body text!
-    test_node.b = ''.join([
-        # The start of the test.
-        f"def {test_name}(self):\n",
-        f"{indent}p = self.c.p\n",
-        # Create the 'old' node.
-        f"{indent}# Create the 'old' node.\n"
-        f"{indent}old = p.insertAsLastChild()\n",
-        f"{indent}old.h = 'old'\n",
-        f"{indent}old.b = textwrap.dedent(\"\"\"\\\n",
-        old_s,
-        f"{indent}\"\"\")\n",
-        # Create the 'new' node.
-        f"{indent}# Create the 'new' node.\n"
-        f"{indent}new = p.insertAsLastChild()\n",
-        f"{indent}new.h = 'new'\n",
-        f"{indent}new.b = textwrap.dedent(\"\"\"\\\n",
-        new_s,
-        f"{indent}\"\"\")\n",
-        # The test.
-        f"{indent}# Run the test.\n",
-        f"{indent}results, expected = self.make_lines(old, new)\n",
-        f"{indent}self.assertEqual(results, expected)\n",
-    ])
-#@+node:ekr.20210906140154.1: *4* class ConvertUndoTests (ConvertAtTests)
-class ConvertUndoTests(ConvertAtTests):
-    """Convert @test nodes for undo commands."""
-    @others
-#@+node:ekr.20210906140220.1: *5* ConvertUndoTests.convert_node
-def convert_node(self, c, p, target):
-    """Convert one @test node, creating a new node."""
-    assert p.h.startswith('@test')
-    before = g.findNodeInTree(c, p, 'before')
-    after = g.findNodeInTree(c, p, 'after')
-    sel = g.findNodeInTree(c, p, 'selection')
-    # Do regular conversion if the nodes don't come from the children of @suite.
-    if not (before and after and sel):
-        super().convert_node(c, p, target)
+        v = p.v
+        if (v.children and (
+            # Use slower test for clones:
+            len(v.parents) > 1 and p in v.expandedPositions or
+            # Use a quick test for non-clones:
+            len(v.parents) <= 1 and (v.statusBits & v.expandedBit) != 0
+        )):
+            # p.moveToFirstChild()
+            p.stack.append((v, p._childIndex),)
+            p.v = v.children[0]
+            p._childIndex = 0
+            yield p
+            continue
+        # if p.hasNext():
+        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+        if p._childIndex + 1 < len(parent_v.children):
+            # p.moveToNext()
+            p._childIndex += 1
+            p.v = parent_v.children[p._childIndex]
+            yield p
+            continue
+        #
+        # A fast version of p.moveToThreadNext().
+        # We look for a parent with a following sibling.
+        while p.stack:
+            # p.moveToParent()
+            p.v, p._childIndex = p.stack.pop()
+            # if p.hasNext():
+            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            if p._childIndex + 1 < len(parent_v.children):
+                # p.moveToNext()
+                p._childIndex += 1
+                p.v = parent_v.children[p._childIndex]
+                break  # Found: moveToThreadNext()
+        else:
+            break  # Not found.
+        # Found moveToThreadNext()
+        yield p
+        continue
+    if target_p:
+        g.trace('NOT FOUND:', target_p.h)
+#@+node:ekr.20220913064923.4: *4* qtree.slowYieldVisible (not used)
+def slowYieldVisible(self, first_p: Position, target_p: Position=None) -> Generator:
+    """
+    A generator yielding positions from first_p to target_p.
+    """
+    c = self.c
+    p = first_p.copy()
+    while p:
+        yield p
+        if p == target_p:
+            return
+        p.moveToVisNext(c)
+    if target_p:
+        g.trace('NOT FOUND:', target_p.h)
+#@+node:ekr.20221017070902.1: *3* Old non-tabbed gui commands
+#@+node:ekr.20110605121601.18303: *4* qtFrame.cascade
+@frame_cmd('cascade-windows')
+def cascade(self, event: Event=None) -> None:
+    """Cascade all Leo windows."""
+    x, y, delta = 50, 50, 50
+    for frame in g.app.windowList:
+        w = frame and frame.top
+        if w:
+            r = w.geometry()  # a Qt.Rect
+            # 2011/10/26: Fix bug 823601: cascade-windows fails.
+            w.setGeometry(QtCore.QRect(x, y, r.width(), r.height()))
+            # Compute the new offsets.
+            x += 30
+            y += 30
+            if x > 200:
+                x = 10 + delta
+                y = 40 + delta
+                delta += 10
+#@+node:ekr.20131115120119.17392: *4* qt_base_tab.tile
+def tile(self, index: int, orientation: str='V') -> None:
+    """detach tab and tile with parent window"""
+    w = self.widget(index)
+    window = w.window()
+    # window.showMaximized()
+    # this doesn't happen until we've returned to main even loop
+    # user needs to do it before using this function
+    fg = window.frameGeometry()
+    geom = window.geometry()
+    x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
+    ww, wh = geom.width(), geom.height()
+    w = self.detach(index)
+    if window.isMaximized():
+        window.showNormal()
+    if orientation == 'V':
+        # follow MS Windows convention for which way is horizontal/vertical
+        window.resize(ww / 2, wh)
+        window.move(x, y)
+        w.resize(ww / 2, wh)
+        w.move(x + fw / 2, y)
+    else:
+        window.resize(ww, wh / 2)
+        window.move(x, y)
+        w.resize(ww, wh / 2)
+        w.move(x, y + fh / 2)
+#@+node:ekr.20110510133719.14548: *3* ac.do_qcompleter_tab (not used)
+def do_qcompleter_tab(self, prefix: str, options: List[str]) -> str:
+    """Return the longest common prefix of all the options."""
+    matches, common_prefix = g.itemsMatchingPrefixInList(
+        prefix, options, matchEmptyPrefix=False)
+    return common_prefix
+#@+node:ekr.20220917052540.1: ** Old commands
+#@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
+@first # -*- coding: utf-8 -*-
+"""Unit test commands"""
+import os
+import time
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Event = Any
+
+@others
+@language python
+@tabwidth -4
+@pagewidth 70
+#@+node:ekr.20210907103024.2: *4* coverage test commands...
+#@+node:ekr.20210907103024.3: *5* cover-all
+@nowrap
+@g.command('cover-all')
+def cover_all(event: Event=None) -> None:
+    """Run all coverage tests in leo.unittests."""
+    if 1:
+        # This is usually best:
+        # - It creates a full report in leo/unittests/htmlcov/index.html.
+        # - It runs all unit tests in the leo.unittests directory.
+        g.run_coverage_tests()
+    else:
+        unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+        assert os.path.exists(unittests_dir)
+        os.chdir(unittests_dir)
+        # This runs only the listed files. index.html describes only the last file.
+        table = (
+            ('leo.core.leoApp', 'core/test_leoApp.py'),
+            ('leo.core.leoAst', 'core/test_leoAst.py'),
+            ('leo.core.leoAtFile', 'core/test_leoAtFile.py'),
+            ('leo.core.leoBridge', 'core/test_leoBridge.py'),
+            ('leo.commands.checkerCommands', 'commands/test_checkerCommands.py'),
+            ('leo.core.leoColorizer', 'core/test_leoColorizer.py'),
+            ('leo.core.leoCommands', 'core/test_leoCommands.py'),
+            ('leo.core.leoConfig', 'core/test_leoConfig.py'),
+            ('leo.commands.convertCommands', 'commands/test_convertCommands.py'),
+            ('leo.commands.editCommands', 'commands/test_editCommands.py'),
+            ('leo.core.leoFileCommands', 'core/test_leoFileCommands.py'),
+            ('leo.core.leoFind', 'core/test_leoFind.py'),
+            ('leo.core.leoFrame', 'core/test_leoFrame.py'),
+            ('leo.core.leoGlobals', 'core/test_leoGlobals.py'),
+            ('leo.core.leoImport', 'core/test_leoImport.py'),
+            ('leo.core.leoKeys', 'core/test_leoKeys.py'),
+            ('leo.core.leoserver', 'core/test_leoserver.py'),
+            ('leo.core.leoNodes', 'core/test_leoNodes.py'),
+            ('leo.core.leoPersistence', 'core/test_leoPersistence.py'),
+            ('leo.core.leoRst', 'core/test_leoRst.py'),
+            ('leo.core.leoShadow', 'core/test_leoShadow.py'),
+            ('leo.core.leoUndo', 'core/test_leoUndo.py'),
+            ('leo.core.leoVim', 'core/test_leoVim.py'),
+        )
+        for module, filename in table:
+            g.run_coverage_tests(module, filename)
+#@+node:ekr.20210911072153.3: *5* cover-app
+@g.command('cover-app')
+def cover_app(event: Event=None) -> None:
+    """Run all coverage tests for leoApp.py."""
+    g.run_coverage_tests('leo.core.leoApp', 'core/test_leoApp.py')
+#@+node:ekr.20210907103024.4: *5* cover-ast
+@g.command('cover-ast')
+def cover_ast(event: Event=None) -> None:
+    """Run all coverage tests for leoAst.py."""
+    g.run_coverage_tests('leo.core.leoAst', 'core/test_leoAst.py')
+#@+node:ekr.20210907103024.5: *5* cover-atfile
+@g.command('cover-atfile')
+def cover_atfile(event: Event=None) -> None:
+    """Run all coverage tests for leoAtFile.py."""
+    g.run_coverage_tests('leo.core.leoAtFile', 'core/test_leoAtFile.py')
+#@+node:ekr.20210911072153.6: *5* cover-bridge
+@g.command('cover-bridge')
+def cover_bridge(event: Event=None) -> None:
+    """Run all coverage tests for leoBridge.py."""
+    g.run_coverage_tests('leo.core.leoBridge', 'core/test_leoBridge.py')
+#@+node:ekr.20210911072153.7: *5* cover-checker-commands
+@g.command('cover-checker-commands')
+def cover_checker_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoCheckerCommands.py."""
+    g.run_coverage_tests('leo.commands.checkerCommands', 'commands/test_checkerCommands.py')
+#@+node:ekr.20210911072153.8: *5* cover-colorizer
+@g.command('cover-colorizer')
+def cover_colorizer(event: Event=None) -> None:
+    """Run all coverage tests for leoColorizer.py."""
+    g.run_coverage_tests('leo.core.leoColorizer', 'core/test_leoColorizer.py')
+#@+node:ekr.20210911072153.10: *5* cover-commands
+@g.command('cover-commands')
+def cover_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoCommands.py."""
+    g.run_coverage_tests('leo.core.leoCommands', 'core/test_leoCommands.py')
+#@+node:ekr.20220109041701.1: *5* cover-convert-commands
+@g.command('cover-convert-commands')
+def cover_convert_commands(event: Event=None) -> None:
+    """Run all coverage tests for convertCommands.py."""
+    g.run_coverage_tests('leo.commands.convertCommands', 'commands/test_convertCommands.py')
+#@+node:ekr.20210911072153.9: *5* cover-config
+@g.command('cover-config')
+def cover_config(event: Event=None) -> None:
+    """Run all coverage tests for leoConfig.py."""
+    g.run_coverage_tests('leo.core.leoConfig', 'core/test_leoConfig.py')
+#@+node:ekr.20210907103024.6: *5* cover-edit-commands
+@g.command('cover-edit-commands')
+def cover_edit_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoEditCommands.py."""
+    g.run_coverage_tests('leo.commands.editCommands', 'commands/test_editCommands.py')
+#@+node:ekr.20210911072153.12: *5* cover-external-files
+@g.command('cover-external-files')
+def cover_external_files(event: Event=None) -> None:
+    """Run all coverage tests for leoExternalFiles.py."""
+    g.run_coverage_tests('leo.core.leoExternalFiles', 'core/test_leoExternalFiles.py')
+#@+node:ekr.20210911072153.14: *5* cover-file-commands
+@g.command('cover-file-commands')
+def cover_file_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoFileCommands.py."""
+    g.run_coverage_tests('leo.core.leoFileCommands', 'core/test_leoFileCommands.py')
+#@+node:ekr.20210907103024.7: *5* cover-find
+@g.command('cover-find')
+def cover_find(event: Event=None) -> None:
+    """Run all coverage tests for leoFind.py."""
+    g.run_coverage_tests('leo.core.leoFind', 'core/test_leoFind.py')
+#@+node:ekr.20210911072153.15: *5* cover-frame
+@g.command('cover-frame')
+def cover_frame(event: Event=None) -> None:
+    """Run all coverage tests for leoFrame.py."""
+    g.run_coverage_tests('leo.core.leoFrame', 'core/test_leoFrame.py')
+#@+node:ekr.20210911072153.16: *5* cover-globals
+@g.command('cover-globals')
+def cover_globals(event: Event=None) -> None:
+    """Run all coverage tests for leoGlobals.py."""
+    g.run_coverage_tests('leo.core.leoGlobals', 'core/test_leoGlobals.py')
+#@+node:ekr.20210911072153.18: *5* cover-import
+@g.command('cover-import')
+def cover_import(event: Event=None) -> None:
+    """Run all coverage tests for leoImport.py."""
+    g.run_coverage_tests('leo.core.leoImport', 'core/test_leoImport.py')
+#@+node:ekr.20210911072153.19: *5* cover-keys
+@g.command('cover-keys')
+def cover_keys(event: Event=None) -> None:
+    """Run all coverage tests for leoKeys.py."""
+    g.run_coverage_tests('leo.core.leoKeys', 'core/test_leoKeys.py')
+#@+node:ekr.20210911072153.20: *5* cover-leoserver
+@g.command('cover-leoserver')
+def cover_leoserver(event: Event=None) -> None:
+    """Run all unittests for leoserver.py"""
+    g.run_coverage_tests('leo.core.leoserver', 'core/test_leoserver.py')
+#@+node:ekr.20210907103024.8: *5* cover-nodes
+@g.command('cover-nodes')
+def cover_node(event: Event=None) -> None:
+    """Run all coverage tests for leoNodes.py."""
+    g.run_coverage_tests('leo.core.leoNodes', 'core/test_leoNodes.py')
+#@+node:ekr.20210911072153.23: *5* cover-persistence
+@g.command('cover-persistence')
+def cover_persistence(event: Event=None) -> None:
+    """Run all coverage tests for leoPersistence.py."""
+    g.run_coverage_tests('leo.core.leoPersistence', 'core/test_leoPersistence.py')
+#@+node:ekr.20210911072153.25: *5* cover-rst
+@g.command('cover-rst')
+def cover_rst3(event: Event=None) -> None:
+    """Run all coverage tests for leoRst.py."""
+    g.run_coverage_tests('leo.core.leoRst', 'core/test_leoRst.py')
+#@+node:ekr.20210911072153.26: *5* cover-shadow
+@g.command('cover-shadow')
+def cover_shadow(event: Event=None) -> None:
+    """Run all coverage tests for leoShadow.py."""
+    g.run_coverage_tests('leo.core.leoShadow', 'core/test_leoShadow.py')
+#@+node:ekr.20210911072153.28: *5* cover-undo
+@g.command('cover-undo')
+def cover_undo(event: Event=None) -> None:
+    """Run all coverage tests for leoUndo.py."""
+    g.run_coverage_tests('leo.core.leoUndo', 'core/test_leoUndo.py')
+#@+node:ekr.20210911072153.29: *5* cover-vim
+@g.command('cover-vim')
+def cover_vim(event: Event=None) -> None:
+    """Run all coverage tests for leoVim.py."""
+    g.run_coverage_tests('leo.core.leoVim', 'core/test_leoVim.py')
+#@+node:ekr.20210907113937.1: *4* unit test commands...
+#@+node:ekr.20210907103024.11: *5* test-all
+@g.command('test-all')
+def test_all(event: Event=None) -> None:
+    """Run all unit tests in leo.unittests."""
+    g.run_unit_tests()
+    # g.es_print('test-all: all tests complete')
+#@+node:ekr.20210907103024.12: *5* test-app
+@g.command('test-app')
+def test_app(event: Event=None) -> None:
+    """Run all unit tests for leoApp.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoApp')
+#@+node:ekr.20210907103024.13: *5* test-ast
+@g.command('test-ast')
+def test_ast(event: Event=None) -> None:
+    """Run all unit tests for leoAst.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoAst')
+#@+node:ekr.20210907103024.14: *5* test-atfile
+@g.command('test-atfile')
+def test_atfile(event: Event=None) -> None:
+    """Run all unit tests for leoAtFile.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoAtFile')
+#@+node:ekr.20210907103024.15: *5* test-bridge
+@g.command('test-bridge')
+def test_bridge(event: Event=None) -> None:
+    """Run all unit tests for leoBridge.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoBridge')
+#@+node:ekr.20210907103024.16: *5* test-checker-commands
+@g.command('test-checker-commands')
+def test_checker_commands(event: Event=None) -> None:
+    """Run all unit tests for leoCheckerCommands.py."""
+    g.run_unit_tests('leo.unittests.commands.test_checkerCommands')
+#@+node:ekr.20210907103024.17: *5* test-colorizer
+@g.command('test-colorizer')
+def test_colorizer(event: Event=None) -> None:
+    """Run all unit tests for leoColorizer.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoColorizer')
+#@+node:ekr.20211013080906.1: *5* test-convert
+@g.command('test-convert')
+def test_convert(event: Event=None) -> None:
+    """Run all unit tests for leo/commands/leoConvertCommands.py."""
+    #.TestPythonToTypeScript')
+    g.run_unit_tests('leo.unittests.commands.test_convertCommands')
+#@+node:ekr.20210907103024.18: *5* test-commands
+@g.command('test-commands')
+def test_commands(event: Event=None) -> None:
+    """Run all unit tests for leoCommands.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoCommands')
+#@+node:ekr.20210910074026.1: *5* test-config
+@g.command('test-config')
+def test_config(event: Event=None) -> None:
+    """Run all unit tests for leoConfig.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoConfig')
+#@+node:ekr.20210926051147.1: *5* test-doctests
+@g.command('test-doctests')
+def test_doctests(event: Event=None) -> None:
+    """Run all doctests in Leo."""
+    g.run_unit_tests('leo.unittests.test_doctests')
+#@+node:ekr.20210907103024.19: *5* test-edit-commands
+@g.command('test-edit-commands')
+def test_edit_commands(event: Event=None) -> None:
+    """Run all unit tests for leo.commands.editCommands."""
+    g.run_unit_tests('leo.unittests.commands.test_editCommands')
+#@+node:ekr.20210907103024.20: *5* test-external-files
+@g.command('test-external-files')
+def test_external_files(event: Event=None) -> None:
+    """Run all unit tests for leoExternalFiles.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoExternalFiles')
+#@+node:ekr.20210910065945.1: *5* test-file-commands
+@g.command('test-file-commands')
+def test_file_commands(event: Event=None) -> None:
+    """Run all unit tests for leoFileCommands.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFileCommands')
+#@+node:ekr.20210907103024.21: *5* test-find
+@g.command('test-find')
+def test_find(event: Event=None) -> None:
+    """Run all unit tests for leoFind.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFind')
+#@+node:ekr.20210907103024.22: *5* test-frame
+@g.command('test-frame')
+def test_frame(event: Event=None) -> None:
+    """Run all unit tests for leoFrame.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFrame')
+#@+node:ekr.20210907103024.23: *5* test-globals
+@g.command('test-globals')
+def test_globals(event: Event=None) -> None:
+    """Run all unit tests for leoGlobals.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoGlobals')
+#@+node:ekr.20210907103024.24: *5* test-import
+@g.command('test-import')
+def test_import(event: Event=None) -> None:
+    """Run all unit tests for leoImport.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoImport')
+#@+node:ekr.20210907103024.25: *5* test-keys
+@g.command('test-keys')
+def test_keys(event: Event=None) -> None:
+    """Run all unit tests for leoKeys.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoKeys.TestKeys')
+#@+node:ekr.20210907103024.29: *5* test-leoserver
+@g.command('test-leoserver')
+def test_leoserver(event: Event=None) -> None:
+    """Run all unittests for leoserver.py"""
+    g.run_unit_tests('leo.unittests.core.test_leoserver')
+#@+node:ekr.20210907103024.10: *5* test-leoserver-with-leoclient
+@g.command('test-leoserver-with-leoclient')
+def test_leo_client_and_server(event: Event=None) -> None:
+    """
+    Test leoserver.py with leoclient.py.
+
+    The test-all command does *not* run this command, because there is
+    no corresponding test*.py file.
+    """
+    g.cls()
+    leo_dir = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+    assert os.path.exists(leo_dir), repr(leo_dir)
+    os.chdir(leo_dir)
+    g.execute_shell_commands('start cmd /k "python -m leo.core.leoserver --trace=request,response,verbose"')
+    time.sleep(1.5)
+    g.execute_shell_commands('start cmd /k "python -m leo.core.leoclient"')
+#@+node:ekr.20210907103024.26: *5* test-nodes
+@g.command('test-nodes')
+def test_nodes(event: Event=None) -> None:
+    """Run all unit tests for leoNodes.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoNodes')
+#@+node:ekr.20210909091424.1: *5* test-persistence
+@g.command('test-persistence')
+def test_persistence(event: Event=None) -> None:
+    """Run all unit tests for leoPersistence.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoPersistence')
+#@+node:ekr.20210907103024.27: *5* test-plugins
+@g.command('test-plugins')
+def test_plugins(event: Event=None) -> None:
+    """Run all unit tests relating to plugins."""
+    g.run_unit_tests('leo.unittests.test_plugins')
+#@+node:ekr.20210907103024.28: *5* test-rst
+@g.command('test-rst')
+def test_rst3(event: Event=None) -> None:
+    """Run all unit tests for leoRst.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoRst')
+#@+node:ekr.20210907103024.30: *5* test-shadow
+@g.command('test-shadow')
+def test_shadow(event: Event=None) -> None:
+    """Run all unit tests for leoShadow.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoShadow')
+#@+node:ekr.20210907103024.31: *5* test-syntax
+@g.command('test-syntax')
+def test_syntax(event: Event=None) -> None:
+    """Run all testss in test_syntax.py."""
+    g.run_unit_tests('leo.unittests.test_syntax')
+#@+node:ekr.20210907103024.32: *5* test-undo
+@g.command('test-undo')
+def test_undo(event: Event=None) -> None:
+    """Run all unit tests for leoUndo.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoUndo')
+#@+node:ekr.20210910073036.1: *5* test-vim
+@g.command('test-vim')
+def test_vim(event: Event=None) -> None:
+    """Run all unit tests for leoVim.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoVim')
+#@+node:ekr.20210910085337.1: *5* test_gui
+@g.command('test-gui')
+def test_gui(event: Event=None) -> None:
+    """Run all gui-related unit tests."""
+    g.run_unit_tests('leo.unittests.test_gui')
+#@+node:ekr.20150514063305.281: *3* ec.flushLines (doesn't work)
+@cmd('flush-lines')
+def flushLines(self, event: Event) -> None:
+    """
+    Delete each line that contains a match for regexp, operating on the
+    text after point.
+
+    In Transient Mark mode, if the region is active, the command operates
+    on the region instead.
+    """
+    k = self.c.k
+    k.setLabelBlue('Flush lines regexp: ')
+    k.get1Arg(event, handler=self.flushLines1)
+
+def flushLines1(self, event: Event) -> None:
+    k = self.c.k
+    k.clearState()
+    k.resetLabel()
+    self.linesHelper(event, k.arg, 'flush')
+#@+node:ekr.20150514063305.282: *3* ec.keepLines (doesn't work)
+@cmd('keep-lines')
+def keepLines(self, event: Event) -> None:
+    """
+    Delete each line that does not contain a match for regexp, operating on
+    the text after point.
+
+    In Transient Mark mode, if the region is active, the command operates
+    on the region instead.
+    """
+    k = self.c.k
+    k.setLabelBlue('Keep lines regexp: ')
+    k.get1Arg(event, handler=self.keepLines1)
+
+def keepLines1(self, event: Event) -> None:
+    k = self.c.k
+    k.clearState()
+    k.resetLabel()
+    self.linesHelper(event, k.arg, 'keep')
+#@+node:ekr.20150514063305.283: *3* ec.linesHelper
+def linesHelper(self, event: Event, pattern: str, which: str) -> None:
+    w = self.editWidget(event)
+    if not w:
+        return  # pragma: no cover (defensive)
+    self.beginCommand(w, undoType=which + '-lines')
+    if w.hasSelection():
+        i, end = w.getSelectionRange()
+    else:
+        i = w.getInsertPoint()
+        end = w.getLastIndex()
+    txt = w.get(i, end)
+    tlines = txt.splitlines(True)
+    keeplines = list(tlines) if which == 'flush' else []
+    try:
+        regex = re.compile(pattern)
+        for n, z in enumerate(tlines):
+            f = regex.findall(z)
+            if which == 'flush' and f:
+                keeplines[n] = None
+            elif f:
+                keeplines.append(z)
+    except Exception:
         return
-    # Create the new node.
-    indent = ' ' * 4
-    test_node = target.insertAsLastChild()
-    # Set the headline.
-    test_name = f"test_{self.clean_headline(p)}"
-    test_node.h = f"{self.class_name}.{test_name}"
-    # Compute the start of the body text.
-    result = [
-        f"def {test_name}(self):\n",
-        f"{indent}c = self.c\n",
-    ]
-    # Append the assignment to 'before'.
-    result.append(f'{indent}before = textwrap.dedent("""\\\n')
-    for z in g.splitLines(before.b):
-        result.append(f"{indent}{indent}{z.rstrip()}\n")
-    result.append('""")\n')
-    # Append the assignment to 'after'.
-    result.append(f'{indent}after = textwrap.dedent("""\\\n')
-    for z in g.splitLines(after.b):
-        result.append(f"{indent}{indent}{z.rstrip()}\n")
-    result.append('""")\n')
-    # Compute the i, j values..
-    lines = g.splitLines(sel.b)
-    assert len(lines) >= 2
-    row1, col1 = lines[0].split('.')
-    row2, col2 = lines[1].split('.')
-    i = g.convertRowColToPythonIndex(before.b, int(row1), int(col1))
-    j = g.convertRowColToPythonIndex(before.b, int(row2), int(col2))
-    # Compute the function name.
-    pat = re.compile(r'@test (\w+)')
-    m = pat.match(p.h)
-    func = m.group(1)
-    # Compute the tail.
-    result.append(f"{indent}i, j = {i}, {j}\n")
-    result.append(f"{indent}func = c.{func}\n")  # Changed
-    result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
-    # Set the body text!
-    test_node.b = ''.join(result)
-#@+node:ekr.20070713082220: *3* ic.scannerUnitTest
-def scannerUnitTest(self, p, s, ext):
-    """
-    Run a unit test of an import scanner,
-    i.e., create a tree from string s at location p.
-    """
-    assert ext, g.callers()
-    self.treeType = '@file'  # Fix #352.
-    fileName = 'test'
-    # Run the test.
-    parent = p.insertAsLastChild()
-    kind = self.compute_unit_test_kind(ext)
-    parent.h = f"{kind} {fileName}"
-    self.createOutline(parent=parent.copy(), ext=ext, s=s)
-#@+node:ekr.20170405201254.1: *4* ic.compute_unit_test_kind
-def compute_unit_test_kind(self, ext):
-    """Return kind from the given extention."""
-    aClass = g.app.classDispatchDict.get(ext)
-    if aClass:
-        d2 = g.app.atAutoDict
-        for z in d2:
-            if d2.get(z) == aClass:
-                return z
-    return '@file'
+    if which == 'flush':
+        keeplines = [x for x in keeplines if x is not None]
+    w.delete(i, end)
+    w.insert(i, ''.join(keeplines))
+    w.setInsertPoint(i)
+    self.endCommand(changed=True, setLabel=True)
+#@+node:ekr.20110605121601.18310: *3* qtFrame.leoHelp
+@frame_cmd('open-offline-tutorial')
+def leoHelp(self, event: Event=None) -> None:
+    """Open Leo's offline tutorial."""
+    frame = self
+    c = frame.c
+    theFile = g.os_path_join(g.app.loadDir, "..", "doc", "sbooks.chm")
+    if g.os_path_exists(theFile) and sys.platform.startswith('win'):
+        # pylint: disable=no-member
+        os.startfile(theFile)
+    else:
+        answer = g.app.gui.runAskYesNoDialog(c,
+            "Download Tutorial?",
+            "Download tutorial (sbooks.chm) from SourceForge?")
+        if answer == "yes":
+            try:
+                url = "http://prdownloads.sourceforge.net/leo/sbooks.chm?download"
+                import webbrowser
+                os.chdir(g.app.loadDir)
+                webbrowser.open_new(url)
+            except Exception:
+                if 0:
+                    g.es("exception downloading", "sbooks.chm")
+                    g.es_exception()
+#@+node:ekr.20221108101907.1: ** Old scripts
+#@+node:ekr.20221108101925.1: *3* script: make leo (from leoDist.leo)
+# Was an @button node in leoDist.leo
+
+# Commit all files before running this script.
+
+'''
+This script is OBSOLETE. It used NSIS to create a full distribution to SourceForge.
+
+Also, pyinstaller is no longer used: See the obsolete SourceForce distribution checklist.
+
+Make these files in the top-level folder::
+
+    git-manifest.txt
+    nsi-install-files.txt
+    nsi-uninstall-files.txt
+    leo.zip.
+'''
+
+version = '5.7 final'  # Don't bother updating.
+<< includes >>
+<< define global paths and file names >>
+
+@others
+
+LeoMaker().run()
+g.es_print('done') # '@button make-leo done')
+#@+node:ekr.20221108101925.2: *4* << includes >>
+import os
+import shutil
+# import string
+# import struct
+# import subprocess
+# import sys
+# import time
+# import leo.core.leoVersion as leoVersion
+#@+node:ekr.20221108101925.3: *4* << define global paths and file names >>
+# Globals...
+abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
+
+# First.
+# bzrRoot     = join('Lib','site-packages','Leo-%s' % (version))
+
+    # Don't use abspath!
+distDir     = abspath(join(g.app.loadDir,'..','dist'))
+rootDir     = abspath(join(g.app.loadDir,'..','..')) # Same as top.
+pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
+
+# Next.
+coreDir =       abspath(join(g.app.loadDir,'..','core'))
+docDir =        abspath(join(g.app.loadDir,'..','doc'))
+docsDir =       abspath(join(g.app.loadDir,'..','..','docs'))
+manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
+# install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
+# uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
+install_fn =    abspath(join(rootDir,'nsi-install-files.txt'))
+uninstall_fn =  abspath(join(rootDir,'nsi-uninstall-files.txt'))
+zipFile =       abspath(join(rootDir,'Leo-%s.zip' % (version)))
+zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
+
+# assert g.os_path_exists(manifest)
+#@+node:ekr.20221108101925.4: *4* class LeoMaker
+class LeoMaker:
+    '''
+    A class to make these files in the leo-editor folder:
+
+    - git-manifest.txt.
+    - nsi-install-files.txt
+    - nsi-uninstall-files.txt
+    - leo.zip
+    '''
+
+    @others
+#@+node:ekr.20221108101925.5: *5* run & helpers
+def run (self):
+    '''The top-level logic.'''
+    g.cls()
+    # No longer exists. Done by git hooks.
+        # leoVersion.create_commit_timestamp_json()
+            # Create leo/core/commit_timestamp.json.
+    self.clean_spellpyx()
+    self.make_manifest()
+    files = self.clean_manifest()
+    dirs = self.directoryList(rootDir)
+        # Compute the list of all the directories.
+    dirDict,filesDict = self.makeDicts(dirs,files)
+        # Compute dictionaries of directories and files.
+    errors = self.printMissing(files,dirDict,filesDict)
+        # Print manifest lines not in either dict.
+        # This is a crucial check.
+    if not errors:
+        self.create_install_files(dirs,dirDict,filesDict)
+        self.create_uninstall_files(dirs,dirDict,filesDict)
+        self.make_zip()
+        # self.copy_nsi_files()
+        # self.remove_commit_timestamp_json()
+#@+node:ekr.20221108101925.6: *6* clean_manifest
+def clean_manifest(self):
+    '''Create and filter the list of files from the manifest.'''
+    f = open(manifest_fn)
+    s = f.read()
+    f.close()
+    lines = g.splitLines(s)
+    lines = self.filterLines(lines)
+    # Write the file back.
+    f = open(manifest_fn,'w')
+    f.write('\n'.join(lines))
+    f.close()
+    return lines
+#@+node:ekr.20221108101925.7: *6* clean_spellpyx
+def clean_spellpyx (self):
+    '''Clean ekr-spellpyx.txt.'''
+    fn = g.os_path_finalize_join(pluginsDir,'ekr-spellpyx.txt')
+    if not g.os_path_exists(fn):
+        return
+    f = self.openFile(fn,mode='rb')
+    s = f.read()
+    f.close()
+    s2 = s.replace(b'\r',b'')
+    if s != s2:
+        g.es_print('cleaning',fn)
+        f = self.openFile(fn,mode='wb')
+        f.write(s2)
+        f.close()
+#@+node:ekr.20221108101925.8: *6* copy_nsi_files (Not used)
+def copy_nsi_files(self):
+    '''
+    Copy these files from the leo\dist folder to the leo-editor folder::
+
+        nsi-install-files.txt
+        nsi-uninstall-files.txt
+    '''
+    assert False, g.callers()
+    names = (
+        'nsi-install-files.txt',
+        'nsi-uninstall-files.txt',
+        # 'nsi-boilerplate.txt',
+    )
+    for fn in names:
+        src = g.os_path_join(distDir,fn)
+        dst = g.os_path_join(rootDir,fn)
+        assert g.os_path_exists(src),src
+        shutil.copyfile(src,dst)
+#@+node:ekr.20221108101925.9: *6* copy_ref_files (Not used)
+def copy_ref_files (self):
+    '''Copy reference copies of .leo files.'''
+    if 0:
+        # There seems to be no need for this.
+        # Furthermore, this changes the ref files.
+        table = (
+            (pluginsDir,'leoGuiPlugins.leo','leoGuiPluginsRef.leo'),
+            (pluginsDir,'leoPlugins.leo','leoPluginsRef.leo'),
+            (coreDir,'leoPy.leo','leoPyRef.leo'),
+        )
+        for d,src,dst in table:
+            src_path = join(d,src)
+            dst_path = join(d,dst)
+            if not exists(src_path):
+                g.error('does not exist',src_path)
+            if not exists(dst_path):
+                g.error('does not exist',dst_path)
+            if exists(src_path) and exists(dst_path):
+                shutil.copyfile(src_path,dst_path)
+#@+node:ekr.20221108101925.10: *6* create_install_files
+def create_install_files(self,dirs,dirDict,filesDict):
+    '''Create leo/dist/nsi-install-files.txt'''
+    global install_fn,rootDir
+    put = self.put
+    self.f = self.openFile(install_fn)
+    if not self.f: return
+    # Top level
+    theDir = '**top'
+    put('\n')
+    put('; top-level\n')
+    put('SetOutPath "$INSTDIR"\n')
+    put('SetOverwrite ifnewer\n')
+    aList = dirDict.get(theDir,[])
+    for fn in aList:
+        put('File "%s"\n' % fn)
+    for theDir in dirs:
+        if theDir != '**top':
+            aList = dirDict.get(theDir,[])
+            if aList:
+                theDir2 = theDir.replace('/','\\').rstrip('\\')
+                put('\n')
+                put('SetOutPath $INSTDIR\\%s\n' % theDir2)
+                for fn in aList:
+                    # Fix bug 425369: quote file names.
+                    put('File "%s\\%s\\%s"\n' % (
+                        rootDir,theDir2,fn))
+    self.f.close()
+#@+node:ekr.20221108101925.11: *6* create_uninstall_files
+def create_uninstall_files(self,dirs,dirDict,filesDict):
+    '''Create leo/dist/nsi-uninstall-files.txt'''
+    def clean(s):
+        return s.replace('/','\\')
+    put = self.put
+    self.f = self.openFile(uninstall_fn)
+    if not self.f: return
+    # Part 1: Delete top-level files.
+    put('\n')
+    put('; Uninstall files...\n\n')
+    put('SetOutPath $Temp\n')
+    # Get the list of top-level files.
+    aList = dirDict.get('**top',[])
+    # Add some special cases:
+    for fn in ('*.pyo','*.pyc',
+        'uninst.exe',
+        # 'setup.py',
+            # setup.py is now allowed at the top level.
+        'git-manifest.txt'
+    ):
+        if fn not in aList:
+            aList.append(fn)
+    for fn in aList:
+        # Always delete individual files.
+        put('Delete "$INSTDIR\\%s"\n' % fn)
+    if 1:
+        # Just delete the leo folder with /r option.
+        # This should be completely safe.
+        put('RMDir /r "$INSTDIR\\leo"\n')
+    else:
+        # Part 2: Delete files in lower directories.
+        for theDir in dirs:
+            if theDir:
+                dir2 = clean(theDir)
+                aList = dirDict.get(theDir,[])
+                if aList:
+                    put('\n')
+                    put('Delete "$INSTDIR\\%s\\*.pyc"\n' % (dir2))
+                    put('Delete "$INSTDIR\\%s\\*.pyo"\n' % (dir2))
+                    # Delete all files in any __pycache__ subdirectory.
+                    put('Delete "$INSTDIR\\%s\\__pycache__\\*.pyc"\n' % (dir2))
+                for fn in aList:
+                    put('Delete "$INSTDIR\\%s\\%s"\n' % (dir2,fn))
+        # Part 3: Delete directories.
+        reverseDirs = dirs[:]
+        reverseDirs.reverse()
+        put('\n')
+        put('; Uninstall directories in reverse order\n')
+        for theDir in reverseDirs:
+            # Delete the directory even if it has files.
+            if theDir and theDir != '**top':
+                if not theDir.startswith('.bzr'):
+                    put('RMDir "$INSTDIR\\%s\\__pycache__"\n' % (clean(theDir)))
+                    put('RMDir "$INSTDIR\\%s"\n' % (clean(theDir)))
+    # Delete the op-level folder.
+    put('\n')
+    put('; Delete the top-level directory.\n')
+    put('RMDir "$INSTDIR"\n')
+        # Important: the /r option is not safe here!
+    self.f.close()
+#@+node:ekr.20221108101925.12: *6* directoryList
+def directoryList (self,rootDir):
+    '''
+    Compute a top-down list of all directories.
+    These directories start at the top-level directory.
+    '''
+    trace = False
+    ignoreDirs = ('.bzr','.git','docs')
+    # Important: this adds all directories on EKR's machine,
+    # regardless of whether they appear in the manifest!
+    result = [] ; n = len(rootDir)
+    for z in os.walk(rootDir): # top-down traversal.
+        dirpath, dirnames, filenames = z
+        assert dirpath.startswith(rootDir),z
+        if len(dirpath) > n:
+            path = dirpath[n+1:].replace('\\','/')
+            result.append(path)
+    for z2 in ignoreDirs:
+        result = [ z for z in result if not z.startswith(z2)]
+    if trace:
+        g.trace('-' * 40)
+        g.trace(g.listToString(result))
+    return result
+#@+node:ekr.20221108101925.13: *6* filterLines & helpers
+def filterLines (self,lines):
+    '''Filter lines from the input manifest file.'''
+    trace = False
+    # Remove blank lines, comments, and .pyc and .pyo files.
+    lines = self.deleteBlankLines(lines)
+    lines = self.deleteComments(lines)
+    lines = self.deleteTempFiles(lines)
+    lines = self.deleteExt(lines,'.pyc')
+    lines = self.deleteExt(lines,'.pyo')
+    lines = self.deleteExt(lines,'.zip') # Don't include the zip file.
+    lines = self.deleteExt(lines,'.exe') # Don't include the installer.
+    # Remove specific files.
+    deleteList = (
+        '.bzrignore',
+        '.gitignore',
+        # 'bzr-manifest.txt',
+        'git-manifest.txt',
+        # 'bzr-small-manifest.txt',
+        # 'setup.py',
+        'stand_alone_globals.leo',
+        'leoStandAloneGlobals',
+        'leo/test/unittest/.leo_shadow/',
+        'nsi.log.txt', # Can't write log while we are creating it.
+        'leo/core/leoPy.leo',
+        'leo/core/ekrLeoPy.leo',
+    )
+    lines = self.deleteFiles(lines,deleteList)
+    # Delete all files in the top-level docs/ directory
+    lines = [z for z in lines if not z.startswith('docs/')]
+    if trace:
+        g.trace('=' * 40)
+        g.trace(g.listToString(lines))
+    return lines
+#@+node:ekr.20221108101925.14: *7* delete...
+def deleteBlankLines (self,lines):
+
+    return [z.strip() for z in lines if z.strip()]
+
+def deleteComments (self,lines):
+
+    return [z for z in lines if not z.startswith('#')]
+
+def deleteExt (self,lines,ext):
+
+    return [z for z in lines if not z.endswith(ext)]
+
+def deleteFiles (self,lines,deleteList):
+
+    return [z for z in lines if not z in deleteList]
+
+def deleteTempFiles (self,lines):
+
+    for i in range(1,10):
+        lines = [z for z in lines if not z.endswith('~%s~' % i)]
+    return lines
+#@+node:ekr.20221108101925.15: *6* make_manifest
+def make_manifest(self):
+    '''Create git-manifest.txt.'''
+    os.chdir(rootDir) # Can't be done below.
+    commands = (
+        r'del git-manifest.txt',
+        r'c:\apps\Git\bin\git.exe ls-files > git-manifest.txt',
+        # r'&ed git-manifest.txt',
+    )
+    g.execute_shell_commands(commands,trace=True)
+#@+node:ekr.20221108101925.16: *6* make_zip
+def make_zip(self):
+    '''
+    Create the zip file.
+    
+    The archive will not contain the .git directory, but will contain
+    .gitignore, .gitattributes, etc. To suppress these files, use the
+    export-ignore attribute in a .gitattributes file. Commit this before
+    doing git archive.
+    '''
+    for z in (zipFile,zipFile2):
+        if exists(z): self.unlink(z)
+    os.chdir(rootDir) # Required.
+    commands = (
+        # This commit ensures the proper files are included in the distribution.
+        # r'git commit -m "commit doc files during make"',
+        ### Don't update version: this scrit is obsolete.
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.7-final/ master' % (
+            r'c:\apps\Git\bin\git.exe',zipFile),
+    )
+    g.execute_shell_commands(commands,trace=True)
+    if not g.os_path_exists(zipFile):
+        print('does not exist: %s' % zipFile)
+    # Remove the temporary zip file.
+    if exists(zipFile2):
+        self.unlink(zipFile2)
+#@+node:ekr.20221108101925.17: *6* makeDicts
+def makeDicts (self,dirs,lines):
+
+    trace = False ; verbose = True
+    # Create the dirDict.
+    # Keys are directories.
+    # Values are files contained in each directory.
+    dirDict = {}
+    dirDict['**top'] = [] # Create an entry for the root directory.
+    for z in dirs:
+        dirDict[z] = []
+        # Leo 5.4: Add leo/core/commit_timestamp.json
+        # This file is in .gitignore, but we must write it here.
+        if 0:
+            if z == 'leo/core':
+                # g.trace(z)
+                # g.trace('Adding commit_timestamp.json')
+                dirDict[z].append('commit_timestamp.json')
+    # Assign files to dirDict.
+    for line in lines:
+        line = line.strip().replace('\\','/')
+        if line in dirDict.keys():
+            path,fn = None,None
+        elif line.startswith('leo/'):
+            path,fn = g.os_path_split(line)
+        else:
+            path,fn = '**top',line.strip()
+        # Don't include top-level leo directory,
+        # Do include leo/scripts/leo file.
+        if fn and (path != '**top**' or fn != 'leo'):
+            aList = dirDict.get(path,[])
+            assert line not in aList,repr(line)
+            aList.append(fn)
+            dirDict[path]=aList
+    # Trace the result.
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        if aList and trace:
+            if verbose:
+                print() ; print(theDir)
+                print(g.listToString(aList))
+            else:
+                print(theDir)
+    # Create the inverse dict.
+    filesDict = {}
+    for theDir in sorted(dirDict):
+        aList = dirDict.get(theDir)
+        for fn in aList:
+            path = g.choose(theDir=='**top',
+                fn,'%s/%s' % (theDir,fn))
+            filesDict[path] = theDir
+            # if fn == 'wikiview.py': g.trace(fn,path)
+    return dirDict,filesDict
+#@+node:ekr.20221108101925.18: *6* printMissing
+def printMissing (self,files,dirDict,filesDict):
+    '''A crucial check.'''
+    errors = 0
+    for fn in files:
+        fn = fn.rstrip('/')
+        if fn and fn not in dirDict and fn not in filesDict:
+            g.es_print('missing',fn,color='red')
+            errors += 1
+    if errors:
+        g.es_print('%s errors' % (errors),color='red')
+    return errors
+#@+node:ekr.20221108101925.19: *6* remove_commit_timestamp_json (Not used)
+def remove_commit_timestamp_json(self):
+    '''Remove leo/core/commit_timestamp.json.'''
+    path = g.os_path_finalize_join(
+        g.app.loadDir, '..', 'core', 'commit_timestamp.json')
+    if g.os_path_exists(path):
+        os.remove(path)
+    else:
+        g.trace('not found', path)
+#@+node:ekr.20221108101925.20: *5* utils...
+#@+node:ekr.20221108101925.21: *6* openFile
+def openFile (self,fn,mode='w'):
+
+    try:
+        f = open(fn,mode)
+        return f
+    except IOError:
+        g.error('can not open',fn)
+        return None
+#@+node:ekr.20221108101925.22: *6* put
+def put (self,s):
+
+    # g.trace(s.rstrip())
+    self.f.write(s)
+#@+node:ekr.20221108101925.23: *6* unlink
+def unlink (self,fn):
+
+    # print('command: unlink: %s' % fn)
+    os.remove(fn)
 #@-all
 #@@nosearch
 #@-leo

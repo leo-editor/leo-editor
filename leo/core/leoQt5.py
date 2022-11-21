@@ -1,8 +1,14 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210407010914.1: * @file leoQt5.py
+#@@first
 """Import wrapper for pyQt5"""
+
+# For now, suppress all mypy checks
+# type:ignore
+
 # pylint: disable=import-error,no-name-in-module,unused-import
-#
+
 # Required imports
 from PyQt5 import Qt
 from PyQt5 import QtCore
@@ -11,12 +17,22 @@ from PyQt5 import QtWidgets
 assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
 from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import pyqtSignal as Signal
+from PyQt5.QtGui import QCloseEvent
 QtConst = QtCore.Qt
 printsupport = Qt
 qt_version = QtCore.QT_VERSION_STR
-assert QUrl and Signal  # For pyflakes.
+assert QCloseEvent and QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
+# Must import this before creating the GUI
+try:
+    # pylint: disable=ungrouped-imports
+    from PyQt5 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # print('No Qt5 QtWebEngineWidgets')
+    has_WebEngineWidgets = False
 try:
     import PyQt5.QtDeclarative as QtDeclarative
 except ImportError:
@@ -57,7 +73,7 @@ except ImportError:
         # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
         # Reinhard: Support pyqt 5.6...
         # used by viewrendered(2|3).py, bigdash.py, richtext.py.
-        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
+        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
         QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
         QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
         QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
@@ -78,7 +94,8 @@ Format = QtGui.QImage
 GlobalColor = QtCore.Qt
 Icon = QtWidgets.QMessageBox
 Information = QtWidgets.QMessageBox
-ItemFlag = QtCore.Qt
+ItemFlag = QtCore.Qt  # 2347
+ItemDataRole = QtCore.Qt  # 2347
 Key = QtCore.Qt
 KeyboardModifier = QtCore.Qt
 Modifier = QtCore.Qt
@@ -97,6 +114,7 @@ Shadow = QtWidgets.QFrame
 Shape = QtWidgets.QFrame
 SizeAdjustPolicy = QtWidgets.QComboBox
 SliderAction = QtWidgets.QAbstractSlider
+SolidLine = QtCore.Qt.SolidLine
 StandardButton = QtWidgets.QDialogButtonBox
 StandardPixmap = QtWidgets.QStyle
 Style = QtGui.QFont
@@ -105,8 +123,16 @@ TextOption = QtGui.QTextOption
 ToolBarArea = QtCore.Qt
 Type = QtCore.QEvent
 UnderlineStyle = QtGui.QTextCharFormat
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
+    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
+else:
+    QWebEngineSettings = None  # type:ignore
+    WebEngineAttribute = None  # type:ignore
+
 Weight = QtGui.QFont
 WindowType = QtCore.Qt
 WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
 WrapMode = QtGui.QTextOption
 #@-leo

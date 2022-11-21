@@ -449,7 +449,6 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
-<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
@@ -505,6 +504,7 @@
 <v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
 <v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
 <v t="ekr.20200526090848.1"><vh>Satheesh Vattekkat</vh></v>
+<v t="ekr.20220420153633.1"><vh>Thomas Passin</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -528,7 +528,7 @@
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
-<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
+<v t="maphew.20200616225715.1"><vh>@ignore Standalone Leo.exe</vh></v>
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
@@ -752,7 +752,6 @@
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
-<v t="ekr.20131030071311.17087"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
@@ -768,6 +767,7 @@
 <v t="ekr.20131009100732.16755"><vh>\@rst-no-head suppresses sections</vh></v>
 <v t="ekr.20131025044901.17147"><vh>\@rst-ignore &amp; @rst-ignore-tree ignore text</vh></v>
 <v t="ekr.20131025044901.17148"><vh>Inserting raw markup</vh></v>
+<v t="ekr.20220129083216.1"><vh>Filtering contents</vh></v>
 </v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
@@ -798,7 +798,7 @@
 <v t="ekr.20180126061429.25"><vh>Search for settings in leoSettings.leo</vh></v>
 <v t="ekr.20180126061429.10"><vh>Use abbreviations</vh></v>
 </v>
-<v t="ekr.20180126062558.1"><vh>Useful commands</vh>
+<v t="ekr.20180126062558.1"><vh>Useful commands and actions</vh>
 <v t="ekr.20180126061429.7"><vh>The beautify command &amp; @nobeautify directive</vh></v>
 <v t="ekr.20180126061429.22"><vh>The find-quick-selected command</vh></v>
 <v t="ekr.20180126061429.23"><vh>The parse-body command</vh></v>
@@ -809,6 +809,7 @@
 <v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
 <v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
 <v t="ekr.20180126184230.1"><vh>Use Ctrl-P (repeat-complex-command) to avoid key bindings</vh></v>
+<v t="ekr.20220218121757.1"><vh>Ctrl-click urls and unls</vh></v>
 </v>
 <v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
 <v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
@@ -820,6 +821,7 @@
 <v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
 <v t="ekr.20180126061429.20"><vh>Use g.trace to debug scripts</vh></v>
 <v t="ekr.20180126061429.4"><vh>Use section references sparingly</vh></v>
+<v t="ekr.20220129091501.1"><vh>Use g.handleUnl to select nodes</vh></v>
 </v>
 </v>
 </v>
@@ -1176,7 +1178,6 @@
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
-<v t="ekr.20150328073917.1"><vh>Example: running unit tests from leoBridge</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
@@ -1532,13 +1533,21 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20211105051309.1"></v>
+<v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
+<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6.x</vh>
+<v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
+<v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
+<v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
+<v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
+<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
+</v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
+<v t="ekr.20221108064344.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
@@ -1555,7 +1564,6 @@
 <v t="ekr.20180126003617.1"><vh>Plugins</vh></v>
 <v t="ekr.20180126003420.1"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20180404015721.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20170911082347.1"><vh>What's new in Leo 5.6</vh>
 <v t="ekr.20170911082432.2"><vh>Highlights</vh>
 <v t="ekr.20170911082432.3"><vh>#488: Created a console gui for Leo</vh></v>
@@ -1696,6 +1704,9 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20220704113115.1"><vh>Leo 6.6.3 release notes</vh></v>
+<v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
+<v t="ekr.20220401072939.1"><vh>Leo 6.6.1 release notes</vh></v>
 <v t="ekr.20211105051031.1"><vh>Leo 6.6 release notes</vh></v>
 <v t="ekr.20210921102613.1"><vh>Leo 6.5 release notes</vh>
 <v t="ekr.20210921102613.13"><vh>6.5: Commands</vh></v>
@@ -2378,7 +2389,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20211105051031.1"></v>
+<v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
+<v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3513,15 +3525,7 @@ Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access t
     :local:
 
 </t>
-<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand, which calls the "command1" and "command2" hook routines for the given label. c.doCommand catches all exceptions thrown by the command::
-
-    c.doCommand(c.markHeadline,label="markheadline")
-
-You can also call command handlers directly so that hooks will not be called::
-
-    c.markHeadline()
-
-You can invoke minibuffer commands by name.  For example::
+<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">You can invoke minibuffer commands by name.  For example::
 
     c.executeMinibufferCommand('open-outline')
 
@@ -3690,7 +3694,7 @@ Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Be
 
 The following have contributed plugins to Leo:
 
-Rodrigo Benenson, Pierre Bidon, Felix Breuer, Terry Brown, Mike Crowe, Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti, Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio, Steve Zatz.
+Rodrigo Benenson, Félix Malboeuf, Felix Breuer, Terry Brown, Mike Crowe, Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti, Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio, Steve Zatz.
 
 The following people have made generous donations to the Leo project: Robert Low, Nic Cave-Lynch.
 </t>
@@ -4082,7 +4086,13 @@ I had used Leo for a long time as a PIM to track my work, but moved to emacs org
 
 I am a manager, physicist and perhaps an electrical engineer. I use several different editors all the time, for different reasons, like vim and scite sometime  emacs. I use Leo on complex projects, involving many files. I have small python and Lua scripts, Lua tables, plain text files, many LaTeX files, CSV files, Markdown files, lots of PDF's for reference, spreadsheets, todo lists. I write documentation, write simple tools to help with business and scientific calculations. I do this all in a company with 20 people, working in small teams.
 
-I use Leo as a project manager. It glues together all kind of stuff, allows me to do some jobs with a little script, and interfaces well with others. Some other tools may be better for some other things and I use other tools too, but I keep coming back to Leo for much of my work. Leo manages to be generic enough to co-exist well with other tools and bring all these different files together.--Josef Dalcomo.</t>
+I use Leo as a project manager. It glues together all kind of stuff, allows me to do some jobs with a little script, and interfaces well with others. Some other tools may be better for some other things and I use other tools too, but I keep coming back to Leo for much of my work. Leo manages to be generic enough to co-exist well with other tools and bring all these different files together.--Josef Dalcomo.
+
+For many years I have been looking for a program for working with information in the broadest sense of the word. Basically, these are the tasks of information analysis and transformation, literature reviews, writing texts and PIM. For a long time I have been using Mindmaps based solutions. For example, freeplane. However, I definitely lacked flexibility. Scripting those was painful!
+
+When I found LEO it solved all my problems. Initially, I lacked the number of buttons on the icon bar, but I solved this problem [as] I previously wrote to the google group. Also I needed to have multiple icons when decluttering. Now everything is enough, I really like the flexibility of LEO. It's like an off-road car that you can modify on your own to suit your needs. I also really like the possibility of interleaved data and scripts to model my workflow.
+
+Thank you very much for your work!.--Luka Golibrodo</t>
 <t tx="ekr.20050830074815.8">"I've written documentation in WordPerfect, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in Leo, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to Leo because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling."---David Nichols
 
 "With the help of the rst2 plugin, [Leo is] the best outliner I have yet encountered for writing the early stages of academic papers."
@@ -4761,8 +4771,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
 'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
 'openwith2'                            after  Open With command            c,p,v,(note 14)
-'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
-'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
+'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName
+'recentfiles2'                         after  Recent Files command         c,p,v,fileName
 'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
 'save1'                        yes     before any Save command             c,p,v,fileName
 'save2'                                after  any Save command             c,p,v,fileName
@@ -4776,8 +4786,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'start2'                               after opening first Leo window      c,p,v,fileName
 'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
 'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
-'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
-'\@url2'                                after  double-click @url node       c,p,v(note 5)
+'\@url1'                       yes     before double-click @url node       c,p,v,url (note 5)
+'\@url2'                               after  double-click @url node       c,p,v(note 5)
 ============================= ======== =================================== =============================
 
 **Notes**:
@@ -7126,7 +7136,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2021 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2022 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -8798,13 +8808,7 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
-<t tx="ekr.20100821182153.4343">@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-######
+<t tx="ekr.20100821182153.4343">######
 Slides
 ######
 
@@ -11204,14 +11208,14 @@ Leo's outline or hierarchical structure is distinct from the web of interleaved 
 [[Category:Software that uses Scintilla]]
 [[Category:Software using the MIT license]]
 </t>
-<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.6 or above.
+<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.9 or above.
 To install Python, see http://python.org.
 
 **PyQt**: `PyQt`_ provides Leo's widgets:
 
 * Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
 
-**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.6 or later.
+**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.9 or later.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
 </t>
@@ -11820,27 +11824,19 @@ run-all-unit-tests-externally = Alt-5
 creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
     
 </t>
-<t tx="ekr.20111127144911.5544">@pagewidth 75
-
-@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+<t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
 .. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
 .. _`Nightly snapshot`:         download.html#snapshots       
 .. _`Python wheel`:             https://pythonwheels.com/
 .. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
-.. _`Standalone leo.exe`:       download.html#standalone
+.. .. _`Standalone leo.exe`:       download.html#standalone
 
 ###############
 Downloading Leo
 ###############
 
-There are three ways to download Leo:
+There are two ways to download Leo:
 
 - ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
 
@@ -11848,7 +11844,7 @@ There are three ways to download Leo:
 
 - If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
 
-- All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
+.. - All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -14744,7 +14740,7 @@ This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 These instructions look complicated because they're long, but really they just boil down to:
 
-- install python (v3.6 or newer).
+- install python. Python 3.9 or later is required.
 - run `pip install leo` from a python enabled command prompt.
 - run leo from that same python enabled command prompt.
 
@@ -16541,10 +16537,6 @@ myDocument.html.txt is the **input** file for sphinx.
                             initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
-<t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to actually get an html file that can be loaded into a word processor to output an .odt or .docx file for example.
-
-For most of the purposes that a programmer would use rst, i.e., documentation or a web page, the tutorial goes far enough. But for those who have different output goals, highlighting the flexibility that Leo with rst should be a primary goal. There are literally hundreds of writers in the world for every programmer. If you want Leo to become popular, this is a critical understanding.
-</t>
 <t tx="ekr.20131030082936.17514">s = p.b
 for child in p.children():
     s = s + '\n- ' + child.h
@@ -17304,7 +17296,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
 Leo's minimal dependencies are:
 
-* `Python`_ 3.6 or later.
+* `Python`_ 3.9 or later.
 * `PyQt5`_.
 * `PyQtWebEngine`
 
@@ -17367,7 +17359,7 @@ Then run "pip --editable install . " in the same folder. Foo.exe will be created
 Yeah! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py
 --do-stuff-here ..." for me. :)
 
-Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
+.. Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
 </t>
 <t tx="ekr.20141108064630.13">.. in FAQ
 
@@ -18339,17 +18331,10 @@ These commands work with either headline or body text.</t>
     
 **@tabwidth**: The ``convert-*`` commands convert between tabs and blanks using the @tabwidth setting presently in effect.
 
-``flush-lines``
-    Deletes each line that contains a match for regexp, operating on the text after point.
-    In Transient Mark mode, if the region is active, the command operates on the region instead.
-
 ``insert-body-time`` and ``insert-headline-time``
     Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime.
     
 **Time format**: For format options see `Python's time module`_. By default, the commands use ``%m/%d/%Y %H:%M:%S``, giving timestamps like ``1/30/2003 8:31:55``.
-
-``keep-lines``
-    Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. 
 
 ``pretty-print-python-code`` and ``pretty-print-all-python-code``
     Pretty prints body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
@@ -18955,7 +18940,7 @@ Searches creating clones:
 
     Alt+R isearch-backward
           isearch-backward-regexp
-    Alt+S isearch-forward
+    Alt+I isearch-forward
           isearch-forward-regexp
           isearch-with-present-options
 </t>
@@ -19678,47 +19663,6 @@ There has been some discussion of @auto v. @clean. Preference is obviously a mat
 
 The ability to work on projects with people who don't have Leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with Leo sentinels (unless the potential cloner is a Leo loyalist). The one downside to no sentinels--there is no evidence that Leo is being used but I think that raises the broader question of marketing Leo, which I certainly believe will be aided significantly by being able to take advantage of Leo without sentinels in external files.--- Steve Zatz
 </t>
-<t tx="ekr.20150328073917.1">Here is a python program that will run unitTest.leo using the leoBridge module. Change the path as required::
-    
-    import leo.core.leoBridge as leoBridge
-    import leo.core.leoTest as leoTest
-    path = &lt;path to unitTest.leo&gt;/unitTest.leo'
-    
-    def main ():
-        tag = 'leoTestBridge'
-    
-        # Setting verbose=True prints messages that would be sent to the log pane.
-        bridge = leoBridge.controller(
-            gui='nullGui',
-            loadPlugins=False,
-            readSettings=False,
-            silent=True,
-            verbose=False) 
-        if bridge.isOpen():
-            g = bridge.globals()
-            c = bridge.openLeoFile(path)
-            runUnitTests(c,g)
-        print('done: %s' % tag)
-    
-    def runUnitTests (c,g):
-        nodeName = 'Active unit tests' # The tests to run.
-        try:
-            u = leoTest.TestManager(c)
-            p = u.findNodeAnywhere(nodeName)
-            if p:
-                print('running unit tests in %s...' % nodeName)
-                c.selectPosition(p)
-                c.debugCommands.runSelectedUnitTestsLocally()
-                print('unit tests complete')
-            else:
-                print('===== node not found: %s' % nodeName)
-        except Exception:
-            print('unexpected exception')
-            g.es_print_exception()
-            raise
-    
-    if __name__ == '__main__':
-        main()</t>
 <t tx="ekr.20150415105956.1">clone-find-all-flattened often includes clones of nodes whose location is unclear.  No problem! Just select the mysterious node and do Alt-N (goto-next-clone). Leo will select the next clone of that node, wrapping the search as necessary.  One or two Alt-N takes me to the "real" node, the node having an ancestor @&lt;file&gt; node.
 
 Ideally, the meaning of all nodes would be clear from their headlines.  I typically use the following conventions. For section definitions, the headline should contain file or class name.  Examples::
@@ -22178,7 +22122,7 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references:
+Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references::
 
     # &lt;&lt; reference 1 &gt;&gt;
     " &lt;&lt; reference 2 &gt;&gt;
@@ -25390,7 +25334,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
   This setting adds @path directives to the root node of imported files.
 </t>
 <t tx="ekr.20180404015644.1"></t>
-<t tx="ekr.20180404015721.1"></t>
 <t tx="ekr.20180404015841.10">https://github.com/leo-editor/leo-editor/issues/812
 PickleShareDB.keys should definitely not call g.glob_glob.
 </t>
@@ -29060,9 +29003,7 @@ You can specify per-language settings by preceding the settings names by a prefi
 message to the Log pane.
 
 Clicking it selects the given line number of p.b.</t>
-<t tx="ekr.20190616175854.1">Leo now requires python 3.6 or above. This greatly simplifies Leo's code.
-
-Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
+<t tx="ekr.20190616175854.1">Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
 
 New and improved commands and features:
 
@@ -29438,8 +29379,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 6.0**
 
-- Leo now requires python 3.6 or above.
-  This greatly simplifies Leo's code.
 - Leo's default gui uses Qt Docks.
   Use --no-dock to use Leo's legacy gui.
 - Several commands now generate clickable links in the Log pane.
@@ -29962,7 +29901,7 @@ between tokens and parse tree nodes::
             return None, None, None, None
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
+        self.create_links(tokens, tree)
         self.reassign_tokens(tokens, tree)
         return contents, encoding, tokens, tree
 </t>
@@ -31143,18 +31082,23 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6 final is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6**
 
-- Replace @raw and @end_raw with @section-delims.
+- Replaced `@raw` and `@end_raw` with `@section-delims`.
 - Leo recognizes section references only when they appear on an otherwise blank line.
-- Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Many improvements to the python-to-typescript command.
+- Improved python importer.
+- Added plugins/picture_viewer.py, a stand-alone app that displays images.
+- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
+- Improved leoserver.py to support leointeg.
+- Many bug fixes.
 
 **6.6 Links**
 
@@ -31181,13 +31125,264 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
-<t tx="ekr.20211105051309.1">- Replace @raw and @end_raw with @section-delims.
+<t tx="ekr.20211105051309.1">- Replaced @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Improved python importer.
+- Added plugins/picture_viewer.py, a stand-alone app that displays images.
+- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
+- Improved leoserver.py to support leointeg.
+- Many bug fixes.</t>
+<t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
+
+    def headline_filter(c, p)
+    def body_filter(c, p)
+    
+so these filters have full access to all nodes of the entire outline. As a result, these filters can return arbitrary text that comes from anywhere in the outline.
+
+The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
+<t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, g.handleUnl(unl, c) will select the referenced node.  For example::
+
+    g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes', c)
+    
+will select this node in LeoDocs.leo.
 </t>
+<t tx="ekr.20220218121757.1">Clicking a url, such as https://www.leoeditor.com/ will open the link in your default browser.
+
+Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
+UNL's have the form:
+
+    
+    unl://
+    Full path of a .leo file
+    List of ancestor nodes, separated by "--&gt;"
+  
+For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
+
+    unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html
+    
+Moving or renaming nodes may (partially) break UNL's.</t>
+<t tx="ekr.20220401072939.1">Leo http://leoeditor.com 6.6.1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6.1/).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6.1**
+
+- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.
+- The usual minor bug fixes.
+
+**6.6.1 Links**
+
+- [6.6.1 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1)
+- [6.6.1 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.1)
+- [6.6.1 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6.1+)
+- [6.6.1 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1+label%3Aenhancement+)
+- [6.6.1 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.1+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20220420153633.1">There have been one or two recent threads on how different people discovered or use Leo.  But I haven't really seen anything that gives the flavor of how very many ways Leo can be used, apart from outright programming that is.  So I thought I'd try to lay out how I typically use it.  It's true that many of these items are programming-related, but many are not.  Some of them do require the help of one or another script, which need to be written if they don't already exist.  But one often can borrow someone else's script.
+
+Here are some of the main ways I'm using Leo these days.
+
+1. Managing a software project.  Leo makes managing all the files and documentation way easier than anything else I know.
+
+2. Simplifying programming itself.  Leo has many strengths that make the actual job of programming much easier, especially for python but also for other languages..
+
+3. Learning how to make bits of code work.  It often takes a lot of guessing and experimenting to turn what you read into correctly working code.  Leo makes this way easier than anything else I know.  And often you can avoid littering  up your file system with small experimental files as you work out your problems.
+
+4. Writing in structured languages like RestructuredText, Markdown, and Asciidoc.  The viewrendered3 plugin displays a fully rendered version of your document, removing an element of guesswork.
+
+5. Writing technical documentation using Sphinx.  Sphinx can produce beautifully readable documents, both for HTML and pdf.  Leo's outlines and rst3 command make it much easier and faster to use Sphinx.  It's gotten hard for me to even imagine producing this kind of documentation without Leo.
+
+6. Producing drafts of documents in formats like .doc files or Libreoffice Writer format.  You need the help of pandoc for this, and a bit of glue script.  I don't know of any way to round-trip these documents, so once your draft gets into the word processor, you can't get it back into Leo in a usable form. Even so, writing the first draft in Leo is a big win.
+
+7. Jupyiter notebook-style mixing of text, code, and output.  The viewrendered3 plugin can do similar things, although more Python-oriented and being less practical for rather long documents.
+
+8. Keeping time records,  with notes, for consulting projects.
+
+9. I have a bookmark manager in Leo - I mean, browser bookmarks - that makes finding the promising bookmarks , adding one to the collection, and organizing them much more practical than anything else I have tried.  It does use a bit of "real" programming, but now that it's working, a user doesn't need to write more.
+
+10. I have adapted the "zettel-kasten" system for storing research notes and inter-linking them to a collection of family history (genealogical) data.  With the help of some scripts that are easy to use, Leo becomes a family history database.  More scripts can produce several family tree-like charts (with the help of Graphviz) that display within Leo and can show a line of descent from a candidate ancestor to a chosen person.  I'm really enjoying using this system.
+
+11. Producing mind maps.  I'm very fond of mind maps, and I have contributed a set of scripts that can turn Leo trees, or any indented list, into a mind map.  It's a bit primitive so far, but it does the basics that I want.  The scripts are in the Leo repo.
+
+12. On-the-spot plotting of 2D numerical data.  If you can get the data into the clipboard, you can plot it using the viewrendered3 plugin with minimal fuss.
+
+13. Literate programming - if you want to go full out with literate programming, there are several ways to do this with Leo.
+
+I'm sure I'm not thinking of several more things here, but you get the idea.  The range of activities that Leo can support is amazingly wide.  That's why it's hard to tell someone what Leo "is".  It's like the elephant and the blind men - none of them can see the whole of the elephant.
+
+To me, the base of Leo's versatility is the extremely good and convenient handling of its outline tree, the ability to subdivide projects into convenient pieces, combined with the ability for anyone to easily extend Leo's core capabilities with scripts and user commands of all kinds.
+
+Phenomenal!</t>
+<t tx="ekr.20220427143133.1">- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.</t>
+<t tx="ekr.20220523084825.1">Leo http://leoeditor.com 6.6.2 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6.2**
+
+- Add "File Only" option in Leo's Find Pane.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
+- Add mypy annotations for Leo's most important files.
+- Fixed 9 minor bugs.
+
+**6.6.2 Links**
+
+- [6.6.2 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2)
+- [6.6.2 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.2)
+- [6.6.2 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Abug+is%3Aclosed)
+- [6.6.2 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Aenhancement+)
+- [6.6.2 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.2+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20220523145755.1">- Add "File Only" option in Leo's Find Pane.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
+- Add mypy annotations for Leo's most important files.</t>
+<t tx="ekr.20220704113115.1">Leo http://leoeditor.com 6.6.3 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6.3**
+
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.
+
+**Links**
+
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20220719064316.1">- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.</t>
+<t tx="ekr.20220831093321.1">- Enhance leoserver.py to support leoInteg and leoJS.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.</t>
+<t tx="ekr.20220912154542.1">- Leo now requires Python 3.9 or later.
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Importers no longer generate underindented escape strings.
+- Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
+</t>
+<t tx="ekr.20221018092737.1">Leo http://leoeditor.com 6.7.1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.7.1**
+
+- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
+- @bool plain-key-outline-search is False by default, disabling a confusing feature.
+- Several minor code cleanups.
+- Remove four unused commands.
+
+**Links**
+
+- [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
+- [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20221018092915.1">- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
+- @bool plain-key-outline-search = False by default.
+- Several minor code cleanups.
+- Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
+<t tx="ekr.20221108064344.1"></t>
+<t tx="ekr.20221108064449.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
@@ -31264,7 +31459,9 @@ first draft of the all-important ws_handler function.
 Edward K. Ream made the code more pythonic and provided Leo-specific
 advice.
 </t>
-<t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
+<t tx="maphew.20200616225715.1">.. This section is no longer valid.
+
+Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
 
@@ -31368,7 +31565,7 @@ If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_
 
 Linux: it's generally advised to use pip ``--user`` flag instead of `sudo`.
 
-Assumes **Python 3.6+** is installed and in PATH.
+Assumes **Python 3.9 or later** is installed and in PATH.
 
 Installing from source code into a new environment must be done in discrete steps: **download**, **unpack archive**, and **install as editable** mode.
 
@@ -31399,7 +31596,7 @@ Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`
 
 See `Running Leo`_ for how to run Leo after installing it.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

@@ -4,7 +4,7 @@
 #@+others
 #@+node:ekr.20170428084208.298: ** Declarations
 import curses
-from . import wgwidget     as widget
+from . import wgwidget as widget
 from . import wgtitlefield as titlefield
 
 #@+node:ekr.20170428084208.299: ** class Slider
@@ -15,7 +15,7 @@ class Slider(widget.Widget):
     def __init__(self, screen, value=0,
                 out_of=100, step=1, lowest=0,
                 label=True,
-                block_color = None,
+                block_color=None,
                 **keywords):
         self.out_of = out_of
         self.value = value
@@ -23,7 +23,7 @@ class Slider(widget.Widget):
         self.lowest = lowest
         self.block_color = block_color or self.__class__.DEFAULT_BLOCK_COLOR
         super(Slider, self).__init__(screen, **keywords)
-        if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
+        if self.parent.curses_pad.getmaxyx()[0] - 1 == self.rely: self.on_last_line = True
         else: self.on_last_line = False
         if self.on_last_line:
             self.maximum_string_length = self.width - 1
@@ -33,7 +33,7 @@ class Slider(widget.Widget):
 
     #@+node:ekr.20170428084208.301: *3* Slider.calculate_area_needed
     def calculate_area_needed(self):
-        return 1,0
+        return 1, 0
 
     #@+node:ekr.20170428084208.302: *3* Slider.translate_value
     def translate_value(self):
@@ -41,10 +41,10 @@ class Slider(widget.Widget):
         method, you can change how the labels are displayed.  This method should return a
         unicode string, to be displayed to the user. You probably want to ensure this is a fixed width."""
 
-        stri = "%s / %s" %(self.value, self.out_of)
+        stri = "%s / %s" % (self.value, self.out_of)
         if isinstance(stri, bytes):
             stri = stri.decode(self.encoding, 'replace')
-        l = (len(str(self.out_of)))*2+4
+        l = (len(str(self.out_of))) * 2 + 4
         stri = stri.rjust(l)
         return stri
 
@@ -61,13 +61,13 @@ class Slider(widget.Widget):
             label_str = self.translate_value()
             if isinstance(label_str, bytes):
                 label_str = label_str.decode(self.encoding, 'replace')
-            blocks_on_screen -= len(label_str)+3
+            blocks_on_screen -= len(label_str) + 3
             if self.do_colors():
                 label_attributes = self.parent.theme_manager.findPair(self)
             else:
                 label_attributes = curses.A_NORMAL
             self.add_line(
-                self.rely, self.relx+blocks_on_screen+2,
+                self.rely, self.relx + blocks_on_screen + 2,
                 label_str,
                 self.make_attributes_list(label_str, label_attributes),
                 len(label_str)
@@ -82,30 +82,30 @@ class Slider(widget.Widget):
             #self.parent.curses_pad.bkgdset(">")
             #self.parent.curses_pad.bkgdset(curses.A_NORMAL)
             BACKGROUND_CHAR = ">"
-            BARCHAR         = curses.ACS_HLINE
+            BARCHAR = curses.ACS_HLINE
         else:
             self.parent.curses_pad.attroff(curses.A_BOLD)
             self.parent.curses_pad.bkgdset(curses.A_NORMAL)
             #self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
             BACKGROUND_CHAR = curses.ACS_HLINE
-            BARCHAR         = " "
+            BARCHAR = " "
 
 
         for n in range(blocks_on_screen):
             xoffset = self.relx
             if self.do_colors():
-                self.parent.curses_pad.addch(self.rely,n+xoffset, BACKGROUND_CHAR, curses.A_NORMAL | self.parent.theme_manager.findPair(self))
+                self.parent.curses_pad.addch(self.rely, n + xoffset, BACKGROUND_CHAR, curses.A_NORMAL | self.parent.theme_manager.findPair(self))
             else:
-                self.parent.curses_pad.addch(self.rely,n+xoffset, BACKGROUND_CHAR, curses.A_NORMAL)
+                self.parent.curses_pad.addch(self.rely, n + xoffset, BACKGROUND_CHAR, curses.A_NORMAL)
 
         for n in range(int(blocks_to_fill)):
             if self.do_colors():
                 if self.block_color:
-                    self.parent.curses_pad.addch(self.rely,n+xoffset, BARCHAR, self.parent.theme_manager.findPair(self, self.block_color))
+                    self.parent.curses_pad.addch(self.rely, n + xoffset, BARCHAR, self.parent.theme_manager.findPair(self, self.block_color))
                 else:
-                    self.parent.curses_pad.addch(self.rely,n+xoffset, BARCHAR, curses.A_STANDOUT | self.parent.theme_manager.findPair(self))
+                    self.parent.curses_pad.addch(self.rely, n + xoffset, BARCHAR, curses.A_STANDOUT | self.parent.theme_manager.findPair(self))
             else:
-                self.parent.curses_pad.addch(self.rely,n+xoffset, BARCHAR, curses.A_STANDOUT) #curses.ACS_BLOCK)
+                self.parent.curses_pad.addch(self.rely, n + xoffset, BARCHAR, curses.A_STANDOUT)  #curses.ACS_BLOCK)
 
         self.parent.curses_pad.attroff(curses.A_BOLD)
         self.parent.curses_pad.bkgdset(curses.A_NORMAL)

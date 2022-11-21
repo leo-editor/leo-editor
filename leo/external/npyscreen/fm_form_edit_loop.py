@@ -39,7 +39,7 @@ class FormNewEditLoop:
         self.display()
         while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
             self.editw += 1
-            if self.editw > len(self._widgets__)-1:
+            if self.editw > len(self._widgets__) - 1:
                 self.editing = False
                 return False
 
@@ -54,7 +54,7 @@ class FormNewEditLoop:
 
             self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
 
-            if self.editw > len(self._widgets__)-1: self.editw = len(self._widgets__)-1
+            if self.editw > len(self._widgets__) - 1: self.editw = len(self._widgets__) - 1
 
     #@+node:ekr.20170428084207.318: *3* FormNewEditLoop.edit
     def edit(self):
@@ -80,15 +80,15 @@ class FormDefaultEditLoop:
         my, mx = self.curses_pad.getmaxyx()
         ok_button_text = self.__class__.OK_BUTTON_TEXT
         my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
-        mx -= len(ok_button_text)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+        mx -= len(ok_button_text) + self.__class__.OK_BUTTON_BR_OFFSET[1]
         self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
-        ok_button_postion = len(self._widgets__)-1
+        ok_button_postion = len(self._widgets__) - 1
         self.ok_button.update()
         # End add buttons
-        self.editing=True
-        if self.editw < 0: self.editw=0
-        if self.editw > len(self._widgets__)-1:
-            self.editw = len(self._widgets__)-1
+        self.editing = True
+        if self.editw < 0: self.editw = 0
+        if self.editw > len(self._widgets__) - 1:
+            self.editw = len(self._widgets__) - 1
         if not self.preserve_selected_widget:
             self.editw = 0
         if not self._widgets__[self.editw].editable: self.find_next_editable()
@@ -97,7 +97,7 @@ class FormDefaultEditLoop:
 
         while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
             self.editw += 1
-            if self.editw > len(self._widgets__)-1:
+            if self.editw > len(self._widgets__) - 1:
                 self.editing = False
                 return False
 
@@ -112,8 +112,8 @@ class FormDefaultEditLoop:
 
             self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
 
-            if self.editw > len(self._widgets__)-1:
-                self.editw = len(self._widgets__)-1
+            if self.editw > len(self._widgets__) - 1:
+                self.editw = len(self._widgets__) - 1
             if self.ok_button.value:
                 self.editing = False
 
@@ -133,7 +133,7 @@ class FormDefaultEditLoop:
         if hasattr(self, 'ok_button'):
             my, mx = self.curses_pad.getmaxyx()
             my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
-            mx -= len(self.__class__.OK_BUTTON_TEXT)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+            mx -= len(self.__class__.OK_BUTTON_TEXT) + self.__class__.OK_BUTTON_BR_OFFSET[1]
             self.ok_button.relx = mx
             self.ok_button.rely = my
 

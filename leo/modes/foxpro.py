@@ -1724,13 +1724,13 @@ keywordsDictDict = {
 def foxpro_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def foxpro_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def foxpro_rule2(colorer, s, i):
@@ -1884,11 +1884,11 @@ def foxpro_rule34(colorer, s, i):
 # Rules dict for foxpro_main ruleset.
 rulesDict1 = {
     "\"": [foxpro_rule0,],
-    "#": [foxpro_rule2,foxpro_rule3,foxpro_rule4,foxpro_rule5,foxpro_rule6,foxpro_rule7,foxpro_rule8,foxpro_rule9,foxpro_rule10,foxpro_rule11,foxpro_rule12,foxpro_rule13,foxpro_rule14,foxpro_rule15,foxpro_rule16,],
+    "#": [foxpro_rule2, foxpro_rule3, foxpro_rule4, foxpro_rule5, foxpro_rule6, foxpro_rule7, foxpro_rule8, foxpro_rule9, foxpro_rule10, foxpro_rule11, foxpro_rule12, foxpro_rule13, foxpro_rule14, foxpro_rule15, foxpro_rule16,],
     "&": [foxpro_rule17,],
     "'": [foxpro_rule1,],
-    "*": [foxpro_rule18,foxpro_rule28,],
-    "+": [foxpro_rule26,foxpro_rule32,],
+    "*": [foxpro_rule18, foxpro_rule28,],
+    "+": [foxpro_rule26, foxpro_rule32,],
     "-": [foxpro_rule27,],
     ".": [foxpro_rule25,],
     "/": [foxpro_rule29,],
@@ -1903,9 +1903,9 @@ rulesDict1 = {
     "8": [foxpro_rule34,],
     "9": [foxpro_rule34,],
     ":": [foxpro_rule33,],
-    "<": [foxpro_rule19,foxpro_rule20,foxpro_rule24,],
+    "<": [foxpro_rule19, foxpro_rule20, foxpro_rule24,],
     "=": [foxpro_rule23,],
-    ">": [foxpro_rule21,foxpro_rule22,],
+    ">": [foxpro_rule21, foxpro_rule22,],
     "?": [foxpro_rule34,],
     "@": [foxpro_rule34,],
     "A": [foxpro_rule34,],
@@ -1937,7 +1937,7 @@ rulesDict1 = {
     "[": [foxpro_rule34,],
     "\\": [foxpro_rule30,],
     "]": [foxpro_rule34,],
-    "^": [foxpro_rule31,foxpro_rule34,],
+    "^": [foxpro_rule31, foxpro_rule34,],
     "_": [foxpro_rule34,],
     "a": [foxpro_rule34,],
     "b": [foxpro_rule34,],
@@ -1974,4 +1974,3 @@ rulesDictDict = {
 
 # Import dict for foxpro mode.
 importDict = {}
-

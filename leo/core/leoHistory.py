@@ -2,46 +2,60 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
-from leo.core import leoGlobals as g
-assert g
+from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+#@+<< leoHistory annotations >>
+#@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoChapters import Chapter
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+else:
+    Chapter = Any
+    Cmdr = Any
+    Position = Any
+#@-<< leoHistory annotations >>
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
     """A class encapsulating knowledge of visited nodes."""
-    #@+others
-    #@+node:ekr.20070615131604.1: *3* NodeHistory.ctor
-    def __init__(self, c):
+
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for NodeHistory class."""
         self.c = c
-        self.beadList = []
-            # a list of (position,chapter) tuples.
+        self.beadList: List[Tuple[Position, Chapter]] = []
         self.beadPointer = -1
         self.skipBeadUpdate = False
+
+    #@+others
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
-    def dump(self):
+    def dump(self) -> None:
         """Dump the beadList"""
         for i, data in enumerate(self.beadList):
             p, chapter = data
-            p = p.h if p else 'no p'
-            chapter = chapter.name if chapter else 'main'
+            p_s = p.h if p else 'no p'
+            chapter_s = chapter.name if chapter else 'main'
             mark = '**' if i == self.beadPointer else '  '
-            print(f"{mark} {i} {chapter} {p}")
+            print(f"{mark} {i} {chapter_s} {p_s}")
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
-    def goNext(self):
+    def goNext(self) -> Optional[Position]:
         """Select the next node, if possible."""
         if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
+            return p
+        return None
     #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
-    def goPrev(self):
+    def goPrev(self) -> Optional[Position]:
         """Select the previously visited node, if possible."""
         if self.beadPointer > 0:
             self.beadPointer -= 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
+            return p
+        return None
     #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
-    def select(self, p, chapter):
+    def select(self, p: Position, chapter: Any) -> None:
         """
         Update the history list when selecting p.
         Called only from self.goToNext/PrevHistory
@@ -59,7 +73,7 @@ class NodeHistory:
         # Fix bug #180: Always call self.update here.
         self.update(p, change=False)
     #@+node:ville.20090724234020.14676: *3* NodeHistory.update
-    def update(self, p, change=True):
+    def update(self, p: Position, change: bool=True) -> None:
         """
         Update the beadList while p is being selected.
         Called *only* from c.frame.tree.selectHelper.
@@ -72,7 +86,8 @@ class NodeHistory:
         if p.h.startswith('@chapter '):
             return
         # Fix bug #180: handle the change flag.
-        aList, found = [], -1
+        aList: List[Tuple[Position, Chapter]] = []
+        found = -1
         for i, data in enumerate(self.beadList):
             p2, junk_chapter = data
             if c.positionExists(p2):
@@ -87,8 +102,7 @@ class NodeHistory:
                 else:
                     aList.append(data)
         if change or found == -1:
-            data = p.copy(), cc.getSelectedChapter()
-            aList.append(data)
+            aList.append((p.copy(), cc.getSelectedChapter()))
             self.beadPointer = len(aList) - 1
         else:
             self.beadPointer = found

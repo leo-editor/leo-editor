@@ -27,7 +27,7 @@ go to the routine:
 
 and comment out everything except the last two lines. Make sure to examine
 the consequences of doing this prior to doing it. Or make a backup first.
-    
+
 After this install is completed, new updates to any of the projects
 (except tornado) can be pulled from github, getting only the most recent
 changes, additions or deletions to any of the project files. After such a
@@ -346,7 +346,7 @@ def get_args():
         ar3 = argv[2]
         #print("ar3 = " + ar3)
     except Exception:
-        pass        
+        pass
 #@+node:ekr.20181211050632.5: *3* run
 def run():
     # ar2 is the step name.

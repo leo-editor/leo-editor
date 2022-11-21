@@ -3,7 +3,7 @@
 #@+others
 #@+node:ekr.20170428084208.246: ** Declarations
 from . import wgmultilinetree as multilinetree
-from . import wgcheckbox      as checkbox
+from . import wgcheckbox as checkbox
 import curses
 import weakref
 
@@ -18,10 +18,10 @@ class MultiSelectTree(multilinetree.SelectOneTree):
         '''MultiSelectTree.set_up_handlers.'''
         super(MultiSelectTree, self).set_up_handlers()
         self.handlers.update({
-            ord("x"):    self.h_select_toggle,
+            ord("x"): self.h_select_toggle,
             curses.ascii.SP: self.h_select_toggle,
-            ord("X"):    self.h_select,
-            "^U":        self.h_select_none,
+            ord("X"): self.h_select,
+            "^U": self.h_select_none,
         })
     #@+node:ekr.20170428084208.249: *3* MultiSelectTree.h_select_none
     def h_select_none(self, input):
@@ -53,7 +53,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
             self.value.append(working_with)
         if self.return_exit:
             self.editing = False
-            self.how_exited=True
+            self.how_exited = True
     #@-others
 #@-others
 #@@language python

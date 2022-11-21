@@ -140,13 +140,13 @@ def rpmspec_rule3(colorer, s, i):
 def rpmspec_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="%attr(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rpmspec::attr",exclude_match=False,
+        delegate="rpmspec::attr", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rpmspec_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="%verify(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rpmspec::verify",exclude_match=False,
+        delegate="rpmspec::verify", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rpmspec_rule6(colorer, s, i):
@@ -164,13 +164,13 @@ def rpmspec_rule8(colorer, s, i):
 def rpmspec_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rpmspec_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="%{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rpmspec_rule11(colorer, s, i):
@@ -199,8 +199,8 @@ def rpmspec_rule16(colorer, s, i):
 # Rules dict for rpmspec_main ruleset.
 rulesDict1 = {
     "#": [rpmspec_rule0,],
-    "$": [rpmspec_rule9,rpmspec_rule11,rpmspec_rule12,rpmspec_rule13,rpmspec_rule14,rpmspec_rule15,],
-    "%": [rpmspec_rule4,rpmspec_rule5,rpmspec_rule8,rpmspec_rule10,rpmspec_rule16,],
+    "$": [rpmspec_rule9, rpmspec_rule11, rpmspec_rule12, rpmspec_rule13, rpmspec_rule14, rpmspec_rule15,],
+    "%": [rpmspec_rule4, rpmspec_rule5, rpmspec_rule8, rpmspec_rule10, rpmspec_rule16,],
     "0": [rpmspec_rule16,],
     "1": [rpmspec_rule16,],
     "2": [rpmspec_rule16,],
@@ -231,10 +231,10 @@ rulesDict1 = {
     "M": [rpmspec_rule16,],
     "N": [rpmspec_rule16,],
     "O": [rpmspec_rule16,],
-    "P": [rpmspec_rule7,rpmspec_rule16,],
+    "P": [rpmspec_rule7, rpmspec_rule16,],
     "Q": [rpmspec_rule16,],
     "R": [rpmspec_rule16,],
-    "S": [rpmspec_rule6,rpmspec_rule16,],
+    "S": [rpmspec_rule6, rpmspec_rule16,],
     "T": [rpmspec_rule16,],
     "U": [rpmspec_rule16,],
     "V": [rpmspec_rule16,],
@@ -369,4 +369,3 @@ rulesDictDict = {
 
 # Import dict for rpmspec mode.
 importDict = {}
-

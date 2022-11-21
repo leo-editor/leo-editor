@@ -104,13 +104,13 @@ keywordsDictDict = {
 def awk_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def awk_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def awk_rule2(colorer, s, i):
@@ -217,9 +217,9 @@ rulesDict1 = {
     "8": [awk_rule21,],
     "9": [awk_rule21,],
     ":": [awk_rule20,],
-    "<": [awk_rule6,awk_rule12,],
+    "<": [awk_rule6, awk_rule12,],
     "=": [awk_rule3,],
-    ">": [awk_rule5,awk_rule11,],
+    ">": [awk_rule5, awk_rule11,],
     "@": [awk_rule21,],
     "A": [awk_rule21,],
     "B": [awk_rule21,],
@@ -287,4 +287,3 @@ rulesDictDict = {
 
 # Import dict for awk mode.
 importDict = {}
-

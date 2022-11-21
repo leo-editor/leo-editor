@@ -5,8 +5,7 @@
 #     import leo
 #     leo.run()
 
-def run(*args,**keys):
-    import pdb ; pdb = pdb.set_trace  # type: ignore[assignment]
+def run(*args, **keys):  # pragma: no cover
+    # import pdb; pdb = pdb.set_trace  # type: ignore[assignment]
     import leo.core.runLeo as runLeo
-    runLeo.run(*args,**keys)
-
+    runLeo.run(*args, **keys)

@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
+#@@first
 #@@nopyflakes
 """
 General import wrapper for PyQt5 and PyQt6.
@@ -17,7 +19,7 @@ import leo.core.leoGlobals as g
 isQt6 = isQt5 = False
 #
 # Make *sure* this module always imports the following symbols.
-Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
+Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = QCloseEvent = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
 QtMultimedia = None  # Replacement for phonon.
@@ -35,7 +37,7 @@ if not g.in_bridge:
     try:
         if 0:  # Testing: Force Qt5.
             raise AttributeError
-        from leo.core.leoQt6 import *
+        from leo.core.leoQt6 import *  # type:ignore
         #
         # Restore the exec_method!
         def exec_(self, *args, **kwargs):
@@ -48,9 +50,11 @@ if not g.in_bridge:
     except Exception:
         # g.es_exception()
         try:
-            from leo.core.leoQt5 import *
+            from leo.core.leoQt5 import *  # type:ignore
             isQt5 = True
             # print('\n===== Qt5 =====')
         except Exception:
-            print('\nCan not load pyQt5 or pyQt6')
+            # print('===== No Qt =====')
+            if g.app.gui.guiName() == 'qt':
+                print('Can not load pyQt5 or pyQt6')
 #@-leo

@@ -6,8 +6,8 @@
 #@@language python
 #@@tabwidth -4
 
-from PyQt5 import QtWidgets     # Can't fail, because Leo-Babel won't run without it.
-import signal                   # Can't fail, because Leo-Babel won't run without it.
+from PyQt5 import QtWidgets  # Can't fail, because Leo-Babel won't run without it.
+import signal  # Can't fail, because Leo-Babel won't run without it.
 
 app = QtWidgets.QApplication([__file__])
 

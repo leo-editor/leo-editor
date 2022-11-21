@@ -94,49 +94,49 @@ keywordsDictDict = {
 def shtml_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<!--#", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shtml::ssi",exclude_match=False,
+        delegate="shtml::ssi", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript",exclude_match=False,
+        delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shtml::tags",exclude_match=False,
+        delegate="shtml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for shtml_main ruleset.
 rulesDict1 = {
     "&": [shtml_rule6,],
-    "<": [shtml_rule0,shtml_rule1,shtml_rule2,shtml_rule3,shtml_rule4,shtml_rule5,],
+    "<": [shtml_rule0, shtml_rule1, shtml_rule2, shtml_rule3, shtml_rule4, shtml_rule5,],
 }
 
 # Rules for shtml_tags ruleset.
@@ -144,13 +144,13 @@ rulesDict1 = {
 def shtml_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule9(colorer, s, i):
@@ -169,7 +169,7 @@ rulesDict2 = {
 def shtml_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shtml::ssi-expression",exclude_match=True,
+        delegate="shtml::ssi-expression", exclude_match=True,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shtml_rule11(colorer, s, i):
@@ -291,9 +291,9 @@ rulesDict4 = {
     "!": [shtml_rule15,],
     "$": [shtml_rule13,],
     "&": [shtml_rule20,],
-    "<": [shtml_rule16,shtml_rule17,],
+    "<": [shtml_rule16, shtml_rule17,],
     "=": [shtml_rule14,],
-    ">": [shtml_rule18,shtml_rule19,],
+    ">": [shtml_rule18, shtml_rule19,],
     "|": [shtml_rule21,],
 }
 
@@ -307,4 +307,3 @@ rulesDictDict = {
 
 # Import dict for shtml mode.
 importDict = {}
-

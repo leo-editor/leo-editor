@@ -34,7 +34,7 @@ Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 import os
 import time
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui
+from leo.core.leoQt import QtCore, QtGui
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -68,7 +68,7 @@ class Recorder:
         self.frame = 0
         self.pointer_pmap = self.make_pointer()
         self.pointer_img = self.pointer_pmap.toImage()
-        self.last_time = 0
+        self.last_time: float = 0.0
         c = g.app.commanders()[0]
         w = c.frame.body.wrapper.widget
         while w.parent():
@@ -87,13 +87,8 @@ class Recorder:
         """Grab one frame."""
         if not self.recording and not filename:
             return
-        if isQt5 or isQt6:
-            # screen = QtGui.QtGuiApplication.primaryScreen()
-            screen = g.app.gui.qtApp.primaryScreen()
-            pm = screen.grabWindow(self.winId)
-        else:
-            pm = QtGui.QPixmap.grabWindow(self.winId)
-
+        screen = g.app.gui.qtApp.primaryScreen()
+        pm = screen.grabWindow(self.winId)
         if False:
             # don't remove this code - all during dev. the above did
             # not capture the pointer in the image, which is quite

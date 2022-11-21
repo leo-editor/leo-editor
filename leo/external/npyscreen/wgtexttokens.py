@@ -9,7 +9,7 @@ from . import wgtextbox
 from . import wgtitlefield
 
 #@+node:ekr.20170428084208.368: ** class TextTokens
-class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
+class TextTokens(wgtextbox.Textfield, wgwidget.Widget):
     """This is an experiemental widget"""
 
     # NB IT DOES NOT CURRENTLY SUPPORT THE HIGHLIGHTING COLORS
@@ -20,9 +20,9 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     #@+node:ekr.20170428084208.369: *3* TextTokens.__init__
     def __init__(self, *args, **keywords):
         super(TextTokens, self).__init__(*args, **keywords)
-        self.begin_at        = 0 # which token to begin display with
+        self.begin_at = 0  # which token to begin display with
         self.maximum_string_length = self.width - 2
-        self.left_margin     = 0
+        self.left_margin = 0
         self.cursor_position = 0
 
         self.important = False
@@ -31,12 +31,12 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 
     #@+node:ekr.20170428084208.370: *3* TextTokens.find_cursor_offset_on_screen
     def find_cursor_offset_on_screen(self, position):
-        index  = self.begin_at
+        index = self.begin_at
         offset = 0
         while index < position:
             offset += len(self.decode_token(self.value[index]))
-            index  += 1
-        return offset - self.begin_at # I don't quite understand
+            index += 1
+        return offset - self.begin_at  # I don't quite understand
                                       # why the - self.begin_at is needed
                                       # but without it the cursor and screen
                                       # get out of sync
@@ -79,7 +79,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     #@+node:ekr.20170428084208.374: *3* TextTokens.update
     def update(self, clear=True, cursor=True):
         if clear: self.clear()
-        if self.begin_at    < 0: self.begin_at = 0
+        if self.begin_at < 0: self.begin_at = 0
         if self.left_margin >= self.maximum_string_length:
             raise ValueError
 
@@ -93,7 +93,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 
         while self.find_cursor_offset_on_screen(self.cursor_position) > \
                  self.find_cursor_offset_on_screen(self.begin_at) + \
-                 self.maximum_string_length - self.left_margin -1: # -1:
+                 self.maximum_string_length - self.left_margin - 1:  # -1:
             self.begin_at += 1
 
 
@@ -142,7 +142,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     def print_cursor(self):
         # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         try:
-            char_under_cur = self.decode_token(self.value[self.cursor_position]) #use the real value
+            char_under_cur = self.decode_token(self.value[self.cursor_position])  #use the real value
             char_under_cur = self.safe_string(char_under_cur)
         except IndexError:
             char_under_cur = ' '
@@ -162,7 +162,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             self.make_attributes_list(char_under_cur, ATTR_LIST),
             # I don't understand why the "- self.begin_at" is needed in the following line
             # but it is or the cursor can end up overrunning the end of the widget.
-            self.maximum_string_length+1 - self.left_margin - offset - self.begin_at,
+            self.maximum_string_length + 1 - self.left_margin - offset - self.begin_at,
             )
 
     #@+node:ekr.20170428084208.377: *3* TextTokens.h_addch
@@ -196,7 +196,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     #@+node:ekr.20170428084208.379: *3* TextTokens.calculate_area_needed
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
-        return 1,0
+        return 1, 0
 
 
 

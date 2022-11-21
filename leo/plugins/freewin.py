@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tom.20210613135525.1: * @file ../plugins/freewin.py
+#@@language python
 r"""
 #@+<< docstring >>
 #@+node:tom.20210603022210.1: ** << docstring >>
@@ -11,8 +12,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Version: 1.71
-:Date: 13 Oct 2021
+:Version: 2.0
+:Date: 6 Apr 2022
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -34,16 +35,25 @@ selected again.
 
 A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and
-will only display that node.  It will remain synchronized even if the node has been moved to a new position in its outline.
+will only display that node.  It will remain synchronized even if
+the node has been moved to a new position in its outline.
 
-.. Note:: A Freewin window will close if the underlying node is removed. This will not change the body of the underlying node.
+.. Note:: A Freewin window will close if the underlying node is removed.
+          This will not change the body of the underlying node.
 
 #@+node:tom.20210625220923.1: *3* Navigating
 Navigating
 ~~~~~~~~~~~
 
 #@@nocolor
-A Freewin window only ever displays the content of the node it ws opened on.  However, the selected node in the outline in the host can be changed, which will cause the host to navigate to the new selection.  This navigation can be done when a line in the visible text contains a `gnx` - a node identifier.  If the cursor is placed on a line with a gnx, or if that line is selected, and then <CONTROL-F9> is pressed, the host outline will navigate to the node having that gnx.
+
+A Freewin window only ever displays the content of the node it ws opened
+on. However, the selected node in the outline in the host can be changed,
+which will cause the host to navigate to the new selection. This navigation
+can be done when a line in the visible text contains a `gnx` - a node
+identifier. If the cursor is placed on a line with a gnx, or if that line
+is selected, and then <CONTROL-F9> is pressed, the host outline will
+navigate to the node having that gnx.
 
 A gnx looks like this::
 
@@ -53,11 +63,13 @@ A line with a gnx might look like this::
 
     :event: tom.20210623002747.1 `John DeBoer Opens General Store`_
 
-This capability is always available in the editor pane.  It can be available in the rendering pane (see below) if the setting::
+This capability is always available in the editor pane. It can be available
+in the rendering pane (see below) if the setting::
 
     @string fw-render-pane = nav-view
 
-is set in the @settings tree. The setting can be in the @settings tree of an outline or in myLeoSettings.leo.
+is set in the @settings tree. The setting can be in the @settings tree of
+an outline or in myLeoSettings.leo.
 #@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
 Rendering with Restructured Text
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,11 +87,25 @@ link will be underlined even though it will not be active.
 
 Two types of rendering views are available, and can be chosen by a setting in the @settings tree.
 
-1. A well-rendered view with all the features of Restructured Text rendered in an appealing way (depending on the stylesheet used).  This view can be zoomed in or out using the standard browser keys: CTRL-+ and CTRL-- (Currently this feature does not work with Qt6).  A light or dark themed stylesheet is selected based on the dark or light character of your Leo theme.  You can supply your own stylesheet to use instead of the built-in ones.
+1. A well-rendered view with all the features of Restructured Text rendered
+   in an appealing way (depending on the stylesheet used). This view can be
+   zoomed in or out using the standard browser keys: CTRL-+ and CTRL--
+   (Currently this feature does not work with Qt6). A light or dark themed
+   stylesheet is selected based on the dark or light character of your Leo
+   theme. You can supply your own stylesheet to use instead of the built-in
+   ones.
 
-2. A less fully-rendered view that has the ability to cause the host outline to navigate to a node with a selected gnx - see the section on `Navigating` above.  Because of limitations of the Qt widget used for this view, the size cannot be zoomed and some visual features of the rendered RsT can be less refined.  The stylesheets for this view cannot be changed.  Automatic switching between light and dark themes is still done.
+2. A less fully-rendered view that has the ability to cause the host
+   outline to navigate to a node with a selected gnx - see the section on
+   `Navigating` above. Because of limitations of the Qt widget used for
+   this view, the size cannot be zoomed and some visual features of the
+   rendered RsT can be less refined. The stylesheets for this view cannot
+   be changed. Automatic switching between light and dark themes is still
+   done.
 
-View 1 is the default view, except when using PyQt6, which does not currently support its features.  To use View 2 instead, add the following setting to the setting tree of an outline or to myLeoSettings.leo:
+View 1 is the default view, except when using PyQt6, which does not
+currently support its features. To use View 2 instead, add the following
+setting to the setting tree of an outline or to myLeoSettings.leo:
 
     @string fw-render-pane = nav-view
 
@@ -98,7 +124,8 @@ with limitations discussed above discussed above.
 Commands
 ~~~~~~~~~
 
-Freewin has one minibuffer command: ``z-open-freewin``.  This opens a Freewin window linked to the currently selected node.
+Freewin has one minibuffer command: ``z-open-freewin``. This opens a
+Freewin window linked to the currently selected node.
 #@+node:tom.20210712005441.1: *3* Settings
 Settings
 ~~~~~~~~~
@@ -107,7 +134,9 @@ Freewin has two settings:
 
 1. ``@string fw-render-pane = nav-view``
 
-If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can.
+If present with this value, the rendered view will allow the <CNTL>-F7/F9
+keys to work as they do in the Editor view. The rendered view will not be
+able to display all the features that a full rendered view can.
 
 2. ``@bool fw-copy-html = False``
 
@@ -120,7 +149,9 @@ The appearance of the editing and rendering view is determined
 by stylesheets. Simple default stylesheets are built into the
 plugin for the editing view.
 
-For styling the Restructured Text rendering view (When the default "View 1" is in use) and for customized editing view stylesheets, the plugin looks in the user's `.leo/css directory`.
+For styling the Restructured Text rendering view (When the default "View 1"
+is in use) and for customized editing view stylesheets, the plugin looks in
+the user's `.leo/css directory`.
 
 The plugin attempts to determine whether the Leo theme in use
 is a dark theme or not.  If it is, a dark-themed stylesheet
@@ -209,12 +240,21 @@ Leo themes.
 
 #@-<< docstring >>
 """
-# This file hangs pylint.
 #@+<< imports >>
 #@+node:tom.20210527153415.1: ** << imports >>
+#@+<< typing imports >>
+#@+node:tom.20220919102037.1: *3* << typing imports >>
+from typing import TYPE_CHECKING, Dict, Any, Tuple
+#@-<< typing imports >>
+
 from os.path import exists, join as osp_join
 import re
 
+from leo.core import leoColorizer
+from leo.plugins import qt_text
+
+# pylint: disable=ungrouped-imports
+#pylint: disable = c-extension-no-member
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
@@ -241,15 +281,21 @@ if not qt_imports_ok:
 #@+<<import  QWebView>>
 #@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
-try:
-    from leo.core.leoQt import QtWebKitWidgets
-    QWebView = QtWebKitWidgets.QWebView
-except ImportError:
-    if not g.unitTesting:
-        print("Freewin: Can't import QtWebKitWidgets")
-except AttributeError:
-    if not g.unitTesting:
-        print("Freewin: limited RsT rendering in effect")
+# Not imported above because we might have PyQt without QWebEngineWidgets
+from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
+if has_WebEngineWidgets:
+    from leo.core.leoQt import QtWebEngineWidgets  # pylint: disable=wrong-import-position
+    QWebView = QtWebEngineWidgets.QWebEngineView
+else:
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        if not g.unitTesting:
+            print("Freewin: Can't import QtWebKitWidgets")
+    except AttributeError:
+        if not g.unitTesting:
+            print("Freewin: limited RsT rendering in effect")
 #@-<<import  QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -287,95 +333,109 @@ QStackedWidget = QtWidgets.QStackedWidget
 QTextEdit = QtWidgets.QTextEdit
 QVBoxLayout = QtWidgets.QVBoxLayout
 QWidget = QtWidgets.QWidget
+QColor = QtGui.QColor
+
+WrapMode = QtGui.QTextOption.WrapMode
 
 #@-<< imports >>
+#@+<< annotations >>
+#@+node:tom.20220919101426.1: ** << annotations >>
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoQt import QtWidgets
+    from leo.core.leoQt import QtGui
+    from leo.plugins.qt_text import LeoQTextBrowser
+else:
+    Cmdr = Any
+    LeoKeyEvent = Any
+    LeoQTextBrowser = Any
+#@-<< annotations >>
 #@+<< declarations >>
 #@+node:tom.20210527153422.1: ** << declarations >>
 # pylint: disable=invalid-name
 # Dimensions and placing of editor windows
-W = 570
-H = 350
-X = 1200
-Y = 100
-DELTA_Y = 35
+W:int = 570
+H:int = 350
+X:int = 1200
+Y:int = 100
+DELTA_Y:int = 35
 
 clipboard = QApplication.clipboard()
 
-FG_COLOR_LIGHT = '#6B5B53'
-BG_COLOR_LIGHT = '#ededed'
-BG_COLOR_DARK = '#202020'
-FG_COLOR_DARK = '#cbdedc'
-FONT_FAMILY = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
+FG_COLOR_LIGHT:str = '#6B5B53'
+BG_COLOR_LIGHT:str = '#ededed'
+BG_COLOR_DARK:str = '#202020'
+FG_COLOR_DARK:str = '#cbdedc'
+FONT_FAMILY:str = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
-EDITOR_FONT_SIZE = '11pt'
-EDITOR_STYLESHEET_LIGHT_FILE = 'freewin_editor_light.css'
-EDITOR_STYLESHEET_DARK_FILE = 'freewin_editor_dark.css'
-ENCODING = 'utf-8'
-BROWSER = 1
-EDITOR = 0
-BROWSER_VIEW = 'browser_view'
-NAV_VIEW = 'nav-view'
+EDITOR_FONT_SIZE:str = '11pt'
+EDITOR_STYLESHEET_LIGHT_FILE:str = 'freewin_editor_light.css'
+EDITOR_STYLESHEET_DARK_FILE:str = 'freewin_editor_dark.css'
+ENCODING:str = 'utf-8'
+BROWSER:int = 1
+EDITOR:int = 0
+BROWSER_VIEW:str = 'browser_view'
+NAV_VIEW:str = 'nav-view'
 
-RST_NO_WARNINGS = 5
-RST_CUSTOM_STYLESHEET_LIGHT_FILE = 'freewin_rst_light.css'
-RST_CUSTOM_STYLESHEET_DARK_FILE = 'freewin_rst_dark.css'
+RST_NO_WARNINGS:int = 5
+RST_CUSTOM_STYLESHEET_LIGHT_FILE:str = 'freewin_rst_light.css'
+RST_CUSTOM_STYLESHEET_DARK_FILE:str = 'freewin_rst_dark.css'
 
-instances = {}
+instances: Dict[str, 'ZEditorWin' ] = {}
 
 #@+others
 #@+node:tom.20210709130401.1: *3* Fonts and Text
-ENCODING = 'utf-8'
+ZOOM_FACTOR:float = 1.1
 
-ZOOM_FACTOR = 1.1
+F7_KEY:int = 0x01000036  # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
+F9_KEY:int = 0x01000038
+KEY_S:int = 0x53
 
-F7_KEY = 0x01000036  # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
-F9_KEY = 0x01000038
-KEY_S = 0x53
+GNXre:str = r'^(.+\.\d+\.\d+)'  # For gnx at start of line
+GNX1re:str = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
 
-GNXre = r'^(.+\.\d+\.\d+)'  # For gnx at start of line
-GNX1re = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
+GNX:re.Pattern = re.compile(GNXre)
+GNX1:re.Pattern = re.compile(GNX1re)
 
-GNX = re.compile(GNXre)
-GNX1 = re.compile(GNX1re)
+fs:str = EDITOR_FONT_SIZE.split('pt', 1)[0]
+qf:QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
+qfont:QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
+FM:QtGui.QFontMetrics = QFontMetrics(qf)
 
-fs = EDITOR_FONT_SIZE.split('pt', 1)[0]
-qf = QFont(FONT_FAMILY[0], int(fs))
-qfont = QFontInfo(qf)  # Uses actual font if different
-FM = QFontMetrics(qf)
-
-TABWIDTH = 36  # Best guess but may not alays be right.
-TAB2SPACES = 4  # Tab replacement when writing back to host node
+TABWIDTH:int = 36  # Best guess but may not alays be right.
+TAB2SPACES:int = 4  # Tab replacement when writing back to host node
 #@-others
 
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
 
-EDITOR_STYLESHEET_LIGHT = f'''QTextEdit {{
+EDITOR_STYLESHEET_LIGHT:str = f'''QTextEdit {{
     color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-EDITOR_STYLESHEET_DARK = f'''QTextEdit {{
+EDITOR_STYLESHEET_DARK:str = f'''QTextEdit {{
     color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-RENDER_BTN_STYLESHEET_LIGHT = f'''color: {FG_COLOR_LIGHT};
+RENDER_BTN_STYLESHEET_LIGHT:str = f'''color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
     font-size: {EDITOR_FONT_SIZE};'''
 
-RENDER_BTN_STYLESHEET_DARK = f'''color: {FG_COLOR_DARK};
+RENDER_BTN_STYLESHEET_DARK:str = f'''color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-size: {EDITOR_FONT_SIZE};'''
 
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
-RST_STYLESHEET_DARK = '''body {
+RST_STYLESHEET_DARK:str = '''body {
   color: #cbdedc; /*#ededed;*/
   background: #202020;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
@@ -426,7 +486,7 @@ RST_STYLESHEET_DARK = '''body {
 
 '''
 #@+node:tom.20210625155534.1: *3* RsT Stylesheet Light
-RST_STYLESHEET_LIGHT = '''body {
+RST_STYLESHEET_LIGHT:str = '''body {
   color: #6B5B53;
   background: #ededed;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
@@ -493,12 +553,12 @@ RST_STYLESHEET_LIGHT = '''body {
 
 #@+others
 #@+node:ekr.20210617074439.1: ** init
-def init():
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     return True
 #@+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
-def open_z_window(event):
+def open_z_window(event: LeoKeyEvent) -> None:
     """Open or show editing window for the selected node."""
     if g.app.gui.guiName() != 'qt':
         return
@@ -514,7 +574,7 @@ def open_z_window(event):
     zwin.show()
     zwin.activateWindow()
 #@+node:tom.20210625145842.1: ** getGnx
-def getGnx(line):
+def getGnx(line: str) -> str:
     """Find and return a gnx in a line of text, or None.
 
     The gnx may be enclosed in parens or brackets.
@@ -524,7 +584,7 @@ def getGnx(line):
     target = matched[1] if matched else None
     return target
 #@+node:tom.20210625145905.1: ** getLine
-def getLine(text_edit):
+def getLine(text_edit: QtWidgets.QTextEdit) -> str:
     """Return line of text at cursor position.
 
     Cursor may not be visible, but its location
@@ -547,7 +607,7 @@ def getLine(text_edit):
     line = before.split('\n')[-1] + after.split('\n')[0]
     return line
 #@+node:tom.20210625161018.1: ** gotoHostGnx
-def gotoHostGnx(c, target):
+def gotoHostGnx(c: Cmdr, target:str) -> bool:
     """Change host node selection to target gnx.
 
     This will not change the node displayed by the
@@ -568,16 +628,58 @@ def gotoHostGnx(c, target):
             return True
     return False
 #@+node:tom.20210628002321.1: ** copy2clip
-def copy2clip(text):
+def copy2clip(text: str) -> None:
     #cb = QApplication.clipboard()
     clipboard.setText(text)
+#@+node:tom.20220329145952.1: ** change_css_prop
+def change_css_prop(css: str, prop: str, newval:str) -> str:
+    """Change the value of a named property in a css stylesheet fragment.
+
+    If there is more than one instance of prop, only
+    the first one will be changed.
+
+    The previous property value is replace with the new.
+    """
+    if prop not in css:
+        return None
+    start = css.find(prop)
+    colon = css[start:].find(':')
+    frag = css[start + colon + 1 :]
+    end = frag.find(';')
+    val = frag[:end].strip()
+
+    return css.replace(val, newval, 1)
+
+#@+node:tom.20220329150105.1: ** get_body_colors
+# Get current colors from the body editor widget
+def get_body_colors(c: Cmdr) -> Tuple[str, str]:
+    wrapper = c.frame.body.wrapper
+    w:LeoQTextBrowser = wrapper.widget
+
+    pallete:QtGui.QPalette = w.viewport().palette()
+    fg_hex:int = pallete.text().color().rgb()
+    bg_hex:int = pallete.window().color().rgb()
+    fg:str = f'#{fg_hex:x}'
+    bg:str = f'#{bg_hex:x}'
+
+    return fg, bg
+#@+node:tom.20220329231604.1: ** is_body_dark
+def is_body_dark(c: Cmdr) -> bool:
+    """Return True if host's body appears to have a dark theme."""
+    fg, bg = get_body_colors(c)
+    # hsv =  hue, saturation, value
+    # We assess the background to be dark if its value is < 90
+    bg_color = QColor(bg)
+    h, s, vbg, a = bg_color.getHsv()
+    return vbg < 90
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
-    def __init__(self, c, title='Z-editor'):
+    def __init__(self, c: Cmdr, title:str ='Z-editor') -> None:
         # pylint: disable=too-many-locals
+        # pylint: disable = too-many-statements
         global TAB2SPACES
         super().__init__()
         QWidget().__init__()
@@ -606,6 +708,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor = QTextEdit()
         browser = self.browser = self.render_widget()
 
+        wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
+        c.k.completeAllBindingsForWidget(wrapper)
+
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
         self.editor_csspath = ''
@@ -613,9 +718,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         home = g.app.loadManager.computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
-        dict_ = g.app.loadManager.globalSettingsDict
+        #dict_ = g.app.loadManager.globalSettingsDict
 
-        is_dark = dict_.get_setting('color-theme-is-dark')
+        #is_dark = dict_.get_setting('color-theme-is-dark')
+        is_dark = is_body_dark(self.c)
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
@@ -654,7 +760,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
-        self.editor.setStyleSheet(self.editor_style)
+        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)  # pylint: disable=no-member
+
+        # Adjust editor stylesheet color to match body fg, bg
+        fg, bg = get_body_colors(self.c)
+        css = change_css_prop(self.editor_style, 'color', fg)
+        css = change_css_prop(css, 'background', bg)
+        self.editor_style = css
+        self.editor.setStyleSheet(css)
+
+        colorizer = leoColorizer.make_colorizer(c, self.editor)
+        colorizer.highlighter.setDocument(self.doc)
 
         # Try to get tab width from the host's body
         # Used when writing edits back to host
@@ -737,12 +853,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.render_pane_type = c.config.getString('fw-render-pane') or ''
-        self.copy_html = c.config.getBool('fw-copy-html', default=False)
+        self.render_pane_type = c.config.getString('fw-render-pane') or ''  # type: ignore [attr-defined]
+        self.copy_html = c.config.getBool('fw-copy-html', default=False)  # type: ignore [attr-defined]
 
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
-    def update(self, tag, keywords):
+    def update(self, tag: str, keywords: Any) -> None:
         """Update host node if this card's text has changed.
 
            Otherwise if the host node's text has changed, update
@@ -757,7 +873,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # Make sure our host node still exists
         if not self.c.p.v == self.v:
             # Find our node
-            found_us = False
+            found_us: bool = False
             for p1 in self.c.all_unique_positions():
                 if p1.v == self.v:
                     self.p = p1
@@ -793,7 +909,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.doc.setModified(False)
 
     #@+node:tom.20210703173219.1: *3* teardown
-    def teardown(self, tag=''):
+    def teardown(self, tag: str ='') -> None:
         # Close window and delete it when host node is deleted.
         if self.closing:
             return
@@ -810,7 +926,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         del instances[id_]
         self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:  # pylint:disable=method-hidden
         """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all
@@ -820,7 +936,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
         pane.
         """
         w = self.browser if self.render_kind == BROWSER else self.editor
-
         modifiers = event.modifiers()
         bare_key = event.text()
         keyval = event.key()
@@ -856,7 +971,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             g.registerHandler(hook, handler)
 
     #@+node:tom.20210529000221.1: *3* set_and_render
-    def set_and_render(self, switch=True):
+    def set_and_render(self, switch: bool = True):
         """Switch between the editor and RsT viewer, and render text."""
         self.switching = True
         if not got_docutils:
@@ -888,12 +1003,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def render_rst(self, text):
         """Render text of the editor widget as HTML and display it."""
         if not got_docutils:
-            return("<h1>Can't find Docutils to Render This Node</h1>")
+            return "<h1>Can't find Docutils to Render This Node</h1>"
 
         # Call docutils to get the html rendering.
         _html = ''
         args = {'output_encoding': 'unicode',  # return a string, not a byte array
-                'report_level' : RST_NO_WARNINGS,
+                'report_level': RST_NO_WARNINGS,
                }
 
         if self.rst_stylesheet:

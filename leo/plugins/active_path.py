@@ -108,13 +108,12 @@ import re
 import shutil
 import time  # for recursion bailout
 from leo.core import leoGlobals as g
-from leo.core import leoPlugins
-    # uses leoPlugins.TryNext
+from leo.core import leoPlugins  # uses leoPlugins.TryNext
 
 #@-<< imports >>
 testing = False
 #@+others
-#@+node:tbrown.20091128094521.15048: ** init
+#@+node:tbrown.20091128094521.15048: ** init (active_path.py)
 def init():
     """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', attachToCommander)
@@ -192,8 +191,8 @@ def isFileNode(p):
         not p.h.strip().startswith('@') and not p.hasChildren() and
         not isDirNode(p) and isDirNode(p.parent()) and
         (not p.b.strip() or
+        # p.b.startswith(c.__active_path['DS_SENTINEL']
         p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
-            # p.b.startswith(c.__active_path['DS_SENTINEL']
       ))
 #@+node:jlunz.20150611151435.1: ** inAny
 def inAny(item, group, regEx=False):

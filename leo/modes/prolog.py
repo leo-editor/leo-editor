@@ -136,25 +136,25 @@ def prolog_rule0(colorer, s, i):
 def prolog_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def prolog_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def prolog_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def prolog_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="prolog::list",exclude_match=False,
+        delegate="prolog::list", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def prolog_rule5(colorer, s, i):
@@ -324,12 +324,12 @@ rulesDict1 = {
     "'": [prolog_rule2,],
     "(": [prolog_rule40,],
     ")": [prolog_rule41,],
-    "*": [prolog_rule33,prolog_rule38,],
+    "*": [prolog_rule33, prolog_rule38,],
     "+": [prolog_rule24,],
     ",": [prolog_rule10,],
-    "-": [prolog_rule5,prolog_rule9,prolog_rule25,],
+    "-": [prolog_rule5, prolog_rule9, prolog_rule25,],
     ".": [prolog_rule39,],
-    "/": [prolog_rule1,prolog_rule26,prolog_rule28,prolog_rule36,],
+    "/": [prolog_rule1, prolog_rule26, prolog_rule28, prolog_rule36,],
     "0": [prolog_rule44,],
     "1": [prolog_rule44,],
     "2": [prolog_rule44,],
@@ -342,11 +342,11 @@ rulesDict1 = {
     "9": [prolog_rule44,],
     ":": [prolog_rule6,],
     ";": [prolog_rule8,],
-    "<": [prolog_rule29,prolog_rule30,],
-    "=": [prolog_rule12,prolog_rule19,prolog_rule20,prolog_rule21,prolog_rule22,prolog_rule37,],
-    ">": [prolog_rule23,prolog_rule31,prolog_rule32,],
+    "<": [prolog_rule29, prolog_rule30,],
+    "=": [prolog_rule12, prolog_rule19, prolog_rule20, prolog_rule21, prolog_rule22, prolog_rule37,],
+    ">": [prolog_rule23, prolog_rule31, prolog_rule32,],
     "?": [prolog_rule7,],
-    "@": [prolog_rule15,prolog_rule16,prolog_rule17,prolog_rule18,prolog_rule44,],
+    "@": [prolog_rule15, prolog_rule16, prolog_rule17, prolog_rule18, prolog_rule44,],
     "A": [prolog_rule44,],
     "B": [prolog_rule44,],
     "C": [prolog_rule44,],
@@ -374,7 +374,7 @@ rulesDict1 = {
     "Y": [prolog_rule44,],
     "Z": [prolog_rule44,],
     "[": [prolog_rule4,],
-    "\\": [prolog_rule11,prolog_rule13,prolog_rule14,prolog_rule27,prolog_rule35,],
+    "\\": [prolog_rule11, prolog_rule13, prolog_rule14, prolog_rule27, prolog_rule35,],
     "^": [prolog_rule34,],
     "_": [prolog_rule44,],
     "a": [prolog_rule44,],
@@ -412,7 +412,7 @@ rulesDict1 = {
 def prolog_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="prolog::list",exclude_match=False,
+        delegate="prolog::list", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 # Rules dict for prolog_list ruleset.
@@ -428,4 +428,3 @@ rulesDictDict = {
 
 # Import dict for prolog mode.
 importDict = {}
-

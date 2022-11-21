@@ -61,7 +61,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
     def addForm(self, f_id, FormClass, *args, **keywords):
         """Create a form of the given class. f_id should be a string which will uniquely identify the form. *args will be passed to the Form constructor.
         Forms created in this way are handled entirely by the NPSAppManaged class."""
-        fm = FormClass( parentApp=self, *args, **keywords)
+        fm = FormClass(parentApp=self, *args, **keywords)
         self.registerForm(f_id, fm)
         return weakref.proxy(fm)
 
@@ -101,12 +101,12 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         self._THISFORM.editing = False
         try:
             self._THISFORM._widgets__[self._THISFORM.editw].editing = False
-        except (AttributeError, IndexError):
+        except(AttributeError, IndexError):
             pass
         # Following is necessary to stop two keypresses being needed for titlefields
         try:
             self._THISFORM._widgets__[self._THISFORM.editw].entry_widget.editing = False
-        except (AttributeError, IndexError):
+        except(AttributeError, IndexError):
             pass
 
     #@+node:ekr.20170428084207.41: *3* removeLastFormFromHistory
@@ -123,10 +123,10 @@ class NPSAppManaged(apNPSApplication.NPSApp):
     def setNextFormPrevious(self, backup=STARTING_FORM):
         try:
             if self._THISFORM.FORM_NAME == self._FORM_VISIT_LIST[-1]:
-                self._FORM_VISIT_LIST.pop() # Remove the current form. if it is at the end of the list
+                self._FORM_VISIT_LIST.pop()  # Remove the current form. if it is at the end of the list
             if self._THISFORM.FORM_NAME == self.NEXT_ACTIVE_FORM:
                 #take no action if it looks as if someone has already set the next form.
-                self.setNextForm(self._FORM_VISIT_LIST.pop()) # Switch to the previous form if one exists
+                self.setNextForm(self._FORM_VISIT_LIST.pop())  # Switch to the previous form if one exists
         except IndexError:
             self.setNextForm(backup)
 
@@ -172,7 +172,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
             self.LAST_ACTIVE_FORM_NAME = self.NEXT_ACTIVE_FORM
             try:
                 Fm, a, k = self._Forms[self.NEXT_ACTIVE_FORM]
-                self._THISFORM = Fm( parentApp = self, *a, **k )
+                self._THISFORM = Fm(parentApp=self, *a, **k)
             except TypeError:
                 self._THISFORM = self._Forms[self.NEXT_ACTIVE_FORM]
             self._THISFORM.FORM_NAME = self.NEXT_ACTIVE_FORM

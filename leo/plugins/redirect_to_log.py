@@ -10,12 +10,12 @@ from leo.core import leoGlobals as g
 def init():
     """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting  # Not for unit tests.
-    if ok: # Register the handlers...
+    if ok:  # Register the handlers...
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
     return ok
 
-def onStart (tag,keywords):
-    g.redirectStdout() # Redirect stdout
-    g.redirectStderr() # Redirect stderr
+def onStart(tag, keywords):
+    g.redirectStdout()  # Redirect stdout
+    g.redirectStderr()  # Redirect stderr
 #@-leo

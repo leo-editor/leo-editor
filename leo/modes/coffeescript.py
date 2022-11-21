@@ -134,7 +134,7 @@ keywordsDictDict = {
 def coffeescript_rule0(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment2", begin="###(?!#)", end="#{3,}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule1(colorer, s, i):
@@ -145,43 +145,43 @@ def coffeescript_rule1(colorer, s, i):
 def coffeescript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coffeescript::doublequoteliteral",exclude_match=False,
+        delegate="coffeescript::doublequoteliteral", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coffeescript::doublequoteliteral",exclude_match=False,
+        delegate="coffeescript::doublequoteliteral", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main",exclude_match=False,
+        delegate="javascript::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="///", end="///",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coffeescript::hereregexp",exclude_match=False,
+        delegate="coffeescript::hereregexp", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule8(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="/(?![\\s=*])", end="/[igmy]{0,4}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def coffeescript_rule9(colorer, s, i):
@@ -298,18 +298,18 @@ def coffeescript_rule36(colorer, s, i):
 # Rules dict for coffeescript_main ruleset.
 rulesDict1 = {
     "!": [coffeescript_rule28,],
-    "\"": [coffeescript_rule2,coffeescript_rule4,],
-    "#": [coffeescript_rule0,coffeescript_rule1,],
+    "\"": [coffeescript_rule2, coffeescript_rule4,],
+    "#": [coffeescript_rule0, coffeescript_rule1,],
     "%": [coffeescript_rule23,],
     "&": [coffeescript_rule19,],
-    "'": [coffeescript_rule3,coffeescript_rule5,],
-    "(": [coffeescript_rule9,coffeescript_rule34,],
+    "'": [coffeescript_rule3, coffeescript_rule5,],
+    "(": [coffeescript_rule9, coffeescript_rule34,],
     ")": [coffeescript_rule10,],
     "*": [coffeescript_rule18,],
     "+": [coffeescript_rule16,],
     "-": [coffeescript_rule22,],
     ".": [coffeescript_rule15,],
-    "/": [coffeescript_rule7,coffeescript_rule8,coffeescript_rule17,],
+    "/": [coffeescript_rule7, coffeescript_rule8, coffeescript_rule17,],
     "0": [coffeescript_rule36,],
     "1": [coffeescript_rule36,],
     "2": [coffeescript_rule36,],
@@ -326,7 +326,7 @@ rulesDict1 = {
     "=": [coffeescript_rule24,],
     ">": [coffeescript_rule26,],
     "?": [coffeescript_rule32,],
-    "@": [coffeescript_rule33,coffeescript_rule36,],
+    "@": [coffeescript_rule33, coffeescript_rule36,],
     "A": [coffeescript_rule36,],
     "B": [coffeescript_rule36,],
     "C": [coffeescript_rule36,],
@@ -363,7 +363,7 @@ rulesDict1 = {
     "c": [coffeescript_rule36,],
     "d": [coffeescript_rule36,],
     "e": [coffeescript_rule36,],
-    "f": [coffeescript_rule35,coffeescript_rule36,],
+    "f": [coffeescript_rule35, coffeescript_rule36,],
     "g": [coffeescript_rule36,],
     "h": [coffeescript_rule36,],
     "i": [coffeescript_rule36,],
@@ -395,7 +395,7 @@ rulesDict1 = {
 def coffeescript_rule37(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="#{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coffeescript::main",exclude_match=False,
+        delegate="coffeescript::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for coffeescript_doublequoteliteral ruleset.
@@ -408,7 +408,7 @@ rulesDict2 = {
 def coffeescript_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="#{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coffeescript::main",exclude_match=False,
+        delegate="coffeescript::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coffeescript_rule39(colorer, s, i):
@@ -418,7 +418,7 @@ def coffeescript_rule39(colorer, s, i):
 
 # Rules dict for coffeescript_hereregexp ruleset.
 rulesDict3 = {
-    "#": [coffeescript_rule38,coffeescript_rule39,],
+    "#": [coffeescript_rule38, coffeescript_rule39,],
 }
 
 # x.rulesDictDict for coffeescript mode.
@@ -430,4 +430,3 @@ rulesDictDict = {
 
 # Import dict for coffeescript mode.
 importDict = {}
-

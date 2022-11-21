@@ -87,10 +87,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, len(before)
         func = c.convertAllBlanks
         self.runTest(before, after, i, j, func)
@@ -101,10 +101,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         after = textwrap.dedent("""\
             @tabwidth -4
 
@@ -112,7 +112,7 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 45
         func = c.convertAllTabs
         self.runTest(before, after, i, j, func)
@@ -131,10 +131,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 51
         func = c.convertBlanks
         self.runTest(before, after, i, j, func)
@@ -145,10 +145,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         after = textwrap.dedent("""\
             @tabwidth -4
 
@@ -156,7 +156,7 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 45
         func = c.convertTabs
         self.runTest(before, after, i, j, func)
@@ -262,7 +262,7 @@ class TestUndo(LeoUnitTest):
         c.selectPosition(node1)
         c.editHeadline()
         w = c.frame.tree.edit_widget(node1)
-        w.insert('1.0', 'changed - ')
+        w.insert(0, 'changed - ')
         c.endEditing()
         self.assertEqual([p.h for p in p.subtree()], ['changed - node 1', 'node 2', 'node 3'])
         # Move the selection and undo the headline change

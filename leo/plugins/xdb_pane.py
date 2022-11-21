@@ -4,15 +4,19 @@
 Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 """
+#@+<< imports: xdb_pane.py >>
+#@+node:ekr.20220424085736.1: ** << imports: xdb_pane.py >>
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy, WrapMode
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
+#@-<< imports: xdb_pane.py >>
+
 # Globals.
-controllers = {}
+controllers: Dict[str, Any] = {}
+
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
@@ -23,19 +27,19 @@ def init():
         if name not in ('curses', 'nullGui'):
             print('xdb_pane.py plugin not loading because gui is not Qt')
         return False
-    g.registerHandler('after-create-leo-frame',onCreate)
-        # Can't use before-create-leo-frame because Qt dock's not ready
+    # Can't use before-create-leo-frame because Qt dock's not ready
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20181004143535.5: *3* onCreate (xdb_pane.py)
-def onCreate (tag,key):
+def onCreate(tag, key):
     c = key.get('c')
     c.xpd_pane = w = XdbPane(c)
-    c.frame.log.createTab('Debug',widget=w)
+    c.frame.log.createTab('Debug', widget=w)
 #@+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
 
-    class XdbPane(QtWidgets.QWidget):
+    class XdbPane(QtWidgets.QWidget):  # type:ignore
         """Create the contents of the Debug pane."""
 
         def __init__(self, c):

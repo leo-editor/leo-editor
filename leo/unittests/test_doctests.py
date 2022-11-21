@@ -18,7 +18,7 @@ def factorial(n):
     # Modified from https://docs.python.org/3/library/doctest.html
     # Must import factorial. See: stackoverflow.com/questions/65066002
     """Return the factorial of n, an exact integer >= 0.
-    
+
     >>> from leo.unittests.test_doctests import factorial
 
     >>> [factorial(n) for n in range(6)]
@@ -44,14 +44,14 @@ def factorial(n):
         ...
     OverflowError: n too large
 
-    """ # Blank line above is required.
+    """  # Blank line above is required.
 
     import math
     if not n >= 0:
         raise ValueError("n must be >= 0")
     if math.floor(n) != n:
         raise ValueError("n must be exact integer")
-    if n+1 == n:  # catch a value like 1e300
+    if n + 1 == n:  # catch a value like 1e300
         raise OverflowError("n too large")
     result = 1
     factor = 2
@@ -77,11 +77,11 @@ class TestDocTests(unittest.TestCase):  # No need to be a subclass of leoTest2.L
                 # Exclude two problematic files.
                 if 'dtest.py' in f or 'javascript.py' in f:
                     continue
-                fails, count = doctest.testfile(f)
+                fails, count = doctest.testfile(f, False)
                 n += count
                 if count:
                     files_list.append(f)
-                if fails:
+                if fails:  # pragma: no cover
                     fails_list.append(f)
                     print(f"{fails} failures in {g.shortFileName(f)}")
             self.assertEqual(fails_list, [])

@@ -297,13 +297,13 @@ keywordsDictDict = {
 def bbj_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def bbj_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def bbj_rule2(colorer, s, i):
@@ -386,7 +386,7 @@ rulesDict1 = {
     "*": [bbj_rule10,],
     "+": [bbj_rule7,],
     "-": [bbj_rule8,],
-    "/": [bbj_rule0,bbj_rule2,bbj_rule9,],
+    "/": [bbj_rule0, bbj_rule2, bbj_rule9,],
     "0": [bbj_rule19,],
     "1": [bbj_rule19,],
     "2": [bbj_rule19,],
@@ -398,9 +398,9 @@ rulesDict1 = {
     "8": [bbj_rule19,],
     "9": [bbj_rule19,],
     ":": [bbj_rule17,],
-    "<": [bbj_rule6,bbj_rule12,bbj_rule13,],
+    "<": [bbj_rule6, bbj_rule12, bbj_rule13,],
     "=": [bbj_rule4,],
-    ">": [bbj_rule5,bbj_rule11,],
+    ">": [bbj_rule5, bbj_rule11,],
     "@": [bbj_rule19,],
     "A": [bbj_rule19,],
     "B": [bbj_rule19,],
@@ -419,7 +419,7 @@ rulesDict1 = {
     "O": [bbj_rule19,],
     "P": [bbj_rule19,],
     "Q": [bbj_rule19,],
-    "R": [bbj_rule3,bbj_rule19,],
+    "R": [bbj_rule3, bbj_rule19,],
     "S": [bbj_rule19,],
     "T": [bbj_rule19,],
     "U": [bbj_rule19,],
@@ -430,7 +430,7 @@ rulesDict1 = {
     "Z": [bbj_rule19,],
     "^": [bbj_rule14,],
     "_": [bbj_rule19,],
-    "a": [bbj_rule15,bbj_rule19,],
+    "a": [bbj_rule15, bbj_rule19,],
     "b": [bbj_rule19,],
     "c": [bbj_rule19,],
     "d": [bbj_rule19,],
@@ -444,7 +444,7 @@ rulesDict1 = {
     "l": [bbj_rule19,],
     "m": [bbj_rule19,],
     "n": [bbj_rule19,],
-    "o": [bbj_rule16,bbj_rule19,],
+    "o": [bbj_rule16, bbj_rule19,],
     "p": [bbj_rule19,],
     "q": [bbj_rule19,],
     "r": [bbj_rule19,],
@@ -465,4 +465,3 @@ rulesDictDict = {
 
 # Import dict for bbj mode.
 importDict = {}
-

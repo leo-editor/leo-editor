@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TL.20090225102340.32: * @file nodeActions.py
+#@+node:TL.20090225102340.32: * @file ../plugins/nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >> (nodeActions.py)
 r""" Allows the definition of double-click actions.
@@ -204,6 +204,7 @@ execute a command in the first line of the body of a double-clicked node::
 import fnmatch
 import os
 import re
+from typing import Any
 from leo.core import leoGlobals as g
 #@-<< imports >>
 
@@ -316,6 +317,7 @@ def doNodeAction(pClicked, c):
                         g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
             #Check for pattern match to clicked node's header
+            match: Any
             if useRegEx:
                 match = re.search(pattern, hClicked)
             else:
@@ -364,19 +366,20 @@ def doNodeAction(pClicked, c):
     #
     # nodeActions plugin enabled without a 'nodeActions' node
     if messageLevel >= 4:
-        g.blue("nA: The " "nodeActions" " node does not exist")
+        g.blue("nA: The nodeActions node does not exist")
     return False  #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 
     script = g.getScript(c, pScript)
+    redirect = c.config.getBool('redirect-execute-script-output-to-log_pane')
     if script:
         working_directory = os.getcwd()
         file_directory = c.frame.openDirectory
         os.chdir(file_directory)
         script += '\n'
         #Redirect output
-        if c.config.redirect_execute_script_output_to_log_pane:
+        if redirect:
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
         try:
@@ -386,18 +389,14 @@ def applyNodeAction(pScript, pClicked, c):
                 'pScript': pScript}
             # exec script in namespace
             exec(script, namespace)
-            #Unredirect output
-            if c.config.redirect_execute_script_output_to_log_pane:
-                g.restoreStderr()
-                g.restoreStdout()
         except Exception:
-            #Unredirect output
-            if c.config.redirect_execute_script_output_to_log_pane:
-                g.restoreStderr()
-                g.restoreStdout()
             g.es("exception in NodeAction plugin")
             g.es_exception(full=False, c=c)
-
+        finally:
+            #Unredirect output
+            if redirect:
+                g.restoreStderr()
+                g.restoreStdout()
         os.chdir(working_directory)
 #@-others
 #@@language python

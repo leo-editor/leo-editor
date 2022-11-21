@@ -1,31 +1,17 @@
-# coding=utf8
-
-import sys
-isPython3 = sys.version_info >= (3,0,0)
-
+# -*- coding: utf-8 -*-
+# 4/23/2022: Modified by EKR. Support only Python 3. Fix mypy complaints.
 import cgi
 import json
 import os
+import sys
 import threading
 import time
+from typing import Any
 import webbrowser
-
-if isPython3:
-    import http.server as BaseHTTPServer
-else:
-    import BaseHTTPServer
-    
-if isPython3:
-    import queue as Queue
-else:
-    import Queue
-
-if isPython3:
-    import urllib.request as urllib
-    import urllib.parse as urlparse
-else:
-    import urllib2 as urllib
-    import urlparse
+import http.server as BaseHTTPServer
+import queue as Queue
+import urllib.request as urllib
+import urllib.parse as urlparse
 
 class QueueTimeout(Queue.Queue):
     """from http://stackoverflow.com/questions/1564501/add-timeout-argument-to-pythons-queue-join
@@ -50,15 +36,16 @@ class PyGeoTag(object):
     def __init__(self, callback=None, synchronous=False):
 
         self.basedir = os.path.dirname(__file__)
-
         self.synchronous = synchronous
+
+
         if callback is not None:
-            self.callback = callback
+            self.callback = callback  # type:ignore
 
         if synchronous:
-            self.callback = self._store
+            self.callback = self._store  # type:ignore
 
-        self.server_thread = None
+        self.server_thread: threading.Thread = None
         self.running = False
         self.address = ''
         self.port = 8008
@@ -105,7 +92,7 @@ class PyGeoTag(object):
             except Queue.Empty:
                 pass
 
-        self.request_queue.put({'__msg_type':'shutdown'})
+        self.request_queue.put({'__msg_type': 'shutdown'})
         time.sleep(2)  # wait for the msg to be picked up
         self.running = False
     def open_server_page(self):
@@ -117,14 +104,14 @@ class PyGeoTag(object):
         self.data = data
     def show_position(self, data={}):
 
-        print('SHOWING',data)
+        print('SHOWING', data)
 
         data["__msg_type"] = "show_position"
 
         self.request_queue.put(data)
     def request_position(self, data={}):
 
-        print('REQUESTING',data)
+        print('REQUESTING', data)
 
         data["__msg_type"] = "request_position"
 
@@ -144,7 +131,7 @@ class PyGeoTag(object):
             try:
                 self.request_queue.join_with_timeout(2)
             except QueueTimeout.NotFinished:
-                if self.running: 
+                if self.running:
                     continue
             break
 
@@ -164,7 +151,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return
 
     def do_GET(self):
-
+        data: Any
         if self.path.startswith("/QUIT"):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
@@ -181,7 +168,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(open(
-                os.path.join(self.owner.basedir,self.staticMap[path[0]])).read().encode('utf-8'))
+                os.path.join(self.owner.basedir, self.staticMap[path[0]])).read().encode('utf-8'))
             return
 
         if self.path.startswith("/sendPos?"):
@@ -220,10 +207,9 @@ if __name__ == '__main__':
 
     f = pgt.get_position
     f({"description": "Turtles"})
-    f({"description": "Frogs", 'secret':7})
+    f({"description": "Frogs", 'secret': 7})
     f({"description": "Otters"})
 
     print("DONE")
     if pgt.synchronous:
         pgt.stop_server()
-
