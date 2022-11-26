@@ -1013,6 +1013,7 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+DART = 'dart'
 
 ASCIIDOC_CONF_FILENAME = 'html5.conf'
 MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
@@ -1090,7 +1091,7 @@ RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL, DART)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
