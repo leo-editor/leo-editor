@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.86
+About Viewrendered3 V3.87
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,12 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
+For Asciidoctor only, new setting to suppress the footer inserted by the
+Asciidoctor by default (``@bool vr3-asciidoctor-nofooter = True``).
 
 Previous Recent Changes
 ========================
+New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
 has to be the second item in the headline after the string "@jupyter".  If
 a URL is not found in the headline, the first line of the body is tried.
@@ -179,7 +181,7 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
-   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
+   "@bool vr3-asciidoctor-nofooter", "False", "True, False", "Whether to suppress footer (``sciidoctor`` only)"   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -1013,6 +1015,7 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+DART = 'dart'
 
 ASCIIDOC_CONF_FILENAME = 'html5.conf'
 MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
@@ -1090,7 +1093,7 @@ RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL, DART)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
@@ -2291,6 +2294,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
         self.asciidoc_show_proc_fail_msgs = True
+        self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
 
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
 
@@ -3189,9 +3193,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         with open(i_path, 'w', encoding='utf-8') as f:
             f.write(s)
 
+        # Set up special commkand-line asciidoctor attributes
+        attrs = []
+        if self.math_output:
+            attrs.append('stem')
+        if self.asciidoctor_suppress_footer:
+            attrs.append('nofooter')
+        att_str = ''
+        for att in attrs:
+            att_str += f'-a {att} '
+
         # Call the external program to write the output file.
-        attr = '-a stem' if self.math_output else ''
-        command = (f'asciidoctor -b html5 {attr} {i_path}')
+        command = (f'asciidoctor -b html5 {att_str} {i_path}')
         g.execute_shell_commands(command)
         # Read the output file and return it.
         try:
