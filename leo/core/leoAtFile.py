@@ -33,7 +33,7 @@ else:
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:  # pragma: no cover
     """Command decorator for the AtFileCommands class."""
-    return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
+    return g.new_cmd_decorator(name, ['c', 'atFileCommands'])
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile:
     """A class implementing the atFile subcommander."""
@@ -42,15 +42,15 @@ class AtFile:
     #@@nobeautify
 
     # directives...
-    noDirective     =  1 # not an at-directive.
-    allDirective    =  2 # at-all (4.2)
-    docDirective    =  3 # @doc.
-    atDirective     =  4 # @<space> or @<newline>
-    codeDirective   =  5 # @code
-    cDirective      =  6 # @c<space> or @c<newline>
-    othersDirective =  7 # at-others
-    miscDirective   =  8 # All other directives
-    startVerbatim   =  9 # @verbatim  Not a real directive. Used to issue warnings.
+    noDirective     =  1  # not an at-directive.
+    allDirective    =  2  # at-all (4.2)
+    docDirective    =  3  # @doc.
+    atDirective     =  4  # @<space> or @<newline>
+    codeDirective   =  5  # @code
+    cDirective      =  6  # @c<space> or @c<newline>
+    othersDirective =  7  # at-others
+    miscDirective   =  8  # All other directives
+    startVerbatim   =  9  # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -1327,7 +1327,7 @@ class AtFile:
                 def writer_for_at_auto_cb(root: Position) -> Optional[str]:
                     # pylint: disable=cell-var-from-loop
                     try:
-                        writer = aClass(at.c)
+                        writer = aClass(at.c)  # noqa
                         s = writer.write(root)
                         return s
                     except Exception:
@@ -1588,8 +1588,8 @@ class AtFile:
                 at.addToOrphanList(root)
                 return ''
             contents = ''.join([
-                s for s in g.splitLines(root.b)
-                    if at.directiveKind4(s, 0) == at.noDirective])
+                s for s in g.splitLines(root.b) if at.directiveKind4(s, 0) == at.noDirective
+            ])
             return contents
         except Exception:
             at.writeException(fileName, root)
@@ -2977,6 +2977,7 @@ class FastAtRead:
         self.section_delims_pat: re.Pattern = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
+    #noflake8
 
     def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""

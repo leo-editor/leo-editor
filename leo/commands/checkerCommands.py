@@ -340,11 +340,10 @@ class Flake8Command:
     #@+node:ekr.20221128123523.3: *3* flake8.check_all
     def check_all(self, roots: List[Position]) -> None:
         """Run flake8 on all files in paths."""
-        print('')
         c, tag = self.c, 'flake8'
         for root in roots:
             # @noflake8
-            if any(z.strip().startswith('@noflake8') for z in g.splitLines(root.b)):
+            if any(z.strip().startswith('#noflake8') for z in g.splitLines(root.b)):
                 continue
             path = g.fullPath(c, root)
             if path and os.path.exists(path):
@@ -357,8 +356,6 @@ class Flake8Command:
     def run(self, p: Position) -> None:
         """
         Run flake8 on all Python @<file> nodes in p's tree.
-
-        Return True if all went well.
         """
         c, root = self.c, p
         if not flake8:
