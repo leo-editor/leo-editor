@@ -84,9 +84,6 @@ class Importer:
             self.ws_pattern = re.compile(fr"^\s*$|^\s*{self.single_comment}")
         else:
             self.ws_pattern = re.compile(r'^\s*$')
-        self.escape = c.atFileCommands.underindentEscapeString
-        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)  # m.group(1) is the unindent value.
-        self.escape_pattern = re.compile(self.escape_string)
         # Default customizing values for i.scan_one_line...
         self.level_up_ch = '{'
         self.level_down_ch = '}'
@@ -264,19 +261,15 @@ class Importer:
     #@+node:ekr.20220727085532.1: *5* i.body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
-        legacy = False  # Generating escape strings seems unlikely to be useful.
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
         # An underindented string.
         n = len(s) - len(s.lstrip())
-        return f"\\\\-{i-n}.{s[n:]}" if legacy else s[n:]
+        return s[n:]
 
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
         return ''.join(self.massaged_line(s, i) for s in self.lines[a:b])
-
-    # def body_lines(self, a: int, b: int, i: int) -> List[str]:
-        # return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20161108131153.9: *5* i.compute_headline
     def compute_headline(self, s: str) -> str:
         """

@@ -76,7 +76,6 @@ class AtFile:
         # User options: set in reloadSettings.
         self.checkPythonCodeOnWrite = False
         self.runPyFlakesOnWrite = False
-        self.underindentEscapeString = '\\-'
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
@@ -84,10 +83,10 @@ class AtFile:
         c = self.c
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write', default=True)
+        self.runFlake8OnWrite = c.config.getBool(
+            'run-flake8-on-write', default=False)
         self.runPyFlakesOnWrite = c.config.getBool(
             'run-pyflakes-on-write', default=False)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
         """
@@ -146,7 +145,6 @@ class AtFile:
         assert root
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
-        assert at.underindentEscapeString is not None
         #
         # Copy args
         at.root = root
@@ -2290,12 +2288,6 @@ class AtFile:
         All output produced by leoAtFile module goes here.
         """
         at = self
-        if s.startswith(self.underindentEscapeString):  # pragma: no cover
-            try:
-                junk, s = at.parseUnderindentTag(s)
-            except Exception:
-                at.exception("exception writing:" + s)
-                return
         s = g.toUnicode(s, at.encoding)
         at.outputList.append(s)
     #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
@@ -2457,17 +2449,7 @@ class AtFile:
     def putIndent(self, n: int, s: str='') -> None:  # pragma: no cover
         """Put tabs and spaces corresponding to n spaces,
         assuming that we are at the start of a line.
-
-        Remove extra blanks if the line starts with the underindentEscapeString"""
-        tag = self.underindentEscapeString
-        if s.startswith(tag):
-            n2, s2 = self.parseUnderindentTag(s)
-            if n2 >= n:
-                return
-            if n > 0:
-                n -= n2
-            else:
-                n += n2
+        """
         if n > 0:
             w = self.tab_width
             if w > 1:
@@ -2763,25 +2745,6 @@ class AtFile:
         d = p.v.tempAttributes.get('read-path', {})
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
-    #@+node:ekr.20081216090156.4: *4* at.parseUnderindentTag
-    # Important: this is part of the *write* logic.
-    # It is called from at.os and at.putIndent.
-
-    def parseUnderindentTag(self, s: str) -> Tuple[int, str]:  # pragma: no cover
-        tag = self.underindentEscapeString
-        s2 = s[len(tag) :]
-        # To be valid, the escape must be followed by at least one digit.
-        i = 0
-        while i < len(s2) and s2[i].isdigit():
-            i += 1
-        if i > 0:
-            n = int(s2[:i])
-            # Bug fix: 2012/06/05: remove any period following the count.
-            # This is a new convention.
-            if i < len(s2) and s2[i] == '.':
-                i += 1
-            return n, s2[i:]
-        return 0, s
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName: str, message: str=None) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
