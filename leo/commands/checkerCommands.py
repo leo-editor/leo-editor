@@ -327,7 +327,7 @@ class MypyCommand:
         g.printObj([z.h for z in roots], tag='mypy.run')
         self.check_all(roots)
     #@-others
-#@+node:ekr.20221128123238.1: ** class Flake8Command (to do)
+#@+node:ekr.20221128123238.1: ** class Flake8Command
 class Flake8Command:
     """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
 
@@ -340,7 +340,7 @@ class Flake8Command:
     #@+node:ekr.20221128123523.3: *3* flake8.check_all
     def check_all(self, roots: List[Position]) -> None:
         """Run flake8 on all files in paths."""
-        print('\n\n')
+        print('')
         c, tag = self.c, 'flake8'
         for root in roots:
             # @noflake8
@@ -353,7 +353,6 @@ class Flake8Command:
             else:
                 g.es_print(f"{tag}: file not found: {path}")
 
-    # changed 9.
     #@+node:ekr.20221128123523.6: *3* flake8.run
     def run(self, p: Position) -> None:
         """
@@ -364,7 +363,6 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
-        g.trace('*****', root.h)
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
