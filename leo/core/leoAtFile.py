@@ -88,6 +88,8 @@ class AtFile:
             'run-flake8-on-write', default=False)
         self.runPyFlakesOnWrite = c.config.getBool(
             'run-pyflakes-on-write', default=False)
+            
+        g.trace('runFlake8OnWrite', self.runFlake8OnWrite)
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
         """
@@ -2099,7 +2101,7 @@ class AtFile:
     def checkUnchangedFiles(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         at = self
         ok1 = ok2 = True
-        if g.unitTesting or (not at.runPyFlakesOnWrite and not at.runPyFlakesOnWrite):
+        if g.unitTesting:
             return
         if not contents or not fileName or not fileName.endswith('.py'):
             return
@@ -2168,8 +2170,8 @@ class AtFile:
             from leo.commands import checkerCommands
             if checkerCommands.flake8:
                 x = checkerCommands.Flake8Command(self.c)
-                ok = x.run(root)
-                return ok
+                x.run(root)
+                return True
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
