@@ -329,6 +329,105 @@ class MypyCommand:
         g.printObj([z.h for z in roots], tag='mypy.run')
         self.check_all(roots)
     #@-others
+#@+node:ekr.20221128123238.1: ** class Flake8Command (to do)
+class Flake8Command:
+    """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
+
+    def __init__(self, c: Cmdr) -> None:
+        """ctor for Flake8Command class."""
+        self.c = c
+        self.seen: List[str] = []  # List of checked paths.
+
+    #@+others
+    #@+node:ekr.20221128123523.2: *3* class Flake8Command.LogStream
+    class LogStream:
+
+        """A log stream for flake8."""
+
+        def __init__(self, fn_n: int=0, roots: List[Position]=None) -> None:
+            self.fn_n = fn_n
+            self.roots = roots
+
+        def write(self, s: str) -> None:
+            fn_n, roots = self.fn_n, self.roots
+            if not s.strip():
+                return
+            g.pr(s)
+            # It *is* useful to send pyflakes errors to the console.
+            if roots:
+                try:
+                    root = roots[fn_n]
+                    line = int(s.split(':')[1])
+                    unl = root.get_UNL()
+                    g.es(s, nodeLink=f"{unl}::{(-line)}")  # Global line
+                except(IndexError, TypeError, ValueError):
+                    # in case any assumptions fail
+                    g.es(s)
+            else:
+                g.es(s)
+    #@+node:ekr.20221128123523.3: *3* flake8.check_all
+    def check_all(self, roots: List[Position]) -> int:
+        """Run flake8 on all files in paths."""
+        c = self.c
+        total_errors = 0
+        for i, root in enumerate(roots):
+            fn = os.path.normpath(g.fullPath(c, root))
+            sfn = g.shortFileName(fn)
+            # noflake8
+            if any(z.strip().startswith('@noflake8') for z in g.splitLines(root.b)):
+                continue
+            # Report the file name.
+            s = g.readFileIntoEncodedString(fn)
+            if s and s.strip():
+                # Send all output to the log pane.
+                r = reporter.Reporter(
+                    errorStream=self.LogStream(i, roots),
+                    warningStream=self.LogStream(i, roots),
+                )
+                errors = api.check(s, sfn, r)
+                total_errors += errors
+        return total_errors
+    #@+node:ekr.20221128123523.4: *3* flake8.check_script (to do)
+    def check_script(self, p: Position, script: str) -> bool:
+        """Call flake8 to check the given script."""
+        try:
+            from pyflakes import api, reporter
+        except Exception:  # ModuleNotFoundError
+            return True  # Pretend all is fine.
+        # #1306: nopyflakes
+        lines = g.splitLines(p.b)
+        for line in lines:
+            if line.strip().startswith('@noflake8'):
+                return True
+        r = reporter.Reporter(
+            errorStream=self.LogStream(),
+            warningStream=self.LogStream(),
+        )
+        errors = api.check(script, '', r)
+        return errors == 0
+    #@+node:ekr.20221128123523.6: *3* flake8.run
+    def run(self, p: Position) -> bool:
+        """Run Pyflakes on all Python @<file> nodes in p's tree."""
+        ok = True
+        if not pyflakes:
+            return ok
+        c = self.c
+        root = p
+        # Make sure Leo is on sys.path.
+        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+        if leo_path not in sys.path:
+            sys.path.append(leo_path)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        if roots:
+            # These messages are important for clarity.
+            total_errors = self.check_all(roots)
+            if total_errors > 0:
+                g.es(f"ERROR: flake8: {total_errors} error{g.plural(total_errors)}")
+            ok = total_errors == 0
+        else:
+            ok = True
+        return ok
+    #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
 class PyflakesCommand:
     """A class to run pyflakes on all Python @<file> nodes in c.p's tree."""
@@ -368,9 +467,10 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, roots: List[Position]) -> int:
         """Run pyflakes on all files in paths."""
+        c = self.c
         total_errors = 0
         for i, root in enumerate(roots):
-            fn = self.finalize(root)
+            fn = os.path.normpath(g.fullPath(c, root))
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
             if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):
@@ -404,12 +504,6 @@ class PyflakesCommand:
         )
         errors = api.check(script, '', r)
         return errors == 0
-    #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
-    def finalize(self, p: Position) -> str:
-        """Finalize p's path."""
-        c = self.c
-        # Use os.path.normpath to give system separators.
-        return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p: Position) -> bool:
         """Run Pyflakes on all Python @<file> nodes in p's tree."""

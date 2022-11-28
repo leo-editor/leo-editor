@@ -75,6 +75,7 @@ class AtFile:
         self.yesToAll = False
         # User options: set in reloadSettings.
         self.checkPythonCodeOnWrite = False
+        self.runFlake8OnWrite = False
         self.runPyFlakesOnWrite = False
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
@@ -2094,18 +2095,20 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20220120210617.1: *5* at.checkPyflakes
-    def checkPyflakes(self, contents: str, fileName: str, root: Position) -> bool:  # pragma: no cover
+    #@+node:ekr.20220120210617.1: *5* at.checkUnchangedFiles
+    def checkUnchangedFiles(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         at = self
-        ok = True
-        if g.unitTesting or not at.runPyFlakesOnWrite:
-            return ok
+        ok1 = ok2 = True
+        if g.unitTesting or (not at.runPyFlakesOnWrite and not at.runPyFlakesOnWrite):
+            return
         if not contents or not fileName or not fileName.endswith('.py'):
-            return ok
-        ok = self.runPyflakes(root)
-        if not ok:
+            return
+        if at.runFlake8OnWrite:
+            ok1 = self.runFlake8(root)
+        if at.runPyFlakesOnWrite:
+            ok2 = self.runPyflakes(root)
+        if not ok1 or not ok2:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
-        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
@@ -2158,6 +2161,19 @@ class AtFile:
                 g.es_print(' ' * (7 + offset) + '^')
             else:
                 g.es_print(f"{j+1:5}: {line}")
+    #@+node:ekr.20221128123139.1: *6* at.runFlake8  (test)
+    def runFlake8(self, root: Position) -> bool:  # pragma: no cover
+        """Run flake8 on the selected node."""
+        try:
+            from leo.commands import checkerCommands
+            if checkerCommands.flake8:
+                x = checkerCommands.Flake8Command(self.c)
+                ok = x.run(root)
+                return ok
+            return True  # Suppress error if pyflakes can not be imported.
+        except Exception:
+            g.es_exception()
+            return True  # Pretend all is well
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
     def runPyflakes(self, root: Position) -> bool:  # pragma: no cover
         """Run pyflakes on the selected node."""
@@ -2528,8 +2544,8 @@ class AtFile:
             if not g.unitTesting and c.config.getBool(
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
-            # Leo 5.6: Check unchanged files.
-            at.checkPyflakes(contents, fileName, root)
+            # Check unchanged files.
+            at.checkUnchangedFiles(contents, fileName, root)
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
