@@ -88,8 +88,6 @@ class AtFile:
             'run-flake8-on-write', default=False)
         self.runPyFlakesOnWrite = c.config.getBool(
             'run-pyflakes-on-write', default=False)
-            
-        g.trace('runFlake8OnWrite', self.runFlake8OnWrite)
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
         """
@@ -2122,6 +2120,8 @@ class AtFile:
             ok = at.checkPythonSyntax(root, contents)
         if ok and at.runPyFlakesOnWrite:
             ok = self.runPyflakes(root)
+        if ok and at.runFlake8OnWrite:
+            ok = self.runFlake8(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
@@ -2163,7 +2163,7 @@ class AtFile:
                 g.es_print(' ' * (7 + offset) + '^')
             else:
                 g.es_print(f"{j+1:5}: {line}")
-    #@+node:ekr.20221128123139.1: *6* at.runFlake8  (test)
+    #@+node:ekr.20221128123139.1: *6* at.runFlake8
     def runFlake8(self, root: Position) -> bool:  # pragma: no cover
         """Run flake8 on the selected node."""
         try:

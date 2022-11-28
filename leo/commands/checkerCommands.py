@@ -295,8 +295,6 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn, root)
-
-
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn: str, root: Position) -> None:
         """Run mypy on one file."""
@@ -342,9 +340,9 @@ class Flake8Command:
     #@+node:ekr.20221128123523.3: *3* flake8.check_all
     def check_all(self, roots: List[Position]) -> None:
         """Run flake8 on all files in paths."""
-        g.printObj(roots, tag='checkd_all: roots')
+        print('\n\n')
         c, tag = self.c, 'flake8'
-        for i, root in enumerate(roots):
+        for root in roots:
             # @noflake8
             if any(z.strip().startswith('@noflake8') for z in g.splitLines(root.b)):
                 continue
@@ -355,7 +353,7 @@ class Flake8Command:
             else:
                 g.es_print(f"{tag}: file not found: {path}")
 
-    # changed2.
+    # changed 9.
     #@+node:ekr.20221128123523.6: *3* flake8.run
     def run(self, p: Position) -> None:
         """
@@ -366,6 +364,7 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
+        g.trace('*****', root.h)
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
