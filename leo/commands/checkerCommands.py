@@ -324,7 +324,6 @@ class MypyCommand:
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        g.printObj([z.h for z in roots], tag='mypy.run')
         self.check_all(roots)
     #@-others
 #@+node:ekr.20221128123238.1: ** class Flake8Command
