@@ -655,6 +655,7 @@
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
+<v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
 <v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
@@ -10322,7 +10323,7 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
+<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
@@ -11651,6 +11652,7 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
+<t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
