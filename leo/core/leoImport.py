@@ -423,7 +423,7 @@ class LeoImportCommands:
                 g.match_word(s, i, "@code")  # 2/25/03
             ):
                 return i, result
-             # 2019/09/12
+            # 2019/09/12
             lt = "<<"
             rt = ">>="
             if g.match(s, i, lt) and g.find_on_line(s, i, rt) > -1:
