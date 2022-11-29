@@ -159,7 +159,7 @@ cmd_instance_dict = {
 
 # c:/Repos/leo-editor/leo/core/leoGlobals.py:4479:17: E701 multiple statements on one line (colon)
 
-flake8_pat = re.compile(r'^xxx$')
+flake8_pat = re.compile(r'(.+?):([0-9]+):[0-9]+:.*$')
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
@@ -1907,7 +1907,7 @@ class SherlockTracer:
             return False
 
         def ignore_file() -> None:
-            if not base_name in self.ignored_files:
+            if base_name not in self.ignored_files:
                 self.ignored_files.append(base_name)
 
         def ignore_function() -> None:
@@ -4478,8 +4478,10 @@ def skip_blank_lines(s: str, i: int) -> int:
             j = g.skip_ws(s, i)
             if g.is_nl(s, j):
                 i = j
-            else: break
-        else: break
+            else:
+                break
+        else:
+            break
     return i
 #@+node:ekr.20031218072017.3186: *4* g.skip_c_id
 def skip_c_id(s: str, i: int) -> int:
@@ -5609,7 +5611,8 @@ def wrap_lines(lines: List[str], pageWidth: int, firstLineWidth: int=None) -> Li
                         # Just add the word to the start of the line.
                         line = word
                     #@-<< place blank and word on the present line >>
-                else: pass  # discard the trailing whitespace.
+                else:
+                    pass  # discard the trailing whitespace.
             else:
                 #@+<< place word on a new line >>
                 #@+node:ekr.20110727091744.15085: *5* << place word on a new line >>
@@ -5714,7 +5717,8 @@ def skip_leading_ws(s: str, i: int, ws: int, tab_width: int) -> int:
         elif ch == '\t':
             count += (abs(tab_width) - (count % abs(tab_width)))
             i += 1
-        else: break
+        else:
+            break
     return i
 #@+node:ekr.20031218072017.3205: *4* g.skip_leading_ws_with_indent
 def skip_leading_ws_with_indent(s: str, i: int, tab_width: int) -> Tuple[int, int]:
@@ -5732,7 +5736,8 @@ def skip_leading_ws_with_indent(s: str, i: int, tab_width: int) -> Tuple[int, in
         elif ch == '\t':
             count += (abs(tab_width) - (count % abs(tab_width)))
             i += 1
-        else: break
+        else:
+            break
     return i, count
 #@+node:ekr.20040723093558.1: *4* g.stripBlankLines
 def stripBlankLines(s: str) -> str:
@@ -6032,9 +6037,9 @@ def prettyPrintType(obj: Any) -> str:
     if isinstance(obj, str):
         return 'string'
     t: Any = type(obj)
-    if t in (types.BuiltinFunctionType, types.FunctionType):
+    if t in (types.BuiltinFunctionType, types.FunctionType):  # noqa
         return 'function'
-    if t == types.ModuleType:
+    if t == types.ModuleType:  # noqa
         return 'module'
     if t in [types.MethodType, types.BuiltinMethodType]:
         return 'method'
@@ -6665,7 +6670,7 @@ def os_startfile(fname: str) -> None:
 
         stderr2log(g, ree, fname)
         rc = subPopen.poll()
-        if not rc is None:
+        if rc is not None:
             ito.stop()
             ito.destroy_self()
             if rc != 0:
