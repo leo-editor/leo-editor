@@ -149,15 +149,11 @@ cmd_instance_dict = {
 #@-<< define global decorator dicts >>
 #@+<< define global error regexs >>
 #@+node:ekr.20220412193109.1: ** << define global error regexs >> (leoGlobals.py)
-# To do: error patterns for black.
-
 # Most code need only know about the *existence* of these patterns.
 
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
 # See link_table above LeoLog.put_html_links.
-
-# c:/Repos/leo-editor/leo/core/leoGlobals.py:4479:17: E701 multiple statements on one line (colon)
 
 flake8_pat = re.compile(r'(.+?):([0-9]+):[0-9]+:.*$')
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
