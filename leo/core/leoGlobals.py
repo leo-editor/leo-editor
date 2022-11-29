@@ -6033,7 +6033,7 @@ def prettyPrintType(obj: Any) -> str:
     if isinstance(obj, str):
         return 'string'
     t: Any = type(obj)
-    if t in (types.BuiltinFunctionType, types.FunctionType):  # noqa
+    if t in (types.BuiltinFunctionType, types.FunctionType):
         return 'function'
     if t == types.ModuleType:  # noqa
         return 'module'
