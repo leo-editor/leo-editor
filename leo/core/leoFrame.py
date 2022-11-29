@@ -1290,13 +1290,14 @@ class LeoLog:
     def putnl(self, tabName: str='Log') -> None:
         pass
     #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helpers
-    error_patterns = (g.mypy_pat, g.pyflakes_pat, g.pylint_pat, g.python_pat)
+    error_patterns = (g.flake8_pat, g.mypy_pat, g.pyflakes_pat, g.pylint_pat, g.python_pat)
 
     # This table encodes which groups extract the filename and line_number from global regex patterns.
     # This is the *only* method that should need to know this information!
 
     link_table: List[Tuple[int, int, Any]] = [
         # (filename_i, line_number_i, pattern)
+        (1, 2, g.flake8_pat),
         (1, 2, g.mypy_pat),
         (1, 2, g.pyflakes_pat),
         (1, 2, g.pylint_pat),

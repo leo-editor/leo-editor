@@ -149,13 +149,17 @@ cmd_instance_dict = {
 #@-<< define global decorator dicts >>
 #@+<< define global error regexs >>
 #@+node:ekr.20220412193109.1: ** << define global error regexs >> (leoGlobals.py)
-# To do: error patterns for black and pyflakes.
+# To do: error patterns for black.
 
 # Most code need only know about the *existence* of these patterns.
 
-# At table in LeoQtLog.put tells it how to extract filenames and line_numbers from each pattern.
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
+# See link_table above LeoLog.put_html_links.
+
+# c:/Repos/leo-editor/leo/core/leoGlobals.py:4479:17: E701 multiple statements on one line (colon)
+
+flake8_pat = re.compile(r'^xxx$')
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
@@ -6252,9 +6256,9 @@ def CheckVersion(
     n2 = len(vals2)
     n = max(n1, n2)
     if n1 < n:
-        vals1.extend([0 for i in range(n - n1)])
+        vals1.extend([0 for _i in range(n - n1)])
     if n2 < n:
-        vals2.extend([0 for i in range(n - n2)])
+        vals2.extend([0 for _i in range(n - n2)])
     for cond, val in (
         ('==', vals1 == vals2), ('!=', vals1 != vals2),
         ('<', vals1 < vals2), ('<=', vals1 <= vals2),
@@ -7082,10 +7086,9 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     #
     # Scan the lines, extracting only the valid lines.
     extracting, result = False, []
-    for i, line in enumerate(g.splitLines(s)):
+    for line in g.splitLines(s):
         m = re.match(pattern, line)
         if m:
-            # g.trace(language, m.group(1))
             extracting = m.group(1) == language
         elif extracting:
             result.append(line)
@@ -7556,7 +7559,8 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     if not g.app.gui.isTextWrapper(w):
         g.internalError('must be a text wrapper', w)
         return None
-    setattr(event, 'widget', w)
+    if event:
+        event.widget = w
     # Part 1: get the url.
     if url is None:
         s = w.getAllText()
