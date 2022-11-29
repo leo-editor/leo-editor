@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.87
+About Viewrendered3 V3.88
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,11 +57,13 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-For Asciidoctor only, new setting to suppress the footer inserted by the
-Asciidoctor by default (``@bool vr3-asciidoctor-nofooter = True``).
+The Dart programming language is now supported.
 
 Previous Recent Changes
 ========================
+For Asciidoctor only, new setting to suppress the footer inserted by the
+Asciidoctor by default (``@bool vr3-asciidoctor-nofooter = True``).
+
 New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
 has to be the second item in the headline after the string "@jupyter".  If
@@ -667,7 +669,7 @@ other differences.
 Colorized Languages
 ===================
 
-Currently the languages that can be colorized are python, javascript,
+Currently the languages that can be colorized are python, dart, javascript,
 java, julia, css, xml, and sql.
 
 #@+node:TomP.20210225000326.1: *3* Code Execution
@@ -1002,6 +1004,7 @@ VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
 ASCIIDOC = 'asciidoc'
 CODE = 'code'
 CSS = 'css'
+DART = 'dart'
 ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
@@ -1093,7 +1096,7 @@ RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL, DART)
+LANGUAGES = (PYTHON, DART, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
