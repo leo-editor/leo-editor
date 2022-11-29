@@ -77,7 +77,6 @@ disable=
         import-error,  # Ignore imports of optional packages.
         import-outside-toplevel, # Requires substantial code changes.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
-        line-too-long,
         missing-docstring, # Instead, use Leo's find-missing-docstrings command.
         no-else-break, # Possible pylint bug?
         protected-access,
@@ -107,7 +106,8 @@ disable=
         # bad-option-value, # obsolete pylint option.
         # chained-comparison,
         # len-as-condition,
-        # import-error, # Warns when an import fails: useful now that we are only using python 3.
+        # import-error, # Useful now that we are only using python 3.
+        # line-too-long,
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
