@@ -1,26 +1,11 @@
-# This is pylint settings file for Leo itself: leo/test/pylint-leo-rc-ref.txt
+# The new, implified .pylintrc file for Leo itself.
 
-# Place a *copy* of this file in your .leo directory.
-
-# Devs should run this with Python 3.10 and the latest version of pylint.
-    # pylint 2.14.0-dev0
-    # astroid 2.11.4
-
-# Handle message activation / deactivation at the module level
-# Nandle some basic stats data
+# This file tested on pylint 2.14.4, Python 3.10.5, as reported by `python -m pylint --version`.
 
 [MASTER]
 
-# Specify a configuration file.
-#rcfile=
-
-# Python code to execute, usually for sys.path manipulation
-#init-hook=
-
 # Add <file or directory> to the black list. A base name, not a path.
-# You may set this option multiple times.
 ignore=
-    CVS
     .git
     
 # Files or directories matching regex, in Windows or Posix format.
@@ -29,24 +14,15 @@ ignore-paths=
     leo\extensions,
     leo\modes,
     leo\plugins\obsolete,
-    leo\plugins\qt_main.py,
-        # Auto-generated, with long lines.
+    leo\plugins\qt_main.py,  # Auto-generated, with long lines.
     leo\plugins\examples,
     leo\plugins\leo_babel,
     leo\plugins\pygeotag,
     leo\scripts,
-    leo\unittests,
-        # cyclic-import, multiple-statements
+    leo\unittests, # cyclic-import, multiple-statements
 
 # Pickle collected data for later comparisons.
-persistent=yes
-
-# Set the cache size for astng objects.
-cache-size=500
-
-# List of plugins (as comma separated values of python modules names) to load,
-# usually to register additional checkers.
-load-plugins=
+persistent=no
 
 [MESSAGES CONTROL]
 
@@ -55,14 +31,24 @@ load-plugins=
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
-    #
-    # Always disable these. Imo, they cause more harm than good.
-    # 
-        design,similarities, # Make work.
+
+    # Catagories to disable: expensive or make-work
+
+        basic,  # Check on names. Unimportant.
+        classes,  # Unimportant.
+        design,  # Make work.
+        format,  # Use black
+        imports,  # Creates import graph.  Expensive?
+        similarities,  # Expensive.
+        typecheck,  # Unimportant
+        variables,  # Unimportant.
         
-        # For now, *do* suppress bad-option-value and unrecognized-option
-        bad-option-value, # obsolete pylint option.
-        unrecognized-option,  # newer python.
+    # Checks on option nanes
+        
+        # bad-option-value, # obsolete pylint option.
+        # unrecognized-option,  # newer python.
+    
+    # Leo: Standard suppressions.
         
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
@@ -77,7 +63,6 @@ disable=
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-dict-items,
-        consider-using-fstring,
         consider-using-generator,
         consider-using-max-builtin,
         consider-using-set-comprehension,
@@ -92,17 +77,14 @@ disable=
         import-error,  # Ignore imports of optional packages.
         import-outside-toplevel, # Requires substantial code changes.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
-        misplaced-comparison-constant, # pedantic.
+        line-too-long,
         missing-docstring, # Instead, use Leo's find-missing-docstrings command.
-        no-elif-break, # **Possible pylint bug**
-        no-else-break, # **Possible pylint bug**
-        no-self-use, # so what?
+        no-else-break, # Possible pylint bug?
         protected-access,
         redeclared-assigned-name,
         redefined-argument-from-local, # I do this all the time.
         redefined-builtin, # all, next, etc. so what?
         redefined-outer-name,
-        redefined-variable-type,
         too-few-public-methods,
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
@@ -117,24 +99,19 @@ disable=
         use-list-literal,
         use-maxsplit-arg, # What is this??
         using-constant-test,
-    #
+
     # Good warnings. Don't suppress these.
-    #
+
         # bad-builtin,
         # bad-continuation,
         # bad-option-value, # obsolete pylint option.
         # chained-comparison,
         # len-as-condition,
         # import-error, # Warns when an import fails: useful now that we are only using python 3.
-        # inconsistent-return-statements,
-        # line-too-long,
-            # Not enabled because it is a format test.
-            # Instead, use Leo's find-long-lines command.
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
         # no-else-raise,
-        # no-else-return, # Leo's new style.
         # no-init,
         # no-value-for-parameter,
         # not-an-iterable,
@@ -149,240 +126,38 @@ disable=
         # useless-object-inheritance, # class x(object):
         # useless-return,
 
-# Categories:
-# basic,classes,design,import,format,similarities,typecheck,variables
-
 [REPORTS]
 
-# set the output format.
-# Available formats are text, parseable, colorized, msvs (visual studio) and html
-output-format=text
+# Set the output format.  Multiple values are allowed.
+output-format=text # colorized, text, parseable, msvs (visual studio)
 
-# Put messages in a separate file for each module / package specified on the
-# command line instead of printing them on stdout. Reports (if any) will be
-# written in a file name "pylint_global.[txt|html]".
-files-output=no
+reports=no  # Display only messages.
 
-# Tells wether to display a full report or only the messages
-reports=no
-
-# Python expression which should return a note less than 10 (10 is the highest
-# note).You have access to the variables errors warning, statement which
-# respectivly contain the number of errors / warnings messages and the total
-# number of statements analyzed. This is used by the global evaluation report
-# (R0004).
-
-evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
-
-# Deactivate the evaluation score.
-score=no
-
-# Enable the report(s) with the given id(s).
-# enable-report=
-
-# Disable the report(s) with the given id(s).
-# R0001,Messages by category
-# R0002 % errors / warnings by module
-# R0003 Messages
-# R0004 Global evaluation
-
-# R0101 Statistics by type
-# R0401 External dependencies
-# R0402 graph ofinternal and externaldependencies
-# R0701 Raw metrics
-# R0801 Duplication
-
-disable-report=R0001,R0002,R0003,R0004,R0101,R0401,R0402,R0701,R0801
-
-[BASIC]
-
-# Regular expression which should only match functions or classes name which do
-# not require a docstring
-no-docstring-rgx=__.*__
-
-# Regular expression which should only match correct module names
-# module-rgx=(([a-z_][a-z0-9_]*)|([a-zA-Z0-9]+))$
-module-rgx=[a-zA-Z][a-zA-Z0-9_]+$
-
-# Regular expression which should only match correct module level names
-#const-rgx=(([A-Z_][A-Z1-9_]*)|(__.*__))$
-const-rgx=(([a-zA-Z_][a-zA-Z0-9_]+)|(__.*__))$
-
-# Regular expression which should only match correct class names
-# class-rgx=[A-Z_][a-zA-Z0-9]+$
-class-rgx=[a-zA-Z_][a-zA-Z0-9_]+$
-
-# Regular expression which should only match correct function names
-# function-rgx=[a-z_][a-z0-9_]{2,30}$
-function-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-
-# Regular expression which should only match correct method names
-#method-rgx=[a-z_][a-z0-9_]{2,30}$
-method-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-
-# Regular expression which should only match correct instance attribute names
-#attr-rgx=[a-z_][a-z0-9_]{2,30}$
-attr-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-class-attribute-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-
-# Regular expression which should only match correct argument names
-#argument-rgx=[a-z_][a-z0-9_]{2,30}$
-argument-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-
-# Regular expression which should only match correct variable names
-#variable-rgx=[a-z_][a-z0-9_]{2,30}$
-variable-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
-
-# Regular expression which should only match correct list comprehension /
-# generator expression variable names
-#inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
-inlinvar-rgx=[a-zA-Z][a-zA-Z0-9_]*$
-
-# Good variable names which should always be accepted, separated by a comma
-good-names=_,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
-
-#__pychecker__,__version__,\
-#__not_a_plugin__,__plugin_id__,__plugin_name__,__plugin_priority__,__plugin_group__,__plugin_requires__,\
-#__revision__,__author__,__date__,__cvsid__,\
-#_emacs_cmd,_vim_cmd,_vim_exe,\
-#_AssignUniqueConstantValue,_PluginDatabase
-
-# Bad variable names which should always be refused, separated by a comma
-bad-names=foo,baz,toto,tutu,tata
-
-# List of builtins function names that should not be used, separated by a comma
-bad-functions=map,filter,apply,input
-
-[TYPECHECK]
-
-# Tells wether missing members accessed in mixin class should be ignored.
-# Mixin classes have names ending in "mixin" (case insensitive).
-ignore-mixin-members=yes
-
-# Members which are usually get through zope's acquisition mecanism and
-# so shouldn't trigger E0201 when accessed (need zope=yes to be considered).
-acquired-members=REQUEST,acl_users,aq_parent
-
-# Members which are set dynamically and missed by pylint inference system...
-
-extension-pkg-whitelist=PyQt4, PyQt5, lxml.etree
-
-[VARIABLES]
-
-# Tells wether we should check for unused import in __init__ files.
-init-import=no
-
-# A regular expression matching names used for dummy variables (i.e. not used).
-dummy-variables-rgx=_|dummy|junk|args|keys|keywords|event|tag|z|unused_.*
-
-# List of additional names supposed to be defined in builtins.
-# Avoid defining new builtins when possible.
-additional-builtins=
-
-[CLASSES]
-
-# List of method names used to declare (i.e. assign) instance attributes.
-# EKR: the last item in the list does not work properly: I added a dummy.
-defining-attr-methods=__init__,__new__,setUp,init,finishCreate,initReadIvars,initWriteIvars,initCommonIvars,initIvars,dummy_init
-
-[DESIGN]
-
-# EKR: These aren't used because all design checks are disabled.
-# The enabled numbers are the defaults.
-
-# Maximum number of arguments for function / method
-max-args=5
-# max-args=20
-
-# Maximum number of boolean expressions in a if statement
-max-bool-expr=5
-# max-bool-expr=20
-
-# Maximum number of locals for function / method body
-max-locals=15
-# max-locals=100
-
-# Maximum number of nested blocks for function / method body
-max-nested-blocks=10
-
-# Maximum number of return / yield for function / method body
-max-returns=6
-# max-returns=50
-
-# Maximum number of branch for function / method body
-max-branches=12
-# max-branches=100
-
-# Maximum number of statements in function / method body
-max-statements=50
-# max-statements=500
-
-# Maximum number of parents for a class (see R0901).
-max-parents=7
-
-# Maximum number of attributes for a class (see R0902).
-max-attributes=7
-# max-attributes=150
-
-# Minimum number of public methods for a class (see R0903).
-min-public-methods=2
-# min-public-methods=1
-
-# Maximum number of public methods for a class (see R0904).
-max-public-methods=20
-# max-public-methods=400
-
-[IMPORTS]
-
-# Deprecated modules which should not be used, separated by a comma
-deprecated-modules=regsub,TERMIOS,Bastion,rexec 
-    # string is sometimes essential.
-
-# Create a graph of internal and external dependencies in the given graph.
-# (report R0402 must not be disabled)
-# import-graph=no
-
-# Create a graph of external dependencies in the given file
-# (report R0402 must not be disabled)
-ext-import-graph=no
-
-# Create a graph of internal dependencies in the given file
-# (report R0402 must not be disabled)
-int-import-graph=no
-
-[FORMAT]
-
-# Maximum number of characters on a single line.
-# max-line-length=80  # Set abive
-max-line-length=120 
-    # Anything less than 90 is make work, except for testing the pylint test itself.
-    # A script in leoPy.leo finds long lines very quickly
-
-# Maximum number of lines in a module
-#max-module-lines=1000
-max-module-lines=20000
-    # Leonine code is different.
-
-# String used as indentation unit.
-# This is usually " " (4 spaces) or "\t" (1 tab).
-indent-string='    '
+score=no  # Deactivate the evaluation score.
 
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
 # notes=FIXME,XXX,TODO
 notes=
-   # Make work in Leo: it's easy to search for them.
 
-# checks for similarities and duplicated code. May be expensive.
+# The following sections are all suppressed above.
+
+[BASIC]
+
+[CLASSES]
+
+[DESIGN]
+
+# Maximum number of nested blocks for function / method body
+max-nested-blocks=10  # Apparently, this can't be suppressed!
+
+[FORMAT]
+
+[IMPORTS]
 
 [SIMILARITIES]
 
-# Minimum lines number of a similarity.
-min-similarity-lines=4
+[TYPECHECK]
 
-# Ignore comments when computing similarities.
-ignore-comments=yes
-
-# Ignore docstrings when computing similarities.
-ignore-docstrings=yes
+[VARIABLES]
