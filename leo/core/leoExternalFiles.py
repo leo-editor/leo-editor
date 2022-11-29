@@ -457,7 +457,7 @@ class ExternalFilesController:
                     except OSError:
                         g.es_print('c_arg', repr(c_arg))
                         g.es_exception()
-            elif hasattr(kind, '__call__'):
+            elif callable(kind):
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename

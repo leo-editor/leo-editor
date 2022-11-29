@@ -2887,7 +2887,7 @@ def printTimes(times: List) -> None:
 
     times: an array of times (calls to time.process_time()).
     """
-    for n, junk in enumerate(times[:-1]):
+    for n, _junk in enumerate(times[:-1]):
         t = times[n + 1] - times[n]
         if t > 0.1:
             g.trace(f"*** {n} {t:5.4f} sec.")
@@ -3082,7 +3082,7 @@ def get_directives_dict(p: Position) -> Dict[str, str]:
     """
     d = {}
     # The headline has higher precedence because it is more visible.
-    for kind, s in (('head', p.h), ('body', p.b)):
+    for _kind, s in (('head', p.h), ('body', p.b)):
         anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
@@ -3624,7 +3624,7 @@ def get_files_in_directory(directory: str, kinds: List=None, recursive: bool=Tru
             kinds = ['*.py']
         if recursive:
             # Works for all versions of Python.
-            for root, dirnames, filenames in os.walk(directory):
+            for root, _dirnames, filenames in os.walk(directory):
                 for kind in kinds:
                     for filename in fnmatch.filter(filenames, kind):
                         files.append(os.path.join(root, filename))
@@ -3713,7 +3713,7 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool=True) -> str:
         ('c.last_dir', c and c.last_dir),
         ('os.curdir', g.os_path_abspath(os.curdir)),
     )
-    for kind, dir_ in table:
+    for _kind, dir_ in table:
         if dir_ and g.os_path_exists(dir_):
             return dir_
     return ''
@@ -4361,7 +4361,7 @@ def see_more_lines(s: str, ins: int, n: int=4) -> int:
     """
     # Show more lines, if they exist.
     if n > 0:
-        for z in range(n):
+        for _z in range(n):
             if ins >= len(s):
                 break
             i, j = g.getLine(s, ins)

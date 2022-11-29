@@ -877,13 +877,14 @@ def find_bound_paragraph(c: Cmdr) -> Tuple[str, List[str], str]:
     # scan backward, adding trailing lines of head to ins.
     if insert_lines and not startsParagraph(insert_lines[0]):
         n = 0  # number of moved lines.
-        for i, s in enumerate(reversed(head_lines)):
+        for s in reversed(head_lines):
             if ends_paragraph(s) or single_line_paragraph(s):
                 break
             elif startsParagraph(s):
                 n += 1
                 break
-            else: n += 1
+            else:
+                n += 1
         if n > 0:
             para_lines = head_lines[-n :] + para_lines
             head_lines = head_lines[: -n]

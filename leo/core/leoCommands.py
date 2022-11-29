@@ -4151,7 +4151,7 @@ class Commands:
                 c.setCurrentPosition(c.rootPosition())
 
         def redo() -> None:
-            for pgnx, i, chgnx in u.getBead(u.bead + 1).data:
+            for pgnx, i, _chgnx in u.getBead(u.bead + 1).data:
                 v = gnx2v[pgnx]
                 ch = v.children.pop(i)
                 ch.parents.remove(v)

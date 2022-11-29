@@ -1943,7 +1943,7 @@ class LocalConfigManager:
         c = self.c
         legend = textwrap.dedent(legend)
         result = []
-        for name, val, c, letter in g.app.config.config_iter(c):
+        for name, val, _c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"
             result.append(f"{kind} {name} = {val}\n")
         # Use a single g.es statement.

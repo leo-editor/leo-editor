@@ -326,7 +326,7 @@ class Undoer:
         including all links."""
         u = self
         # This effectively relinks all vnodes.
-        for v, vInfo in treeInfo:
+        for _v, vInfo in treeInfo:
             u.restoreVnodeUndoInfo(vInfo)
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
     def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:

@@ -329,7 +329,7 @@ class MarkupCommands:
         Neither asciidoctor nor pandoc handles extra extentions well.
         """
         c = self.c
-        for i in range(3):
+        for _i in range(3):
             i_path, ext = os.path.splitext(i_path)
             if not ext:
                 break

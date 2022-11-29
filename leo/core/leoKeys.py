@@ -722,7 +722,7 @@ class AutoCompleterClass:
         #
         # Find the global line, and compute offsets.
         source_lines = g.splitLines(source)
-        for jedi_line, g_line in enumerate(source_lines[n0:]):
+        for _jedi_line, g_line in enumerate(source_lines[n0:]):
             if line.lstrip() == g_line.lstrip():
                 # Adjust the column.
                 indent1 = len(line) - len(line.lstrip())

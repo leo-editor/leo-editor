@@ -402,7 +402,7 @@ class RstCommands:
             writer_name = None
         else:
             writer = None
-            for ext2, writer_name in (
+            for ext2, _writer_name in (
                 ('.html', 'html'),
                 ('.htm', 'html'),
                 ('.tex', 'latex'),

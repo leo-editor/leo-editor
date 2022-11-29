@@ -2421,7 +2421,8 @@ class LoadManager:
         # Allow plugins to be defined in ~/.leo/plugins.
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+        ### Huh?
+        for kind, plugins in (('home', plugins1), ('leo', plugins2)):  # noqa
             pattern = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'plugins', 'importers', '*.py')
             for fn in g.glob_glob(pattern):
@@ -2479,7 +2480,8 @@ class LoadManager:
         g.app.atAutoWritersDict = {}
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+        ### Huh?
+        for kind, plugins in (('home', plugins1), ('leo', plugins2)):  # noqa
             pattern = g.os_path_finalize_join(g.app.loadDir,
                 '..', 'plugins', 'writers', '*.py')
             for fn in g.glob_glob(pattern):

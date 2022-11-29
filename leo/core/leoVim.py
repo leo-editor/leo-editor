@@ -839,7 +839,7 @@ class VimCommands:
     def vim_b(self) -> None:
         """N words backward."""
         if self.is_text_wrapper(self.w):
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 if self.state == 'visual':
                     self.do('back-word-extend-selection')
                 else:
@@ -924,7 +924,7 @@ class VimCommands:
         if self.is_text_wrapper(w):
             if self.stroke == 'd':
                 i = w.getInsertPoint()
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     # It's simplest just to get the text again.
                     s = w.getAllText()
                     i, j = g.getLine(s, i)
@@ -954,7 +954,7 @@ class VimCommands:
             if i1 == i2:
                 pass
             elif i1 < i2:
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     if extend_to_line:
                         i2 = self.to_eol(s, i2)
                         if i2 < len(s) and s[i2] == '\n':
@@ -963,7 +963,7 @@ class VimCommands:
                 w.delete(i1, i2)
             else:  # i1 > i2
                 i1, i2 = i2, i1
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     if extend_to_line:
                         i1 = self.to_bol(s, i1)
                 g.app.gui.replaceClipboardWith(s[i1:i2])
@@ -1030,7 +1030,7 @@ class VimCommands:
     def vim_e(self) -> None:
         """Forward to the end of the Nth word."""
         if self.is_text_wrapper(self.w):
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 if self.state == 'visual':
                     self.do('forward-word-extend-selection')
                 else:
@@ -1084,7 +1084,7 @@ class VimCommands:
                         break
                     i -= 1
                 if match_i is not None:
-                    for z in range(i1 - match_i):
+                    for _z in range(i1 - match_i):
                         if self.state == 'visual':
                             self.do('back-char-extend-selection')
                         else:
@@ -1118,7 +1118,7 @@ class VimCommands:
                         break
                     i += 1
                 if match_i is not None:
-                    for z in range(match_i - i1 + 1):
+                    for _z in range(match_i - i1 + 1):
                         if self.state == 'visual':
                             self.do('forward-char-extend-selection')
                         else:
@@ -1204,7 +1204,7 @@ class VimCommands:
             if i == 0 or (i > 0 and s[i - 1] == '\n'):
                 pass
             else:
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     if i > 0 and s[i - 1] != '\n':
                         i -= 1
                     if i == 0 or (i > 0 and s[i - 1] == '\n'):
@@ -1236,7 +1236,7 @@ class VimCommands:
     def vim_j(self) -> None:
         """N j  Down n lines."""
         if self.is_text_wrapper(self.w):
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 if self.state == 'visual':
                     self.do('next-line-extend-selection')
                 else:
@@ -1251,7 +1251,7 @@ class VimCommands:
     def vim_k(self) -> None:
         """Cursor up N lines."""
         if self.is_text_wrapper(self.w):
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 if self.state == 'visual':
                     self.do('previous-line-extend-selection')
                 else:
@@ -1272,7 +1272,7 @@ class VimCommands:
             if i >= len(s) or s[i] == '\n':
                 pass
             else:
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     if i < len(s) and s[i] != '\n':
                         i += 1
                     if i >= len(s) or s[i] == '\n':
@@ -1303,7 +1303,7 @@ class VimCommands:
         fc.setup_ivars()
         old_node_only = fc.node_only
         fc.node_only = True
-        for z in range(self.n1 * self.n):
+        for _z in range(self.n1 * self.n):
             if not fc.findNext():
                 break
         fc.node_only = old_node_only
@@ -1317,7 +1317,7 @@ class VimCommands:
         old_reverse = fc.reverse
         fc.node_only = True
         fc.reverse = True
-        for z in range(self.n1 * self.n):
+        for _z in range(self.n1 * self.n):
             if not fc.findNext():
                 break
         fc.node_only = old_node_only
@@ -1518,7 +1518,7 @@ class VimCommands:
                         break
                     i += 1
                 if match_i is not None:
-                    for z in range(match_i - i1):
+                    for _z in range(match_i - i1):
                         if self.state == 'visual':
                             self.do('forward-char-extend-selection')
                         else:
@@ -1555,7 +1555,7 @@ class VimCommands:
                         break
                     i -= 1
                 if match_i is not None:
-                    for z in range(i1 - match_i - 1):
+                    for _z in range(i1 - match_i - 1):
                         if self.state == 'visual':
                             self.do('back-char-extend-selection')
                         else:
@@ -1616,7 +1616,7 @@ class VimCommands:
     def vim_w(self) -> None:
         """N words forward."""
         if self.is_text_wrapper(self.w):
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 if self.state == 'visual':
                     self.do('forward-word-extend-selection')
                 else:
@@ -1633,7 +1633,7 @@ class VimCommands:
         w = self.w
         if self.is_text_wrapper(w):
             delete_flag = False
-            for z in range(self.n1 * self.n):
+            for _z in range(self.n1 * self.n):
                 # It's simplest just to get the text again.
                 s = w.getAllText()
                 i = w.getInsertPoint()
@@ -1678,7 +1678,7 @@ class VimCommands:
                 w = self.w
                 i1 = i = w.getInsertPoint()
                 s = w.getAllText()
-                for z in range(self.n1 * self.n):
+                for _z in range(self.n1 * self.n):
                     i, j = g.getLine(s, i)
                     i = j + 1
                 w.setSelectionRange(i1, j, insert=j)

@@ -950,9 +950,7 @@ if 1:  # pragma: no cover
             return
         print("Note: values shown are repr(value) *except* for 'string' tokens.")
         tokens[0].dump_header()
-        for i, z in enumerate(tokens):
-            # Confusing.
-                # if (i % 20) == 0: z.dump_header()
+        for z in tokens:
             print(z.dump())
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
@@ -2083,7 +2081,7 @@ class IterativeTokenGenerator:
         result: ActionList = []
         # 1. Sync the position-only args.
         if posonlyargs:
-            for n, z in enumerate(posonlyargs):
+            for z in posonlyargs:
                 result.append((self.visit, z))
             result.append((self.op, '/'))
         # 2. Sync all args.
@@ -3035,7 +3033,7 @@ class IterativeTokenGenerator:
         result: ActionList = [
             (self.name, 'from'),
         ]
-        for i in range(node.level):
+        for _i in range(node.level):
             result.append((self.op, '.'))
         if node.module:
             result.append((self.name, node.module))
@@ -3184,7 +3182,7 @@ class IterativeTokenGenerator:
             raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
         if token:
             result.append((self.op, token.value))
-        for i, pattern in enumerate(patterns):
+        for pattern in patterns:
             result.append((self.visit, pattern))
         if token:
             val = ']' if token.value == '[' else ')'
@@ -3457,7 +3455,7 @@ class Orange:
         self.tree = tree
         self.add_token('file-start', '')
         self.push_state('file-start')
-        for i, token in enumerate(tokens):
+        for token in tokens:
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
             if self.verbatim:
@@ -3657,7 +3655,7 @@ class Orange:
         n = 1  # n = 2 if kind == 'class' else 1
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
-        for i in range(0, n + 1):
+        for _i in range(0, n + 1):
             self.add_token('line-end', '\n')
         if tail:
             self.code_list.extend(tail)
@@ -3868,7 +3866,7 @@ class Orange:
         if prev.kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        for i in range(0, n + 1):
+        for _i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
@@ -4177,7 +4175,7 @@ class Orange:
         Also add all lt tokens directly following the first lt token.
         """
         result = []
-        for i, t in enumerate(token_list):
+        for t in token_list:
             result.append(t)
             if t.kind == 'lt':
                 break
@@ -4855,8 +4853,7 @@ class TokenOrderGenerator:
         kwarg = getattr(node, 'kwarg', None)
         # 1. Sync the position-only args.
         if posonlyargs:
-            for n, z in enumerate(posonlyargs):
-                # g.trace('pos-only', ast.dump(z))
+            for z in posonlyargs:
                 self.visit(z)
             self.op('/')
         # 2. Sync all args.
@@ -5661,7 +5658,7 @@ class TokenOrderGenerator:
     def do_ImportFrom(self, node: Node) -> None:
 
         self.name('from')
-        for i in range(node.level):
+        for _i in range(node.level):
             self.op('.')
         if node.module:
             self.name(node.module)
@@ -5779,7 +5776,7 @@ class TokenOrderGenerator:
             raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
         if token:
             self.op(token.value)
-        for i, pattern in enumerate(patterns):
+        for pattern in patterns:
             self.visit(pattern)
         if token:
             self.op(']' if token.value == '[' else ')')

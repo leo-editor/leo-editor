@@ -75,7 +75,7 @@ class CommandChainDispatcher:
         This will call all funcs in chain with the same args as were given to this
         function, and return the result of first func that didn't raise
         TryNext """
-        for prio, cmd in self.chain:
+        for _prio, cmd in self.chain:
             #print "prio",prio,"cmd",cmd #dbg
             try:
                 ret = cmd(*args, **kw)
