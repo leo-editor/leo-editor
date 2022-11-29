@@ -394,7 +394,7 @@ class BaseColorizer:
             'literal3'  :('literal3_color', '#00aa00'),
             'literal4'  :('literal4_color', '#00aa00'),
             'markup'    :('markup_color',   'red'),
-            'null'      :('null_color',     None), #'black'),
+            'null'      :('null_color',     None),  # 'black'
             'operator'  :('operator_color', 'black'),
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
@@ -3073,7 +3073,7 @@ if pygments:
                 if m:
                     if action is not None:
                         # pylint: disable=unidiomatic-typecheck
-                            # EKR: Why not use isinstance?
+                        # EKR: Why not use isinstance?
                         if type(action) is _TokenType:
                             yield pos, action, m.group()
                         else:
