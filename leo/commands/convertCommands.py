@@ -177,7 +177,8 @@ class To_Python:  # pragma: no cover
             elif self.match(lines, i, '\n'):
                 i += 1
                 i = self.removeExcessWsFromLine(lines, i)
-            else: i += 1
+            else:
+                i += 1
     #@+node:ekr.20150514063305.141: *5* removeExessWsFromLine
     def removeExcessWsFromLine(self, lines: List[str], i: int) -> int:
         assert(i == 0 or lines[i - 1] == '\n')
@@ -193,7 +194,8 @@ class To_Python:  # pragma: no cover
                 assert j > i
                 lines[i:j] = [' ']
                 i += 1  # make sure we don't go past a newline!
-            else: i += 1
+            else:
+                i += 1
         return i
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
     def removeMatchingBrackets(self, lines: List[str], i: int) -> int:
@@ -433,7 +435,8 @@ class To_Python:  # pragma: no cover
             elif ch == '(' or ch == '[' or ch == '{':
                 i = self.skip_to_matching_bracket(lines, i)
                 i += 1  # skip the closing bracket.
-            else: i += 1
+            else:
+                i += 1
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
     def skip_ws(self, lines: List[str], i: int) -> int:
@@ -441,7 +444,8 @@ class To_Python:  # pragma: no cover
             c = lines[i]
             if c == ' ' or c == '\t':
                 i += 1
-            else: break
+            else:
+                break
         return i
 
     def skip_ws_and_nl(self, lines: List[str], i: int) -> int:
@@ -449,7 +453,8 @@ class To_Python:  # pragma: no cover
             c = lines[i]
             if c == ' ' or c == '\t' or c == '\n':
                 i += 1
-            else: break
+            else:
+                break
         return i
     #@-others
 #@-<< class To_Python >>
@@ -1040,7 +1045,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             i = j
                     else:
                         result.extend(prevWord)
-                else: i += 1
+                else:
+                    i += 1
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
@@ -1068,7 +1074,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         result.append(',')
                     lastWord = []
                     i += 1
-                else: i += 1
+                else:
+                    i += 1
             if result[-1] == ',':
                 del result[-1]
             result.append(')')
@@ -1158,8 +1165,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         body[i:j] = word
                         delta = len(word) - (j - i)
                         i = j + delta
-                    else: i = j
-                else: i += 1
+                    else:
+                        i = j
+                else:
+                    i += 1
             return body
         #@+node:ekr.20150514063305.174: *8* removeCasts
         def removeCasts(self, body: List[str]) -> List[str]:
@@ -1184,7 +1193,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                                 # print "removing cast:", ''.join(body[start:i])
                                 del body[start:i]
                                 i = start
-                else: i += 1
+                else:
+                    i += 1
             return body
         #@+node:ekr.20150514063305.175: *8* removeTypeNames
         def removeTypeNames(self, body: List[str]) -> List[str]:
@@ -1211,7 +1221,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         del body[i:j]
                     else:
                         i = j
-                else: i += 1
+                else:
+                    i += 1
             return body
         #@-others
     #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
@@ -2523,7 +2534,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             result.append(',')
                         lastWord = []
                         i += 1
-                    else: i += 1
+                    else:
+                        i += 1
                 if result[-1] == ',':
                     del result[-1]
                 result.append(')')
@@ -2561,7 +2573,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                                 i = j
                         else:
                             result.extend(prevWord)
-                    else: i += 1
+                    else:
+                        i += 1
                 finalResult = list("def ")
                 finalResult.extend(result)
                 return finalResult

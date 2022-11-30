@@ -889,7 +889,8 @@ class LeoApp:
                 sysVersion = f"Windows {release} {true_platform} (build {winbuild}) {sp}"
             except Exception:
                 pass
-        else: sysVersion = sys.platform
+        else:
+            sysVersion = sys.platform
         branch, junk_commit = g.gitInfo()
         author, commit, date = g.getGitVersion()
         # Compute g.app.signon.
@@ -1715,7 +1716,8 @@ class LoadManager:
                         path = path[0].upper() + path[1:]
                 path = g.os_path_finalize(path)
                 loadDir = g.os_path_dirname(path)
-            else: loadDir = None
+            else:
+                loadDir = None
             if (
                 not loadDir or
                 not g.os_path_exists(loadDir) or

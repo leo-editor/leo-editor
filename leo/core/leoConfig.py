@@ -851,7 +851,8 @@ class ParserBaseClass:
             pane = s[j:i]
             if not pane.strip():
                 pane = 'all'
-        else: pane = 'all'
+        else:
+            pane = 'all'
         i = g.skip_ws(s, i)
         if g.match(s, i, '='):
             i = g.skip_ws(s, i + 1)

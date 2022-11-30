@@ -2965,7 +2965,8 @@ class QScintillaColorizer(BaseColorizer):
                 if len(z) == 2:
                     color, style = z
                     table.append((color.strip(), style.strip()),)
-                else: g.trace(f"entry: {z}")
+                else:
+                    g.trace(f"entry: {z}")
         if not table:
             black = '#000000'
             firebrick3 = '#CD2626'

@@ -1106,7 +1106,8 @@ class Commands:
             back = p.visBack(c)
             if back and back.isVisible(c):
                 p = back
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self) -> Tuple[str, List[str], str, Optional[Tuple], Optional[Tuple]]:
@@ -1200,7 +1201,8 @@ class Commands:
             next = p.visNext(c)
             if next and next.isVisible(c):
                 p = next
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p: Position, root: Position=None, trace: bool=False) -> bool:
@@ -3360,7 +3362,8 @@ class Commands:
                         ch2 = h[n] if n < len(h) else ''
                         if ch2.isspace():
                             prefix = prefix + ch2
-                        else: break
+                        else:
+                            break
                     if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
                         return prefix + ch
         return ''

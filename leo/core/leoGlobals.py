@@ -4135,7 +4135,8 @@ def skip_braces(s: str, i: int) -> int:
         ):
             i, delta = g.skip_pp_if(s, i)
             level += delta
-        else: i += 1
+        else:
+            i += 1
     return i
 #@+node:ekr.20031218072017.3162: *4* g.skip_parens
 def skip_parens(s: str, i: int) -> int:
@@ -5292,7 +5293,8 @@ def itemsMatchingPrefixInList(s: str, aList: List[str], matchEmptyPrefix: bool=F
         pmatches = [a for a in aList if a.startswith(s)]
     elif matchEmptyPrefix:
         pmatches = aList[:]
-    else: pmatches = []
+    else:
+        pmatches = []
     if pmatches:
         pmatches.sort()
         common_prefix = reduce(g.longestCommonPrefix, pmatches)

@@ -829,7 +829,10 @@ class AutoCompleterClass:
         c = self.c
         obj, prefix = self.get_object()
         c.frame.log.clearTab('Info', wrap='word')
-        put = lambda s: self.put('', s, tabName='Info')
+
+        def put(s: str) -> None:
+            self.put('', s, tabName='Info')
+
         put(prefix)
         try:
             argspec = inspect.getargspec(obj)

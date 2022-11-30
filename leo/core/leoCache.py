@@ -624,7 +624,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key: str, default: Any=None) -> Any:
 
-        if not self.has_key(key):
+        if not self.has_key(key):  # noqa
             return default
         try:
             val = self[key]

@@ -44,10 +44,10 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.append(leo_path)
 # Leo
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
-from leo.core.leoGui import StringFindTabManager
-from leo.core.leoExternalFiles import ExternalFilesController
+from leo.core.leoCommands import Commands as Cmdr  # noqa
+from leo.core.leoNodes import Position, VNode  # noqa
+from leo.core.leoGui import StringFindTabManager  # noqa
+from leo.core.leoExternalFiles import ExternalFilesController  # noqa
 #@-<< leoserver imports >>
 #@+<< leoserver annotations >>
 #@+node:ekr.20220820155747.1: ** << leoserver annotations >>
