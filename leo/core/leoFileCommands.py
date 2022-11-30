@@ -1082,7 +1082,8 @@ class FileCommands:
             g.trace('there should be at least one top level node!')
             return None
 
-        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)  # noqa
+        def findNode(x: Any) -> VNode:
+            return fc.gnxDict.get(x, c.hiddenRootNode)
 
         # let us replace every gnx with the corresponding vnode
         for v in vnodes:
@@ -1190,7 +1191,10 @@ class FileCommands:
                 v.statusBits = statusBits
                 v.u = ua
                 vnodes.append(v)
-            pv = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)  # noqa
+
+            def pv(x: Any) -> VNode:
+                return fc.gnxDict.get(x, c.hiddenRootNode)
+
             for v in vnodes:
                 v.children = [pv(x) for x in v.children]
                 v.parents = [pv(x) for x in v.parents]
@@ -1201,7 +1205,9 @@ class FileCommands:
                     v.parents.append(c.hiddenRootNode)
         #@+node:vitalije.20170831144827.8: *6* function: priv_data
         def priv_data(gnxes: Any) -> Tuple:
-            dbrow = lambda v: (  # noqa
+
+            def dbrow(v: VNode) -> Tuple:
+                return (
                         v.gnx,
                         v.h,
                         v.b,
@@ -1211,6 +1217,7 @@ class FileCommands:
                         v.statusBits,
                         v.u
                     )
+
             return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
         #@+node:vitalije.20170831144827.9: *6* function: nosqlite_commander
         @contextmanager
@@ -1567,7 +1574,8 @@ class FileCommands:
                 g.trace('unpickleable value', repr(v.u))
             return s
 
-        dbrow = lambda v: (  # noqa
+        def dbrow(v: VNode) -> Tuple:
+            return (
                 v.gnx,
                 v.h,
                 v.b,

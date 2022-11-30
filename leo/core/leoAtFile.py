@@ -2977,7 +2977,6 @@ class FastAtRead:
         self.section_delims_pat: re.Pattern = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
-    #noflake8
 
     def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""
