@@ -3082,7 +3082,7 @@ def get_directives_dict(p: Position) -> Dict[str, str]:
     """
     d = {}
     # The headline has higher precedence because it is more visible.
-    for _kind, s in (('head', p.h), ('body', p.b)):
+    for s in (p.h, p.b):
         anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
@@ -3710,10 +3710,10 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool=True) -> str:
             if dir_ and g.os_path_exists(dir_):
                 return dir_
     table = (
-        ('c.last_dir', c and c.last_dir),
-        ('os.curdir', g.os_path_abspath(os.curdir)),
+        c and c.last_dir,
+        g.os_path_abspath(os.curdir),
     )
-    for _kind, dir_ in table:
+    for dir_ in table:
         if dir_ and g.os_path_exists(dir_):
             return dir_
     return ''

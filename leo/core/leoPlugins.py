@@ -76,7 +76,6 @@ class CommandChainDispatcher:
         function, and return the result of first func that didn't raise
         TryNext """
         for _prio, cmd in self.chain:
-            #print "prio",prio,"cmd",cmd #dbg
             try:
                 ret = cmd(*args, **kw)
                 return ret
