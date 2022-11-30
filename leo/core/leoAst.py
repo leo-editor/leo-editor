@@ -312,7 +312,7 @@ class LeoGlobals:  # pragma: no cover
         b: bytes = s
         try:
             s2 = b.decode(encoding, 'strict')
-        except(UnicodeDecodeError, UnicodeError):
+        except(UnicodeDecodeError, UnicodeError):  # noqa
             s2 = b.decode(encoding, 'replace')
             print(f"{tag}: unicode error. encoding: {encoding!r}, s2:\n{s2!r}")
             g.trace(g.callers())

@@ -206,7 +206,7 @@ class ChapterController:
             if 0:  # To trace cause of failed unit test.
                 g.trace('=====', s, g.callers())
             if killUnitTest:
-                assert False, s
+                assert False, s  # noqa
         else:
             g.note(f"Note: {s}")
 

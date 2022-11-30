@@ -5376,7 +5376,7 @@ def checkUnicode(s: str, encoding: str=None) -> str:
         encoding = 'utf-8'
     try:
         s = s.decode(encoding, 'strict')
-    except(UnicodeDecodeError, UnicodeError):
+    except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         g.trace(g.callers())
@@ -5498,7 +5498,7 @@ def toUnicode(s: Any, encoding: str=None, reportErrors: bool=False) -> str:
         encoding = 'utf-8'
     try:
         s = s.decode(encoding, 'strict')
-    except(UnicodeDecodeError, UnicodeError):
+    except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if reportErrors:

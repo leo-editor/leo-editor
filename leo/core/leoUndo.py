@@ -1273,7 +1273,7 @@ class Undoer:
                 p.v.selectionStart, p.v.selectionLength = (i, j - i)
         else:
             if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"
+                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
             g.trace('Not a text wrapper')
             p.v.insertSpot = 0
             p.v.selectionStart, p.v.selectionLength = (0, 0)

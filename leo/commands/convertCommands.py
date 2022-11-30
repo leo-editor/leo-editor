@@ -410,7 +410,7 @@ class To_Python:  # pragma: no cover
         elif self.match(lines, i, "/*"):
             j = self.skip_c_block_comment(lines, i)
         else:
-            assert False
+            assert False  # noqa
         return j
     #@+node:ekr.20150514063305.158: *5* skip_to_matching_bracket
     def skip_to_matching_bracket(self, lines: List[str], i: int) -> int:
@@ -422,7 +422,7 @@ class To_Python:  # pragma: no cover
         elif ch == '[':
             delim = ']'
         else:
-            assert False
+            assert False  # noqa
         i += 1
         while i < len(lines):
             ch = lines[i]
@@ -895,7 +895,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             elif self.match_word(lines, i, "for"):
                 i += 3
             else:
-                assert False
+                assert False  # noqa
             # Make sure one space follows the keyword.
             k = i
             i = self.skip_ws(lines, i)
@@ -2358,7 +2358,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 5
                 elif self.match_word(lines, i, "for"):
                     i += 3
-                else: assert False, 'not a keyword'
+                else:
+                    assert False, 'not a keyword'  # noqa
                 # Make sure one space follows the keyword.
                 k = i
                 i = self.skip_ws(lines, i)

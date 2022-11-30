@@ -781,7 +781,7 @@ class AtFile:
             g.trace('can not happen: at.errors > 0', g.callers())
             e = at.encoding
             if g.unitTesting:
-                assert False, g.callers()
+                assert False, g.callers()  # noqa
         else:
             at.initReadLine(s)
             old_encoding = at.encoding

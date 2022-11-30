@@ -1614,7 +1614,7 @@ class Commands:
             else:
                 print('<no p>')
             if g.unitTesting:
-                assert False, g.callers()
+                assert False, g.callers()  # noqa
 
         if p.hasParent():
             n = p.childIndex()

@@ -3096,7 +3096,7 @@ if pygments:
                         elif new_state == '#push':
                             statestack.append(statestack[-1])
                         else:
-                            assert False, f"wrong state def: {new_state!r}"
+                            assert False, f"wrong state def: {new_state!r}"  # noqa
                         statetokens = tokendefs[statestack[-1]]
                     break
             else:
