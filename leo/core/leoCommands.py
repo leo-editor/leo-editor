@@ -1056,7 +1056,7 @@ class Commands:
         position. So c.p.copy() is never necessary.
         """
         c = self
-        if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition'):
+        if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition', None):
             # *Always* return a copy.
             return c._currentPosition.copy()
         return c.rootPosition()
@@ -2551,7 +2551,7 @@ class Commands:
         def minibufferCallback(event: Event, function: Callable=function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
-                cm = getattr(self, 'theContextMenuController')
+                cm = self.theContextMenuController
                 keywords = cm.mb_keywords
             else:
                 cm = keywords = None

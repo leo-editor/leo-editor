@@ -1196,7 +1196,7 @@ class LeoServer:
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
             # Patch up quick-search controller to the commander
-            setattr(c, 'patched_quicksearch_controller', cc)
+            c.patched_quicksearch_controller = cc
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1755,11 +1755,11 @@ class LeoServer:
             fileOnly = searchSettings.get('file_only', False)
             suboutlineOnly = searchSettings.get('suboutline_only', False)
             if not nodeOnly and not suboutlineOnly and not fileOnly:
-                setattr(find, 'entire_outline', True)
+                find.entire_outline = True
                 if not w.isChecked():
                     w.toggle()
             else:
-                setattr(find, 'entire_outline', False)
+                find.entire_outline = False
                 if w.isChecked():
                     w.toggle()
         except Exception as e:

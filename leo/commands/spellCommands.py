@@ -511,9 +511,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         """Simulate pressing the 'Change, Find' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
-            # A workaround for a pylint warning:
-            # self.handler.changeThenFind()
-            f = getattr(self.handler, 'changeThenFind')
+            f = self.handler.changeThenFind
             f()
         else:
             self.openSpellTab()
