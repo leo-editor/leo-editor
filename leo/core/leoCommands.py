@@ -1052,13 +1052,14 @@ class Commands:
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
         """
-        Return a copy of the presently selected position or a new null
-        position. So c.p.copy() is never necessary.
+        Return a copy of the presently selected position or None.
+        So c.p.copy() is never necessary.
         """
         c = self
-        if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition', None):
+        if getattr(c, '_currentPosition', None):
             # *Always* return a copy.
             return c._currentPosition.copy()
+        # Returns a new copy of the root position or None
         return c.rootPosition()
 
     # For compatibility with old scripts...
@@ -1233,13 +1234,8 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Optional[Position]:
-        """Return the root position.
-
-        Root position is the first position in the document. Other
-        top level positions are siblings of this node.
-        """
+        """Return a new *copy* of the root position or None."""
         c = self
-        # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
