@@ -722,7 +722,7 @@ class AutoCompleterClass:
         #
         # Find the global line, and compute offsets.
         source_lines = g.splitLines(source)
-        for jedi_line, g_line in enumerate(source_lines[n0:]):
+        for jedi_line, g_line in enumerate(source_lines[n0:]):  # noqa: B007: jedi_line used below.
             if line.lstrip() == g_line.lstrip():
                 # Adjust the column.
                 indent1 = len(line) - len(line.lstrip())
@@ -829,7 +829,10 @@ class AutoCompleterClass:
         c = self.c
         obj, prefix = self.get_object()
         c.frame.log.clearTab('Info', wrap='word')
-        put = lambda s: self.put('', s, tabName='Info')
+
+        def put(s: str) -> None:
+            self.put('', s, tabName='Info')
+
         put(prefix)
         try:
             argspec = inspect.getargspec(obj)

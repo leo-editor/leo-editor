@@ -1124,7 +1124,7 @@ class Position:
             g.trace('child', child)
             g.trace('** callers:', g.callers())
             if g.unitTesting:
-                assert False, 'children[%s] != p.v'
+                assert False, 'children[%s] != p.v'  # noqa
         else:
             g.trace(
                 f"**can not happen: bad child index: {n}, "
@@ -1134,7 +1134,7 @@ class Position:
             g.trace('parent_v', parent_v, 'child', child)
             g.trace('** callers:', g.callers())
             if g.unitTesting:
-                assert False, f"bad child index: {n}"
+                assert False, f"bad child index: {n}"  # noqa
     #@+node:ekr.20080416161551.199: *3* p.moveToX
     #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().

@@ -130,7 +130,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 print(s.rstrip())
             else:
                 # Use the output area.
-                xdb = getattr(g.app, 'xdb')
+                xdb = getattr(g.app, 'xdb', None)
                 if xdb:
                     xdb.write(s)
                 else:

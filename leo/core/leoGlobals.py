@@ -2887,7 +2887,7 @@ def printTimes(times: List) -> None:
 
     times: an array of times (calls to time.process_time()).
     """
-    for n, junk in enumerate(times[:-1]):
+    for n, _junk in enumerate(times[:-1]):
         t = times[n + 1] - times[n]
         if t > 0.1:
             g.trace(f"*** {n} {t:5.4f} sec.")
@@ -3082,7 +3082,7 @@ def get_directives_dict(p: Position) -> Dict[str, str]:
     """
     d = {}
     # The headline has higher precedence because it is more visible.
-    for kind, s in (('head', p.h), ('body', p.b)):
+    for s in (p.h, p.b):
         anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
@@ -3624,7 +3624,7 @@ def get_files_in_directory(directory: str, kinds: List=None, recursive: bool=Tru
             kinds = ['*.py']
         if recursive:
             # Works for all versions of Python.
-            for root, dirnames, filenames in os.walk(directory):
+            for root, _dirnames, filenames in os.walk(directory):
                 for kind in kinds:
                     for filename in fnmatch.filter(filenames, kind):
                         files.append(os.path.join(root, filename))
@@ -3710,10 +3710,10 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool=True) -> str:
             if dir_ and g.os_path_exists(dir_):
                 return dir_
     table = (
-        ('c.last_dir', c and c.last_dir),
-        ('os.curdir', g.os_path_abspath(os.curdir)),
+        c and c.last_dir,
+        g.os_path_abspath(os.curdir),
     )
-    for kind, dir_ in table:
+    for dir_ in table:
         if dir_ and g.os_path_exists(dir_):
             return dir_
     return ''
@@ -4135,7 +4135,8 @@ def skip_braces(s: str, i: int) -> int:
         ):
             i, delta = g.skip_pp_if(s, i)
             level += delta
-        else: i += 1
+        else:
+            i += 1
     return i
 #@+node:ekr.20031218072017.3162: *4* g.skip_parens
 def skip_parens(s: str, i: int) -> int:
@@ -4361,7 +4362,7 @@ def see_more_lines(s: str, ins: int, n: int=4) -> int:
     """
     # Show more lines, if they exist.
     if n > 0:
-        for z in range(n):
+        for _z in range(n):
             if ins >= len(s):
                 break
             i, j = g.getLine(s, ins)
@@ -5292,7 +5293,8 @@ def itemsMatchingPrefixInList(s: str, aList: List[str], matchEmptyPrefix: bool=F
         pmatches = [a for a in aList if a.startswith(s)]
     elif matchEmptyPrefix:
         pmatches = aList[:]
-    else: pmatches = []
+    else:
+        pmatches = []
     if pmatches:
         pmatches.sort()
         common_prefix = reduce(g.longestCommonPrefix, pmatches)
@@ -5376,7 +5378,7 @@ def checkUnicode(s: str, encoding: str=None) -> str:
         encoding = 'utf-8'
     try:
         s = s.decode(encoding, 'strict')
-    except(UnicodeDecodeError, UnicodeError):
+    except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         g.trace(g.callers())
@@ -5498,7 +5500,7 @@ def toUnicode(s: Any, encoding: str=None, reportErrors: bool=False) -> str:
         encoding = 'utf-8'
     try:
         s = s.decode(encoding, 'strict')
-    except(UnicodeDecodeError, UnicodeError):
+    except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if reportErrors:

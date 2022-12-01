@@ -1052,13 +1052,14 @@ class Commands:
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
         """
-        Return a copy of the presently selected position or a new null
-        position. So c.p.copy() is never necessary.
+        Return a copy of the presently selected position or None.
+        So c.p.copy() is never necessary.
         """
         c = self
-        if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition'):
+        if getattr(c, '_currentPosition', None):
             # *Always* return a copy.
             return c._currentPosition.copy()
+        # Returns a new copy of the root position or None
         return c.rootPosition()
 
     # For compatibility with old scripts...
@@ -1105,7 +1106,8 @@ class Commands:
             back = p.visBack(c)
             if back and back.isVisible(c):
                 p = back
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self) -> Tuple[str, List[str], str, Optional[Tuple], Optional[Tuple]]:
@@ -1199,7 +1201,8 @@ class Commands:
             next = p.visNext(c)
             if next and next.isVisible(c):
                 p = next
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p: Position, root: Position=None, trace: bool=False) -> bool:
@@ -1233,13 +1236,8 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Optional[Position]:
-        """Return the root position.
-
-        Root position is the first position in the document. Other
-        top level positions are siblings of this node.
-        """
+        """Return a new *copy* of the root position or None."""
         c = self
-        # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
@@ -1618,7 +1616,7 @@ class Commands:
             else:
                 print('<no p>')
             if g.unitTesting:
-                assert False, g.callers()
+                assert False, g.callers()  # noqa
 
         if p.hasParent():
             n = p.childIndex()
@@ -2551,7 +2549,7 @@ class Commands:
         def minibufferCallback(event: Event, function: Callable=function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
-                cm = getattr(self, 'theContextMenuController')
+                cm = self.theContextMenuController
                 keywords = cm.mb_keywords
             else:
                 cm = keywords = None
@@ -3364,7 +3362,8 @@ class Commands:
                         ch2 = h[n] if n < len(h) else ''
                         if ch2.isspace():
                             prefix = prefix + ch2
-                        else: break
+                        else:
+                            break
                     if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
                         return prefix + ch
         return ''
@@ -4151,7 +4150,7 @@ class Commands:
                 c.setCurrentPosition(c.rootPosition())
 
         def redo() -> None:
-            for pgnx, i, chgnx in u.getBead(u.bead + 1).data:
+            for pgnx, i, _chgnx in u.getBead(u.bead + 1).data:
                 v = gnx2v[pgnx]
                 ch = v.children.pop(i)
                 ch.parents.remove(v)

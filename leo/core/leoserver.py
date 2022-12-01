@@ -44,10 +44,10 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.append(leo_path)
 # Leo
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
-from leo.core.leoGui import StringFindTabManager
-from leo.core.leoExternalFiles import ExternalFilesController
+from leo.core.leoCommands import Commands as Cmdr  # noqa
+from leo.core.leoNodes import Position, VNode  # noqa
+from leo.core.leoGui import StringFindTabManager  # noqa
+from leo.core.leoExternalFiles import ExternalFilesController  # noqa
 #@-<< leoserver imports >>
 #@+<< leoserver annotations >>
 #@+node:ekr.20220820155747.1: ** << leoserver annotations >>
@@ -1196,7 +1196,7 @@ class LeoServer:
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
             # Patch up quick-search controller to the commander
-            setattr(c, 'patched_quicksearch_controller', cc)
+            c.patched_quicksearch_controller = cc
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1755,11 +1755,11 @@ class LeoServer:
             fileOnly = searchSettings.get('file_only', False)
             suboutlineOnly = searchSettings.get('suboutline_only', False)
             if not nodeOnly and not suboutlineOnly and not fileOnly:
-                setattr(find, 'entire_outline', True)
+                find.entire_outline = True
                 if not w.isChecked():
                     w.toggle()
             else:
-                setattr(find, 'entire_outline', False)
+                find.entire_outline = False
                 if w.isChecked():
                     w.toggle()
         except Exception as e:
@@ -2658,7 +2658,7 @@ class LeoServer:
         c = self._check_c()
         n = param.get("n", 0)
         if n:
-            for z in range(n):
+            for _z in range(n):
                 c.selectVisNext()
         else:
             parent = c.p.parent()
@@ -2684,7 +2684,7 @@ class LeoServer:
         c = self._check_c()
         n = param.get("n", 0)
         if n:
-            for z in range(n):
+            for _z in range(n):
                 c.selectVisBack()
         else:
             parent = c.p.parent()
@@ -2792,7 +2792,7 @@ class LeoServer:
         c = self._check_c()
         u = c.undoer
         total = param.get('repeat', 1)  # Facultative repeat redo count
-        for i in range(total):
+        for _i in range(total):
             if u.canRedo():
                 u.redo()
         return self._make_response()
@@ -2994,7 +2994,7 @@ class LeoServer:
         c = self._check_c()
         u = c.undoer
         total = param.get('repeat', 1)  # Facultative repeat undo count
-        for i in range(total):
+        for _i in range(total):
             if u.canUndo():
                 u.undo()
         # Félix: Caller can get focus using other calls.

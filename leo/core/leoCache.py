@@ -624,7 +624,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key: str, default: Any=None) -> Any:
 
-        if not self.has_key(key):
+        if not self.has_key(key):  # noqa
             return default
         try:
             val = self[key]
@@ -634,7 +634,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
     def has_key(self, key: str) -> bool:
         sql = 'select 1 from cachevalues where key=?;'
-        for row in self.conn.execute(sql, (key,)):
+        for _row in self.conn.execute(sql, (key,)):
             return True
         return False
     #@+node:vitalije.20170716201700.18: *3* items

@@ -126,8 +126,8 @@ def main() -> None:
         def some_emission(self) -> None:
             self.emit('the_emission', 12, [1, 2, 3])
 
-    def hear_emit(n: int, l: Any) -> None:
-        print(f"Got {n} {l}")
+    def hear_emit(n: int, obj: Any) -> None:
+        print(f"Got {n} {obj}")
 
     emitter = Emitter()
     emitter.connect('the_emission', hear_emit)

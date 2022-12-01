@@ -1306,7 +1306,7 @@ class LeoLog:
 
     def put_html_links(self, s: str) -> bool:
         """
-        If *any* line is s contains a matches against known error patterns,
+        If *any* line in s contains a matches against known error patterns,
         then output *all* lines in s to the log, and return True.
         Otherwise, return False
         """

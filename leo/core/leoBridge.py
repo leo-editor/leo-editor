@@ -235,7 +235,7 @@ class BridgeController:
             log.enabled = True  # Allow prints from NullLog.
             log.logInited = True  # Bug fix: 2012/10/17.
         else:
-            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"
+            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"  # noqa
     #@+node:ekr.20070227093629.4: *4* bridge.isValidPython
     def isValidPython(self) -> bool:
         if sys.platform == 'cli':

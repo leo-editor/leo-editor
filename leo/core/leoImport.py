@@ -423,7 +423,7 @@ class LeoImportCommands:
                 g.match_word(s, i, "@code")  # 2/25/03
             ):
                 return i, result
-             # 2019/09/12
+            # 2019/09/12
             lt = "<<"
             rt = ">>="
             if g.match(s, i, lt) and g.find_on_line(s, i, rt) > -1:
@@ -1023,7 +1023,8 @@ class LeoImportCommands:
             i = g.skip_ws_and_nl(s, i)
             if self.isModuleStart(s, i) or g.match(s, i, lb):
                 break
-            else: i = g.skip_line(s, i)
+            else:
+                i = g.skip_line(s, i)
             assert i > progress
         j = g.skip_ws(s, 0)
         if j < i:
@@ -1035,7 +1036,8 @@ class LeoImportCommands:
                 i = g.skip_ws_and_nl(s, i)
                 if self.isModuleStart(s, i):
                     break
-                else: i = g.skip_line(s, i)
+                else:
+                    i = g.skip_line(s, i)
                 assert i > progress
             self.createHeadline(parent, s[j:i], g.angleBrackets(" @ "))
 
@@ -1301,7 +1303,8 @@ class LeoImportCommands:
                         doc += "\n\n"
                     s = s[:start] + doc + s[end:]
                     i = start + len(doc)
-            else: i = g.skip_line(s, i)
+            else:
+                i = g.skip_line(s, i)
             assert i > progress
         #@-<< Remove most newlines from @space and @* sections >>
         #@+<< Replace abbreviated names with full names >>
@@ -1599,7 +1602,8 @@ class MORE_Importer:
                     p.setBodyString(body)
                 #@-<< Add the lines to the body text of p >>
                 p.setDirty()
-            else: index += 1
+            else:
+                index += 1
             assert progress < index
         if theRoot:
             theRoot.setDirty()

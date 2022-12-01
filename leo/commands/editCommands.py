@@ -1481,7 +1481,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                         ch = prev[n - count - 1]
                         if ch != ' ':
                             break
-                        else: count += 1
+                        else:
+                            count += 1
                     # Make sure we actually delete something.
                     i = ins - (max(1, count))
                     w.delete(i, ins)
@@ -3246,7 +3247,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 line = s[i:j]
                 if line.strip():
                     break
-            else: return
+            else:
+                return
         # Select from i to the end of the paragraph.
         self.selectParagraphHelper(w, i)
     #@+node:ekr.20150514063305.326: *5* ec.selectParagraphHelper
@@ -3298,7 +3300,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         for z in txt:
             if z == '\n':
                 lines += 1
-            else: chars += 1
+            else:
+                chars += 1
         k.setLabelGrey(
             f"Region has {lines} lines, "
             f"{chars} character{g.plural(chars)}")

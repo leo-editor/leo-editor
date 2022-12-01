@@ -889,7 +889,8 @@ class LeoApp:
                 sysVersion = f"Windows {release} {true_platform} (build {winbuild}) {sp}"
             except Exception:
                 pass
-        else: sysVersion = sys.platform
+        else:
+            sysVersion = sys.platform
         branch, junk_commit = g.gitInfo()
         author, commit, date = g.getGitVersion()
         # Compute g.app.signon.
@@ -1715,7 +1716,8 @@ class LoadManager:
                         path = path[0].upper() + path[1:]
                 path = g.os_path_finalize(path)
                 loadDir = g.os_path_dirname(path)
-            else: loadDir = None
+            else:
+                loadDir = None
             if (
                 not loadDir or
                 not g.os_path_exists(loadDir) or
@@ -2419,24 +2421,23 @@ class LoadManager:
     def createImporterData(self) -> None:
         """Create the data structures describing importer plugins."""
         # Allow plugins to be defined in ~/.leo/plugins.
-        plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
-        plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            pattern = g.os_path_finalize_join(
-                g.app.loadDir, '..', 'plugins', 'importers', '*.py')
-            for fn in g.glob_glob(pattern):
-                sfn = g.shortFileName(fn)
+        for pattern in (
+            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
+            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),  # leo/plugins/importers.
+        ):
+            filenames = g.glob_glob(pattern)
+            for filename in filenames:
+                sfn = g.shortFileName(filename)
                 if sfn != '__init__.py':
                     try:
                         module_name = sfn[:-3]
-                        # Important: use importlib to give imported modules
-                        # their fully qualified names.
-                        m = importlib.import_module(
-                            f"leo.plugins.importers.{module_name}")
+                        # Important: use importlib to give imported modules their fully qualified names.
+                        m = importlib.import_module(f"leo.plugins.importers.{module_name}")
                         self.parse_importer_dict(sfn, m)
                         # print('createImporterData', m.__name__)
                     except Exception:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
+                        g.printObj(filenames)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn: str, m: Any) -> None:
         """
@@ -2477,13 +2478,14 @@ class LoadManager:
             g.app.debug_dict['createWritersData'] = True
         g.app.writersDispatchDict = {}
         g.app.atAutoWritersDict = {}
-        plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
-        plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            pattern = g.os_path_finalize_join(g.app.loadDir,
-                '..', 'plugins', 'writers', '*.py')
-            for fn in g.glob_glob(pattern):
-                sfn = g.shortFileName(fn)
+
+        # Allow plugins to be defined in ~/.leo/plugins.
+        for pattern in (
+            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
+            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'writers', '*.py'),  # leo/plugins/writers
+        ):
+            for filename in g.glob_glob(pattern):
+                sfn = g.shortFileName(filename)
                 if sfn != '__init__.py':
                     try:
                         # Important: use importlib to give imported modules their fully qualified names.

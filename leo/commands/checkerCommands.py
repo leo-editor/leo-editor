@@ -341,9 +341,6 @@ class Flake8Command:
         """Run flake8 on all files in paths."""
         c, tag = self.c, 'flake8'
         for root in roots:
-            # @noflake8
-            if any(z.strip().startswith('#noflake8') for z in g.splitLines(root.b)):
-                continue
             path = g.fullPath(c, root)
             if path and os.path.exists(path):
                 g.es_print(f"{tag}: {path}")

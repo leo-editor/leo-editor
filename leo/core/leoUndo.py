@@ -321,12 +321,11 @@ class Undoer:
             u.setRedoType("Can't Redo")
         u.cutStack()
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
-    def restoreTree(self, treeInfo: g.Bunch) -> None:
-        """Use the tree info to restore all VNode data,
-        including all links."""
+    def restoreTree(self, treeInfo: List[g.Bunch]) -> None:
+        """Use the tree info to restore all VNode data, including all links."""
         u = self
         # This effectively relinks all vnodes.
-        for v, vInfo in treeInfo:
+        for vInfo in treeInfo:
             u.restoreVnodeUndoInfo(vInfo)
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
     def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:
@@ -350,7 +349,7 @@ class Undoer:
             v.unknownAttributes = uA
             v._p_changed = True
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
-    def saveTree(self, p: Position, treeInfo: g.Bunch=None) -> g.Bunch:
+    def saveTree(self, p: Position, treeInfo: List[g.Bunch]=None) -> List[g.Bunch]:
         """Return a list of tuples with all info needed to handle a general undo operation."""
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
@@ -377,7 +376,7 @@ class Undoer:
         if topLevel:
             treeInfo = []
         # Add info for p.v.  Duplicate info is harmless.
-        data = (p.v, u.createVnodeUndoInfo(p.v))
+        data = u.createVnodeUndoInfo(p.v)
         treeInfo.append(data)
         # Recursively add info for the subtree.
         child = p.firstChild()
@@ -1274,7 +1273,7 @@ class Undoer:
                 p.v.selectionStart, p.v.selectionLength = (i, j - i)
         else:
             if g.unitTesting:
-                assert False, f"Not a text wrapper: {g.callers()}"
+                assert False, f"Not a text wrapper: {g.callers()}"  # noqa
             g.trace('Not a text wrapper')
             p.v.insertSpot = 0
             p.v.selectionStart, p.v.selectionLength = (0, 0)

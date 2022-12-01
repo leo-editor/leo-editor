@@ -851,7 +851,8 @@ class ParserBaseClass:
             pane = s[j:i]
             if not pane.strip():
                 pane = 'all'
-        else: pane = 'all'
+        else:
+            pane = 'all'
         i = g.skip_ws(s, i)
         if g.match(s, i, '='):
             i = g.skip_ws(s, i + 1)
@@ -1941,17 +1942,16 @@ class LocalConfigManager:
     [T] theme .leo file.
     '''
         c = self.c
+        if g.unitTesting:
+            return
         legend = textwrap.dedent(legend)
         result = []
-        for name, val, c, letter in g.app.config.config_iter(c):
+        for name, val, _c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"
             result.append(f"{kind} {name} = {val}\n")
         # Use a single g.es statement.
         result.append('\n' + legend)
-        if g.unitTesting:
-            pass  # print(''.join(result))
-        else:
-            g.es_print('', ''.join(result), tabName='Settings')
+        g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p: Position, kind: str, name: str, val: Any, warn: bool=True) -> None:
         """
