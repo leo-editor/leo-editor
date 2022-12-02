@@ -3115,7 +3115,15 @@ class FastAtRead:
                 #@+<< handle verbatim line >>
                 #@+node:ekr.20211102052518.1: *4* << handle verbatim line >>
                 # Previous line was verbatim *sentinel*. Append this line as it is.
+
+                if 1:  ### Experimental
+                    # Adjust indentation.
+                    if indent and line[:indent].isspace() and len(line) > indent:
+                        line = line[indent:]
+
                 body.append(line)
+
+
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
