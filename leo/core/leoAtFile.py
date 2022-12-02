@@ -1839,7 +1839,8 @@ class AtFile:
         if isSection:
             return False  # A section definition node.
         if at.sentinels:
-            # @ignore must not stop expansion here!
+                #@verbatim
+                # @ignore must not stop expansion here!
             return True
         if p.isAtIgnoreNode():  # pragma: no cover
             g.error('did not write @ignore node', p.v.h)
@@ -1882,12 +1883,22 @@ class AtFile:
     def putCodeLine(self, s: str, i: int) -> None:
         """Put a normal code line."""
         at = self
-        # Put @verbatim sentinel if required.
-        k = g.skip_ws(s, i)
-        if g.match(s, k, self.startSentinelComment + '@'):
-            self.putSentinel('@verbatim')
         j = g.skip_line(s, i)
+        k = g.skip_ws(s, i)
+        ws = s[i:k]
         line = s[i:j]
+
+        # Put and @verbatim sentinel if the next line looks like another sentinel.
+        if at.language == 'python':  # New in Leo 6.7.2.
+            # Python sentinels *only* may contain a splace between '#' and '@'
+            assert self.startSentinelComment == '#'
+            if g.match(s, k, '#@') or g.match(s, k, '# @'):
+                # For compatiblility with Black, match the indentation of the *next* line.
+                at.os(ws)
+                self.putSentinel("@verbatim")
+        elif g.match(s, k, self.startSentinelComment + "@"):
+            self.putSentinel("@verbatim")
+
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
             at.putIndent(at.indent, line)
@@ -2074,9 +2085,9 @@ class AtFile:
         if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # #2194. The following would follow the black convention,
-            #        but doing so is a dubious idea.
-                # at.os('  ')
+            # #2194. #2983: Put Black sentinels if --put-black-sentinels is in effect.
+            if 0:  ### Not yet.
+                at.os(' ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
             #   double all '@' signs except the first.
@@ -2995,11 +3006,13 @@ class FastAtRead:
             ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
             ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
             ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
-            # @node
+                #@verbatim
+                # @node
             ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
             ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
             ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
-            # @section-delims
+                #@verbatim
+                # @section-delims
             ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
@@ -3055,11 +3068,14 @@ class FastAtRead:
         section_delim1 = '<<'
         section_delim2 = '>>'
         section_reference_seen = False
-        sentinel = comment_delim1 + '@'  # Faster than a regex!
+        # Defining these constants is faster than using a regex!
+        sentinel = comment_delim1 + '@'
+        sentinel2 = comment_delim1 + ' @'
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: List[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         # The spelling of at-verbatim sentinel
-        verbatim_line = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
+        verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
+        verbatim_line2 = comment_delim1 + ' @verbatim' + comment_delim2
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3104,7 +3120,8 @@ class FastAtRead:
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if line == verbatim_line:  # <delim>@verbatim.
+            if strip_line in (verbatim_line, verbatim_line2):
+                # <delim>@verbatim or <delim> @verbatim.
                 verbatim = True
                 continue
             #@+<< finalize line >>
@@ -3253,7 +3270,8 @@ class FastAtRead:
                 #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
                 m = self.doc_pat.match(line)
                 if m:
-                    # @+at or @+doc?
+                                    #@verbatim
+                                    # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
                     doc2 = m.group(2) or ''  # Trailing text.
                     if doc2:
@@ -3273,7 +3291,8 @@ class FastAtRead:
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
             m = self.all_pat.match(line)
             if m:
-                # @all tells Leo's *write* code not to check for undefined sections.
+                            #@verbatim
+                            # @all tells Leo's *write* code not to check for undefined sections.
                 # Here, in the read code, we merely need to add it to the body.
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
                 if m.group(2) == '+':  # opening sentinel
@@ -3397,7 +3416,8 @@ class FastAtRead:
             # These sections must be last, in this order.
             #@+<< handle remaining @@ lines >>
             #@+node:ekr.20180603135602.1: *4* << handle remaining @@ lines >>
-            # @first, @last, @delims and @comment generate @@ sentinels,
+                        #@verbatim
+                        # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
             if line.startswith(comment_delim1 + '@@'):
                 ii = len(comment_delim1) + 1  # on second '@'
@@ -3428,15 +3448,21 @@ class FastAtRead:
             # This *can* happen after the git-diff or refresh-from-disk commands.
             #
             if 1:  # pragma: no cover (defensive)
+
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
-                # A useful trace.
-                g.trace(
-                    f"{g.shortFileName(self.path)}: "
-                    f"warning: inserting unexpected line: {line.rstrip()!r}"
-                )
-                # #2213: *Do* insert the line, with a warning.
-                body.append(line)
+                assert strip_line.startswith((sentinel, sentinel2)), repr(line)
+                
+                # Defensive: make *sure* we ignore verbatim lines.
+                if strip_line in (verbatim_line, verbatim_line2):
+                    g.trace('Ignore bad @verbatim sentinel', repr(line))
+                else:
+                    # A useful trace.
+                    g.trace(
+                        f"{g.shortFileName(self.path)}: "
+                        f"warning: inserting unexpected line: {line.rstrip()!r}"
+                    )
+                    # #2213: *Do* insert the line, with a warning.
+                    body.append(line)
             #@-<< handle remaining @ lines >>
         else:
             # No @-leo sentinel!
