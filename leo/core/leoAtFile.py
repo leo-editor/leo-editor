@@ -1888,13 +1888,16 @@ class AtFile:
         line = s[i:j]
 
         def put_verbatim_sentinel() -> None:
-            """Put an @verbatim sentinel without indentation."""
-            old_indent = at.indent
-            try:
-                at.indent = 0
+            """Put an @verbatim sentinel with or without indentation."""
+            if g.app.write_black_sentinels:
                 self.putSentinel("@verbatim")
-            finally:
-                at.indent = old_indent
+            else:
+                old_indent = at.indent
+                try:
+                    at.indent = 0
+                    self.putSentinel("@verbatim")
+                finally:
+                    at.indent = old_indent
 
         # Put an @verbatim sentinel if the next line looks like another sentinel.
         if at.language == 'python':  # New in Leo 6.7.2.
@@ -1903,9 +1906,6 @@ class AtFile:
                 put_verbatim_sentinel()
         elif g.match(s, k, self.startSentinelComment + "@"):
             put_verbatim_sentinel()
-
-        if False:  ### line.strip() == '# @ignore must not stop expansion here!':
-            g.pdb()
 
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
@@ -2093,8 +2093,8 @@ class AtFile:
         if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # #2194. #2983: Put Black sentinels if --put-black-sentinels is in effect.
-            if 0:  ### Not yet.
+            # #2194. #2983: Put Black sentinels if --black-sentinels is in effect.
+            if g.app.write_black_sentinels:
                 at.os(' ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
