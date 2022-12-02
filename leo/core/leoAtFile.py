@@ -112,9 +112,7 @@ class AtFile:
         self.language: str = None
         self.output_newline = g.getOutputNewline(c=c)
         self.page_width: int = None
-        self.root: Position = (
-            None  # The root (a position) of tree being read or written.
-        )
+        self.root: Position = None  # The root (a position) of tree being read or written.
         self.startSentinelComment = ""
         self.endSentinelComment = ""
         self.tab_width: int = c.tab_width or -4
@@ -125,9 +123,7 @@ class AtFile:
 
         self.initCommonIvars()
         self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        self.cloneSibCount = (
-            0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        )
+        self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0  # For perfect import.
         self.docOut: List[str] = []  # The doc part being accumulated.
         self.done = False  # True when @-leo seen.
@@ -170,9 +166,7 @@ class AtFile:
         #
         # Set other ivars.
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
-            'force-newlines-in-at-nosent-bodies'
-        )
-        # For at.putBody only.
+            'force-newlines-in-at-nosent-bodies')  # For at.putBody only.
         at.outputList = []  # For stream output.
         # Sets the following ivars:
         # at.encoding
@@ -248,7 +242,8 @@ class AtFile:
 
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(
-        self, fromString: str=None
+        self,
+        fromString: str=None
     ) -> Union[Tuple[str, str], Tuple[None, None]]:
         """
         Open the file given by at.root.
@@ -379,7 +374,9 @@ class AtFile:
 
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(
-        self, root: Position, all: bool
+        self,
+        root: Position,
+        all: bool
     ) -> List[Position]:  # pragma: no cover
 
         c = self.c
@@ -689,7 +686,9 @@ class AtFile:
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(
-        self, root: Position, headline: Any
+        self,
+        root: Position,
+        headline: Any
     ) -> Position:  # pragma: no cover
         at = self
         if at.importRootSeen:
@@ -722,18 +721,16 @@ class AtFile:
         readVersion, readVersion5 = None, None
         new_df, start, end, isThin = False, '', '', False
         # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
-        pattern = re.compile(
-            r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)'
-        )
-        # The old code weirdly allowed '.' in version numbers.
-        # group 1: opening delim
-        # group 2: -ver=
-        # group 3: version number
-        # group(4): -thin
-        # group(5): -encoding=utf-8,.
-        # group(6): utf-8,
-        # group(7): .
-        # group(8): closing delim.
+        pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
+            # The old code weirdly allowed '.' in version numbers.
+            # group 1: opening delim
+            # group 2: -ver=
+            # group 3: version number
+            # group(4): -thin
+            # group(5): -encoding=utf-8,.
+            # group(6): utf-8,
+            # group(7): .
+            # group(8): closing delim.
         m = pattern.match(s)
         valid = bool(m)
         if valid:
@@ -1028,7 +1025,10 @@ class AtFile:
 
     #@+node:ekr.20041005105605.157: *5* at.putFile
     def putFile(
-        self, root: Position, fromString: str='', sentinels: bool=True
+        self,
+        root: Position,
+        fromString: str='',
+        sentinels: bool=True
     ) -> None:
         """Write the contents of the file to the output stream."""
         at = self
