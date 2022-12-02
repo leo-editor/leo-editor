@@ -1956,7 +1956,7 @@ class AtFile:
         if isSection:
             return False  # A section definition node.
         if at.sentinels:
-    # @verbatim
+            # @verbatim
             # @ignore must not stop expansion here!
             return True
         if p.isAtIgnoreNode():  # pragma: no cover
@@ -2005,6 +2005,7 @@ class AtFile:
         # Put @verbatim sentinel if required.
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
+        ws = s[i:k]
         line = s[i:j]
         if 1:  ### Experimental!
             if g.match(s, k, self.startSentinelComment):
@@ -2013,8 +2014,14 @@ class AtFile:
                 if g.match(s, k, " "):
                     k += 1
                 if g.match(s, k, "@"):
-                    self.putSentinel("@verbatim")
-                    ### g.trace(f"Generate @verbatim: {line!r}")
+                    # For black, match the indentation of the *next* line.
+                    try:
+                        old_indent = at.indent
+                        at.indent = 0
+                        at.os(ws)
+                        self.putSentinel("@verbatim")
+                    finally:
+                        at.indent = old_indent
         else:  ### Legacy.
             if g.match(s, k, self.startSentinelComment + "@"):
                 self.putSentinel("@verbatim")
@@ -3212,7 +3219,7 @@ class FastAtRead:
             ('doc', fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'),  # @doc or @
             ('first', fr'^\s*{delim1}@@first{delim2}$'),  # @first
             ('last', fr'^\s*{delim1}@@last{delim2}$'),  # @last
-    # @verbatim
+            # @verbatim
             # @node
             (
                 'node_start',
@@ -3220,7 +3227,7 @@ class FastAtRead:
             ),
             ('others', fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'),  # @others
             ('ref', fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),  # section ref
-    # @verbatim
+            # @verbatim
             # @section-delims
             (
                 'section_delims',
@@ -3510,7 +3517,7 @@ class FastAtRead:
                 # @+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
                 m = self.doc_pat.match(line)
                 if m:
-                # @verbatim
+                    # @verbatim
                     # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
                     doc2 = m.group(2) or ''  # Trailing text.
@@ -3531,7 +3538,7 @@ class FastAtRead:
             # @+node:ekr.20180602103135.13: *4* << handle @all >>
             m = self.all_pat.match(line)
             if m:
-            # @verbatim
+                # @verbatim
                 # @all tells Leo's *write* code not to check for undefined sections.
                 # Here, in the read code, we merely need to add it to the body.
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
