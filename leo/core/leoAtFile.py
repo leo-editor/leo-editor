@@ -3060,6 +3060,7 @@ class FastAtRead:
         stack: List[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         # The spelling of at-verbatim sentinel
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
+        verbatim_line2 = comment_delim1 + ' @verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3104,7 +3105,7 @@ class FastAtRead:
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if line == verbatim_line:  # <delim>@verbatim.
+            if line == verbatim_line or line == verbatim_line2:  # <delim>@verbatim or <delim> @verbatim.
                 verbatim = True
                 continue
             #@+<< finalize line >>
