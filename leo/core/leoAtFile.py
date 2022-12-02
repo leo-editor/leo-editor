@@ -1886,7 +1886,7 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
-        
+
         def put_verbatim_sentinel() -> None:
             """Put an @verbatim sentinel without indentation."""
             old_indent = at.indent
@@ -1903,8 +1903,8 @@ class AtFile:
                 put_verbatim_sentinel()
         elif g.match(s, k, self.startSentinelComment + "@"):
             put_verbatim_sentinel()
-            
-        if False: ### line.strip() == '# @ignore must not stop expansion here!':
+
+        if False:  ### line.strip() == '# @ignore must not stop expansion here!':
             g.pdb()
 
         # Don't put any whitespace in otherwise blank lines.
