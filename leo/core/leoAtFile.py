@@ -87,13 +87,9 @@ class AtFile:
     def reloadSettings(self) -> None:
         """AtFile.reloadSettings"""
         c = self.c
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write', default=True
-        )
+        self.checkPythonCodeOnWrite = c.config.getBool('check-python-code-on-write', default=True)
         self.runFlake8OnWrite = c.config.getBool('run-flake8-on-write', default=False)
-        self.runPyFlakesOnWrite = c.config.getBool(
-            'run-pyflakes-on-write', default=False
-        )
+        self.runPyFlakesOnWrite = c.config.getBool('run-pyflakes-on-write', default=False)
 
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
