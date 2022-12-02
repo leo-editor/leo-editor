@@ -1890,6 +1890,8 @@ class AtFile:
         def put_verbatim_sentinel() -> None:
             """Put an @verbatim sentinel with or without indentation."""
             if g.app.write_black_sentinels:
+                ws = s[i:k]
+                self.putIndent(len(ws))
                 self.putSentinel("@verbatim")
             else:
                 old_indent = at.indent
