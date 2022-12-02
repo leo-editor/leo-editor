@@ -46,15 +46,15 @@ class AtFile:
     #@@nobeautify
 
     # directives...
-    noDirective = 1  # not an at-directive.
-    allDirective = 2  # at-all (4.2)
-    docDirective = 3  # @doc.
-    atDirective = 4  # @<space> or @<newline>
-    codeDirective = 5  # @code
-    cDirective = 6  # @c<space> or @c<newline>
+    noDirective     = 1  # not an at-directive.
+    allDirective    = 2  # at-all (4.2)
+    docDirective    = 3  # @doc.
+    atDirective     = 4  # @<space> or @<newline>
+    codeDirective   = 5  # @code
+    cDirective      = 6  # @c<space> or @c<newline>
     othersDirective = 7  # at-others
-    miscDirective = 8  # All other directives
-    startVerbatim = 9  # @verbatim  Not a real directive. Used to issue warnings.
+    miscDirective   = 8  # All other directives
+    startVerbatim   = 9  # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -3206,14 +3206,14 @@ class FastAtRead:
         ref = g.angleBrackets(r'(.*)')
         table = (
             # These patterns must be mutually exclusive.
-            ('after', fr'^\s*{delim1}@afterref{delim2}$'),  # @afterref
-            ('all', fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),  # @all
-            ('code', fr'^\s*{delim1}@@c(ode)?{delim2}$'),  # @c and @code
-            ('comment', fr'^\s*{delim1}@@comment(.*){delim2}'),  # @comment
-            ('delims', fr'^\s*{delim1}@delims(.*){delim2}'),  # @delims
+            ('after', fr'^\s*{delim1}@afterref{delim2}$'),            # @afterref
+            ('all', fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),     # @all
+            ('code', fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
+            ('comment', fr'^\s*{delim1}@@comment(.*){delim2}'),       # @comment
+            ('delims', fr'^\s*{delim1}@delims(.*){delim2}'),          # @delims
             ('doc', fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'),  # @doc or @
-            ('first', fr'^\s*{delim1}@@first{delim2}$'),  # @first
-            ('last', fr'^\s*{delim1}@@last{delim2}$'),  # @last
+            ('first', fr'^\s*{delim1}@@first{delim2}$'),              # @first
+            ('last', fr'^\s*{delim1}@@last{delim2}$'),                # @last
             #@verbatim
             # @node
             (
@@ -3221,7 +3221,7 @@ class FastAtRead:
                 fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$',
             ),
             ('others', fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'),  # @others
-            ('ref', fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),  # section ref
+            ('ref', fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),         # section ref
             #@verbatim
             # @section-delims
             (
