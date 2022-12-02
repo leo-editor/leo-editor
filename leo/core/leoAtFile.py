@@ -1895,7 +1895,7 @@ class AtFile:
                     k += 1
                 if g.match(s, k, "@"):
                     self.putSentinel("@verbatim")
-                    g.trace(f"Generate @verbatim: {line!r}")
+                    ### g.trace(f"Generate @verbatim: {line!r}")
         else:  ### Legacy.
             if g.match(s, k, self.startSentinelComment + "@"):
                 self.putSentinel("@verbatim")
@@ -3115,13 +3115,11 @@ class FastAtRead:
                 #@+<< handle verbatim line >>
                 #@+node:ekr.20211102052518.1: *4* << handle verbatim line >>
                 # Previous line was verbatim *sentinel*. Append this line as it is.
-                g.trace('VERBATIM LINE', repr(line))
                 body.append(line)
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
             if strip_line in (verbatim_line, verbatim_line2):  # <delim>@verbatim or <delim> @verbatim.
-                g.trace('VERBATIM')
                 verbatim = True
                 continue
             #@+<< finalize line >>
