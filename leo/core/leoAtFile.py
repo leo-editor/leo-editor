@@ -2015,13 +2015,16 @@ class AtFile:
                     k += 1
                 if g.match(s, k, "@"):
                     # For black, match the indentation of the *next* line.
-                    try:
-                        old_indent = at.indent
-                        at.indent = 0
-                        at.os(ws)
-                        self.putSentinel("@verbatim")
-                    finally:
-                        at.indent = old_indent
+                    g.trace('INDENT', at.indent, 'WS', len(ws))
+                    at.os(ws)
+                    self.putSentinel("@verbatim")
+                    # try:
+                        # old_indent = at.indent
+                        # at.indent = 0
+                        # at.os(ws)
+                        # self.putSentinel("@verbatim")
+                    # finally:
+                        # at.indent = old_indent
         else:  ### Legacy.
             if g.match(s, k, self.startSentinelComment + "@"):
                 self.putSentinel("@verbatim")
