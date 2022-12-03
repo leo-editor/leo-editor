@@ -3042,7 +3042,7 @@ class FastAtRead:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
-        
+
         Important: delims[0] will end with a blank when reading a file with blackened sentinels!
                    This fact eliminates all special cases in scan_lines!
         """
