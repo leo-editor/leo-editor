@@ -3001,23 +3001,26 @@ class FastAtRead:
         delim2 = re.escape(comment_delim_end or '')
         ref = g.angleBrackets(r'(.*)')
         table = (
+            # Note: Do *not* alter these regexes to handle black-compatible sentinels!
+            #       delim1 *already* contains the trailing blank!
+
             # These patterns must be mutually exclusive.
-            ('after',       fr'^\s*{delim1}\s?@afterref{delim2}$'),             # @afterref
-            ('all',         fr'^(\s*){delim1}\s?@(\+|-)all\b(.*){delim2}$'),    # @all
-            ('code',        fr'^\s*{delim1}\s?@@c(ode)?{delim2}$'),             # @c and @code
-            ('comment',     fr'^\s*{delim1}\s?@@comment(.*){delim2}'),          # @comment
-            ('delims',      fr'^\s*{delim1}\s?@delims(.*){delim2}'),            # @delims
-            ('doc',         fr'^\s*{delim1}\s?@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('first',       fr'^\s*{delim1}\s?@@first{delim2}$'),               # @first
-            ('last',        fr'^\s*{delim1}\s?@@last{delim2}$'),                # @last
+            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
+            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
+            ('code',        fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
+            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
+            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
+            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+            ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
+            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
             #@verbatim
             # @node
-            ('node_start',  fr'^(\s*){delim1}\s?@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
-            ('others',      fr'^(\s*){delim1}\s?@(\+|-)others\b(.*){delim2}$'), # @others
-            ('ref',         fr'^(\s*){delim1}\s?@(\+|-){ref}\s*{delim2}$'),     # section ref
+            ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
+            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
             #@verbatim
             # @section-delims
-            ('section_delims', fr'^\s*{delim1}\s?@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
         for (name, pattern) in table:
@@ -3058,7 +3061,9 @@ class FastAtRead:
         # Simple vars...
         afterref = False  # True: the next line follows @afterref.
         clone_v: VNode = None  # The root of the clone tree.
-        comment_delim1, comment_delim2 = comment_delims  # The start/end *comment* delims.
+        # The start/end *comment* delims.
+        # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
+        comment_delim1, comment_delim2 = comment_delims
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
@@ -3072,14 +3077,10 @@ class FastAtRead:
         section_delim1 = '<<'
         section_delim2 = '>>'
         section_reference_seen = False
-        # Defining these constants is faster than using a regex!
         sentinel = comment_delim1 + '@'
-        sentinel2 = comment_delim1 + ' @'
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: List[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
-        # The spelling of at-verbatim sentinel
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
-        verbatim_line2 = comment_delim1 + ' @verbatim' + comment_delim2
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3129,8 +3130,7 @@ class FastAtRead:
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if strip_line in (verbatim_line, verbatim_line2):
-                # <delim>@verbatim or <delim> @verbatim.
+            if strip_line == verbatim_line:  # <delim>@verbatim
                 verbatim = True
                 continue
             #@+<< finalize line >>
@@ -3139,14 +3139,11 @@ class FastAtRead:
             if is_cweb:
                 if line.startswith(sentinel):
                     line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
-                elif line.startswith(sentinel2):
-                    line = line[: len(sentinel2)] + line[len(sentinel2) :].replace('@@', '@')
-
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             #@-<< finalize line >>
-            if not in_doc and not strip_line.startswith((sentinel, sentinel2)):  # Faster than a regex!
+            if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3371,7 +3368,6 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                sentinel2 = comment_delim1 + ' @'
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3405,7 +3401,6 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                sentinel2 = comment_delim1 + ' @'
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
@@ -3465,10 +3460,10 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith((sentinel, sentinel2)), repr(line)
+                assert strip_line.startswith(sentinel), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
-                if strip_line in (verbatim_line, verbatim_line2):
+                if strip_line == verbatim_line:
                     g.trace('Ignore bad @verbatim sentinel', repr(line))
                 else:
                     # A useful trace.
