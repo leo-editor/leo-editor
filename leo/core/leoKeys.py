@@ -900,7 +900,7 @@ class AutoCompleterClass:
                 if self.forbid_invalid:
                     # Delete the character we just inserted.
                     self.do_backspace()
-#@verbatim
+            #@verbatim
             # @bool auto_tab_complete is deprecated.
             # Auto-completion makes no sense if it is False.
             elif self.auto_tab and len(common_prefix) > len(prefix):

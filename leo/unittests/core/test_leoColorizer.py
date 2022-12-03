@@ -81,7 +81,7 @@ class TestColorizer(LeoUnitTest):
             # Unambiguous child.
             (False, '', '@killcolor\n'),
             (True, '', '@color\n'),
-#@verbatim
+            #@verbatim
             # @nocolor-node rules node.
             (False, '', '@nocolor-node\n'),
             (False, '', '@color\n@nocolor-node\n'),

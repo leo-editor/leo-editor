@@ -1389,7 +1389,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # self.root = get_root()
         # self.tag = '(py.menu.wrap)'
 
-#@verbatim
+    #@verbatim
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
 # Leo's core doesn't define a NullMinibuffer class.

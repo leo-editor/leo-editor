@@ -94,7 +94,7 @@ class Recorder:
             # not capture the pointer in the image, which is quite
             # typical for screen captures - this code draws a pointer
             # in the right place, and may be need to be enabled by a
-#@verbatim
+            #@verbatim
             # @setting in future, if pointer capture does not occur in
             # all environments - pointer is captured in
             # Leo Log Window

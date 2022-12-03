@@ -2129,7 +2129,7 @@ class IterativeTokenGenerator:
         returns = getattr(node, 'returns', None)
         result: ActionList = []
         # Decorators...
-#@verbatim
+            #@verbatim
             # @{z}\n
         for z in node.decorator_list or []:
             result.extend([
@@ -2163,7 +2163,7 @@ class IterativeTokenGenerator:
 
         result: ActionList = []
         for z in node.decorator_list or []:
-#@verbatim
+            #@verbatim
             # @{z}\n
             result.extend([
                 (self.op, '@'),
@@ -2198,7 +2198,7 @@ class IterativeTokenGenerator:
         returns = getattr(node, 'returns', None)
         result: ActionList = []
         # Decorators...
-#@verbatim
+            #@verbatim
             # @{z}\n
         for z in node.decorator_list or []:
             result.extend([
@@ -3635,7 +3635,7 @@ class Orange:
                 tail.insert(0, t)
             elif t.kind == 'comment':
                 # Only underindented single-line comments belong in the tail.
-#@verbatim
+                #@verbatim
                 # @+node comments must never be in the tail.
                 single_line = self.code_list[i].kind in ('line-end', 'line-indent')
                 lws = len(t.value) - len(t.value.lstrip())
@@ -4916,7 +4916,7 @@ class TokenOrderGenerator:
     def do_ClassDef(self, node: Node) -> None:
 
         for z in node.decorator_list or []:
-#@verbatim
+            #@verbatim
             # @{z}\n
             self.op('@')
             self.visit(z)
@@ -4945,7 +4945,7 @@ class TokenOrderGenerator:
         # Guards...
         returns = getattr(node, 'returns', None)
         # Decorators...
-#@verbatim
+            #@verbatim
             # @{z}\n
         for z in node.decorator_list or []:
             self.op('@')

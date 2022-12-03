@@ -166,12 +166,12 @@ class GoToCommands:
                     gnx, h = self.get_script_node_info(s, delim2)
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
-#@verbatim
+                    #@verbatim
                     # @others is visible in the outline, but *not* in the file.
                     offset += 1
                 elif s2.startswith('@-others') or s2.startswith('@-<<'):
                     gnx, h, offset = stack.pop()
-#@verbatim
+                    #@verbatim
                     # @-others is invisible.
                     offset += 1
                 elif s2.startswith('@@'):

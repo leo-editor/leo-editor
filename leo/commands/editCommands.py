@@ -1841,7 +1841,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.showStateAndMode()
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.268: *4* ec.selfInsertCommand, helpers
-#@verbatim
+    #@verbatim
     # @cmd('self-insert-command')
 
     def selfInsertCommand(self, event: Event, action: str='insert') -> None:
