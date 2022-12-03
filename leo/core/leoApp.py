@@ -2676,7 +2676,7 @@ class LoadManager:
         add = parser.add_argument
         add('PATHS', nargs='*', metavar='FILES',
             help='list of files')
-        add('--black-sentinels', dest='black_sentinels', action='store_true',
+        add('-b', '--black-sentinels', dest='black_sentinels', action='store_true',
             help='write black-compatible sentinel comments')
         add('--diff', dest='diff', action='store_true',
             help='use Leo as an external git diff')
