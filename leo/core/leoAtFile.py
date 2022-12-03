@@ -3002,22 +3002,22 @@ class FastAtRead:
         ref = g.angleBrackets(r'(.*)')
         table = (
             # These patterns must be mutually exclusive.
-            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
-            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
-            ('code',        fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
-            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
-            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
-            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
-            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
+            ('after',       fr'^\s*{delim1}\s?@afterref{delim2}$'),             # @afterref
+            ('all',         fr'^(\s*){delim1}\s?@(\+|-)all\b(.*){delim2}$'),    # @all
+            ('code',        fr'^\s*{delim1}\s?@@c(ode)?{delim2}$'),             # @c and @code
+            ('comment',     fr'^\s*{delim1}\s?@@comment(.*){delim2}'),          # @comment
+            ('delims',      fr'^\s*{delim1}\s?@delims(.*){delim2}'),            # @delims
+            ('doc',         fr'^\s*{delim1}\s?@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+            ('first',       fr'^\s*{delim1}\s?@@first{delim2}$'),               # @first
+            ('last',        fr'^\s*{delim1}\s?@@last{delim2}$'),                # @last
             #@verbatim
             # @node
-            ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
-            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
+            ('node_start',  fr'^(\s*){delim1}\s?@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+            ('others',      fr'^(\s*){delim1}\s?@(\+|-)others\b(.*){delim2}$'), # @others
+            ('ref',         fr'^(\s*){delim1}\s?@(\+|-){ref}\s*{delim2}$'),     # section ref
             #@verbatim
             # @section-delims
-            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+            ('section_delims', fr'^\s*{delim1}\s?@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
         for (name, pattern) in table:
