@@ -3136,9 +3136,8 @@ class FastAtRead:
             #@+<< finalize line >>
             #@+node:ekr.20180602103135.10: *4* << finalize line >>
             # Undo the cweb hack.
-            if is_cweb:
-                if line.startswith(sentinel):
-                    line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
+            if is_cweb and line.startswith(sentinel):
+                line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
