@@ -3142,13 +3142,17 @@ class FastAtRead:
             #@+<< finalize line >>
             #@+node:ekr.20180602103135.10: *4* << finalize line >>
             # Undo the cweb hack.
-            if is_cweb and line.startswith(sentinel):
-                line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
+            if is_cweb:
+                if line.startswith(sentinel):
+                    line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
+                elif line.startswith(sentinel2):
+                    line = line[: len(sentinel2)] + line[len(sentinel2) :].replace('@@', '@')
+
             # Adjust indentation.
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             #@-<< finalize line >>
-            if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
+            if not in_doc and not strip_line.startswith((sentinel, sentinel2)):  # Faster than a regex!
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3373,6 +3377,7 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                sentinel2 = comment_delim1 + ' @'
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3406,6 +3411,7 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                sentinel2 = comment_delim1 + ' @'
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
