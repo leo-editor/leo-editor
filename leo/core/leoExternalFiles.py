@@ -159,11 +159,13 @@ class ExternalFilesController:
                 self.idle_check_open_with_file(c, ef)
         elif self.unchecked_commanders:
             # Check the next commander for which
+#@verbatim
             # @bool check_for_changed_external_file is True.
             c = self.unchecked_commanders.pop()
             self.idle_check_commander(c)
         else:
             # Add all commanders for which
+#@verbatim
             # @bool check_for_changed_external_file is True.
             self.unchecked_commanders = [
                 z for z in g.app.commanders() if self.is_enabled(z)

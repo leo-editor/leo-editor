@@ -171,6 +171,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
+#@verbatim
         # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
         if c.config:
             key = 'abbreviations-subst-env'

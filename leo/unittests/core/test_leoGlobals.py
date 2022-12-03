@@ -169,6 +169,7 @@ class TestGlobals(LeoUnitTest):
         p.b = textwrap.dedent("""\
             @language python
             @comment a b c
+#@verbatim
                 # @comment must follow @language.
             @tabwidth -8
             @pagewidth 72

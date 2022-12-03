@@ -1023,6 +1023,7 @@ class LeoFind:
         """Toggle the 'Whole Word' checkbox in the Find tab."""
         self.toggle_option('whole_word')
 
+#@verbatim
     # @cmd('toggle-find-wrap-around-option')
     # def toggleWrapSearchOption(self, event):
         # """Toggle the 'Wrap Around' checkbox in the Find tab."""
@@ -1335,6 +1336,7 @@ class LeoFind:
         return self._cf_helper(settings, flatten=False)
     #@+node:ekr.20131117164142.16996: *4* find.clone-find-all-flattened & helper
     @cmd('clone-find-all-flattened')
+#@verbatim
     # @cmd('find-clone-all-flattened')
     @cmd('cff')
     def interactive_cff(self, event: Event=None, preloaded: bool=False) -> None:  # pragma: no cover (interactive)

@@ -140,6 +140,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         """Prints a discussion of autocompletion."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.378: *4* << define s >> (helpForAutocompletion)
+#@verbatim
         # @pagewidth 40
         #@@language rest
 
@@ -256,6 +257,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         """Prints a discussion of keyboard bindings."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.380: *4* << define s >> (helpForBindings)
+#@verbatim
         # @pagewidth 40
         #@@language rest
 
@@ -594,6 +596,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.389: *4* << define s >> (helpForDebuggingCommands)
+#@verbatim
         # @pagewidth 40
         #@@language rest
 
@@ -625,6 +628,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.391: *4* << define s >> (helpForDragAndDrop
+#@verbatim
         # @pagewidth 40
         #@@language rest
 
