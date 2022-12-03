@@ -166,10 +166,10 @@ class TestGlobals(LeoUnitTest):
     def test_g_get_directives_dict(self):
         c = self.c
         p = c.p
+        # Note: @comment must follow @language.
         p.b = textwrap.dedent("""\
             ATlanguage python
             ATcomment a b c
-                # ATcomment must follow @language.
             ATtabwidth -8
             ATpagewidth 72
             ATencoding utf-8
