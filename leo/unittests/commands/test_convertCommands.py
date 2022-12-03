@@ -34,7 +34,7 @@ class TestPythonToTypeScript(LeoUnitTest):
             contents = f.read()
         # Set the gnx of the @file nodes in the contents to root.gnx.
         # This is necessary because of a check in fast_at.scan_lines.
-        pat = re.compile(r'^\s*#@\+node:([^:]+): \* @file leoNodes\.py$')
+        pat = re.compile(r'^\s*#\s?@\+node:([^:]+): \* @file leoNodes\.py$')
         line3 = g.splitLines(contents)[2]
         m = pat.match(line3)
         assert m, "Can not replace gnx"
