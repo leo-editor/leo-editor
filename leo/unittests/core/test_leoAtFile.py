@@ -619,9 +619,35 @@ class TestFastAtRead(LeoUnitTest):
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
+        #@+<< define expected >>
+        #@+node:ekr.20221203083459.1: *4* << define expected >> (test_at_all)
+        # Be careful: no line should look like a Leo sentinel!
+        expected = textwrap.dedent(f'''\
+        #AT+leo-ver=5-thin
+        #AT+node:{root.gnx}: * {h}
+        # This is Leo's final resting place for dead code.
+        # Much easier to access than a git repo.
+
+        #AT@language python
+        #AT@killbeautify
+        #AT+all
+        #AT+node:ekr.20211103093559.1: ** node 1
+        Section references can be undefined.
+
+        LB missing reference >>
+        #AT+node:ekr.20211103093633.1: ** node 2
+        #ATverbatim
+        # ATothers doesn't matter
+
+        ATothers
+        #AT-all
+        #AT@nosearch
+        #AT-leo
+        ''').replace('AT', '@').replace('LB', '<<')
+        #@-<< define expected >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
+        self.assertEqual(expected, s)
     #@+node:ekr.20211101085019.1: *3* TestFast.test_at_comment (and @first)
     def test_at_comment(self):
 
