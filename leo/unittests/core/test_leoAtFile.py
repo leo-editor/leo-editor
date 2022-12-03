@@ -622,7 +622,6 @@ class TestFastAtRead(LeoUnitTest):
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        # self.assertEqual(expected, s)
         self.assertEqual(contents, s)
     #@+node:ekr.20211101085019.1: *3* TestFast.test_at_comment (and @first)
     def test_at_comment(self):
