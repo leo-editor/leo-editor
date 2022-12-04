@@ -2586,7 +2586,7 @@ class TestOrange(BaseTest):
     def test_verbatim(self):
 
         line_length = 40  # For testing.
-        contents = """\
+        contents = textwrap.dedent("""\
     #@@nobeautify
 
     def addOptionsToParser(self, parser, trace_m):
@@ -2610,7 +2610,7 @@ class TestOrange(BaseTest):
     docDirective    =  3 # @doc.
 
     #@@beautify
-    """
+    """)
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree,

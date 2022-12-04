@@ -3444,10 +3444,11 @@ class FastAtRead:
                     # doc lines are unchanged.
                     body.append(line)
                     continue
-                # Doc lines start with start_delim + one blank.
-                # #1496: Retire the @doc convention.
-                # #2194: Strip lws.
-                tail = line.lstrip()[len(comment_delim1) + 1 :]
+
+                #    with --black-sentinels: comment_delim1 ends with a blank.
+                # without --black-sentinels: comment_delim1 does *not* end with a blank.
+
+                tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
                 if tail.strip():
                     body.append(tail)
                 else:

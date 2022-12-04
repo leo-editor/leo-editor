@@ -528,7 +528,7 @@ class TestFastAtRead(LeoUnitTest):
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
 
     #@+others
-    #@+node:ekr.20211104162514.1: *3* TestFast.test_afterref
+    #@+node:ekr.20211104162514.1: *3* TestFastAtRead.test_afterref
     def test_afterref(self):
 
         c, x = self.c, self.x
@@ -587,7 +587,7 @@ class TestFastAtRead(LeoUnitTest):
         # Leo has *never* round-tripped the contents without change!
         self.assertEqual(s, expected_contents, msg='mismatch in contents')
 
-    #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
+    #@+node:ekr.20211103093332.1: *3* TestFastAtRead.test_at_all
     def test_at_all(self):
 
         c, x = self.c, self.x
@@ -623,7 +623,7 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-    #@+node:ekr.20211101085019.1: *3* TestFast.test_at_comment (and @first)
+    #@+node:ekr.20211101085019.1: *3* TestFastAtRead.test_at_comment (and @first)
     def test_at_comment(self):
 
         c, x = self.c, self.x
@@ -675,7 +675,7 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
-    #@+node:ekr.20211101111636.1: *3* TestFast.test_at_delims
+    #@+node:ekr.20211101111636.1: *3* TestFastAtRead.test_at_delims
     def test_at_delims(self):
         c, x = self.c, self.x
         h = '@file /test/test_at_delims.txt'
@@ -724,7 +724,7 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
-    #@+node:ekr.20211103095616.1: *3* TestFast.test_at_last
+    #@+node:ekr.20211103095616.1: *3* TestFastAtRead.test_at_last
     def test_at_last(self):
 
         c, x = self.c, self.x
@@ -762,7 +762,7 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-    #@+node:ekr.20211103092228.1: *3* TestFast.test_at_others
+    #@+node:ekr.20211103092228.1: *3* TestFastAtRead.test_at_others
     def test_at_others(self):
 
         # In particular, we want to test indented @others.
@@ -790,7 +790,7 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-    #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
+    #@+node:ekr.20211031093209.1: *3* TestFastAtRead.test_at_section_delim
     def test_at_section_delim(self):
 
         c, x = self.c, self.x
@@ -842,7 +842,7 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
-    #@+node:ekr.20211101155930.1: *3* TestFast.test_clones
+    #@+node:ekr.20211101155930.1: *3* TestFastAtRead.test_clones
     def test_clones(self):
 
         c, x = self.c, self.x
@@ -892,7 +892,7 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(child1.v, child2.v)
         self.assertFalse(grand_child1.isCloned())
         self.assertFalse(grand_child2.isCloned())
-    #@+node:ekr.20211103080718.1: *3* TestFast.test_cweb
+    #@+node:ekr.20211103080718.1: *3* TestFastAtRead.test_cweb
     #@@language python
 
     def test_cweb(self):
@@ -941,13 +941,14 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-    #@+node:ekr.20211101152817.1: *3* TestFast.test_doc_parts
+    #@+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
 
         c, x = self.c, self.x
         h = '@file /test/test_directives.py'
         root = c.rootPosition()
         root.h = h  # To match contents.
+
         #@+<< define contents >>
         #@+node:ekr.20211101152843.1: *4* << define contents >> (test_doc_parts)
         # Be careful: no line should look like a Leo sentinel!
@@ -971,10 +972,21 @@ class TestFastAtRead(LeoUnitTest):
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
+
+        # Test 1: without black delims.
+        g.app.write_black_sentinels = False
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
-    #@+node:ekr.20211101154632.1: *3* TestFast.test_html_doc_part
+        self.assertEqual(contents, s, msg='Test 1')
+
+        # Test 2: with black delims.
+        g.app.write_black_sentinels = True
+        contents = contents.replace('#@', '# @')
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        ### g.printObj(contents2, tag='contents2')
+        self.assertEqual(contents, s, 'Test 2: -b')
+    #@+node:ekr.20211101154632.1: *3* TestFastAtRead.test_html_doc_part
     def test_html_doc_part(self):
 
         c, x = self.c, self.x
@@ -1002,7 +1014,7 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-    #@+node:ekr.20211101180354.1: *3* TestFast.test_verbatim
+    #@+node:ekr.20211101180354.1: *3* TestFastAtRead.test_verbatim
     def test_verbatim(self):
 
         c, x = self.c, self.x
@@ -1013,15 +1025,15 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101180404.1: *4* << define contents >> (test_verbatim)
         # Be careful: no line should look like a Leo sentinel!
         contents = textwrap.dedent(f'''\
-        #AT+leo-ver=5-thin
-        #AT+node:{root.gnx}: * {h}
-        #AT@language python
-        # Test of @verbatim
-        print('hi')
-        #ATverbatim
-        #AT+node (should be protected by verbatim)
-        #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+            # Test of @verbatim
+            print('hi')
+            #ATverbatim
+            #AT+node (should be protected by verbatim)
+            #AT-leo
+        ''').replace('AT', '@') ### .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
@@ -1032,10 +1044,23 @@ class TestFastAtRead(LeoUnitTest):
         #AT+node (should be protected by verbatim)
         ''').replace('AT', '@')
         #@-<< define expected_body >>
+        
+        # Test 1: without black delims.
+        g.app.write_black_sentinels = False
         x.read_into_root(contents, path='test', root=root)
         self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
+        
+        # Test 2: with black delims.
+        g.app.write_black_sentinels = True
+        contents = contents.replace('#@', '# @')
+        expected_body = expected_body.replace('#@', '# @')
+        x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+
     #@-others
 #@-others
 #@-leo
