@@ -334,6 +334,7 @@ class LeoApp:
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
             "cljs":     "clojure",
             "cljc":     "clojure",
+            "cmd":      "batch",
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",

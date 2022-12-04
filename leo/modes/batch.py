@@ -135,8 +135,9 @@ def batch_rule6(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def batch_rule7(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    # Labels.
+    return colorer.match_eol_span(s, i, kind="label", seq=":",
+        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
 def batch_rule8(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="REM",
@@ -147,7 +148,6 @@ def batch_rule8a(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="rem",
         at_line_start=True, at_whitespace_end=True, at_word_start=True,
         delegate="", exclude_match=False)
-
 
 def batch_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
