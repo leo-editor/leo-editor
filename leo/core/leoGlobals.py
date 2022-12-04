@@ -3743,7 +3743,7 @@ def is_binary_string(s: str) -> bool:
 def is_sentinel(line: str, delims: Sequence) -> bool:
     """
     Return True if line starts with a sentinel comment.
-    
+
     Leo 6.7.2: Support blackened sentinels.
     """
     delim1, delim2, delim3 = delims
