@@ -1083,7 +1083,6 @@ class FileCommands:
             return None
 
         def findNode(x: VNode) -> VNode:
-            g.trace(x.__class__.__name__)
             return fc.gnxDict.get(x, c.hiddenRootNode)  # type:ignore
 
         # let us replace every gnx with the corresponding vnode
