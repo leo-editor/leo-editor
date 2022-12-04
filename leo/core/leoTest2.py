@@ -119,7 +119,7 @@ class LeoUnitTest(unittest.TestCase):
 
         # Set g.unitTesting *early*, for guards.
         g.unitTesting = True
-        
+
         # Default.
         g.app.write_black_sentinels = False
 

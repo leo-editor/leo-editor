@@ -1044,14 +1044,14 @@ class TestFastAtRead(LeoUnitTest):
         #AT+node (should be protected by verbatim)
         ''').replace('AT', '@')
         #@-<< define expected_body >>
-        
+
         # Test 1: without black delims.
         g.app.write_black_sentinels = False
         x.read_into_root(contents, path='test', root=root)
         self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-        
+
         # Test 2: with black delims.
         g.app.write_black_sentinels = True
         contents = contents.replace('#@', '# @')
