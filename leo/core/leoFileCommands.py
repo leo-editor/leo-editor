@@ -1082,8 +1082,9 @@ class FileCommands:
             g.trace('there should be at least one top level node!')
             return None
 
-        def findNode(x: Any) -> VNode:
-            return fc.gnxDict.get(x, c.hiddenRootNode)
+        def findNode(x: VNode) -> VNode:
+            g.trace(x.__class__.__name__)
+            return fc.gnxDict.get(x, c.hiddenRootNode)  # type:ignore
 
         # let us replace every gnx with the corresponding vnode
         for v in vnodes:
@@ -1146,10 +1147,10 @@ class FileCommands:
         c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
-        def get_ref_filename() -> str:
+        def get_ref_filename() -> Optional[str]:
             for v in priv_vnodes():
                 return g.splitLines(v.b)[0].strip()
-            raise TypeError  # EKR: to suppress mypy complaint.
+            return None
         #@+node:vitalije.20170831144827.4: *6* function: pub_vnodes
         def pub_vnodes() -> Generator:
             for v in c.hiddenRootNode.children:
@@ -1192,8 +1193,8 @@ class FileCommands:
                 v.u = ua
                 vnodes.append(v)
 
-            def pv(x: Any) -> VNode:
-                return fc.gnxDict.get(x, c.hiddenRootNode)
+            def pv(x: VNode) -> VNode:
+                return fc.gnxDict.get(x, c.hiddenRootNode)  # type:ignore
 
             for v in vnodes:
                 v.children = [pv(x) for x in v.children]
@@ -1237,6 +1238,8 @@ class FileCommands:
         privnodes = priv_data(privgnxes - pubgnxes)
         toppriv = [v.gnx for v in priv_vnodes()]
         fname = get_ref_filename()
+        if not fname:
+            return
         with nosqlite_commander(fname):
             theFile = open(fname, 'rb')
             fc.initIvars()
