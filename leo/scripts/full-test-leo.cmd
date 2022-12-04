@@ -8,8 +8,8 @@ call beautify-leo.cmd
 echo unittests
 call python -m unittest
 echo.
-echo mp
-call mp-leo.cmd
+echo mypy
+call mypy-leo.cmd
 echo.
 echo flake8
 call python -m flake8
