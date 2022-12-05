@@ -63,6 +63,7 @@ Previous Recent Changes
 ========================
 For Asciidoctor only, new setting to suppress the footer inserted by the
 Asciidoctor by default (``@bool vr3-asciidoctor-nofooter = True``).
+Asciidoctor by default (``@string vr3-asciidoctor-icons=''``).
 
 New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
@@ -184,6 +185,7 @@ All settings are of type @string unless shown as ``@bool``
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
    "@bool vr3-asciidoctor-nofooter", "False", "True, False", "Whether to suppress footer (``sciidoctor`` only)"   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
+   "@string vr3-asciidoctor-icons", "", "'', font, image", "Whether to use icons (``asciidoctor`` only)"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -2298,6 +2300,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
         self.asciidoc_show_proc_fail_msgs = True
         self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
+        self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
 
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
 
@@ -3202,6 +3205,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             attrs.append('stem')
         if self.asciidoctor_suppress_footer:
             attrs.append('nofooter')
+        if self.asciidoctor_icons:  # not ""
+            attrs.append(f'icons={self.asciidoctor_icons}')
         att_str = ''
         for att in attrs:
             att_str += f'-a {att} '
