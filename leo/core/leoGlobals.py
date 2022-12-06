@@ -3754,7 +3754,7 @@ def is_sentinel(line: str, delims: Sequence) -> bool:
     if delim1:
         sentinel1 = delim1 + '@'
         sentinel2 = delim1 + ' @'
-        return line.startswith(sentinel1, sentinel2)
+        return line.startswith((sentinel1, sentinel2))
     if delim2 and delim3:
         sentinel1 = delim2 + '@'
         sentinel2 = delim2 + ' @'
