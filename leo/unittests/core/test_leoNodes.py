@@ -201,7 +201,6 @@ class TestNodes(LeoUnitTest):
                 aList.append(p)
     #@+node:ekr.20210828075915.1: *5* TestNodes.test_all_nodes_coverage
     def test_all_nodes_coverage(self):
-        # @test c iters: <coverage tests>
         c = self.c
         v1 = [p.v for p in c.all_positions()]
         v2 = [v for v in c.all_nodes()]

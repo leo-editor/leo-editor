@@ -166,14 +166,14 @@ class TestGlobals(LeoUnitTest):
     def test_g_get_directives_dict(self):
         c = self.c
         p = c.p
+        # Note: @comment must follow @language.
         p.b = textwrap.dedent("""\
-            @language python
-            @comment a b c
-                # @comment must follow @language.
-            @tabwidth -8
-            @pagewidth 72
-            @encoding utf-8
-    """)
+            ATlanguage python
+            ATcomment a b c
+            ATtabwidth -8
+            ATpagewidth 72
+            ATencoding utf-8
+    """).replace('AT', '@')
         d = g.get_directives_dict(p)
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), '-8')

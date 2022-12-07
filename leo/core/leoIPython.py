@@ -42,7 +42,7 @@ except ImportError:
 try:
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
-    IPKernelApp = None
+    IPKernelApp = None  # type:ignore
     import_fail('IPKernelApp')
 
 g.app.ipython_inited = IPKernelApp is not None

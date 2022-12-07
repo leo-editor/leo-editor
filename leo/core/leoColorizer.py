@@ -732,6 +732,7 @@ class BaseColorizer:
         # Now look at the parents.
         for p in p.parents():
             d = self.findColorDirectives(p)
+            #@verbatim
             # @killcolor anywhere disables coloring.
             if 'killcolor' in d:
                 return False

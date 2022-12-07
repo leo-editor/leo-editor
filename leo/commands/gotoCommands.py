@@ -111,9 +111,8 @@ class GoToCommands:
         stack: List[Tuple[str, str, int]] = []
         for s in g.splitLines(file_s):
             n += 1  # All lines contribute to the file's line count.
-            # g.trace('%4s %4r %40r %s' % (n, node_offset, h, s.rstrip()))
             if self.is_sentinel(delim1, delim2, s):
-                s2 = s.strip()[len(delim1) :]
+                s2 = s.strip()[len(delim1) :]  # Works for blackened sentinels.
                 # Common code for the visible sentinels.
                 if s2.startswith(('@+others', '@+<<', '@@'),):
                     if target_offset == node_offset and gnx == target_gnx:
@@ -159,17 +158,19 @@ class GoToCommands:
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
             if is_sentinel:
-                s2 = s.strip()[len(delim1) :]
+                s2 = s.strip()[len(delim1) :]  # Works for blackened sentinels.
                 if s2.startswith('@+node'):
                     # Invisible, but resets the offset.
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
+                    #@verbatim
                     # @others is visible in the outline, but *not* in the file.
                     offset += 1
                 elif s2.startswith('@-others') or s2.startswith('@-<<'):
                     gnx, h, offset = stack.pop()
+                    #@verbatim
                     # @-others is invisible.
                     offset += 1
                 elif s2.startswith('@@'):
@@ -204,7 +205,7 @@ class GoToCommands:
         stack = [(gnx, h, offset),]
         for i, s in enumerate(lines):
             if self.is_sentinel(delim1, delim2, s):
-                s2 = s.strip()[len(delim1) :]
+                s2 = s.strip()[len(delim1) :]  # Works for blackened sentinels.
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
@@ -336,14 +337,15 @@ class GoToCommands:
             h = h.rstrip(delim2)
         return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
-    def is_sentinel(self, delim1: Any, delim2: Any, s: str) -> bool:
+    def is_sentinel(self, delim1: str, delim2: str, s: str) -> bool:
         """Return True if s is a sentinel line with the given delims."""
-        assert delim1
-        i = s.find(delim1 + '@')
-        if delim2:
-            j = s.find(delim2)
-            return -1 < i < j
-        return -1 < i
+        # Leo 6.7.2: Use g.is_sentinel, which handles blackened sentinels properly.
+        delims: Tuple
+        if delim1 and delim2:
+            delims = (None, delim1, delim2)
+        else:
+            delims = (delim1, None, None)
+        return g.is_sentinel(line=s, delims=delims)
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s: str) -> str:
         i = g.skip_ws(s, 0)

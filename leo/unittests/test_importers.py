@@ -27,6 +27,7 @@ class BaseTestImporter(LeoUnitTest):
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
+        g.app.write_black_sentinels = False
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)

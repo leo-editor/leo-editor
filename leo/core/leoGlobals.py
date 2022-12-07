@@ -2431,7 +2431,7 @@ def assertUi(uitype: Any) -> None:
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
     #@+others
-    #@+node:ekr.20200219071958.1: *4* test_comment_delims_from_extension
+    #@+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
 
         # pylint: disable=import-self
@@ -2441,15 +2441,17 @@ class TestLeoGlobals(unittest.TestCase):
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
         assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
-    #@+node:ekr.20200219072957.1: *4* test_is_sentinel
+    #@+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
 
         # pylint: disable=import-self
         from leo.core import leoGlobals as leo_g
-        # Python.
+        # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
         assert leo_g.is_sentinel("#@+node", py_delims)
+        assert leo_g.is_sentinel("# @+node", py_delims)
         assert not leo_g.is_sentinel("#comment", py_delims)
+        assert not leo_g.is_sentinel("# comment", py_delims)
         # C.
         c_delims = leo_g.comment_delims_from_extension('.c')
         assert leo_g.is_sentinel("//@+node", c_delims)
@@ -3739,15 +3741,31 @@ def is_binary_string(s: str) -> bool:
     return bool(s.translate(None, bytes(aList)))  # type:ignore
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line: str, delims: Sequence) -> bool:
-    """Return True if line starts with a sentinel comment."""
+    """
+    Return True if line starts with a sentinel comment.
+
+    Leo 6.7.2: Support blackened sentinels.
+    """
     delim1, delim2, delim3 = delims
+    # Defensive code. Make *sure* delim has no trailing space.
+    if delim1:
+        delim1 = delim1.rstrip()
     line = line.lstrip()
     if delim1:
-        return line.startswith(delim1 + '@')
+        sentinel1 = delim1 + '@'
+        sentinel2 = delim1 + ' @'
+        return line.startswith((sentinel1, sentinel2))
     if delim2 and delim3:
-        i = line.find(delim2 + '@')
-        j = line.find(delim3)
-        return 0 == i < j
+        sentinel1 = delim2 + '@'
+        sentinel2 = delim2 + ' @'
+        if sentinel1 in line:
+            i = line.find(sentinel1)
+            j = line.find(delim3)
+            return 0 == i < j
+        if sentinel2 in line:
+            i = line.find(sentinel2)
+            j = line.find(delim3)
+            return 0 == i < j
     g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
     return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories

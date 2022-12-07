@@ -150,6 +150,7 @@ class LeoApp:
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
+        self.write_black_sentinels = False  # True: write a space befor '@' in sentinel lines.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
@@ -2676,6 +2677,8 @@ class LoadManager:
         add = parser.add_argument
         add('PATHS', nargs='*', metavar='FILES',
             help='list of files')
+        add('-b', '--black-sentinels', dest='black_sentinels', action='store_true',
+            help='write black-compatible sentinel comments')
         add('--diff', dest='diff', action='store_true',
             help='use Leo as an external git diff')
         add('--fail-fast', dest='fail_fast', action='store_true',
@@ -2794,6 +2797,8 @@ class LoadManager:
     #@+node:ekr.20210927034148.8: *6* LM.doSimpleOptions
     def doSimpleOptions(self, args: Any, trace_m: str) -> None:
         """These args just set g.app ivars."""
+        # --black-sentinels
+        g.app.write_black_sentinels = args.black_sentinels
         # --fail-fast
         g.app.failFast = args.fail_fast
         # --fullscreen

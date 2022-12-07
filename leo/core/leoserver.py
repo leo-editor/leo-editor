@@ -210,6 +210,7 @@ class ServerExternalFilesController(ExternalFilesController):
 
         if self.unchecked_commanders:
             # Check the next commander for which
+            #@verbatim
             # @bool check_for_changed_external_file is True.
             c = self.unchecked_commanders.pop()
             self.lastCommander = c
@@ -217,6 +218,7 @@ class ServerExternalFilesController(ExternalFilesController):
             self.idle_check_commander(c)
         else:
             # Add all commanders for which
+            #@verbatim
             # @bool check_for_changed_external_file is True.
             self.unchecked_commanders = [
                 z for z in g.app.commanders() if self.is_enabled(z)
