@@ -31153,15 +31153,15 @@ will select this node in LeoDocs.leo.
 Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
 UNL's have the form:
 
-    
-    unl://
+
+    ``unl://``
     Full path of a .leo file
-    List of ancestor nodes, separated by "--&gt;"
+    List of ancestor nodes, separated by ``--&gt;``,
   
 For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
 
-    unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html
-    
+    ``unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html``
+
 Moving or renaming nodes may (partially) break UNL's.</t>
 <t tx="ekr.20220401072939.1">Leo http://leoeditor.com 6.6.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
