@@ -1901,7 +1901,7 @@ class AtFile:
         # Put an @verbatim sentinel if the next line looks like another sentinel.
         if at.language == 'python':  # New in Leo 6.7.2.
             # Python sentinels *only* may contain a space between '#' and '@'
-            if (g.match(s, k, '#@') or g.match(s, k, '# @')):
+            if g.match(s, k, '#@') or g.match(s, k, '# @'):
                 put_verbatim_sentinel()
         elif g.match(s, k, self.startSentinelComment + "@"):
             put_verbatim_sentinel()
