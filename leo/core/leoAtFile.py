@@ -1891,14 +1891,17 @@ class AtFile:
             """
             Put an @verbatim sentinel. *Always* use black-compatible indentation.
             """
+            if at.root.isAtCleanNode():
+                # #2996. Adding an @verbatim sentinel interferes with the @clean algorithm.
+                return
             ws = s[i:k]
             self.putIndent(len(ws))
             self.putSentinel("@verbatim")
 
         # Put an @verbatim sentinel if the next line looks like another sentinel.
         if at.language == 'python':  # New in Leo 6.7.2.
-            # Python sentinels *only* may contain a splace between '#' and '@'
-            if g.match(s, k, '#@') or g.match(s, k, '# @'):
+            # Python sentinels *only* may contain a space between '#' and '@'
+            if (g.match(s, k, '#@') or g.match(s, k, '# @')):
                 put_verbatim_sentinel()
         elif g.match(s, k, self.startSentinelComment + "@"):
             put_verbatim_sentinel()
