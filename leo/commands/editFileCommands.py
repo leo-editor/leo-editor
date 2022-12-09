@@ -209,7 +209,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().split('.')[-1] in ('py', 'pyw'):
+            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith(('py', 'pyw')):
                 n = 0
                 for p2 in p.subtree():
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
@@ -247,7 +247,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         # Look for an @clean node.
         for p in c.p.self_and_parents(copy=False):
             if g.match_word(p.h, 0, '@clean') and \
-                            p.h.rstrip().split('.')[-1] in ('py', 'pyw'):
+                            p.h.rstrip().endswith(('py', 'pyw')):
                 break
         else:
             g.es_print('no an @clean node found', p.h, color='blue')

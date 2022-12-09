@@ -452,7 +452,7 @@ class LeoPluginsController:
 
         We *must* allow .py suffixes, for compatibility with @enabled-plugins nodes.
         """
-        if not moduleOrFileName.split('.')[-1] in ('py', 'pyw'):
+        if not moduleOrFileName.endswith(('py', 'pyw')):
             # A module name. Return it unchanged.
             return moduleOrFileName
         #

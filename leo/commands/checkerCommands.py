@@ -148,7 +148,7 @@ def find_missing_docstrings(event: Event) -> None:
         for parent in p.self_and_parents():
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
-        return p.isAnyAtFileNode() and p.h.strip().split('.')[-1] in ('py', 'pyw')
+        return p.isAnyAtFileNode() and p.h.strip().endswith(('py', 'pyw'))
     #@-others
     log = c.frame.log
     count, files, found, t1 = 0, 0, [], time.process_time()

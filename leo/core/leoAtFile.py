@@ -2119,7 +2119,7 @@ class AtFile:
         ok1 = ok2 = True
         if g.unitTesting:
             return
-        is_python = fileName and fileName.split('.')[-1] in ('py', 'pyw')
+        is_python = fileName and fileName.endswith(('py', 'pyw'))
         if not contents or not is_python:
             return
 
@@ -2133,7 +2133,7 @@ class AtFile:
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
         at = self
-        is_python = fileName and fileName.split('.')[-1] in ('py', 'pyw')
+        is_python = fileName and fileName.endswith(('py', 'pyw'))
 
         if g.unitTesting or not contents or not is_python:
             return
