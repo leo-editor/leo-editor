@@ -511,19 +511,29 @@ class PylintCommand:
     #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
     def get_rc_file(self) -> Optional[str]:
         """Return the path to the pylint configuration file."""
-        base = 'pylint-leo-rc.txt'
-        table = (
-            # In ~/.leo
-            g.os_path_finalize_join(g.app.homeDir, '.leo', base),
-            # In leo/test
-            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
+        c = self.c
+        bases = (
+            '.pylintrc',
+            'pylint-leo-rc.txt',
         )
-        for fn in table:
-            fn = g.os_path_abspath(fn)
-            if g.os_path_exists(fn):
-                return fn
-        table_s = '\n'.join(table)
-        g.es_print(f"no pylint configuration file found in\n{table_s}")
+        local_dir = g.os_path_dirname(c.fileName())
+        for base in bases:
+            table = (
+                # In the directory containing the outline.
+                g.os_path_finalize_join(local_dir, base),
+                # In ~/.leo
+                g.os_path_finalize_join(g.app.homeDir, '.leo', base),
+                # In leo/test
+                g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
+            )
+            for fn in table:
+                print(f"Using {fn}")
+                fn = g.os_path_abspath(fn)
+                if g.os_path_exists(fn):
+                    return fn
+        # table_s = '\n'.join(table)
+        # g.es_print("no pylint configuration file found")
+        g.es_print('Not found: .pylintrc and pylint-leo-rc.txt')
         return None
     #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
     def get_fn(self, p: Position) -> Optional[str]:
