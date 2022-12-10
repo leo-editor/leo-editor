@@ -4047,7 +4047,7 @@ def findRootsWithPredicate(c: Cmdr, root: Position, predicate: Callable=None) ->
 
         def predicate(p: Position) -> bool:
             headline = p.h.strip()
-            is_python = headline.split('.')[-1] in ('py', 'pyw')
+            is_python = headline.endswith(('py', 'pyw'))
             return p.isAnyAtFileNode() and is_python
 
     # 1. Search p's tree.

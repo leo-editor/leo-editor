@@ -2119,8 +2119,10 @@ class AtFile:
         ok1 = ok2 = True
         if g.unitTesting:
             return
-        if not contents or not fileName or not fileName.endswith('.py'):
+        is_python = fileName and fileName.endswith(('py', 'pyw'))
+        if not contents or not is_python:
             return
+
         if at.runFlake8OnWrite:
             ok1 = self.runFlake8(root)
         if at.runPyFlakesOnWrite:
@@ -2131,7 +2133,9 @@ class AtFile:
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
         at = self
-        if g.unitTesting or not contents or not fileName or not fileName.endswith('.py'):
+        is_python = fileName and fileName.endswith(('py', 'pyw'))
+
+        if g.unitTesting or not contents or not is_python:
             return
         ok = True
         if at.checkPythonCodeOnWrite:

@@ -573,7 +573,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if not p.isAnyAtFileNode():
                 g.es_print(f"{tag}: not an @file node: {p.h}")
                 return
-            if not p.h.endswith('.py'):
+            if not p.h.endswith(('py', 'pyw')):
                 g.es_print(f"{tag}: not a python file: {p.h}")
                 return
             # Init.
@@ -1326,7 +1326,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
-                if not fn.endswith('.py'):
+                if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
                 abs_fn = g.fullPath(c, p)
@@ -1420,7 +1420,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
-                if not fn.endswith('.py'):
+                if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
                 abs_fn = g.fullPath(c, p)

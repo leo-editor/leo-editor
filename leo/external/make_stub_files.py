@@ -1627,7 +1627,7 @@ class StandAloneMakeStubFile:
         Make a stub file in ~/stubs for all source files mentioned in the
         [Source Files] section of ~/stubs/make_stub_files.cfg
         '''
-        if not fn.endswith('.py'):
+        if not fn.endswith(('py', 'pyw')):
             print('not a python file', fn)
             return
         if not os.path.exists(fn):
