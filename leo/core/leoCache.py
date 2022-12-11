@@ -393,13 +393,13 @@ class PickleShareDB:
         else:
             # Do not call g.glob_glob here.
             files = [z for z in join(self.root, globpat)]
-        result = [self._normalized(p) for p in files if isfile(p)]
+        result = [self._normalized(s) for s in files if isfile(s)]
         return result
     #@+node:ekr.20100208223942.5976: *4* _normalized
-    def _normalized(self, p: str) -> str:
+    def _normalized(self, filename: str) -> str:
         """ Make a key suitable for user's eyes """
         # os.path.relpath doesn't work here.
-        return self._relpathto(self.root, p).replace('\\', '/')
+        return self._relpathto(self.root, filename).replace('\\', '/')
     #@+node:ekr.20100208223942.10460: *4* _relpathto
     # Used only by _normalized.
 

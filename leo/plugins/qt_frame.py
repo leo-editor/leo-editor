@@ -4170,7 +4170,7 @@ class QtIconBarClass:
                 act.setSeparator(True)
             elif rc.position.b.strip():
 
-                def cb(checked: str, p: str=rc.position, button: str=button) -> None:
+                def cb(checked: str, p: Position=rc.position, button: str=button) -> None:
                     controller.executeScriptFromButton(
                         b=button,
                         buttonText=p.h[8:].strip(),
