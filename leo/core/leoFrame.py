@@ -1665,7 +1665,7 @@ class LeoTree:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper
-    def unselect_helper(self, old_p: str, p: Position) -> None:
+    def unselect_helper(self, old_p: Position, p: Position) -> None:
         """Unselect the old node, calling the unselect hooks."""
         c = self.c
         call_event_handlers = p != old_p
