@@ -3,8 +3,8 @@
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 #@@first
 """Leo's beautification classes."""
-#@+<< leoBeautify imports >>
-#@+node:ekr.20220822114944.1: ** << leoBeautify imports >>
+#@+<< leoBeautify imports & annotations >>
+#@+node:ekr.20220822114944.1: ** << leoBeautify imports & annotations >>
 from __future__ import annotations
 import sys
 import os
@@ -18,14 +18,13 @@ except Exception:
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst
-#@-<< leoBeautify imports >>
-#@+<< leoBeautify annotations >>
-#@+node:ekr.20220822114959.1: ** << leoBeautify annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-#@-<< leoBeautify annotations >>
+#@-<< leoBeautify imports & annotations >>
+
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)
 #@+node:ekr.20150528131012.1: *3* Beautify:commands

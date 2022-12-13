@@ -3,8 +3,8 @@
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
 """Handling background processes"""
-#@+<< leoBackground imports >>
-#@+node:ekr.20220410202718.1: ** << leoBackground imports >>
+#@+<< leoBackground imports & annotations >>
+#@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>
 from __future__ import annotations
 import re
 import subprocess
@@ -13,15 +13,14 @@ from time import sleep
 from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
-#@-<< leoBackground imports >>
-#@+<< leoBackground annotations >>
-#@+node:ekr.20220827054935.1: ** << leoBackground annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     Pattern = Union[Any, str]
-#@-<< leoBackground annotations >>
+#@-<< leoBackground imports & annotations >>
+
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status
 @g.command('bpm-status')

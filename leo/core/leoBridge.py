@@ -47,20 +47,18 @@
 #   Host programs can use these commanders as described in Leo's scripting
 #   chapter.
 #@-<< about the leoBridge module >>
-#@+<< leoBridge imports >>
-#@+node:ekr.20220901084154.1: ** << leoBridge imports >>
+#@+<< leoBridge imports & annotations >>
+#@+node:ekr.20220901084154.1: ** << leoBridge imports & annotations >>
 # This module must import *no* Leo modules at the outer level!
 from __future__ import annotations
 import os
 import sys
 import traceback
 from typing import Any, Optional, TYPE_CHECKING
-#@-<< leoBridge imports >>
-#@+<< leoBridge annotatations >>
-#@+node:ekr.20220901084238.1: ** << leoBridge annotatations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-#@-<< leoBridge annotatations >>
+#@-<< leoBridge imports & annotations >>
 
 gBridgeController = None  # The singleton bridge controller.
 #@+others

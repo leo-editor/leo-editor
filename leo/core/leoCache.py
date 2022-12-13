@@ -3,8 +3,8 @@
 #@+node:ekr.20100208065621.5894: * @file leoCache.py
 #@@first
 """A module encapsulating Leo's file caching"""
-#@+<< leoCache imports >>
-#@+node:ekr.20100208223942.10436: ** << leoCache imports >>
+#@+<< leoCache imports & annotations >>
+#@+node:ekr.20100208223942.10436: ** << leoCache imports & annotations >>
 from __future__ import annotations
 import fnmatch
 import os
@@ -14,14 +14,14 @@ import stat
 from typing import Any, Dict, Generator, List, Optional, Sequence, Set, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
-#@-<< leoCache imports >>
-#@+<< leoCache annotations >>
-#@+node:ekr.20220901155714.1: ** << leoCache annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 
-#@-<< leoCache annotations >>
+#@-<< leoCache imports & annotations >>
+
 # pylint: disable=raise-missing-from
+
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
 basename = g.os_path_basename

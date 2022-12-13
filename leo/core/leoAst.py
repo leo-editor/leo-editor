@@ -150,8 +150,8 @@ Leo's outline structure. These comments have the form::
     `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 """
 #@-<< leoAst docstring >>
-#@+<< leoAst imports >>
-#@+node:ekr.20200105054219.1: ** << leoAst imports >>
+#@+<< leoAst imports & annotations >>
+#@+node:ekr.20200105054219.1: ** << leoAst imports & annotations >>
 import argparse
 import ast
 import codecs
@@ -165,14 +165,13 @@ import textwrap
 import tokenize
 import traceback
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
-#@-<< leoAst imports >>
-#@+<< leoAst annotations >>
-#@+node:ekr.20220821044037.1: ** << leoAst annotations >>
+
 Node = ast.AST
 ActionList = List[Tuple[Callable, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
-#@-<< leoAst annotations >>
+
+#@-<< leoAst imports & annotations >>
 #@+<< leoAst data >>
 #@+node:ekr.20220821044107.1: ** << leoAst data >>
 

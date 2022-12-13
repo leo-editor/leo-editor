@@ -3,8 +3,8 @@
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
 """Classes to read and write @file nodes."""
-#@+<< leoAtFile imports >>
-#@+node:ekr.20041005105605.2: ** << leoAtFile imports >>
+#@+<< leoAtFile imports & annotations >>
+#@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
 import io
 import os
@@ -17,14 +17,13 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-#@-<< leoAtFile imports >>
-#@+<< leoAtFile annotations >>
-#@+node:ekr.20220819064015.1: ** << leoAtFile annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-#@-<< leoAtFile annotations >>
+#@-<< leoAtFile imports & annotations >>
+
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:  # pragma: no cover
