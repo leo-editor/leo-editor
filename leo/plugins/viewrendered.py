@@ -199,6 +199,7 @@ Jacob Peck added markdown support to this plugin.
 #@+<< vr imports >>
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 # pylint: disable = c-extension-no-member
+from __future__ import annotations
 import json
 import os
 from pathlib import Path
@@ -287,13 +288,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< vr annotations >>
 # pylint: disable=no-member
 trace = False  # This global trace is convenient.

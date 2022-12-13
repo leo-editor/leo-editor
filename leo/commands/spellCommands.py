@@ -5,6 +5,7 @@
 """Leo's spell-checking commands."""
 #@+<< spellCommands imports >>
 #@+node:ekr.20150514050530.1: ** << spellCommands imports >>
+from __future__ import annotations
 import re
 from typing import Any, Callable, Dict, List, Optional, Set, TYPE_CHECKING
 # Third-party annotations
@@ -22,12 +23,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
 #@-<< spellCommands annotations >>
 
 def cmd(name: str) -> Callable:

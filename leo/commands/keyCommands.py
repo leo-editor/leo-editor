@@ -4,6 +4,7 @@
 #@@first
 """Leo's key-handling commands."""
 # This file *is* used. Do not delete it!
+from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass

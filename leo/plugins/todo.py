@@ -64,6 +64,7 @@ todo_calendar_cols
 
 #@+<< todo imports >>
 #@+node:tbrown.20090119215428.4: ** << todo imports >>
+from __future__ import annotations
 import os
 import re
 import datetime
@@ -82,18 +83,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    # from QtGui import QIcon
-else:
-    Cmdr = Any
-    Event = Any
-    # QIcon = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Icon = Any # QtGui.QIcon
-Menu = Any
-Priority = Union[int, str]
+    Icon = Any # QtGui.QIcon
+    Menu = Any
+    Priority = Union[int, str]
 #@-<< todo annotations >>
 
 # Aliases: these should be in leoQt5.py or leoQt6.py.

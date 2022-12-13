@@ -244,6 +244,7 @@ Leo themes.
 #@+node:tom.20210527153415.1: ** << imports >>
 #@+<< typing imports >>
 #@+node:tom.20220919102037.1: *3* << typing imports >>
+from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Any, Tuple
 #@-<< typing imports >>
 
