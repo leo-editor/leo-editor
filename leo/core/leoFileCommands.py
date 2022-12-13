@@ -5,6 +5,7 @@
 """Classes relating to reading and writing .leo files."""
 #@+<< leoFileCommands imports >>
 #@+node:ekr.20050405141130: ** << leoFileCommands imports >>
+from __future__ import annotations
 import binascii
 from collections import defaultdict
 from contextlib import contextmanager

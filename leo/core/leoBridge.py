@@ -50,6 +50,7 @@
 #@+<< leoBridge imports >>
 #@+node:ekr.20220901084154.1: ** << leoBridge imports >>
 # This module must import *no* Leo modules at the outer level!
+from __future__ import annotations
 import os
 import sys
 import traceback
@@ -61,10 +62,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
 #@-<< leoBridge annotatations >>
 
 gBridgeController = None  # The singleton bridge controller.

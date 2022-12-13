@@ -4,6 +4,7 @@
 #@@first
 #@+<< leoImport imports >>
 #@+node:ekr.20091224155043.6539: ** << leoImport imports >>
+from __future__ import annotations
 import csv
 import io
 import json

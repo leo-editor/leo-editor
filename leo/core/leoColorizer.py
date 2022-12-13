@@ -9,6 +9,7 @@
 
 #@+<< leoColorizer imports >>
 #@+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
+from __future__ import annotations
 import re
 import string
 import time
@@ -37,18 +38,12 @@ except Exception:
 #@+node:ekr.20220901164936.1: ** << leoColorizer annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Color = Any
-Font = Any
-Mode = g.Bunch
-RuleSet = Any
-Widget = Any
+    Color = Any
+    Font = Any
+    Mode = g.Bunch
+    RuleSet = Any
+    Widget = Any
 #@-<< leoColorizer annotations >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer

@@ -24,6 +24,7 @@ Leo commanders.
 #@-<< leoIpython docstring >>
 #@+<< leoIPython imports >>
 #@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
+from __future__ import annotations
 import sys
 from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING
 from leo.core import leoGlobals as g

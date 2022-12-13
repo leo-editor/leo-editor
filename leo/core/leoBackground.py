@@ -5,6 +5,7 @@
 """Handling background processes"""
 #@+<< leoBackground imports >>
 #@+node:ekr.20220410202718.1: ** << leoBackground imports >>
+from __future__ import annotations
 import re
 import subprocess
 import _thread as thread
@@ -19,13 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-
-Pattern = Union[Any, str]
+    Pattern = Union[Any, str]
 #@-<< leoBackground annotations >>
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status

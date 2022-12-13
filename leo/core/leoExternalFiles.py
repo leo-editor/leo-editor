@@ -4,6 +4,7 @@
 #@@first
 #@+<< leoExternalFiles imports >>
 #@+node:ekr.20220821202943.1: ** << leoExternalFiles imports >>
+from __future__ import annotations
 import getpass
 import os
 import subprocess

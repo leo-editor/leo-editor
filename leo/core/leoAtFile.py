@@ -5,6 +5,7 @@
 """Classes to read and write @file nodes."""
 #@+<< leoAtFile imports >>
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports >>
+from __future__ import annotations
 import io
 import os
 import re
@@ -23,11 +24,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
 #@-<< leoAtFile annotations >>
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)

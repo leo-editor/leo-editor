@@ -5,6 +5,7 @@
 """A module encapsulating Leo's file caching"""
 #@+<< leoCache imports >>
 #@+node:ekr.20100208223942.10436: ** << leoCache imports >>
+from __future__ import annotations
 import fnmatch
 import os
 import pickle
@@ -18,12 +19,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220901155714.1: ** << leoCache annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
+
 #@-<< leoCache annotations >>
 # pylint: disable=raise-missing-from
 # Abbreviations used throughout.

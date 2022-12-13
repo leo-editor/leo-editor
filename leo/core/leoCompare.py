@@ -5,6 +5,7 @@
 """Leo's base compare class."""
 #@+<< leoCompare imports >>
 #@+node:ekr.20220901161941.1: ** << leoCompare imports >>
+from __future__ import annotations
 import difflib
 import filecmp
 import os

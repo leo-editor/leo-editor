@@ -7,6 +7,7 @@
 # pylint: disable=deprecated-method
 #@+<< leoKeys imports >>
 #@+node:ekr.20061031131434.1: ** << leoKeys imports >>
+from __future__ import annotations
 import inspect
 import os
 import re

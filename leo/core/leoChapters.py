@@ -5,6 +5,7 @@
 """Classes that manage chapters in Leo's core."""
 #@+<< leoChapters imports >>
 #@+node:ekr.20220824080606.1: ** << leoChapters imports >>
+from __future__ import annotations
 import re
 import string
 from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
@@ -18,12 +19,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    LeoQtTreeTab = Any
-    Position = Any
-    Wrapper = Any
 #@-<< leoChapters annotations >>
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)

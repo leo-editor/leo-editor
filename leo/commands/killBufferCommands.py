@@ -17,11 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
 #@-<< killBufferCommands annotations >>
 
 def cmd(name: str) -> Callable:

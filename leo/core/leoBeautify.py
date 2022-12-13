@@ -5,6 +5,7 @@
 """Leo's beautification classes."""
 #@+<< leoBeautify imports >>
 #@+node:ekr.20220822114944.1: ** << leoBeautify imports >>
+from __future__ import annotations
 import sys
 import os
 import time
@@ -23,12 +24,7 @@ from leo.core import leoAst
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
 #@-<< leoBeautify annotations >>
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)

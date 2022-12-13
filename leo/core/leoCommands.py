@@ -4,6 +4,7 @@
 #@@first
 #@+<< leoCommands imports >>
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
+from __future__ import annotations
 import json
 import os
 import re
@@ -59,49 +60,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Event = Any
-    Position = Any
-    PreviousSettings = Any
-    VNode = Any
-    # Subcommanders...
-    AtFile = Any
-    ChapterController = Any
-    FileCommands = Any
-    InternalIPKernel = Any
-    LeoFind = Any
-    LeoGui = Any
-    LeoImportCommands = Any
-    KeyHandlerClass = Any
-    NodeHistory = Any
-    PersistenceDataController = Any
-    PrintingController = Any
-    ShadowController = Any
-    Undoer = Any
-    VimCommands = Any
-    # Command handlers...
-    AbbrevCommands = Any
-    BufferCommandsClass = Any
-    ControlCommandsClass = Any
-    ConvertCommandsClass = Any
-    DebugCommandsClass = Any
-    EditCommandsClass = Any
-    EditFileCommandsClass = Any
-    GoToCommands = Any
-    HelpCommandsClass = Any
-    KeyHandlerCommandsClass = Any
-    KillBufferCommandsClass = Any
-    RectangleCommandsClass = Any
-    RstCommands = Any
-    SpellCommandsClass = Any
-    # Special cases...
-    StyleSheetManager = Any
-    Wrapper = Any
-
-RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-
-# These gui classes are hard to specify...
-Widget = Any
+    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    Widget = Any
 #@-<< leoCommands annotations >>
 
 def cmd(name: str) -> Callable:

@@ -12,6 +12,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 """
 #@+<< leoGui imports >>
 #@+node:ekr.20220414080546.1: ** << leoGui imports >>
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g

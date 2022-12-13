@@ -9,6 +9,7 @@ Important: This module imports no other Leo module.
 """
 #@+<< leoGlobals imports >>
 #@+node:ekr.20050208101229: ** << leoGlobals imports >>
+from __future__ import annotations
 import binascii
 import codecs
 import copy

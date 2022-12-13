@@ -6,6 +6,7 @@
 # pylint: disable=unsubscriptable-object
 #@+<< leoConfig imports >>
 #@+node:ekr.20041227063801: ** << leoConfig imports >>
+from __future__ import annotations
 import os
 import sys
 import re
