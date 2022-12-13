@@ -3,8 +3,8 @@
 #@+node:ekr.20150514040138.1: * @file ../commands/helpCommands.py
 #@@first
 """Leo's help commands."""
-#@+<< helpCommands imports >>
-#@+node:ekr.20150514050337.1: ** << helpCommands imports >>
+#@+<< helpCommands imports & annotations >>
+#@+node:ekr.20150514050337.1: ** << helpCommands imports & annotations >>
 from __future__ import annotations
 import io
 import re
@@ -13,12 +13,10 @@ import textwrap
 from typing import Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< helpCommands imports >>
-#@+<< helpCommands annotations >>
-#@+node:ekr.20220828064812.1: ** << helpCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
-#@-<< helpCommands annotations >>
+#@-<< helpCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the helpCommands class."""

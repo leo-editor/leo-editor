@@ -3,19 +3,17 @@
 #@+node:ekr.20150514040146.1: * @file ../commands/rectangleCommands.py
 #@@first
 """Leo's rectangle commands."""
-#@+<< rectangleCommands imports >>
-#@+node:ekr.20150514050446.1: ** << rectangleCommands imports >>
+#@+<< rectangleCommands imports & annotations >>
+#@+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
 from __future__ import annotations
 from typing import Callable, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< rectangleCommands imports >>
-#@+<< rectangleCommands annotations >>
-#@+node:ekr.20220828062821.1: ** << rectangleCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-#@-<< rectangleCommands annotations >>
+#@-<< rectangleCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the RectangleCommandsClass class."""

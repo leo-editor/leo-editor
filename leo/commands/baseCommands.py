@@ -3,8 +3,8 @@
 #@+node:ekr.20150514035943.1: * @file ../commands/baseCommands.py
 #@@first
 """The base class for all of Leo's user commands."""
-#@+<< baseCommands imports >>
-#@+node:ekr.20220828071357.1: ** << baseCommands imports >>
+#@+<< baseCommands imports & abbreviations >>
+#@+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>
 from __future__ import annotations
 from typing import Any, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -14,7 +14,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
-#@-<< baseCommands imports >>
+#@-<< baseCommands imports & abbreviations >>
+
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:

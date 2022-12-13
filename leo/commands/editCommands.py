@@ -3,23 +3,21 @@
 #@+node:ekr.20150514035813.1: * @file ../commands/editCommands.py
 #@@first
 """Leo's general editing commands."""
-#@+<< editCommands imports >>
-#@+node:ekr.20150514050149.1: **  << editCommands imports >>
+#@+<< editCommands imports & annotations  >>
+#@+node:ekr.20150514050149.1: **  << editCommands imports & annotations >>
 from __future__ import annotations
 import os
 import re
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< editCommands imports >>
-#@+<< editCommands annotations >>
-#@+node:ekr.20220826191642.1: ** << editCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-#@-<< editCommands annotations >>
+#@-<< editCommands imports & annotations  >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the EditCommandsClass class."""

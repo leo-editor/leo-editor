@@ -3,8 +3,8 @@
 #@+node:ekr.20150514041209.1: * @file ../commands/editFileCommands.py
 #@@first
 """Leo's file-editing commands."""
-#@+<< editFileCommands imports >>
-#@+node:ekr.20170806094317.4: ** << editFileCommands imports >>
+#@+<< editFileCommands imports & annotations >>
+#@+node:ekr.20170806094317.4: ** << editFileCommands imports & annotations >>
 from __future__ import annotations
 import difflib
 import io
@@ -14,14 +14,12 @@ from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< editFileCommands imports >>
-#@+<< editFileCommands annotations >>
-#@+node:ekr.20220826200438.1: ** << editFileCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-#@-<< editFileCommands annotations >>
+#@-<< editFileCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the EditFileCommandsClass class."""

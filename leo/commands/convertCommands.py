@@ -3,8 +3,8 @@
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
 #@@first
 """Leo's file-conversion commands."""
-#@+<< convertCommands imports >>
-#@+node:ekr.20220824202922.1: ** << convertCommands imports >>
+#@+<< convertCommands imports & annotations >>
+#@+node:ekr.20220824202922.1: ** << convertCommands imports & annotations >>
 from __future__ import annotations
 import re
 import time
@@ -12,15 +12,13 @@ from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< convertCommands imports >>
-#@+<< convertCommands annotations >>
-#@+node:ekr.20220824202941.1: ** << convertCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     Match = re.Match
-#@-<< convertCommands annotations >>
+#@-<< convertCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the ConvertCommandsClass class."""

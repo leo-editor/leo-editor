@@ -3,20 +3,19 @@
 #@+node:ekr.20150514040118.1: * @file ../commands/debugCommands.py
 #@@first
 """Per-commander debugging class."""
-#@+<< debugCommands imports >>
-#@+node:ekr.20181006100818.1: ** << debugCommands imports >>
+#@+<< debugCommands imports & annotations >>
+#@+node:ekr.20181006100818.1: ** << debugCommands imports & annotations >>
 from __future__ import annotations
 import os
 import sys
 from typing import Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< debugCommands imports >>
-#@+<< debugCommands annotations >>
-#@+node:ekr.20220826190831.1: ** << debugCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
-#@-<< debugCommands annotations >>
+
+#@-<< debugCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the DebugCommandsClass class."""

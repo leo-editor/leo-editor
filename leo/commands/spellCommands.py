@@ -3,8 +3,8 @@
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
 #@@first
 """Leo's spell-checking commands."""
-#@+<< spellCommands imports >>
-#@+node:ekr.20150514050530.1: ** << spellCommands imports >>
+#@+<< spellCommands imports & annotations >>
+#@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
 from __future__ import annotations
 import re
 from typing import Any, Callable, Dict, List, Optional, Set, TYPE_CHECKING
@@ -17,14 +17,12 @@ except Exception:  # May throw WinError(!)
     enchant = None
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
-#@-<< spellCommands imports >>
-#@+<< spellCommands annotations >>
-#@+node:ekr.20220828060855.1: ** << spellCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-#@-<< spellCommands annotations >>
+#@-<< spellCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the SpellCommandsClass class."""

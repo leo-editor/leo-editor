@@ -3,8 +3,8 @@
 #@+node:ekr.20150514035236.1: * @file ../commands/abbrevCommands.py
 #@@first
 """Leo's abbreviations commands."""
-#@+<< abbrevCommands imports >>
-#@+node:ekr.20150514045700.1: ** << abbrevCommands imports >>
+#@+<< abbrevCommands imports & abbreviations >>
+#@+node:ekr.20150514045700.1: ** << abbrevCommands imports & abbreviations >>
 from __future__ import annotations
 import functools
 import re
@@ -13,16 +13,14 @@ from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< abbrevCommands imports >>
-#@+<< abbrevCommands annotations >>
-#@+node:ekr.20220826065314.1: ** << abbrevCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Stroke = Any
-#@-<< abbrevCommands annotations >>
+#@-<< abbrevCommands imports & abbreviations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the abbrevCommands class."""

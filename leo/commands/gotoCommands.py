@@ -3,20 +3,19 @@
 #@+node:ekr.20150624112334.1: * @file ../commands/gotoCommands.py
 #@@first
 """Leo's goto commands."""
-#@+<< gotoCommands imports >>
-#@+node:ekr.20220827065126.1: ** << gotoCommands imports >>
+#@+<< gotoCommands imports & annotations >>
+#@+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< gotoCommands imports >>
-#@+<< gotoCommands annotations >>
-#@+node:ekr.20220827065107.1: ** << gotoCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-#@-<< gotoCommands annotations >>
+#@-<< gotoCommands imports & annotations >>
+
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands
 class GoToCommands:

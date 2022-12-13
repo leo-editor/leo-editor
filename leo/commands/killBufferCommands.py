@@ -3,21 +3,19 @@
 #@+node:ekr.20150514040142.1: * @file ../commands/killBufferCommands.py
 #@@first
 """Leo's kill-buffer commands."""
-#@+<< killBufferCommands imports >>
-#@+node:ekr.20150514050411.1: ** << killBufferCommands imports >>
+#@+<< killBufferCommands imports & annotations >>
+#@+node:ekr.20150514050411.1: ** << killBufferCommands imports & annotations >>
 from __future__ import annotations
 from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< killBufferCommands imports >>
-#@+<< killBufferCommands annotations >>
-#@+node:ekr.20220828063613.1: ** << killBufferCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-#@-<< killBufferCommands annotations >>
+#@-<< killBufferCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the KillBufferCommandsClass class."""

@@ -4,15 +4,18 @@
 #@@first
 """Leo's key-handling commands."""
 # This file *is* used. Do not delete it!
+
+#@+<< keyCommands imports and abbreviations >>
+#@+node:ekr.20221213115646.1: ** << keyCommands imports and abbreviations >>
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
-else:
-    Event = Any
+#@-<< keyCommands imports and abbreviations >>
+
 #@+others
 #@+node:ekr.20160514120948.1: ** class KeyHandlerCommandsClass
 class KeyHandlerCommandsClass(BaseEditCommandsClass):
