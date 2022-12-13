@@ -11,8 +11,8 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-#@+<< leoTest2 imports >>
-#@+node:ekr.20220901083840.1: ** << leoTest2 imports >>
+#@+<< leoTest2 imports & annotations >>
+#@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
 from __future__ import annotations
 import time
 import unittest
@@ -20,13 +20,11 @@ import warnings
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
-#@-<< leoTest2 imports >>
-#@+<< leoTest2 annotations >>
-#@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-#@-<< leoTest2 annotations >>
+#@-<< leoTest2 imports & annotations >>
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app

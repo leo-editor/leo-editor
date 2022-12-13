@@ -3,8 +3,8 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 """Text classes for the Qt version of Leo"""
-#@+<< qt_text imports >>
-#@+node:ekr.20220416085845.1: ** << qt_text imports >>
+#@+<< qt_text imports & annotations>>
+#@+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 import time
 assert time
@@ -16,15 +16,12 @@ from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
-#@-<< qt_text imports >>
-#@+<< qt_text annotations >>
-#@+node:ekr.20220416085945.1: ** << qt_text annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     MousePressEvent = Any
     Widget = Any
-#@-<< qt_text annotations >>
+#@-<< qt_text imports & annotations>>
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor

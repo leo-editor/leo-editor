@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
+#@+<< leoHistory imports & annotations >>
+#@+node:ekr.20221213120137.1: ** << leoHistory imports & annotations >>
 from __future__ import annotations
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 
@@ -9,6 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+#@-<< leoHistory imports & annotations >>
 
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory

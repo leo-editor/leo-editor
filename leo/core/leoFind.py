@@ -3,8 +3,8 @@
 #@+node:ekr.20060123151617: * @file leoFind.py
 #@@first
 """Leo's gui-independent find classes."""
-#@+<< leoFind imports >>
-#@+node:ekr.20220415005856.1: ** << leoFind imports >>
+#@+<< leoFind imports & annotations >>
+#@+node:ekr.20220415005856.1: ** << leoFind imports & annotations >>
 from __future__ import annotations
 import keyword
 import re
@@ -13,9 +13,7 @@ import time
 from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoFind imports >>
-#@+<< leoFind annotations >>
-#@+node:ekr.20220415005920.1: ** << leoFind annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
@@ -27,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
     MatchGroups = Tuple  # Best we can do so far.
     Settings = g.Bunch
     UndoData = g.Bunch
-#@-<< leoFind annotations >>
+#@-<< leoFind imports & annotations >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
 #@@language rest

@@ -96,8 +96,8 @@ cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
 """
 #@-<< nodetags docstring >>
-#@+<< nodetags imports >>
-#@+node:ekr.20220828131647.1: ** << nodetags imports >>
+#@+<< nodetags imports & annotations >>
+#@+node:ekr.20220828131647.1: ** << nodetags imports & annotations >>
 from __future__ import annotations
 import re
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
@@ -105,15 +105,14 @@ from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import MouseButton
-#@-<< nodetags imports >>
-#@+<< nodetags annotations >>
-#@+node:ekr.20220828131716.1: ** << nodetags annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     Widget = Any
-#@-<< nodetags annotations >>
+#@-<< nodetags imports & annotations >>
+
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
 def init() -> bool:
