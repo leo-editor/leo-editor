@@ -5,10 +5,11 @@
 """Leo's control commands."""
 #@+<< controlCommands imports >>
 #@+node:ekr.20150514050127.1: ** << controlCommands imports >>
+from __future__ import annotations
 import shlex
 import subprocess
 import sys
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< controlCommands imports >>
@@ -17,12 +18,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+
 #@-<< controlCommands annotations >>
 
 def cmd(name: str) -> Callable:

@@ -5,10 +5,11 @@
 """Help commands that used to be defined in leoCommands.py"""
 #@+<< commanderHelpCommands imports >>
 #@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports >>
+from __future__ import annotations
 import os
 import sys
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< commanderHelpCommands imports >>
 #@+<< commanderHelpCommands annotations >>
@@ -16,13 +17,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Self = Cmdr  # For @g.commander_command
+    Self = Cmdr  # For @g.commander_command
 #@-<< commanderHelpCommands annotations >>
 #@+others
 #@+node:ekr.20031218072017.2939: ** c_help.about (version number & date)

@@ -5,6 +5,7 @@
 """Outline commands that used to be defined in leoCommands.py"""
 #@+<< commanderOutlineCommands imports >>
 #@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports >>
+from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
@@ -19,12 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Self = Cmdr  # For @g.commander_command
+    Self = Cmdr  # For @g.commander_command
 #@-<< commanderOutlineCommands annotations >>
 
 #@+others

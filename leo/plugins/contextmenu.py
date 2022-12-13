@@ -43,6 +43,7 @@ And call this in your plugin *once*::
 # Original version by Ville M. Vainio.
 #@+<< contextmenu imports >>
 #@+node:ekr.20220828123814.1: ** << contextmenu imports >>
+from __future__ import annotations
 import os
 from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -59,11 +60,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event # pylint: disable=reimported
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
 #@-<< contextmenu annotations >>
 
 # Globals

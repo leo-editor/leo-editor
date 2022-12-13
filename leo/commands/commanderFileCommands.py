@@ -5,6 +5,7 @@
 """File commands that used to be defined in leoCommands.py"""
 #@+<< commanderFileCommands imports >>
 #@+node:ekr.20220826120852.1: ** << commanderFileCommands imports >>
+from __future__ import annotations
 import os
 import sys
 import time
