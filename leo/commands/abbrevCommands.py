@@ -5,6 +5,7 @@
 """Leo's abbreviations commands."""
 #@+<< abbrevCommands imports >>
 #@+node:ekr.20150514045700.1: ** << abbrevCommands imports >>
+from __future__ import annotations
 import functools
 import re
 import string
@@ -20,12 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Position = Any
-    Event = Any
-    Wrapper = Any
-Stroke = Any
+    Stroke = Any
 #@-<< abbrevCommands annotations >>
 
 def cmd(name: str) -> Callable:

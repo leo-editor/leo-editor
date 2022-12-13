@@ -346,10 +346,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoQt import QtWidgets
     from leo.core.leoQt import QtGui
     from leo.plugins.qt_text import LeoQTextBrowser
-else:
-    Cmdr = Any
-    LeoKeyEvent = Any
-    LeoQTextBrowser = Any
 #@-<< annotations >>
 #@+<< declarations >>
 #@+node:tom.20210527153422.1: ** << declarations >>

@@ -5,6 +5,7 @@
 """Commands that invoke external checkers"""
 #@+<< checkerCommands imports >>
 #@+node:ekr.20161021092038.1: ** << checkerCommands imports >>
+from __future__ import annotations
 import os
 import shlex
 import sys
@@ -45,12 +46,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands

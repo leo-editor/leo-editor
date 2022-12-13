@@ -5,6 +5,7 @@
 """Leo's qt frame classes."""
 #@+<< qt_frame imports >>
 #@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
+from __future__ import annotations
 from collections import defaultdict
 import os
 import platform

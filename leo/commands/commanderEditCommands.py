@@ -5,6 +5,7 @@
 """Edit commands that used to be defined in leoCommands.py"""
 #@+<< commanderEditCommands imports >>
 #@+node:ekr.20220826084013.1: ** << commanderEditCommands imports >>
+from __future__ import annotations
 import re
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -14,13 +15,8 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Self = Cmdr  # For arguments to @g.commander_command.
+    from leo.core.leoNodes import Position
+    Self = Cmdr  # For arguments to @g.commander_command.
 #@-<< commanderEditCommands annotations >>
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments

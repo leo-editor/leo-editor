@@ -8,7 +8,7 @@
 import os
 import sys
 import time
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoImport
 #@-<< commanderFileCommands imports >>
@@ -18,14 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    LeoGui = Any
-    Position = Any
-    VNode = Any
-Self = Cmdr  # For @g.commander_command.
+    Self = Cmdr  # For @g.commander_command.
 #@-<< commanderFileCommands annotations >>
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings

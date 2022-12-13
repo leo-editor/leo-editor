@@ -4,6 +4,7 @@
 #@@first
 #@+<< leoApp imports >>
 #@+node:ekr.20120219194520.10463: ** << leoApp imports >>
+from __future__ import annotations
 import argparse
 import importlib
 import io
@@ -38,23 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoPlugins import PluginsManager
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    BackgroundProcessManager = Any
-    Cmdr = Any
-    CommanderCacher = Any
-    ExternalFilesController = Any
-    Event = Any
-    GlobalCacher = Any
-    GlobalConfigManager = Any
-    InternalIPKernel = Any
-    LeoGui = Any
-    NodeIndices = Any
-    PluginsManager = Any
-    Position = Any
-    SessionManager = Any
-    VNode = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< leoApp annotations >>
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)

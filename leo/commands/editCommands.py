@@ -5,6 +5,7 @@
 """Leo's general editing commands."""
 #@+<< editCommands imports >>
 #@+node:ekr.20150514050149.1: **  << editCommands imports >>
+from __future__ import annotations
 import os
 import re
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
@@ -18,12 +19,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
 #@-<< editCommands annotations >>
 
 def cmd(name: str) -> Callable:
