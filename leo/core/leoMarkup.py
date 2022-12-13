@@ -3,8 +3,8 @@
 #@+node:ekr.20190515070742.1: * @file leoMarkup.py
 #@@first
 """Supports @adoc, @pandoc and @sphinx nodes and related commands."""
-#@+<< leoMarkup imports >>
-#@+node:ekr.20190515070742.3: ** << leoMarkup imports >>
+#@+<< leoMarkup imports & annotations >>
+#@+node:ekr.20190515070742.3: ** << leoMarkup imports & annotations >>
 from __future__ import annotations
 import io
 from shutil import which
@@ -17,15 +17,13 @@ import leo.core.leoGlobals as g
 # Abbreviation.
 StringIO = io.StringIO
 
-#@-<< leoMarkup imports >>
-#@+<< leoMarkup annotations >>
-#@+node:ekr.20220901062551.1: ** << leoMarkup annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     File_List = Optional[List[str]]
-#@-<< leoMarkup annotations >>
+#@-<< leoMarkup imports & annotations >>
+
 asciidoctor_exec = which('asciidoctor')
 asciidoc3_exec = which('asciidoc3')
 pandoc_exec = which('pandoc')

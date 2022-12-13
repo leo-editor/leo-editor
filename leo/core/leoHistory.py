@@ -4,13 +4,12 @@
 #@@first
 from __future__ import annotations
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
-#@+<< leoHistory annotations >>
-#@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-#@-<< leoHistory annotations >>
+
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:

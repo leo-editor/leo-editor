@@ -2,8 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
 #@@first
-#@+<< leoExternalFiles imports >>
-#@+node:ekr.20220821202943.1: ** << leoExternalFiles imports >>
+#@+<< leoExternalFiles imports & annotations >>
+#@+node:ekr.20220821202943.1: ** << leoExternalFiles imports & annotations >>
 from __future__ import annotations
 import getpass
 import os
@@ -11,14 +11,13 @@ import subprocess
 import tempfile
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoExternalFiles imports >>
-#@+<< leoExternalFiles annotations >>
-#@+node:ekr.20220821203011.1: ** << leoExternalFiles annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     Widget = Any
-#@-<< leoExternalFiles annotations >>
+#@-<< leoExternalFiles imports & annotations >>
+
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:

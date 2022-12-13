@@ -3,21 +3,20 @@
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
 #@@first
 """Classes relating to Leo's plugin architecture."""
-#@+<< leoPlugins imports >>
-#@+node:ekr.20220901071118.1: ** << leoPlugins imports >>
+#@+<< leoPlugins imports & annotations >>
+#@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
 import sys
 from typing import Any, Callable, Dict, Iterator, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoPlugins imports >>
-#@+<< leoPlugins annotations >>
-#@+node:ekr.20220901071130.1: ** << leoPlugins annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     # mypy doesn't seem to handle this.
     Tag_List = Any  # Union[str, Sequence[str]]
-#@-<< leoPlugins annotations >>
+#@-<< leoPlugins imports & annotations >>
+
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
 optional_modules = [

@@ -3,23 +3,22 @@
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
 #@@first
 """Classes that manage chapters in Leo's core."""
-#@+<< leoChapters imports >>
-#@+node:ekr.20220824080606.1: ** << leoChapters imports >>
+#@+<< leoChapters imports & annotations >>
+#@+node:ekr.20220824080606.1: ** << leoChapters imports & annotations >>
 from __future__ import annotations
 import re
 import string
 from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoChapters imports >>
-#@+<< leoChapters annotations >>
-#@+node:ekr.20220821201049.1: ** << leoChapters annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-#@-<< leoChapters annotations >>
+#@-<< leoChapters imports & annotations >>
+
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
 def cmd(name: Any) -> Callable:

@@ -3,8 +3,8 @@
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
 #@@first
 """Leo's fundamental data classes."""
-#@+<< leoNodes imports >>
-#@+node:ekr.20060904165452.1: ** << leoNodes imports >>
+#@+<< leoNodes imports & annotations >>
+#@+node:ekr.20060904165452.1: ** << leoNodes imports & annotations >>
 from __future__ import annotations
 import copy
 import time
@@ -15,7 +15,7 @@ from leo.core import signal_manager
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-#@-<< leoNodes imports >>
+#@-<< leoNodes imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
 class NodeIndices:

@@ -3,22 +3,21 @@
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
 #@@first
 """Leo's base compare class."""
-#@+<< leoCompare imports >>
-#@+node:ekr.20220901161941.1: ** << leoCompare imports >>
+#@+<< leoCompare imports & annotations >>
+#@+node:ekr.20220901161941.1: ** << leoCompare imports & annotations >>
 from __future__ import annotations
 import difflib
 import filecmp
 import os
 from typing import Any, BinaryIO, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoCompare imports >>
-#@+<< leoCompare annotations >>
-#@+node:ekr.20220901162009.1: ** << leoCompare annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-#@-<< leoCompare annotations >>
+#@-<< leoCompare imports & annotations >>
+
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare:

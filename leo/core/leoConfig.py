@@ -4,8 +4,8 @@
 #@@first
 """Configuration classes for Leo."""
 # pylint: disable=unsubscriptable-object
-#@+<< leoConfig imports >>
-#@+node:ekr.20041227063801: ** << leoConfig imports >>
+#@+<< leoConfig imports & annotations >>
+#@+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
 import os
 import sys
@@ -16,14 +16,12 @@ from typing import TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
-#@-<< leoConfig imports >>
-#@+<< leoConfig annotations >>
-#@+node:ekr.20220417212402.1: ** << leoConfig annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.core.leoApp import PreviousSettings
     Widget = Any
-#@-<< leoConfig annotations >>
+#@-<< leoConfig imports & annotations >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:

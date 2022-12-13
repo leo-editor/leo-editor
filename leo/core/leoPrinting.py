@@ -6,8 +6,8 @@
 Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
-#@+<< leoPrinting imports >>
-#@+node:ekr.20220901091411.1: ** << leoPrinting imports >>
+#@+<< leoPrinting imports & annotations >>
+#@+node:ekr.20220901091411.1: ** << leoPrinting imports & annotations >>
 from __future__ import annotations
 from typing import Any, Callable, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -19,14 +19,12 @@ try:  # #1973
 except Exception:
     printsupport = QtGui = None  # type:ignore
     DialogCode = None  # type:ignore
-#@-<< leoPrinting imports >>
-#@+<< leoPrinting annotations >>
-#@+node:ekr.20220901091421.1: ** << leoPrinting annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-#@-<< leoPrinting annotations >>
+#@-<< leoPrinting imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the PrintingController class."""

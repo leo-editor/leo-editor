@@ -3,21 +3,20 @@
 #@+node:ekr.20140821055201.18331: * @file leoPersistence.py
 #@@first
 """Support for persistent clones, gnx's and uA's using @persistence trees."""
-#@+<< leoPersistence imports >>
-#@+node:ekr.20220901064457.1: ** << leoPersistence imports >>
+#@+<< leoPersistence imports & annotations >>
+#@+node:ekr.20220901064457.1: ** << leoPersistence imports & annotations >>
 from __future__ import annotations
 import binascii
 import pickle
 from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoPersistence imports >>
-#@+<< leoPersistence annotations >>
-#@+node:ekr.20220901064516.1: ** << leoPersistence annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-#@-<< leoPersistence annotations >>
+#@-<< leoPersistence imports & annotations >>
+
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 
