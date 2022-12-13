@@ -27,21 +27,20 @@ Settings:
   This is useful for name-based tools like py.test.
 """
 #@-<< leoShadow docstring >>
-#@+<< leoShadow imports >>
-#@+node:ekr.20080708094444.52: ** << leoShadow imports >>
+#@+<< leoShadow imports & annotations >>
+#@+node:ekr.20080708094444.52: ** << leoShadow imports & annotations >>
 from __future__ import annotations
 import difflib
 import os
 import pprint
 from typing import List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoShadow imports >>
-#@+<< leoShadow annotations >>
-#@+node:ekr.20220821091505.1: ** << leoShadow annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-#@-<< leoShadow annotations >>
+#@-<< leoShadow imports & annotations >>
+
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
 class ShadowController:

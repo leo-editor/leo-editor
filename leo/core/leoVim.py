@@ -18,24 +18,22 @@ k.masterKeyHandler dispatches keys to vim mode before
 doing the normal key handling that vim emulation uses.
 """
 #@-<< leoVim docstring >>
-#@+<< leoVim imports >>
-#@+node:ekr.20220901100947.1: ** << leoVim imports >>
+#@+<< leoVim imports & annotations >>
+#@+node:ekr.20220901100947.1: ** << leoVim imports & annotations >>
 from __future__ import annotations
 import os
 import string
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
-#@-<< leoVim imports >>
-#@+<< leoVim annotations >>
-#@+node:ekr.20220901100956.1: ** << leoVim annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Event = Any  # More than one kind of event.
     Stroke = Any
     Widget = Any
-#@-<< leoVim annotations >>
+#@-<< leoVim imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the VimCommands class."""
