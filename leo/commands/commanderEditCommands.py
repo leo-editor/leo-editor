@@ -3,21 +3,21 @@
 #@+node:ekr.20171123135539.1: * @file ../commands/commanderEditCommands.py
 #@@first
 """Edit commands that used to be defined in leoCommands.py"""
-#@+<< commanderEditCommands imports >>
-#@+node:ekr.20220826084013.1: ** << commanderEditCommands imports >>
+
+#@+<< commanderEditCommands imports & annotations >>
+#@+node:ekr.20220826084013.1: ** << commanderEditCommands imports & annotations >>
 from __future__ import annotations
 import re
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< commanderEditCommands imports >>
-#@+<< commanderEditCommands annotations >>
-#@+node:ekr.20220826083914.1: ** << commanderEditCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     Self = Cmdr  # For arguments to @g.commander_command.
-#@-<< commanderEditCommands annotations >>
+#@-<< commanderEditCommands imports & annotations >>
+
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
 @g.commander_command('add-comments')

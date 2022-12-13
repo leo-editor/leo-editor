@@ -3,8 +3,8 @@
 #@+node:ekr.20171123095353.1: * @file ../commands/commanderFileCommands.py
 #@@first
 """File commands that used to be defined in leoCommands.py"""
-#@+<< commanderFileCommands imports >>
-#@+node:ekr.20220826120852.1: ** << commanderFileCommands imports >>
+#@+<< commanderFileCommands imports & annotations >>
+#@+node:ekr.20220826120852.1: ** << commanderFileCommands imports & annotations >>
 from __future__ import annotations
 import os
 import sys
@@ -12,15 +12,14 @@ import time
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoImport
-#@-<< commanderFileCommands imports >>
-#@+<< commanderFileCommands annotations >>
-#@+node:ekr.20220826120908.1: ** << commanderFileCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
     Self = Cmdr  # For @g.commander_command.
-#@-<< commanderFileCommands annotations >>
+#@-<< commanderFileCommands imports & annotations >>
+
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings
 @g.commander_command('reload-settings')

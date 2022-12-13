@@ -3,22 +3,21 @@
 #@+node:ekr.20171124073126.1: * @file ../commands/commanderHelpCommands.py
 #@@first
 """Help commands that used to be defined in leoCommands.py"""
-#@+<< commanderHelpCommands imports >>
-#@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports >>
+#@+<< commanderHelpCommands imports & annotations >>
+#@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports & annotations >>
 from __future__ import annotations
 import os
 import sys
 import time
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< commanderHelpCommands imports >>
-#@+<< commanderHelpCommands annotations >>
-#@+node:ekr.20220826122824.1: ** << commanderHelpCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     Self = Cmdr  # For @g.commander_command
-#@-<< commanderHelpCommands annotations >>
+#@-<< commanderHelpCommands imports & annotations >>
+
 #@+others
 #@+node:ekr.20031218072017.2939: ** c_help.about (version number & date)
 @g.commander_command('about-leo')

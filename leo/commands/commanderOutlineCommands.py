@@ -3,8 +3,8 @@
 #@+node:ekr.20171124080430.1: * @file ../commands/commanderOutlineCommands.py
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
-#@+<< commanderOutlineCommands imports >>
-#@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports >>
+#@+<< commanderOutlineCommands imports & annotations >>
+#@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
@@ -13,15 +13,13 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_C
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
-#@-<< commanderOutlineCommands imports >>
-#@+<< commanderOutlineCommands annotations >>
-#@+node:ekr.20220826123623.1: ** << commanderOutlineCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     Self = Cmdr  # For @g.commander_command
-#@-<< commanderOutlineCommands annotations >>
+#@-<< commanderOutlineCommands imports & annotations >>
 
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines

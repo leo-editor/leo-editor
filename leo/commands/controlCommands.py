@@ -3,8 +3,8 @@
 #@+node:ekr.20150514040100.1: * @file ../commands/controlCommands.py
 #@@first
 """Leo's control commands."""
-#@+<< controlCommands imports >>
-#@+node:ekr.20150514050127.1: ** << controlCommands imports >>
+#@+<< controlCommands imports & annotations >>
+#@+node:ekr.20150514050127.1: ** << controlCommands imports & annotations >>
 from __future__ import annotations
 import shlex
 import subprocess
@@ -12,14 +12,12 @@ import sys
 from typing import Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< controlCommands imports >>
-#@+<< controlCommands annotations >>
-#@+node:ekr.20220826190244.1: ** << controlCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
 
-#@-<< controlCommands annotations >>
+#@-<< controlCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the ControlCommandsClass class."""
