@@ -27,6 +27,7 @@ http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
+from __future__ import annotations
 import copy
 import logging
 import logging.handlers
@@ -63,13 +64,8 @@ from leo.core import leoNodes
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-    from leo.core.leoNodes import VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
-Event = Any  # Not usually a LeoKeyEvent.
-Wrapper = Any  # Everything, including widgets, is a wrapper!
+    Event = Any  # Not usually a LeoKeyEvent.
+    Wrapper = Any  # Everything, including widgets, is a wrapper!
 #@-<< cursesGui2 annotations >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation

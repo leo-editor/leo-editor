@@ -5,6 +5,7 @@
 """Leo's goto commands."""
 #@+<< gotoCommands imports >>
 #@+node:ekr.20220827065126.1: ** << gotoCommands imports >>
+from __future__ import annotations
 import re
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -14,12 +15,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
 #@-<< gotoCommands annotations >>
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands

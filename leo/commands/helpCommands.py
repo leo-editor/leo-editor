@@ -5,22 +5,19 @@
 """Leo's help commands."""
 #@+<< helpCommands imports >>
 #@+node:ekr.20150514050337.1: ** << helpCommands imports >>
+from __future__ import annotations
 import io
 import re
 import sys
 import textwrap
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< helpCommands imports >>
 #@+<< helpCommands annotations >>
 #@+node:ekr.20220828064812.1: ** << helpCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-else:
-    Cmdr = Any
-    Event = Any
 #@-<< helpCommands annotations >>
 
 def cmd(name: str) -> Callable:

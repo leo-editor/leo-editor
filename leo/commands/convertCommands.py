@@ -5,6 +5,7 @@
 """Leo's file-conversion commands."""
 #@+<< convertCommands imports >>
 #@+node:ekr.20220824202922.1: ** << convertCommands imports >>
+from __future__ import annotations
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
@@ -18,11 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-Match = re.Match
+    Match = re.Match
 #@-<< convertCommands annotations >>
 
 def cmd(name: str) -> Callable:

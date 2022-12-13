@@ -29,6 +29,7 @@ free-layout-zoom
 # Written by Terry Brown.
 #@+<< free_layout imports >>
 #@+node:tbrown.20110203111907.5520: ** << free_layout imports >>
+from __future__ import annotations
 import json
 from typing import Any, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
@@ -53,11 +54,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
 #@-<< free_layout annotations >>
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init

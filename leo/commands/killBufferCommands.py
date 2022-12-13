@@ -5,6 +5,7 @@
 """Leo's kill-buffer commands."""
 #@+<< killBufferCommands imports >>
 #@+node:ekr.20150514050411.1: ** << killBufferCommands imports >>
+from __future__ import annotations
 from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass

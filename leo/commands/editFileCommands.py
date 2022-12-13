@@ -5,11 +5,12 @@
 """Leo's file-editing commands."""
 #@+<< editFileCommands imports >>
 #@+node:ekr.20170806094317.4: ** << editFileCommands imports >>
+from __future__ import annotations
 import difflib
 import io
 import os
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -20,11 +21,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
 #@-<< editFileCommands annotations >>
 
 def cmd(name: str) -> Callable:
