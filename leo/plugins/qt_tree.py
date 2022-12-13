@@ -5,6 +5,7 @@
 """Leo's Qt tree class."""
 #@+<< qt_tree imports >>
 #@+node:ekr.20140907131341.18709: ** << qt_tree imports >>
+from __future__ import annotations
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple

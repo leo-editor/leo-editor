@@ -35,30 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
     from leo.plugins.notebook import NbController
-else:
-    ChapterController = Any
-    Cmdr = Any
-    CoreBody = Any
-    CoreLog = Any
-    CoreMenu = Any
-    CoreStatusLine = Any
-    CoreTree = Any
-    DynamicWindow = Any
-    Event = Any
-    LeoGui = Any
-    LeoMenu = Any
-    LeoQtBody = Any
-    LeoQtLog = Any
-    LeoQtMenu = Any
-    LeoQtTree = Any
-    TopFrame = Any
-    QtIconBarClass = Any
-    NbController = Any
-    NullMenu = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>

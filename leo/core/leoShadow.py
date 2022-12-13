@@ -29,21 +29,18 @@ Settings:
 #@-<< leoShadow docstring >>
 #@+<< leoShadow imports >>
 #@+node:ekr.20080708094444.52: ** << leoShadow imports >>
+from __future__ import annotations
 import difflib
 import os
 import pprint
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoShadow imports >>
 #@+<< leoShadow annotations >>
 #@+node:ekr.20220821091505.1: ** << leoShadow annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
 #@-<< leoShadow annotations >>
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController

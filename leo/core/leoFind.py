@@ -10,7 +10,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoFind imports >>
@@ -22,20 +22,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import FindTabManager
     from leo.core.leoKeys import KeyHandlerClass as KeyHandler
     from leo.core.leoGlobals import KeyStroke as Stroke
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    FindTabManager = Any
-    KeyHandler = Any
-    Position = Any
-    Stroke = Any
-    VNode = Any
-    Wrapper = Any
-MatchGroups = Tuple  # Best we can do so far.
-Settings = g.Bunch
-UndoData = g.Bunch
+    MatchGroups = Tuple  # Best we can do so far.
+    Settings = g.Bunch
+    UndoData = g.Bunch
 #@-<< leoFind annotations >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>

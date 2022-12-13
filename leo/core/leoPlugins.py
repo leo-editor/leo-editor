@@ -5,6 +5,7 @@
 """Classes relating to Leo's plugin architecture."""
 #@+<< leoPlugins imports >>
 #@+node:ekr.20220901071118.1: ** << leoPlugins imports >>
+from __future__ import annotations
 import sys
 from typing import Any, Callable, Dict, Iterator, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -13,17 +14,9 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220901071130.1: ** << leoPlugins annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-
-# mypy doesn't seem to handle this.
-Tag_List = Any  # Union[str, Sequence[str]]
+    # mypy doesn't seem to handle this.
+    Tag_List = Any  # Union[str, Sequence[str]]
 #@-<< leoPlugins annotations >>
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.

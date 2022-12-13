@@ -5,8 +5,9 @@
 """Support for sessions in Leo."""
 #@+<< leoSessions imports >>
 #@+node:ekr.20120420054855.14344: ** << leoSessions imports >>
+from __future__ import annotations
 import json
-from typing import Any, List, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoSessions imports >>
 #@+<< leoSessions annotations >>
@@ -14,11 +15,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
+
 #@-<< leoSessions annotations >>
 #@+<< leoSessions exception classes>>
 #@+node:ekr.20120420054855.14357: ** << leoSessions exception classes >>

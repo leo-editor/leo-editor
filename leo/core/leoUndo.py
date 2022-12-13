@@ -47,7 +47,8 @@
 #@-<< How Leo implements unlimited undo >>
 #@+<< leoUndo imports >>
 #@+node:ekr.20220821074023.1: ** << leoUndo imports >>
-from typing import Any, Callable, List, Tuple, TYPE_CHECKING
+from __future__ import annotations
+from typing import Callable, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoUndo imports >>
 #@+<< leoUndo annotations >>
@@ -57,12 +58,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
 #@-<< leoUndo annotations >>
 # pylint: disable=unpacking-non-sequence
 

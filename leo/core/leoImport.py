@@ -42,11 +42,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
 #@-<< leoImport annotations >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter

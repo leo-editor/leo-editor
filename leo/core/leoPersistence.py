@@ -5,6 +5,7 @@
 """Support for persistent clones, gnx's and uA's using @persistence trees."""
 #@+<< leoPersistence imports >>
 #@+node:ekr.20220901064457.1: ** << leoPersistence imports >>
+from __future__ import annotations
 import binascii
 import pickle
 from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
@@ -16,10 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
 #@-<< leoPersistence annotations >>
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)

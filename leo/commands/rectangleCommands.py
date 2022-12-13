@@ -5,6 +5,7 @@
 """Leo's rectangle commands."""
 #@+<< rectangleCommands imports >>
 #@+node:ekr.20150514050446.1: ** << rectangleCommands imports >>
+from __future__ import annotations
 from typing import Any, Callable, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass

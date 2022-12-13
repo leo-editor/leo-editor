@@ -16,12 +16,8 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220821203011.1: ** << leoExternalFiles annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
-Widget = Any
+    from leo.core.leoNodes import Position
+    Widget = Any
 #@-<< leoExternalFiles annotations >>
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile

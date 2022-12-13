@@ -20,6 +20,7 @@ doing the normal key handling that vim emulation uses.
 #@-<< leoVim docstring >>
 #@+<< leoVim imports >>
 #@+node:ekr.20220901100947.1: ** << leoVim imports >>
+from __future__ import annotations
 import os
 import string
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
@@ -30,15 +31,10 @@ from leo.core.leoGui import LeoKeyEvent
 #@+node:ekr.20220901100956.1: ** << leoVim annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Position = Any
-    Wrapper = Any
-Event = Any  # More than one kind of event.
-Stroke = Any
-Widget = Any
+    Event = Any  # More than one kind of event.
+    Stroke = Any
+    Widget = Any
 #@-<< leoVim annotations >>
 
 def cmd(name: str) -> Callable:

@@ -13,6 +13,7 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
 #@+<< leoTest2 imports >>
 #@+node:ekr.20220901083840.1: ** << leoTest2 imports >>
+from __future__ import annotations
 import time
 import unittest
 import warnings
@@ -24,12 +25,7 @@ from leo.core import leoApp
 #@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
 #@-<< leoTest2 annotations >>
 
 #@+others

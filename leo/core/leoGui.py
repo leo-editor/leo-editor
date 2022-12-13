@@ -26,13 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    FindTabManager = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< leoGui annotations >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui

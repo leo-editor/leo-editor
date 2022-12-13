@@ -222,6 +222,7 @@ most brilliant idea in Leo's history.
 #@-<< mod_scripting docstring >>
 #@+<< mod_scripting imports >>
 #@+node:ekr.20060328125248.2: ** << mod_scripting imports >>
+from __future__ import annotations
 from collections import namedtuple
 import pprint
 import re
@@ -239,12 +240,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< mod_scripting annotations >>
 #@+others
 #@+node:ekr.20210228135810.1: ** cmd decorator

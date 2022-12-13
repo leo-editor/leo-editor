@@ -22,11 +22,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.core.leoApp import PreviousSettings
-else:
-    Position = Any
-    PreviousSettings = Any
-
-Widget = Any
+    Widget = Any
 #@-<< leoConfig annotations >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>

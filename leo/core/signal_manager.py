@@ -15,6 +15,7 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 #@-<< signal_manager docstring >>
 #@+<< signal_manager imports >>
 #@+node:ekr.20220901092745.1: ** << signal_manager imports >>
+from __future__ import annotations
 from collections import defaultdict
 from typing import Any, Callable, Dict, List, TYPE_CHECKING
 #@-<< signal_manager imports >>

@@ -6,6 +6,7 @@
 # pylint: disable=import-error
 #@+<< qt_gui imports  >>
 #@+node:ekr.20140918102920.17891: ** << qt_gui imports >>
+from __future__ import annotations
 import datetime
 import functools
 import re

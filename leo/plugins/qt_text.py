@@ -5,6 +5,7 @@
 """Text classes for the Qt version of Leo"""
 #@+<< qt_text imports >>
 #@+node:ekr.20220416085845.1: ** << qt_text imports >>
+from __future__ import annotations
 import time
 assert time
 from typing import Any, Callable, Dict, List, Optional, Tuple

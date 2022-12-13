@@ -5,17 +5,16 @@
 """Leo's fundamental data classes."""
 #@+<< leoNodes imports >>
 #@+node:ekr.20060904165452.1: ** << leoNodes imports >>
-#Transcrypt does not support Python's copy module.
+from __future__ import annotations
 import copy
 import time
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-else:
-    Cmdr = Any
 #@-<< leoNodes imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices

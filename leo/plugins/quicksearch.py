@@ -78,6 +78,7 @@ This plugin defines the following commands that can be bound to keys:
 # Original by Ville M. Vainio <vivainio@gmail.com>.
 #@+<< quicksearch imports >>
 #@+node:ville.20090314215508.7: ** << quicksearch imports >>
+from __future__ import annotations
 import fnmatch
 import itertools
 import re

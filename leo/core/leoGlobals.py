@@ -59,12 +59,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    LeoGui = Any
-    Position = Any
-    VNode = Any
-Event = Any
+    Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.

@@ -5,6 +5,7 @@
 """Save and show tips to the user."""
 #@+<< leoTips imports >>
 #@+node:ekr.20220901094023.1: ** << leoTips imports >>
+from __future__ import annotations
 import random
 import textwrap
 from typing import Any, List, TYPE_CHECKING
@@ -15,12 +16,7 @@ assert g
 #@+node:ekr.20220901094043.1: ** << leoTips annotatsions >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
+
 #@-<< leoTips annotatsions >>
 
 # Define constant strings for use in f-strings.

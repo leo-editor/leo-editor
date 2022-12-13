@@ -8,6 +8,7 @@ Adapted from printing plugin.
 """
 #@+<< leoPrinting imports >>
 #@+node:ekr.20220901091411.1: ** << leoPrinting imports >>
+from __future__ import annotations
 from typing import Any, Callable, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -25,11 +26,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
 #@-<< leoPrinting annotations >>
 
 def cmd(name: str) -> Callable:

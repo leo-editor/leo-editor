@@ -5,12 +5,13 @@
 """Supports @adoc, @pandoc and @sphinx nodes and related commands."""
 #@+<< leoMarkup imports >>
 #@+node:ekr.20190515070742.3: ** << leoMarkup imports >>
+from __future__ import annotations
 import io
 from shutil import which
 import os
 import re
 import time
-from typing import Any, List, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -23,11 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-File_List = Optional[List[str]]
+    File_List = Optional[List[str]]
 #@-<< leoMarkup annotations >>
 asciidoctor_exec = which('asciidoctor')
 asciidoc3_exec = which('asciidoc3')

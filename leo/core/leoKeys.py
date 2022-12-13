@@ -27,18 +27,12 @@ except ImportError:
 #@-<< leoKeys imports >>
 #@+<< leoKeys annotations >>
 #@+node:ekr.20220414165644.1: ** << leoKeys annotations >>
-# Leo never imports any other Leo module.
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    # from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Position = Any
-    Wrapper = Any
-Event = Any  # Several kinds of events?
-Stroke = Any
+    Event = Any  # Several kinds of events?
+    Stroke = Any
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>

@@ -57,6 +57,7 @@ __plugin_priority__
 # **Important**: this plugin is gui-independent.
 #@+<< plugins_menu imports >>
 #@+node:ekr.20050101090207.10: ** << plugins_menu imports >>
+from __future__ import annotations
 import configparser as ConfigParser
 import os
 from typing import Any, Dict, List, Sequence, TYPE_CHECKING
@@ -67,16 +68,9 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Item = Any
-Group = Any
-Menu = Any
+    Item = Any
+    Group = Any
+    Menu = Any
 #@-<< plugins_menu annotations >>
 
 __plugin_name__ = "Plugins Menu"
