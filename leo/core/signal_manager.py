@@ -17,19 +17,9 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 #@+node:ekr.20220901092745.1: ** << signal_manager imports >>
 from __future__ import annotations
 from collections import defaultdict
-from typing import Any, Callable, Dict, List, TYPE_CHECKING
+from typing import Any, Callable, Dict, List
 #@-<< signal_manager imports >>
-#@+<< signal_manager annotations >>
-#@+node:ekr.20220901092755.1: ** << signal_manager annotations >>
-if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< signal_manager annotations >>
+
 #@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:

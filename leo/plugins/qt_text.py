@@ -22,14 +22,8 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper  # pylint: disable=import-self
-else:
-    Cmdr = Any
-    Event = Any
-    Wrapper = Any
-Widget = Any
-
-MousePressEvent = Any
+    MousePressEvent = Any
+    Widget = Any
 #@-<< qt_text annotations >>
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6

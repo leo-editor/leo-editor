@@ -100,17 +100,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-
-Match = re.Match
-Match_Iter = Iterator[re.Match[str]]
-Match_List = List[Tuple[Position, Match_Iter]]
-RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-Widget = Any
+    Match = re.Match
+    Match_Iter = Iterator[re.Match[str]]
+    Match_List = List[Tuple[Position, Match_Iter]]
+    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    Widget = Any
 #@-<< quicksearch annotations >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level

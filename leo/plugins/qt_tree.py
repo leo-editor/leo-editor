@@ -26,18 +26,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    LeoQtFrame = Any
-    LeoQTreeWidget = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Editor = Any
-Icon = Any
-Item = Any
-Widget = Any
+    Editor = Any
+    Icon = Any
+    Item = Any
+    Widget = Any
 #@-<< qt_tree annotations >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
