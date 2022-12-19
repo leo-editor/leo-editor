@@ -105,6 +105,16 @@ class TestPlugins(LeoUnitTest):
             assert p2
             self.assertEqual(p2.v, p.v)
             assert c.positionExists(p2), 'does not exist: %s' % p2
+    #@+node:ekr.20221219090253.1: *3* TestPlugins.test_cursesGui2
+    def test_cursesGui2(self):
+
+        # New unit test for #3008
+        # https://github.com/leo-editor/leo-editor/issues/3008
+
+        import leo.plugins.cursesGui2 as cursesGui2
+
+        # Instantiating this class caused the crash.
+        cursesGui2.LeoTreeData()
     #@+node:ekr.20210909194336.57: *3* TestPlugins.test_regularizeName
     def test_regularizeName(self):
         pc = LeoPluginsController()
