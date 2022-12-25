@@ -74,6 +74,14 @@ class GoToCommands:
         for i, s in enumerate(g.splitLines(s)):
             if node_pat.match(s):
                 return i + 1
+        # #3010: Special case for .vue files.
+        #        Also look for nodes delimited by "//"
+        if root.h.endswith('.vue'):
+            node_pat2 = re.compile(r'\s*%s@\+node:%s:' % (
+            re.escape('//'), re.escape(p.gnx)))
+        for i, s in enumerate(g.splitLines(s)):
+            if node_pat2.match(s):
+                return i + 1
         return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n: int, root: Position) -> Tuple[Position, int, bool]:
