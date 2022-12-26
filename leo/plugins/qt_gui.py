@@ -593,10 +593,15 @@ class LeoQtGui(leoGui.LeoGui):
             val = dialog.exec() if isQt6 else dialog.exec_()
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
-        return {
-            # Buglet: This assumes both yes-all and no-all buttons are active.
-            0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-all', 4: 'no-all',
-        }.get(val, 'cancel')
+        return_d = {0: 'yes', 1: 'no', 2: 'cancel'}
+        if yes_all and no_all:
+            return_d [3] = 'yes-all'
+            return_d [4] = 'no-all'
+        elif yes_all:
+            return_d [3] = 'yes-all'
+        elif no_all:
+            return_d [3] = 'no-all'
+        return return_d.get(val, 'cancel')
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
         """Create and run an Qt open directory dialog ."""
