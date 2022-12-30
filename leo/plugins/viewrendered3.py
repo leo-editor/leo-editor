@@ -2304,6 +2304,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
         self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
         self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
+        self.asciidoctor_diagram = c.config.getBool('vr3-asciidoctor-diagram', default=False)
 
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
 
@@ -3194,9 +3195,41 @@ class ViewRenderedController3(QtWidgets.QWidget):
         The caller handles all exceptions.
         """
 
-        home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
-        o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
+        # home = g.os.path.expanduser('~')
+        # i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
+        # o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
+
+        c = self.c
+        # Find path relative to this file.  Needed as the base of relative
+        # URLs, e.g., image or included files.
+        path = c.getNodePath(c.p)
+        print('path:', path);
+
+        """
+        Save vr3_adoc.adoc & vr3_adoc.html in getNodePath
+        Advantage 1: Can show asciidoctor_diagram in vr3 panel
+        Advantage 2: Can run asciidoctor command manually without copy 
+                     vr3_adoc.adoc from home directory to getNodePath.
+                     Because of some relative image path need getNodePath.
+            `asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf xxx.adoc`
+        
+            diagram example:
+                [plantuml, target=diagram-classes, format=png]
+                ....
+                class BlockProcessor
+                class DiagramBlock
+                class DitaaBlock
+                class PlantUmlBlock
+
+                BlockProcessor <|-- DiagramBlock
+                DiagramBlock <|-- DitaaBlock
+                DiagramBlock <|-- PlantUmlBlock
+                ....
+        Disadvantage: Will Save vr3_adoc.adoc & vr3_adoc.html and 
+                      dynamic image in each getNodePath.
+        """
+        i_path = g.os_path_finalize_join(path, 'vr3_adoc.adoc')
+        o_path = g.os_path_finalize_join(path, 'vr3_adoc.html')
 
         # Write the input file.
         with open(i_path, 'w', encoding='utf-8') as f:
@@ -3218,6 +3251,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call the external program to write the output file.
         command = (f'asciidoctor -b html5 {att_str} {i_path}')
+
+        # If find asciidoctor-diagram converter config, then use it.
+        if self.asciidoctor_diagram:
+            command += f' -r asciidoctor-diagram'
+
         g.execute_shell_commands(command)
         # Read the output file and return it.
         try:

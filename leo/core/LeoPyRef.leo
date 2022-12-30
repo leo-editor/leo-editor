@@ -3956,6 +3956,7 @@ def batch_rule8a(colorer, s, i):
 <t tx="ekr.20221201043917.1">@language batch
 echo off
 cd C:\Repos\leo-editor
+echo test-leo
 python -m unittest
 </t>
 <t tx="ekr.20221201080228.1">@language python
@@ -3983,6 +3984,7 @@ black.main()
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
 echo off
+echo pylint-leo
 time /T
 call python -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
 time /T
@@ -3994,38 +3996,33 @@ cd c:\Repos\leo-editor
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
 
+echo mypy-leo
 python -m mypy --debug-cache leo %*
 </t>
 <t tx="ekr.20221204071220.1">@language batch
 echo off
+cls
 cd c:\Repos\leo-editor
-python -m unittest ^
-    leo.unittests.core.test_leoAtFile.TestFastAtRead.test_doc_parts ^
-    leo.unittests.core.test_leoAtFile.TestFastAtRead.test_html_doc_part ^
-    leo.unittests.core.test_leoAtFile.TestFastAtRead.test_verbatim ^
-    leo.unittests.core.test_leoAst.TestOrange.test_verbatim ^
-    %*
+echo test-one-leo: test_cursesGui2
+call python -m unittest leo.unittests.test_plugins.TestPlugins.test_cursesGui2 %*
 </t>
 <t tx="ekr.20221204071554.1">@language batch
 echo off
 cls
 cd C:\Repos\leo-editor
-echo reindent
-call reindent leo
-echo beautify
+
+echo full-test-leo
+call reindent-leo.cmd
 call beautify-leo.cmd
-echo unittests
-call python -m unittest
+call test-leo.cmd
 echo.
-echo mypy
 call mypy-leo.cmd
 echo.
-echo flake8
-call python -m flake8
-echo pylint
+call flake8-leo.cmd
 call pylint-leo.cmd
 echo.
-echo Done!</t>
+echo Done!
+</t>
 <t tx="ekr.20221204072154.1">@language batch
 echo off
 cd c:\Repos\leo-editor
@@ -4034,6 +4031,8 @@ reindent leo
 <t tx="ekr.20221204072456.1">@language batch
 echo off
 cd C:\Repos\leo-editor
+
+echo beautify-leo
 call python -m leo.core.leoAst --orange --recursive leo\core
 call python -m leo.core.leoAst --orange --recursive leo\commands
 call python -m leo.core.leoAst --orange --recursive leo\plugins\importers
@@ -4043,6 +4042,8 @@ call python -m leo.core.leoAst --orange --recursive leo\plugins\writers
 echo off
 cd c:\Repos\leo-editor
 rem: See leo-editor/setup.cfg for defaults.
+
+echo flake8-leo
 python -m flake8 %*
 </t>
 </tnodes>
