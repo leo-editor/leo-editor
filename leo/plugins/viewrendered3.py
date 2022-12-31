@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.88
+About Viewrendered3 V3.89
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,16 +57,18 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-The Dart programming language is now supported.
+Asciidoctor enhancements
+
+    - New setting to suppress the default footer (``@bool vr3-asciidoctor-nofooter = True``).
+    - Set default directory for asciidoctor icons (``@string vr3-asciidoctor-icons=''``).
+    - Set default image directory (``@string vr3-asciidoctor-imagesdir=''``).
 
 Previous Recent Changes
 ========================
-For Asciidoctor only, new setting to suppress the footer inserted by the
-Asciidoctor by default (``@bool vr3-asciidoctor-nofooter = True``).
-Asciidoctor by default (``@string vr3-asciidoctor-icons=''``).
-Asciidoctor by default (``@string vr3-asciidoctor-imagesdir=''``).
+The Dart programming language is now supported.
 
 New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
+
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
 has to be the second item in the headline after the string "@jupyter".  If
 a URL is not found in the headline, the first line of the body is tried.
@@ -86,7 +88,8 @@ Added new command *vr3-render-html-from-clip*.
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
 the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.
-Add a line similar to the following to the *[executables]* section::
+
+Added a line similar to the following to the *[executables]* section::
 
     lua = C:\Program Files (x86)\Lua\5.1\lua.exe
 #@+node:TomP.20200309205046.1: *3* Compatibility
@@ -167,27 +170,34 @@ Settings are put into nodes with the headlines ``@setting ...``.
 They must be placed into an ``@settings`` tree, preferably
 in the myLeoSettings file.
 
-All settings are of type @string unless shown as ``@bool``
+All settings are of type @string unless shown as ``@bool``.
 
 .. csv-table:: VR3 Settings
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
    "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
-   "vr3-ext-editor", "", "Path to external editor", "Specify
-   desired external editor to receive generated markup"
+   "vr3-ext-editor", "''", "Path to external editor", "Specify desired external editor to receive generated markup"
    "vr3-math-output", "False", "bool (True, False)", "RsT MathJax math rendering"
    "vr3-md-math-output", "False", "bool (True, False)", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "Optional URL for RsT Stylesheet"
    "vr3-rst-use-dark-theme", "''", "True, False", "Whether to force the use of the default dark stylesheet"
    "vr3-md-stylesheet", "''", "url string", "Optional URL for MD stylesheet"
+   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
+
+
+.. csv-table:: Asciidoctor External Processor Settings
+   :header: "Setting", "Default", "Values", "Purpose"
+   :widths: 18, 5, 5, 30
+
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
-   "@bool vr3-asciidoctor-nofooter", "False", "True, False", "Whether to suppress footer (``sciidoctor`` only)"   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
-   "@string vr3-asciidoctor-icons", "", "'', font, image", "Whether to use icons (``asciidoctor`` only)"
-   "@string vr3-asciidoctor-imagesdir", "", "'', absolutePath, relativePath, URL", "Whether to use imagesdir (``asciidoctor`` only)"
+   "@bool vr3-asciidoctor-nofooter", "False", "True, False", "Whether to suppress footer (``sciidoctor`` only)"
+   "@string vr3-asciidoctor-icons", "''", "'', font, image", "Whether to use icons (``asciidoctor`` only)"
+   "@string vr3-asciidoctor-imagesdir", "''", "'', absolutePath, relativePath, URL", "Whether to use imagesdir (``asciidoctor`` only)"
+   "@bool vr3-asciidoctor-diagram", "False", "False, True", "Whether to use the ``asciidoctor-diagram`` extension to render plantuml diagrams"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -203,10 +213,6 @@ All settings are of type @string unless shown as ``@bool``
     @int qweb-view-font-size = 16
 
 **Note** The font size setting, *qweb-view-font-size*, will probably not be needed.  Useful values will generally be from 8 - 20.
-
-
-
-
 
 Hot Key
 =======
@@ -1210,6 +1216,14 @@ def find_dir(name, path):
         if name in dirs:
             return os.path.join(root, name)
     return None
+#@+node:tom.20221231143118.1: ** get_gems()
+def check_gems(gem:str, encoding:str = 'utf-8') -> bool:
+    """Check if a particular ruby gem is installed."""
+    cmd = f'gem list {gem}'
+    proc = subprocess.run(cmd, shell = True, capture_output = True)
+    installed = gem in proc.stdout.decode(encoding)
+    return installed
+
 #@+node:tom.20211125003406.1: ** configure_asciidoc
 def configure_asciidoc():
     r"""
@@ -1240,15 +1254,23 @@ def configure_asciidoc():
         asciidoc3_ok      # imported asciidoc3
         asciidoc_ok       # imported asciidoc
         asciidoctor       # path to asciidoctor program
+
+    This function also tries to detect the presence of the Ruby gem 
+    "asciidoctor-diagram", which the external asciidoctor processor uses to
+    render Plantuml diagrams.  (If asciidoctor is used and a node contains a
+    plantuml diagram, the diagram will be rendered).  
     #@-<< asciidoc docstring >>
     """
     # pylint: disable = import-outside-toplevel
     global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
     global asciidoc_ok, asciidoc3_ok, asciidoc_processors
     global asciidoc_dirs
+    global asciidoc_has_diagram
 
     asciidoc_ok = False
     asciidoc3_ok = False
+    asciidoc_has_diagram = check_gems('asciidoctor-diagram')
+
     #@+<< get asciidoc >>
     #@+node:tom.20211125003406.3: *3* << get asciidoc >>
     try:
@@ -2017,6 +2039,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
 
+
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
@@ -2304,7 +2327,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
         self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
         self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
-        self.asciidoctor_diagram = c.config.getBool('vr3-asciidoctor-diagram', default=False)
+        self.asciidoctor_diagram = asciidoc_has_diagram and \
+                                       c.config.getBool('vr3-asciidoctor-diagram', default=False)
 
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
 
@@ -3203,7 +3227,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
-        print('path:', path);
 
         """
         Save vr3_adoc.adoc & vr3_adoc.html in getNodePath
@@ -3254,7 +3277,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # If find asciidoctor-diagram converter config, then use it.
         if self.asciidoctor_diagram:
-            command += f' -r asciidoctor-diagram'
+            command += ' -r asciidoctor-diagram'
 
         g.execute_shell_commands(command)
         # Read the output file and return it.
