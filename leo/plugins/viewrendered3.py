@@ -203,7 +203,7 @@ All settings are of type @string unless shown as ``@bool``.
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
-   qweb-view-font-size, -, small integer, Change Initial Font size
+   qweb-view-font-size, \-, small integer, Change Initial Font size
 
 **Examples**::
 
@@ -625,6 +625,31 @@ or Windows console::
 There is more information at https://docs.asciidoctor.org/asciidoctor/latest/install/ruby-packaging/.
 VR3 will attempt to find the program when it starts up.  The program should
 be on your PATH.
+
+If the ``asciidoctor-diagram`` gem is installed, the asciidoctor processor will be able to render nodes that contain a plantuml diagram.  To install the gem, run the following command in a terminal or console::
+
+    gem install asciidoctor-diagram
+
+To declare a plantuml diagram, use this header::
+
+    [plantuml, target=diagram-classes, format=png, !pragma layout smetana]
+
+If the ``asciidoctor-diagram`` extension is not present, VR3 will only render the text in the node as ordinary asciidoc, not as a diagram.  No error message will be given.
+
+A diagram must follow this example::
+
+    [plantuml, target=diagram-classes, format=png, !pragma layout smetana]
+    ....
+    class BlockProcessor
+    class DiagramBlock
+    class DitaaBlock
+    class PlantUmlBlock
+
+    BlockProcessor <|-- DiagramBlock
+    DiagramBlock <|-- DitaaBlock
+    DiagramBlock <|-- PlantUmlBlock
+    ....
+
 
 asciidoc
 --------
