@@ -1326,8 +1326,7 @@ class LeoFind:
         return self._cf_helper(settings, flatten=False)
     #@+node:ekr.20131117164142.16996: *4* find.clone-find-all-flattened & helper
     @cmd('clone-find-all-flattened')
-    #@verbatim
-    # @cmd('find-clone-all-flattened')
+    @cmd('find-clone-all-flattened')
     @cmd('cff')
     def interactive_cff(self, event: Event=None, preloaded: bool=False) -> None:  # pragma: no cover (interactive)
         """
