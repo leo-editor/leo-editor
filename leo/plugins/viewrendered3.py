@@ -1280,10 +1280,10 @@ def configure_asciidoc():
         asciidoc_ok       # imported asciidoc
         asciidoctor       # path to asciidoctor program
 
-    This function also tries to detect the presence of the Ruby gem 
+    This function also tries to detect the presence of the Ruby gem
     "asciidoctor-diagram", which the external asciidoctor processor uses to
     render Plantuml diagrams.  (If asciidoctor is used and a node contains a
-    plantuml diagram, the diagram will be rendered).  
+    plantuml diagram, the diagram will be rendered).
     #@-<< asciidoc docstring >>
     """
     # pylint: disable = import-outside-toplevel
