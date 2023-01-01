@@ -3240,42 +3240,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def run_asciidoctor_external(self, s):
         """
         Process s with an asciidoctor3 external processor.
-        Return the contents of the html file.
-        The caller handles all exceptions.
+        Return the contents of the html file. The caller handles most exceptions.
         """
-
-        # home = g.os.path.expanduser('~')
-        # i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
-        # o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
-
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
-
-        """
-        Save vr3_adoc.adoc & vr3_adoc.html in getNodePath
-        Advantage 1: Can show asciidoctor_diagram in vr3 panel
-        Advantage 2: Can run asciidoctor command manually without copy 
-                     vr3_adoc.adoc from home directory to getNodePath.
-                     Because of some relative image path need getNodePath.
-            `asciidoctor -r asciidoctor-diagram -r asciidoctor-pdf -b pdf xxx.adoc`
-        
-            diagram example:
-                [plantuml, target=diagram-classes, format=png]
-                ....
-                class BlockProcessor
-                class DiagramBlock
-                class DitaaBlock
-                class PlantUmlBlock
-
-                BlockProcessor <|-- DiagramBlock
-                DiagramBlock <|-- DitaaBlock
-                DiagramBlock <|-- PlantUmlBlock
-                ....
-        Disadvantage: Will Save vr3_adoc.adoc & vr3_adoc.html and 
-                      dynamic image in each getNodePath.
-        """
         i_path = g.os_path_finalize_join(path, 'vr3_adoc.adoc')
         o_path = g.os_path_finalize_join(path, 'vr3_adoc.html')
 
