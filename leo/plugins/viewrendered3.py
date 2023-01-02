@@ -2026,6 +2026,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.gv = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
+        self.last_text = ''
         self.locked = False
 
         self.pyplot_active = False
@@ -2981,15 +2982,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _must_update = False
         elif pc.gnx != p.v.gnx:
             _must_update = True
-        elif len(p.b) != pc.length:
+        elif len(p.b) != pc.length or pc.last_text != p.b:
             if pc.get_kind(p) in ('html', 'pyplot'):
-                pc.length = len(p.b)
                 _must_update = False  # Only update explicitly.
-            _must_update = True
-        # This trace would be called at idle time.
-            # g.trace('no change')
+            else:
+                _must_update = True
+            pc.length = len(p.b)
+            pc.last_text = p.b
         else:
             _must_update = False
+            # This trace would be called at idle time.
+            # g.trace('no change')
 
         if _must_update and self.w:
             # Hide the old widget so it won't keep us from seeing the new one.
