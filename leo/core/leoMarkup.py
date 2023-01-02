@@ -460,7 +460,7 @@ class MarkupCommands:
         else:
             g.es_print(f"bad kind: {self.kind!r}")
             return
-        self.output_file.write(f"{section} {p.h}\n\n")
+        self.output_file.write(f"{section} {p.h}\n")
     #@+node:ekr.20191007054942.1: *4* markup.remove_directives
     def remove_directives(self, s: str) -> str:
         lines = g.splitLines(s)
