@@ -3,6 +3,8 @@
 #@@tabwidth -4
 #@@language python
 # pylint: disable=line-too-long,multiple-statements
+# pylint: disable = c-extension-no-member
+
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -1161,6 +1163,7 @@ asciidoc_ok = False
 asciidoc3_ok = False
 asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
 asciidoc_processors = []
+asciidoc_has_diagram = False
 #@-<< Misc Globals >>
 #@-<< declarations >>
 
@@ -1245,6 +1248,7 @@ def find_dir(name, path):
 def check_gems(gem:str, encoding:str = 'utf-8') -> bool:
     """Check if a particular ruby gem is installed."""
     cmd = f'gem list {gem}'
+    # pylint: disable = subprocess-run-check
     proc = subprocess.run(cmd, shell = True, capture_output = True)
     installed = gem in proc.stdout.decode(encoding)
     return installed
@@ -1569,7 +1573,7 @@ def hide_rendering_pane(event):
     if vr3 == controllers.get(h):
         del controllers[h]
     else:
-        g.trace('Can not happen: no controller for %s' % (c))
+        g.trace(f'Can not happen: no controller for {c}')
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -1672,7 +1676,7 @@ def export_rst_html(event):
     try:
         _html = vr3.rst_html
     except NameError as e:
-        g.es('=== %s: %s' % (type(e), e))
+        g.es(f'=== {type(e)}: {e}')
         return
     if not _html:
         return
@@ -2026,6 +2030,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.gv = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
+        self.last_text = ''
         self.locked = False
 
         self.pyplot_active = False
@@ -2902,7 +2907,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
-                g.trace('no handler for kind: %s' % kind)
+                g.trace(f'no handler for kind: {kind}')
                 f = pc.update_rst
             if kind in (ASCIIDOC, MD, RST, REST, TEXT):
                 f(_tree, keywords)
@@ -2981,15 +2986,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _must_update = False
         elif pc.gnx != p.v.gnx:
             _must_update = True
-        elif len(p.b) != pc.length:
+        elif len(p.b) != pc.length or pc.last_text != p.b:
             if pc.get_kind(p) in ('html', 'pyplot'):
-                pc.length = len(p.b)
                 _must_update = False  # Only update explicitly.
-            _must_update = True
-        # This trace would be called at idle time.
-            # g.trace('no change')
+            else:
+                _must_update = True
+            pc.length = len(p.b)
+            pc.last_text = p.b
         else:
             _must_update = False
+            # This trace would be called at idle time.
+            # g.trace('no change')
 
         if _must_update and self.w:
             # Hide the old widget so it won't keep us from seeing the new one.
@@ -3356,7 +3363,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if not ok:
             w = pc.ensure_text_widget()
-            w.setPlainText('@image: file not found: %s' % (path))
+            w.setPlainText(f'@image: file not found: {path}')
             return
 
         if not is_url:
@@ -3425,7 +3432,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 with urlopen(url) as u:
                     s = u.read().decode()
             except Exception:
-                return 'url not found: %s' % url
+                return f'url not found: {url}'
         try:
             nb = nbformat.reads(s, as_version=4)
             e = HTMLExporter()
@@ -3602,7 +3609,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
-                _html = 'MD error:\n%s\n\n%s' % (msg, s)
+                _html = f'MD error:\n{msg}\n\n{s}'
 
         _html = self.md_header + '\n<body>\n' + _html + '\n</body>\n</html>'
         return _html
@@ -3620,7 +3627,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ok, path = pc.get_fn(s, '@movie')
         if not ok:
             w = pc.ensure_text_widget()
-            w.setPlainText('Not found: %s' % (path))
+            w.setPlainText(f'Not found: {path}')
             return
         if not phonon and not QtMultimedia:
             if not self.movie_warning:
@@ -3717,19 +3724,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
         i_path = g.os_path_finalize_join(home, 'vr3_input.pandoc')
         o_path = g.os_path_finalize_join(home, 'vr3_output.html')
         # Write the input file.
-        with open(i_path, 'w') as f:
+        with open(i_path, 'w', encoding = ENCODING) as f:
             f.write(s)
         # Call pandoc to write the output file.
         # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
         g.execute_shell_commands(command)
         # Read the output file and return it.
-        with open(o_path, 'r') as f:
+        with open(o_path, 'r', encoding = ENCODING) as f:
             return f.read()
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
         g.es('@pyplot nodes not implemented', color='gray')
+        # pylint: disable = using-constant-test
         if 0:  # Keep old code here for possible resurrection
             c = self.c
             if not self.pyplot_imported:
@@ -4738,7 +4746,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Generate rST underlining for s."""
         ch = '#'
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-        return '%s\n%s\n\n' % (s, ch * n)
+        return f'{s}\n{ch * n}\n\n'
     #@+node:TomP.20200329230503.4: *5* vr3.store_layout
     def store_layout(self, which):
 
@@ -4882,7 +4890,7 @@ class Chunk:
         _formatted = ['']
         if self.tag == CODE:
             if self.structure in (RST, REST):
-                _formatted = ['.. code:: %s\n' % (self.language)]
+                _formatted = [f'.. code:: {self.language}\n']
                 for line in self.text_lines:
                     if not line.strip():
                         _formatted.append('')
