@@ -56,9 +56,9 @@ if TYPE_CHECKING:  # pragma: no cover
 def check_nodes(event: Event) -> None:
     """
     Find nodes that:
-    - Could be split (containing multiple defs/classes),
-    - Could be removed.
-    - Contain leading blank lines.
+    - contain multiple defs.
+    - start with leading blank lines.
+    - are non-organizer nodes contain no body text.
 
     Especially useful for outlines containing @clean nodes.
     """
@@ -67,7 +67,7 @@ def check_nodes(event: Event) -> None:
         return
     def_pattern = re.compile(r'^def\b')
     suppressions: List[str]
-    ok_head_patterns: List[re.Pattern]
+    ok_head_patterns: List[re.Pattern] = []
     ok_head_prefixes: List[str]
 
     #@+others  # Define helpers.
@@ -90,16 +90,21 @@ def check_nodes(event: Event) -> None:
         return dubious
     #@+node:ekr.20230104142418.1: *4* get_data
     def get_data(c: Cmdr) -> None:
+        """
+        Get user data from @data nodes.
+        """
         nonlocal ok_head_patterns, ok_head_prefixes, suppressions
-        ok_head_prefixes = ['@', '*', '=', '-']
-        ok_head_patterns = [
-            re.compile(r'.*test_'),
-            re.compile(r'.*Test'),
-        ]
-        suppressions = [
-            # 'Query.__init__ & __repr__',
-        ]
 
+        ok_head_strings = c.config.getData('check-nodes-ok-patterns') or []
+        ok_head_prefixes = c.config.getData('check-nodes-ok-prefixes') or []
+        suppressions = c.config.getData('check-nodes-suppressions') or []
+        # Compile all regex patterns.
+        for s in ok_head_strings:
+            try:
+                ok_head_patterns.append(re.compile(fr"{s}"))
+            except Exception:
+                g.es_print('Bad pattern in @data check-nodes-ok-patterns')
+                g.es_print(repr(s))
     #@+node:ekr.20230104141545.1: *4* is_dubious_node
     def is_dubious_node(p: Position) -> bool:
 

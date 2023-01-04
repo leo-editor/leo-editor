@@ -567,6 +567,11 @@
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
+<v t="ekr.20230104150532.1"><vh>check-node settings</vh>
+<v t="ekr.20230104150550.1"><vh>@data check-nodes-ok-prefixes</vh></v>
+<v t="ekr.20230104150600.1"><vh>@data check-nodes-ok-patterns</vh></v>
+<v t="ekr.20230104151508.1"><vh>@data check-nodes-suppressions</vh></v>
+</v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -2311,7 +2316,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20131213135427.22343"></v>
+<v t="ekr.20230104150532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11656,6 +11661,21 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 </t>
 <t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20230104130512.1"></t>
+<t tx="ekr.20230104150532.1"></t>
+<t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
+@
+*
+=
+-</t>
+<t tx="ekr.20230104150600.1"># Headlines matching the following regex strings are never considered dubious.
+# These strings are treated as raw strings.
+.*test_
+.*Test
+</t>
+<t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
+# Headlines must match exactly.
+
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
