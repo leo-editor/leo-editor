@@ -1533,6 +1533,7 @@
 <v t="ekr.20131213135427.22346"><vh>@item &amp;open-online-home</vh></v>
 <v t="ekr.20131213135427.22347"><vh>@item &amp;open-online-toc</vh></v>
 <v t="ekr.20131213135427.22348"><vh>@item &amp;open-users-guide</vh></v>
+<v t="ekr.20230104130512.1"><vh>@item &amp;open-online-scripting-miscellany</vh></v>
 <v t="ekr.20131213135427.22349"><vh>@item &amp;open-online-tutorials</vh></v>
 <v t="ekr.20131213135427.22350"><vh>@item &amp;open-online-videos</vh></v>
 </v>
@@ -2310,6 +2311,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20131213135427.22343"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11653,6 +11655,7 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # zenity_file_dialogs.py
 </t>
 <t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
+<t tx="ekr.20230104130512.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

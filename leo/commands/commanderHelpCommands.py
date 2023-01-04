@@ -281,6 +281,16 @@ def openLeoTOC(self: Self, event: Event=None) -> None:
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
+#@+node:ekr.20230104130712.1: *3* c_help.openLeoScriptingMiscellany
+@g.commander_command('open-online-scripting-miscellany')
+def openLeoScriptingMiscellany(self: Self, event: Event=None) -> None:
+    """Open Leo's tutorials page in a web browser."""
+    import webbrowser
+    url = "http://leoeditor.com/scripting-miscellany.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
 #@+node:ekr.20131213072223.19435: *3* c_help.openLeoTutorials
 @g.commander_command('open-online-tutorials')
 def openLeoTutorials(self: Self, event: Event=None) -> None:
