@@ -1275,6 +1275,7 @@
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
+<v t="ekr.20230104100924.1"><vh>Keeping @clean files up to date</vh></v>
 <v t="ekr.20161014160238.1"><vh>Creating code that will run on both Python 2 and 3</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
@@ -31383,6 +31384,43 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
 <t tx="ekr.20221108064344.1"></t>
 <t tx="ekr.20221108064449.1"></t>
+<t tx="ekr.20230104100924.1">I use the following script (as an @button node) to add and delete nodes in `@clean` trees::
+
+    """
+    Find nodes that:
+    - Could be split (containing multiple defs/classes),
+    - Could be removed.
+    - Contain leading blank lines.
+
+    Especially useful for outlines containing many @clean nodes.
+    """
+    g.cls()
+
+    import re
+
+    suppressions = [
+        'Query.__init__ &amp; __repr__', 
+    ]
+    head_pattern = re.compile(r'(.*test_)|(.*Test)')
+    body_pattern = re.compile(r'^def\b')
+
+    def should_split(p) -&gt; bool:
+        if (p.h in suppressions
+            or p.h.startswith('class') and '@others' not in p.b
+            or head_pattern.match(p.h)
+        ):
+            return False
+        return sum(1 for s in g.splitLines(p.b) if body_pattern.match(s)) &gt; 1
+
+    for p in c.all_unique_nodes():
+        if should_split(p):
+            print('Split:', p.h)
+        if p.b.strip() and not p.b.splitlines()[0].strip():
+            print('Blank line:', p.h)
+        if not p.b.strip() and not p.hasChildren() and not p.h.startswith(('@', '*', '=', '-')):
+            print('Empty:', p.h)
+    print('Done!')
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
