@@ -2391,6 +2391,7 @@
 </v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
+<v t="ekr.20100806170836.4399"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8621,6 +8622,8 @@ These directives typically affect the node in which they appear and all descenda
     node.
 </t>
 <t tx="ekr.20100806170836.4399">.. _`Mulder/Ream update algorithm`: appendices.html#the-mulder-ream-update-algorithm
+.. _`Scripting miscellany`: scripting-miscellany.html
+.. _`Keeping @clean files up to date`: scripting-miscellany.html#keeping-clean-files-up-to-date
 
 .. index::
     pair: @clean; Reference
@@ -8639,8 +8642,8 @@ to the @clean tree using the `Mulder/Ream update algorithm`_.
 Leo writes a trailing newline if non-empty body text does not end in a newline.
 The default is True.
 
-**Experimental**: Nested @clean trees are possible.  See Leo issue #525.  However, "inner" @clean files can not, at present, contain child nodes. 
-</t>
+**Note**: Keeping @clean trees up-to-date in a collaborative environment takes effort.
+The `Keeping @clean files up to date`_ script in Leo's `Scripting miscellany`_ helps.</t>
 <t tx="ekr.20100806170836.4402">.. index::
     pair: @shadow; Reference
     pair: Private file; Reference
@@ -31364,7 +31367,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
     import re
 
     suppressions = [
-        'Query.__init__ &amp; __repr__', 
+        # For rope.leo. Adjust as necessary.
+        'Query.__init__ &amp; __repr__',
     ]
     head_pattern = re.compile(r'(.*test_)|(.*Test)')
     body_pattern = re.compile(r'^def\b')
