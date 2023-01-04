@@ -7,6 +7,7 @@
 #@+node:ekr.20161021092038.1: ** << checkerCommands imports >>
 from __future__ import annotations
 import os
+import re
 import shlex
 import sys
 import time
@@ -50,6 +51,84 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20230104132446.1: *3* check-nodes & helper
+@g.command('check-nodes')
+def check_nodes(event: Event) -> None:
+    """
+    Find nodes that:
+    - Could be split (containing multiple defs/classes),
+    - Could be removed.
+    - Contain leading blank lines.
+
+    Especially useful for outlines containing @clean nodes.
+    """
+    c = event and event.get('c')
+    if not c:
+        return
+    def_pattern = re.compile(r'^def\b')
+    suppressions: List[str]
+    ok_head_patterns: List[re.Pattern]
+    ok_head_prefixes: List[str]
+
+    #@+others  # Define helpers.
+    #@+node:ekr.20230104142059.1: *4* create_dubious_nodes
+    def create_dubious_nodes(c: Cmdr) -> Position:
+        u = c.undoer
+        # Create the top-level node.
+        undoData = u.beforeInsertNode(c.p)
+        dubious = c.lastTopLevel().insertAfter()
+        dubious.h = f"{count} dubious nodes{g.plural(count)}"
+        # Clone nodes as children of the top-level node.
+        for p in clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = dubious.numberOfChildren()
+            p2._linkCopiedAsNthChild(dubious, n)
+        # Sort the clones in place, without undo.
+        dubious.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(dubious, 'check-nodes', undoData)
+        return dubious
+    #@+node:ekr.20230104142418.1: *4* get_data
+    def get_data(c: Cmdr) -> None:
+        nonlocal ok_head_patterns, ok_head_prefixes, suppressions
+        ok_head_prefixes = ['@', '*', '=', '-']
+        ok_head_patterns = [
+            re.compile(r'.*test_'),
+            re.compile(r'.*Test'),
+        ]
+        suppressions = [
+            # 'Query.__init__ & __repr__',
+        ]
+
+    #@+node:ekr.20230104141545.1: *4* is_dubious_node
+    def is_dubious_node(p: Position) -> bool:
+
+        too_many_defs = (
+            p.h not in suppressions
+            and not p.h.startswith('class') and '@others' not in p.b
+            and not any(z.match(p.h) for z in ok_head_patterns)
+            and sum(1 for s in g.splitLines(p.b) if def_pattern.match(s)) > 1
+        )
+        leading_blank_line = p.b.strip() and not p.b.splitlines()[0].strip()
+        empty_body = (
+            not p.b.strip()
+            and not p.hasChildren()
+            and not any(p.h.startswith(z) for z in ok_head_prefixes)
+        )
+        return too_many_defs or leading_blank_line or empty_body
+    #@-others
+
+    get_data(c)
+    clones = [z.copy() for z in c.all_unique_positions() if is_dubious_node(z)]
+    # Report.
+    count = len(clones)
+    g.es(f"{count} dubious nodes{g.plural(count)}")
+    if not count:
+        return
+    dubious = create_dubious_nodes(c)
+    c.setChanged()
+    c.selectPosition(dubious)
+    c.redraw()
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event: Event) -> None:
