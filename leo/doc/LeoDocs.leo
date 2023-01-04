@@ -1276,7 +1276,6 @@
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
 <v t="ekr.20230104100924.1"><vh>Keeping @clean files up to date</vh></v>
-<v t="ekr.20161014160238.1"><vh>Creating code that will run on both Python 2 and 3</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20161014050133.1"><vh>Cutting and pasting text</vh></v>
@@ -20587,40 +20586,6 @@ Removed all chapter-* commands except the chapter-select and chapter-select-main
 - @int autojustify
 - @int qweb_view_font_size
 </t>
-<t tx="ekr.20161014160238.1">Leo uses constants and functions defined in leoGlobals.py to ensure that Leo's code works on both Python 2.7+ and Python 3.x.
-
-- g.isPython3: True if Leo is running Python 3.x.  False otherwise.
- 
-You should be particularly aware of:
-
-- g.isBytes, g.isInt, g.isString, g.isUnicode.
-- g.toUnicode, g.toEncodedString, g.isValidEncoding.
-- g.u, g.ue.
-
-If you use the above methods there should never be a need for direct calls to unicode(s), encode(s) or decode(s).  The above methods are clearer, safer, and do better error checking and recovery.
-
-A few other functions should be on your radar:
-
-- g.readFileIntoEncodedString
-- s, e = g.readFileIntoString
-- g.stripBOM
-
-There may be cases where direct tests against g.isPython3 seem the clearest. That's fine, but usually you can avoid direct tests.
-
-**Important**: g.u and g.toUnicode are not always interchangeable. You should always use g.u to convert Qt QStrings to unicode. Here is an example from quicksearch.py::
-
-    t = g.u(self.ui.lineEdit.text())
-
-Similarly, use g.ue to convert Qt bytes to unicode. Here is an example from LM.openZipFile::
-
-    s = theFile.read(name)
-    if g.isPython3:
-        s = g.ue(s, 'utf-8')
-    return StringIO(s)
-
-Actually, the above code is dubious, because it will break if the mode of the open command changes.
-
-**Note**: Leo's code sometimes does s = g.u('aString'), but this isn't needed since Python 2.7 which supports unicode literals.</t>
 <t tx="ekr.20161020064204.1">``flake8``
     Run flake8 on all nodes of the selected tree, or the first ancestor @&lt;file&gt; node.
 ``pyflakes``
