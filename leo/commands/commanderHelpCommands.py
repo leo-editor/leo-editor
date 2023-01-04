@@ -284,7 +284,7 @@ def openLeoTOC(self: Self, event: Event=None) -> None:
 #@+node:ekr.20230104130712.1: *3* c_help.openLeoScriptingMiscellany
 @g.commander_command('open-online-scripting-miscellany')
 def openLeoScriptingMiscellany(self: Self, event: Event=None) -> None:
-    """Open Leo's tutorials page in a web browser."""
+    """Open Leo's scripting miscellany page in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/scripting-miscellany.html"
     try:
