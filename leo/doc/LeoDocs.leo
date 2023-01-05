@@ -1019,6 +1019,7 @@
 <v t="ekr.20191004123555.1"><vh>Formatting text</vh></v>
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
+<v t="ekr.20230105123159.1"><vh>Syncing @clean files</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
 <v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
@@ -1275,7 +1276,6 @@
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
-<v t="ekr.20230104100924.1"><vh>Keeping @clean files up to date</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20161014050133.1"><vh>Cutting and pasting text</vh></v>
@@ -2392,6 +2392,10 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20100806170836.4399"></v>
+<v t="ekr.20131015104133.16763"></v>
+<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20050901101608.2"></v>
+<v t="ekr.20230105123159.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8623,7 +8627,7 @@ These directives typically affect the node in which they appear and all descenda
 </t>
 <t tx="ekr.20100806170836.4399">.. _`Mulder/Ream update algorithm`: appendices.html#the-mulder-ream-update-algorithm
 .. _`Scripting miscellany`: scripting-miscellany.html
-.. _`Keeping @clean files up to date`: scripting-miscellany.html#keeping-clean-files-up-to-date
+.. _`check-nodes`: commands.html#syncing-clean-files
 
 .. index::
     pair: @clean; Reference
@@ -8642,8 +8646,8 @@ to the @clean tree using the `Mulder/Ream update algorithm`_.
 Leo writes a trailing newline if non-empty body text does not end in a newline.
 The default is True.
 
-**Note**: Keeping @clean trees up-to-date in a collaborative environment takes effort.
-The `Keeping @clean files up to date`_ script in Leo's `Scripting miscellany`_ helps.</t>
+**Note**: The `check-nodes`_ command helps sync @clean trees when
+collaborating with others.</t>
 <t tx="ekr.20100806170836.4402">.. index::
     pair: @shadow; Reference
     pair: Private file; Reference
@@ -31352,44 +31356,46 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
 <t tx="ekr.20221108064344.1"></t>
 <t tx="ekr.20221108064449.1"></t>
-<t tx="ekr.20230104100924.1">I use the following script (as an @button node) to add and delete nodes in `@clean` trees::
+<t tx="ekr.20230105123159.1">The **check-nodes** command finds **dubious** nodes, that is, nodes that:
 
-    """
-    Find nodes that:
-    - Could be split (containing multiple defs/classes),
-    - Could be removed.
-    - Contain leading blank lines.
+- contain multiple defs.
+- start with leading blank lines.
+- are non-organizer nodes contain no body text.
 
-    Especially useful for outlines containing many @clean nodes.
-    """
-    g.cls()
+This command is specially useful when using @clean nodes in a collaborative
+environment. Leo's @clean update algorithm will update @clean nodes when
+others have added, deleted or moved code, but the update algorithm won't
+assign changed code to the optimal nodes. This script highligts nodes that
+needed attention.
 
-    import re
+**Settings**: You can customize the behavior of this command with @data nodes:
 
-    suppressions = [
-        # For rope.leo. Adjust as necessary.
-        'Query.__init__ &amp; __repr__',
-    ]
-    head_pattern = re.compile(r'(.*test_)|(.*Test)')
-    body_pattern = re.compile(r'^def\b')
+- @data check-nodes-ok-patterns
 
-    def should_split(p) -&gt; bool:
-        if (p.h in suppressions
-            or p.h.startswith('class') and '@others' not in p.b
-            or head_pattern.match(p.h)
-        ):
-            return False
-        return sum(1 for s in g.splitLines(p.b) if body_pattern.match(s)) &gt; 1
+  The body of the @data node contains a list of regexes (strings), one per
+  line. This command compiles each regex as if it were a raw string.
+  Headlines matching any of these compiled regexes are not considered
+  dubious. The defaults ignore unit tests::
 
-    for p in c.all_unique_nodes():
-        if should_split(p):
-            print('Split:', p.h)
-        if p.b.strip() and not p.b.splitlines()[0].strip():
-            print('Blank line:', p.h)
-        if not p.b.strip() and not p.hasChildren() and not p.h.startswith(('@', '*', '=', '-')):
-            print('Empty:', p.h)
-    print('Done!')
-</t>
+    .*test_
+    .*Test
+
+- @data check-nodes-ok-prefixes
+
+  The body ot the @data node contains a list of strings, one per line.
+  Headlines starting with any of these strings are not considered dubious.
+  The defaults ignore top-level @&lt;file&gt; nodes and marker nodes::
+  
+    @
+    **
+    ==
+    --
+
+- @data check-nodes-suppressions
+
+  The body ot the @data node contains a list of strings, one per line.
+  Headlines that match these suppressions *exactly* are not considered
+  dubious. Default: None.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

@@ -11663,10 +11663,11 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20230104130512.1"></t>
 <t tx="ekr.20230104150532.1"></t>
 <t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
+# These defaults ignore top-level @&lt;file&gt; nodes and marker nodes.
 @
-*
-=
--</t>
+**
+==
+--</t>
 <t tx="ekr.20230104150600.1"># Headlines matching the following regex strings are never considered dubious.
 # These strings are treated as raw strings.
 .*test_

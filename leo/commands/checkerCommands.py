@@ -70,19 +70,27 @@ def check_nodes(event: Event) -> None:
     Settings: You can customize the behavior of this command with @data nodes:
 
     - @data check-nodes-ok-patterns
+
       The body of the @data node contains a list of regexes (strings), one per line.
       This command compiles each regex as if it were a raw string.
       Headlines matching any of these compiled regexes are not considered dubious.
-      The defaults ignore unit tests:
+      The defaults ignore unit tests::
         .*test_
         .*Test
 
     - @data check-nodes-ok-prefixes
+
       The body ot the @data node contains a list of strings, one per line.
       Headlines starting with any of these strings are not considered dubious.
-      Default: `@`, `*`, `=`, `-` (EKR's preference).
+      The defaults ignore top-level @<file> nodes and marker nodes::
+  
+        @
+        **
+        ==
+        --
 
     - @data check-nodes-suppressions
+
       The body ot the @data node contains a list of strings, one per line.
       Headlines that match these suppressions *exactly* are not considered dubious.
       Default: None.
