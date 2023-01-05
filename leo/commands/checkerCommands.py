@@ -55,12 +55,37 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.command('check-nodes')
 def check_nodes(event: Event) -> None:
     """
-    Find nodes that:
+    Find **dubious* nodes, that is, nodes that:
+
     - contain multiple defs.
     - start with leading blank lines.
     - are non-organizer nodes contain no body text.
 
-    Especially useful for outlines containing @clean nodes.
+    Especially useful when using @clean nodes in a collaborative
+    environment. Leo's @clean update algorithm will update @clean nodes
+    when others have added, deleted or moved code, but the update algorithm
+    won't assign changed code to the optimal nodes. This script highligts
+    nodes that needed attention.
+
+    Settings: You can customize the behavior of this command with @data nodes:
+
+    - @data check-nodes-ok-patterns
+      The body of the @data node contains a list of regexes (strings), one per line.
+      This command compiles each regex as if it were a raw string.
+      Headlines matching any of these compiled regexes are not considered dubious.
+      The defaults ignore unit tests:
+        .*test_
+        .*Test
+
+    - @data check-nodes-ok-prefixes
+      The body ot the @data node contains a list of strings, one per line.
+      Headlines starting with any of these strings are not considered dubious.
+      Default: `@`, `*`, `=`, `-` (EKR's preference).
+
+    - @data check-nodes-suppressions
+      The body ot the @data node contains a list of strings, one per line.
+      Headlines that match these suppressions *exactly* are not considered dubious.
+      Default: None.
     """
     c = event and event.get('c')
     if not c:

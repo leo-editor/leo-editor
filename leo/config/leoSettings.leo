@@ -568,8 +568,8 @@
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
 <v t="ekr.20230104150532.1"><vh>check-node settings</vh>
-<v t="ekr.20230104150550.1"><vh>@data check-nodes-ok-prefixes</vh></v>
 <v t="ekr.20230104150600.1"><vh>@data check-nodes-ok-patterns</vh></v>
+<v t="ekr.20230104150550.1"><vh>@data check-nodes-ok-prefixes</vh></v>
 <v t="ekr.20230104151508.1"><vh>@data check-nodes-suppressions</vh></v>
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
