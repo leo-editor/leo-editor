@@ -83,7 +83,7 @@ def check_nodes(event: Event) -> None:
       The body ot the @data node contains a list of strings, one per line.
       Headlines starting with any of these strings are not considered dubious.
       The defaults ignore top-level @<file> nodes and marker nodes::
-  
+
         @
         **
         ==
