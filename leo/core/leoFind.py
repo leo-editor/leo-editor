@@ -310,7 +310,7 @@ class LeoFind:
                     p.b = new_b
             if count_h or count_b:
                 u.afterChangeNodeContents(p1, 'Replace All', undoData)
-        u.afterChangeGroup(p1, undoType, reportFlag=True)
+        u.afterChangeGroup(p1, undoType)
         if not g.unitTesting:  # pragma: no cover
             print(f"{count:3}: {find_text:>30} => {change_text}")
         return count
@@ -1165,7 +1165,7 @@ class LeoFind:
         self.root = None
         self.node_only = self.suboutline_only = False
         p = c.p
-        u.afterChangeGroup(p, undoType, reportFlag=True)
+        u.afterChangeGroup(p, undoType)
         t2 = time.process_time()
         if not g.unitTesting:  # pragma: no cover
             g.es_print(

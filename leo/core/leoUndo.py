@@ -454,7 +454,11 @@ class Undoer:
                 'Call u.doTyping instead')
         u.updateAfterTyping(p, w)
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
-    def afterChangeGroup(self, p: Position, undoType: str, reportFlag: bool=False) -> None:
+    def afterChangeGroup(self,
+        p: Position,
+        undoType: str,
+        reportFlag: bool=False,  # unused: retained for compatiblility with existing scripts.
+    ) -> None:
         """
         Create an undo node for general tree operations using d created by
         beforeChangeGroup
@@ -485,7 +489,6 @@ class Undoer:
         bunch.newP = p.copy()
         bunch.newSel = w.getSelectionRange()
         # Tells whether to report the number of separate changes undone/redone.
-        bunch.reportFlag = reportFlag
         if 0:
             # Push the bunch.
             u.bead += 1

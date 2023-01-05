@@ -66,7 +66,7 @@ class To_Python:  # pragma: no cover
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         # Warn if no changes were made at all
         if not changed:
             g.es("Command did not find content to convert")

@@ -322,7 +322,7 @@ class CPrettyPrinter:
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         if not changed:
             g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()

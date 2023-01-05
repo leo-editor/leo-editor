@@ -3474,7 +3474,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             elif scheme in ('http',):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         if changed:
             c.setChanged()
             c.redraw()
