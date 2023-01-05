@@ -461,7 +461,7 @@ class LeoFind:
         """
         c, u = self.c, self.c.undoer
         undoType = 'clone-find-marked'
-        failMsg='No marked nodes'
+        failMsg = 'No marked nodes'
 
         count = 0
         for p in c.all_unique_positions():
