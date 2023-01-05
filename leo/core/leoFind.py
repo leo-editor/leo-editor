@@ -461,16 +461,25 @@ class LeoFind:
         """
         c, u = self.c, self.c.undoer
         undoType = 'clone-find-marked'
+        failMsg='No marked nodes'
+
+        count = 0
+        for p in c.all_unique_positions():
+            if p.isMarked():
+                count += 1
+        if count == 0:
+            g.es(failMsg, color='red')  # prevent even creating an undo bead.
+            return False
 
         def isMarked(p: Position) -> bool:
             return p.isMarked()
 
-        u.beforeChangeGroup(c.p.copy(), undoType)
+        u.beforeChangeGroup(c.p.copy(), undoType)  # will create a bead.
 
         root = c.cloneFindByPredicate(
             generator=c.all_unique_positions,
             predicate=isMarked,
-            failMsg='No marked nodes',
+            failMsg=failMsg,
             flatten=flatten,
             undoType=undoType,
         )
