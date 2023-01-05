@@ -474,7 +474,7 @@ class LeoFind:
         def isMarked(p: Position) -> bool:
             return p.isMarked()
 
-        u.beforeChangeGroup(c.p.copy(), undoType)  # will create a bead.
+        u.beforeChangeGroup(c.p.copy(), undoType, False)  # will create a bead.
 
         root = c.cloneFindByPredicate(
             generator=c.all_unique_positions,
@@ -494,7 +494,7 @@ class LeoFind:
             root.b = f"# Found {n} marked node{g.plural(n)}"
             c.selectPosition(root)
             c.redraw(root)
-        u.afterChangeGroup(c.p.copy(), undoType, True)
+        u.afterChangeGroup(c.p.copy(), undoType)
         return bool(root)
     #@+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
