@@ -459,27 +459,33 @@ class LeoFind:
 
         This is a stand-alone method for unit testing.
         """
-        c = self.c
+        c, u = self.c, self.c.undoer
+        undoType = 'clone-find-marked'
 
         def isMarked(p: Position) -> bool:
             return p.isMarked()
+
+        u.beforeChangeGroup(c.p.copy(), undoType)
 
         root = c.cloneFindByPredicate(
             generator=c.all_unique_positions,
             predicate=isMarked,
             failMsg='No marked nodes',
             flatten=flatten,
-            undoType='clone-find-marked',
+            undoType=undoType,
         )
         if root:
             # Unmarking all nodes is convenient.
-            for v in c.all_unique_nodes():
-                if v.isMarked():
-                    v.clearMarked()
+            for p in c.all_unique_positions():
+                if p.isMarked():
+                    bunch = u.beforeMark(p, 'Unmark')
+                    c.clearMarked(p)
+                    u.afterMark(p, 'Unmark', bunch)
             n = root.numberOfChildren()
             root.b = f"# Found {n} marked node{g.plural(n)}"
             c.selectPosition(root)
             c.redraw(root)
+        u.afterChangeGroup(c.p.copy(), undoType, True)
         return bool(root)
     #@+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
