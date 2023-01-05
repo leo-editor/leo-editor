@@ -18298,38 +18298,6 @@ def spam():
 #@+node:ekr.20221105063835.6: *4* eggs
 def eggs(a=None):
     print('eggs')
-#@+node:ekr.20230104100720.1: ** script: check-nodes
-"""
-Find nodes that should be split (containing multiple defs/classes)
-
-Especially useful for outlines containing many @clean nodes.
-"""
-g.cls()
-
-import re
-
-suppressions = [
-    'Query.__init__ & __repr__',
-]
-head_pattern = re.compile(r'(.*test_)|(.*Test)')
-body_pattern = re.compile(r'^def\b')
-
-def should_split(p) -> bool:
-    if (p.h in suppressions
-        or p.h.startswith('class') and '@others' not in p.b
-        or head_pattern.match(p.h)
-    ):
-        return False
-    return sum(1 for s in g.splitLines(p.b) if body_pattern.match(s)) > 1
-
-for p in c.all_unique_nodes():
-    if should_split(p):
-        print('Split:', p.h)
-    if p.b.strip() and not p.b.splitlines()[0].strip():
-        print('Blank line:', p.h)
-    if not p.b.strip() and not p.hasChildren() and not p.h.startswith(('@', '*', '=', '-')):
-        print('Empty:', p.h)
-print('Done!')
 #@-all
 #@@language python
 #@@tabwidth -4
