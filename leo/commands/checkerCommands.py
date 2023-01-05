@@ -59,7 +59,7 @@ def check_nodes(event: Event) -> None:
 
     - contain multiple defs.
     - start with leading blank lines.
-    - are non-organizer nodes contain no body text.
+    - are non-organizer nodes containing no body text.
 
     Especially useful when using @clean nodes in a collaborative
     environment. Leo's @clean update algorithm will update @clean nodes

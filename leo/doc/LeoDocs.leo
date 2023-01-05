@@ -2391,11 +2391,6 @@
 </v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
-<v t="ekr.20100806170836.4399"></v>
-<v t="ekr.20131015104133.16763"></v>
-<v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20050901101608.2"></v>
-<v t="ekr.20230105123159.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31360,7 +31355,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 - contain multiple defs.
 - start with leading blank lines.
-- are non-organizer nodes contain no body text.
+- are non-organizer nodes containing no body text.
 
 This command is specially useful when using @clean nodes in a collaborative
 environment. Leo's @clean update algorithm will update @clean nodes when
