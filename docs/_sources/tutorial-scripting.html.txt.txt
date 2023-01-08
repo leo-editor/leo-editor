@@ -1,0 +1,171 @@
+.. rst3: filename: html\tutorial-scripting.html
+
+.. |---| unicode:: U+02015 .. for quotes
+   :trim:
+
+#############################
+Writing Leo scripts in Python
+#############################
+
+..  "Leo a way to make a "living" document. A document built out of
+..  discrete parts that can be re-organized on the fly to meet the needs of
+..  a varying audience... just the possibility of keeping system
+..  maintenance scripts in the IT manual is mind boggling."---David Nichols
+
+This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial <http://docs.python.org/2/tutorial/>`_. Jacob Peck has written a more `informal scripting tutorial <http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/>`_.
+
+Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own codebase.
+
+**Positions** and **vnodes** are the foundation of Leo scripting. leo/core/leoNodes.py defines the corresponding Position and VNode classes. These classes provide access to all outline data and allow Leo scripts to create and change outlines.
+
+.. _`Leo's cheat sheet`: cheatsheet.html
+.. _`scripting portion`: cheatsheet.html#scripting
+
+**Further study**: The `scripting portion`_ of `Leo's cheat sheet`_ contains more information about scripting.
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+
+Hello world
++++++++++++
+
+.. index::
+    pair: Hello World Example; Tutorial
+
+Here is the obligatory "Hello World!" script::
+
+    g.es('Hello World!') # g.es prints all its arguments to the log pane.
+    
+In more detail:
+
+1. Create a node anywhere in the outline.
+2. Put g.es('hello, world!') in the node's body text.
+3. Select the node and type Ctrl-B.
+
+**Important** If text is selected, execute-script executes only the selected text. If you are in LeoDocs.leo, you can run the script from this node.
+
+Create outline nodes
+++++++++++++++++++++
+
+**p.b** is the body text associated with position p. Similarly, **p.h** is p's headline.
+p.b and p.h are python properties, so you can assign to p.b and p.h.
+
+This script creates an outline node as the last top-level node::
+
+    p = c.lastTopLevel().insertAfter()
+    p.h = 'my new node'
+    c.redraw(p) # Selects the new node.
+    
+This script creates multiple nodes, with different headlines::
+
+    parent = c.lastTopLevel().insertAfter()
+    parent.h = 'New nodes'
+    table = (
+        ('First node', 'Body text for first node'),
+        ('Node 2',     'Body text for node 2'),
+        ('Last Node',  'Body text for last node\nLine 2'),
+    )
+    for headline, body in table:
+        child = parent.insertAsLastChild()
+        child.b = body.rstrip() + '\n' # Ensure exactly one trailing newline.
+        child.h = headline
+    c.selectPosition(parent) # Another way to select nodes.
+    c.redraw()
+
+This script creates a node containing today's date in the body text::
+
+    import time
+    p = c.lastTopLevel().insertAfter()
+    p.h = "Today's date"
+    p.b = time.strftime("%Y/%m/%d")
+    c.redraw(p)
+
+Generate an output file from nodes
+++++++++++++++++++++++++++++++++++
+
+The script writes the body text of the presently selected node to ~/leo_output_file.txt and then prints it to the log pane::
+
+    fn = g.os_path_finalize_join(g.app.homeDir, 'leo_output_file.txt')
+    with open(fn, 'w') as f:
+        f.write(c.p.b)
+    with open(fn, 'r') as f:
+        for line in f.readlines():
+            g.es(line.rstrip())
+
+Predefined symbols: c, g, and p
++++++++++++++++++++++++++++++++
+
+.. index::
+    pair: Predefined Symbols; Tutorial
+    
+The execute-script command predefines the symbols c, g, and p.
+
+c is the **commander** of the outline containing the script. Commanders are instances of the Commands class, defined in leoCommands.py. Commanders provide access to all outline data *and* all of Leo's source code.
+
+g is Leo's **leo.core.leoGlobals** containing many useful functions, including g.es.
+
+p is the **position** of the presently selected node. Positions represent nodes at a particular location of an outline. Because of clones, the *same* node may appear at multiple positions in an outline. **c.p** is the outline's presently selected position.
+
+Positions and vnodes
+++++++++++++++++++++
+
+.. index::
+    pair: Position; Tutorial
+    pair: position class; Tutorial
+    pair: Vnode; Tutorial
+    pair: vnode class; Tutorial
+    
+.. _`Python properties`: http://stackabuse.com/python-properties/
+
+A **position** represents an outline node at a *specific position* in the outline. Positions provide methods to insert, delete and move outline nodes. The `scripting portion`_ of `Leo's cheat sheet`_ lists the most important methods of the position class.
+
+Because of clones, the *same* node may appear at *multiple positions* in the outline. A **vnode** represents the node's data, which is shared by all positions referring to that node.
+
+.. _`user attributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+
+For any position p, **p.b** is the node's body text, **p.h** is the node's headline and **p.u** is the node's `user attributes`_, and **p.v** is the position's vnode. Similarly, for any vnode v, **v.b** is the node's body text, **v.h** is the node's headline and **v.u** is the node's user attributes.
+
+Generators
+++++++++++
+
+.. index::
+    pair: Generator; Tutorial
+
+Commanders and positions define several `Python generators <https://wiki.python.org/moin/Generators>`_ to traverse (step through) an outline. The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's generators. For example, c.all_positions() traverses the outline in outline order.  The following prints a properly-indented list of all headlines::
+
+    for p in c.all_positions():
+        print(' '*p.level()+p.h)
+
+.. index::
+    pair: Invalid positions; Tutorial
+    
+Scripts may capture positions like this::
+
+    aList = list(c.all_positions())
+    
+**Warning**: stored positions become invalid when outline changes. **c.positionExists(p)** is True if p is valid in c's outline.
+
+**New in Leo 5.5**: All generators now yield *copies* of positions.
+
+wrappers vs. widgets
+++++++++++++++++++++
+
+Leo's Gui code is built on wrapper and widget classes. A **widget** is an actual Qt widget. A **wrapper** is an object whose API hides the details of the underlying gui **text** widgets. Leo's core code usually uses wrappers, not raw widgets.
+
+There is a back door for special cases. All wrapper classes define an official ``widget`` ivar (instance variable), so core or plugin code can gain access to the real Qt widget using ``wrapper.widget``. Searching for ``wrapper.widget`` should find all gui-dependent snippets of code in Leo's core.
+
+Wrappers allow the same text-handling code to work regardless of whether the actual text widgets are a QTextBrowser or a QsciScintilla object. Without wrappers, all of Leo's text-editing commands would have to know the details of the api of the actual Qt text widget!
+
+Summary
++++++++
+
+- execute-script predefines c, g, and p.
+- c is a commander, g is the leoGlobals module, and p is the current position.
+- Vnodes contain all outline data.
+- Positions provide easy access to vnodes.
+- Positions become invalid when outline nodes are inserted, deleted, or moved.
+- Generators visit all or parts of the outline, in a specified order.
+
+For more information, consult `Leo's cheat sheet <cheatsheet.html>`_ and `Leo's scripting miscellany <scripting-miscellany.html>`_
+
