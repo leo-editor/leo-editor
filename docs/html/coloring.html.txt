@@ -1,0 +1,677 @@
+.. rst3: filename: html\coloring.html
+
+###########################
+Controlling Syntax Coloring
+###########################
+
+This chapter discusses the settings to control Leo's syntax colorer. This chapter also discusses how to extend Leo's colorizer by creating xml language descriptions files and corresponding Python files. **Important**: this material is for those who want to support Leo's colorizing code. To use Leo's colorizers you only need to know about syntax-coloring settings.
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+
+Settings for syntax coloring
+++++++++++++++++++++++++++++
+
+.. _`Customizing Leo`: customizing.html
+
+This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
+
+Color settings
+**************
+
+To specify a color, say for comment1, for *all* languages, create an @color node::
+
+    @color comment1 = blue
+    
+To specify a color for a **particular** language, say Python, prepend the setting name
+with the language name.  For example::
+
+    @color python_comment1 = pink
+    
+Here are Leo's legacy (jEdit-based) @color settings:
+
+    @color comment1
+    @color comment2
+    @color comment3
+    @color comment4
+    @color doc-part
+    @color function
+    @color keyword1
+    @color keyword2
+    @color keyword3
+    @color keyword4
+    @color keyword5
+    @color label
+    @color leo-keyword
+    @color link
+    @color literal1
+    @color literal2
+    @color literal3
+    @color literal4
+    @color markup
+    @color name
+    @color name-brackets
+    @color null
+    @color operator
+    @color show-invisibles-space
+    @color tab
+    @color trailing-whitespace
+    @color url
+    
+In addition, the pygments colorizer uses these settings::
+    
+    @color comment
+    @color comment.hashbang
+    @color comment.multiline
+    @color comment.preproc
+    @color comment.single
+    @color comment.special
+    @color error
+    @color generic
+    @color generic.deleted
+    @color generic.emph
+    @color generic.error
+    @color generic.heading
+    @color generic.inserted
+    @color generic.output
+    @color generic.prompt
+    @color generic.strong
+    @color generic.subheading
+    @color generic.traceback
+    @color keyword
+    @color keyword.constant
+    @color keyword.declaration
+    @color keyword.namespace
+    @color keyword.pseudo
+    @color keyword.reserved
+    @color keyword.type
+    @color literal
+    @color literal.date
+    @color name.attribute
+    @color name.builtin
+    @color name.builtin.pseudo
+    @color name.class
+    @color name.constant
+    @color name.decorator
+    @color name.entity
+    @color name.exception
+    @color name.function
+    @color name.function.magic
+    @color name.label
+    @color name.namespace
+    @color name.other
+    @color name.pygments
+    @color name.tag
+    @color name.variable
+    @color name.variable.class
+    @color name.variable.global
+    @color name.variable.instance
+    @color name.variable.magic
+    @color number
+    @color number.bin
+    @color number.float
+    @color number.hex
+    @color number.integer
+    @color number.integer.long
+    @color number.oct
+    @color operator.word
+    @color other
+    @color punctuation
+    @color string
+    @color string.affix
+    @color string.backtick
+    @color string.char
+    @color string.delimiter
+    @color string.doc
+    @color string.double
+    @color string.escape
+    @color string.heredoc
+    @color string.interpol
+    @color string.other
+    @color string.regex
+    @color string.single
+    @color string.symbol
+    @color whitespace
+    @color xt
+    
+**Note**: all @color settings may optionally end with the _color suffix.
+
+Font settings
+*************
+
+To specify a font, say for keyword_font, to be used as the default font for **all** languages, put the following in the body text of an @font node in leoSettings.leo::
+
+    # keyword_font_family = None
+    keyword_font_size = 16
+    keyword_font_slant = roman
+        # roman, italic
+    keyword_font_weight = bold
+        # normal, bold
+
+Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.
+
+You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an @font node in leoSettings.leo::
+
+    # php_keyword_font_family = None
+    php_keyword_font_size = 16
+    php_keyword_font_slant = roman
+        # roman, italic
+    php_keyword_font_weight = bold
+        # normal, bold
+
+Files
++++++
+
+.. _jEdit: http://www.jedit.org/
+.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
+
+The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+
+These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+
+`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+
+**Important**: jEdit's xml language description files contain no explicit <RULE> elements Rules are simply sub-elements of an enclosing <RULES> element. The element indicates the kind of rule that is specified, for example, <SPAN>, <SEQ>, etc. By the term **rule element** we shall mean any sub-element of the <RULES> element.
+
+**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
+
+Using Python colorer control files has the following advantages:
+
+- Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.
+
+- Colorer control files are valid .py files, so all of Python's import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
+
+- Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.
+
+- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
+
+The colorizer's inner loop
+++++++++++++++++++++++++++
+
+When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
+
+Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
+
+The colorizer calls rules functions until one matches, at which point a range of text gets colored and the process repeats. The inner loop of the colorizer is this code::
+
+    for f in self.rulesDict.get(s[i],[]):
+        n = f(self,s,i)
+        if n > 0:
+            i += n ; break
+        else: i += 1
+
+- rulesDict is a dictionary whose keys are rulesets and whose values are ruleset dictionaries.
+  Ruleset dictionaries have keys that are single characters and whose values are
+  the list of rules that can start with that character. 
+
+- s is the full text to be colorized.
+
+- i is the position within s is to be colorized.
+
+Rules methods (and functions) return n > 0 if they match, and n == 0 if they fail.
+
+Format of colorizer control files
++++++++++++++++++++++++++++++++++
+
+The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo's Legacy (jEdit-based) colorizer. Leo's pygments syntax colorizer does not use these files.
+
+Ruleset names
+*************
+
+A **ruleset name** is a Python string having the form 'x_setname', where setname is the value of the SET attribute of the <RULES> element in x.xml. For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is 'php_JAVASCRIPT'. **Important**: by convention, the ruleset name of the default <RULES> element is 'x_main'; note that default <RULES> element have no SET attributes.
+
+The colorizer uses ruleset names to gain access to all data structures in x.py. To anticipate a bit, ruleset names are keys into two standard dictionaries, x.rulesDict and x.keywordsDictDict, from which the colorizer can get all other information in x.py::
+
+    # The rules list for the 'JAVASCRIPT' ruleset in php.xml.
+    rules = x.rulesDict('php_JAVASCRIPT')
+
+    # The keywords dict for the 'JAVASCRIPT' ruleset in php.xml.
+    keywordsDict = x.keywordsDictDict('php_JAVASCRIPT')
+
+In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the **only** names that the colorizer needs to know in order to access all information in x.py.
+
+x.properties
+************
+
+**x.properties** is a Python dictionary corresponding to the <PROPS> element in x.xml. Keys are property names; values are strings, namely the contents of <PROPERTY> elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have <PROPS> elements. For example, here is x.properties in php.py::
+
+    # properties for mode php.xml
+    properties = {
+        "commentEnd": "-->",
+        "commentStart": "<!--",
+        "indentCloseBrackets": "}",
+        "indentOpenBrackets": "{",
+        "lineUpClosingBracket": "true",
+    }
+
+Attribute dictionaries and x.attributesDictDict
+***********************************************
+
+x.py contains a **attribute dictionary** for each ruleset in x.xml. Keys are attribute names, values strings representing the values of the attributes. This dictionary is empty if a ruleset contains no attributes. The valid keys are:
+
+- 'default': the default token type.  'null' is the default.
+
+- 'digit_re': a regular expression.
+  Words matching this regular expression are colored with the digit token type.
+
+- 'ignore_case': 'true' or 'false'.  Default is 'true'.
+
+- 'highlight_digits': 'true' or 'false'.  Default is 'true'.
+
+- 'no_word_sep': A list of characters treated as 'alphabetic' characters when matching keywords.
+
+For example, here is one attribute dictionary in php.py::
+
+    # Attributes dict for php_javascript ruleset.
+    php_javascript_attributes_dict = {
+        "default": "MARKUP",
+        "digit_re": "",
+        "highlight_digits": "true",
+        "ignore_case": "true",
+        "no_word_sep": "",
+    }
+
+x.py also contains **x.attributesDictDict**. Keys are ruleset names, values are attribute dictionaries. Here is attributesDictDict for php.py::
+
+    # Dictionary of attributes dictionaries for php mode.
+    attributesDictDict = {
+        "php_javascript": php_javascript_attributes_dict,
+        "php_javascript_php": php_javascript_php_attributes_dict,
+        "php_main": php_main_attributes_dict,
+        "php_php": php_php_attributes_dict,
+        "php_php_literal": php_php_literal_attributes_dict,
+        "php_phpdoc": php_phpdoc_attributes_dict,
+        "php_tags": php_tags_attributes_dict,
+        "php_tags_literal": php_tags_literal_attributes_dict,
+    }
+
+**Note**: The jEdit2Py script creates 'friendly' names for attribute dictionaries *solely* as an aid for people reading the code. Leo's colorer uses only the name x.attributeDictDict; Leo's colorer never uses the actual names of attribute dictionaries.
+
+Keyword dictionaries and x.keywordsDictDict
+*******************************************
+
+x.py contains a **keyword dictionary** for each ruleset in x.xml. x.py contains an empty keywords dictionary if a ruleset contains no <KEYWORDS> element.
+
+Keys are strings representing keywords of the language describe by the mode. Values are strings representing syntactic categories, i.e. a TYPE attribute valid in x.xml, namely: COMMENT1, COMMENT2, COMMENT3, COMMENT4, FUNCTION, KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4, LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4, MARKUP, NULL and OPERATOR.
+
+For example, here (parts of) some keyword dictionaries in php.py::
+
+    # Keywords dict for mode php::PHP
+    php_PHP_keywords_dict = {
+        "COM_invoke": "keyword2",
+        "COM_load": "keyword2",
+        "__CLASS__": "keyword3",
+        ...
+        "abs": "keyword2",
+        "abstract": "keyword1",
+        "accept_connect": "keyword2",
+        ...
+    }
+
+    # Keywords dict for mode php::JAVASCRIPT_PHP
+    php_JAVASCRIPT_PHP_keywords_dict = {}
+
+    # Keywords dict for mode php::PHPDOC
+    php_PHPDOC_keywords_dict = {
+        "@abstract": "label",
+        "@access": "label",
+        "@author": "label",
+        ...
+        "@var": "label",
+        "@version": "label",
+    }
+
+x.py also contains **x.keywordsDictDict**. Keys are ruleset names, values are keywords dictionaries. Here is keywordsDictDict for php.py::
+
+    # Dictionary of keywords dictionaries for php mode.
+    keywordsDictDict = {
+        "php_javascript": php_javascript_keywords_dict,
+        "php_javascript_php": php_javascript_php_keywords_dict,
+        "php_main": php_main_keywords_dict,
+        "php_php": php_php_keywords_dict,
+        "php_php_literal": php_php_literal_keywords_dict,
+        "php_phpdoc": php_phpdoc_keywords_dict,
+        "php_tags": php_tags_keywords_dict,
+        "php_tags_literal": php_tags_literal_keywords_dict,
+    }
+
+The colorizer can get the keywords dictionary for a ruleset as follows::
+
+    keywordsDict = x.keywordsDictDict(rulesetName)
+
+**Note**: The jEdit2Py script creates 'friendly' names for keyword dictionaries *solely* as an aid for people reading the code. Leo's colorer uses only the name x.keywordsDictDict; Leo's colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.
+
+Rules, rules dictionaries and x.rulesDictDict
+*********************************************
+
+x.py contains one **rule function** for every rule in every ruleset (<RULES> element) in x.xml. These rules have names rule1 through  ruleN, where N is the total number of rules in all rulesets in x.xml.
+
+Each rules *function* merely calls a rules *method* in Leo's colorizer. Which method gets called depends on the corresponding element in `x.xml`. For example, the first rule in php.xml is::
+
+    <SPAN TYPE="MARKUP" DELEGATE="PHP">
+		<BEGIN>&lt;?php</BEGIN>
+		<END>?&gt;</END>
+	</SPAN>
+
+and the corresponding rule function is::
+
+    def php_rule0(colorer, s, i):
+        return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
+            at_line_start=False, at_whitespace_end=False, at_word_start=False,
+            delegate="PHP",exclude_match=False,
+            no_escape=False, no_line_break=False, no_word_break=False)
+
+
+php_rule0 calls colorer.match_span because the corresponding xml rule is a <SPAN> element.
+
+For each ruleset, x.py also contains a **rules dictionary**, a Python dictionary whose keys are characters and whose values are all lists of rules functions that that can match the key. For example::
+
+    # Rules dict for phpdoc ruleset.
+    rulesDict8 = {
+        "*": [rule64,],
+        "0": [rule70,],
+        "1": [rule70,],
+        "2": [rule70,],
+        "3": [rule70,],
+        "4": [rule70,],
+        "5": [rule70,],
+        "6": [rule70,],
+        "7": [rule70,],
+        "8": [rule70,],
+        "9": [rule70,],
+        "<": [rule65,rule66,rule67,rule68,rule69,],
+        "@": [rule70,],
+        "A": [rule70,],
+        "B": [rule70,],
+        ...
+        "X": [rule70,],
+        "Y": [rule70,],
+        "Z": [rule70,],
+        "_": [rule70,],
+        "a": [rule70,],
+        "b": [rule70,],
+       ...
+        "x": [rule70,],
+        "y": [rule70,],
+        "z": [rule70,],
+        "{": [rule63,],
+    }
+
+**Note**: The order of rules in each rules list is important; it should be the same as rules element in x.xml.
+
+Finally, x.py contains **x.rulesDictDict**. Keys are ruleset names, values are rules dictionaries. The colorer can get the rules list for character ch as follows::
+
+    self.rulesDict = x.rulesDictDict.get(rulesetName) # When a mode is inited.
+    ...
+    rules = self.rulesDict.get(ch,[]) # In the main loop.
+
+For example, here is the rules dictionary for php.py::
+
+    # x.rulesDictDict for php mode.
+    rulesDictDict = {
+        "php_javascript": rulesDict6,
+        "php_javascript_php": rulesDict7,
+        "php_main": rulesDict1,
+        "php_php": rulesDict4,
+        "php_php_literal": rulesDict5,
+        "php_phpdoc": rulesDict8,
+        "php_tags": rulesDict2,
+        "php_tags_literal": rulesDict3,
+    }
+
+**Note**: The jEdit2Py script creates 'friendly' names for rules lists *solely* as an aid for people reading the code. Leo's colorer uses only the name x.rulesDictDict; Leo's colorer never uses the actual names of rules lists such as rulesDict8, and Leo's colorer never uses the actual names of rules functions such as rule64.
+
+x.importDict and imported versus delegated rulesets
+***************************************************
+
+x.importDict is a Python dictionary. Keys are ruleset names; values are a list of ruleset names. For example::
+
+    # Import dict for php mode.
+    importDict = {
+        "php_javascript_php": ["javascript::main"],
+    }
+
+For any ruleset R whose ruleset name is N, x.importDict.get(N) is the list of rulesets names whose rulesets appear in a DELEGATE attribute of an <IMPORT> rule element in R's ruleset. Such **imported** ruleset are copied to the end of the R's rules list. Leo's colorizer does this copying only once, when loading ruleset R for the first time.
+
+**Note 1**: Loading imported rulesets must be done at 'run time'. It should definitely not be done by jEdit2Py at 'compile time'; that would require running jEdit2Py on *all* .xml files whenever any such file changed.
+
+**Note 2**:  Multiple <IMPORT> rule elements in a single ruleset are allowed: delegated rules are copied to the end of N's rules list in the order they appear in the ruleset.
+
+**Note 3**: The DELEGATE attribute of <IMPORT> elements is, in fact, completely separate from the DELEGATE attributes of other rules as discussed in `Arguments to rule methods`_. Indeed, the DELEGATE attribute of <IMPORT> elements creates entries in x.importDict, which in turn causes the colorizer to append the rules of the imported ruleset to the end of the present rules list. In contrast, the DELEGATE attributes of other rules sets the delegate argument to rules methods, which in tern causes the colorizer to recursively color the matched text with the **delegated** ruleset. In short:
+
+- The rules of **imported** rulesets are appended to the end of another rules list; the rules of **delegated** rulesets never are.
+
+- **Imported** ruleset names appear as the values of items in x.importDict; **delegated** ruleset names appear as delegate arguments to rule methods.
+
+Rule methods
+++++++++++++
+
+This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+
+All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
+
+Arguments to rule methods
+*************************
+
+.. _`Ruleset name`: `Ruleset names`_
+
+All rule methods take three required arguments and zero or more optional keyword arguments.
+
+Here is a list of the required arguments and their meaning:
+
+- **self**: An instance of Leo's colorizer.
+
+- **s**: The string in which matches may be found.
+
+- **i**: The location within the string at which the rule method looks for a match.
+
+Here is a list of all optional keyword arguments and their meaning:
+
+- **at_line_start**:
+  If True, a match will succeed only if i is at the start of a line.
+
+- **at_whitespace_end**:
+  If True, the match will succeed only if i is at the first non-whitespace text in a line.
+
+- **at_word_start**:
+  If True, the match will succeed only if i is at the beginning of a word.
+
+- **delegate**:
+  If non-empty, the value of this argument is a `ruleset name`_.
+  If the match succeeds, the matched text will be colored recursively with the indicate ruleset.
+
+- **exclude_match**:
+  If True, the actual text that matched will not be colored.
+  The meaning of this argument varies slightly depending on whether one or two sequences are matched.
+  See the individual rule methods for details.
+
+- **kind**: A string representing a class of tokens, i.e., one of:
+  'comment1', 'comment2', 'comment3', 'comment4', 'function',
+  'keyword1', 'keyword2', 'keyword3', 'keyword4',
+  'label', 'literal1', 'literal2', 'literal3', 'literal4',
+  'markup', 'null' and 'operator'.
+
+- **no_escape**:
+  If True, the ruleset's escape character will have no effect before the end argument to match_span.
+  Otherwise, the presence of the escape character will cause that occurrence of the end string to be ignored.
+
+- **no_line_break**:
+  If True, the match will not succeed across line breaks.
+
+- **no_word_break**:
+  If True, the match will not cross word breaks.
+
+New in Leo 4.4.1 final: the regular expression rule matchers no longer get a hash_char argument
+because such matchers are called only if the present search pattern starts with hash_char.
+
+match_eol_span
+**************
+
+::
+
+    def match_eol_span (self,s,i,kind,begin,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        delegate = '',
+        exclude_match = False):
+
+match_eol_span succeeds if s[i:].startswith(begin) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+If successful, match_eol_span highlights from i to the end of the line with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_eol_span_regexp
+*********************
+
+::
+
+    def match_eol_span_regexp (self,s,i,kind,regex,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        delegate = '',
+        exclude_match = False):
+
+match_eol_span_exp succeeds if:
+
+1. The regular expression regex matches at s[i:], and
+
+2. The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+If successful, match_eol_span_regexp  highlights from i to the end of the line. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_keywords
+**************
+
+::
+
+    def match_keywords (self,s,i):
+
+match_keywords succeeds if s[i:] starts with an identifier contained in the mode's keywords dictionary d.
+
+If successful, match_keywords colors the keyword. match_keywords does not take a kind keyword argument. Instead, the keyword is colored as specified by d.get(theKeyword).
+
+match_mark_following
+********************
+
+::
+
+    def match_mark_following (self,s,i,kind,pattern,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        exclude_match = False):
+
+match_mark_following succeeds if s[i:].startswith(pattern), and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+If successful, match_mark_following colors from i to the start of the next token with the color specified by kind. If the exclude_match argument is True, only the text after the matched text will be colored.
+
+match_mark_previous
+*******************
+
+::
+
+    def match_mark_previous (self,s,i,kind,pattern,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        exclude_match = False):
+        
+At present match_mark_previous does nothing (always returns 0).
+Its use is deprecated.
+
+..  match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+..  If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
+
+match_seq
+*********
+
+::
+
+    def match_seq (self,s,i,kind,seq,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        delegate = ''):
+
+match_seq succeeds if s[i:].startswith(seq) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+If successful, match_seq highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_seq_regexp
+****************
+
+::
+
+    def match_seq_regexp (self,s,i,kind,regex,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        delegate = ''):
+
+match_seq succeeds if:
+
+1. The regular expression regex matches at s[i:], and
+
+2. The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+
+If successful, match_seq_regexp highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_span
+**********
+
+::
+
+    def match_span (self,s,i,kind,begin,end,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        exclude_match = False,
+        delegate = ''
+        no_escape = False,
+        no_line_break = False,
+        no_word_break = False):
+
+match_span succeeds if there is an index j > i such that s[:i].startswith(begin) and s[i:j].endswith(end) and the at_line_start, at_whitespace_end, at_word_start, no_escape, no_line_break and no_word_break conditions are all satisfied.
+
+If successful, match_span highlights from s[i:j with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_span_regexp
+*****************
+
+::
+
+    def match_span (self,s,i,kind,regex,end,
+        at_line_start = False,
+        at_whitespace_end = False,
+        at_word_start = False,
+        exclude_match = False,
+        delegate = ''
+        no_escape = False,
+        no_line_break = False,
+        no_word_break = False):
+
+match_span_regex succeeds if:
+
+1. The regular expression regex matches at s[i:],
+
+2. There is an index j > i such that s[i:j].endswith(end),
+
+3. The at_line_start, at_whitespace_end, at_word_start,
+   no_escape, no_line_break and no_word_break conditions are all satisfied.
+
+If successful, match_span colors s[i:j], with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.
+
+match_terminate
+***************
+
+::
+
+    def match_terminate (self,s,i,kind,at_char):
+
+match_terminate succeeds if s[i:] contains at least at_char more characters.
+
+If successful, match_terminate colors at_char characters with the color specified by kind.
+

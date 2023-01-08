@@ -1,0 +1,16 @@
+.. rst3: filename: html/leoandotherprograms.html
+
+######################
+Leo and Other Programs
+######################
+
+.. toctree::
+   :maxdepth: 2
+
+   leoandasciidoc
+   emacs
+   vimBindings
+   leoBridge
+   IPythonBridge
+   leoserver
+
