@@ -1276,6 +1276,7 @@
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
+<v t="tom.20230107235603.1"><vh>Converting Body Text To Title Case</vh></v>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
 <v t="ekr.20161014050133.1"><vh>Cutting and pasting text</vh></v>
@@ -31676,6 +31677,36 @@ Here are direct download links for the "master" branch, which rarely changes and
   - `master: 30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip&gt;`_
   - `master: 90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip&gt;`_
 </t>
+<t tx="tom.20230107235603.1">Title case means that all words start with capital letters.  The
+following script converts the selected body text to title case.  If
+nothing has been selected, the entirecurrent node is converted. The
+conversion is undoable::
+
+    """Undoably convert selection or body to title case."""
+    w = c.frame.body.wrapper
+    p = c.p
+    s = p.b
+    u = c.undoer
+
+    start, end = w.getSelectionRange()
+    use_entire = start == end  # no selection, convert entire body
+
+    undoType = 'title-case-body-selection'
+    undoData = u.beforeChangeNodeContents(p)
+
+    if use_entire:
+        p.b = s.title()
+    else:
+        sel = s[start:end]
+        head, tail = s[:start], s[end:]
+        p.b = head + sel.title() + tail
+
+    c.setChanged()
+    p.setDirty()
+    u.afterChangeNodeContents(p, undoType, undoData)
+    c.redraw()
+
+[Contributed by T. B. Passin]</t>
 <t tx="ville.20090602181814.6219">def commanders(self):
     """ Return list of currently active controllers """
     return [f.c for f in g.app.windowList]
