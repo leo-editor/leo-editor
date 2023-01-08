@@ -1,7 +1,7 @@
 /*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
 :Author: David Goodger
 :Contact: goodger@users.sourceforge.net
-:date: $Date: 2006/10/19 13:23:15 $
+:date: $Date: 2007/07/02 16:12:15 $
 :version: $Revision: 1.2 $
 :copyright: This stylesheet has been placed in the public domain.
 
@@ -227,7 +227,7 @@ at the end of this style sheet so I've commented it out*/
 
 ul.auto-toc {
   list-style-type: none }
-
+  
 hr { /* EKR */
   width: 100%;
   height: 1pt;

@@ -1,0 +1,105 @@
+.. rst3: filename: html\IPythonBridge.html
+
+##########################
+ILeo: Leo's IPython Bridge
+##########################
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
+Overview
+++++++++
+
+Leo's ``--ipython`` command-line option enables two-way communication (**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo scripts from IPython, and IPython scripts from Leo.
+
+The level of integration is much deeper than conventional integration in IDEs. Most notably, you are able to store and manipulate *data* in Leo nodes, in addition to mere program code--essentially making ILeo a hierarchical spreadsheet, albeit with non-grid view of the data. The possibilities of this are endless, and the approach can be applied in wide range of problem domains with very little actual coding.
+
+Starting ILeo
++++++++++++++
+
+.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
+
+To run Leo's IPython bridge:
+
+1. Install IPython 4.0 and above and Jupyter.
+
+2. `run Leo in a console window`_ with the ``--ipython`` command-line option enabled. This option starts an instance of the IPython shell in the console. Leo and IPython run simultaneously and independently. Their separate event loops do not interfere with each other. The ipython-new command launches new terminals connected to the same IPython kernel.
+
+Running Leo scripts from IPython
+++++++++++++++++++++++++++++++++
+
+*You can run any Leo script from IPython*. The IPython bridge injects an object called _leo into IPython's namespace. IPython scripts may access Leo's c and g objects as follows::
+
+    c,g = _leo.c, _leo.g
+
+This allows IPython scripts to do *anything* that a Leo script can do. Scripts run from IPython *immediately* change Leo, *exactly* as if the script were run from Leo.
+
+**Important**: the _leo object is an instance of LeoNameSpace class, defined in leo.core.leoIPython.py. This class allows IPython scripts to access multiple Leo outlines at once. See the actual code for details.
+
+**Note**: _leo.c is a property which can return None in some situations. Here is its definition::
+
+    def __get_c(self):
+        '''Return the designated commander, or the only open commander.'''
+        self.update()
+        if self.commander and self.commander in self.commanders_list:
+            return self.commander
+        elif len(self.commanders_list) == 1:
+            return self.commanders_list[0]
+        else:
+            return None
+    
+    def __set_c(self,c):
+        '''Designate the commander to be returned by the getter.'''
+        self.update()
+        if c in self.commanders_list:
+            self.commander = c
+        else:
+            g.trace(g.callers())
+            raise ValueError(c)
+    
+    c = property(
+        __get_c, __set_c,
+        doc = "LeoNameSpace c property")
+
+Running IPython scripts from Leo
+++++++++++++++++++++++++++++++++
+
+*You can run any IPython script from Leo*. Leo's ipython-exec command executes the body text of the presently selected Leo node in the address space of the IPython shell. Such scripts *immediately* affect the IPython interpreter.
+
+The IPython bridge sets several global variables *within Leo*, allowing Leo scripts *complete* access to all of IPython's code and data:
+
+- g.app.ipk is a *singleton* instance of the InternalIPKernel class,
+  defined in leoIPython.py.
+- g.app.ipk.namespace is IPython's namespace.
+- g.app.ipk.kernelApp is an IPython IPKernelApp object.
+- g.app.ipk.kernelApp.shell is an IPython InteractiveShell object.
+  Depending on your installation, this may be a ZMQInteractiveShell.
+
+ILeo as an IPython notebook
++++++++++++++++++++++++++++
+
+.. _`IPython Notebook`: http://projects.scipy.org/ipython/ipython/wiki/NoteBook
+
+The IPython bridge turns Leo into another kind of `IPython Notebook`_. IPython users typically use %edit to produce non-trivial functions/classes instead of entering them directly on the interactive prompt. But this is a bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
+
+- You can execute any Leo node in IPython with ipython-exec.
+- Saving your Leo outline saves all your IPython scripts.
+- You can use Leo as always to organize all your IPython scripts.
+
+ILeo and the valuespace plugin
+++++++++++++++++++++++++++++++
+
+Leo's valuespace.py plugin uses the ipython namespace when the ``--ipython`` command line switch is in effect.
+
+This plugin provides a "workbook" like way to get data from Leo document to the namespace, and do calculations based on that data. Having this data be accessible to the ipython instance makes it convenient to interact and poke around with the same data.
+
+Acknowledgements and history
+++++++++++++++++++++++++++++
+
+This idea got started when I (Ville M. Vainio) saw this post by Edward Ream on IPython developer mailing list: http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
+
+I was using FreeMind as mind mapping software, and so I had an immediate use case for Leo (which, incidentally, is superior to FreeMind as mind mapper). The wheels started rolling, I got obsessed with the power of this concept (everything clicked together), and Edwards excitement paralleled mine. Everything was mind-bogglingly easy/trivial, something that is typical of all promising technologies.
+
+The goal of close cooperation between Leo and IPython went from vague dream to completed reality over the span of about 10 days. The IPython bridge has continued to evolve since then.
+
