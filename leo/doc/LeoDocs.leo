@@ -8948,7 +8948,7 @@ function search(event) {
 <t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
   &amp;copy; Copyright 1997-2022, Edward K. Ream.
   Last updated on January 9, 2023
-  Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt;.
+  Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx 6.1.2&lt;/a&gt;.
 &lt;/div&gt;
 </t>
 <t tx="ekr.20100808060203.4282">&lt;div class="sphinxsidebar"&gt;
