@@ -2317,7 +2317,6 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20100904134301.11000"></v>
-<v t="ekr.20230109163514.1"><vh>@data global-abbreviations - symbols</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4767,6 +4766,25 @@ date;;={|{x=time.asctime()}|}
 #  Sig;;=Σ
 #  pm;;=±
 
+# And here are some other abbreviations.
+
+#  degree;;=°
+#  half;;=½
+#  quarter;;=¼
+#  3fourths;;=¾
+#  divide;;=÷
+#  bullet;;=•
+#  infinity;;=∞
+#  # Ellipsis
+#  #.;;=…
+#  ergo;;=∴
+#  because;;=∵
+
+#  # Currency
+#  cent;;=¢
+#  euro;;=€
+#  pound;;=£
+#  yen;;=¥
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
@@ -11692,8 +11710,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
 # Headlines must match exactly.
 
-</t>
-<t tx="ekr.20230109163514.1">
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
