@@ -2412,8 +2412,6 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
-<v t="ekr.20230109171400.1"><vh>--- To be changed</vh></v>
-<v t="ekr.20180505114327.8"></v>
 <v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
 <v t="ekr.20050831195449"></v>
 <v t="ekr.20110518101739.18154"></v>
@@ -26127,17 +26125,16 @@ Here are the basics of debugging with Leo:
 
 **g.pdb**
 
-`g.pdb()` invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
+`g.pdb()` invokes python's pdb debugger, https://docs.python.org/3/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb when g.trace doesn't tell me enough.
 </t>
 <t tx="ekr.20180505114327.8">.. https://github.com/leo-editor/leo-editor/issues/837
 
-​All devs must run all unit tests before commit anything. Here's how:
+​All devs must run all unit tests before commit anything. Here's how::
 
-- Open leo/test/unitTest.leo in a console.
-- The "Active Unit Tests" node should already be selected. If not, select it.
-- Do Alt-4. It is bound in the file to run-selected-unit-tests-locally.
+    cd &lt;path to&gt;leo-editor
+    python -m unittest %*
 
-**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on leo-editor.</t>
+**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *new* unit tests to fail.  If in doubt, ask on leo-editor.</t>
 <t tx="ekr.20180505114327.9">.. https://github.com/leo-editor/leo-editor/issues/846
 
 c.recursiveImport is a wrapper on the RecursiveImportController class.​ ​You can find the related code by doing a regex cff (ignoring case) on ​ ​"recursive?import".
@@ -31774,7 +31771,6 @@ needed attention.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
 <t tx="ekr.20230109165907.1">@nosearch</t>
-<t tx="ekr.20230109171400.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
