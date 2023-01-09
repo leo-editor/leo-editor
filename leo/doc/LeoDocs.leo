@@ -412,7 +412,6 @@
 <v t="ekr.20180523095243.8"><vh>#733: How to Install and run the leocljs demo</vh></v>
 <v t="ekr.20180523095243.7"><vh>#735: How to Install and run LeoVue</vh></v>
 <v t="ekr.20180523095243.6"><vh>#752: How to install eric6 on Windows</vh></v>
-<v t="ekr.20180523095243.5"><vh>#754: Move distribution from SourceForge to github + pip install Leo</vh></v>
 <v t="ekr.20180523095243.4"><vh>#755: How to build pyzo from sources</vh></v>
 <v t="ekr.20180523095243.3"><vh>#872: Info: how Leo handles uA's</vh></v>
 <v t="ekr.20180523095243.1"><vh>#906: Dubious major projects</vh></v>
@@ -2413,6 +2412,41 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
+<v t="ekr.20230109171400.1"><vh>--- To be changed</vh></v>
+<v t="ekr.20180505114327.8"></v>
+<v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
+<v t="ekr.20050831195449"></v>
+<v t="ekr.20110518101739.18154"></v>
+<v t="ekr.20100808060203.4274"></v>
+<v t="ekr.20170215075612.1"></v>
+<v t="ekr.20220218121757.1"></v>
+<v t="ekr.20150318110552.37"></v>
+<v t="ekr.20150312080344.33"></v>
+<v t="ekr.20150312080344.35"></v>
+<v t="ekr.20170123085934.1"></v>
+<v t="ekr.20170608071626.1"></v>
+<v t="ekr.20180125034327.1"></v>
+<v t="ekr.20180404015249.1"></v>
+<v t="ekr.20180411070654.1"></v>
+<v t="ekr.20180509122406.1"></v>
+<v t="ekr.20180930062351.1"></v>
+<v t="ekr.20190117143933.1"></v>
+<v t="ekr.20191003062919.1"></v>
+<v t="ekr.20191003050703.1"></v>
+<v t="ekr.20200225075435.1"></v>
+<v t="ekr.20201014052236.1"></v>
+<v t="ekr.20210405104422.1"></v>
+<v t="ekr.20210921102613.1"></v>
+<v t="ekr.20211105051031.1"></v>
+<v t="ekr.20220401072939.1"></v>
+<v t="ekr.20220523084825.1"></v>
+<v t="ekr.20220704113115.1"></v>
+<v t="ekr.20221018092737.1"></v>
+<v t="ekr.20200807105709.1"></v>
+<v t="ekr.20180505114327.7"></v>
+<v t="ekr.20150220115528.4"></v>
+<v t="ekr.20101115152915.4937"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4529,10 +4563,10 @@ What People are Saying about Leo
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
 <t tx="ekr.20050831195449">For instruction about installing Leo see:
-http://leoeditor.com/installing.html
+https://leo-editor.github.io/leo-editor/installing.html
 
 For everything a beginner needs to know about Leo see:
-http://leoeditor.com/tutorial.html
+https://leo-editor.github.io/leo-editor/tutorial.html
 
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor
@@ -8858,7 +8892,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
-&lt;title&gt;Leo's GitHub Pages Home Page&lt;/title&gt;
+&lt;title&gt;Leo's Home Page (GitHub Pages version)&lt;/title&gt;
 &lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
@@ -8883,7 +8917,8 @@ var DOCUMENTATION_OPTIONS = {
 &lt;script type="text/javascript"&gt;
 function search(event) {
   if (event === null || (event.keyCode || event.which) === 13) {
-    window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+    window.open(
+        'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
   }
 }
 &lt;/script&gt;
@@ -11404,7 +11439,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
 | license = [[MIT License]]
-| website = {{URL|leoeditor.com}}
+| website = {{URL|leo-editor.github.io/leo-editor/}}
 }}
 
 '''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is an [[open-source software|open-source]]  [[text editor]]/[[outliner]] that features  clones (virtual copies of outline nodes) as its central tool of organization, navigation, customization and scripting.
@@ -11429,7 +11464,7 @@ Leo's outline or hierarchical structure is distinct from the web of interleaved 
 
 ==External links==
 {{Portal|Free and open-source software}}
-*{{official website|leoeditor.com}}
+*{{official website|leo-editor.github.io/leo-editor/}}
 *{{github|leo-editor}}
 *{{cite web | title=LeoVue, A web-based version of Leo, by Joe Orr | url=https://kaleguy.github.io/leovue}}
 *{{sourceforge|leo}}, Leo's host for binary downloads of stable releases
@@ -11456,14 +11491,17 @@ To install Python, see http://python.org.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
 </t>
-<t tx="ekr.20110518101739.18154">&lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
-href="http://leoeditor.com"&gt;&lt;/a&gt;
-&lt;noscript&gt;
-&lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
-&lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
-alt="Flattr this" title="Flattr this" border="0" /&gt;
-&lt;/a&gt;
-&lt;/noscript&gt;
+<t tx="ekr.20110518101739.18154">&lt;!--
+    &lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+        href="https://leo-editor.github.io/leo-editor/"&gt;
+    &lt;/a&gt;
+    &lt;noscript&gt;
+    &lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
+    &lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
+    alt="Flattr this" title="Flattr this" border="0" /&gt;
+    &lt;/a&gt;
+    &lt;/noscript&gt;
+--&gt;
 </t>
 <t tx="ekr.20110518101739.18155">&lt;script type="text/javascript"&gt;
 /* &lt;![CDATA[ */
@@ -18053,7 +18091,7 @@ x.sentinels.
 <t tx="ekr.20150212182032.4"></t>
 <t tx="ekr.20150220115528.4">Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
 
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+https://leo-editor.github.io/leo-editor/appendices.html#the-mulder-ream-update-algorithm
 </t>
 <t tx="ekr.20150220145456.4">For simplicity, this discussion will assume that we are updating an
 external file, x, created with @clean x. The update algorithm works
@@ -18100,7 +18138,7 @@ deleting lines.
 
 ::
   
-  http://leoeditor.com/load-leo.html displays .leo files in the browser
+  load-leo.html displays .leo files in the browser
   Added the LeoQtGui.IdleTime class and the g.IdleTime wrapper
   Leo now honors @language inside @doc parts
   @shadow is deprecated
@@ -18269,7 +18307,7 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
     @clean outlines create external files without sentinels.
     Leo regularly checks the integrity of the outline.
     Up/Down arrows in the minibuffer cycle though command history.
-    http://leoeditor.com/load-leo.html displays .leo files in the browser.
+    load-leo.html displays .leo files in the browser.
     Leo now honors @language inside @doc parts.
     @data nodes can now be composed from a tree of nodes.
         This feature appeared in Leo 5.0, but was not documented.
@@ -18291,7 +18329,7 @@ I'll probably never be able to recreate a clearer picture of how the Aha came to
     Multiple editors in Leo's body pane
     A new colorizer plugin controlled by jEdit language description files
     Search commands now support regex replace patterns
-    Support for external debuggers: http://leoeditor.com/debuggers.html
+    Support for external debuggers: https://leo-editor.github.io/leo-editor/debuggers.html
 </t>
 <t tx="ekr.20150312080344.36">::
 
@@ -18909,17 +18947,17 @@ A **session** specifies a list of .leo files that Leo opens automatically when L
         help-for-scripting
 
 ``open-online-home``
-    Opens Leo's home page at http://leoeditor.com.
+    Opens Leo's home page at https://leo-editor.github.io/leo-editor/.
 ``open-online-toc``
-    Opens Leo's table of contents at http://leoeditor.com/leo_toc.html.
+    Opens Leo's table of contents at https://leo-editor.github.io/leo-editor/leo_toc.html.
 ``open-online-tutorials``
-    Opens Leo's tutorials page at http://leoeditor.com/tutorial.html.
+    Opens Leo's tutorials page at https://leo-editor.github.io/leo-editor/tutorial.html.
 ``open-online-videos``
-    Opens Leo's video page at http://leoeditor.com/screencasts.html.
+    Opens Leo's video page at https://leo-editor.github.io/leo-editor/screencasts.html.
 ``open-quickstart-leo``
     Opens Leo's quickstart guide in a new tab or window.
 ``open-users-guide``
-    Opens Leo's Users Guide at http://leoeditor.com/usersguide.html.
+    Opens Leo's Users Guide at https://leo-editor.github.io/leo-editor/usersguide.html.
 
 
 </t>
@@ -21585,9 +21623,9 @@ The performance bug created by calling QSyntaxHighlighter explicitly caused a "s
 </t>
 <t tx="ekr.20170123085934.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.5 March 23, 2017
 
-[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](https://leo-editor.github.io/leo-editor/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
@@ -21605,16 +21643,16 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **Links**
 
-- [Leo's home page](http://leoeditor.com)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Leo's home page](https://leo-editor.github.io/leo-editor/)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20170123090348.1"></t>
 <t tx="ekr.20170123090814.1"></t>
@@ -22318,7 +22356,7 @@ Leo's Documentation Page
 
 **Important**: the easiest way to search Leo's documentation is to search LeoDocs.leo.
 
-.. _`Leo's home page`: http://leoeditor.com/
+.. _`Leo's home page`: https://leo-editor.github.io/leo-editor/
 
 `Leo's home page`_
 
@@ -23229,9 +23267,9 @@ These performance gotchas become important for repetitive commands, like cff, re
 </t>
 <t tx="ekr.20170608071626.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.6 September 25, 2017
 
-[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](https://leo-editor.github.io/leo-editor/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
@@ -23244,16 +23282,16 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **Links**
 
-- [Leo's home page](http://leoeditor.com)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Leo's home page](https://leo-editor.github.io/leo-editor/)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20170612093902.1">Use @others unless the contents of a node must appear in a certain spot, or in a certain order. For examples, most of Leo's source files start like this::
 
@@ -23505,7 +23543,7 @@ Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFile
 
 The fix was in xml_i.scan_tag &amp; helper
 </t>
-<t tx="ekr.20170707034853.3">A new chapter in Leo's documentation: http://leoeditor.com/console-gui.html
+<t tx="ekr.20170707034853.3">A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor/console-gui.html
 
 https://github.com/leo-editor/leo-editor/issues/488
 </t>
@@ -24006,7 +24044,7 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 - Added listen-to-log and kill-log-listen commands.
 - Added "yes/no to all" buttons for externally changed file dialog
 - Leo switches between git branches more smoothly.</t>
-<t tx="ekr.20170911082432.3">A new chapter in Leo's documentation: http://leoeditor.com/console-gui.html
+<t tx="ekr.20170911082432.3">A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor//console-gui.html
 
 https://github.com/leo-editor/leo-editor/issues/488
 </t>
@@ -24493,7 +24531,7 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+
 </t>
 <t tx="ekr.20180124100450.1030"></t>
 <t tx="ekr.20180124100450.126">https://github.com/leo-editor/leo-editor/issues/488
-Docs: http://leoeditor.com/console-gui.html
+Docs: https://leo-editor.github.io/leo-editor/console-gui.html
 
 The highlights of recent work:
 
@@ -24768,9 +24806,9 @@ https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+mileston
 </t>
 <t tx="ekr.20180125034327.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.7 final February 27, 2018
 
-Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, https://leo-editor.github.io/leo-editor/ is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in C or assembly language...
 
@@ -24797,17 +24835,17 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20180125034510.1"></t>
 <t tx="ekr.20180125034531.1"></t>
@@ -24940,7 +24978,7 @@ Added k.remove_conflicting_definitions.</t>
 <t tx="ekr.20180125235810.7">https://github.com/leo-editor/leo-editor/issues/509
 
 Serious unfixable bugs:
-http://leoeditor.com/console-gui.html#unfixed-bugs
+https://leo-editor.github.io/leo-editor/console-gui.html#unfixed-bugs
 </t>
 <t tx="ekr.20180125235810.8">https://github.com/leo-editor/leo-editor/issues/493</t>
 <t tx="ekr.20180125235810.9">https://github.com/leo-editor/leo-editor/issues/489</t>
@@ -25611,10 +25649,10 @@ In those days, Leo's GUI was built on the TKinter package that shipped with Pyth
 </t>
 <t tx="ekr.20180404015249.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.7.1 April 6, 2018
 
-Leo 5.7.1, http://leoeditor.com, is now available on
+Leo 5.7.1, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 5.7.1**
 
@@ -25630,17 +25668,17 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20180404015558.1">- Improved support for themes
     - Added the open-theme-file command.
@@ -25750,10 +25788,10 @@ Theme files should contain three settings that describe the theme::
 </t>
 <t tx="ekr.20180411070654.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">May 7, 2018
 
-Leo 5.7.2, http://leoeditor.com, is now available on
+Leo 5.7.2, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 5.7.2**
 
@@ -25766,17 +25804,17 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20180411071648.1">#850: Optionally convert Meta to Alt on MacOs
 https://github.com/leo-editor/leo-editor/issues/850
@@ -26090,12 +26128,7 @@ Here are the basics of debugging with Leo:
 **g.pdb**
 
 `g.pdb()` invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
-
-**Using `@`button/command nodes as a testing framework**
-
-This is the so-called stupendous Aha:
-http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter
-This can save you a lot of time.</t>
+</t>
 <t tx="ekr.20180505114327.8">.. https://github.com/leo-editor/leo-editor/issues/837
 
 ​All devs must run all unit tests before commit anything. Here's how:
@@ -26187,10 +26220,10 @@ Leo University
 This is a backup of the online `LeoU issues`_.
 </t>
 <t tx="ekr.20180509122406.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">May 28, 2018
-Leo 5.7.3, http://leoeditor.com, is now available on
+Leo 5.7.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 5.7.3**
 
@@ -26208,17 +26241,17 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20180509122603.1">Added c.diff_file, c.diff_two_branches and c.git_diff. Examples::
 
@@ -26701,16 +26734,6 @@ I don't think we want to go down the track of letting users register JSON read/w
 pyzo is pure python with only a few optional dependencies.  Use the binary installer.
 
 See [this pyzo issue](https://github.com/pyzo/pyzo/issues/386) for more details. In particular, the binaries depend on [cx_freeze](http://cx-freeze.readthedocs.io/en/latest/) and maybe [PySide](http://wiki.qt.io/About_PySide).</t>
-<t tx="ekr.20180523095243.5">https://github.com/leo-editor/leo-editor/issues/754
-- [ ] Update the summary + news tabs on SourceForge:
-    For example: Leo is now available on [GitHub](https://github.com/leo-editor/leo-editor). Follow the installation guide at leoeditor.com
-      
-    **Note**: the link above is to the master branch, even though there is no explicit branch url.
-
-- [ ] Create a permanent devel branch.
-- [ ] Update links on Leo's home page to these branches.
-
-.</t>
 <t tx="ekr.20180523095243.6">https://github.com/leo-editor/leo-editor/issues/752
 **Summary**: Not installed yet on Windows.
 
@@ -27226,11 +27249,8 @@ g.trace(*args, **kwargs) prints its arguments to the console.
 
 **g.pdb**
 
-g.pdb() invokes a version of [python's pdb debugger](https://docs.python.org/2/library/pdb.html), adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
-
-**Using `@`button/command nodes as a testing framework**
-
-This is the so-called [stupendous Aha](http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter). This can save you a lot of time.</t>
+g.pdb() invokes a version of [python's pdb debugger]('https://docs.python.org/3/library/pdb.html'), adapted to Leo's Qt gui.  I use g.pdb when g.trace doesn't tell me enough.
+</t>
 <t tx="ekr.20180523101514.7">https://github.com/leo-editor/leo-editor/issues/818
 
 For any programming project I recommend using github issues to track your work.  You'll be glad you did.
@@ -27462,10 +27482,10 @@ and then predefines the animation, matplotlib, np, numpy and plt vars in the @py
 
 2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.</t>
 <t tx="ekr.20180930062351.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">
-Leo 5.8 final, http://leoeditor.com, is now available on
+Leo 5.8 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 5.8**
 
@@ -27478,17 +27498,17 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20180930062351.10">https://github.com/leo-editor/leo-editor/issues/938
 
@@ -28752,10 +28772,10 @@ The body text of an @data history-list *setting node* preloads commands into the
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="ekr.20190117143933.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.9 final, http://leoeditor.com, is now available on
+<t tx="ekr.20190117143933.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.9 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 5.9**
 
@@ -28776,17 +28796,17 @@ Other features
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20190117143942.2">https://github.com/leo-editor/leo-editor/issues/1002
 </t>
@@ -29492,10 +29512,10 @@ Add the following to the headline of a new node as a child of your @settings nod
 5. Save the file and restart Leo.
 
 You should now be using myTheme.leo. You can load myTheme.leo from Leo. The font sizing and colors are under Theme Settings in the tree.</t>
-<t tx="ekr.20191003050703.1">Leo 6.1, http://leoeditor.com, is now available on
+<t tx="ekr.20191003050703.1">Leo 6.1, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.1**
 
@@ -29513,17 +29533,17 @@ their contributions to Leo 6.1.
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20191003050703.11">This page shows all enhancements related to Leo 6.1:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aenhancement
@@ -29702,10 +29722,10 @@ https://github.com/leo-editor/leo-editor/issues/1325
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 </t>
 <t tx="ekr.20191003061844.1">https://github.com/leo-editor/leo-editor/issues/1315</t>
-<t tx="ekr.20191003062919.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 6.0 final, http://leoeditor.com, is now available on
+<t tx="ekr.20191003062919.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 6.0 final, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.0**
 
@@ -29717,17 +29737,17 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20191003062919.10">Problems syntax coloring TeX and LaTeX files
 https://github.com/leo-editor/leo-editor/issues/1088
@@ -30283,9 +30303,9 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
-<t tx="ekr.20200225075435.1">Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20200225075435.1">Leo 6.2.1, https://leo-editor.github.io/leo-editor/ is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.2**
 
@@ -30302,17 +30322,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20200313051859.1">Persistent body editors:
 https://github.com/leo-editor/leo-editor/issues/1268
@@ -30610,7 +30630,7 @@ Back to learning new leo  then :)</t>
 unify python's token-based and ast-based worlds by creating two-way links
 between tokens in the token list and ast nodes in the parse tree.
     
-leoAst.py is part of `Leo &lt;https://leoeditor.com&gt;`_, and can be used
+leoAst.py is part of `Leo &lt;https://leo-editor.github.io/leo-editor/&gt;`_, and can be used
 completely independently of Leo.
 
 You must use Leo to see the intended outline structure of the code. Without
@@ -30738,10 +30758,10 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20201014052236.1">Leo 6.3, http://leoeditor.com, is now available on
+<t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.3**
 
@@ -30753,17 +30773,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20201014052236.2">**Major change**
 
@@ -31102,10 +31122,10 @@ Note: Leo can not recognize @path directives in the body text of @file nodes!</t
 - Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
 - Add execute-general-script command and c.general_script_helper.
 </t>
-<t tx="ekr.20210405104422.1">Leo http://leoeditor.com 6.4 is now available on
+<t tx="ekr.20210405104422.1">Leo https://leo-editor.github.io/leo-editor/ 6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.4**
 
@@ -31123,17 +31143,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="ekr.20210405104614.1">For a list of all the bugs fixed in Leo 6.4 see:
 https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.4+label%3Abug+</t>
@@ -31293,10 +31313,10 @@ Leo's source code. For this reason, the names of methods in Leo's core
 change rarely. Similarly, clients can usually assume that the names of Leo
 commands won't change.
 </t>
-<t tx="ekr.20210921102613.1">Leo http://leoeditor.com 6.5 is now available on
+<t tx="ekr.20210921102613.1">Leo https://leo-editor.github.io/leo-editor/ 6.5 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.5**
 
@@ -31318,17 +31338,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **General Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31412,11 +31432,11 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6 final is now available on
+<t tx="ekr.20211105051031.1">Leo https://leo-editor.github.io/leo-editor/ 6.6 final is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.6**
 
@@ -31440,17 +31460,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **General Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31478,7 +31498,7 @@ The leo/plugins/example_rst_filter.py shows how to define and register these fil
     
 will select this node in LeoDocs.leo.
 </t>
-<t tx="ekr.20220218121757.1">Clicking a url, such as https://www.leoeditor.com/ will open the link in your default browser.
+<t tx="ekr.20220218121757.1">Clicking a url, such as https://leo-editor.github.io/leo-editor/ will open the link in your default browser.
 
 Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
 UNL's have the form:
@@ -31493,11 +31513,11 @@ For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
     ``unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html``
 
 Moving or renaming nodes may (partially) break UNL's.</t>
-<t tx="ekr.20220401072939.1">Leo http://leoeditor.com 6.6.1 is now available on
+<t tx="ekr.20220401072939.1">Leo https://leo-editor.github.io/leo-editor/ 6.6.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6.1/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.6.1**
 
@@ -31522,17 +31542,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **General Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31581,11 +31601,11 @@ Phenomenal!</t>
 - Leo's mypy command runs without blocking Leo.
 - Improve the add-mypy-annotations command.
 - Clean all files with reindent.</t>
-<t tx="ekr.20220523084825.1">Leo http://leoeditor.com 6.6.2 is now available on
+<t tx="ekr.20220523084825.1">Leo https://leo-editor.github.io/leo-editor/ 6.6.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.6.2**
 
@@ -31604,17 +31624,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **General Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- Leo's home page: https://leo-editor.github.io/leo-editor/
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31622,11 +31642,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 <t tx="ekr.20220523145755.1">- Add "File Only" option in Leo's Find Pane.
 - Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.</t>
-<t tx="ekr.20220704113115.1">Leo http://leoeditor.com 6.6.3 is now available on
+<t tx="ekr.20220704113115.1">Leo https://leo-editor.github.io/leo-editor/ 6.6.3 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo, https://leo-editor.github.io/leo-editor/ is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.6.3**
 
@@ -31638,16 +31658,16 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 **Links**
 
 - 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31672,11 +31692,11 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
   - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
   - Retire Tk indices, except in unit tests.
 </t>
-<t tx="ekr.20221018092737.1">Leo http://leoeditor.com 6.7.1 is now available on
+<t tx="ekr.20221018092737.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.7.1**
 
@@ -31691,16 +31711,16 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 - [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
 - [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 
 @nowrap
 @language md
@@ -31753,6 +31773,8 @@ needed attention.
   The body ot the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
+<t tx="ekr.20230109165907.1">@nosearch</t>
+<t tx="ekr.20230109171400.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
