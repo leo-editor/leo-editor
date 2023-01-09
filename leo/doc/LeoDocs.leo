@@ -2413,6 +2413,7 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
+<v t="ekr.20230109163424.1"><vh>Greek abbreviations</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31753,6 +31754,19 @@ needed attention.
   The body ot the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
+<t tx="ekr.20230109163424.1">​@data global-abbreviations - Symbols.  Here is the content of the node's body, ready to be copy-pasted:
+
+alph;;=α
+beta;;=β
+delt;;=δ
+gam;;=γ
+mu;;=μ
+pi;;=π
+sig;;=σ
+
+Delt;;=Δ
+Sig;;=Σ
+pm;;=±</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

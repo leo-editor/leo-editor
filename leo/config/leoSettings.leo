@@ -2316,7 +2316,8 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20230104150532.1"></v>
+<v t="ekr.20100904134301.11000"></v>
+<v t="ekr.20230109163514.1"><vh>@data global-abbreviations - symbols</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4751,6 +4752,21 @@ date;;={|{x=time.asctime()}|}
 
 # Typically you would define @data global-abbreviation nodes
 # in myLeoSettings.leo and @data abbreviation nodes in local files.
+
+# Here are some abbreviations of Greek letters:
+
+#  alph;;=α
+#  beta;;=β
+#  delt;;=δ
+#  gam;;=γ
+#  mu;;=μ
+#  pi;;=π
+#  sig;;=σ
+
+#  Delt;;=Δ
+#  Sig;;=Σ
+#  pm;;=±
+
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
@@ -11676,6 +11692,8 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
 # Headlines must match exactly.
 
+</t>
+<t tx="ekr.20230109163514.1">
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
