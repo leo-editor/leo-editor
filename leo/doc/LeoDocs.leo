@@ -2412,6 +2412,7 @@
 </v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
+<v t="ekr.20131005214621.16088"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8857,7 +8858,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
-&lt;title&gt;Leo's New Home Page&lt;/title&gt;
+&lt;title&gt;Leo's GitHub Pages Home Page&lt;/title&gt;
 &lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
@@ -9034,9 +9035,9 @@ and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
 &lt;&lt; flattr icon &gt;&gt;
 &lt;/p&gt;
 </t>
-<t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
+<t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s New Home Page&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
