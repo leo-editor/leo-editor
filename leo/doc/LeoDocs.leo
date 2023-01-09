@@ -442,7 +442,7 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@clean html/index.html</vh>
+<v t="ekr.20100808060203.4273"><vh>@clean ../../docs/index.html</vh>
 <v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
 <v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
 <v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
@@ -8858,7 +8858,7 @@ Nevertheless, these sentinels can be useful in special situations.
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
 &lt;title&gt;Leo's Home Page&lt;/title&gt;
-&lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
 &lt;!-- scale screen-shot to fit parent container --&gt;
@@ -8871,7 +8871,7 @@ img {
 &lt;script type="text/javascript"&gt;
 var DOCUMENTATION_OPTIONS = {
   URL_ROOT:    './',
-  VERSION:     '6.7.1',
+  VERSION:     '6.7.2',
   COLLAPSE_INDEX: false,
   FILE_SUFFIX: '.html',
   HAS_SOURCE:  true,
@@ -8923,7 +8923,7 @@ function search(event) {
     &lt;li class="right" &gt;
       &lt;a href="leo_toc.html" title="Users Guide"
          accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
-    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.1 documentation&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.2 documentation&lt;/a&gt;&lt;/li&gt;
     &lt;!--  &amp;raquo; --&gt;
   &lt;/ul&gt;
 &lt;/div&gt;
@@ -8941,13 +8941,13 @@ function search(event) {
       &lt;a href="leo_toc.html" title="Users Guide"
          &gt;contents&lt;/a&gt; |&lt;/li&gt;
 
-    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.1 documentation&lt;/a&gt;&lt;/li&gt; 
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.2 documentation&lt;/a&gt;&lt;/li&gt; 
   &lt;/ul&gt;
 &lt;/div&gt;
 </t>
 <t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
   &amp;copy; Copyright 1997-2022, Edward K. Ream.
-  Last updated on November 8, 2022.
+  Last updated on January 9, 2023
   Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt;.
 &lt;/div&gt;
 </t>
