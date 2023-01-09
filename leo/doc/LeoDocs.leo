@@ -8857,7 +8857,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
-&lt;title&gt;Leo's Home Page&lt;/title&gt;
+&lt;title&gt;Leo's New Home Page&lt;/title&gt;
 &lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
