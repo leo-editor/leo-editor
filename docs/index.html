@@ -30,6 +30,7 @@
   };
   </script>
 
+
   <script type="text/javascript">
   function search(event) {
     if (event === null || (event.keyCode || event.which) === 13) {
@@ -42,7 +43,7 @@
       <!-- FAILS
       window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
       -->
-      window.open('http://www.google.com/search?q=site:leo-editor.github.io/'+document.getElementById('q').value);
+      window.open('http://www.google.com/search?q=site:leo-editor.github.io+/'+document.getElementById('q').value);
     }
   }
   </script>
