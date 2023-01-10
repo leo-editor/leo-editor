@@ -2446,6 +2446,29 @@
 <v t="ekr.20150220115528.4"></v>
 <v t="ekr.20101115152915.4937"></v>
 </v>
+<v t="ekr.20230110032152.1"><vh>COPY (6.7.1) Home page</vh>
+<v t="ekr.20230110032152.2"><vh>COPY html/index.html</vh>
+<v t="ekr.20230110032152.3"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
+<v t="ekr.20230110032152.4"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.5"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20230110032152.6"><vh>&lt;&lt; div top nav &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.7"><vh>&lt;&lt; div main section &gt;&gt; (home page)</vh>
+<v t="ekr.20230110032152.8"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.9"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.10"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.11"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.12"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20230110032152.13"><vh>&lt;&lt; sidebar &gt;&gt; (home page)</vh>
+<v t="ekr.20230110032152.14"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
+<v t="ekr.20230110032152.15"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20230110032152.16"><vh>&lt;&lt; div bottom nav &gt;&gt;</vh></v>
+<v t="ekr.20230110032152.17"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8869,7 +8892,8 @@ Nevertheless, these sentinels can be useful in special situations.
 @tabwidth -2
 &lt;!DOCTYPE html&gt;
 &lt;head&gt;
-    &lt;&lt; head &gt;&gt;
+  &lt;!-- changed 1: 2023/01/10 --&gt;
+  &lt;&lt; head &gt;&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;&lt; div top nav &gt;&gt;
@@ -31773,6 +31797,352 @@ needed attention.
   dubious. Default: None.</t>
 <t tx="ekr.20230109165907.1">@nosearch</t>
 <t tx="ekr.20230110030732.1"></t>
+<t tx="ekr.20230110032152.1"></t>
+<t tx="ekr.20230110032152.10">&lt;!-- &lt;p&gt; --&gt;
+&lt;!-- The following is --&gt;
+&lt;!-- &lt;a class="reference external" href="https://kaleguy.github.io/leovue/#/t/2/"&gt; --&gt;
+&lt;!-- Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;: --&gt;
+&lt;!-- &lt;/p&gt; --&gt;
+&lt;!-- &lt;iframe --&gt;
+  &lt;!-- src="https://chrisgeorge.ca/leovue/#/t/1" --&gt;
+  &lt;!-- style="height:768px;width:1024px" &gt; --&gt;
+&lt;!-- &lt;/iframe&gt; --&gt;
+</t>
+<t tx="ekr.20230110032152.11">&lt;p&gt;Here is reduced screenshot of Leo's main window. You can view the full-sized image using something like "view image" in your browser.&lt;/p&gt;
+
+&lt;img class="screenshot"
+    src="screen-shots/DarkScreenShot.png"
+    alt="ScreenShot"/&gt;
+</t>
+<t tx="ekr.20230110032152.12">&lt;!-- This works --
+&lt;iframe id="forum_embed"
+    src="javascript:void(0)"
+    scrolling="yes"
+    frameborder="1"
+    width="900"
+    height="700"&gt;
+&lt;/iframe&gt;
+&lt;script type="text/javascript"&gt;
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/leo-editor'
+     + '&amp;showsearch=true&amp;showpopout=true&amp;showtabs=true'
+     + '&amp;parenturl=' + encodeURIComponent(window.location.href);
+&lt;/script&gt;
+--&gt;
+</t>
+<t tx="ekr.20230110032152.13">&lt;div class="sphinxsidebar"&gt;
+    &lt;div class="sphinxsidebarwrapper"&gt;
+        &lt;&lt; sidebar contents &gt;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110032152.14">@language html
+
+&lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+  &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: Click the lion!
+&lt;/p&gt;
+&lt;p&gt;
+&lt;form&gt;
+  &lt;input type="button"
+    style="background-color:#6CA6CD;"
+    value="Download Leo"
+    onClick="window.location.href='download.html'"&gt;
+&lt;/form&gt;
+&lt;/p&gt;
+
+&lt;a class="reference external"
+  href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+  Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="tutorial.html"&gt;
+  Tutorial&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="leo_toc.html"&gt;
+  Documentation&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screen-shots.html"&gt;
+  Screen shots&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screencasts.html"&gt;
+  Videos&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="testimonials.html"&gt;
+  What people are saying&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="slides.html"&gt;
+  Tutorial Slide Shows&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1064"&gt;
+  Leo's Public To Do List&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&amp;uio=d4"&gt;
+  #leo IRC&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+  Leo at Google Groups&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor"&gt;
+  Leo at GitHub&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/snippets"&gt;
+  Code Snippets&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues"&gt;
+  Report a bug&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="leoLinks.html"&gt;
+  More links...&lt;/a&gt;&lt;br&gt;
+  
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div id="searchbox" style=""&gt;
+    &lt;input id='q' type="text" name="q" onkeypress="search(event)"&gt;
+  &lt;div&gt;&lt;button onclick="search(null)"&gt;Google Search&lt;/button&gt;&lt;/div&gt;
+  &lt;div class="searchtip" style="font-size: 90%"&gt;
+    &lt;!-- Use quotes for "@file" and similar symbols. --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Written by &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;br&gt;
+and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
+&lt;&lt; flattr icon &gt;&gt;
+&lt;/p&gt;
+</t>
+<t tx="ekr.20230110032152.15">&lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+href="http://leoeditor.com"&gt;&lt;/a&gt;
+&lt;noscript&gt;
+&lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
+&lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
+alt="Flattr this" title="Flattr this" border="0" /&gt;
+&lt;/a&gt;
+&lt;/noscript&gt;
+</t>
+<t tx="ekr.20230110032152.16">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         &gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         &gt;contents&lt;/a&gt; |&lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.1 documentation&lt;/a&gt;&lt;/li&gt; 
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110032152.17">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2022, Edward K. Ream.
+  Last updated on November 8, 2022.
+  Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt;.
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110032152.2">@first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+@first "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+@first &lt;!-- This is Leo's home page --&gt;
+
+@language html
+@tabwidth -2
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;&lt; head &gt;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;&lt; div top nav &gt;&gt;
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;&lt; div main section &gt;&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;&lt; sidebar &gt;&gt;
+    &lt;div class="clearer"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;&lt; div bottom nav &gt;&gt;
+  &lt;&lt; div footer &gt;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20230110032152.3">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
+&lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
+
+&lt;!-- scale screen-shot to fit parent container --&gt;
+&lt;style type="text/css"&gt;
+img {
+    max-width:50%; max-height:50%;
+}
+&lt;/style&gt;
+
+&lt;script type="text/javascript"&gt;
+var DOCUMENTATION_OPTIONS = {
+  URL_ROOT:    './',
+  VERSION:     '6.7.1',
+  COLLAPSE_INDEX: false,
+  FILE_SUFFIX: '.html',
+  HAS_SOURCE:  true,
+  SOURCELINK_SUFFIX: '.txt'
+};
+&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+function search(event) {
+  if (event === null || (event.keyCode || event.which) === 13) {
+    window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+  }
+}
+&lt;/script&gt;
+
+&lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/underscore.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="_static/sidebar.js"&gt;&lt;/script&gt;
+
+&lt;link rel="search" title="Search" href="search.html" /&gt;
+
+&lt;div id="searchbox" style="display: none" role="search"&gt;
+  &lt;h3&gt;Quick search&lt;/h3&gt;
+    &lt;form class="search" action="search.html" method="get"&gt;
+      &lt;div&gt;&lt;input type="text" name="q" /&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;input type="submit" value="Go" /&gt;&lt;/div&gt;
+      &lt;input type="hidden" name="check_keywords" value="yes" /&gt;
+      &lt;input type="hidden" name="area" value="default" /&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+
+&lt;&lt; flattr head &gt;&gt;
+&lt;&lt; feed2js stylesheet &gt;&gt;
+&lt;link rel="top" title="Leo 6.7.1 documentation" href="index.html" /&gt;
+&lt;link rel="next" title="Table of Contents" href="leo_toc.html" /&gt;
+&lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
+
+</t>
+<t tx="ekr.20230110032152.4">&lt;script type="text/javascript"&gt;
+/* &lt;![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]&gt; */
+&lt;/script&gt;
+</t>
+<t tx="ekr.20230110032152.5">&lt;style type="text/css" media="all"&gt;
+
+&lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
+
+.rss_box {
+    width:   0px;
+    padding: 0px;
+    border:  0px solid white;
+    margin:  0px;
+}
+
+.rss_title {
+    visibility:hidden;
+    line-height: 0px;
+}
+
+.rss_items {
+    font-size: 80%;
+}
+
+&lt;/style&gt;
+</t>
+<t tx="ekr.20230110032152.6">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.1 documentation&lt;/a&gt;&lt;/li&gt;
+    &lt;!--  &amp;raquo; --&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110032152.7">&lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
+
+    &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+    &lt;&lt; Leo is... &gt;&gt;
+    &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
+    &lt;&lt; embed leovue demo &gt;&gt;
+    &lt;&lt; screenshot &gt;&gt;
+    &lt;&lt; embed leo-editor &gt;&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110032152.8">&lt;p&gt;&lt;blockquote&gt;
+  "Leo is a revolutionary step in the right direction for programming."&amp;#8213;Brian Takita
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt; "Leo is the best IDE that I have had the pleasure to use. It
+has totally changed not only the way that I program, but also the way that
+I store and organize all of the information that I need for the job that I
+do."&amp;#8213;Ian Mulvany
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+"When first I opened Leo, it was out of curiosity. But having used it, I'll
+never go back. They'll have to pry Leo out of my cold, dead fingers!"&amp;#8213;Travers A. Hough
+&lt;/blockquote&gt;
+&lt;p&gt;
+Leo is a
+&lt;a href="https://en.wikipedia.org/wiki/Personal_information_manager"&gt;PIM&lt;/a&gt;, 
+&lt;a href="https://en.wikipedia.org/wiki/Integrated_development_environment"&gt;IDE&lt;/a&gt;
+and outliner that accelerates the work flow of programmers, authors and web designers.
+&lt;em&gt;Outline nodes may appear in more than one place&lt;/em&gt;, allowing multiple organizations of data within a single outline.
+
+&lt;p&gt;
+  &lt;a href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+    &lt;strong&gt;Joe Orr's must see demo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="preface.html"&gt;
+    &lt;strong&gt;A brief summary of Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="testimonials.html"&gt;
+    &lt;strong&gt;What people are saying about Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="tutorial.html"&gt;
+    &lt;strong&gt;Learn about Leo in 20 minutes&lt;/strong&gt;&lt;/a&gt;.
+&lt;/p&gt;
+
+</t>
+<t tx="ekr.20230110032152.9">&lt;p&gt;
+&lt;strong&gt;Ask us anything&lt;/strong&gt; at the
+&lt;a href="http://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
+&lt;br&gt;
+&lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
+  &lt;strong&gt;Send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
+&lt;/p&gt;
+
+&lt;!--
+&lt;p&gt;Here are the most recent discussions...&lt;/p&gt;
+&lt;script language="JavaScript"
+  src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&amp;chan=title&amp;num=5&amp;desc=0&amp;date=y&amp;targ=y"
+  type="text/javascript"&gt;
+&lt;/script&gt;
+--&gt;
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
