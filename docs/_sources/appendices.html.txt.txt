@@ -489,7 +489,7 @@ The classes in `leoAst.py <https://github.com/leo-editor/leo-editor/blob/devel/l
 unify python's token-based and ast-based worlds by creating two-way links
 between tokens in the token list and ast nodes in the parse tree.
     
-leoAst.py is part of `Leo <https://leoeditor.com>`_, and can be used
+leoAst.py is part of `Leo <https://leo-editor.github.io/leo-editor/>`_, and can be used
 completely independently of Leo.
 
 You must use Leo to see the intended outline structure of the code. Without

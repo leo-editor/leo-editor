@@ -489,7 +489,7 @@ Leo 5.1 b1 was released March 20, 2015.  This release features @clean, one of th
 
 ::
   
-  http://leoeditor.com/load-leo.html displays .leo files in the browser
+  load-leo.html displays .leo files in the browser
   Added the LeoQtGui.IdleTime class and the g.IdleTime wrapper
   Leo now honors @language inside @doc parts
   @shadow is deprecated

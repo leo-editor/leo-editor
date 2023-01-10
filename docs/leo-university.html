@@ -74,21 +74,16 @@
 <p><strong>g.trace</strong></p>
 <p><cite>g.trace(*args, **kwargs)</cite> prints its arguments to the console.  I use g.trace all throughout Leo’s code base.</p>
 <p><strong>g.pdb</strong></p>
-<p><cite>g.pdb()</cite> invokes a version of python’s pdb debugger, <a class="reference external" href="https://docs.python.org/2/library/pdb.html">https://docs.python.org/2/library/pdb.html</a>, adapted to Leo’s Qt gui.  I use g.pdb only rarely, when g.trace doesn’t tell me enough.</p>
-<p><strong>Using `&#64;`button/command nodes as a testing framework</strong></p>
-<p>This is the so-called stupendous Aha:
-<a class="reference external" href="http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter">http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter</a>
-This can save you a lot of time.</p>
+<p><cite>g.pdb()</cite> invokes python’s pdb debugger, <a class="reference external" href="https://docs.python.org/3/library/pdb.html">https://docs.python.org/3/library/pdb.html</a>, adapted to Leo’s Qt gui.  I use g.pdb when g.trace doesn’t tell me enough.</p>
 </section>
 <section id="lesson-3-running-unit-tests">
 <h2>Lesson 3: Running unit tests<a class="headerlink" href="#lesson-3-running-unit-tests" title="Permalink to this heading">¶</a></h2>
 <p>​All devs must run all unit tests before commit anything. Here’s how:</p>
-<ul class="simple">
-<li><p>Open leo/test/unitTest.leo in a console.</p></li>
-<li><p>The “Active Unit Tests” node should already be selected. If not, select it.</p></li>
-<li><p>Do Alt-4. It is bound in the file to run-selected-unit-tests-locally.</p></li>
-</ul>
-<p><strong>Important</strong>: Some unit tests may fail on your environment.  Don’t worry about them.  You need only ensure that your new code causes no <em>other</em> unit tests to fail.  If in doubt, ask on leo-editor.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">path</span> <span class="n">to</span><span class="o">&gt;</span><span class="n">leo</span><span class="o">-</span><span class="n">editor</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">unittest</span> <span class="o">%*</span>
+</pre></div>
+</div>
+<p><strong>Important</strong>: Some unit tests may fail on your environment.  Don’t worry about them.  You need only ensure that your new code causes no <em>new</em> unit tests to fail.  If in doubt, ask on leo-editor.</p>
 </section>
 <section id="lesson-4-use-issues-as-an-programming-notebook">
 <h2>Lesson 4: Use issues as an programming notebook<a class="headerlink" href="#lesson-4-use-issues-as-an-programming-notebook" title="Permalink to this heading">¶</a></h2>
@@ -300,7 +295,7 @@ Not everyone agrees with everything I say here.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 09, 2023.
+      Last updated on January 10, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
     </div>
   </body>

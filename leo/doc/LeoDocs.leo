@@ -105,16 +105,6 @@
 <v t="ekr.20111017085134.16199"><vh>@@button remove-built-slides</vh></v>
 <v t="ekr.20111017085134.16200"><vh>@@button remove-final-output</vh></v>
 </v>
-<v t="ekr.20130803073926.17120"><vh>@@button clean-mail</vh></v>
-<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
-<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
-<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
-</v>
-<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
-<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
-<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
 <v t="ekr.20180125094702.1"><vh>@button demo</vh>
 <v t="ekr.20180125113535.1"><vh>&lt;&lt; utils &gt;&gt;</vh>
 <v t="ekr.20180125101040.1"><vh>hightlight</vh></v>
@@ -127,6 +117,11 @@
 <v t="ekr.20180128051013.1"><vh>panes</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20230109174650.1"><vh>@button find-bad-links</vh>
+<v t="ekr.20230109181501.1"><vh>_validate_url</vh></v>
+<v t="ekr.20230109175335.1"><vh>find_broken_web_links</vh></v>
+<v t="ekr.20230109175359.1"><vh>find_broken_outline_links (to do)</vh></v>
 </v>
 <v t="ekr.20170212105226.1"><vh>@button IntroSlides</vh>
 <v t="ekr.20170212105226.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
@@ -333,15 +328,27 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
-<v t="ekr.20161120074501.1"><vh>@@@button make-md-heads</vh>
-<v t="ekr.20161120075731.1"><vh>markup</vh></v>
-</v>
 <v t="ekr.20161204055040.1"><vh>@button make-md-toc</vh>
 <v t="ekr.20161204055436.1"><vh>run</vh></v>
 <v t="ekr.20161204060843.1"><vh>mak_link</vh></v>
 <v t="ekr.20161204055804.1"><vh>make_toc</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
+<v t="ekr.20230109174708.1"><vh>@ignore disabled buttons</vh>
+<v t="ekr.20161120074501.1"><vh>@@@button make-md-heads</vh>
+<v t="ekr.20161120075731.1"><vh>markup</vh></v>
+</v>
+<v t="ekr.20130803073926.17120"><vh>@@button clean-mail</vh></v>
+<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
+<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
+</v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20180523085905.1"><vh>Scripts that get GitHub issues</vh>
@@ -2412,7 +2419,7 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
-<v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
+<v t="ekr.20230109165907.1"><vh>--- Change urls</vh>
 <v t="ekr.20050831195449"></v>
 <v t="ekr.20110518101739.18154"></v>
 <v t="ekr.20100808060203.4274"></v>
@@ -2445,6 +2452,8 @@
 <v t="ekr.20150220115528.4"></v>
 <v t="ekr.20101115152915.4937"></v>
 </v>
+<v t="ekr.20230109174650.1"></v>
+<v t="ekr.20230109182936.1"><vh>*** Update the website before searching!!!</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31771,6 +31780,82 @@ needed attention.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
 <t tx="ekr.20230109165907.1">@nosearch</t>
+<t tx="ekr.20230109174650.1">"""Report broken links at https://leo-editor.github.io/leo-editor/
+
+Adapted from https://brianli.com/2021/06/how-to-find-broken-links-with-python/
+
+pip install beautifulsoup4
+
+https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+
+This script has two parts:
+- find_broken_web_links:     Find broken links on Leo's web site.
+- find_borken_outline_links: Find broken links in this file.
+"""
+# To do:
+# - Recursively search the entire website.
+# - create Leo commands for each part of this script.
+
+g.cls()
+import requests
+import time
+from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor
+
+root_domain = 'https://leo-editor.github.io/leo-editor/'
+
+@others  # define helpers
+    
+t1 = time.process_time()
+if 1:
+    url = f"{root_domain}/index.html"
+    links, broken_links = find_broken_web_links(url)
+else:
+    links, broken_links = find_broken_outline_links()
+t2 = time.process_time()
+
+if 0:
+    g.printObj(links, tag=f"{len(links)} top-level links")
+
+for z in broken_links:
+    g.es_print(f"Bad link: {z}")
+
+n1, n2 = len(links), len(broken_links)
+g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken in {t2-t1:5.2} sec.")
+</t>
+<t tx="ekr.20230109174708.1"></t>
+<t tx="ekr.20230109175335.1">def find_broken_web_links(url):
+
+    # Make request to URL.        
+    data = requests.get(url).text
+
+    # Parse HTML from request.
+    soup = BeautifulSoup(data, features="html.parser")
+
+    # Create a list containing all links with the root domain.
+    links = sorted(list(set([
+        link.get("href") for link in soup.find_all("a")
+        # if f"{root_domain}" in link.get("href")
+    ])))
+    
+    if 1:
+        g.printObj(links, tag='links')
+        g.es_print('Validating...')
+
+    # Loop through links checking for 404 responses, and append to list.
+    broken_links = []
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        executor.map(_validate_url, links)
+        
+    return links, broken_links</t>
+<t tx="ekr.20230109175359.1">def find_broken_outline_links():
+    pass</t>
+<t tx="ekr.20230109181501.1">def _validate_url(url):
+    r = requests.head(url)
+    if r.status_code == 404:
+        broken_links.append(url)
+</t>
+<t tx="ekr.20230109182936.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

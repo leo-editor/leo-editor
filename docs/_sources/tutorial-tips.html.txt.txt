@@ -161,7 +161,7 @@ button using Ctrl-P.
 Ctrl-click urls and unls
 ************************
 
-Clicking a url, such as https://www.leoeditor.com/ will open the link in your default browser.
+Clicking a url, such as https://leo-editor.github.io/leo-editor/ will open the link in your default browser.
 
 Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
 UNL's have the form:

@@ -1130,17 +1130,17 @@ Help commands
         help-for-scripting
 
 ``open-online-home``
-    Opens Leo's home page at http://leoeditor.com.
+    Opens Leo's home page at https://leo-editor.github.io/leo-editor/.
 ``open-online-toc``
-    Opens Leo's table of contents at http://leoeditor.com/leo_toc.html.
+    Opens Leo's table of contents at https://leo-editor.github.io/leo-editor/leo_toc.html.
 ``open-online-tutorials``
-    Opens Leo's tutorials page at http://leoeditor.com/tutorial.html.
+    Opens Leo's tutorials page at https://leo-editor.github.io/leo-editor/tutorial.html.
 ``open-online-videos``
-    Opens Leo's video page at http://leoeditor.com/screencasts.html.
+    Opens Leo's video page at https://leo-editor.github.io/leo-editor/screencasts.html.
 ``open-quickstart-leo``
     Opens Leo's quickstart guide in a new tab or window.
 ``open-users-guide``
-    Opens Leo's Users Guide at http://leoeditor.com/usersguide.html.
+    Opens Leo's Users Guide at https://leo-editor.github.io/leo-editor/usersguide.html.
 
 Language conversion commands
 ****************************

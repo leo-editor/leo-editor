@@ -62,26 +62,19 @@ Here are the basics of debugging with Leo:
 
 **g.pdb**
 
-`g.pdb()` invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
-
-**Using `@`button/command nodes as a testing framework**
-
-This is the so-called stupendous Aha:
-http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter
-This can save you a lot of time.
+`g.pdb()` invokes python's pdb debugger, https://docs.python.org/3/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb when g.trace doesn't tell me enough.
 
 Lesson 3: Running unit tests
 ++++++++++++++++++++++++++++
 
 .. https://github.com/leo-editor/leo-editor/issues/837
 
-​All devs must run all unit tests before commit anything. Here's how:
+​All devs must run all unit tests before commit anything. Here's how::
 
-- Open leo/test/unitTest.leo in a console.
-- The "Active Unit Tests" node should already be selected. If not, select it.
-- Do Alt-4. It is bound in the file to run-selected-unit-tests-locally.
+    cd <path to>leo-editor
+    python -m unittest %*
 
-**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on leo-editor.
+**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *new* unit tests to fail.  If in doubt, ask on leo-editor.
 
 Lesson 4: Use issues as an programming notebook
 +++++++++++++++++++++++++++++++++++++++++++++++

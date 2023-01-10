@@ -373,7 +373,7 @@ Highlights
 #488: Created a console gui for Leo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A new chapter in Leo's documentation: http://leoeditor.com/console-gui.html
+A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor//console-gui.html
 
 https://github.com/leo-editor/leo-editor/issues/488
 
@@ -810,7 +810,7 @@ Highlights
     @clean outlines create external files without sentinels.
     Leo regularly checks the integrity of the outline.
     Up/Down arrows in the minibuffer cycle though command history.
-    http://leoeditor.com/load-leo.html displays .leo files in the browser.
+    load-leo.html displays .leo files in the browser.
     Leo now honors @language inside @doc parts.
     @data nodes can now be composed from a tree of nodes.
         This feature appeared in Leo 5.0, but was not documented.
@@ -852,7 +852,7 @@ The Mulder/Ream update algorithm
 
 Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
 
-http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+https://leo-editor.github.io/leo-editor/appendices.html#the-mulder-ream-update-algorithm
 
 What's new in Leo 5.0
 *********************
@@ -1549,7 +1549,7 @@ Highlights
     Multiple editors in Leo's body pane
     A new colorizer plugin controlled by jEdit language description files
     Search commands now support regex replace patterns
-    Support for external debuggers: http://leoeditor.com/debuggers.html
+    Support for external debuggers: https://leo-editor.github.io/leo-editor/debuggers.html
 
 Commands
 ^^^^^^^^
