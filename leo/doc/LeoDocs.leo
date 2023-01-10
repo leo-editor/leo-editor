@@ -2397,6 +2397,13 @@
 <v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
 <v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (home page)</vh>
+<v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
+<v t="ekr.20131005151401.16117"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
+<v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
+<v t="ekr.20130924043646.21624"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
+<v t="ekr.20150414224436.1"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20230110034104.1"><vh>--- temp data</vh>
 <v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
 <v t="ekr.20050831195449"></v>
@@ -8939,6 +8946,16 @@ function search(event) {
 &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
 
 </t>
+<t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
+
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: Test 1&lt;/h1&gt;
+    &lt;&lt; Leo is... &gt;&gt;
+    &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
+    &lt;&lt; embed leovue demo &gt;&gt;
+    &lt;&lt; screenshot &gt;&gt;
+    &lt;&lt; embed leo-editor &gt;&gt;
+&lt;/div&gt;
+</t>
 <t tx="ekr.20100821182153.4343">######
 Slides
 ######
@@ -11959,6 +11976,42 @@ if changed:
     c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
     c.redraw()
 </t>
+<t tx="ekr.20111019104425.15904">&lt;p&gt;&lt;blockquote&gt;
+  "Leo is a revolutionary step in the right direction for programming."&amp;#8213;Brian Takita
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt; "Leo is the best IDE that I have had the pleasure to use. It
+has totally changed not only the way that I program, but also the way that
+I store and organize all of the information that I need for the job that I
+do."&amp;#8213;Ian Mulvany
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+"When first I opened Leo, it was out of curiosity. But having used it, I'll
+never go back. They'll have to pry Leo out of my cold, dead fingers!"&amp;#8213;Travers A. Hough
+&lt;/blockquote&gt;
+&lt;p&gt;
+Leo is a
+&lt;a href="https://en.wikipedia.org/wiki/Personal_information_manager"&gt;PIM&lt;/a&gt;, 
+&lt;a href="https://en.wikipedia.org/wiki/Integrated_development_environment"&gt;IDE&lt;/a&gt;
+and outliner that accelerates the work flow of programmers, authors and web designers.
+&lt;em&gt;Outline nodes may appear in more than one place&lt;/em&gt;, allowing multiple organizations of data within a single outline.
+
+&lt;p&gt;
+  &lt;a href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+    &lt;strong&gt;Joe Orr's must see demo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="preface.html"&gt;
+    &lt;strong&gt;A brief summary of Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="testimonials.html"&gt;
+    &lt;strong&gt;What people are saying about Leo&lt;/strong&gt;&lt;/a&gt;.
+  &lt;br&gt;
+  &lt;a href="tutorial.html"&gt;
+    &lt;strong&gt;Learn about Leo in 20 minutes&lt;/strong&gt;&lt;/a&gt;.
+&lt;/p&gt;
+
+</t>
 <t tx="ekr.20111028195854.16608">&lt;style type="text/css" media="all"&gt;
 
 &lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
@@ -14314,6 +14367,12 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20130924043646.21624">&lt;p&gt;Here is reduced screenshot of Leo's main window. You can view the full-sized image using something like "view image" in your browser.&lt;/p&gt;
+
+&lt;img class="screenshot"
+    src="screen-shots/DarkScreenShot.png"
+    alt="ScreenShot"/&gt;
+</t>
 <t tx="ekr.20131001045038.17448">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream on IPython developer mailing list: http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
 
 I was using FreeMind as mind mapping software, and so I had an immediate use case for Leo (which, incidentally, is superior to FreeMind as mind mapper). The wheels started rolling, I got obsessed with the power of this concept (everything clicked together), and Edwards excitement paralleled mine. Everything was mind-bogglingly easy/trivial, something that is typical of all promising technologies.
@@ -14717,6 +14776,22 @@ Please take a few moments to experiment with clones:
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
 A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
+</t>
+<t tx="ekr.20131005151401.16117">&lt;p&gt;
+&lt;strong&gt;Ask us anything&lt;/strong&gt; at the
+&lt;a href="http://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
+&lt;br&gt;
+&lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
+  &lt;strong&gt;Send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
+&lt;/p&gt;
+
+&lt;!--
+&lt;p&gt;Here are the most recent discussions...&lt;/p&gt;
+&lt;script language="JavaScript"
+  src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&amp;chan=title&amp;num=5&amp;desc=0&amp;date=y&amp;targ=y"
+  type="text/javascript"&gt;
+&lt;/script&gt;
+--&gt;
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
@@ -19839,6 +19914,22 @@ There have been some posts about the recovered nodes, comparing the old and new 
 There has been some discussion of @auto v. @clean. Preference is obviously a matter of taste. I will say that for me the fact that node headlines are unaffected by external file changes is a feature not a problem since I place notes in the headlines that I want preserved when I edit files externally. Yes, if the node headlines are the method names then they won't be updated if an external edit changes a method name but this was true of @file as well.
 
 The ability to work on projects with people who don't have Leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with Leo sentinels (unless the potential cloner is a Leo loyalist). The one downside to no sentinels--there is no evidence that Leo is being used but I think that raises the broader question of marketing Leo, which I certainly believe will be aided significantly by being able to take advantage of Leo without sentinels in external files.--- Steve Zatz
+</t>
+<t tx="ekr.20150414224436.1">&lt;!-- This works --
+&lt;iframe id="forum_embed"
+    src="javascript:void(0)"
+    scrolling="yes"
+    frameborder="1"
+    width="900"
+    height="700"&gt;
+&lt;/iframe&gt;
+&lt;script type="text/javascript"&gt;
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/leo-editor'
+     + '&amp;showsearch=true&amp;showpopout=true&amp;showtabs=true'
+     + '&amp;parenturl=' + encodeURIComponent(window.location.href);
+&lt;/script&gt;
+--&gt;
 </t>
 <t tx="ekr.20150415105956.1">clone-find-all-flattened often includes clones of nodes whose location is unclear.  No problem! Just select the mysterious node and do Alt-N (goto-next-clone). Leo will select the next clone of that node, wrapping the search as necessary.  One or two Alt-N takes me to the "real" node, the node having an ancestor @&lt;file&gt; node.
 
@@ -28980,6 +29071,16 @@ described when refactoring code.
 
 Neither tags, nor filters, nor refactoring packages can emulate the
 Leonine way of refactoring.</t>
+<t tx="ekr.20190415091241.1">&lt;!-- &lt;p&gt; --&gt;
+&lt;!-- The following is --&gt;
+&lt;!-- &lt;a class="reference external" href="https://kaleguy.github.io/leovue/#/t/2/"&gt; --&gt;
+&lt;!-- Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;: --&gt;
+&lt;!-- &lt;/p&gt; --&gt;
+&lt;!-- &lt;iframe --&gt;
+  &lt;!-- src="https://chrisgeorge.ca/leovue/#/t/1" --&gt;
+  &lt;!-- style="height:768px;width:1024px" &gt; --&gt;
+&lt;!-- &lt;/iframe&gt; --&gt;
+</t>
 <t tx="ekr.20190422181351.1">To specify a color, say for comment1, for *all* languages, create an @color node::
 
     @color comment1 = blue
