@@ -443,7 +443,7 @@
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@clean ../../docs/index.html</vh>
-<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
+<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head contents &gt;&gt;</vh>
 <v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
 <v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
 <v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
@@ -452,7 +452,7 @@
 <v t="ekr.20230110051147.1"><vh>&lt;&lt; scale screen-shot to fit parent container &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20100808060203.4276"><vh>&lt;&lt; div top nav &gt;&gt;</vh></v>
-<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (version)</vh>
+<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt;</vh>
 <v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
 <v t="ekr.20131005151401.16117"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
 <v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
@@ -8901,7 +8901,7 @@ Nevertheless, these sentinels can be useful in special situations.
 &lt;head&gt;
   &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
   &lt;title&gt;Leo's Home Page&lt;/title&gt;
-  &lt;&lt; head &gt;&gt;
+  &lt;&lt; head contents &gt;&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;&lt; div top nav &gt;&gt;
@@ -9068,7 +9068,7 @@ and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
 </t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: V7&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s New Home Page&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -32123,11 +32123,6 @@ and outliner that accelerates the work flow of programmers, authors and web desi
 <t tx="ekr.20230110042146.1">&lt;script type="text/javascript"&gt;
 function search(event) {
   if (event === null || (event.keyCode || event.which) === 13) {
-    &lt;!-- OLD
-    'http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value
-    'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
-    'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
-    --&gt;
     window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value);
   }
 }
