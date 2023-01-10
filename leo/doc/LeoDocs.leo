@@ -442,7 +442,28 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@clean ../../docs/index.html</vh>
+<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
+<v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
+<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
+<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20100808060203.4276"><vh>&lt;&lt; div top nav &gt;&gt;</vh></v>
+<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (version)</vh>
+<v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
+<v t="ekr.20131005151401.16117"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
+<v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
+<v t="ekr.20130924043646.21624"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
+<v t="ekr.20150414224436.1"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20100808060203.4282"><vh>&lt;&lt; sidebar &gt;&gt; (home page)</vh>
+<v t="ekr.20100808060203.4283"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
+<v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20100808060203.4277"><vh>&lt;&lt; div bottom nav &gt;&gt;</vh></v>
+<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
+</v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -2393,23 +2414,13 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
-<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (version)</vh>
-<v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
-<v t="ekr.20131005151401.16117"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
-<v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
-<v t="ekr.20130924043646.21624"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
-<v t="ekr.20150414224436.1"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
-<v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
-<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
-<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20100808060203.4286"></v>
+<v t="ekr.20100808060203.4274"></v>
 <v t="ekr.20230110042146.1"></v>
 <v t="ekr.20230110034104.1"><vh>--- temp data</vh>
 <v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
 <v t="ekr.20050831195449"></v>
-<v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
+<v t="ekr.20110518101739.18154"></v>
 <v t="ekr.20100808060203.4274"></v>
 <v t="ekr.20170215075612.1"></v>
 <v t="ekr.20220218121757.1"></v>
@@ -2464,7 +2475,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8884,6 +8894,30 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
+<t tx="ekr.20100808060203.4273">@language html
+@tabwidth -2
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+  &lt;&lt; head &gt;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;&lt; div top nav &gt;&gt;
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;&lt; div main section &gt;&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;&lt; sidebar &gt;&gt;
+    &lt;div class="clearer"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;&lt; div bottom nav &gt;&gt;
+  &lt;&lt; div footer &gt;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
 &lt;title&gt;Leo's Home Page&lt;/title&gt;
@@ -8932,9 +8966,132 @@ var DOCUMENTATION_OPTIONS = {
 &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
 
 </t>
+<t tx="ekr.20100808060203.4276">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.2 documentation&lt;/a&gt;&lt;/li&gt;
+    &lt;!--  &amp;raquo; --&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4277">&lt;div class="related"&gt;
+  &lt;h3&gt;Navigation&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li class="right" style="margin-right: 10px"&gt;
+      &lt;a href="genindex.html" title="General Index"
+         &gt;index&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="glossary.html" title="Glossary"
+         accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+    &lt;li class="right" &gt;
+      &lt;a href="leo_toc.html" title="Users Guide"
+         &gt;contents&lt;/a&gt; |&lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 6.7.2 documentation&lt;/a&gt;&lt;/li&gt; 
+  &lt;/ul&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2022, Edward K. Ream.
+  Last updated on January 9, 2023
+  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 6.1.2&lt;/a&gt;.
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4282">&lt;div class="sphinxsidebar"&gt;
+    &lt;div class="sphinxsidebarwrapper"&gt;
+        &lt;&lt; sidebar contents &gt;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20100808060203.4283">@language html
+
+&lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+  &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: Click the lion!
+&lt;/p&gt;
+&lt;p&gt;
+&lt;form&gt;
+  &lt;input type="button"
+    style="background-color:#6CA6CD;"
+    value="Download Leo"
+    onClick="window.location.href='download.html'"&gt;
+&lt;/form&gt;
+&lt;/p&gt;
+
+&lt;a class="reference external"
+  href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+  Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="tutorial.html"&gt;
+  Tutorial&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="leo_toc.html"&gt;
+  Documentation&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screen-shots.html"&gt;
+  Screen shots&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screencasts.html"&gt;
+  Videos&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="testimonials.html"&gt;
+  What people are saying&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="slides.html"&gt;
+  Tutorial Slide Shows&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1064"&gt;
+  Leo's Public To Do List&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&amp;uio=d4"&gt;
+  #leo IRC&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+  Leo at Google Groups&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor"&gt;
+  Leo at GitHub&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/snippets"&gt;
+  Code Snippets&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues"&gt;
+  Report a bug&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="leoLinks.html"&gt;
+  More links...&lt;/a&gt;&lt;br&gt;
+  
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div id="searchbox" style=""&gt;
+    &lt;input id='q' type="text" name="q" onkeypress="search(event)"&gt;
+  &lt;div&gt;&lt;button onclick="search(null)"&gt;Google Search&lt;/button&gt;&lt;/div&gt;
+  &lt;div class="searchtip" style="font-size: 90%"&gt;
+    &lt;!-- Use quotes for "@file" and similar symbols. --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Written by &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;br&gt;
+and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
+&lt;&lt; flattr icon &gt;&gt;
+&lt;/p&gt;
+</t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: V2&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: V3&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -31993,8 +32150,9 @@ function search(event) {
     
     &lt;!-- FAILS
     'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
-    --&gt;
     'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
+    --&gt;
+    'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value
     );
   }
 }
