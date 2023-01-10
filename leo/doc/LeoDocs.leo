@@ -2451,8 +2451,7 @@
 <v t="ekr.20150220115528.4"></v>
 <v t="ekr.20101115152915.4937"></v>
 </v>
-<v t="ekr.20230110032152.1"><vh>COPY (6.7.1) Home page</vh>
-<v t="ekr.20230110032152.2"><vh>COPY html/index.html</vh>
+<v t="ekr.20230110032152.2"><vh>COPY (6.7.1) html/index.html</vh>
 <v t="ekr.20230110032152.3"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
 <v t="ekr.20230110032152.4"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
 <v t="ekr.20230110032152.5"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
@@ -2472,7 +2471,6 @@
 </v>
 <v t="ekr.20230110032152.16"><vh>&lt;&lt; div bottom nav &gt;&gt;</vh></v>
 <v t="ekr.20230110032152.17"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
-</v>
 </v>
 </v>
 </vnodes>
@@ -9091,7 +9089,7 @@ and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
 </t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: V3&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: V4&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -31793,7 +31791,6 @@ needed attention.
   dubious. Default: None.</t>
 <t tx="ekr.20230109165907.1">@nosearch</t>
 <t tx="ekr.20230110030732.1"></t>
-<t tx="ekr.20230110032152.1"></t>
 <t tx="ekr.20230110032152.10">&lt;!-- &lt;p&gt; --&gt;
 &lt;!-- The following is --&gt;
 &lt;!-- &lt;a class="reference external" href="https://kaleguy.github.io/leovue/#/t/2/"&gt; --&gt;
@@ -32143,17 +32140,12 @@ and outliner that accelerates the work flow of programmers, authors and web desi
 <t tx="ekr.20230110042146.1">&lt;script type="text/javascript"&gt;
 function search(event) {
   if (event === null || (event.keyCode || event.which) === 13) {
-    window.open(
     &lt;!-- OLD
     'http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value
-    --&gt;
-    
-    &lt;!-- FAILS
     'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
     'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
     --&gt;
-    'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value
-    );
+    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value);
   }
 }
 &lt;/script&gt;
