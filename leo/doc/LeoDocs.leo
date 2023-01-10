@@ -9089,7 +9089,7 @@ and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
 </t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: V4&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: V5&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -32145,7 +32145,7 @@ function search(event) {
     'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
     'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
     --&gt;
-    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value);
+    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/+'+document.getElementById('q').value);
   }
 }
 &lt;/script&gt;
