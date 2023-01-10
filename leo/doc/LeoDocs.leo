@@ -447,6 +447,9 @@
 <v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
 <v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
 <v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
+<v t="ekr.20230110050910.1"><vh>&lt;&lt; search box &gt;&gt;</vh></v>
+<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
+<v t="ekr.20230110051147.1"><vh>&lt;&lt; scale screen-shot to fit parent container &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20100808060203.4276"><vh>&lt;&lt; div top nav &gt;&gt;</vh></v>
 <v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (version)</vh>
@@ -8896,6 +8899,8 @@ Nevertheless, these sentinels can be useful in special situations.
 @tabwidth -2
 &lt;!DOCTYPE html&gt;
 &lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;title&gt;Leo's Home Page&lt;/title&gt;
   &lt;&lt; head &gt;&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -8916,53 +8921,27 @@ Nevertheless, these sentinels can be useful in special situations.
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-
-&lt;title&gt;Leo's Home Page&lt;/title&gt;
-&lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
+<t tx="ekr.20100808060203.4274">&lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
-&lt;!-- scale screen-shot to fit parent container --&gt;
-&lt;style type="text/css"&gt;
-img {
-    max-width:50%; max-height:50%;
-}
-&lt;/style&gt;
-
-&lt;script type="text/javascript"&gt;
-var DOCUMENTATION_OPTIONS = {
-  URL_ROOT:    './',
-  VERSION:     '6.7.2',
-  COLLAPSE_INDEX: false,
-  FILE_SUFFIX: '.html',
-  HAS_SOURCE:  true,
-  SOURCELINK_SUFFIX: '.txt'
-};
-&lt;/script&gt;
+&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;
 
 &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/underscore.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/sidebar.js"&gt;&lt;/script&gt;
 
+&lt;&lt; scale screen-shot to fit parent container &gt;&gt;
 &lt;&lt; search script &gt;&gt;
-&lt;link rel="search" title="Search" href="search.html" /&gt;
-&lt;div id="searchbox" style="display: none" role="search"&gt;
-  &lt;h3&gt;Quick search&lt;/h3&gt;
-    &lt;form class="search" action="search.html" method="get"&gt;
-      &lt;div&gt;&lt;input type="text" name="q" /&gt;&lt;/div&gt;
-      &lt;div&gt;&lt;input type="submit" value="Go" /&gt;&lt;/div&gt;
-      &lt;input type="hidden" name="check_keywords" value="yes" /&gt;
-      &lt;input type="hidden" name="area" value="default" /&gt;
-    &lt;/form&gt;
-&lt;/div&gt;
+&lt;&lt; search box &gt;&gt;
 
+&lt;!-- Disabled --&gt;
 &lt;&lt; flattr head &gt;&gt;
 &lt;&lt; feed2js stylesheet &gt;&gt;
+
 &lt;link rel="top" title="Leo 6.7.1 documentation" href="index.html" /&gt;
 &lt;link rel="next" title="Table of Contents" href="leo_toc.html" /&gt;
 &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
-
 </t>
 <t tx="ekr.20100808060203.4276">&lt;div class="related"&gt;
   &lt;h3&gt;Navigation&lt;/h3&gt;
@@ -9089,7 +9068,7 @@ and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
 </t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: V5&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: V6&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -11520,17 +11499,19 @@ To install Python, see http://python.org.
     &lt;/noscript&gt;
 --&gt;
 </t>
-<t tx="ekr.20110518101739.18155">&lt;script type="text/javascript"&gt;
-/* &lt;![CDATA[ */
-    (function() {
-        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        t.parentNode.insertBefore(s, t);
-    })();
-/* ]]&gt; */
-&lt;/script&gt;
+<t tx="ekr.20110518101739.18155">&lt;!--
+    &lt;script type="text/javascript"&gt;
+    /* &lt;![CDATA[ */
+        (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+            t.parentNode.insertBefore(s, t);
+        })();
+    /* ]]&gt; */
+    &lt;/script&gt;
+--&gt;
 </t>
 <t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
@@ -12153,27 +12134,29 @@ and outliner that accelerates the work flow of programmers, authors and web desi
 &lt;/p&gt;
 
 </t>
-<t tx="ekr.20111028195854.16608">&lt;style type="text/css" media="all"&gt;
+<t tx="ekr.20111028195854.16608">&lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
+&lt;!--
+    &lt;style type="text/css" media="all"&gt;
 
-&lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
 
-.rss_box {
-    width:   0px;
-    padding: 0px;
-    border:  0px solid white;
-    margin:  0px;
-}
+    .rss_box {
+        width:   0px;
+        padding: 0px;
+        border:  0px solid white;
+        margin:  0px;
+    }
 
-.rss_title {
-    visibility:hidden;
-    line-height: 0px;
-}
+    .rss_title {
+        visibility:hidden;
+        line-height: 0px;
+    }
 
-.rss_items {
-    font-size: 80%;
-}
+    .rss_items {
+        font-size: 80%;
+    }
 
-&lt;/style&gt;
+    &lt;/style&gt;
+--&gt;
 </t>
 <t tx="ekr.20111108052738.5507">run-marked-unit-tests-externally = Alt-4
 run-all-unit-tests-externally = Alt-5
@@ -32145,10 +32128,39 @@ function search(event) {
     'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
     'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
     --&gt;
-    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/+'+document.getElementById('q').value);
+    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor '+document.getElementById('q').value);
   }
 }
 &lt;/script&gt;
+</t>
+<t tx="ekr.20230110050910.1">&lt;link rel="search" title="Search" href="search.html" /&gt;
+&lt;div id="searchbox" style="display: none" role="search"&gt;
+  &lt;h3&gt;Quick search&lt;/h3&gt;
+    &lt;form class="search" action="search.html" method="get"&gt;
+      &lt;div&gt;&lt;input type="text" name="q" /&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;input type="submit" value="Go" /&gt;&lt;/div&gt;
+      &lt;input type="hidden" name="check_keywords" value="yes" /&gt;
+      &lt;input type="hidden" name="area" value="default" /&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230110051126.1">
+&lt;script type="text/javascript"&gt;
+var DOCUMENTATION_OPTIONS = {
+  URL_ROOT:    './',
+  VERSION:     '6.7.2',
+  COLLAPSE_INDEX: false,
+  FILE_SUFFIX: '.html',
+  HAS_SOURCE:  true,
+  SOURCELINK_SUFFIX: '.txt'
+};
+&lt;/script&gt;
+</t>
+<t tx="ekr.20230110051147.1">&lt;style type="text/css"&gt;
+img {
+    max-width:50%; max-height:50%;
+}
+&lt;/style&gt;
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

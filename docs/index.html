@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
   <title>Leo's Home Page</title>
   <link rel="stylesheet" href="_static/classic.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
-  <!-- scale screen-shot to fit parent container -->
-  <style type="text/css">
-  img {
-      max-width:50%; max-height:50%;
-  }
-  </style>
 
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
@@ -29,6 +22,11 @@
   <script type="text/javascript" src="_static/doctools.js"></script>
   <script type="text/javascript" src="_static/sidebar.js"></script>
 
+  <style type="text/css">
+  img {
+      max-width:50%; max-height:50%;
+  }
+  </style>
   <script type="text/javascript">
   function search(event) {
     if (event === null || (event.keyCode || event.which) === 13) {
@@ -37,7 +35,7 @@
       'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
       'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
       -->
-      window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/+'+document.getElementById('q').value);
+      window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor '+document.getElementById('q').value);
     }
   }
   </script>
@@ -52,42 +50,47 @@
       </form>
   </div>
 
-  <script type="text/javascript">
-  /* <![CDATA[ */
-      (function() {
-          var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-          s.type = 'text/javascript';
-          s.async = true;
-          s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-          t.parentNode.insertBefore(s, t);
-      })();
-  /* ]]> */
-  </script>
-  <style type="text/css" media="all">
-
+  <!-- Disabled -->
+  <!--
+      <script type="text/javascript">
+      /* <![CDATA[ */
+          (function() {
+              var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+              s.type = 'text/javascript';
+              s.async = true;
+              s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+              t.parentNode.insertBefore(s, t);
+          })();
+      /* ]]> */
+      </script>
+  -->
   <!-- See: http://feed2js.org/index.php?s=style -->
+  <!--
+      <style type="text/css" media="all">
 
-  .rss_box {
-      width:   0px;
-      padding: 0px;
-      border:  0px solid white;
-      margin:  0px;
-  }
 
-  .rss_title {
-      visibility:hidden;
-      line-height: 0px;
-  }
+      .rss_box {
+          width:   0px;
+          padding: 0px;
+          border:  0px solid white;
+          margin:  0px;
+      }
 
-  .rss_items {
-      font-size: 80%;
-  }
+      .rss_title {
+          visibility:hidden;
+          line-height: 0px;
+      }
 
-  </style>
+      .rss_items {
+          font-size: 80%;
+      }
+
+      </style>
+  -->
+
   <link rel="top" title="Leo 6.7.1 documentation" href="index.html" />
   <link rel="next" title="Table of Contents" href="leo_toc.html" />
   <link rel="Users Guide" title="Leo&#8217;s Users Guide" href="leo_toc.html" />
-
 </head>
 <body>
   <div class="related">
@@ -112,7 +115,7 @@
         <div class="body">
           <div class="section" id="Leo&#8217;s New Home page">
 
-              <h1>Leo&#8217;s Home Page: V5</h1>
+              <h1>Leo&#8217;s Home Page: V6</h1>
               <p><blockquote>
                 "Leo is a revolutionary step in the right direction for programming."&#8213;Brian Takita
               </blockquote>
