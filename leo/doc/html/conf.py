@@ -184,7 +184,7 @@ html_use_smartypants = True
 
 html_sidebars = {
 
-   '**': ['relations.html','searchbox.html',]
+   '**': ['relations.html', 'searchbox.html',]
 
    # 'localtoc.html',
    # 'globaltoc.html',

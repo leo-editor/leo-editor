@@ -30,31 +30,31 @@
   };
   </script>
 
-
-  <script type="text/javascript">
-  function search(event) {
-    if (event === null || (event.keyCode || event.which) === 13) {
-    
-    
-      <!-- OLD
-      window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
-      -->
-      
-      <!-- FAILS
-      window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
-      -->
-      window.open('http://www.google.com/search?q=site:leo-editor.github.io+/'+document.getElementById('q').value);
-    }
-  }
-  </script>
-
   <script type="text/javascript" src="_static/jquery.js"></script>
   <script type="text/javascript" src="_static/underscore.js"></script>
   <script type="text/javascript" src="_static/doctools.js"></script>
   <script type="text/javascript" src="_static/sidebar.js"></script>
 
+  <!--@+<< search script >>-->
+  <!--@+node:ekr.20230110042146.1: *3* << search script >>-->
+  <script type="text/javascript">
+  function search(event) {
+    if (event === null || (event.keyCode || event.which) === 13) {
+      window.open(
+      <!-- OLD
+      'http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value
+      -->
+      
+      <!-- FAILS
+      'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
+      -->
+      'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
+      );
+    }
+  }
+  </script>
+  <!--@-<< search script >>-->
   <link rel="search" title="Search" href="search.html" />
-
   <div id="searchbox" style="display: none" role="search">
     <h3>Quick search</h3>
       <form class="search" action="search.html" method="get">
@@ -134,10 +134,10 @@
       <div class="bodywrapper">
         <div class="body">
           <!--@+<< div main section >>-->
-          <!--@+node:ekr.20100808060203.4286: ** << div main section >> (home page)-->
+          <!--@+node:ekr.20100808060203.4286: ** << div main section >> (version)-->
           <div class="section" id="Leo&#8217;s New Home page">
 
-              <h1>Leo&#8217;s Home Page: Test 1</h1>
+              <h1>Leo&#8217;s Home Page: V2</h1>
               <!--@+<< Leo is... >>-->
               <!--@+node:ekr.20111019104425.15904: *3* << Leo is... >>-->
               <p><blockquote>

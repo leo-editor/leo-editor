@@ -2393,17 +2393,19 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
-<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
-<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
-<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (home page)</vh>
+<v t="ekr.20100808060203.4286"><vh>&lt;&lt; div main section &gt;&gt; (version)</vh>
 <v t="ekr.20111019104425.15904"><vh>&lt;&lt; Leo is... &gt;&gt;</vh></v>
 <v t="ekr.20131005151401.16117"><vh>&lt;&lt; Leo Google group &amp; postcard &gt;&gt;</vh></v>
 <v t="ekr.20190415091241.1"><vh>&lt;&lt; embed leovue demo &gt;&gt;</vh></v>
 <v t="ekr.20130924043646.21624"><vh>&lt;&lt; screenshot &gt;&gt;</vh></v>
 <v t="ekr.20150414224436.1"><vh>&lt;&lt; embed leo-editor &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head &gt;&gt; (home page)</vh>
+<v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
+<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
+<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20230110042146.1"></v>
 <v t="ekr.20230110034104.1"><vh>--- temp data</vh>
 <v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
 <v t="ekr.20050831195449"></v>
@@ -2462,6 +2464,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8905,30 +8908,13 @@ var DOCUMENTATION_OPTIONS = {
 };
 &lt;/script&gt;
 
-&lt;script type="text/javascript"&gt;
-function search(event) {
-  if (event === null || (event.keyCode || event.which) === 13) {
-  
-  
-    &lt;!-- OLD
-    window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
-    --&gt;
-    
-    &lt;!-- FAILS
-    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
-    --&gt;
-    window.open('http://www.google.com/search?q=site:leo-editor.github.io/'+document.getElementById('q').value);
-  }
-}
-&lt;/script&gt;
-
 &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/underscore.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="_static/sidebar.js"&gt;&lt;/script&gt;
 
+&lt;&lt; search script &gt;&gt;
 &lt;link rel="search" title="Search" href="search.html" /&gt;
-
 &lt;div id="searchbox" style="display: none" role="search"&gt;
   &lt;h3&gt;Quick search&lt;/h3&gt;
     &lt;form class="search" action="search.html" method="get"&gt;
@@ -8948,7 +8934,7 @@ function search(event) {
 </t>
 <t tx="ekr.20100808060203.4286">&lt;div class="section" id="Leo&amp;#8217;s New Home page"&gt;
 
-    &lt;h1&gt;Leo&amp;#8217;s Home Page: Test 1&lt;/h1&gt;
+    &lt;h1&gt;Leo&amp;#8217;s Home Page: V2&lt;/h1&gt;
     &lt;&lt; Leo is... &gt;&gt;
     &lt;&lt; Leo Google group &amp; postcard &gt;&gt;
     &lt;&lt; embed leovue demo &gt;&gt;
@@ -31997,6 +31983,23 @@ and outliner that accelerates the work flow of programmers, authors and web desi
 --&gt;
 </t>
 <t tx="ekr.20230110034104.1"></t>
+<t tx="ekr.20230110042146.1">&lt;script type="text/javascript"&gt;
+function search(event) {
+  if (event === null || (event.keyCode || event.which) === 13) {
+    window.open(
+    &lt;!-- OLD
+    'http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value
+    --&gt;
+    
+    &lt;!-- FAILS
+    'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value
+    --&gt;
+    'http://www.google.com/search?q=site:leo-editor.github.io+'+document.getElementById('q').value
+    );
+  }
+}
+&lt;/script&gt;
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
