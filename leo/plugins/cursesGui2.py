@@ -1819,11 +1819,11 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
     #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
     def focus_to_body(self, c: Cmdr) -> None:
-        """Put focus in minibuffer text widget."""
+        """Put focus in the body pane."""
         self.set_focus(c, c.frame.body)
     #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
     def focus_to_head(self, c: Cmdr, p: Position) -> None:
-        """Put focus in minibuffer text widget."""
+        """Put focus in the headline."""
         self.set_focus(c, c.frame.tree)
     #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c: Cmdr) -> None:
