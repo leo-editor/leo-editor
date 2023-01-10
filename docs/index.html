@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <head>
-  <!-- changed 1: 2023/01/10 -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-  <title>Leo's Home Page (GitHub Pages version)</title>
+  <title>Leo's Home Page</title>
   <link rel="stylesheet" href="_static/classic.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
@@ -28,8 +27,16 @@
   <script type="text/javascript">
   function search(event) {
     if (event === null || (event.keyCode || event.which) === 13) {
-      window.open(
-          'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
+    
+    
+      <!-- OLD
+      window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+      -->
+      
+      <!-- FAILS
+      window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
+      -->
+      window.open('http://www.google.com/search?q=site:leo-editor.github.io/'+document.getElementById('q').value);
     }
   }
   </script>

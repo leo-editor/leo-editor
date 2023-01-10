@@ -2413,6 +2413,8 @@
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20131005214621.16088"></v>
+<v t="ekr.20100808060203.4274"></v>
+<v t="ekr.20230110034104.1"><vh>--- temp data</vh>
 <v t="ekr.20230109165907.1"><vh>Found 38:leoeditor</vh>
 <v t="ekr.20050831195449"></v>
 <v t="ekr.20110518101739.18154"></v>
@@ -2467,6 +2469,7 @@
 </v>
 <v t="ekr.20230110032152.16"><vh>&lt;&lt; div bottom nav &gt;&gt;</vh></v>
 <v t="ekr.20230110032152.17"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -8892,7 +8895,6 @@ Nevertheless, these sentinels can be useful in special situations.
 @tabwidth -2
 &lt;!DOCTYPE html&gt;
 &lt;head&gt;
-  &lt;!-- changed 1: 2023/01/10 --&gt;
   &lt;&lt; head &gt;&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -8915,7 +8917,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4274">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
 
-&lt;title&gt;Leo's Home Page (GitHub Pages version)&lt;/title&gt;
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
 &lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
 &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
 
@@ -8940,8 +8942,16 @@ var DOCUMENTATION_OPTIONS = {
 &lt;script type="text/javascript"&gt;
 function search(event) {
   if (event === null || (event.keyCode || event.which) === 13) {
-    window.open(
-        'http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
+  
+  
+    &lt;!-- OLD
+    window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+    --&gt;
+    
+    &lt;!-- FAILS
+    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor/'+document.getElementById('q').value);
+    --&gt;
+    window.open('http://www.google.com/search?q=site:leo-editor.github.io/'+document.getElementById('q').value);
   }
 }
 &lt;/script&gt;
@@ -32143,6 +32153,7 @@ and outliner that accelerates the work flow of programmers, authors and web desi
 &lt;/script&gt;
 --&gt;
 </t>
+<t tx="ekr.20230110034104.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
