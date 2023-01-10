@@ -48,7 +48,12 @@
 </v>
 </v>
 <v t="ekr.20131017051340.16847"><vh>Buttons</vh>
-<v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh></v>
+<v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
+<v t="ekr.20230110153045.1"><vh>_validate_url</vh></v>
+<v t="ekr.20230110153304.1"><vh>find_outline_links</vh></v>
+<v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
+<v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
+</v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
 <v t="ekr.20230110152349.1"><vh>@ignore disabled buttons</vh>
 <v t="ekr.20111017085134.16158"><vh> Slideshow Buttons</vh>
@@ -2399,6 +2404,7 @@
 </v>
 </v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31419,22 +31425,32 @@ pip install beautifulsoup4
 
 https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 """
+@language python
 g.cls()
 import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 
-# root_domain = 'leo-editor.github.io/leo-editor/'
 root_domain = 'https://leo-editor.github.io/leo-editor/'
 
+# Define helpers
+@others
 
-def get_broken_links(url):
+links = get_outline_links()
+if 0:
+    url = f"{root_domain}/index.html"
+    links.extend(find_web_links(url))
 
+links = list(set(links))
+g.printObj(links, tag=f"{len(links)} links")
 
-    def _validate_url(url):
-        r = requests.head(url)
-        if r.status_code == 404:
-            broken_links.append(url)
+broken_links = find_broken_links(links)
+n1, n2 = len(links), len(broken_links)
+g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
+</t>
+<t tx="ekr.20230110152349.1"></t>
+<t tx="ekr.20230110153045.1"></t>
+<t tx="ekr.20230110153129.1">def find_web_links(url):
 
     # Make request to URL.        
     data = requests.get(url).text
@@ -31443,31 +31459,49 @@ def get_broken_links(url):
     soup = BeautifulSoup(data, features="html.parser")
 
     # Create a list containing all links with the root domain.
-    links = sorted(list(set([
+    return sorted(list(set([
         link.get("href") for link in soup.find_all("a")
         # if f"{root_domain}" in link.get("href")
     ])))
+</t>
+<t tx="ekr.20230110153304.1">def get_outline_links():
+    
+    links = set()
+    for p in c.all_unique_positions():
+        
+        # Parse HTML in the body.
+        soup = BeautifulSoup(p.b, features="html.parser")
+
+        # Create a list containing all links with the root domain.
+        # links.extend([link.get("href") for link in soup.find_all("a")])
+        for link in soup.find_all("a"):
+            links.add(link.get("href"))
+            # if f"{root_domain}" in link.get("href")
+
+    return sorted(list(links))
+</t>
+<t tx="ekr.20230110153501.1">def find_broken_links(links):
+    
+    broken_links = []
+    suppress = ('&lt;|URL|&gt;',)
+    
+    def validate_url(url):
+        if url in suppress:
+            g.trace(f"Skip: {url}")
+            return
+        r = requests.head(url)
+        if r.status_code == 404:
+            broken_links.append(url)
 
     # Loop through links checking for 404 responses, and append to list.
     broken_links = []
     with ThreadPoolExecutor(max_workers=8) as executor:
-        executor.map(_validate_url, links)
+        executor.map(validate_url, links)
         
-    return links, broken_links
-    
-url = f"{root_domain}/index.html"
-links, broken_links = get_broken_links(url)
-
-if 1:
-    g.printObj(links, tag=f"{len(links)} top-level links")
-
-for link in broken_links:
-    g.es_print(f"Bad link: {link}")
-
-n1, n2 = len(links), len(broken_links)
-g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
+    for link in broken_links:
+        g.es_print(f"Bad link: {link}")
+    return broken_links
 </t>
-<t tx="ekr.20230110152349.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
