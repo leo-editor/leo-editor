@@ -31357,7 +31357,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 This command is specially useful when using @clean nodes in a collaborative
 environment. Leo's @clean update algorithm will update @clean nodes when
 others have added, deleted or moved code, but the update algorithm won't
-assign changed code to the optimal nodes. This script highligts nodes that
+assign changed code to the optimal nodes. This script highlights nodes that
 needed attention.
 
 **Settings**: You can customize the behavior of this command with @data nodes:
@@ -31374,7 +31374,7 @@ needed attention.
 
 - @data check-nodes-ok-prefixes
 
-  The body ot the @data node contains a list of strings, one per line.
+  The body of the @data node contains a list of strings, one per line.
   Headlines starting with any of these strings are not considered dubious.
   The defaults ignore top-level @&lt;file&gt; nodes and marker nodes::
   
@@ -31385,7 +31385,7 @@ needed attention.
 
 - @data check-nodes-suppressions
 
-  The body ot the @data node contains a list of strings, one per line.
+  The body of the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
@@ -31791,7 +31791,7 @@ Here are direct download links for the "master" branch, which rarely changes and
 </t>
 <t tx="tom.20230107235603.1">Title case means that all words start with capital letters.  The
 following script converts the selected body text to title case.  If
-nothing has been selected, the entirecurrent node is converted. The
+nothing has been selected, the entire current node is converted. The
 conversion is undoable::
 
     """Undoably convert selection or body to title case."""
