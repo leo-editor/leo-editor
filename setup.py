@@ -141,13 +141,13 @@ if production:
         version=version,
         author='Edward K. Ream',
         author_email='edreamleo@gmail.com',
-        url='http://leoeditor.com',
+        url='http://leo-editor.github.io/leo-editor',
         license='MIT License',
         description='An IDE, PIM and Outliner',  # becomes 'Summary' in pkg-info
         long_description=long_description,
         long_description_content_type="text/markdown",  # PEP566
         platforms=['Linux', 'Windows', 'MacOS'],
-        download_url='http://leoeditor.com/download.html',
+        download_url='http://leo-editor.github.io/leo-editor/download.html',
         classifiers=classifiers,
         packages=setuptools.find_packages(),
         include_package_data=True,  # also include MANIFEST files in wheels

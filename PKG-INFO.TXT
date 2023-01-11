@@ -1,9 +1,9 @@
 Metadata-Version: 1.0
 Name: leo
 Version: 6.7.1
-Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
-Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
-Home-page: http://leoeditor.com/
+Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
+Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
+Home-page: http://leo-editor.github.io/leo-editor/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT

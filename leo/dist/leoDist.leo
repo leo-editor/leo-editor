@@ -198,9 +198,9 @@ Portions of Leo's pyzo interface uses code from pyzo:
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
 Version: 6.7.1
-Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
-Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
-Home-page: http://leoeditor.com/
+Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
+Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
+Home-page: http://leo-editor.github.io/leo-editor/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
@@ -216,11 +216,11 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.7.1 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leo-editor.github.io/leo-editor 6.7.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](http://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.7.1**
 
@@ -235,16 +235,16 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 - [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
 - [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Documentation](http://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](http://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](http://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](http://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](http://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](http://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -622,7 +622,7 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 </t>
 <t tx="ekr.20150425135153.2">class Leo &lt; Formula
 
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
   head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
@@ -1203,7 +1203,7 @@ Here is the updated leo.rb file that passes brew audit --strict Leo:
 @language ruby
 
 class Leo &lt; Formula
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "https://downloads.sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
 
@@ -1261,7 +1261,7 @@ git push
 @language ruby
 
 class Leo &lt; Formula
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
   head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
@@ -1362,7 +1362,7 @@ I would rename the pull request "leo 5.1 (new formula)". :-)
 
 class LeoEditor &lt; Formula
   desc "The Leo IDE/Outliner/PIM"
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "https://github.com/leo-editor/leo-editor/archive/5.4.1.tar.gz"
   sha256 "2cf0f598aa46e8ced6dd7da0229157e7b523704d0a03604a4da14b715c0a232f"
 
@@ -1685,7 +1685,7 @@ So links to files in the project root or other folders will be broken. (Backgrou
     ./leo-editor/docs/*    --&gt; left out
     ./leo-editor/leo/*/*/* --&gt; PYTHONHOME/Lib/site-packages/leo
 
-Docs: of little concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
+Docs: of little concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leo-editor.github.io/leo-editor
 
 Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor</t>
 <t tx="maphew.20180128213245.1">TestPyPI: https://packaging.python.org/guides/using-testpypi/
@@ -1763,8 +1763,126 @@ build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 
-# Leo 6.4: Leo only supports Python 3, so universal should be zero.
+# Leo only supports Python 3, so universal should be zero.
 universal=0
+
+[flake8]
+
+exclude =
+    .git,
+    __pycache__,
+    leo/build,
+    leo/dist,
+    leo/doc,
+    leo/extensions,
+    leo/external,
+    leo/modes,
+    leo/plugins,
+    leo/scripts,
+    leo/test,
+    leo/unittests,
+
+extend-ignore =
+
+    # Don't check B020. It conflicts with Leo idioms like `for p in p.children():
+    # Found for loop that reassigns the iterable it is iterating with each iterable value.
+    B020
+    
+    # Don't complain on every save. Let reindent handle this later.
+    # blank line contains whitespace
+    W293
+
+    # Harmless...
+    
+    # expected an indented block (comment)
+    E115
+
+    # unexpected indentation (comment)
+    E116
+    
+    # over-indented (comment)
+    E117
+    
+    # continuation line over-indented for visual indent
+    E127
+    
+    # continuation line missing indentation or outdented.
+    E122
+    
+    # closing bracket does not match visual indentation.
+    E124
+    
+    # continuation line with same indent as next logical line
+    E125
+    
+    # continuation line under-indented for visual indent.
+    E128
+    
+    # visually indented line with same indent as next logical line
+    E129
+    
+    # continuation line unaligned for hanging indent.
+    E131
+
+    # whitespace before '['
+    E211
+    
+    # multiple spaces before operator
+    E221
+    
+    # multiple spaces after operator
+    E222
+    
+    # missing whitespace around operator
+    E225
+    
+    # missing whitespace after ','
+    E231
+    
+    # unexpected spaces around keyword / parameter equals
+    E251
+    
+    # at least two spaces before inline comment
+    E261
+    
+    # missing whitespace around parameter equals.
+    E252
+    
+    # inline comment should start with '# '
+    E262
+    
+    # block comment should start with '# '.
+    E265
+    
+    # too many leading '#' for block comment
+    E266
+    
+    # multiple spaces before keyword
+    E272
+    
+    # missing whitespace after keyword.
+    E275
+
+    # expected 1 blank line, found 0.
+    E301
+    
+    # expected 2 blank lines, found 1.
+    E302
+    
+    # whitespace before ':'
+    E203
+    
+    # too many blank lines (2)
+    E303
+    
+    # expected 2 blank lines after class or function definition, found 0.
+    E305
+    
+    # expected 1 blank line before a nested definition, found 0.
+    E306
+
+    # Line too long.
+    E501
 </t>
 <t tx="maphew.20200424174643.1">@language md
 
