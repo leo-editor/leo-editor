@@ -31458,11 +31458,11 @@ root_domain = 'https://leo-editor.github.io/leo-editor/'
 # Define helpers
 @others
 
-if 1:  # By far the most useful test.
+if 1:  # Best test.
     links = find_docs_links()
 elif 1:
     links = find_outline_links()
-elif 0:
+else:
     url = f"{root_domain}/index.html"
     links = find_web_links(url)
 # Report the found links.
@@ -31552,7 +31552,7 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
             return False
     return True</t>
 <t tx="ekr.20230111171223.1">def find_docs_links():
-    """Find all links the leo-editor/docs directory."""
+    """Find all links in all .html files in the leo-editor/docs directory."""
     docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
     if not os.path.exists(docs_path):
         g.es_print(f"Not found: {docs_path!r}")
