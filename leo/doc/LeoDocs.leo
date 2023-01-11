@@ -31436,7 +31436,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20230110152214.1"></t>
 <t tx="ekr.20230110152240.1"></t>
-<t tx="ekr.20230110152344.1">"""Report broken links at https://leo-editor.github.io/leo-editor/
+<t tx="ekr.20230110152344.1">"""
+Report broken links in all .html files leo-editor/docs.
 
 Adapted from https://brianli.com/2021/06/how-to-find-broken-links-with-python/
 
@@ -31457,7 +31458,7 @@ root_domain = 'https://leo-editor.github.io/leo-editor/'
 # Define helpers
 @others
 
-if 1:
+if 1:  # By far the most useful test.
     links = find_docs_links()
 elif 1:
     links = find_outline_links()
