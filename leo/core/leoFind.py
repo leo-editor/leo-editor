@@ -898,12 +898,14 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
-    #@+node:ekr.20031218072017.3068: *4* find.replace
+    #@+node:ekr.20031218072017.3068: *4* find.replace (replace)
     @cmd('replace')
     @cmd('change')
     def change(self, event: Event=None) -> None:  # pragma: no cover (cmd)
         """Replace the selected text with the replacement text."""
         p = self.c.p
+        settings = self.ftm.get_settings()
+        self.init_ivars_from_settings(settings)
         if self.check_args('replace'):
             self.init_in_headline()
             self.change_selection(p)
