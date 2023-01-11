@@ -51,6 +51,7 @@
 <v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
 <v t="ekr.20230110153045.1"><vh>_validate_url</vh></v>
+<v t="ekr.20230111171223.1"><vh>find_docs_links</vh></v>
 <v t="ekr.20230110153304.1"><vh>find_outline_links</vh></v>
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
@@ -2410,12 +2411,13 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230111160459.1"><vh>Recent files</vh>
+<v t="ekr.20230111160459.1"><vh>Recent</vh>
+<v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
 </v>
-<v t="ekr.20131016083406.16724"></v>
+<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31444,6 +31446,8 @@ https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 """
 @language python
 g.cls()
+import glob
+import os
 import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
@@ -31453,14 +31457,19 @@ root_domain = 'https://leo-editor.github.io/leo-editor/'
 # Define helpers
 @others
 
-links = get_outline_links()
-if 0:
+if 1:
+    links = find_docs_links()
+elif 1:
+    links = find_outline_links()
+elif 0:
     url = f"{root_domain}/index.html"
-    links.extend(find_web_links(url))
-
+    links = find_web_links(url)
+# Report the found links.
 links = list(set(links))
 g.printObj(links, tag=f"{len(links)} links")
-
+# Report all broken links.
+n = len(links)
+g.es_print(f"Testing {n} link{g.plural(n)}")
 broken_links = find_broken_links(links)
 n1, n2 = len(links), len(broken_links)
 g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
@@ -31468,33 +31477,26 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
 <t tx="ekr.20230110152349.1"></t>
 <t tx="ekr.20230110153045.1"></t>
 <t tx="ekr.20230110153129.1">def find_web_links(url):
-
+    """Return a list of all links with the root domain."""
     # Make request to URL.        
     data = requests.get(url).text
 
     # Parse HTML from request.
     soup = BeautifulSoup(data, features="html.parser")
 
-    # Create a list containing all links with the root domain.
     return sorted(list(set([
         link.get("href") for link in soup.find_all("a")
-        # if f"{root_domain}" in link.get("href")
     ])))
 </t>
-<t tx="ekr.20230110153304.1">def get_outline_links():
-    
+<t tx="ekr.20230110153304.1">def find_outline_links():
+    """Find all links in this outline."""
     links = set()
     for p in c.all_unique_positions():
-        
         # Parse HTML in the body.
         soup = BeautifulSoup(p.b, features="html.parser")
-
         # Create a list containing all links with the root domain.
-        # links.extend([link.get("href") for link in soup.find_all("a")])
         for link in soup.find_all("a"):
             links.add(link.get("href"))
-            # if f"{root_domain}" in link.get("href")
-
     return sorted(list(links))
 </t>
 <t tx="ekr.20230110153501.1">def find_broken_links(links):
@@ -31548,6 +31550,27 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
             g.es_print(f"Not found: {headline!r}")
             return False
     return True</t>
+<t tx="ekr.20230111171223.1">def find_docs_links():
+    """Find all links the leo-editor/docs directory."""
+    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
+    if not os.path.exists(docs_path):
+        g.es_print(f"Not found: {docs_path!r}")
+        return []
+    files = glob.glob(f"{docs_path}{os.sep}*.html")
+    if not files:
+        g.es_print(f"No .html files in {docs_path!r}")
+        return []
+    links = set()
+    for filename in files:
+        with open(filename,'rb') as f:
+            contents = g.toUnicode(f.read())
+        soup = BeautifulSoup(contents, features="html.parser")
+        for link in soup.find_all("a"):
+            ref = link.get("href")
+            if not ref.startswith(('#', 'mailto:')):
+                links.add(ref)
+    return sorted(list(links))
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
