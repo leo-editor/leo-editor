@@ -48,13 +48,17 @@
 </v>
 </v>
 <v t="ekr.20131017051340.16847"><vh>Buttons</vh>
+<v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
 <v t="ekr.20230110153045.1"><vh>_validate_url</vh></v>
 <v t="ekr.20230110153304.1"><vh>find_outline_links</vh></v>
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
-<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
+<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
+<v t="ekr.20230111164618.1"><vh>get_paths</vh></v>
+<v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
+</v>
 <v t="ekr.20230110152349.1"><vh>@ignore disabled buttons</vh>
 <v t="ekr.20111017085134.16158"><vh> Slideshow Buttons</vh>
 <v t="ekr.20111017085134.16159"><vh>@@button copy-@screenshot-node</vh>
@@ -1541,6 +1545,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
 <v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6.x</vh>
@@ -2403,10 +2408,14 @@
 </v>
 </v>
 </v>
+<v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230111160459.1"><vh>Recent files</vh>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
+</v>
+<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15802,25 +15811,30 @@ Downloading, Installing &amp; Running Leo
 
 For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
 <t tx="ekr.20131016083406.16724">@language python
-'''Run sphinx make clean ; make html.'''
-import os
-trace = True
+"""
+- Generate intermediate files for all headlines in the table.
+- Run `make clean ; make html` from the leo/doc/html directory.
+"""
 g.cls()
-c.setComplexCommand('make-sphinx')
+import os
+
+trace = False
+@others  # define helpers
 if c.isChanged():
     c.save()
-aList = c.rstCommands.rst3()
-if aList:
-    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
-    os.chdir(path)
-    if len(aList) &gt; 1: g.execute_shell_commands('make clean',trace=trace)
-    g.execute_shell_commands('make html',trace=trace)
-    fn = aList[0].h.strip() if len(aList) == 1 else 'leo_toc.html'
-    fn = g.os_path_finalize_join(path,'_build','html',g.os_path_basename(fn))
-    if g.os_path_exists(fn):
-        # Don't wait for this command to exit!
-        g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
-</t>
+headlines = [
+    "Leo's Documentation"
+]
+old_p = c.p
+try:
+    docs_path, html_path = get_paths()
+    if html_path:
+        os.chdir(html_path)
+        if write_intermediate_files():
+            g.execute_shell_commands('make clean',trace=trace)
+            g.execute_shell_commands('make html',trace=trace)
+finally:
+    c.selectPosition(old_p)</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
     bookmarks.py:       Manages URL's used as bookmarks.
@@ -31397,7 +31411,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 **The highlights of Leo 6.7.2**
 
 - Leo's website has moved to https://leo-editor.github.io/leo-editor/
-
+- Support the --black-sentinels command-line option.
+- Many minor bug fixes.
 
 **Links**
 
@@ -31504,6 +31519,35 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         g.es_print(f"Bad link: {link}")
     return broken_links
 </t>
+<t tx="ekr.20230111160459.1"></t>
+<t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
+- Support the --black-sentinels command-line option.
+- Many minor bug fixes.</t>
+<t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
+</t>
+<t tx="ekr.20230111164618.1">def get_paths():
+    """
+    Return paths to leo-editor/leo/doc/html and leo-editor/docs.
+    """
+    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
+    if not os.path.exists(docs_path):
+        g.es_print(f"Not found: {docs_path!r}")
+        return None, None
+    html_path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+    if not os.path.exists(html_path):
+        g.es_print(f"Not found: {html_path!r}")
+        return None, None
+    return docs_path, html_path</t>
+<t tx="ekr.20230111165336.1">def write_intermediate_files():
+    for headline in headlines:
+        p = g.findTopLevelNode(c, headline)
+        if p:
+            c.selectPosition(p)
+            c.rstCommands.rst3()
+        else:
+            g.es_print(f"Not found: {headline!r}")
+            return False
+    return True</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
