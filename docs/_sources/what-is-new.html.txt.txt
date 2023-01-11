@@ -17,6 +17,23 @@ What's New in Leo
 .. _pymacs:                 http://pymacs.progiciels-bpi.ca/index.html
 .. _`Leo and Emacs`:        emacs.html
 
+What's new in Leo 6.7.2
++++++++++++++++++++++++
+
+- Leo's website has moved to https://leo-editor.github.io/leo-editor/
+- Support the --black-sentinels command-line option.
+- Many minor bug fixes.
+
+What's new in Leo 6.7.1
++++++++++++++++++++++++
+
+- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
+- @bool plain-key-outline-search = False by default.
+- Several minor code cleanups.
+- Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.
+
 What's new in Leo 6.7.0
 +++++++++++++++++++++++
 

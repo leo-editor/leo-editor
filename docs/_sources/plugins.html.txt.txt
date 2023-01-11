@@ -212,7 +212,7 @@ Summary
 ``run_nodes.py``
     Runs a program and interface Leos through its input/output/error streams.   
 ``screen_capture.py``
-    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
+    Supports taking screen shots.
 ``screenshots.py``
     Creates stand-alone slideshows containing screenshots.
 ``script_io_to_body.py``
@@ -2326,7 +2326,7 @@ Enables rich text using the `CKEditor <http://ckeditor.com/>`_ editor.
 screen_capture.py
 *****************
 
-By Terry Brown. See http://leo-editor.github.io/screen_capture.html
+By Terry Brown.
 
 screen_capture now captures an image immediately, screen_capture_5sec waits
 five seconds, so you can position the pointer, open menus etc. The only

@@ -51,7 +51,7 @@ Converting Body Text To Title Case
 
 Title case means that all words start with capital letters.  The
 following script converts the selected body text to title case.  If
-nothing has been selected, the entirecurrent node is converted. The
+nothing has been selected, the entire current node is converted. The
 conversion is undoable::
 
     """Undoably convert selection or body to title case."""

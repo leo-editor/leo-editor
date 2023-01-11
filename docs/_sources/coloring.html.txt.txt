@@ -164,13 +164,12 @@ Files
 +++++
 
 .. _jEdit: http://www.jedit.org/
-.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
 
 The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
 These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
 
-`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
 
 **Important**: jEdit's xml language description files contain no explicit <RULE> elements Rules are simply sub-elements of an enclosing <RULES> element. The element indicates the kind of rule that is specified, for example, <SPAN>, <SEQ>, etc. By the term **rule element** we shall mean any sub-element of the <RULES> element.
 
@@ -447,7 +446,7 @@ For any ruleset R whose ruleset name is N, x.importDict.get(N) is the list of ru
 Rule methods
 ++++++++++++
 
-This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files.
 
 All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
 

@@ -2418,6 +2418,24 @@
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
 </v>
 <v t="ekr.20230110152344.1"></v>
+<v t="ekr.20230111174824.1"><vh>git diff HEAD </vh>
+<v t="ekr.20230111174825.1"><vh>diff: leo/doc/LeoDocs.leo</vh>
+<v t="ekr.20230111174825.6"><vh>diff: Changed</vh>
+<v t="ekr.20230111174825.7"><vh>diff: Summary</vh>
+<v t="ekr.20230111174825.8"><vh>Old:Summary</vh></v>
+<v t="ekr.20101113063552.9398"></v>
+</v>
+<v t="ekr.20230111174825.9"><vh>diff: screen_capture.py</vh>
+<v t="ekr.20230111174825.10"><vh>Old:screen_capture.py</vh></v>
+<v t="ekr.20130815102041.15630"></v>
+</v>
+<v t="ekr.20230111174825.11"><vh>diff: Files</vh>
+<v t="ekr.20230111174825.12"><vh>Old:Files</vh></v>
+<v t="ekr.20060430220749"></v>
+</v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -5020,13 +5038,12 @@ except Exception:
 <t tx="ekr.20060329101442">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
 </t>
 <t tx="ekr.20060430220749">.. _jEdit: http://www.jedit.org/
-.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
 
 The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
 
 These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
 
-`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
 
 **Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
 
@@ -5230,7 +5247,7 @@ The colorizer uses ruleset names to gain access to all data structures in x.py. 
 
 In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the **only** names that the colorizer needs to know in order to access all information in x.py.
 </t>
-<t tx="ekr.20060502122950">This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files. In fact, this documentation is a 'refactoring' of `jEdit's documentation`_.
+<t tx="ekr.20060502122950">This section describes each rules method in Leo's jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit's language description files.
 
 All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.
 </t>
@@ -9307,7 +9324,7 @@ controller(c).run()
 ``run_nodes.py``
     Runs a program and interface Leos through its input/output/error streams.   
 ``screen_capture.py``
-    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
+    Supports taking screen shots.
 ``screenshots.py``
     Creates stand-alone slideshows containing screenshots.
 ``script_io_to_body.py``
@@ -14138,7 +14155,7 @@ In the future, this could be able to remember the scores through the sessions, d
 
 Mylyn was a nice boost back in the eclipse days, it could work for Leo too. My main motivation right now was to demonstrate the signals with something that is much simpler than using them in qmlnotebook.
 </t>
-<t tx="ekr.20130815102041.15630">By Terry Brown. See http://leo-editor.github.io/screen_capture.html
+<t tx="ekr.20130815102041.15630">By Terry Brown.
 
 screen_capture now captures an image immediately, screen_capture_5sec waits
 five seconds, so you can position the pointer, open menus etc. The only
@@ -31571,6 +31588,376 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
             if not ref.startswith(('#', 'mailto:')):
                 links.add(ref)
     return sorted(list(links))
+</t>
+<t tx="ekr.20230111174824.1">@ignore
+@nosearch
+HEAD=aa0868160</t>
+<t tx="ekr.20230111174825.1">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -5020,13 +5020,12 @@
+ &lt;t tx="ekr.20060329101442"&gt;Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
+ &lt;/t&gt;
+ &lt;t tx="ekr.20060430220749"&gt;.. _jEdit: http://www.jedit.org/
+-.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
+ 
+ The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+ 
+ These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+ 
+-`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
++Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+ 
+ **Important**: jEdit's xml language description files contain no explicit &amp;lt;RULE&amp;gt; elements Rules are simply sub-elements of an enclosing &amp;lt;RULES&amp;gt; element. The element indicates the kind of rule that is specified, for example, &amp;lt;SPAN&amp;gt;, &amp;lt;SEQ&amp;gt;, etc. By the term **rule element** we shall mean any sub-element of the &amp;lt;RULES&amp;gt; element.
+ 
+@@ -9307,7 +9306,7 @@
+ ``run_nodes.py``
+     Runs a program and interface Leos through its input/output/error streams.   
+ ``screen_capture.py``
+-    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
++    Supports taking screen shots.
+ ``screenshots.py``
+     Creates stand-alone slideshows containing screenshots.
+ ``script_io_to_body.py``
+@@ -14138,7 +14137,7 @@
+ 
+ Mylyn was a nice boost back in the eclipse days, it could work for Leo too. My main motivation right now was to demonstrate the signals with something that is much simpler than using them in qmlnotebook.
+ &lt;/t&gt;
+-&lt;t tx="ekr.20130815102041.15630"&gt;By Terry Brown. See http://leo-editor.github.io/screen_capture.html
++&lt;t tx="ekr.20130815102041.15630"&gt;By Terry Brown.
+ 
+ screen_capture now captures an image immediately, screen_capture_5sec waits
+ five seconds, so you can position the pointer, open menus etc. The only
+@language python
+</t>
+<t tx="ekr.20230111174825.10">By Terry Brown. See http://leo-editor.github.io/screen_capture.html
+
+screen_capture now captures an image immediately, screen_capture_5sec waits
+five seconds, so you can position the pointer, open menus etc. The only
+feedback is in the console, as messages in the log would be distracting in
+the captured image.</t>
+<t tx="ekr.20230111174825.11">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,11 +1,10 @@
+ .. _jEdit: http://www.jedit.org/
+-.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
+ 
+ The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+ 
+ These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+ 
+-`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
++Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+ 
+ **Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
+ 
+@language python
+</t>
+<t tx="ekr.20230111174825.12">.. _jEdit: http://www.jedit.org/
+.. _`jEdit's documentation`: http://www.jedit.org/42docs/users-guide/writing-modes-part.html
+
+The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+
+These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+
+`jEdit's documentation`_ contain a complete description of these xml files. Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+
+**Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
+
+**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
+
+Using Python colorer control files has the following advantages:
+
+- Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.
+
+- Colorer control files are valid .py files, so all of Python's import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
+
+- Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.
+
+- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
+</t>
+<t tx="ekr.20230111174825.6"></t>
+<t tx="ekr.20230111174825.7">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -182,7 +182,7 @@
+ ``run_nodes.py``
+     Runs a program and interface Leos through its input/output/error streams.   
+ ``screen_capture.py``
+-    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
++    Supports taking screen shots.
+ ``screenshots.py``
+     Creates stand-alone slideshows containing screenshots.
+ ``script_io_to_body.py``
+@language python
+</t>
+<t tx="ekr.20230111174825.8">.. Complete as of Leo 5.5.
+
+``active_path.py``
+    Synchronizes @path nodes with folders.
+``bookmarks.py``
+    Manages bookmarks using a separate pane.
+``add_directives.py``
+    Allows users to define new @directives.
+``at_folder.py``
+    Synchronizes @folder nodes with folders.
+``at_produce.py``
+    Executes commands in nodes whose body text starts with @produce.
+``at_view.py``
+    Adds support for @clip, @view and @strip nodes.
+``attrib_edit.py``
+    Edits user attributes in a Qt frame.
+``backlink.py``
+    Allows arbitrary links between nodes.
+``bibtex.py``
+    Manages BibTeX files with Leo.
+``bigdash.py``
+    Creates a global search window.
+``bookmarks.py``
+    Manages bookmarks using a separate pane.
+``bzr_qcommands.py``
+    Adds a context menu to each node containing all the commands in the bzr Qt
+    interface. Bzr is invoked based on the path of the current node.
+``chapter_hoist.py``
+    Creates hoist buttons.
+``codewisecompleter.py``
+    Uses the ctags database to provide an autocompletion list.
+``colorize_headlines.py``
+    Manipulates appearance of individual tree widget items.
+``contextmenu.py``
+    Defines various useful actions for context menus (Qt only).
+``ctagscompleter.py``
+    Uses ctags to provide an autocompletion list.
+``datenodes.py``
+    Allows users to insert headlines containing dates.
+``debugger_pudb.py``
+    Makes g.pdb() enter the Pudb debugger instead of pdb.
+``demo.py``
+    Creates slides or interactive demos.
+``dragdropgoodies``
+    Dumps files dropped into Leo.
+``dtest.py``
+    Sends code to the doctest module and reports the result.
+``dragdropgoodies``
+    Dumps files dropped into Leo.
+``dump_globals.py``
+    Dumps Python globals at startup.
+``EditAttributes.py``
+    Lets the user associate text with a specific node.
+``empty_leo_file.py``
+    Allows Leo to open any empty file as a minimal .leo file.
+``enable_gc.py``
+    Enables debugging and tracing for Python's garbage collector.
+``expfolder.py``
+    Adds @expfolder nodes that represent folders in the file system.
+``FileActions.py``
+    Defines actions taken when double-clicking on @&lt;file&gt; nodes and
+    supports @file-ref nodes.
+``ftp.py``
+    Supports uploading of files via ftp.
+``geotag.py``
+    Tags nodes with latitude and longitude.
+``gitarchive.py``
+    Stores snapshots of outline in git.
+``graphcanvas.py``
+    Adds a graph layout for nodes in a tab.
+    Requires Qt and the backlink.py plugin.
+``import_cisco_config.py``
+    Allows the user to import Cisco configuration files.
+``initinclass.py``
+    Modifies the Python @auto importer so that the importer
+    puts the __init__ method (ctor) into the body of the class node.
+``interact.py``
+    Adds buttons so Leo can interact with command line environments.
+``jinjarender.py``
+    Renders @jinja nodes.
+``leofeeds.py``
+    Reads from rss, atom or other sources.
+``leo_interface.py``
+    Allows the user to browse XML documents in Leo.
+``leo_pdf.py``
+    This NOT a Leo plugin: this is a docutils writer for .pdf files.
+``leo_to_html.py``
+    Converts a leo outline to an html web page.**.
+``leo_to_rtf.py``
+    Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
+    loaded into Microsoft Word and formatted as a proper outline.
+``leocursor.py``
+    Creates a LeoCursor object that can walk around a Leo outline and decode
+    attributes from nodes.
+``leofeeds.py``
+    Reads from rss, atom or other sources.
+
+.. Not a plugin: leofts.py.
+
+``leomail.py``
+    Sync local mailbox files over to Leo.
+``leomylyn.py``
+    Provides a "Mylyn" like experience for Leo.
+``leoOPML.py``
+    Read and write .leo files in OPML.
+``leoremote.py``
+    Remote control for Leo.
+``leoscreen.py``
+    Allows interaction with shell apps via screen.
+``lineNumbers.py``
+    Adds #line directives in perl and perlpod programs.   
+``livecode.py``
+    Creates a live code-evaluation pane.
+``macros.py``
+    Creates new nodes containing parameterized section references.
+``markup_inline.py``
+    Adds commands that create bold, italic or underlined text.
+``maximizeNewWindows.py``
+    Maximizes all new windows.
+``mime.py``
+    Opens files with their default platform program.
+``mod_autosave.py``
+    Autosaves the Leo outline every so often.
+``mod_framesize.py``
+    Sets a hard coded frame size.
+``mod_http.py``
+    An http plugin for Leo, based on AsyncHttpServer.py.
+``mod_read_dir_outline.py``
+    Allows Leo to read a complete directory tree into a Leo outline. Converts
+    directories into headlines and puts the list of file names into bodies.
+``mod_scripting.py``
+    Creates script buttons and @button, @command, @plugin and @script nodes.
+``mod_timestamp.py``
+    Timestamps all save operations to show when they occur.
+``multifile.py``
+    Allows Leo to write a file to multiple locations.
+``nav_qt.py``
+    Adds "Back" and "Forward" buttons (Qt only).
+``niceNosent.py``
+    Ensures that all descendants of @file-nosent nodes end
+    with exactly one newline, replaces all tabs with spaces, and
+    adds a newline before class and functions in the derived file.
+``nodeActions.py``
+    Allows the definition of double-click actions.
+``nodediff.py``
+    Provides commands to run text diffs on node bodies within Leo.
+``nodeTags.py``
+    Provides node tagging capabilities to Leo.
+``nodewatch.py``
+    Adds scriptable @nodewatch nodes.
+``notebook.py``
+    Adds a QML notebook.
+``open_shell.py``
+    Creates an 'Extensions' menu containing two commands:
+    Open Console Window and Open Explorer.
+``outline_export.py``
+    Modifies the way exported outlines are written.
+``paste_as_headlines.py``
+    Creates new headlines from clipboard text.
+``plugins_menu.py``
+    Creates a Plugins menu and adds all actives plugins to it.  
+``projectwizard.py``
+    Creates a wizard that creates @auto nodes.
+``python_terminal.py``
+    Embeds an python interpreter in Leo's log pane.
+``QNCalendarWidgets.py``
+    Adds a calendar widget.
+``quickMove.py``
+    Creates buttons to move nodes quickly to other nodes.
+``quicksearch.py``
+    Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+``quit_leo.py``
+    Shows how to force Leo to quit.
+``read_only_nodes.py``
+    Creates and updates @read-only nodes.
+``redirect_to_log.py``
+    Sends all output to the log pane.
+``richtext.py``
+    Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
+``rss.py``
+    Adds rss reader features to Leo.
+``run_nodes.py``
+    Runs a program and interface Leos through its input/output/error streams.   
+``screen_capture.py``
+    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
+``screenshots.py``
+    Creates stand-alone slideshows containing screenshots.
+``script_io_to_body.py``
+    Sends output from the Execute Script command to the end of the body pane.
+``scripts_menu.py``
+    Creates a Scripts menu for LeoPy.leo.
+``setHomeDirectory.py``
+    Sets g.app.homeDir to a hard-coded path.
+``sftp.py``
+    Adds @edit-like functionality for remote files over SFTP.
+``slideshow.py``
+    Support slideshows in Leo outlines.
+``spydershell.py``
+    Launches the spyder environment with access to Leo instance.
+    See http://packages.python.org/spyder/.
+``startfile.py``
+    Launches (starts) a file given by a headline when double-clicking the icon.
+``stickynotes.py``
+    Adds simple "sticky notes" feature (popout editors) for Qt gui.
+``systray.py``
+    Adds Leo to the system tray.
+``threadutil.py``
+    Adds utilities for asynchronous operation of commands.
+``timestamp.py``
+    Manages attributes containing node creation/modification/viewed times.
+``todo.py``
+    Provides to-do list and simple task management for leo (Qt only).
+``tomboy_import.py``
+    Allows imports of notes created in Tomboy / gnote.
+``trace_gc_plugin.py``
+    Traces changes to Leo's objects at idle time.
+``trace_keys.py``
+    Traces keystrokes in the outline and body panes.
+``trace_tags.py``
+    Traces most common hooks, but not key, drag or idle hooks.
+``valuespace.py``
+    Supports outline-based calculations similar to spreadsheets.
+``viewrendered.py``
+    Creates a window for *live* rendering of rst, html, etc.
+    This plugin uses docutils, http://docutils.sourceforge.net/,
+    to do the rendering, so installing docutils is recommended.
+    Supports @graphics-script, @image, @html, @movie and @svg nodes.
+``viewrendered2.py``
+    An alternate/enhanced version of viewrendered.py.
+``vim.py``
+    Enables two-way communication with VIM.
+``wikiview.py``
+    Hides/shows parts of urls in the body editor.
+``word_count.py``
+    Counts characters, words, lines, and paragraphs in the body pane.
+``word_export.py``
+    Adds the Plugins\:Word Export\:Export menu item to format and export
+    the selected outline to a Word document, starting Word if necessary.
+``xemacs.py``
+    Allows you to edit nodes in emacs/xemacs.
+``xml_edit.py``
+    Adds commands for importing and exporting xml to and from Leo outlines.
+``xsltWithNodes.py``
+    Adds the Outline:XSLT menu containing XSLT-related commands.
+``zenity_file_dialogs.py``
+    Replaces Leo's file dialogs on Linux with external
+    calls to the zenity gtk dialog package.
+</t>
+<t tx="ekr.20230111174825.9">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+-By Terry Brown. See http://leo-editor.github.io/screen_capture.html
++By Terry Brown.
+ 
+ screen_capture now captures an image immediately, screen_capture_5sec waits
+ five seconds, so you can position the pointer, open menus etc. The only
+@language python
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
