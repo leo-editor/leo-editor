@@ -2473,7 +2473,7 @@ class LoadManager:
         ):
             for filename in g.glob_glob(pattern):
                 sfn = g.shortFileName(filename)
-                if sfn != '__init__.py':
+                if sfn.endswith('.py') and sfn != '__init__.py':
                     try:
                         # Important: use importlib to give imported modules their fully qualified names.
                         m = importlib.import_module(f"leo.plugins.writers.{sfn[:-3]}")
