@@ -323,12 +323,18 @@ class EnchantWrapper(BaseSpellWrapper):
         g.app.spellDict = self.d
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
     def create_dict_from_file(self, fn: str, language: Any) -> Dict[str, str]:
-
-        return enchant.DictWithPWL(language, fn)
+        
+        try:
+            return enchant.DictWithPWL(language, fn)
+        except Exception:
+            return {}
     #@+node:ekr.20180207074613.1: *3* enchant.default_dict
     def default_dict(self, language: Any) -> Dict[str, str]:
 
-        return enchant.Dict(language)
+        try:
+            return enchant.Dict(language)
+        except Exception:
+            return {}
     #@+node:ekr.20180207072846.1: *3* enchant.init_language
     def init_language(self) -> None:
         """Init self.language."""
@@ -363,14 +369,19 @@ class EnchantWrapper(BaseSpellWrapper):
                 self.clean_dict(fn)
                 d = enchant.DictWithPWL(language, fn)
             except Exception:
-                # This is off-putting, and not necessary.
-                # g.es('Error reading dictionary file', fn)
-                # g.es_exception()
-                d = enchant.Dict(language)
+                try:
+                    d = enchant.Dict(language)
+                except Exception:
+                    d = {}
         else:
-            # A fallback.  Unlikely to happen.
-            d = enchant.Dict(language)
+            # A fallback. Unlikely to happen.
+            try:
+                d = enchant.Dict(language)
+            except Exception:
+                d = {}
+        # Commen exit, for traces.
         return d
+       
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word: str) -> None:
 
