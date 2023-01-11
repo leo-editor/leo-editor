@@ -323,7 +323,7 @@ class EnchantWrapper(BaseSpellWrapper):
         g.app.spellDict = self.d
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
     def create_dict_from_file(self, fn: str, language: Any) -> Dict[str, str]:
-        
+
         try:
             return enchant.DictWithPWL(language, fn)
         except Exception:
@@ -381,7 +381,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = {}
         # Commen exit, for traces.
         return d
-       
+
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word: str) -> None:
 
