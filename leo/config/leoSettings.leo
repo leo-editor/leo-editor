@@ -4752,7 +4752,7 @@ date;;={|{x=time.asctime()}|}
 # Typically you would define @data global-abbreviation nodes
 # in myLeoSettings.leo and @data abbreviation nodes in local files.
 
-# Here are some abbreviations of Greek letters:
+# Abbreviations of Greek letters:
 
 #  alph;;=α
 #  beta;;=β
@@ -4761,30 +4761,32 @@ date;;={|{x=time.asctime()}|}
 #  mu;;=μ
 #  pi;;=π
 #  sig;;=σ
-
 #  Delt;;=Δ
 #  Sig;;=Σ
 #  pm;;=±
 
-# And here are some other abbreviations.
+#  Abbreviations for currency symbols.
 
-#  degree;;=°
-#  half;;=½
-#  quarter;;=¼
-#  3fourths;;=¾
-#  divide;;=÷
-#  bullet;;=•
-#  infinity;;=∞
-#  # Ellipsis
-#  #.;;=…
-#  ergo;;=∴
-#  because;;=∵
-
-#  # Currency
 #  cent;;=¢
 #  euro;;=€
 #  pound;;=£
 #  yen;;=¥
+
+# Abbreviations for other symbols.
+
+#  .;;=…
+#  3fourths;;=¾
+#  because;;=∵
+#  bullet;;=•
+#  cross;;=✖
+#  degree;;=°
+#  divide;;=÷
+#  ergo;;=∴
+#  exists;;=∃
+#  half;;=½
+#  infinity;;=∞
+#  quarter;;=¼
+#  tick;;=✔
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
