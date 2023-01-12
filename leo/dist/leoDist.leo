@@ -1460,9 +1460,8 @@ LeoDist.leo:
   - In leo/doc/html run:
     make clean
     make html
-- Copy files from leo/doc/html/_build/html to web (FileZilla)
-  Do **not** copy searchindex.js.
-- Copy leo/doc/html/index.html to web (FileZilla)
+- Copy files from leo/doc/html/_build/html to leo-editor/docs
+- Commit the changes and push.
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
@@ -1509,10 +1508,6 @@ There is a "Draft New Release" button at the top-right of the page.
 <t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
 Public announcements, after creating a package.
-
-- Update version number on Wikipedia:
-  Copy Wikipedia link by hand.
-  https://en.wikipedia.org/wiki/Leo_(text_editor)
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
