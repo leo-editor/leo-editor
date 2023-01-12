@@ -31394,6 +31394,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - Leo's website has moved to https://leo-editor.github.io/leo-editor/
 - Support the --black-sentinels command-line option.
+- A new script packages Leo as a MacOS .app bundle:
+  https://github.com/leo-editor/leo-editor/issues/2966
 - Many minor bug fixes.
 
 **Links**
