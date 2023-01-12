@@ -31510,6 +31510,7 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
     return broken_links
 </t>
 <t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
+- Improve rst3 command.
 - Support the --black-sentinels command-line option.
 - Many minor bug fixes.</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')

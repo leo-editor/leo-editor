@@ -202,7 +202,7 @@ class RstCommands:
                 else:
                     self.write_slides(p)
 
-    #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
+    #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree (sets self.root)
     def write_rst_tree(self, p: Position, fn: str) -> str:
         """Convert p's tree to rst sources."""
         c = self.c
@@ -315,10 +315,13 @@ class RstCommands:
             s = self.addTitleToHtml(s)
         if not s:
             return
-        with open(fn, 'wb') as f:
-            f.write(g.toEncodedString(s, 'utf-8'))
+        # with open(fn, 'wb') as f:
+            # f.write(g.toEncodedString(s, 'utf-8'))
+            # self.n_docutils += 1
+        changed = g.writeFileIfChanged(fn, s, binary_flag=True, encoding='utf-8')
+        if changed:
             self.n_docutils += 1
-        self.report(fn)
+            self.report(fn)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s: str) -> str:
         """
@@ -370,18 +373,24 @@ class RstCommands:
             if not ok:
                 g.error('did not create:', theDir)
         return bool(ok)
-    #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
-    def writeIntermediateFile(self, fn: str, s: str) -> None:
-        """Write s to to the file whose name is fn."""
-        # ext = self.getOption(p, 'write_intermediate_extension')
+    #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile (changed)
+    def writeIntermediateFile(self, fn: str, s: str) -> bool:
+        """
+        Write s to to the file whose name is fn.
+
+        New in Leo 6.7.2: write the file only if:
+        a: it does not exist or
+        b: the write would actually change the file.
+        """
         ext = self.write_intermediate_extension
         if not ext.startswith('.'):
             ext = '.' + ext
         fn = fn + ext
-        with open(fn, 'w', encoding=self.encoding) as f:
-            f.write(s)
+        changed = g.writeFileIfChanged(fn, s, binary_flag=False, encoding=self.encoding)
+        if changed:
             self.n_intermediate += 1
-        self.report(fn)
+            self.report(fn)
+        return changed
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
         """Send s to docutils using the writer implied by ext and return the result."""
