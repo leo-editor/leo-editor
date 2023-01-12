@@ -2412,12 +2412,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230111160459.1"><vh>Recent</vh>
-<v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20090428133936.2"></v>
-<v t="ekr.20100808060203.4273"></v>
-</v>
-<v t="ekr.20230110152344.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31512,7 +31506,6 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         g.es_print(f"Bad link: {link}")
     return broken_links
 </t>
-<t tx="ekr.20230111160459.1"></t>
 <t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
 - Support the --black-sentinels command-line option.
 - Many minor bug fixes.</t>
