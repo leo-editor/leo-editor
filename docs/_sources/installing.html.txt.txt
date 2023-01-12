@@ -242,9 +242,9 @@ Why Homebrew? It does not try to replace every single bit of functionality on yo
 
 Here is my installation write-up:
 
-- Read the Homebrew installation instructions at http://brew.sh/
+- Read the Homebrew installation instructions at http://brew.sh/.
 
-- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal) Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
 
 - In preparation for Homebrew, the best option in my opinion is to delete /usr/local via::
 
@@ -260,10 +260,7 @@ Here is my installation write-up:
 
   If you don't know your username, run "whoami". :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).
 
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running the
-  following command in the Terminal::
-    
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+- Install Homebrew. See the instructions at https://brew.sh/.
 
 - Run "brew doctor" and check any further suggestions to improve your system.
 

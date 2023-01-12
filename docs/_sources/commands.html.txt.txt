@@ -998,7 +998,7 @@ Importing & exporting files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _CWEB:   http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _noweb:  http://www.eecs.harvard.edu/~nr/noweb/
+.. _noweb:  https://www.cs.tufts.edu/~nr/noweb/
 
 ``export-headlines``
     Exports all headlines to an external file.

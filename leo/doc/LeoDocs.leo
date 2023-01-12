@@ -4095,9 +4095,7 @@ Leo is my Favorites Mind Capsule ;-)
 
 "Leo is EXACTLY the kind of outliner I was looking for--fantastic job!"---Steve Allen
 
-.. _`Thrive`: https://refiction.com/resource-reviews/leo-editor-for-writers
-
-"Leo creates living documents. Ideas can be organized and reorganized gradually and then inserted into the appropriate place in a project. Outlines become fluid, allowing infinite depth and by using clones of nodes, arbitrary levels of complexity...[Other] outliners impose structure on documents...Leo is different. Instead of imposing structure, it allows you to impose your own infrastructure, and then be as creative as you want. This brings the necessary chaos of creativity to heel when it is time to produce the document. The node structure creates ultimate flexibility when it comes to ordering scenes in chapter. Say good-bye to copy and paste and hello to drag and drop."---Chris George, in `Thrive`_
+"Leo creates living documents. Ideas can be organized and reorganized gradually and then inserted into the appropriate place in a project. Outlines become fluid, allowing infinite depth and by using clones of nodes, arbitrary levels of complexity...[Other] outliners impose structure on documents...Leo is different. Instead of imposing structure, it allows you to impose your own infrastructure, and then be as creative as you want. This brings the necessary chaos of creativity to heel when it is time to produce the document. The node structure creates ultimate flexibility when it comes to ordering scenes in chapter. Say good-bye to copy and paste and hello to drag and drop."---Chris George.
 </t>
 <t tx="ekr.20050830074815.6">"If you are like me, you have a kind of knowledge base with infos gathered over time. And you have projects, where you use some of those infos. Now, with conventional outliners you begin to double these infos, because you want to have the infos needed for the project with your project. With Leo you can do this too, but if you change text in one place IT IS UPDATED IN THE OTHER PLACE TOO! This is a feature I did not see with any other outliner (and I tried a few). Amazing! Leo directly supports the way I work!"---F. Geiger
 
@@ -4301,7 +4299,7 @@ or::
 
 - Most methods are defined using @others, *not* section definition nodes.
 </t>
-<t tx="ekr.20050830115714.20">Here is a posting which might be helpful: http://sourceforge.net/forum/message.php?msg_id=2300457 The @first directive_ is the key to output usable code in unsupported languages. For example, to use Leo with the Basic language, use the following::
+<t tx="ekr.20050830115714.20">The @first directive_ is the key to output usable code in unsupported languages. For example, to use Leo with the Basic language, use the following::
 
     @first $IFDEF LEOHEADER
     @delims '
@@ -4552,7 +4550,7 @@ Declarations add clutter, declarations are never obviously right and declaration
 
 Functions returning tuples are a "minor" feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.
 
-.. _`pylint`: http://www.logilab.org/857
+.. _`pylint`: https://pylint.pycqa.org/en/latest/
 
 Python can't check declarations because there aren't any. However, there is a really nifty tool called `pylint`_ that does many of the checks typically done by compilers.
 </t>
@@ -7864,7 +7862,7 @@ Doc part
 .. index::
     pair: Escape convention; Glossary
 
-.. _`noweb`: http://www.eecs.harvard.edu/~nr/noweb/
+.. _`noweb`: https://www.cs.tufts.edu/~nr/noweb/
 
 Escape convention
 
@@ -18484,7 +18482,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Exits Leo, prompting you to save any changed outline. Closing the last outline tab also exits Leo.
 </t>
 <t tx="ekr.20150318110552.32">.. _CWEB:   http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _noweb:  http://www.eecs.harvard.edu/~nr/noweb/
+.. _noweb:  https://www.cs.tufts.edu/~nr/noweb/
 
 ``export-headlines``
     Exports all headlines to an external file.
@@ -21590,9 +21588,9 @@ Why Homebrew? It does not try to replace every single bit of functionality on yo
 
 Here is my installation write-up:
 
-- Read the Homebrew installation instructions at http://brew.sh/
+- Read the Homebrew installation instructions at http://brew.sh/.
 
-- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal) Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
 
 - In preparation for Homebrew, the best option in my opinion is to delete /usr/local via::
 
@@ -21608,10 +21606,7 @@ Here is my installation write-up:
 
   If you don't know your username, run "whoami". :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).
 
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running the
-  following command in the Terminal::
-    
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+- Install Homebrew. See the instructions at https://brew.sh/.
 
 - Run "brew doctor" and check any further suggestions to improve your system.
 
@@ -23593,13 +23588,9 @@ c.outerUpdate has been drastically simplified. It no longer handles requests for
 </t>
 <t tx="ekr.20170815082542.1">Leo's Console minimal dependencies are:
 
-- Python 2.6 or later, including all Python 3.x versions.
-- Curses
-  For windows, download and install curses from `this page &lt;http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses&gt;`_
-  and then install using pip.
-    
+- For windows, install windows-curses with `pip install windows-curses`.
 - PythonTk for clipboard handling
-  For Linux use your system package manager, e.g. `sudo apt install python-tk`</t>
+  For Linux use your system package manager, e.g. `sudo apt install python-tk`.</t>
 <t tx="ekr.20170822100152.1">https://github.com/leo-editor/leo-editor/issues/501
 
 The new git-diff command shows the diffs between any uncommitted work and git's HEAD in an outline. This is, by far, the best outline-oriented diff in Leo's history. The command works for all kinds of external files.
@@ -31498,7 +31489,11 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
 <t tx="ekr.20230110153501.1">def find_broken_links(links):
     
     broken_links = []
-    suppress = ('&lt;|URL|&gt;',)
+    suppress = (
+        '&lt;|URL|&gt;',
+        # In a how-to item.
+        'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py',
+    )
     
     def validate_url(url):
         if url in suppress:

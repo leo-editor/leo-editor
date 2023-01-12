@@ -31,13 +31,9 @@ System requirements
 
 Leo's Console minimal dependencies are:
 
-- Python 2.6 or later, including all Python 3.x versions.
-- Curses
-  For windows, download and install curses from `this page <http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses>`_
-  and then install using pip.
-    
+- For windows, install windows-curses with `pip install windows-curses`.
 - PythonTk for clipboard handling
-  For Linux use your system package manager, e.g. `sudo apt install python-tk`
+  For Linux use your system package manager, e.g. `sudo apt install python-tk`.
 
 Starting Leo with the console gui
 +++++++++++++++++++++++++++++++++

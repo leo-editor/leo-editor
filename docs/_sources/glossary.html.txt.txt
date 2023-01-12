@@ -348,7 +348,7 @@ Doc part
 .. index::
     pair: Escape convention; Glossary
 
-.. _`noweb`: http://www.eecs.harvard.edu/~nr/noweb/
+.. _`noweb`: https://www.cs.tufts.edu/~nr/noweb/
 
 Escape convention
 

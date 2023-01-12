@@ -96,9 +96,7 @@ Leo is a superb outliner
 
 "Leo is EXACTLY the kind of outliner I was looking for--fantastic job!"---Steve Allen
 
-.. _`Thrive`: https://refiction.com/resource-reviews/leo-editor-for-writers
-
-"Leo creates living documents. Ideas can be organized and reorganized gradually and then inserted into the appropriate place in a project. Outlines become fluid, allowing infinite depth and by using clones of nodes, arbitrary levels of complexity...[Other] outliners impose structure on documents...Leo is different. Instead of imposing structure, it allows you to impose your own infrastructure, and then be as creative as you want. This brings the necessary chaos of creativity to heel when it is time to produce the document. The node structure creates ultimate flexibility when it comes to ordering scenes in chapter. Say good-bye to copy and paste and hello to drag and drop."---Chris George, in `Thrive`_
+"Leo creates living documents. Ideas can be organized and reorganized gradually and then inserted into the appropriate place in a project. Outlines become fluid, allowing infinite depth and by using clones of nodes, arbitrary levels of complexity...[Other] outliners impose structure on documents...Leo is different. Instead of imposing structure, it allows you to impose your own infrastructure, and then be as creative as you want. This brings the necessary chaos of creativity to heel when it is time to produce the document. The node structure creates ultimate flexibility when it comes to ordering scenes in chapter. Say good-bye to copy and paste and hello to drag and drop."---Chris George.
 
 Leo is an excellent PIM
 +++++++++++++++++++++++

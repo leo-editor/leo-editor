@@ -1083,7 +1083,7 @@ Leo is happy: it recognizes the @comment directive_. The C compiler is happy: th
 How can I use Leo with unsupported languages?
 *********************************************
 
-Here is a posting which might be helpful: http://sourceforge.net/forum/message.php?msg_id=2300457 The @first directive_ is the key to output usable code in unsupported languages. For example, to use Leo with the Basic language, use the following::
+The @first directive_ is the key to output usable code in unsupported languages. For example, to use Leo with the Basic language, use the following::
 
     @first $IFDEF LEOHEADER
     @delims '

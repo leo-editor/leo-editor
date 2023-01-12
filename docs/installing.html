@@ -248,8 +248,8 @@ Leo.</p>
 <p>Why Homebrew? It does not try to replace every single bit of functionality on your Mac with their own version, like Macports or fink. It reuses the existing libraries as far as possible. No need to reinstall Python, for example (one of my pet gripes when people try to install new software on their Macs, and the source of much confusion and pain). It installs to /usr/local, the standard place to find third-party libraries and headers, instead of the obscure /opt or /sw. It’s simple to use and to extend.</p>
 <p>Here is my installation write-up:</p>
 <ul>
-<li><p>Read the Homebrew installation instructions at <a class="reference external" href="http://brew.sh/">http://brew.sh/</a></p></li>
-<li><p>Make sure you have Xcode installed (test it by confirming that “gcc” runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.</p></li>
+<li><p>Read the Homebrew installation instructions at <a class="reference external" href="http://brew.sh/">http://brew.sh/</a>.</p></li>
+<li><p>Make sure you have Xcode installed (test it by confirming that “gcc” runs in the Terminal) Only the smaller command-line tools are required; there is no need to get the full Xcode beast.</p></li>
 <li><p>In preparation for Homebrew, the best option in my opinion is to delete /usr/local via:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
 </pre></div>
@@ -262,12 +262,7 @@ Leo.</p>
 </div>
 <p>If you don’t know your username, run “whoami”. :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).</p>
 </li>
-<li><p>Install Homebrew (<a class="reference external" href="http://mxcl.github.com/homebrew/">http://mxcl.github.com/homebrew/</a>) by running the
-following command in the Terminal:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span>
-</pre></div>
-</div>
-</li>
+<li><p>Install Homebrew. See the instructions at <a class="reference external" href="https://brew.sh/">https://brew.sh/</a>.</p></li>
 <li><p>Run “brew doctor” and check any further suggestions to improve your system.</p>
 <p>EKR note: I thought I had installed command-line tools after installing the XCode page. I hadn’t, and “brew doctor” told me so.</p>
 </li>
@@ -372,7 +367,7 @@ export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 11, 2023.
+      Last updated on January 12, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
     </div>
   </body>

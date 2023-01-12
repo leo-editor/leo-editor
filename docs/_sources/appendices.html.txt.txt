@@ -1073,7 +1073,7 @@ Declarations add clutter, declarations are never obviously right and declaration
 
 Functions returning tuples are a "minor" feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.
 
-.. _`pylint`: http://www.logilab.org/857
+.. _`pylint`: https://pylint.pycqa.org/en/latest/
 
 Python can't check declarations because there aren't any. However, there is a really nifty tool called `pylint`_ that does many of the checks typically done by compilers.
 
