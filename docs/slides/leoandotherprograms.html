@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Leo and Other Programs &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Leo and Emacs, including org mode" href="emacs.html" />
+    <link rel="prev" title="Directives Reference" href="directives.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="emacs.html" title="Leo and Emacs, including org mode"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="directives.html" title="Directives Reference"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="leo-and-other-programs">
+<h1>Leo and Other Programs<a class="headerlink" href="#leo-and-other-programs" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="emacs.html">Leo and Emacs, including org mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="emacs.html#leo-vs-org-mode">Leo vs org mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="emacs.html#using-org-mode-org-files-in-leo">Using org-mode (.org) files in Leo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="emacs.html#controlling-leo-from-emacs-using-pymacs">Controlling Leo from Emacs using Pymacs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="emacs.html#functions-in-leopymacs-py">Functions in leoPymacs.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="emacs.html#the-minibuffer">The minibuffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vimBindings.html">Using Vim with Leo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vimBindings.html#using-leo-s-native-vim-mode">Using Leo&#8217;s native vim mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vimBindings.html#using-vimoutline-otl-files-in-leo">Using vimoutline (.otl) files in Leo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vimBindings.html#using-stand-alone-vim-bindings">Using stand-alone vim bindings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="leoBridge.html">Embedding Leo with the leoBridge module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="leoBridge.html#the-basics">The basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leoBridge.html#example-running-unit-tests-from-leobridge">Example: running unit tests from leoBridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leoBridge.html#running-leobridge-from-within-leo">Running leoBridge from within Leo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="IPythonBridge.html">ILeo: Leo&#8217;s IPython Bridge</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#starting-ileo">Starting ILeo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#running-leo-scripts-from-ipython">Running Leo scripts from IPython</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#running-ipython-scripts-from-leo">Running IPython scripts from Leo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#ileo-as-an-ipython-notebook">ILeo as an IPython notebook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#ileo-and-the-valuespace-plugin">ILeo and the valuespace plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#acknowledgements-and-history">Acknowledgements and history</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="zodb.html">Using ZODB with Leo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#configuring-leo-to-use-zodb">Configuring Leo to use zodb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#initing-zodb">Initing zodb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#writing-data-to-zodb">Writing data to zodb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#defining-zodb-keys">Defining zodb keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#reading-data-from-zodb">Reading data from zodb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#about-connections">About connections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zodb.html#convenience-routines">Convenience routines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="directives.html"
+                        title="previous chapter">Directives Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="emacs.html"
+                        title="next chapter">Leo and Emacs, including org mode</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="emacs.html" title="Leo and Emacs, including org mode"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="directives.html" title="Directives Reference"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

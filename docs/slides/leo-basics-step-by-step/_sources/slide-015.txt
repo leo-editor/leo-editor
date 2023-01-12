@@ -1,0 +1,9 @@
+==========================
+Leo Basics Step By Step:15
+==========================
+
+
+I type "fix car" followed by the <return> key.
+
+.. image:: slide-015.png
+

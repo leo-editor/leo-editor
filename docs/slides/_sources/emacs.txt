@@ -1,0 +1,258 @@
+.. rst3: filename: html\emacs.html
+
+#################################
+Leo and Emacs, including org mode
+#################################
+
+This chapter several topics relating to the Emacs editor.
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
+Leo vs org mode
++++++++++++++++
+
+Leo and `Emacs org mode <http://orgmode.org/>`_ share similar goals. Org mode has many strengths related to non-programming tasks:
+
+- Drawers: visible, pure text, easily extensible uA's.
+- Agendas and tables.
+- In-pane rendering of Latex and special symbols.
+- Support for multiple source languages, including shell scripts, C, etc.
+- Code blocks, with arguments.
+- Result blocks.
+
+But org mode is unsuitable for software development. Org mode's code block syntax::
+
+    #+NAME: <name>
+    #+BEGIN_SRC <language> <switches> <header arguments>
+        <body>
+    #+END_SRC
+    
+would be unbearable in source files.
+
+More generally, org mode lacks the following Leonine features:
+
+- Automatic tangling when saving files.
+- Automatic untangling when loading files.
+- @others
+- Importers for programming languages.
+- Clones and especially Leo's clone-find commands. 
+- A full Python API and DOM, including generators.
+- @command, @button, @test.
+
+.. _`algorithm`: appendices.html#the-mulder-ream-update-algorithm
+.. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+Leo's is based on technologies missing from org mode:
+
+- Clones require that outlines be `Directed Acyclic Graphs`_.
+- Leo updates @clean trees using an `algorithm`_ that could not be duplicated in org mode.
+- Leo's outlines are true Python objects, with unique, persistent identities.
+
+In contrast, org mode is completely text oriented:
+
+- Org mode's API is limited to parsing body text.
+- Org mode simulates a DOM with text filters.
+
+Using org-mode (.org) files in Leo
+++++++++++++++++++++++++++++++++++
+
+Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
+
+    @auto-org-mode <path to .org file>
+
+or equivalently::
+
+    @auto-org <path to .org file>
+    
+import the org-mode file as a Leo outline. 
+
+These nodes work like other @auto nodes: when Leo loads an outline, Leo reads the .org file into the @auto-org-mode tree. When Leo writes an outline, Leo writes any @auto-org-mode tree back to the org-mode file.
+
+After creating an @auto-org-mode node by hand, be sure to use Leo's refresh-from-disk command to populate the node. Do this *before* saving the .leo file. If you try to save an empty @auto-org-mode node Leo will warn you that you are about to overwrite the file.
+
+The ``refresh-from-disk`` command creates an @auto-org-mode node whose **children** represent the contents of the external .org file. Leo does *not* write the @auto-org-mode node itself. This allows you to put Leo directives in the node.
+
+Controlling Leo from Emacs using Pymacs
++++++++++++++++++++++++++++++++++++++++
+
+.. _`pymacs`:   http://pymacs.progiciels-bpi.ca/index.html
+.. _`elisp`:    http://en.wikipedia.org/wiki/Emacs_Lisp
+.. _`Emacs`:    http://www.xemacs.org/
+
+Leo's leoPymacs module is a simple 'server' for the `pymacs`_ package. Using pymacs and leoPymacs, `elisp`_ scripts in `Emacs`_ can open .leo files and execute *Python* scripts as if they were executed inside Leo. In particular, such scripts can use Leo's predefined c, g and p variables. Thus, *Python* scripts running in Emacs can:
+
+- Open any .leo file. 
+- Access any part of the outline. 
+- Change any part of the outline, including external files, 
+- Save .leo files.
+- Execute *any* Leo script.
+
+In short, you can now do from Emacs anything that you can do with Leo scripting inside Leo.
+
+Here are step-by-step instructions for executing Python scripts in Emacs:
+
+**Step 1. Install pymacs** 
+
+   The pymacs installation instructions should be clear enough.
+   A clarification is needed about two-way communication between Python and lisp scripts:
+   in truth, Python scripts can call the Pymacs.lisp function *only* if the Python script
+   was invoked from emacs.
+   Otherwise, calling Pymacs.lisp will hang the process making the call.
+   For example, executing the following script as an ordinary Leo script will hang Leo::
+
+        from Pymacs import lisp
+        print lisp("""2+2""") # Hangs
+
+**Step 2. Load the leoPymacs module from Emacs, creating a hidden Leo application**
+
+  From inside Emacs, you load Leo's leoPymacs module as follows::
+
+    (pymacs-load "leoPymacs" "leo-")
+
+  The call to pymacs-load is similar to 'import leoPymacs as leo-' in
+  Python. The side effect of pymacs-load is to define the elisp
+  function leo-x for every top-level function x in leoPymacs.py,
+  namely leo-dump, leo-get-app, leo-get-g, leo-get-script-result,
+  leo-init, leo-open and leo-run-script. The first call to any of
+  these functions creates a **hidden Leo application** in which .leo
+  files may be loaded, modified and saved, and in which Leo scripts
+  may be executed. This hidden Leo application uses Leo's nullGui
+  class as its gui, so Leo commands and Leo scripts that require a
+  fully functional gui will not work as expected in the hidden Leo
+  application. Steps 3 and 4 tell how to use this hidden Leo
+  application.
+
+  pymacs-load works like a Python reload, so you can redefine
+  leoPymacs.py while Emacs is running. However, calling pymacs-load
+  destroys the old hidden Leo application and creates a new one, so
+  typically you would want to call pymacs-load only once per Emacs
+  session. Like this::
+
+        (setq reload nil) ; change nil to t to force a reload.
+
+        (if (or reload (not (boundp 'leoPymacs)))
+            (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
+            (message "leoPymacs already loaded")
+        )
+
+**Step 3. From Emacs, open .leo files**
+
+   Once we have loaded the leoPymacs module
+   we can open a .leo file as follows::
+
+    (setq c (leo-open fileName))
+
+   This binds the elisp c variable to the Leo commander created by opening fileName.
+   fileName should be the full path to a .leo file.
+   In the next step we will use this c variable to execute *Leo* scripts in the
+   context of an open Leo outline.
+
+   Sometimes we want to execute a Leo script before opening any Leo commanders.
+   For example, we might want to compute the fileName passed to leo-open.
+   leo-run-script allows the c argument to be nil,
+   in which case leo-run-script creates a dummy commander in which to run the script.
+   For example, the following script calls g.os_path_join and g.os_path_abspath::
+
+        (setq script "g.app.scriptResult =
+            g.os_path_abspath(g.os_path_join(
+                g.app.loadDir,'..','test','ut.leo'))"
+        )
+
+        (setq fileName (leo-run-script nil script))
+
+   leo-run-script returns the value of g.app.scriptResult
+   As shown above, Python scripts may set g.app.scriptResult to indicate their result.
+   elisp scripts can also get g.app.scriptResult using leo-script-result.
+   Note that the Python script may span multiple lines.
+
+**Step 4. From Emacs, execute Leo (Python) scripts**
+
+   From emacs we can execute a Python script **as if** it were executed in an
+   open Leo outline.
+   Suppose aLeoScript is an **elisp** string containing a Leo (Python) script.
+   We can execute that script in the hidden Leo application as follows::
+
+        (leo-run-script c aLeoScript)
+
+   For example::
+
+        (setq c (leo-open fileName)
+        (csetq script "print 'c',c,'h',c.p.h")
+        (leo-run-script c script)
+
+Putting this all together, we get::
+
+        ; Step 1: load leoPymacs if it has not already been loaded.
+        (setq reload nil)
+        (if (or reload (not (boundp 'leoPymacs)))
+            (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
+            (message "leoPymacs already loaded")
+        )
+
+        ; Step 2: compute the path to leo/test/ut.leo using a Leo script.
+        (setq script
+            "g.app.scriptResult = g.os_path_abspath(
+                g.os_path_join(g.app.loadDir,'..','test','ut.leo'))"
+        )
+        (setq fileName (leo-run-script nil script))
+
+        ; Step 3: execute a script in ut.leo.
+        (setq c (leo-open fileName))
+        (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
+        (leo-run-script c script)
+
+Functions in leoPymacs.py
++++++++++++++++++++++++++
+
+The leoPymacs module is intended to be called from Emacs using pymacs.  It contains the following top-level functions:
+
+- get_app()
+
+  Returns the hidden app created by the leoPymacs.init function.
+
+- dump(anyPythonObject)
+
+  Returns str(repr(anyPythonObject)).
+
+- get_g()
+
+  Returns the leoGlobals module of the hidden app created by the leoPymacs.init function.
+
+- get_script_result()
+
+  Returns g.app.scriptResult, where g.app is the hidden app.
+
+- init()
+  Calls leo.run(pymacs=True) to create a hidden Leo application.
+  Later calls to open can open hidden Leo outlines that can be accessed via runScript.
+
+- open(fileName)
+
+  Opens the .leo file given by fileName. fileName must be the full
+  path to a .leo file. Returns the commander of the open Leo outline,
+  or None if the outline could not be opened.
+
+- run_script(c,script,p=None)
+
+  Executes a script in the context of a commander c returned by the leoPymacs.open.
+  c may be None, in which case a dummy commander is created in which to run the script.
+  In the executed script, p is set to c.p if no p argument is specified.
+  Returns g.app.scriptResult, where g.app is the hidden app.
+
+The minibuffer
+++++++++++++++
+
+Leo's mini-buffer is a text area at the bottom of the body pane. You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*. The following commands affect the minibuffer:
+
+- **full-command**: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a full command name, then hit <Return> to execute the command. Tab completion works, but not yet for file names.
+
+- **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is defined in leoSettings.leo. It is useful for commonly-used commands.
+
+- **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat count for later command. Ctrl-u 999 a adds 999 a's.
+
+- **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
+
+For example, to print a list of all commands type Alt-X print-commands <Return>.
+

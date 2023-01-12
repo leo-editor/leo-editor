@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Creating Documents from Outlines &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Writing Leo scripts in Python" href="tutorial-scripting.html" />
+    <link rel="prev" title="Using Leo as a Personal Information Manager" href="tutorial-pim.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tutorial-scripting.html" title="Writing Leo scripts in Python"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial-pim.html" title="Using Leo as a Personal Information Manager"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial.html" accesskey="U">Leo&#8217;s Tutorials</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="creating-documents-from-outlines">
+<h1>Creating Documents from Outlines<a class="headerlink" href="#creating-documents-from-outlines" title="Permalink to this headline">¶</a></h1>
+<p>Leo&#8217;s rst3 command converts Leo trees containing <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> (rST) or <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> markup to HTML, PDF, <a class="reference external" href="http://www.latex-project.org/">LaTeX</a> and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.</p>
+<p><strong>Prerequisites</strong>: Please make sure you have read the <a class="reference external" href="tutorial-basics.html">first tutorial</a> before reading this one. If you are new to rST, please read the <a class="reference external" href="http://sphinx-doc.org/rest.html">rST primer</a>. For full information about Sphinx, please read the <a class="reference external" href="http://sphinx-doc.org/contents.html">Sphinx documentation</a>.</p>
+<p>The rst3 command makes using rST or Sphinx <em>much</em> easier by automatically creating underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don&#8217;t have to change underlining characters by hand.</p>
+<p>The tutorial covers only the basic features of the rst3 command. This is enough to generate all of Leo&#8217;s documentation!</p>
+<p>CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo&#8217;s help menu.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#install-docutils-and-optional-sphinx" id="id1">Install docutils and (optional) sphinx</a></li>
+<li><a class="reference internal" href="#create-the-rst-node" id="id2">Create the &#64;rst node</a></li>
+<li><a class="reference internal" href="#the-output-and-intermediate-files" id="id3">The output and intermediate files</a></li>
+<li><a class="reference internal" href="#choose-docutils-or-sphinx" id="id4">Choose docutils or sphinx</a><ul>
+<li><a class="reference internal" href="#setting-up-conf-py-for-sphinx" id="id5">Setting up conf.py for sphinx</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#put-a-title-in-the-rst-node" id="id6">Put a title in the &#64;rst node</a></li>
+<li><a class="reference internal" href="#start-the-chapter" id="id7">Start the chapter</a></li>
+<li><a class="reference internal" href="#create-sections-and-subsections" id="id8">Create sections and subsections</a></li>
+<li><a class="reference internal" href="#write-your-document" id="id9">Write your document</a></li>
+<li><a class="reference internal" href="#run-the-rst3-command" id="id10">Run the rst3 command</a></li>
+<li><a class="reference internal" href="#other-topics" id="id11">Other topics</a><ul>
+<li><a class="reference internal" href="#rst-no-head-suppresses-sections" id="id12">&#64;rst-no-head suppresses sections</a></li>
+<li><a class="reference internal" href="#rst-ignore-rst-ignore-tree-ignore-text" id="id13">&#64;rst-ignore &amp; &#64;rst-ignore-tree ignore text</a></li>
+<li><a class="reference internal" href="#inserting-raw-markup" id="id14">Inserting raw markup</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#summary" id="id15">Summary</a></li>
+<li><a class="reference internal" href="#further-study" id="id16">Further study</a></li>
+</ul>
+</div>
+<div class="section" id="install-docutils-and-optional-sphinx">
+<h2><a class="toc-backref" href="#id1">Install docutils and (optional) sphinx</a><a class="headerlink" href="#install-docutils-and-optional-sphinx" title="Permalink to this headline">¶</a></h2>
+<p>The rst3 command requires the <a class="reference external" href="http://docutils.sourceforge.net">docutils</a> Python package. You must also install the <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> package if you use sphinx markup. Sphinx gives Leo&#8217;s and <a class="reference external" href="http://www.python.org/">Python&#8217;s</a> web sites their distinctive appearance and features. After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.</p>
+</div>
+<div class="section" id="create-the-rst-node">
+<h2><a class="toc-backref" href="#id2">Create the &#64;rst node</a><a class="headerlink" href="#create-the-rst-node" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic" id="index-0">
+<li><p class="first">Create a node someplace in your outline.</p>
+</li>
+<li><p class="first">Type this in the headline:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span> <span class="n">myDocument</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The &#64;rst node, and all its descendants, represents your document.</p>
+</div>
+<div class="section" id="the-output-and-intermediate-files">
+<h2><a class="toc-backref" href="#id3">The output and intermediate files</a><a class="headerlink" href="#the-output-and-intermediate-files" title="Permalink to this headline">¶</a></h2>
+<p>The rst3 command applied to:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span> <span class="n">myDocument</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+<p>will generate an <strong>output file</strong>, myDocument.html, from this node and its children, grand-children, etc. The rst3 command creates the output file in the same directory as the .leo file containing the &#64;rst node. You can specify other directories using absolute or relative paths. Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span> <span class="n">myDocument</span><span class="o">.</span><span class="n">html</span>        <span class="c1"># in same folder as the .leo file</span>
+<span class="nd">@rst</span> <span class="n">html</span><span class="o">/</span><span class="n">myDocument</span><span class="o">.</span><span class="n">html</span>   <span class="c1"># in a subfolder</span>
+<span class="nd">@rst</span> <span class="o">~/</span><span class="n">docs</span><span class="o">/</span><span class="n">myDocument</span><span class="o">.</span><span class="n">html</span> <span class="c1"># an absolute path to the folder</span>
+</pre></div>
+</div>
+<p>The rst3 command writes an <strong>intermediate file</strong> in the same directory as the output file. This intermediate file contains the reStructuredText markup generated by the rst3 command. It has the suffix .txt:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">myDocument</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="choose-docutils-or-sphinx">
+<h2><a class="toc-backref" href="#id4">Choose docutils or sphinx</a><a class="headerlink" href="#choose-docutils-or-sphinx" title="Permalink to this headline">¶</a></h2>
+<p>Put the rst3_call_docutils setting in the &#64;settings tree in the .leo file containing the &#64;rst node. This setting determines whether to use plain rST markup or full sphinx markup. To use plain reStructuredText markup:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@bool</span> <span class="n">rst3_call_docutils</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>To use sphinx markup:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@bool</span> <span class="n">rst3_call_docutils</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<div class="section" id="setting-up-conf-py-for-sphinx">
+<h3><a class="toc-backref" href="#id5">Setting up conf.py for sphinx</a><a class="headerlink" href="#setting-up-conf-py-for-sphinx" title="Permalink to this headline">¶</a></h3>
+<p>When using sphinx you must ensure that sphinx&#8217;s conf.py file is configured so that it will find the intermediate files created by the rst3 command. For example, the conf.py file for Leo&#8217;s docs contains the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source_suffix</span> <span class="o">=</span> <span class="s1">&#39;.html.txt&#39;</span>
+</pre></div>
+</div>
+<p>This &#8220;matches&#8221; the form of the intermediate files.  For example, given:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span> <span class="n">myDocument</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+<p>and the default value for the rst3_write_intermediate_extension setting:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@string</span> <span class="n">rst3_write_intermediate_extension</span> <span class="o">=</span> <span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>the name of intermediate file will be:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">myDocument</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>myDocument.html.txt is the <strong>input</strong> file for sphinx.</p>
+</div>
+</div>
+<div class="section" id="put-a-title-in-the-rst-node">
+<h2><a class="toc-backref" href="#id6">Put a title in the &#64;rst node</a><a class="headerlink" href="#put-a-title-in-the-rst-node" title="Permalink to this headline">¶</a></h2>
+<p>Put something like this in the body of the &#64;rst node:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#############</span>
+<span class="n">War</span> <span class="ow">and</span> <span class="n">Peace</span>
+<span class="c1">#############</span>
+</pre></div>
+</div>
+<p>rST markup uses over/underlining to indicate chapter titles. Put a <strong>overline</strong> consisting of pounds signs above the title (War and Peace), and an identical <strong>underline</strong> of pound signs below as shown. rST markup for chapter titles is a bit picky:</p>
+<ul class="simple">
+<li>under/overlines must be at least 4 characters long</li>
+<li>under/overlines must be at least as long as the title.</li>
+<li>The overline and underline must be identical.</li>
+</ul>
+<p>In addition, the rst3 command requires that the &#8220;#&#8221; character be used in the over/underlines for chapter titles.</p>
+</div>
+<div class="section" id="start-the-chapter">
+<h2><a class="toc-backref" href="#id7">Start the chapter</a><a class="headerlink" href="#start-the-chapter" title="Permalink to this headline">¶</a></h2>
+<p>Put introductory words in the body of the &#64;rst node itself:</p>
+<blockquote>
+<div><p>&#8220;Well, Prince, so Genoa and Lucca are now just family estates of the
+Buonapartes. But I warn you, if you don&#8217;t tell me that this means war,
+if you still try to defend the infamies and horrors perpetrated by that
+Antichrist&#8211;I really believe he is Antichrist&#8211;I will have nothing more
+to do with you and you are no longer my friend, no longer my &#8216;faithful
+slave,&#8217; as you call yourself! But how do you do? I see I have
+frightened you&#8211;sit down and tell me all the news.&#8221;</p>
+<p>It was in July, 1805, and the speaker was the well-known Anna Pavlovna
+Scherer, maid of honor and favorite of the Empress Marya Fedorovna.
+With these words she greeted Prince Vasili Kuragin, a man of high rank
+and importance, who was the first to arrive at her reception. Anna
+Pavlovna had had a cough for some days. She was, as she said, suffering
+from la grippe; grippe being then a new word in St. Petersburg, used
+only by the elite.</p>
+</div></blockquote>
+</div>
+<div class="section" id="create-sections-and-subsections">
+<h2><a class="toc-backref" href="#id8">Create sections and subsections</a><a class="headerlink" href="#create-sections-and-subsections" title="Permalink to this headline">¶</a></h2>
+<p>To create a new section, subsection, etc., in the output file:</p>
+<ol class="arabic simple">
+<li>Create a new outline node, as some descendant of the &#64;rst node.</li>
+<li><strong>The new node&#8217;s headline becomes the section&#8217;s title</strong>.</li>
+<li>Type the contents of the section in the body text of the node.</li>
+</ol>
+<p>That&#8217;s all there is to it:</p>
+<ul class="simple">
+<li><strong>The rst3 command generates rST underlining automatically</strong>.</li>
+<li><strong>You reorganize your document by reorganizing nodes</strong>.</li>
+</ul>
+<p>There is <em>no</em> need to change markup when reorganizing your document, a huge improvement over writing &#8220;raw&#8221; rST.</p>
+</div>
+<div class="section" id="write-your-document">
+<h2><a class="toc-backref" href="#id9">Write your document</a><a class="headerlink" href="#write-your-document" title="Permalink to this headline">¶</a></h2>
+<p>Now you write your novel, short story, documentation or whatever. Organize your work as always:</p>
+<div class="line-block">
+<div class="line"><strong>nodes create sections, subsections, sub-sub-sections, etc.</strong></div>
+<div class="line"><strong>depending on their position in the outline</strong>.</div>
+</div>
+</div>
+<div class="section" id="run-the-rst3-command">
+<h2><a class="toc-backref" href="#id10">Run the rst3 command</a><a class="headerlink" href="#run-the-rst3-command" title="Permalink to this headline">¶</a></h2>
+<p id="index-1"><code class="docutils literal"><span class="pre">&lt;Alt-X&gt;rst3&lt;Return&gt;</span></code> runs the rst3 command.</p>
+<ul class="simple">
+<li>If the present node is an &#64;rst node, or a descendant node of an &#64;rst node, the rst3 command applies to the nearest ancestor &#64;rst node.</li>
+<li>Otherwise, the rst3 command applies to all descendant &#64;rst trees.</li>
+</ul>
+<p>If &#64;bool rst3_call_docutils is True, the rst3 command will call docutils automatically to create the output files. For more information about Leo settings, see <a class="reference external" href="tutorial-basics.html#configuring-leo">this section</a>.</p>
+<p>When using sphinx, run sphinx&#8217;s &#8220;make&#8221; utility after running the rst3 command to create the final output files.</p>
+<p><strong>Errors and warnings</strong>:</p>
+<ol class="arabic">
+<li><p class="first">Install docutils and then restart Leo if you see this error:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">writeToDocutils</span><span class="p">:</span> <span class="n">docutils</span> <span class="ow">not</span> <span class="n">present</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">​Leo has a default stylesheet ​​that centers titles and makes them big and bold, so you can disregard messages such as:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">stylesheet</span> <span class="ow">not</span> <span class="n">found</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">&gt;</span><span class="n">default</span><span class="o">.</span><span class="n">css</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="other-topics">
+<h2><a class="toc-backref" href="#id11">Other topics</a><a class="headerlink" href="#other-topics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rst-no-head-suppresses-sections">
+<h3><a class="toc-backref" href="#id12">&#64;rst-no-head suppresses sections</a><a class="headerlink" href="#rst-no-head-suppresses-sections" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes you want to organize text without creating sections:</p>
+<ol class="arabic">
+<li><p class="first">Create an outline node to organize your text.</p>
+</li>
+<li><p class="first">Type the following in the headline:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">head</span> <span class="o">&lt;</span><span class="nb">any</span> <span class="n">text</span><span class="p">:</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The rst3 command adds the body text of this node to the previous section:</p>
+<ul class="simple">
+<li>The headline is ignored.</li>
+<li>The &#64;rst-no-head node does not change the rST section structure in any way.</li>
+</ul>
+</div>
+<div class="section" id="rst-ignore-rst-ignore-tree-ignore-text">
+<h3><a class="toc-backref" href="#id13">&#64;rst-ignore &amp; &#64;rst-ignore-tree ignore text</a><a class="headerlink" href="#rst-ignore-rst-ignore-tree-ignore-text" title="Permalink to this headline">¶</a></h3>
+<p>It is often useful to put reference material in your &#64;rst tree that will <em>not</em> be included in the actual output. To have the rst3 command ignore a single node, type this in the node&#8217;s headline:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span> <span class="o">&lt;</span><span class="n">ignored</span><span class="o">-</span><span class="n">text</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Neither the headline nor body text will be part of the output file.</p>
+<p>To have the rst3 command ignore a node and all its descendants, type this in the node&#8217;s headline:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span><span class="o">-</span><span class="n">tree</span> <span class="o">&lt;</span><span class="n">ignored</span><span class="o">-</span><span class="n">text</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-raw-markup">
+<h3><a class="toc-backref" href="#id14">Inserting raw markup</a><a class="headerlink" href="#inserting-raw-markup" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="http://docutils.sourceforge.net/docs/user/rst/quickref.html#directives">rST manual</a> tells how to insert &#8220;raw&#8221; markup into the output. For example, Leo&#8217;s documentation defines the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="o">|---|</span> <span class="n">unicode</span><span class="p">::</span> <span class="n">U</span><span class="o">+</span><span class="mi">02015</span> <span class="o">..</span> <span class="k">for</span> <span class="n">quotes</span>
+   <span class="p">:</span><span class="n">trim</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>Now <code class="docutils literal"><span class="pre">---</span></code> inserts &#8212;, the unicode &#8220;quotation dash&#8221; used to indicate the author of quotations. Note that rST automatically turns <code class="docutils literal"><span class="pre">--</span></code> into a dash: &#8211;.</p>
+<p>The rST <code class="docutils literal"><span class="pre">|</span></code> markup breaks text into specific lines, but there are times when it can&#8217;t be used.  The following inserts a line break into text:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="o">|</span><span class="n">br</span><span class="o">|</span> <span class="n">raw</span><span class="p">::</span> <span class="n">html</span>
+
+   <span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="summary">
+<h2><a class="toc-backref" href="#id15">Summary</a><a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The rst3 command converts an &#64;rst tree to an output file and an intermediate file.</li>
+<li>docutils uses the output file; sphinx uses the intermediate file.</li>
+<li>Settings starting with &#8220;rst3&#8221; control how the rst3 command works.</li>
+<li>Within &#64;rst trees, headlines become rST sections.</li>
+<li>Sections levels in the generated rST correspond to outline levels in Leo.</li>
+<li>You reorganize your rST documents just by reorganizing the corresponding &#64;rst tree.</li>
+<li>The rst3 command works acts on the nearest ancestor &#64;rst node, if any, or on all descendant &#64;rst nodes.</li>
+<li>&#64;rst-no-head nodes insert text (or markup) without an rST headline.</li>
+<li>The rst3 command ignores &#64;rst-ignore nodes and &#64;rst-ignore-tree trees.</li>
+<li>The &#64;button make-sphinx node in LeoDocs.leo calls sphinx automatically.</li>
+<li>CheatSheet.leo contains an expanded version of the example used in this tutorial. <br />
+You can open CheatSheet.leo from Leo&#8217;s help menu.</li>
+<li>The rst3 command provides <em>many</em> other capabilities. For details, see <a class="reference external" href="rstplugin3.html">the rst3 chapter</a>.</li>
+</ul>
+</div>
+<div class="section" id="further-study">
+<h2><a class="toc-backref" href="#id16">Further study</a><a class="headerlink" href="#further-study" title="Permalink to this headline">¶</a></h2>
+<p>You now know enough to get started with the rst3 command. Some possible next steps are:</p>
+<ul class="simple">
+<li>Look at Leo&#8217;s own documentation in LeoDocs.leo. Discover how the nodes in this tree correspond to the documentation you see before you.</li>
+<li>LeoDocs.leo has an &#64;button make-sphinx script that calls sphinx automatically.</li>
+<li>Create your own &#64;rst nodes. Run the rst3 command on them and see what happens.</li>
+<li>If you get stuck, please ask for help at <a class="reference external" href="https://groups.google.com/forum/#!forum/leo-editor">https://groups.google.com/forum/#!forum/leo-editor</a>.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial-pim.html"
+                        title="previous chapter">Using Leo as a Personal Information Manager</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial-scripting.html"
+                        title="next chapter">Writing Leo scripts in Python</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tutorial-scripting.html" title="Writing Leo scripts in Python"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial-pim.html" title="Using Leo as a Personal Information Manager"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial.html" >Leo&#8217;s Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

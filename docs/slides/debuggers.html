@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Debugging with Leo &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Leo’s Console Gui" href="console-gui.html" />
+    <link rel="prev" title="Unit testing with Leo" href="unitTesting.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="console-gui.html" title="Leo’s Console Gui"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="unitTesting.html" title="Unit testing with Leo"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="debugging-with-leo">
+<h1>Debugging with Leo<a class="headerlink" href="#debugging-with-leo" title="Permalink to this headline">¶</a></h1>
+<p>This chapter discusses debugging Python scripts with Leo.
+Be aware of the distinction between <strong>Leo-specific</strong> scripts and <strong>general</strong> scripts.
+Leo-specific scripts access data in the Leo outline in which they are contained;
+general scripts do not.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#using-g-trace-and-g-pdb" id="id1">Using g.trace and g.pdb</a></li>
+<li><a class="reference internal" href="#settings-for-winpdb" id="id2">Settings for winpdb</a></li>
+<li><a class="reference internal" href="#debugging-scripts-with-winpdb" id="id3">Debugging scripts with winpdb</a><ul>
+<li><a class="reference internal" href="#the-debug-command" id="id4">The debug command</a></li>
+<li><a class="reference internal" href="#the-execute-script-command-with-explicit-debugger-breaks" id="id5">The execute-script command with explicit debugger breaks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="using-g-trace-and-g-pdb">
+<h2><a class="toc-backref" href="#id1">Using g.trace and g.pdb</a><a class="headerlink" href="#using-g-trace-and-g-pdb" title="Permalink to this headline">¶</a></h2>
+<p>Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must <a class="reference external" href="installing.html#running-leo-from-a-console-window">run Leo in a console</a> to use g.trace.</p>
+<p>Inserting and deleting g.trace statements is fast, provided that your <a class="reference external" href="FAQ.html#how-can-i-use-leo-to-develop-leo-itself">work flow</a> makes it easy to restart the program under test. As a result, using g.trace statements is similar to setting tracepoints in a debugger, with the advantage that (disabled) tracepoints remain in the source code for future use. You will find many examples of using g.trace throughout Leo&#8217;s source code.</p>
+<p>My second choice is using g.pdb to set breakpoints for the <a class="reference external" href="https://docs.python.org/3/library/pdb.html">pdb</a> debugger. Pdb uses the console for all interaction, so you must <a class="reference external" href="installing.html#running-leo-from-a-console-window">run Leo in a console</a>. See the <a class="reference external" href="FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo">FAQ</a> for a discussion of both g.trace and g.pdb.</p>
+</div>
+<div class="section" id="settings-for-winpdb">
+<h2><a class="toc-backref" href="#id2">Settings for winpdb</a><a class="headerlink" href="#settings-for-winpdb" title="Permalink to this headline">¶</a></h2>
+<p>The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@string</span> <span class="n">debugger_kind</span> <span class="o">=</span> <span class="n">winpdb</span>
+</pre></div>
+</div>
+<p>This setting controls what debugger the &#8216;Debug Script&#8217; script button uses. Eventually this setting will control what debugger the debug command uses:: At present the only valid value is &#8216;winpdb&#8217;</p>
+<blockquote>
+<div>&#64;bool write_script_file = True</div></blockquote>
+<p>True: The execute script command writes the script to be executed to a file, then executes the script using Python&#8217;s execFile function. The script_file_path setting specifies the path to this file. False (legacy): The execute script command uses Python&#8217;s exec command to execute the script.</p>
+<p>&#64;string script_file_path = ../test/scriptFile.py</p>
+<p>The path to the file to be written by the execute-script command. Notes:</p>
+<ul class="simple">
+<li>This setting has effect only if the write_script_file setting is True.</li>
+<li>Use / as the path delimiter, regardless of platform.</li>
+<li>The default path is ../test/scriptFile.py if no path is given.</li>
+<li>The path starts at g.app.loadDir, so for example ../test/scriptFile.py is equivalent to leo/test/scriptFile.py.</li>
+<li>The filename should end in .py.</li>
+</ul>
+<p>&#64;string debugger_path = None</p>
+</div>
+<div class="section" id="debugging-scripts-with-winpdb">
+<h2><a class="toc-backref" href="#id3">Debugging scripts with winpdb</a><a class="headerlink" href="#debugging-scripts-with-winpdb" title="Permalink to this headline">¶</a></h2>
+<p>The following three section discuss three ways of debugging scripts with <a class="reference external" href="http://www.digitalpeers.com/pythondebugger/">winpdb</a>. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.</p>
+<p><a class="reference external" href="http://www.digitalpeers.com/pythondebugger/">winpdb</a> and its documentation have been improved recently. For more details, see the <a class="reference external" href="http://www.digitalpeers.com/pythondebugger/embedded.htm">embedded winpdb</a> docs. The discussion of embedded debugging may have been written specifically with Leo in mind.</p>
+<div class="section" id="the-debug-command">
+<h3><a class="toc-backref" href="#id4">The debug command</a><a class="headerlink" href="#the-debug-command" title="Permalink to this headline">¶</a></h3>
+<p>This way of debugging can only be used for general scripts, not leo-specific scripts. The debug command writes the script to scriptFile.py and invokes winpdb. winpdb opens and is already &#8216;attached&#8217; to the script to be debugged. You can single-step as you like. Leo continues to run, but killing the debugger will also kill Leo.</p>
+</div>
+<div class="section" id="the-execute-script-command-with-explicit-debugger-breaks">
+<h3><a class="toc-backref" href="#id5">The execute-script command with explicit debugger breaks</a><a class="headerlink" href="#the-execute-script-command-with-explicit-debugger-breaks" title="Permalink to this headline">¶</a></h3>
+<p>This way of debugging scripts allows winpdb to debug scripts that use c, g and p. A bit more work is needed because winpdb does not start automatically. Here are step-by step instructions:</p>
+<ol class="arabic">
+<li><p class="first">Insert the following two lines of code at the start of the script to be debugged:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rpdb2</span>
+<span class="n">rpdb2</span><span class="o">.</span><span class="n">start_embedded_debugger</span><span class="p">(</span><span class="s1">&#39;go&#39;</span><span class="p">,</span><span class="n">fAllowUnencrypted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Execute Leo&#8217;s execute-script command (<em>not</em> the debug command). Leo will appear to hang: start_embedded_debugger is waiting for <em>another</em> copy of winpdb to &#8216;attach&#8217; to the script&#8217;s process. The default timeout is 5 minutes, after which an exception gets thrown.</p>
+</li>
+<li><p class="first">Start winpdb explicitly by executing something like the following in a console:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">/</span><span class="n">Python26</span><span class="o">/</span><span class="n">Scripts</span><span class="o">/</span><span class="n">_winpdb</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">t</span>
+</pre></div>
+</div>
+<p>The -t option tells winpdb that no encoding of password is necessary.
+The password is specified in the call to rpdb2.start_embedded_debugger in your script.
+In our example, the password is &#8216;go&#8217;.</p>
+</li>
+<li><p class="first">Use winpdb&#8217;s <a class="reference external" href="File:Attach">File:Attach</a> command to attach winpdb to Leo. Specify the password as &#8216;go&#8217; and you will see the scriptFile.py containing your entire script. You can now execute or single-step through the script. To repeat, c, g and p are defined, so you can debug any script this way.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="unitTesting.html"
+                        title="previous chapter">Unit testing with Leo</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="console-gui.html"
+                        title="next chapter">Leo&#8217;s Console Gui</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="console-gui.html" title="Leo’s Console Gui"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="unitTesting.html" title="Unit testing with Leo"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Leo’s Cheat Sheet &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Videos about Leo" href="screencasts.html" />
+    <link rel="prev" title="Running Leo" href="running.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="screencasts.html" title="Videos about Leo"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="running.html" title="Running Leo"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="leo-s-cheat-sheet">
+<h1>Leo&#8217;s Cheat Sheet<a class="headerlink" href="#leo-s-cheat-sheet" title="Permalink to this headline">¶</a></h1>
+<p><strong>Important</strong>: The easiest way to find documentation is to search LeoDocs.leo.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#key-bindings" id="id2">Key bindings</a><ul>
+<li><a class="reference internal" href="#selecting-outline-nodes" id="id3">Selecting outline nodes</a></li>
+<li><a class="reference internal" href="#moving-outline-nodes" id="id4">Moving outline nodes</a></li>
+<li><a class="reference internal" href="#moving-the-cursor" id="id5">Moving the cursor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#frequently-used-commands" id="id6">Frequently used commands</a></li>
+<li><a class="reference internal" href="#gathering-find-commands" id="id7">Gathering find commands</a></li>
+<li><a class="reference internal" href="#leo-directives" id="id8">Leo directives</a></li>
+<li><a class="reference internal" href="#settings" id="id9">Settings</a></li>
+<li><a class="reference internal" href="#node-types" id="id10">Node types</a></li>
+<li><a class="reference internal" href="#notable-plugins" id="id11">Notable Plugins</a></li>
+<li><a class="reference internal" href="#external-files-file-nodes" id="id12">External files (&#64;&lt;file&gt; nodes)</a></li>
+<li><a class="reference internal" href="#sections" id="id13">Sections</a></li>
+<li><a class="reference internal" href="#scripting" id="id14">Scripting</a><ul>
+<li><a class="reference internal" href="#pre-defined-symbols" id="id15">Pre-defined symbols</a></li>
+<li><a class="reference internal" href="#leoapp-class" id="id16">LeoApp class</a></li>
+<li><a class="reference internal" href="#commands-class" id="id17">Commands class</a></li>
+<li><a class="reference internal" href="#vnode-class" id="id18">VNode class</a></li>
+<li><a class="reference internal" href="#position-class" id="id19">Position class</a></li>
+<li><a class="reference internal" href="#leo-core-leoglobals-module" id="id20">leo.core.leoGlobals module</a></li>
+<li><a class="reference internal" href="#test-driven-development" id="id21">Test driven development</a></li>
+<li><a class="reference internal" href="#performance-gotchas" id="id22">Performance gotchas</a></li>
+<li><a class="reference internal" href="#about-names" id="id23">About names</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-line-options" id="id24">Command-line options</a></li>
+</ul>
+</div>
+<div class="section" id="key-bindings">
+<h2><a class="toc-backref" href="#id2">Key bindings</a><a class="headerlink" href="#key-bindings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="selecting-outline-nodes">
+<h3><a class="toc-backref" href="#id3">Selecting outline nodes</a><a class="headerlink" href="#selecting-outline-nodes" title="Permalink to this headline">¶</a></h3>
+<p>When focus is in the outline pane:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Right</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">expand</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">go</span><span class="o">-</span><span class="n">right</span><span class="p">)</span>
+<span class="n">Left</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">contract</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">go</span><span class="o">-</span><span class="n">left</span><span class="p">)</span>
+<span class="n">Up</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="n">prev</span><span class="o">-</span><span class="n">visible</span><span class="p">)</span>
+<span class="n">Down</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="nb">next</span><span class="o">-</span><span class="n">visible</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Regardless of focus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Alt</span><span class="o">-</span><span class="n">Home</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">visible</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">End</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="n">last</span><span class="o">-</span><span class="n">visible</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Right</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">expand</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">go</span><span class="o">-</span><span class="n">right</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Left</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">contract</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">go</span><span class="o">-</span><span class="n">left</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Up</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="n">prev</span><span class="o">-</span><span class="n">visible</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Down</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">goto</span><span class="o">-</span><span class="nb">next</span><span class="o">-</span><span class="n">visible</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="moving-outline-nodes">
+<h3><a class="toc-backref" href="#id4">Moving outline nodes</a><a class="headerlink" href="#moving-outline-nodes" title="Permalink to this headline">¶</a></h3>
+<p>When focus is in the outline:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Shift</span><span class="o">-</span><span class="n">Down</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">down</span><span class="p">)</span>
+<span class="n">Shift</span><span class="o">-</span><span class="n">Left</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">left</span><span class="p">)</span>
+<span class="n">Shift</span><span class="o">-</span><span class="n">Right</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">right</span><span class="p">)</span>
+<span class="n">Shift</span><span class="o">-</span><span class="n">Up</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">up</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Regardless of focus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Alt</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">Down</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">down</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">Left</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">left</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">Right</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">right</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">Up</span><span class="o">-</span><span class="n">arrow</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">up</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">D</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">down</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">L</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">left</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">R</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">right</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">U</span> <span class="p">(</span><span class="n">move</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">up</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="moving-the-cursor">
+<h3><a class="toc-backref" href="#id5">Moving the cursor</a><a class="headerlink" href="#moving-the-cursor" title="Permalink to this headline">¶</a></h3>
+<p>When focus is in any of Leo&#8217;s text panes (body pane, log pane, headlines):</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="55%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Key</strong></td>
+<td><strong>Move Cursor</strong></td>
+</tr>
+<tr class="row-even"><td>Arrow keys</td>
+<td>one character</td>
+</tr>
+<tr class="row-odd"><td>Ctrl-LeftArrow</td>
+<td>back one word</td>
+</tr>
+<tr class="row-even"><td>Ctrl-RightArrow</td>
+<td>forward one word</td>
+</tr>
+<tr class="row-odd"><td>Home</td>
+<td>beginning of line</td>
+</tr>
+<tr class="row-even"><td>End</td>
+<td>end of line</td>
+</tr>
+<tr class="row-odd"><td>Ctrl-Home</td>
+<td>beginning of the body</td>
+</tr>
+<tr class="row-even"><td>Ctrl-End</td>
+<td>end of body</td>
+</tr>
+<tr class="row-odd"><td>PageDown</td>
+<td>down one page</td>
+</tr>
+<tr class="row-even"><td>PageUp</td>
+<td>up one page</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Adding the Shift key modifier to any of the keys above moves the cursor and extends the selected text.</p>
+</div>
+</div>
+<div class="section" id="frequently-used-commands">
+<h2><a class="toc-backref" href="#id6">Frequently used commands</a><a class="headerlink" href="#frequently-used-commands" title="Permalink to this headline">¶</a></h2>
+<p>For much more information, see the <a class="reference external" href="commands.html">Commands Reference</a>.</p>
+<p>Copy/Paste (text):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span> <span class="p">(</span><span class="n">copy</span><span class="o">-</span><span class="n">text</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">K</span> <span class="p">(</span><span class="n">kill</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">V</span> <span class="p">(</span><span class="n">paste</span><span class="o">-</span><span class="n">text</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">X</span> <span class="p">(</span><span class="n">cut</span><span class="o">-</span><span class="n">text</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Y</span> <span class="p">(</span><span class="n">yank</span><span class="p">)</span>
+<span class="n">Alt</span><span class="o">-</span><span class="n">Y</span>  <span class="p">(</span><span class="n">yank</span><span class="o">-</span><span class="n">pop</span><span class="p">)</span>
+<span class="n">kill</span><span class="o">-...</span>
+</pre></div>
+</div>
+<p>Files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Ctrl</span><span class="o">-</span><span class="n">N</span> <span class="p">(</span><span class="n">new</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">O</span> <span class="p">(</span><span class="nb">open</span><span class="o">-</span><span class="n">outline</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">S</span> <span class="p">(</span><span class="n">save</span><span class="o">-</span><span class="n">file</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Q</span> <span class="p">(</span><span class="n">exit</span><span class="o">-</span><span class="n">leo</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Focus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Alt</span><span class="o">-</span><span class="n">T</span> <span class="p">(</span><span class="n">focus</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">tree</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">T</span> <span class="p">(</span><span class="n">toggle</span><span class="o">-</span><span class="n">active</span><span class="o">-</span><span class="n">pane</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Tab</span> <span class="p">(</span><span class="n">tab</span><span class="o">-</span><span class="n">cycle</span><span class="o">-</span><span class="nb">next</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Help:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Alt</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">vr</span><span class="o">-</span><span class="n">toggle</span><span class="p">)</span>
+<span class="n">F1</span> <span class="p">(</span><span class="n">help</span><span class="p">)</span>
+<span class="n">F11</span> <span class="p">(</span><span class="n">help</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="n">command</span><span class="p">)</span>
+<span class="n">F12</span> <span class="p">(</span><span class="n">help</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="n">python</span><span class="p">)</span>
+<span class="nb">print</span><span class="o">-</span><span class="n">bindings</span>
+<span class="nb">print</span><span class="o">-</span><span class="n">settings</span>
+<span class="n">help</span><span class="o">-</span><span class="k">for</span><span class="o">-...</span>
+</pre></div>
+</div>
+<p>Find/Replace:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Ctrl</span><span class="o">-</span><span class="n">F</span> <span class="p">(</span><span class="n">search</span><span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">present</span><span class="o">-</span><span class="n">options</span><span class="p">)</span>
+<span class="n">Shift</span><span class="o">-</span><span class="n">Ctrl</span><span class="o">-</span><span class="n">R</span> <span class="p">(</span><span class="n">replace</span><span class="o">-</span><span class="n">string</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">minus</span> <span class="p">(</span><span class="n">replace</span><span class="o">-</span><span class="n">then</span><span class="o">-</span><span class="n">find</span><span class="p">)</span>
+<span class="n">F3</span> <span class="p">(</span><span class="n">find</span><span class="o">-</span><span class="nb">next</span><span class="p">)</span>
+<span class="n">F2</span> <span class="p">(</span><span class="n">find</span><span class="o">-</span><span class="n">previous</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Minibuffer:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Alt</span><span class="o">-</span><span class="n">X</span> <span class="p">(</span><span class="n">full</span><span class="o">-</span><span class="n">command</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">G</span> <span class="p">(</span><span class="n">keyboard</span><span class="o">-</span><span class="n">quit</span><span class="p">)</span>
+<span class="n">Tab</span> <span class="p">(</span><span class="ow">not</span> <span class="n">a</span> <span class="n">command</span><span class="p">,</span> <span class="n">completes</span> <span class="n">typing</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Nodes:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Ctrl</span><span class="o">-</span><span class="n">I</span> <span class="ow">or</span> <span class="n">Insert</span> <span class="p">(</span><span class="n">insert</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">H</span> <span class="p">(</span><span class="n">edit</span><span class="o">-</span><span class="n">headline</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">Return</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">when</span> <span class="n">editing</span> <span class="n">a</span> <span class="n">headline</span><span class="p">)</span> <span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">edit</span><span class="o">-</span><span class="n">headline</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">C</span> <span class="p">(</span><span class="n">copy</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">X</span> <span class="p">(</span><span class="n">cut</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">V</span> <span class="p">(</span><span class="n">paste</span><span class="o">-</span><span class="n">node</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="p">{</span> <span class="p">(</span><span class="n">promote</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="p">}</span> <span class="p">(</span><span class="n">demote</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">M</span> <span class="p">(</span><span class="n">mark</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Undo:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Ctrl</span><span class="o">-</span><span class="n">Z</span> <span class="p">(</span><span class="n">undo</span><span class="p">)</span>
+<span class="n">Ctrl</span><span class="o">-</span><span class="n">Shift</span><span class="o">-</span><span class="n">Z</span> <span class="p">(</span><span class="n">redo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="gathering-find-commands">
+<h2><a class="toc-backref" href="#id7">Gathering find commands</a><a class="headerlink" href="#gathering-find-commands" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>clone find</strong> commands, cfa and cff,  move clones of all nodes matching the search pattern under a single <strong>organizer node</strong>, created as the last top-level node. <strong>Flattened</strong> searches put all nodes as direct children of the organizer node:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cfa</span>     <span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="nb">all</span>
+<span class="n">cff</span>     <span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">flattened</span>
+</pre></div>
+</div>
+<p>The <strong>clone-marked</strong> commands move clones of all marked nodes under an organizer node. Especially useful for gathering nodes by hand:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cfam</span>    <span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="n">marked</span>
+<span class="n">cffm</span>    <span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="n">flattened</span><span class="o">-</span><span class="n">marked</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="leo-directives">
+<h2><a class="toc-backref" href="#id8">Leo directives</a><a class="headerlink" href="#leo-directives" title="Permalink to this headline">¶</a></h2>
+<p>Directives starting with &#8216;&#64; in the leftmost column</p>
+<p>See the <a class="reference external" href="directives.html">Directives reference</a> for full details:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">@</span>                       <span class="c1"># starts doc part</span>
+<span class="nd">@c</span>                      <span class="c1"># ends doc part</span>
+<span class="nd">@color</span>
+<span class="nd">@doc</span>                    <span class="c1"># starts doc part</span>
+<span class="nd">@killcolor</span>
+<span class="nd">@nocolor</span>
+<span class="nd">@language</span> <span class="n">python</span>
+<span class="nd">@language</span> <span class="n">c</span>
+<span class="nd">@language</span> <span class="n">rest</span>          <span class="c1"># restructured text</span>
+<span class="nd">@language</span> <span class="n">plain</span>         <span class="c1"># plain text: no syntax coloring.</span>
+<span class="nd">@lineending</span> <span class="n">lineending</span>
+<span class="nd">@nosearch</span>               <span class="c1"># suppress searching for cff &amp; cfa commands.</span>
+<span class="nd">@pagewidth</span> <span class="mi">100</span>
+<span class="nd">@raw</span><span class="p">,</span> <span class="nd">@end_raw</span>          <span class="c1"># @file only.</span>
+<span class="nd">@tabwidth</span> <span class="o">-</span><span class="mi">4</span>            <span class="c1"># use spaces</span>
+<span class="nd">@tabwidth</span> <span class="mi">8</span>             <span class="c1"># use tabs</span>
+<span class="nd">@nowrap</span>
+<span class="nd">@wrap</span>
+</pre></div>
+</div>
+<p>Leading whitespace is allowed (and significant) for:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@all</span>
+<span class="nd">@others</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="settings">
+<h2><a class="toc-backref" href="#id9">Settings</a><a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
+<p>For documentation see node: &#8220;About this file&#8221; in leoSettings.leo:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Command</span> <span class="n">history</span><span class="p">:</span>    <span class="nd">@history</span><span class="o">-</span><span class="nb">list</span>
+<span class="n">Key</span> <span class="n">bindings</span><span class="p">:</span>       <span class="nd">@shortcuts</span>
+<span class="n">Visual</span> <span class="n">settings</span><span class="p">:</span>    <span class="nd">@data</span> <span class="n">qt</span><span class="o">-</span><span class="n">gui</span><span class="o">-</span><span class="n">plugin</span><span class="o">-</span><span class="n">style</span><span class="o">-</span><span class="n">sheet</span>
+<span class="n">Enabling</span> <span class="n">plugins</span><span class="p">:</span>   <span class="nd">@enabled</span><span class="o">-</span><span class="n">plugins</span>
+</pre></div>
+</div>
+<p>To disable a binding for a key, bind it to do-nothing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">do</span><span class="o">-</span><span class="n">nothing</span> <span class="o">=</span> <span class="n">Insert</span>
+</pre></div>
+</div>
+<p>This overrides the following default binding in leoSettings.leo:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">insert</span><span class="o">-</span><span class="n">node</span> <span class="o">=</span> <span class="n">Insert</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="node-types">
+<h2><a class="toc-backref" href="#id10">Node types</a><a class="headerlink" href="#node-types" title="Permalink to this headline">¶</a></h2>
+<p>Supported by Leo&#8217;s core:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@chapter</span>
+<span class="nd">@rst</span><span class="p">,</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">head</span><span class="p">,</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span><span class="p">,</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span><span class="o">-</span><span class="n">tree</span>
+<span class="nd">@settings</span>
+<span class="nd">@test</span><span class="p">,</span> <span class="nd">@testsetup</span><span class="p">,</span> <span class="nd">@testclass</span>
+<span class="nd">@url</span>
+</pre></div>
+</div>
+<p>Within &#64;settings trees:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@bool</span><span class="p">,</span> <span class="nd">@buttons</span><span class="p">,</span> <span class="nd">@color</span><span class="p">,</span> <span class="nd">@commands</span>
+<span class="nd">@directory</span><span class="p">,</span> <span class="nd">@encoding</span>
+<span class="nd">@enabled</span><span class="o">-</span><span class="n">plugins</span><span class="p">,</span> <span class="nd">@float</span><span class="p">,</span> <span class="nd">@font</span><span class="p">,</span>
+<span class="nd">@history</span><span class="o">-</span><span class="nb">list</span><span class="p">,</span> <span class="nd">@int</span>
+<span class="nd">@menus</span><span class="p">,</span> <span class="nd">@menu</span><span class="p">,</span> <span class="nd">@menuat</span><span class="p">,</span> <span class="nd">@item</span>
+<span class="nd">@openwith</span><span class="p">,</span> <span class="nd">@path</span><span class="p">,</span> <span class="nd">@shortcuts</span><span class="p">,</span> <span class="nd">@string</span>
+</pre></div>
+</div>
+<p>Supported by plugins:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bookmarks</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>       <span class="nd">@bookmarks</span><span class="p">,</span> <span class="nd">@bookmark</span>
+<span class="n">at_folder</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>       <span class="nd">@folder</span>
+<span class="n">at_produce</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>      <span class="nd">@produce</span>
+<span class="n">at_view</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>         <span class="nd">@clip</span><span class="p">,</span> <span class="nd">@strip</span><span class="p">,</span> <span class="nd">@view</span>
+<span class="n">expfolder</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>       <span class="nd">@expfolder</span>
+<span class="n">mod_scripting</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>   <span class="nd">@button</span><span class="p">,</span> <span class="nd">@command</span><span class="p">,</span> <span class="nd">@script</span>
+<span class="n">viewrendered</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>    <span class="nd">@graphics</span><span class="o">-</span><span class="n">script</span><span class="p">,</span> <span class="nd">@image</span>
+                    <span class="nd">@html</span><span class="p">,</span> <span class="nd">@movie</span><span class="p">,</span> <span class="nd">@svg</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="notable-plugins">
+<h2><a class="toc-backref" href="#id11">Notable Plugins</a><a class="headerlink" href="#notable-plugins" title="Permalink to this headline">¶</a></h2>
+<p>See the docstring of these plugins for more details:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bookmarks</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>       <span class="n">Manages</span> <span class="n">URL</span><span class="s1">&#39;s used as bookmarks.</span>
+<span class="n">contextmenu</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>     <span class="n">Creates</span> <span class="n">context</span> <span class="n">menus</span> <span class="k">for</span> <span class="n">headlines</span><span class="o">.</span>
+<span class="n">demo</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>            <span class="n">Creates</span> <span class="n">demos</span> <span class="ow">and</span> <span class="n">slides</span><span class="o">.</span>
+<span class="n">mod_scripting</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>   <span class="n">Supports</span> <span class="nd">@button</span> <span class="ow">and</span> <span class="nd">@command</span> <span class="n">nodes</span><span class="o">.</span>
+<span class="n">quicksearch</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>     <span class="n">Adds</span> <span class="n">Nav</span> <span class="n">tab</span> <span class="k">for</span> <span class="n">searching</span><span class="o">.</span>
+<span class="n">todo</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>            <span class="n">To</span><span class="o">-</span><span class="n">do</span> <span class="n">lists</span> <span class="ow">and</span> <span class="n">simple</span> <span class="n">project</span> <span class="n">management</span><span class="o">.</span>
+<span class="n">valuespace</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>      <span class="n">Creates</span> <span class="n">an</span> <span class="n">outline</span><span class="o">-</span><span class="n">oriented</span> <span class="n">spreadsheet</span><span class="o">.</span>
+<span class="n">viewrendered</span><span class="o">.</span><span class="n">py</span><span class="p">:</span>    <span class="n">Creates</span> <span class="n">a</span> <span class="n">rendering</span> <span class="n">pane</span><span class="o">.</span>
+                    <span class="n">Automatically</span> <span class="n">loaded</span> <span class="n">by</span> <span class="n">Leo</span><span class="s1">&#39;s help commands.</span>
+                    <span class="n">Supports</span> <span class="nd">@graphics</span><span class="o">-</span><span class="n">script</span><span class="p">,</span> <span class="nd">@image</span><span class="p">,</span> <span class="nd">@html</span><span class="p">,</span>
+                    <span class="nd">@movie</span> <span class="ow">and</span> <span class="nd">@svg</span> <span class="n">nodes</span><span class="o">.</span>
+<span class="n">vim</span><span class="o">.</span><span class="n">py</span> <span class="o">&amp;</span> <span class="n">xemacs</span><span class="o">.</span><span class="n">py</span>  <span class="n">Interface</span> <span class="k">with</span> <span class="n">vim</span> <span class="ow">and</span> <span class="n">xemacs</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="external-files-file-nodes">
+<h2><a class="toc-backref" href="#id12">External files (&#64;&lt;file&gt; nodes)</a><a class="headerlink" href="#external-files-file-nodes" title="Permalink to this headline">¶</a></h2>
+<p>&#64;&lt;file&gt; nodes create external files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@asis</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">write</span> <span class="n">only</span><span class="p">,</span> <span class="n">no</span> <span class="n">sentinels</span><span class="p">,</span> <span class="n">exact</span> <span class="n">line</span> <span class="n">endings</span>
+<span class="nd">@auto</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">recommended</span>
+<span class="nd">@clean</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>       <span class="n">recommended</span>
+<span class="nd">@edit</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="nd">@edit</span> <span class="n">node</span> <span class="n">contains</span> <span class="n">entire</span> <span class="n">file</span>
+<span class="nd">@file</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">recommended</span>
+<span class="nd">@nosent</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>      <span class="n">write</span> <span class="n">only</span><span class="p">,</span> <span class="n">no</span> <span class="n">sentinels</span>
+</pre></div>
+</div>
+<p>This table summarizes the differences between &#64;&lt;file&gt; nodes:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>                         Sections &amp;   File data in
+@&lt;file&gt; kind  Sentinels?  @others?    .leo file?    Notes
+------------  ---------- -----------  ------------  -----
+@asis          no          no          yes
+@auto          no          yes         no           1, 2
+@auto-xx       no          yes         no           1, 2
+@clean         no          yes         yes
+@edit          no          no          no
+@file          yes         yes         no
+@nosent        no          yes         yes
+</pre></div>
+</div>
+<p>&#64;auto nodes read files using language-specific importers.
+By default, the file&#8217;s extension determines the importer:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Extensions</span>                  <span class="n">Importer</span>
+<span class="o">----------</span>                  <span class="o">--------</span>
+<span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="o">.</span><span class="n">cc</span><span class="p">,</span> <span class="o">.</span><span class="n">c</span><span class="o">++</span><span class="p">,</span> <span class="o">.</span><span class="n">cpp</span><span class="p">,</span><span class="o">.</span><span class="n">cxx</span>    <span class="n">C</span>
+<span class="o">.</span><span class="n">cs</span><span class="s1">&#39;, .c#&#39;</span>                  <span class="n">C</span> <span class="n">Sharp</span>
+<span class="o">.</span><span class="n">el</span>                         <span class="n">Elisp</span>
+<span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="o">.</span><span class="n">h</span><span class="o">++</span>                    <span class="n">C</span>
+<span class="o">.</span><span class="n">html</span><span class="p">,</span> <span class="o">.</span><span class="n">htm</span>                 <span class="n">HTML</span>
+<span class="o">.</span><span class="n">ini</span>                        <span class="n">Config</span> <span class="n">file</span>
+<span class="o">.</span><span class="n">ipynb</span>                      <span class="n">Jupyter</span> <span class="n">notebook</span>
+<span class="o">.</span><span class="n">java</span>                       <span class="n">Java</span>
+<span class="o">.</span><span class="n">js</span>                         <span class="n">JavaScript</span>
+<span class="o">.</span><span class="n">md</span>                         <span class="n">Markdown</span>
+<span class="o">.</span><span class="n">org</span>                        <span class="n">Org</span> <span class="n">Mode</span>
+<span class="o">.</span><span class="n">otl</span>                        <span class="n">Vim</span> <span class="n">outline</span>
+<span class="o">.</span><span class="n">pas</span>                        <span class="n">Pascal</span>
+<span class="o">.</span><span class="n">php</span>                        <span class="n">PHP</span>
+<span class="o">.</span><span class="n">py</span><span class="p">,</span> <span class="o">.</span><span class="n">pyi</span><span class="p">,</span> <span class="o">.</span><span class="n">pyw</span>             <span class="n">Python</span>
+<span class="o">.</span><span class="n">rest</span><span class="p">,</span> <span class="o">.</span><span class="n">rst</span>                 <span class="n">reStructuredText</span>
+<span class="o">.</span><span class="n">ts</span>                         <span class="n">TypeScript</span>
+<span class="o">.</span><span class="n">xml</span>                        <span class="n">XML</span>
+</pre></div>
+</div>
+<p>You can also specify importers <em>explicitly</em> as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@auto</span><span class="o">-</span><span class="n">xxx</span>           <span class="n">Importer</span>
+<span class="o">---------</span>           <span class="o">--------</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">ctext</span>         <span class="n">ctext</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">markdown</span>      <span class="n">markdown</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">md</span>            <span class="n">markdown</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">org</span>           <span class="n">org</span><span class="o">-</span><span class="n">mode</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">org</span><span class="o">-</span><span class="n">mode</span>      <span class="n">org</span><span class="o">-</span><span class="n">mode</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">otl</span>           <span class="n">vimoutline</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">vim</span><span class="o">-</span><span class="n">outline</span>   <span class="n">vimoutline</span>
+<span class="nd">@auto</span><span class="o">-</span><span class="n">rst</span>           <span class="n">reStructuredText</span>
+</pre></div>
+</div>
+<p><strong>Important</strong>: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatically generate section headings corresponding to Leo&#8217;s outline level. Body text of the top-level &#64;auto node is ignored.</p>
+<p>See the <a class="reference external" href="directives.html">Directives reference</a> for full details.</p>
+</div>
+<div class="section" id="sections">
+<h2><a class="toc-backref" href="#id13">Sections</a><a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h2>
+<p><strong>Section names</strong> have the form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;&lt;</span> <span class="nb">any</span> <span class="n">text</span><span class="p">,</span> <span class="k">except</span> <span class="n">double</span> <span class="n">closing</span> <span class="n">angle</span> <span class="n">brackets</span> <span class="o">&gt;&gt;</span>
+</pre></div>
+</div>
+<p><strong>Section-definition nodes</strong> have headlines starting with a section name.</p>
+<p>Leo performs <strong>expansions</strong> for all &#64;&lt;file&gt; nodes except &#64;asis.</p>
+<p>Expansion of &#64;all:</p>
+<ul class="simple">
+<li>Leo replaces &#64;all by the <em>unexpanded</em> body text of <em>all</em> nodes.</li>
+</ul>
+<p>Expansion of section names and &#64;others:</p>
+<ul class="simple">
+<li>Leo replaces section names in body text by the <em>expanded</em>
+text of the corresponding section definition node.</li>
+<li>Leo replaces &#64;others with the <em>expanded</em> text of all nodes
+that <em>aren&#8217;t</em> section-definition nodes.</li>
+</ul>
+</div>
+<div class="section" id="scripting">
+<h2><a class="toc-backref" href="#id14">Scripting</a><a class="headerlink" href="#scripting" title="Permalink to this headline">¶</a></h2>
+<p>This section lists the ivars, properties, functions and methods most commonly used in Leo scripts.</p>
+<p><strong>Very important</strong>: use Alt-1 (toggle-autocompleter) and Alt-2 (toggle-calltips) to recreate these lists as you type.</p>
+<div class="section" id="pre-defined-symbols">
+<h3><a class="toc-backref" href="#id15">Pre-defined symbols</a><a class="headerlink" href="#pre-defined-symbols" title="Permalink to this headline">¶</a></h3>
+<p>execute-script predefines:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span> <span class="n">The</span> <span class="n">commander</span> <span class="n">of</span> <span class="n">the</span> <span class="n">present</span> <span class="n">outline</span><span class="o">.</span>
+<span class="n">g</span><span class="p">:</span> <span class="n">The</span> <span class="n">leo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">leoGlobals</span> <span class="n">module</span><span class="o">.</span>
+<span class="n">p</span><span class="p">:</span> <span class="n">The</span> <span class="n">presently</span> <span class="n">selected</span> <span class="n">position</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>&#64;test scripts predefine all the above, plus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="p">:</span> <span class="n">The</span> <span class="n">instance</span> <span class="n">of</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="leoapp-class">
+<h3><a class="toc-backref" href="#id16">LeoApp class</a><a class="headerlink" href="#leoapp-class" title="Permalink to this headline">¶</a></h3>
+<p><strong>Ivars</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span>                   <span class="n">A</span> <span class="n">LeoApp</span> <span class="n">instance</span><span class="o">.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span>               <span class="n">A</span> <span class="n">LeoGui</span> <span class="n">instance</span><span class="o">.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">pluginsController</span> <span class="n">A</span> <span class="n">LeoPluginsController</span> <span class="n">instance</span><span class="o">.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.*</span>                 <span class="n">Leo</span><span class="s1">&#39;s global variables.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="commands-class">
+<h3><a class="toc-backref" href="#id17">Commands class</a><a class="headerlink" href="#commands-class" title="Permalink to this headline">¶</a></h3>
+<p><strong>Ivars</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">config</span>                <span class="n">c</span><span class="s1">&#39;s configuration object</span>
+<span class="n">c</span><span class="o">.</span><span class="n">frame</span>                 <span class="n">c</span><span class="s1">&#39;s outer frame, a leoFrame instance.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">undoer</span>                <span class="n">c</span><span class="s1">&#39;s undo handler.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">user_dict</span>             <span class="n">A</span> <span class="n">temporary</span> <span class="nb">dict</span> <span class="k">for</span> <span class="n">use</span> <span class="n">of</span> <span class="n">scripts</span> <span class="ow">and</span> <span class="n">plugins</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>SubCommanders</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># In leo/core...</span>
+<span class="n">c</span><span class="o">.</span><span class="n">atFileCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">chapterController</span>
+<span class="n">c</span><span class="o">.</span><span class="n">fileCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">findCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">importCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">keyHandler</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+<span class="n">c</span><span class="o">.</span><span class="n">persistenceController</span>
+<span class="n">c</span><span class="o">.</span><span class="n">printingController</span>
+<span class="n">c</span><span class="o">.</span><span class="n">rstCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">shadowController</span>
+<span class="n">c</span><span class="o">.</span><span class="n">tangleCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">testManager</span>
+<span class="n">c</span><span class="o">.</span><span class="n">vimCommands</span>
+
+<span class="c1"># In leo/commands...</span>
+<span class="n">c</span><span class="o">.</span><span class="n">abbrevCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">controlCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">convertCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">debugCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">editCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">editFileCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">gotoCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">helpCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">keyHandlerCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">killBufferCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">rectangleCommands</span>
+<span class="n">c</span><span class="o">.</span><span class="n">spellCommands</span>
+</pre></div>
+</div>
+<p><strong>Generators</strong> (New in Leo 5.5: All generators yield distinct positions):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">all_unique_positions</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Most useful methods</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">isChanged</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">deletePositionsInList</span><span class="p">(</span><span class="n">aList</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="c1"># safely deletes all the positions in aList.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">positionExists</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>        <span class="c1"># Redraw the screen. Select p if given.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>                <span class="c1"># Save the present outline.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Official ivars</strong> of any leoFrame f:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>f.c                     is the frame’s commander.
+f.body                  is a leoBody instance.
+f.body.bodyCtl          is a leoQTextEditWidget instance.
+f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+f.log                   is a leoLog instance.
+f.tree                  is a leoQtTree instance.
+f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+</pre></div>
+</div>
+<p>Use autocompletion to explore these objects!</p>
+</div>
+<div class="section" id="vnode-class">
+<h3><a class="toc-backref" href="#id18">VNode class</a><a class="headerlink" href="#vnode-class" title="Permalink to this headline">¶</a></h3>
+<p><strong>Ivars</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">v</span><span class="o">.</span><span class="n">b</span><span class="p">:</span>    <span class="n">v</span><span class="s1">&#39;s body text.</span>
+<span class="n">v</span><span class="o">.</span><span class="n">gnx</span>   <span class="n">v</span><span class="s1">&#39;s gnx.</span>
+<span class="n">v</span><span class="o">.</span><span class="n">h</span><span class="p">:</span>    <span class="n">v</span><span class="s1">&#39;s headline text.</span>
+<span class="n">v</span><span class="o">.</span><span class="n">u</span><span class="p">:</span>    <span class="n">v</span><span class="o">.</span><span class="n">unknownAttributes</span><span class="p">,</span> <span class="n">a</span> <span class="n">persistent</span> <span class="n">Python</span> <span class="n">dictionary</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>v.u (uA&#8217;s or unknownAttributes or userAttributes) allow plugins or scripts
+to associate persistent data with vnodes. For details see the section about
+<a class="reference external" href="customizing.html#adding-extensible-attributes-to-nodes-and-leo-files">userAttributes</a> in the <a class="reference external" href="customizing.html">Customizing Leo</a> chapter.</p>
+</div>
+<div class="section" id="position-class">
+<h3><a class="toc-backref" href="#id19">Position class</a><a class="headerlink" href="#position-class" title="Permalink to this headline">¶</a></h3>
+<p><strong>Properties</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">:</span> <span class="n">same</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span><span class="o">.</span>  <span class="o">*</span><span class="ne">Warning</span><span class="o">*</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">s</span> <span class="ow">is</span> <span class="n">expensive</span><span class="o">.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">:</span> <span class="n">same</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">h</span><span class="o">.</span>  <span class="o">*</span><span class="ne">Warning</span><span class="o">*</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">s</span> <span class="ow">is</span> <span class="n">expensive</span><span class="o">.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">u</span><span class="p">:</span> <span class="n">same</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">u</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Generators</strong> (New in Leo 5.5: All generators yield distinct positions):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">children</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">self_and_parents</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">self_and_siblings</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">following_siblings</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">subtree</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">self_and_subtree</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Getters</strong> These return <em>new positions</em>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">children</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">firstChild</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasChildren</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasNext</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasParent</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasThreadBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">hasThreadNext</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isAncestorOf</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isAnyAtFileNode</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isAt</span><span class="o">...</span><span class="n">Node</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isCloned</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isDirty</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isExpanded</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isMarked</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isRoot</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">lastChild</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">nodeAfterTree</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">nthChild</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">numberOfChildren</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">threadBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">threadNext</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">visBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">visNext</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Setters</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">setDirty</span><span class="p">()</span>  <span class="o">*</span><span class="ne">Warning</span><span class="o">*</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">setDirty</span><span class="p">()</span> <span class="ow">is</span> <span class="n">expensive</span><span class="o">.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setMarked</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Operations on nodes</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">contract</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">doDelete</span><span class="p">(</span><span class="n">new_position</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">insertAfter</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">insertAsNthChild</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">insertBefore</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveAfter</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToFirstChildOf</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToLastChildOf</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToNthChildOf</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToRoot</span><span class="p">(</span><span class="n">oldRoot</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># oldRoot **must** be the old root position if it exists.</span>
+</pre></div>
+</div>
+<p><strong>Moving positions</strong></p>
+<p>The following move positions <em>themselves</em>: they change the node to which a
+position refers. They do <em>not</em> change outline structure in any way! Use
+these when generators are not flexible enough:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">moveToBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToFirstChild</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToLastChild</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToLastNode</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToNext</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToNodeAfterTree</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToNthChild</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToParent</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToThreadBack</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToThreadNext</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToVisBack</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToVisNext</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="leo-core-leoglobals-module">
+<h3><a class="toc-backref" href="#id20">leo.core.leoGlobals module</a><a class="headerlink" href="#leo-core-leoglobals-module" title="Permalink to this headline">¶</a></h3>
+<p>For full details, see &#64;file leoGlobals.py in LeoPyRef.leo.</p>
+<p><strong>g vars</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">windowlist</span>
+<span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
+<span class="n">g</span><span class="o">.</span><span class="n">user_dict</span>  <span class="c1"># a temporary dict for use of scripts and plugins.</span>
+</pre></div>
+</div>
+<p><strong>g decorator</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@g</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">command</span><span class="o">-</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>g functions</strong> (the most interesting: there are many more in leoGlobals.py):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">angleBrackets</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">commanders</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">guiName</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es_exception</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">getScript</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span>
+    <span class="n">useSelectedText</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">forcePythonSentinels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">useSentinels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">old_c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">os_path_</span><span class="o">...</span> <span class="c1"># Wrappers for os.path methods.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">pdb</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span><span class="n">reportErrors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-driven-development">
+<h3><a class="toc-backref" href="#id21">Test driven development</a><a class="headerlink" href="#test-driven-development" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Use <a class="reference external" href="https://docs.python.org/3/library/imp.html">imp.reload</a> to reload all changed modules.</li>
+<li>Make sure to <em>instantiate</em> any changed objects.</li>
+<li>See <a class="reference external" href="unitTesting.html#test-driven-development-in-leo">this section</a> for full details.</li>
+</ul>
+</div>
+<div class="section" id="performance-gotchas">
+<h3><a class="toc-backref" href="#id22">Performance gotchas</a><a class="headerlink" href="#performance-gotchas" title="Permalink to this headline">¶</a></h3>
+<p><strong>Warning</strong>: The p.b and p.h setters and p.setDirty() are <em>very</em> expensive:</p>
+<ul class="simple">
+<li>p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node&#8217;s icon.</li>
+<li>p.h = s calls c.setHeadString(p, s) which calls p.setDirty().</li>
+<li>p.setDirty() changes the icons of all ancestor &#64;file nodes.</li>
+</ul>
+<p>In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.</p>
+<p>Usually, code <em>should</em> use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo&#8217;s outline pane properly. Calling c.redraw() is <em>not</em> enough.</p>
+<p>These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.</p>
+</div>
+<div class="section" id="about-names">
+<h3><a class="toc-backref" href="#id23">About names</a><a class="headerlink" href="#about-names" title="Permalink to this headline">¶</a></h3>
+<p>Scripts may safely assume that most names defined in Leo&#8217;s core will never change. Names used outside their defining module <em>can&#8217;t</em> be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.</p>
+</div>
+</div>
+<div class="section" id="command-line-options">
+<h2><a class="toc-backref" href="#id24">Command-line options</a><a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">launchLeo</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">,</span> <span class="o">...</span>
+
+<span class="n">Options</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">debug</span>               <span class="n">enable</span> <span class="n">debug</span> <span class="n">mode</span>
+  <span class="o">--</span><span class="n">diff</span>                <span class="n">use</span> <span class="n">Leo</span> <span class="k">as</span> <span class="n">an</span> <span class="n">external</span> <span class="n">git</span> <span class="n">diff</span>
+  <span class="o">--</span><span class="n">fullscreen</span>          <span class="n">start</span> <span class="n">fullscreen</span>
+  <span class="o">--</span><span class="n">ipython</span>             <span class="n">enable</span> <span class="n">ipython</span> <span class="n">support</span>
+  <span class="o">--</span><span class="n">fail</span><span class="o">-</span><span class="n">fast</span>           <span class="n">stop</span> <span class="n">unit</span> <span class="n">tests</span> <span class="n">after</span> <span class="n">the</span> <span class="n">first</span> <span class="n">failure</span>
+  <span class="o">--</span><span class="n">gui</span><span class="o">=</span><span class="n">GUI</span>             <span class="n">gui</span> <span class="n">to</span> <span class="n">use</span> <span class="p">(</span><span class="n">qt</span><span class="o">/</span><span class="n">qttabs</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">load</span><span class="o">-</span><span class="nb">type</span><span class="o">=</span><span class="n">LOAD_TYPE</span>
+                        <span class="o">@&lt;</span><span class="n">file</span><span class="o">&gt;</span> <span class="nb">type</span> <span class="k">for</span> <span class="n">loading</span> <span class="n">non</span><span class="o">-</span><span class="n">outlines</span> <span class="kn">from</span> <span class="nn">command</span>
+                        <span class="n">line</span>
+  <span class="o">--</span><span class="n">maximized</span>           <span class="n">start</span> <span class="n">maximized</span>
+  <span class="o">--</span><span class="n">minimized</span>           <span class="n">start</span> <span class="n">minimized</span>
+  <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">cache</span>            <span class="n">disable</span> <span class="n">reading</span> <span class="n">of</span> <span class="n">cached</span> <span class="n">files</span>
+  <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">plugins</span>          <span class="n">disable</span> <span class="nb">all</span> <span class="n">plugins</span>
+  <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">splash</span>           <span class="n">disable</span> <span class="n">the</span> <span class="n">splash</span> <span class="n">screen</span>
+  <span class="o">--</span><span class="n">screen</span><span class="o">-</span><span class="n">shot</span><span class="o">=</span><span class="n">SCREENSHOT_FN</span>
+                        <span class="n">take</span> <span class="n">a</span> <span class="n">screen</span> <span class="n">shot</span> <span class="ow">and</span> <span class="n">then</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">script</span><span class="o">=</span><span class="n">SCRIPT</span>       <span class="n">execute</span> <span class="n">a</span> <span class="n">script</span> <span class="ow">and</span> <span class="n">then</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">script</span><span class="o">-</span><span class="n">window</span><span class="o">=</span><span class="n">SCRIPT_WINDOW</span>
+                        <span class="nb">open</span> <span class="n">a</span> <span class="n">window</span> <span class="k">for</span> <span class="n">scripts</span>
+  <span class="o">--</span><span class="n">select</span><span class="o">=</span><span class="n">SELECT</span>       <span class="n">headline</span> <span class="ow">or</span> <span class="n">gnx</span> <span class="n">of</span> <span class="n">node</span> <span class="n">to</span> <span class="n">select</span>
+  <span class="o">--</span><span class="n">session</span><span class="o">-</span><span class="n">restore</span>     <span class="n">restore</span> <span class="n">previously</span> <span class="n">saved</span> <span class="n">session</span> <span class="n">tabs</span> <span class="n">at</span> <span class="n">startup</span>
+  <span class="o">--</span><span class="n">session</span><span class="o">-</span><span class="n">save</span>        <span class="n">save</span> <span class="n">session</span> <span class="n">tabs</span> <span class="n">on</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">silent</span>              <span class="n">disable</span> <span class="nb">all</span> <span class="n">log</span> <span class="n">messages</span>
+  <span class="o">--</span><span class="n">trace</span><span class="o">-</span><span class="n">plugins</span>       <span class="n">trace</span> <span class="n">imports</span> <span class="n">of</span> <span class="n">plugins</span>
+  <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">version</span>         <span class="nb">print</span> <span class="n">version</span> <span class="n">number</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">window</span><span class="o">-</span><span class="n">size</span><span class="o">=</span><span class="n">WINDOW_SIZE</span>
+                        <span class="n">initial</span> <span class="n">window</span> <span class="n">size</span> <span class="p">(</span><span class="n">height</span> <span class="n">x</span> <span class="n">width</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="running.html"
+                        title="previous chapter">Running Leo</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="screencasts.html"
+                        title="next chapter">Videos about Leo</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="screencasts.html" title="Videos about Leo"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="running.html" title="Running Leo"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

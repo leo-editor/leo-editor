@@ -1,0 +1,619 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendices &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History of Leo" href="history.html" />
+    <link rel="prev" title="The Leonine World" href="leonine-world.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="history.html" title="History of Leo"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="leonine-world.html" title="The Leonine World"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendices">
+<h1>Appendices<a class="headerlink" href="#appendices" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#format-of-leo-files" id="id1">Format of .leo files</a></li>
+<li><a class="reference internal" href="#format-of-external-files" id="id2">Format of external files</a></li>
+<li><a class="reference internal" href="#unicode-reference" id="id3">Unicode reference</a></li>
+<li><a class="reference internal" href="#valid-url-s" id="id4">Valid URL&#8217;s</a></li>
+<li><a class="reference internal" href="#the-mulder-ream-update-algorithm" id="id5">The Mulder/Ream update algorithm</a><ul>
+<li><a class="reference internal" href="#what-the-algorithm-does" id="id6">What the algorithm does</a></li>
+<li><a class="reference internal" href="#guesses-don-t-matter" id="id7">Guesses don&#8217;t matter</a></li>
+<li><a class="reference internal" href="#background-of-the-code" id="id8">Background of the code</a></li>
+<li><a class="reference internal" href="#aha-the-x-sentinels-array" id="id9">Aha: the x.sentinels array</a></li>
+<li><a class="reference internal" href="#strategy-proof-of-correctness" id="id10">Strategy &amp; proof of correctness</a></li>
+<li><a class="reference internal" href="#summary" id="id11">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#why-i-like-python" id="id12">Why I like Python</a><ul>
+<li><a class="reference internal" href="#clarity" id="id13">Clarity</a></li>
+<li><a class="reference internal" href="#power" id="id14">Power</a></li>
+<li><a class="reference internal" href="#safety" id="id15">Safety</a></li>
+<li><a class="reference internal" href="#speed" id="id16">Speed</a></li>
+<li><a class="reference internal" href="#conclusions" id="id17">Conclusions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="format-of-leo-files">
+<h2><a class="toc-backref" href="#id1">Format of .leo files</a><a class="headerlink" href="#format-of-leo-files" title="Permalink to this headline">¶</a></h2>
+<p>Here are the XML elements that may appear in Leo files:</p>
+<dl class="docutils">
+<dt>&lt;?xml&gt;</dt>
+<dd><p class="first">Leo files start with the following line:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+</pre></div>
+</div>
+</dd>
+<dt>&lt;?xml-stylesheet&gt;</dt>
+<dd><p class="first">An xml-stylesheet line is option.  For example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span>&lt;?xml-stylesheet ekr_stylesheet?&gt;
+</pre></div>
+</div>
+</dd>
+<dt>&lt;leo_file&gt;</dt>
+<dd>The &lt;leo_file&gt; element opens an element that contains the entire file.
+&lt;/leo_file&gt; ends the file.</dd>
+<dt>&lt;leo_header&gt;</dt>
+<dd><p class="first">The &lt;leo_header&gt; element specifies version information and other information
+that affects how Leo parses the file.  For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">leo_header</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">tnodes</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">max_tnode_index</span><span class="o">=</span><span class="s2">&quot;5725&quot;</span> <span class="n">clone_windows</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p class="last">The file_format attribute gives the &#8216;major&#8217; format number.
+It is &#8216;2&#8217; for all 4.x versions of Leo.
+The tnodes and clone_windows attributes are no longer used.
+The max_tnode_index attribute is the largest tnode index.</p>
+</dd>
+<dt>&lt;globals&gt;</dt>
+<dd><p class="first">The globals element specifies information relating to the entire file.
+For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nb">globals</span> <span class="n">body_outline_ratio</span><span class="o">=</span><span class="s2">&quot;0.50&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">global_window_position</span> <span class="n">top</span><span class="o">=</span><span class="s2">&quot;27&quot;</span> <span class="n">left</span><span class="o">=</span><span class="s2">&quot;27&quot;</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;472&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;571&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">global_log_window_position</span> <span class="n">top</span><span class="o">=</span><span class="s2">&quot;183&quot;</span> <span class="n">left</span><span class="o">=</span><span class="s2">&quot;446&quot;</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;397&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;534&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="nb">globals</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="last simple">
+<li>The body_outline_ratio attribute specifies the ratio of the height of the body pane to
+the total height of the Leo window.
+It initializes the position of the splitter separating the outline pane from the body pane.</li>
+<li>The global_window_position and global_log_window_position elements
+specify the position of the Leo window and Log window in global coordinates:</li>
+</ul>
+</dd>
+<dt>&lt;preferences&gt;</dt>
+<dd>This element is vestigial.
+Leo ignores the &lt;preferences&gt; element when reading.
+Leo writes an empty &lt;preferences&gt; element.</dd>
+<dt>&lt;find_panel_settings&gt;</dt>
+<dd>This element is vestigial.
+Leo ignores the &lt;find_panel_settings&gt; element when reading.
+Leo writes an empty &lt;find_panel_settings&gt; element.</dd>
+<dt>&lt;clone_windows&gt;</dt>
+<dd>This element is vestigial.
+Leo ignores the &lt;clone_windows&gt; element when reading.
+Leo no longer writes &lt;clone_windows&gt; elements.</dd>
+<dt>&lt;vnodes&gt;</dt>
+<dd>A single &lt;vnodes&gt; element contains nested &lt;v&gt; elements.
+&lt;v&gt; elements correspond to vnodes.
+The nesting of &lt;v&gt; elements indicates outline structure in the obvious way.</dd>
+<dt>&lt;v&gt;</dt>
+<dd><p class="first">The &lt;v&gt; element represents a single vnode and has the following form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">v</span><span class="o">...&gt;&lt;</span><span class="n">vh</span><span class="o">&gt;</span><span class="n">sss</span><span class="o">&lt;/</span><span class="n">vh</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">zero</span> <span class="ow">or</span> <span class="n">more</span> <span class="n">nested</span> <span class="n">v</span> <span class="n">elements</span><span class="p">)</span> <span class="o">&lt;/</span><span class="n">v</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The &lt;vh&gt; element specifies the headline text.
+sss is the headline text encoded with the usual XML escapes.
+As shown above, a &lt;v&gt; element may contain nested &lt;v&gt; elements.
+This nesting indicates outline structure in the obvious way.
+Zero or more of the following attributes may appear in &lt;v&gt; elements:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">t</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">n</span>
+<span class="n">a</span><span class="o">=</span><span class="s2">&quot;xxx&quot;</span>
+</pre></div>
+</div>
+<p>The t=&#8221;Tnnn&#8221; attribute specifies the &lt;t&gt; element associated with a &lt;v&gt; element.
+The a=&#8221;xxx&#8221; attribute specifies vnode attributes.
+The xxx denotes one or more upper-case letters whose meanings are as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">C</span>       <span class="n">The</span> <span class="n">vnode</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">clone</span><span class="o">.</span> <span class="p">(</span><span class="n">Not</span> <span class="n">used</span> <span class="ow">in</span> <span class="mf">4.</span><span class="n">x</span><span class="p">)</span>
+<span class="n">E</span>       <span class="n">The</span> <span class="n">vnode</span> <span class="ow">is</span> <span class="n">expanded</span> <span class="n">so</span> <span class="n">its</span> <span class="n">children</span> <span class="n">are</span> <span class="n">visible</span><span class="o">.</span>
+<span class="n">M</span>       <span class="n">The</span> <span class="n">vnode</span> <span class="ow">is</span> <span class="n">marked</span><span class="o">.</span>
+<span class="n">T</span>       <span class="n">The</span> <span class="n">vnode</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">top</span> <span class="n">visible</span> <span class="n">node</span><span class="o">.</span>
+<span class="n">V</span>       <span class="n">The</span> <span class="n">vnode</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">current</span> <span class="n">vnode</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>For example, a=&#8221;EM&#8221;  specifies that the vnode is expanded and is marked.</p>
+<p><strong>New in 4.0</strong>:</p>
+<ul class="last simple">
+<li>&lt;v&gt; elements corresponding to &#64;file nodes now contain tnodeList attributes.
+The tnodeList attribute allows Leo to recreate the order in which nodes should
+appear in the outline.
+The tnodeList attribute is a list of gnx&#8217;s: global node indices.
+See Format of external files (4.x) for the format of gnx&#8217;s.</li>
+<li>Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
+See <a class="reference external" href="writingPlugins.html">Writing plugins</a> for details.</li>
+</ul>
+</dd>
+<dt>&lt;tnodes&gt;</dt>
+<dd>A single &lt;tnodes&gt; element contains a non-nested list of &lt;t&gt; elements.</dd>
+<dt>&lt;t&gt;</dt>
+<dd><p class="first">The &lt;t&gt; element represents the body text of the corresponding &lt;v&gt; element.
+It has this form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">t</span> <span class="n">tx</span><span class="o">=</span><span class="s2">&quot;&lt;gnx&gt;&quot;</span><span class="o">&gt;</span><span class="n">sss</span><span class="o">&lt;/</span><span class="n">t</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The tx attribute is required.
+The t attribute of &lt;v&gt; elements refer to this tx attribute.
+sss is the body text encoded with the usual XML escapes.</p>
+<p class="last"><strong>New in 4.0</strong>: Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt;
+elements. See <a class="reference external" href="writingPlugins.html">Writing plugins</a> for details.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="format-of-external-files">
+<h2><a class="toc-backref" href="#id2">Format of external files</a><a class="headerlink" href="#format-of-external-files" title="Permalink to this headline">¶</a></h2>
+<p>This section describe the format of external files. Leo&#8217;s <a class="reference external" href="glossary.html#sentinel-lines">sentinel lines</a> are comments, and this section describes those comments.</p>
+<p id="index-0">External files created by &#64;file use gnx&#8217;s in &#64;+node sentinels. Such gnx&#8217;s permanently and uniquely identify nodes. Gnx&#8217;s have the form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">.</span><span class="n">yyyymmddhhmmss</span>
+<span class="nb">id</span><span class="o">.</span><span class="n">yyyymmddhhmmss</span><span class="o">.</span><span class="n">n</span>
+</pre></div>
+</div>
+<p>The second form is used if two gnx&#8217;s would otherwise be identical.</p>
+<ul class="simple">
+<li>id is a string unique to a developer, e.g., a git id.</li>
+<li>yyyymmddhhmmss is the node&#8217;s creation date.</li>
+<li>n is an integer.</li>
+</ul>
+<p>Closing sentinels are required for section references and the &#64;all and &#64;others directives, collectively known as <strong>embedding constructs.</strong> Proof: These constructs do not terminate the node in which they appear. Without a closing sentinel there would be no way to know where the construct ended and the following lines of the enclosing node began.</p>
+<p>New sentinels do not include &#64;nonl or &#64;nl. As a result, body text always ends with at least one newline.</p>
+<p>Here are the sentinels used by Leo, in alphabetical order. Unless otherwise noted, the documentation applies to all versions of Leo. In the following discussion, gnx denotes a gnx as described above.</p>
+<dl class="docutils">
+<dt>&#64;&lt;&lt;</dt>
+<dd><p class="first">A sentinel of the form &#64;&lt;&lt;section_name&gt;&gt; represents a section reference.</p>
+<p class="last">If the reference does not end the line, the sentinel line ending
+the expansion is followed by the remainder of the reference line.
+This allows the Read code to recreate the reference line exactly.</p>
+</dd>
+<dt>&#64;&#64;</dt>
+<dd><p class="first">The &#64;&#64; sentinel represents any line starting with &#64; in body text
+except &#64;*whitespace*, &#64;doc and &#64;others.
+Examples:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">@</span><span class="nd">@nocolor</span>
+<span class="o">@</span><span class="nd">@pagewidth</span> <span class="mi">80</span>
+<span class="o">@</span><span class="nd">@tabwidth</span> <span class="mi">4</span>
+<span class="o">@</span><span class="nd">@code</span>
+</pre></div>
+</div>
+</dd>
+<dt>&#64;afterref</dt>
+<dd>Marks non-whitespace text appearing after a section references.</dd>
+<dt>&#64;+all</dt>
+<dd>Marks the start of text generated by the &#64;all directive.</dd>
+<dt>&#64;-all</dt>
+<dd>Marks the end of text generated by the &#64;all directive.</dd>
+</dl>
+<p>&#64;at and &#64;doc</p>
+<blockquote>
+<div><p>The &#64;+doc &#64;+at sentinels indicate the start of a doc parts.</p>
+<p>We use the following <strong>trailing whitespace convention</strong> to
+determine where putDocPart has inserted line breaks:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">doc</span> <span class="n">part</span> <span class="ow">is</span> <span class="n">followed</span> <span class="n">by</span> <span class="n">an</span> <span class="n">inserted</span> <span class="n">newline</span>
+<span class="k">if</span> <span class="ow">and</span> <span class="n">only</span> <span class="k">if</span> <span class="n">the</span> <span class="n">newline</span> <span class="k">if</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">whitespace</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>To make this convention work, Leo&#8217;s write code deletes the trailing
+whitespace of all lines that are followed by a &#8220;real&#8221; newline.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>&#64;+body <strong>(Leo 3.x only)</strong></dt>
+<dd>Marks the start of body text.</dd>
+<dt>&#64;-body <strong>(Leo 3.x only)</strong></dt>
+<dd>Marks the end of body text.</dd>
+<dt>&#64;delims</dt>
+<dd>The &#64;delims directive inserts &#64;&#64;delims sentinels into the
+external file. The new delimiter strings continue in effect until
+the next &#64;&#64;delims sentinel <em>in the external file</em> or until the
+end of the external file. Adding, deleting or changing &#64;&#64;delim
+<em>sentinels</em> will destroy Leo&#8217;s ability to read the external file.
+Mistakes in using the &#64;delims <em>directives</em> have no effect on Leo,
+though such mistakes will thoroughly mess up a external file as
+far as compilers, HTML renderers, etc. are concerned.</dd>
+<dt>&#64;+leo</dt>
+<dd><p class="first">Marks the start of any external file. This sentinel has the form:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">opening_delim</span><span class="o">&gt;</span><span class="nd">@leo</span><span class="o">&lt;</span><span class="n">closing_delim</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The read code uses single-line comments if &lt;closing_delim&gt; is empty.
+The write code generates single-line comments if possible.</p>
+<p>The &#64;+leo sentinel contains other information. For example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">opening_delim</span><span class="o">&gt;</span><span class="nd">@leo</span><span class="o">-</span><span class="n">ver</span><span class="o">=</span><span class="mi">4</span><span class="o">-</span><span class="n">thin</span><span class="o">&lt;</span><span class="n">closing_delim</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+<dt>&#64;-leo</dt>
+<dd>Marks the end of the Leo file.
+Nothing but whitespace should follow this directive.</dd>
+</dl>
+<p>&#64;+middle <strong>(Created in Leo 4.0, removed in Leo 5.3)</strong></p>
+<dl class="docutils">
+<dt>&#64;-middle <strong>(Created in Leo 4.0, removed in Leo 5.3)</strong></dt>
+<dd><p class="first">Marks the start/end of intermediate nodes between the node that
+references a section and the node that defines the section.</p>
+<p class="last">These sentinels were a <strong>mistake</strong> that created bugs.  See:
+<a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/132">https://github.com/leo-editor/leo-editor/issues/132</a></p>
+</dd>
+<dt>&#64;nl <strong>(Leo 3.x only)</strong></dt>
+<dd>Insert a newline in the outline.</dd>
+<dt>&#64;+node</dt>
+<dd><p class="first">Mark the start and end of a node:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">@+</span><span class="n">node</span><span class="p">:</span><span class="n">gnx</span><span class="p">:</span><span class="o">&lt;</span><span class="n">headline</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd>
+<dt>&#64;nonl <strong>(Leo 3.x only)</strong></dt>
+<dd>Suppresses a newline in the outline.</dd>
+<dt>&#64;others</dt>
+<dd>The &#64;+others sentinel indicates the start of the expansion of an &#64;+others
+directive, which continues until the matching &#64;-others sentinel.</dd>
+<dt>&#64;verbatim</dt>
+<dd>&#64;verbatim indicates that the next line of the external file is not a sentinel.
+This escape convention allows body text to contain lines that would otherwise
+be considered sentinel lines.</dd>
+<dt>&#64;&#64;verbatimAfterRef</dt>
+<dd><p class="first">&#64;verbatimAfterRef is generated when a comment following a section reference would
+otherwise be treated as a sentinel. In Python code, an example would be:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;&lt;</span> <span class="n">ref</span> <span class="o">&gt;&gt;</span> <span class="c1">#+others</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="unicode-reference">
+<h2><a class="toc-backref" href="#id3">Unicode reference</a><a class="headerlink" href="#unicode-reference" title="Permalink to this headline">¶</a></h2>
+<p>Leo uses unicode internally for all strings.</p>
+<ol class="arabic">
+<li><p class="first">Leo converts headline and body text to unicode when reading .leo files and external files. Both .leo files and external files may specify their encoding.  The default is utf-8. If the encoding used in a external file is not &#8220;utf-8&#8221; it is represented in the &#64;+leo sentinel line. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="c1">#@+leo-encoding=iso-8859-1.</span>
+
+<span class="n">The</span> <span class="n">utf</span><span class="o">-</span><span class="mi">8</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="n">a</span> <span class="s2">&quot;lossless&quot;</span> <span class="n">encoding</span> <span class="p">(</span><span class="n">it</span> <span class="n">can</span> <span class="n">represent</span> <span class="nb">all</span>
+<span class="n">unicode</span> <span class="n">code</span> <span class="n">points</span><span class="p">),</span> <span class="n">so</span> <span class="n">converting</span> <span class="n">to</span> <span class="ow">and</span> <span class="kn">from</span> <span class="nn">utf</span><span class="o">-</span><span class="mi">8</span> <span class="n">plain</span>
+<span class="n">strings</span> <span class="n">will</span> <span class="n">never</span> <span class="n">cause</span> <span class="n">a</span> <span class="n">problem</span><span class="o">.</span> <span class="n">When</span> <span class="n">reading</span> <span class="ow">or</span> <span class="n">writing</span> <span class="n">a</span>
+<span class="n">character</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a</span> <span class="s2">&quot;lossy&quot;</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">Leo</span> <span class="n">converts</span> <span class="n">such</span> <span class="n">characters</span>
+<span class="n">to</span> <span class="s1">&#39;?&#39;</span> <span class="ow">and</span> <span class="n">issues</span> <span class="n">a</span> <span class="n">warning</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">When writing .leo files and external files Leo uses the same encoding used to read the file, again with utf-8 used as a default.</p>
+</li>
+<li><p class="first">leoSettings.leo contains the following Unicode settings, with the defaults as shown:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="n">default_derived_file_encoding</span> <span class="o">=</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+    <span class="n">new_leo_file_encoding</span> <span class="o">=</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+
+<span class="n">These</span> <span class="n">control</span> <span class="n">the</span> <span class="n">default</span> <span class="n">encodings</span> <span class="n">used</span> <span class="n">when</span> <span class="n">writing</span> <span class="n">external</span>
+<span class="n">files</span> <span class="ow">and</span> <span class="o">.</span><span class="n">leo</span> <span class="n">files</span><span class="o">.</span> <span class="n">Changing</span> <span class="n">the</span> <span class="n">new_leo_file_encoding</span> <span class="n">setting</span>
+<span class="ow">is</span> <span class="ow">not</span> <span class="n">recommended</span><span class="o">.</span> <span class="n">See</span> <span class="n">the</span> <span class="n">comments</span> <span class="ow">in</span> <span class="n">leoSettings</span><span class="o">.</span><span class="n">leo</span><span class="o">.</span> <span class="n">You</span> <span class="n">may</span>
+<span class="nb">set</span> <span class="n">default_derived_file_encoding</span> <span class="n">to</span> <span class="n">anything</span> <span class="n">that</span> <span class="n">makes</span> <span class="n">sense</span> <span class="k">for</span>
+<span class="n">you</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The &#64;encoding directive specifies the encoding used in a external file. You can&#8217;t mix encodings in a single external file.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="valid-url-s">
+<h2><a class="toc-backref" href="#id4">Valid URL&#8217;s</a><a class="headerlink" href="#valid-url-s" title="Permalink to this headline">¶</a></h2>
+<p>Leo checks that the URL is valid before attempting to open it. A valid URL is:</p>
+<ul class="simple">
+<li>3 or more lowercase alphas</li>
+<li>followed by one :</li>
+<li>followed by one or more of:</li>
+<li><code class="docutils literal"><span class="pre">$%&amp;'()*+,-./0-9:=?&#64;A-Z_a-z{}~</span></code></li>
+<li>followed by one of: <code class="docutils literal"><span class="pre">$%&amp;'()*+/0-9:=?&#64;A-Z_a-z}~</span></code></li>
+</ul>
+<p>That is, a comma, hyphen and open curly brace may not be the last character.</p>
+<p>URL&#8217;s in Leo should contain no spaces: use %20 to indicate spaces.</p>
+<p>You may use any type of URL that your browser supports: http, mailto, ftp, file, etc.</p>
+</div>
+<div class="section" id="the-mulder-ream-update-algorithm">
+<h2><a class="toc-backref" href="#id5">The Mulder/Ream update algorithm</a><a class="headerlink" href="#the-mulder-ream-update-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>This appendix documents the Mulder/Ream update algorithm in detail, with an informal proof of its correctness.</p>
+<p>Prior to Leo 5.1, Leo used Bernhard Mulder&#8217;s original algorithm to read &#64;shadow files. Starting with Leo 5.1, Leo uses this algorithm to read both &#64;clean and &#64;shadow files. Conceptually, both algorithms work as described in the next section.</p>
+<p>In February 2015 EKR realized that the &#64;shadow algorithm could be used to update &#64;clean (&#64;nosent) files. Simplifying the algorithm instantly became a top priority. The new code emerged several days later, made possible by the x.sentinels array. It is an important milestone in Leo&#8217;s history.</p>
+<div class="section" id="what-the-algorithm-does">
+<h3><a class="toc-backref" href="#id6">What the algorithm does</a><a class="headerlink" href="#what-the-algorithm-does" title="Permalink to this headline">¶</a></h3>
+<p>For simplicity, this discussion will assume that we are updating an
+external file, x, created with &#64;clean x. The update algorithm works
+exactly the same way with &#64;shadow trees.</p>
+<p>The algorithm works with <em>any</em> kind of text file. The algorithm uses only
+difflib. It knows nothing about the text or its meaning. No parsing is ever
+done.</p>
+<p>Suppose file x has been changed outside of Leo. When Leo reads x it does
+the following:</p>
+<ol class="arabic">
+<li><p class="first">Recreates the <em>old</em> version of x <em>without</em> sentinels by writing the
+&#64;clean x <em>outline</em> into a string, as if it were writing the &#64;clean x
+outline again.</p>
+</li>
+<li><p class="first">Recreates all the lines of x <em>with</em> sentinels by writing the &#64;clean x
+<em>outline</em> into a string, as if it was writing an &#64;file node! Let&#8217;s call
+these lines the <strong>old sentinels</strong> lines.</p>
+</li>
+<li><p class="first">Uses difflib.SequenceMatcher to create a set of diffs between the
+old and new versions of x <em>without</em> sentinels.</p>
+<p><strong>Terminology</strong>: the diffs tell how to change file a into file b. The
+actual code uses this terminology: <strong>a</strong> is set of lines in the old
+version of x, <strong>b</strong> is the set of lines in the new version of x.</p>
+</li>
+<li><p class="first">Creates a set of lines, the <strong>new sentinels lines</strong> using the old
+sentinels lines, the a and b lines and the diffs.</p>
+<p>This is the magic. Bernhard Mulder&#8217;s genius was conceiving that a
+three-way merge of lines could produce the new outline, <em>with</em>
+sentinels. The code is in x.propagate_changed_lines and its helpers.</p>
+</li>
+<li><p class="first">Replaces the &#64;clean tree with the new tree created by reading the new
+sentinels lines with the &#64;file read logic.</p>
+</li>
+</ol>
+<p><strong>Important</strong>: The update algorithm never changes sentinels. It never
+inserts or deletes nodes. The user is responsible for creating nodes to
+hold new lines, or for deleting nodes that become empty as the result of
+deleting lines.</p>
+</div>
+<div class="section" id="guesses-don-t-matter">
+<h3><a class="toc-backref" href="#id7">Guesses don&#8217;t matter</a><a class="headerlink" href="#guesses-don-t-matter" title="Permalink to this headline">¶</a></h3>
+<p>There are several boundary cases that the update algorithm can not resolve.
+For example, if a line is inserted between nodes, the algorithm can not
+determine whether the line should be inserted at the end of one node or the
+start of the next node. Let us call such lines <strong>ambiguous lines</strong>.</p>
+<p>The algorithm <em>guesses</em> that ambiguous lines belongs at the end of a node
+rather than at the start of the next node. This is usually what is
+wanted&#8211;we usually insert lines at the end of a node.</p>
+<p>Happily, <strong>guesses don&#8217;t matter</strong>, for the following reasons:</p>
+<ol class="arabic simple">
+<li>The external file that results from writing the &#64;clean x tree will be
+the same as the updated external file <em>no matter where</em> ambiguous lines
+are placed. In other words, the update algorithm is <strong>sound</strong>.</li>
+<li>Leo reports nodes that were changed when reading any external file. The
+user can review changes to &#64;clean and &#64;file trees in the same way.</li>
+<li>The user can permanently correct any mistaken guess. Guesses only happen
+for <em>newly inserted or changed</em> lines. Moving an ambiguous line to the
+following node will not change the external file. As a result, the
+next time Leo reads the file the line will be placed in the correct node!</li>
+</ol>
+<p>This proves that &#64;shadow and &#64;clean are easy and safe to use. The
+remaining sections of this document discuss code-level details.</p>
+</div>
+<div class="section" id="background-of-the-code">
+<h3><a class="toc-backref" href="#id8">Background of the code</a><a class="headerlink" href="#background-of-the-code" title="Permalink to this headline">¶</a></h3>
+<p>The algorithm depends on three simple, guaranteed, properties of
+SequenceMatcher.opcodes. See
+<a class="reference external" href="https://docs.python.org/2/library/difflib.html#sequencematcher-examples">https://docs.python.org/2/library/difflib.html#sequencematcher-examples</a></p>
+<p><strong>Fact 1</strong>: The opcodes tell how to turn x.a (a list of lines) into x.b
+(another list of lines).</p>
+<p>The code uses the a and b terminology. It&#8217;s concise and easy to remember.</p>
+<p><strong>Fact 2</strong>: The opcode indices ai, aj, bi, bj <em>never</em> change because
+neither x.a nor x.b changes.</p>
+<p>Plain lines of the result can be built up by copying lines from x.b to x.results:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s1">&#39;replace&#39;</span>   <span class="n">x</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="n">b1</span><span class="p">:</span><span class="n">b2</span><span class="p">])</span>
+<span class="s1">&#39;delete&#39;</span>    <span class="n">do</span> <span class="n">nothing</span>  <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">b2</span><span class="p">)</span>
+<span class="s1">&#39;insert&#39;</span>    <span class="n">x</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="n">b1</span><span class="p">:</span><span class="n">b2</span><span class="p">])</span>
+<span class="s1">&#39;equal&#39;</span>     <span class="n">x</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="n">b1</span><span class="p">:</span><span class="n">b2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Fact 3</strong>: The opcodes <em>cover</em> both x.a and x.b, in order, without any gaps.</p>
+<p>This is an explicit requirement of sm.get_opcode:</p>
+<ul class="simple">
+<li>The first tuple has ai==aj==bi==bj==0.</li>
+<li>Remaining tuples have ai == (aj from the preceding tuple) and bi == (bj
+from the previous tuple).</li>
+</ul>
+<p>Keep in mind this crucial picture:</p>
+<ul class="simple">
+<li>The slices x.a[ai:aj] cover the x.a array, in order without gaps.</li>
+<li>The slices x.b[bi:bj] cover the x.b array, in order without gaps.</li>
+</ul>
+</div>
+<div class="section" id="aha-the-x-sentinels-array">
+<h3><a class="toc-backref" href="#id9">Aha: the x.sentinels array</a><a class="headerlink" href="#aha-the-x-sentinels-array" title="Permalink to this headline">¶</a></h3>
+<p>Mulder&#8217;s original algorithm was hard to understand or to change. The
+culprit was the x.mapping array, which mapped indices into arrays of lines
+<em>with</em> sentinels to indices into arrays of lines <em>without</em> sentinels.</p>
+<p>The new algorithm replaces the x.mapping array with the x.sentinels array.
+As a result, diff indices never need to be adjusted and handling diff
+opcodes is easy.</p>
+<p>For any index i, x.sentinels[i] is the (possibly empty) list of sentinel
+lines that precede line a[i]. Computing x.sentinels from old_private_lines
+is easy. Crucially, x.a and x.sentinels are <em>parallel arrays</em>. That is,
+len(x.a) == len(x.sentinels), so indices into x.a are <em>also</em> indices into
+x.sentinels.</p>
+</div>
+<div class="section" id="strategy-proof-of-correctness">
+<h3><a class="toc-backref" href="#id10">Strategy &amp; proof of correctness</a><a class="headerlink" href="#strategy-proof-of-correctness" title="Permalink to this headline">¶</a></h3>
+<p>Given the x.sentinels array, the strategy for creating the results is
+simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:</p>
+<ul class="simple">
+<li>Writes sentinels from x.sentinels[i], for i in range(ai,aj).</li>
+<li>Writes plain lines from b[i], for i in range(bi,bj).</li>
+</ul>
+<p>This &#8220;just works&#8221; because the indices cover both a and b.</p>
+<ul class="simple">
+<li>The algorithm writes sentinels exactly once (in order) because each
+sentinel appears in x.sentinels[i] for some i in range(len(x.a)).</li>
+<li>The algorithm writes plain lines exactly once (in order) because
+each plain line appears in x.b[i] for some i in range(len(x.b)).</li>
+</ul>
+<p>This completes an informal proof of the correctness of the algorithm.</p>
+<p>The leading and trailing sentinels lines are easy special cases. This
+code, appearing before the main loop, ensures that leading lines are
+written first, and only once:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">put_sentinels</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x</span><span class="o">.</span><span class="n">sentinels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+<p>Similarly, this line, at the end of the main loop, writes trailing
+sentinels:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">trailing_sentinels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="summary">
+<h3><a class="toc-backref" href="#id11">Summary</a><a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<p>The algorithm creates an updated set of lines <em>with</em> sentinels using the
+&#64;clean outline and the updated external file. These new lines then replace
+the original &#64;clean with a new &#64;clean tree. The algorithm uses only
+difflib. It will work with <em>any</em> kind of text file. No knowledge of any
+language is needed.</p>
+<p>The algorithm depends on simple, guaranteed, properties of indices in
+SequenceMatcher opcodes.</p>
+<p>The algorithm steps through x.sentinels and x.b, extending x.results
+as it goes.</p>
+<p>The algorithm gets all needed data directly from opcode indices into
+x.sentinels and x.b. Using opcode indices requires neither reader
+classes nor auxiliary indices.</p>
+<p>The algorithm is simple enough to be understood at first reading. I&#8217;ll
+remember its details for the rest of my life.</p>
+</div>
+</div>
+<div class="section" id="why-i-like-python">
+<h2><a class="toc-backref" href="#id12">Why I like Python</a><a class="headerlink" href="#why-i-like-python" title="Permalink to this headline">¶</a></h2>
+<p>I wrote this soon after discovering Python in 2001. The conclusions are still valid today.</p>
+<p>I&#8217;ve known for a while that Python was interesting; I attended a Python conference last year and added Python support to Leo. But last week I got that Python is something truly remarkable. I wanted to convert Leo from wxWindows to wxPython, so I began work on c2py, a Python script that would help convert from C++ syntax to Python. While doing so, I had an Aha experience. Python is more than an incremental improvement over Smalltalk or C++ or objective-C; it is &#8220;something completely different&#8221;. The rest of this post tries to explain this difference.</p>
+<div class="section" id="clarity">
+<h3><a class="toc-backref" href="#id13">Clarity</a><a class="headerlink" href="#clarity" title="Permalink to this headline">¶</a></h3>
+<p>What struck me first as I converted C++ code to Python is how much less blah, blah, blah there is in Python. No braces, no stupid semicolons and most importantly, <em>no declarations</em>. No more pointless distinctions between const, char *, char const *, char * and wxString. No more wondering whether a variable should be signed, unsigned, short or long.</p>
+<p>Declarations add clutter, declarations are never obviously right and declarations don&#8217;t prevent memory allocation tragedies. Declarations also hinder prototyping. In C++, if I change the type of something I must change all related declarations; this can be a huge and dangerous task. With Python, I can change the type of an object without changing the code at all! It&#8217;s no accident that Leo&#8217;s new log pane was created first in Python.</p>
+<p>Functions returning tuples are a &#8220;minor&#8221; feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.</p>
+<p>Python can&#8217;t check declarations because there aren&#8217;t any. However, there is a really nifty tool called <a class="reference external" href="http://www.logilab.org/857">pylint</a> that does many of the checks typically done by compilers.</p>
+</div>
+<div class="section" id="power">
+<h3><a class="toc-backref" href="#id14">Power</a><a class="headerlink" href="#power" title="Permalink to this headline">¶</a></h3>
+<p>Python is much more powerful than C++, not because Python has more features, but because Python needs <em>less</em> features. Some examples:</p>
+<ul class="simple">
+<li>Python does everything that the C++ Standard Template Library (STL) does, without any of the blah, blah, blah needed by STL. No fuss, no muss, no code bloat.</li>
+<li>Python&#8217;s slicing mechanism is very powerful and applies to any sequence (string, list or tuple). Python&#8217;s string library does more with far less functions because slices replace many functions typically found in other string libraries.</li>
+<li>Writing dict = {} creates a dictionary (hash table). Hash tables can contain anything, including lists and other hash tables.</li>
+<li>Python&#8217;s special functions,  __init__, __del__, __repr__, __cmp__, etc. are an elegant way to handle any special need that might arise.</li>
+</ul>
+</div>
+<div class="section" id="safety">
+<h3><a class="toc-backref" href="#id15">Safety</a><a class="headerlink" href="#safety" title="Permalink to this headline">¶</a></h3>
+<p>Before using Python I never fully realized how difficult and dangerous memory allocation is in C++. Try doing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aList</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">aString</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>in C.  You will write about 20 lines of C code. Any error in this code will create a memory allocation crash or leak.</p>
+<p>Python is fundamentally safe. C++ is fundamentally unsafe. When I am using Python I am free from worry and anxiety. When I am using C++ I must be constantly &#8220;on guard.&#8221; A momentary lapse can create a hard-to-find pointer bug. With Python, almost nothing serious can ever go wrong, so I can work late at night, or after a beer. The Python debugger is always available. If an exception occurs, the debugger/interpreter tells me just what went wrong. I don&#8217;t have to plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can keep right on going even after a crash!</p>
+</div>
+<div class="section" id="speed">
+<h3><a class="toc-backref" href="#id16">Speed</a><a class="headerlink" href="#speed" title="Permalink to this headline">¶</a></h3>
+<p>Python has almost all the speed of C. Other interpretive environments such as icon and Smalltalk have clarity, power and safety similar to Python. What makes Python unique is its seamless way of making C code look like Python code. Python executes at essentially the speed of C code because most Python modules are written in C. The overhead in calling such modules is negligible. Moreover, if code is too slow, one can always create a C module to do the job.</p>
+<p>In fact, Python encourages optimization by moving to higher levels of expression. For example, Leo&#8217;s Open command reads an XML file. If this command is too slow I can use Python&#8217;s XML parser module. This will speed up Leo while at the same time raising the level of the code.</p>
+</div>
+<div class="section" id="conclusions">
+<h3><a class="toc-backref" href="#id17">Conclusions</a><a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h3>
+<p>Little of Python is completely new. What stands out is the superb engineering judgment evident in Python&#8217;s design. Python is extremely powerful, yet small, simple and elegant. Python allows me to express my intentions clearly and at the highest possible level.</p>
+<p>The only hope of making Leo all it can be is to use the best possible tools. I believe Python will allow me to add, at long last, the new features that Leo should have.</p>
+<p>Edward K. Ream, October 25, 2001.  P.S., September, 2005:</p>
+<p>Four years of experience have only added to my admiration for Python. Leo could
+not possibly be what it is today without Python.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="leonine-world.html"
+                        title="previous chapter">The Leonine World</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="history.html"
+                        title="next chapter">History of Leo</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="history.html" title="History of Leo"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="leonine-world.html" title="The Leonine World"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

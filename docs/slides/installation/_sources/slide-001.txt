@@ -1,0 +1,37 @@
+========
+Overview
+========
+
+
+.. _`Download Python`: http://www.python.org/download/
+.. _`packaged version`: https://sourceforge.net/projects/leo/files/Leo/
+.. _`Leo's download page`: https://sourceforge.net/projects/leo/files/Leo/
+.. _`next slide`: slide-002.html
+
+**Installing on Windows: using Leo's single-click installer** 
+
+1. Install Python: `Download Python`_, save to your desktop, then
+   double-click on the saved file.
+
+   Python is software for creating and running computer programs.
+   Leo requires Python 2.6 or later, or Python 3.0 or later.
+
+2. Install Qt. Get the binary package of PyQt from: 
+   http://www.riverbankcomputing.co.uk/software/pyqt/download
+
+   The version of PyQt that you download must match the version of your Python.
+
+3. Download the latest Leo installer from `Leo's download page`_.
+   It will be called something like LeoSetup-<version>.exe
+
+4. Run the installer.
+
+**Installing Leo from Linux packages**
+
+Linux users are best served by the `packaged version`_ available at
+SourceForge. You can also install Leo manually, as discussed in the
+`next slide`_.
+
+**Installing Leo from sources**
+
+See the `next slide`_.

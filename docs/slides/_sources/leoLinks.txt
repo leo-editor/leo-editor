@@ -1,0 +1,40 @@
+.. rst3: filename: html/leoLinks.html
+
+##################
+More Leo Resources
+##################
+
+.. _`blog post`: http://rickardlindberg.me/writing/reflections-on-programming/2013-02-24-related-things-are-not-kept-together/
+.. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
+.. _`Icons`:                icons.html
+.. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
+.. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
+.. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
+.. _`Mind Mapping`:         http://www.mind-mapping.org/
+.. _`bookmarks plugin video`: https://vimeo.com/77720098 
+.. _`literate programming`: http://www.literateprogramming.com/
+.. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
+.. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
+.. _`web viewer`:           load-leo.html
+.. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
+
+Videos:
+
+- Ville Vainio's `Introduction to Leo`_.
+- Terry Brown's `bookmarks plugin video`_.
+- Tom Fetherston's `2012 PyOhio talk`_
+
+More resources:
+
+- Speed Ream's `slashdot article`_ about Leo.
+- Jacob Peck's `scripting tutorial`_.
+- Leo's `wikipedia page`_.
+- A page about `literate programming`_.
+- Joe Orr's `Leo page viewer`_.
+- Satish Goda's `Leo tutorial <https://github.com/satishgoda/leo-editor-tutorial>`_.
+- The `Mind Mapping`_ page.
+- A `web viewer`_ page for .leo files.
+- `Icons`_ telling the world that you used Leo.
+- `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
+- Rickard Lindberg's `blog post`_ about how Leo improves computer code.
+

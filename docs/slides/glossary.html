@@ -1,0 +1,467 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Glossary &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="What’s New in Leo" href="what-is-new.html" />
+    <link rel="prev" title="FAQ" href="FAQ.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="what-is-new.html" title="What’s New in Leo"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FAQ.html" title="FAQ"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<p>This is a short glossary of important terms in Leo&#8217;s world. For more information about terms, look in the index for links to discussions in other places, especially in <a class="reference external" href="tutorial.html">Leo&#8217;s Tutorial</a> and <a class="reference external" href="directives.html">Leo&#8217;s Reference</a>.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#id1" id="id2">&#64;</a></li>
+<li><a class="reference internal" href="#a-c" id="id3">A - C</a></li>
+<li><a class="reference internal" href="#d-g" id="id4">D - G</a></li>
+<li><a class="reference internal" href="#h-l" id="id5">H - L</a></li>
+<li><a class="reference internal" href="#m-o" id="id6">M - O</a></li>
+<li><a class="reference internal" href="#p-r" id="id7">P - R</a></li>
+<li><a class="reference internal" href="#s-z" id="id8">S - Z</a></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id2">&#64;</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="index-0">
+<dt>&#64;</dt>
+<dd>Starts a doc part. Doc parts continue until an &#64;c
+directive or the end of the body text.</dd>
+</dl>
+<dl class="docutils" id="index-1">
+<dt>&#64;&#64; convention for headlines</dt>
+<dd>Within &#64;asis trees only, if a headline starts with &#64;&#64;, Leo
+writes everything in the headline following the &#64;&#64; just before the
+corresponding body text.</dd>
+</dl>
+<dl class="docutils" id="index-2">
+<dt>&#64;&lt;file&gt; node</dt>
+<dd>A node whose headline starts with &#64;asis, &#64;clean, &#64;edit, &#64;file, &#64;shadow, &#64;thin, or their longer forms. We often refer to outline nodes by the directives they contain. For example, an &#64;file node is a node whose headline starts with &#64;file, etc.</dd>
+</dl>
+<dl class="docutils" id="index-3">
+<dt>&#64;all</dt>
+<dd>Copies the body text of all nodes in an &#64;file tree to the external file.</dd>
+</dl>
+<dl class="docutils" id="index-4">
+<dt>&#64;asis &lt;filename&gt;</dt>
+<dd>Creates an external file containing no Leo sentinels directly from the &#64;asis tree.</dd>
+</dl>
+<p id="index-5">&#64;auto &lt;filename&gt;</p>
+<blockquote>
+<div>Imports an external file into the Leo outline, splitting the file into pieces if an importer exists for the give filetype. Importers presently exist for the following languages: C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.</div></blockquote>
+<p id="index-6">&#64;c and &#64;code</p>
+<blockquote>
+<div>Ends a doc part and starts a code part.</div></blockquote>
+<p id="index-7">&#64;chapter</p>
+<blockquote>
+<div>An &#64;chapter tree represents a chapter.</div></blockquote>
+<span class="target" id="index-8"></span><p id="index-9">&#64;clean</p>
+<blockquote>
+<div>Creates an external file without sentinels. Section references and the &#64;all and &#64;others directives are valid in &#64;clean trees.</div></blockquote>
+<p>&#64;color</p>
+<blockquote>
+<div>Enables syntax coloring in a node and its descendants until the next
+&#64;nocolor directive.</div></blockquote>
+<p id="index-10">&#64;comment</p>
+<blockquote>
+<div>Sets the comment delimiters in &#64;thin, &#64;file and &#64;shadow files.</div></blockquote>
+<p id="index-11">&#64;delims</p>
+<blockquote>
+<div>Sets the comment delimiters in &#64;thin, &#64;file and &#64;shadow files.</div></blockquote>
+<p id="index-12">&#64;edit &lt;filename&gt;</p>
+<blockquote>
+<div>Reads an entire external file into a single node.</div></blockquote>
+<p id="index-13">&#64;encoding &lt;encoding&gt;</p>
+<blockquote>
+<div>Specifies the Unicode encoding for an external file.</div></blockquote>
+<p id="index-14">&#64;end_raw</p>
+<blockquote>
+<div>Ends a section of &#8216;raw&#8217; text.</div></blockquote>
+<p id="index-15">&#64;file &lt;filename&gt;</p>
+<blockquote>
+<div>Creates an external file containing sentinels. When writing &#64;file trees, Leo expands section references and &#64;all and &#64;others directives. <strong>Important</strong>: &#64;file is the recommended way to create and edit most files. Using &#64;file trees is <strong>highly recommended</strong> when sharing external files in a collaborative environment.</div></blockquote>
+<p id="index-16">&#64;first &lt;text&gt;</p>
+<blockquote>
+<div><p>The &#64;first directive allows you to place one or more lines at the <em>very start</em> of an external file, before the first sentinel. The &#64;first directive must appear at the <em>very start</em> of body text. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1">#! /usr/bin/env python</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p id="index-17">&#64;killcolor</p>
+<blockquote>
+<div>Completely disables syntax coloring in a node, regardless of other directives.</div></blockquote>
+<p id="index-18">&#64;language &lt;language name&gt;</p>
+<blockquote>
+<div>Specifies the source language, which affects syntax coloring and the comments delimiters used in external files and syntax coloring.</div></blockquote>
+<p id="index-19">&#64;last &lt;text&gt;</p>
+<blockquote>
+<div><p>Allows you to place lines at the very end of external files, after the last sentinel. This directive must appear at the <em>very end</em> of body text. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>@first &lt;?php
+...
+@last ?&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p id="index-20">&#64;lineending cr/lf/nl/crlf</p>
+<blockquote>
+<div>Sets the line endings for external files.</div></blockquote>
+<p id="index-21">&#64;nocolor</p>
+<blockquote>
+<div>Disables syntax coloring in a node and its descendants until the next &#64;color
+directive.</div></blockquote>
+<p id="index-22">&#64;nocolor-node</p>
+<blockquote>
+<div>Completely disables coloring for one node. Descendant nodes are not affected.</div></blockquote>
+<p id="index-23">&#64;nosent</p>
+<blockquote>
+<div>Creates external files without sentinels. Unlike &#64;clean, &#64;nosent trees
+are never updated from from external files.</div></blockquote>
+<p id="index-24">&#64;nowrap</p>
+<blockquote>
+<div>Disables line wrapping the Leo&#8217;s body pane.</div></blockquote>
+<p id="index-25">&#64;others</p>
+<blockquote>
+<div>Copies the body text of all nodes <em>except</em> section definition nodes in an
+&#64;file tree to the corresponding external file.</div></blockquote>
+<p id="index-26">&#64;pagewidth &lt;n&gt;</p>
+<blockquote>
+<div>Sets the page width used to break doc parts into lines.</div></blockquote>
+<dl class="docutils" id="index-27">
+<dt>&#64;raw</dt>
+<dd>Starts a section of &#8220;raw&#8221; text that ends <em>only</em> with the
+&#64;end_raw directive or the end of the body text.</dd>
+</dl>
+<p id="index-28">&#64;tabwidth &lt;n&gt;</p>
+<blockquote>
+<div>Sets the width of tabs. Negative tab widths cause Leo to convert tabs to
+spaces.</div></blockquote>
+<p id="index-29">&#64;thin &lt;filename&gt;</p>
+<blockquote>
+<div>A synonym for &#64;file.</div></blockquote>
+<p id="index-30">&#64;wrap</p>
+<blockquote>
+<div>Enables line wrapping in Leo&#8217;s body pane.</div></blockquote>
+</div>
+<div class="section" id="a-c">
+<h2><a class="toc-backref" href="#id3">A - C</a><a class="headerlink" href="#a-c" title="Permalink to this headline">¶</a></h2>
+<p id="index-31">Body pane</p>
+<blockquote>
+<div>The pane containing the body text of the currently selected headline in the
+outline pane.</div></blockquote>
+<p id="index-32">Body text</p>
+<blockquote>
+<div>The text in the body pane. That is, the contents of a node.</div></blockquote>
+<p id="index-33">Body text box</p>
+<blockquote>
+<div>A small blue box in the icon box indicating that the node contains body
+text.</div></blockquote>
+<p id="index-34">Child</p>
+<blockquote>
+<div>The direct descendant of a node.</div></blockquote>
+<dl class="docutils" id="index-35">
+<dt>Clone</dt>
+<dd>A copy of a tree that changes whenever the original changes.
+The original and all clones are treated equally:
+no special status is given to the &#8220;original&#8221; node.</dd>
+</dl>
+<p id="index-36">Clone arrow</p>
+<blockquote>
+<div>A small red arrow in the icon box indicating that the node is a clone.</div></blockquote>
+<p id="index-37">Code part</p>
+<blockquote>
+<div>A part of a section definition that contains code. Code parts start with &#64;c
+or &#64;code directives and continue until the next doc part.</div></blockquote>
+<p id="index-38">Contract:</p>
+<blockquote>
+<div>To hide all descendants of a node.</div></blockquote>
+</div>
+<div class="section" id="d-g">
+<h2><a class="toc-backref" href="#id4">D - G</a><a class="headerlink" href="#d-g" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="index-39">
+<dt>Demote</dt>
+<dd>To move all siblings that follow a node so that they become children of the node.</dd>
+</dl>
+<dl class="docutils" id="index-40">
+<dt>Descendant</dt>
+<dd>An offspring of a node.  That is, a child, grandchild, etc. of a node.</dd>
+</dl>
+<p id="index-41">Directive</p>
+<blockquote>
+<div>A keyword, preceded by an &#8216;&#64;&#8217; sign, in body text that controls Leo&#8217;s
+operation. The keyword is empty for the &#64; directive.</div></blockquote>
+<p id="index-42">Dirty Node</p>
+<blockquote>
+<div>A node whose headline or body text has changed.</div></blockquote>
+<p id="index-43">Doc part</p>
+<blockquote>
+<div>A part of a section definition that contains comments. Doc parts start with
+&#64; and continue until the &#64;c directive or the end of the body text.</div></blockquote>
+<p>Escape convention</p>
+<blockquote>
+<div>A convention for representing sequences of characters that would otherwise
+have special meaning. <strong>Important</strong>: Leo does not support escape conventions
+used by <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a>. Any line containing matched &lt;&lt; and &gt;&gt; is a section
+reference, regardless of context. To use &lt;&lt; and &gt;&gt; as ordinary characters,
+place them on separate lines.</div></blockquote>
+<p id="index-45">Expand</p>
+<blockquote>
+<div>To make the children of a node visible.</div></blockquote>
+<p id="index-46">External file</p>
+<blockquote>
+<div>A file outside of Leo that is connected to Leo by an &#64;&lt;file&gt; node.</div></blockquote>
+<p>Gnx (Global Node Index)</p>
+<blockquote>
+<div>A unique, immutable string permanently associated with each vnode.
+See <a class="reference external" href="appendices.html#format-of-external-files">format of external files</a>.</div></blockquote>
+<p id="index-48">Grandchild</p>
+<blockquote>
+<div>The child of a child of a node.</div></blockquote>
+</div>
+<div class="section" id="h-l">
+<h2><a class="toc-backref" href="#id5">H - L</a><a class="headerlink" href="#h-l" title="Permalink to this headline">¶</a></h2>
+<p id="index-49">Headline</p>
+<blockquote>
+<div>The headline text of a node.  The part of the node visible in the outline pane.</div></blockquote>
+<p id="index-50">Hoist &amp; dehoist</p>
+<blockquote>
+<div>Hoisting a node redraws the screen that node and its descendants becomes the
+only visible part of the outline. Leo prevents the you from moving nodes
+outside the hoisted outline. Dehoisting a node restores the outline.
+Multiple hoists may be in effect: each dehoist undoes the effect of the
+immediately preceding hoist.</div></blockquote>
+<p id="index-51">Icon box</p>
+<blockquote>
+<div>An icon just to the left of headline text of a node indicating whether the
+node is cloned, marked or dirty, and indicating whether the node contains
+body text.</div></blockquote>
+<p id="index-52">Log Pane</p>
+<blockquote>
+<div>The part of Leo&#8217;s main window that shows informational messages from Leo. It
+also contains the Find tab, the Spell tab, the autocompletion tab.</div></blockquote>
+</div>
+<div class="section" id="m-o">
+<h2><a class="toc-backref" href="#id6">M - O</a><a class="headerlink" href="#m-o" title="Permalink to this headline">¶</a></h2>
+<p id="index-53">Mark</p>
+<blockquote>
+<div>A red vertical line in the icon box of a node.</div></blockquote>
+<p id="index-54">Node</p>
+<blockquote>
+<div>The organizational unit of an outline. The combination of headline text and
+body text. Sometimes used as a synonym for tree.</div></blockquote>
+<p id="index-55">Offspring</p>
+<blockquote>
+<div>A synonym for the descendants of a node.
+The children, grandchildren, etc. of a node.</div></blockquote>
+<p id="index-56">Organizer node</p>
+<blockquote>
+<div>A node containing no body text. Organizing nodes may appear anywhere in an
+&#64;file tree; they do not affect the external file in any way. In particular,
+organizing nodes do not affect indentation in external files.</div></blockquote>
+<p id="index-57">Orphan node</p>
+<blockquote>
+<div><p>A node that would not be copied to a external file. Orphan nodes can arise
+because an &#64;file tree has no &#64;others or &#64;all directives. Sections that are
+defined but not used also create orphan nodes.</p>
+<p>Leo issues a warning when attempting to write an &#64;file tree containing
+orphan nodes, and does not save the external file. No information is lost;
+Leo saves the information in the &#64;file tree in the .leo file. Leo will load
+the &#64;file tree from the .leo file the next time Leo opens the .leo file.</p>
+</div></blockquote>
+<p id="index-58">Outline</p>
+<blockquote>
+<div>A node and its descendants. A tree. All the nodes of a .leo file.</div></blockquote>
+<p id="index-59">Outline order</p>
+<blockquote>
+<div>The order that nodes appear on the screen when all nodes are expanded.</div></blockquote>
+<p id="index-60">Outline pane</p>
+<blockquote>
+<div>The pane containing a visual representation of the entire outline, or a part
+of the outline if the outline is hoisted.</div></blockquote>
+</div>
+<div class="section" id="p-r">
+<h2><a class="toc-backref" href="#id7">P - R</a><a class="headerlink" href="#p-r" title="Permalink to this headline">¶</a></h2>
+<p id="index-61">Parent</p>
+<blockquote>
+<div>The node that directly contains a node.</div></blockquote>
+<p id="index-62">Plugin</p>
+<blockquote>
+<div>A way to modify and extend Leo without changing Leo&#8217;s core code.
+See <a class="reference external" href="writingPlugins.html">Writing plugins and hooks</a>.</div></blockquote>
+<p id="index-63">Promote</p>
+<blockquote>
+<div>To move all children of a node in an outline so that they become siblings of
+the node.</div></blockquote>
+<p id="index-64">Reference .leo file</p>
+<p>Leo&#8217;s <a class="reference external" href="https://github.com/leo-editor/leo-editor">git repository</a> and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. These reference files should contain nothing but &#64;file nodes and should change only when new external files get added to the project. Developers should use <em>local copies</em> of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</p>
+<p>reStructuredText (rST)</p>
+<blockquote>
+<div>A simple, yet powerful markup language for creating .html, or LaTeX output
+files. See the <a class="reference external" href="http://docutils.sourceforge.net/docs/user/rst/quickstart.html">rST primer</a>.</div></blockquote>
+<p id="index-66">Root</p>
+<blockquote>
+<div>The first node of a .leo file, outline, suboutline or &#64;&lt;file&gt; tree.</div></blockquote>
+</div>
+<div class="section" id="s-z">
+<h2><a class="toc-backref" href="#id8">S - Z</a><a class="headerlink" href="#s-z" title="Permalink to this headline">¶</a></h2>
+<p id="index-67">Section</p>
+<blockquote>
+<div>A fragment of text that can be incorporated into external files.</div></blockquote>
+<p id="index-68">Section definition</p>
+<blockquote>
+<div>The body text of a section definition node.</div></blockquote>
+<p id="index-69">Section definition node</p>
+<blockquote>
+<div>A node whose headline starts with a section name and whose body text defines
+a section.</div></blockquote>
+<p id="index-70">Section name</p>
+<blockquote>
+<div>A name enclosed in &lt;&lt; and &gt;&gt;. Section names may contain any characters
+except newlines and &#8220;&gt;&gt;&#8221;.</div></blockquote>
+<p id="index-71">Section reference</p>
+<blockquote>
+<div>A section name appearing in a code part. When writing to an external file,
+Leo replaces all references by their definitions.</div></blockquote>
+<p id="index-72">Sentinel</p>
+<blockquote>
+<div><p>Comment lines in external files used to represent Leo&#8217;s outline structure.
+Such lines start with an &#64; following the opening comment delimiter.
+Sentinels embed outline structure into external files.</p>
+<p><strong>Do not alter sentinel lines</strong>. Doing so can corrupt the outline structure.</p>
+</div></blockquote>
+<p id="index-73">Settings:</p>
+<blockquote>
+<div>Plugins and other parts of Leo can get options from &#64;settings trees,
+outlines whose headline is &#64;settings. When opening a .leo file, Leo looks
+for &#64;settings trees in the outline being opened and also in various
+leoSettings.leo files. &#64;settings trees allow plugins to get options without
+any further support from Leo&#8217;s core code. For a full discussion of &#64;settings
+trees, see <a class="reference external" href="customizing.html">Customizing Leo</a>.</div></blockquote>
+<p id="index-74">Sibling</p>
+<blockquote>
+<div>Nodes with the same parent. Siblings of the root node have the hidden root
+node as their parent.</div></blockquote>
+<p id="index-75">Target language</p>
+<blockquote>
+<div>The language used to syntax color text. This determines the default comment
+delimiters used when writing external files.</div></blockquote>
+<p id="index-76">Tree</p>
+<blockquote>
+<div>An outline. A node and its descendants.</div></blockquote>
+<p id="index-77">Underindent line</p>
+<blockquote>
+<div>A line of body text that is indented less then the starting line of the
+class, method or function in which it appears. Leo outlines can not
+represent such lines exactly: every line in an external file will have at
+least the indentation of any unindented line of the corresponding node in
+the outline.</div></blockquote>
+<p>uA</p>
+<blockquote>
+<div>uA&#8217;s (User Attributes) are persistent Python dicts that allows scripts
+and plugins to associate additional data with each node. See
+<a class="reference external" href="customizing.html#adding-extensible-attributes-to-nodes-and-leo-files">extensible attributes</a>.</div></blockquote>
+<p id="index-79">View node</p>
+<blockquote>
+<div>A node that represents a view of an outline. View nodes are typically
+ordinary, non-cloned nodes that contain cloned descendant nodes. The cloned
+descendant nodes comprise most of the data of the view. Other non-cloned
+nodes may add additional information to the view.</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="FAQ.html"
+                        title="previous chapter">FAQ</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="what-is-new.html"
+                        title="next chapter">What&#8217;s New in Leo</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="what-is-new.html" title="What’s New in Leo"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FAQ.html" title="FAQ"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>
