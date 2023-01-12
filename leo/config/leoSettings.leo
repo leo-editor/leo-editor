@@ -600,6 +600,7 @@
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command settings</vh>
+<v t="ekr.20230112123841.1"><vh>@string rst3-action=None</vh></v>
 <v t="ekr.20210327193736.1"><vh>rst3 reporting options</vh>
 <v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
 </v>
@@ -2316,7 +2317,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20100904134301.11000"></v>
+<v t="ekr.20230112123841.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11712,6 +11713,13 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
 # Headlines must match exactly.
 
+</t>
+<t tx="ekr.20230112123841.1">This setting tells what the rst3 should do when writing changed intermediate files.
+The valid actions are:
+
+'none': take no extra action.
+'clone': clone all dirty `@rst` trees.
+'mark': mark all dirty `@rst` tree.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 

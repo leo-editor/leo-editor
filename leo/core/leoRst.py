@@ -59,16 +59,16 @@ class RstCommands:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the RstCommand class."""
         self.c = c
-        #
+
         # Statistics.
         self.n_intermediate = 0  # Number of intermediate files written.
         self.n_docutils = 0  # Number of docutils files written.
-        #
+
         # Http support for HtmlParserClass.  See http_addNodeMarker.
         self.anchor_map: Dict[str, Position] = {}  # Keys are anchors. Values are positions
         self.http_map: Dict[str, Position] = {}  # Keys are named hyperlink targets.  Value are positions.
         self.nodeNumber = 0  # Unique node number.
-        #
+
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
@@ -76,12 +76,12 @@ class RstCommands:
         self.path = ''  # The path from any @path directive.
         self.result_list: List[str] = []  # The intermediate results.
         self.root: Position = None  # The @rst node being processed.
-        #
+
         # Default settings.
         self.default_underline_characters = '#=+*^~`-:><-'
         self.user_filter_b = None
         self.user_filter_h = None
-        #
+
         # Complete the init.
         self.reloadSettings()
     #@+node:ekr.20210326084034.1: *4* rst.reloadSettings
@@ -89,14 +89,19 @@ class RstCommands:
         """RstCommand.reloadSettings"""
         c = self.c
         getBool, getString = c.config.getBool, c.config.getString
-        #
+
+        # Action option for rst3 command.
+        self.rst3_action = getString('rst3-action') or 'none'
+        if self.rst3_action.lower() not in ('none', 'clone', 'mark'):
+            self.rst3_action = 'none'
+
         # Reporting options.
         self.silent = not getBool('rst3-verbose', default=True)
-        #
+
         # Http options.
         self.http_server_support = getBool('rst3-http-server-support', default=False)
         self.node_begin_marker = getString('rst3-node-begin-marker') or 'http-node-marker-'
-        #
+
         # Output options.
         self.default_path = getString('rst3-default-path') or ''
         self.generate_rst_header_comment = getBool('rst3-generate-rst-header-comment', default=True)
@@ -105,11 +110,11 @@ class RstCommands:
             or self.default_underline_characters)
         self.write_intermediate_file = getBool('rst3-write-intermediate-file', default=True)
         self.write_intermediate_extension = getString('rst3-write-intermediate-extension') or '.txt'
-        #
+
         # Docutils options.
         self.call_docutils = getBool('rst3-call-docutils', default=True)
         self.publish_argv_for_missing_stylesheets = getString('rst3-publish-argv-for-missing-stylesheets') or ''
-        self.stylesheet_embed = getBool('rst3-stylesheet-embed', default=False)  # New in leoSettings.leo.
+        self.stylesheet_embed = getBool('rst3-stylesheet-embed', default=False)
         self.stylesheet_name = getString('rst3-stylesheet-name') or 'default.css'
         self.stylesheet_path = getString('rst3-stylesheet-path') or ''
     #@+node:ekr.20100813041139.5920: *3* rst: Entry points
