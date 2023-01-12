@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
-#@@first
 """Leo's qt frame classes."""
 #@+<< qt_frame imports >>
 #@+node:ekr.20110605121601.18003: **  << qt_frame imports >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040140.1: * @file ../commands/keyCommands.py
-#@@first
 """Leo's key-handling commands."""
 # This file *is* used. Do not delete it!
 

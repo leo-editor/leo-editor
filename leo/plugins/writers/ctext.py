@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20140804103545.29975: * @file ../plugins/writers/ctext.py
-#@@first
 #@@language python
 #@@tabwidth -4
 from leo.core import leoGlobals as g  # Required.

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
-#@@first
 """Support for the edit-pane-test-open command and window."""
 #@+<<editpane imports>>
 #@+node:tbrown.20171028115438.1: ** << editpane imports >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040118.1: * @file ../commands/debugCommands.py
-#@@first
 """Per-commander debugging class."""
 #@+<< debugCommands imports & annotations >>
 #@+node:ekr.20181006100818.1: ** << debugCommands imports & annotations >>

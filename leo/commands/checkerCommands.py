@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161021090740.1: * @file ../commands/checkerCommands.py
-#@@first
 """Commands that invoke external checkers"""
 #@+<< checkerCommands imports >>
 #@+node:ekr.20161021092038.1: ** << checkerCommands imports >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035236.1: * @file ../commands/abbrevCommands.py
-#@@first
 """Leo's abbreviations commands."""
 #@+<< abbrevCommands imports & abbreviations >>
 #@+node:ekr.20150514045700.1: ** << abbrevCommands imports & abbreviations >>

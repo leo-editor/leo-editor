@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
-#@@first
 """Leo's base compare class."""
 #@+<< leoCompare imports & annotations >>
 #@+node:ekr.20220901161941.1: ** << leoCompare imports & annotations >>

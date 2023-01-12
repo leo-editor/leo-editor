@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
-#@@first
 """The new, tokenize based, @auto importer for Python."""
 import re
 import tokenize

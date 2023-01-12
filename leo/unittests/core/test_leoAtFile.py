@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210901172411.1: * @file ../unittests/core/test_leoAtFile.py
-#@@first
 """Tests of leoAtFile.py"""
 import os
 import tempfile
@@ -801,10 +799,8 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101050923.1: *4* << define contents >> (test_at_section_delim)
         # The contents of a personal test file, slightly altered.
         contents = textwrap.dedent(f'''\
-        # -*- coding: utf-8 -*-
         #AT+leo-ver=5-thin
         #AT+node:{root.gnx}: * {h}
-        #AT@first
 
         """Classes to read and write @file nodes."""
 

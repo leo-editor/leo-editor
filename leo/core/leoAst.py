@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
-#@@first
 # This file is part of Leo: https://leoeditor.com
 # Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
 

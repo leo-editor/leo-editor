@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
-#@@first
 """Leo's file-conversion commands."""
 #@+<< convertCommands imports & annotations >>
 #@+node:ekr.20220824202922.1: ** << convertCommands imports & annotations >>
@@ -2187,7 +2185,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def pre_pass(self, s: str) -> str:
 
             # Remove the python encoding lines.
-            s = s.replace('@first # -*- coding: utf-8 -*-\n', '')
+            s = s.replace('', '')
 
             # Replace 'self' by 'this' *everywhere*.
             s = re.sub(r'\bself\b', 'this', s)

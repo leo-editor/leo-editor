@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
-#@@first
 """Handling background processes"""
 #@+<< leoBackground imports & annotations >>
 #@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>

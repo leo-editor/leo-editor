@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
-#@@first
 """linescanner.py: The base Importer class used by some importers."""
 import io
 import re

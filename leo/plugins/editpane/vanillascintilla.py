@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.3: * @file ../plugins/editpane/vanillascintilla.py
-#@@first
 """
 vanillascintilla.py - a LeoEditPane editor that uses QScintilla
 but does not try to add Leo key handling

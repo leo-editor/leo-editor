@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
-#@@first
 """The @auto importer for .ini files."""
 import re
 from typing import Dict, List, Optional

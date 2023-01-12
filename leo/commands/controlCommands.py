@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040100.1: * @file ../commands/controlCommands.py
-#@@first
 """Leo's control commands."""
 #@+<< controlCommands imports & annotations >>
 #@+node:ekr.20150514050127.1: ** << controlCommands imports & annotations >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210901140718.1: * @file ../unittests/test_syntax.py
-#@@first
 """Syntax tests, including a check that Leo will continue to load!"""
 # pylint: disable=no-member
 import glob

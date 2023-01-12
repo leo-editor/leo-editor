@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180202053206.1: * @file ../plugins/writers/treepad.py
-#@@first
 """The @auto write code for TreePad (.hjt) files."""
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20220822082042.1: * @file ../unittests/core/test_leoImport.py
-#@@first
 """Tests of leoImport.py"""
 
 import io

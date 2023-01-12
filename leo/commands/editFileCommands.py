@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514041209.1: * @file ../commands/editFileCommands.py
-#@@first
 """Leo's file-editing commands."""
 #@+<< editFileCommands imports & annotations >>
 #@+node:ekr.20170806094317.4: ** << editFileCommands imports & annotations >>

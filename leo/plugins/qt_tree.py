@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907131341.18707: * @file ../plugins/qt_tree.py
-#@@first
 """Leo's Qt tree class."""
 #@+<< qt_tree imports >>
 #@+node:ekr.20140907131341.18709: ** << qt_tree imports >>

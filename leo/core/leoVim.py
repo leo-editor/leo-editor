@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
-#@@first
 #@+<< leoVim docstring >>
 #@+node:ekr.20220824081749.1: ** << leoVim docstring >>
 """

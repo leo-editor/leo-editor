@@ -1,6 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181009072707.1: * @file ../../run_travis_unit_tests.py
-# -*- coding: utf-8 -*-
 import os
 import sys
 import traceback

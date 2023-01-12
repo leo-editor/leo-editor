@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
-#@@first
 """Classes that manage chapters in Leo's core."""
 #@+<< leoChapters imports & annotations >>
 #@+node:ekr.20220824080606.1: ** << leoChapters imports & annotations >>

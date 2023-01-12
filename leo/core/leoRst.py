@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20090502071837.3: * @file leoRst.py
-#@@first
 #@+<< leoRst docstring >>
 #@+node:ekr.20090502071837.4: ** << leoRst docstring >>
 """Support for restructured text (rST), adapted from rst3 plugin.

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210904064440.2: * @file ../unittests/test_importers.py
-#@@first
 """Tests of leo/plugins/importers"""
 import glob
 import importlib

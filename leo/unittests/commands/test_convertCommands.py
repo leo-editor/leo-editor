@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20211013081056.1: * @file ../unittests/commands/test_convertCommands.py
-#@@first
 """Tests of leo.commands.leoConvertCommands."""
 import os
 import re
@@ -35,8 +33,10 @@ class TestPythonToTypeScript(LeoUnitTest):
         # Set the gnx of the @file nodes in the contents to root.gnx.
         # This is necessary because of a check in fast_at.scan_lines.
         pat = re.compile(r'^\s*#\s?@\+node:([^:]+): \* @file leoNodes\.py$')
-        line3 = g.splitLines(contents)[2]
-        m = pat.match(line3)
+        # line 1: #@+leo-ver=5-thin
+        # line 2: #@+node:ekr.20031218072017.3320: * @file leoNodes.py
+        line2 = g.splitLines(contents)[1]
+        m = pat.match(line2)
         assert m, "Can not replace gnx"
         contents = contents.replace(m.group(1), root.gnx)
         # Replace c's outline with leoNodes.py.
@@ -260,36 +260,6 @@ class Test_To_Python(BaseTestImporter):
     """Test cases for commands using To_Python class."""
 
     #@+others
-    #@+node:ekr.20220824194104.1: *3*  TestTo_Python.setUp
-    # def setUp(self):
-        # super().setUp()
-        # c = self.c
-
-        ###
-            # self.assertTrue(hasattr(self.x, 'convert'))
-            # root = self.root_p
-            # # Delete all children
-            # root.deleteAllChildren()
-            # # Read leo.core.leoNodes into contents.
-            # unittest_dir = os.path.dirname(__file__)
-            # core_dir = os.path.abspath(os.path.join(unittest_dir, '..', '..', 'core'))
-            # path = os.path.join(core_dir, 'leoNodes.py')
-            # with open(path) as f:
-                # contents = f.read()
-            # # Set the gnx of the @file nodes in the contents to root.gnx.
-            # # This is necessary because of a check in fast_at.scan_lines.
-            # pat = re.compile(r'^\s*#@\+node:([^:]+): \* @file leoNodes\.py$')
-            # line3 = g.splitLines(contents)[2]
-            # m = pat.match(line3)
-            # assert m, "Can not replace gnx"
-            # contents = contents.replace(m.group(1), root.gnx)
-            # # Replace c's outline with leoNodes.py.
-            # gnx2vnode = {}
-            # ok = c.atFileCommands.fast_read_into_root(c, contents, gnx2vnode, path, root)
-            # self.assertTrue(ok)
-            # root.h = 'leoNodes.py'
-            # self.p = root
-            # c.selectPosition(self.p)
     #@+node:ekr.20220824193932.1: *3* test_c_to_python
     def test_c_to_python(self):
 

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210902055206.1: * @file ../unittests/core/test_leoRst.py
-#@@first
 """Tests of leo/core/leoRst.py"""
 
 import textwrap

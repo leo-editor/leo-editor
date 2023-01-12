@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
-#@@first
 """Leo's beautification classes."""
 #@+<< leoBeautify imports & annotations >>
 #@+node:ekr.20220822114944.1: ** << leoBeautify imports & annotations >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
-#@@first
 """The @auto importer for Perl."""
 import re
 from leo.core.leoCommands import Commands as Cmdr

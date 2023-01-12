@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210907081548.1: * @file ../unittests/test_plugins.py
-#@@first
 """General tests of plugins."""
 
 import glob

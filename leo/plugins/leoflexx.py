@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
-#@@first
 
 # Disable mypy checking.
 # type:ignore

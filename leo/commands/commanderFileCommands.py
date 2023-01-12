@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20171123095353.1: * @file ../commands/commanderFileCommands.py
-#@@first
 """File commands that used to be defined in leoCommands.py"""
 #@+<< commanderFileCommands imports & annotations >>
 #@+node:ekr.20220826120852.1: ** << commanderFileCommands imports & annotations >>

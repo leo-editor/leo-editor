@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120420054855.14241: * @file leoSessions.py
-#@@first
 """Support for sessions in Leo."""
 #@+<< leoSessions imports  & annotations >>
 #@+node:ekr.20120420054855.14344: ** << leoSessions imports & annotations >>

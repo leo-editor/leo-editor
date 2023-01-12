@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
-#@@first
 #@+<< leoIpython docstring >>
 #@+node:ekr.20180326102140.1: ** << leoIpython docstring >>
 """

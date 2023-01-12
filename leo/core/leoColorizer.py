@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
-#@@first
 """All colorizing code for Leo."""
 
 # Indicated code are copyright (c) Jupyter Development Team.

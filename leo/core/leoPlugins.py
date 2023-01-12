@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
-#@@first
 """Classes relating to Leo's plugin architecture."""
 #@+<< leoPlugins imports & annotations >>
 #@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>

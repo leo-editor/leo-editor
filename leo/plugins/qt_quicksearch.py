@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Form implementation generated from reading ui file 'qt_quicksearch.ui'
 #
 # Created: Sat Mar 14 22:38:41 2009

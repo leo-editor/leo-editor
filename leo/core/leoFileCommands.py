@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
-#@@first
 """Classes relating to reading and writing .leo files."""
 #@+<< leoFileCommands imports >>
 #@+node:ekr.20050405141130: ** << leoFileCommands imports >>

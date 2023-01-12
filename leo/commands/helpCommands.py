@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040138.1: * @file ../commands/helpCommands.py
-#@@first
 """Leo's help commands."""
 #@+<< helpCommands imports & annotations >>
 #@+node:ekr.20150514050337.1: ** << helpCommands imports & annotations >>
@@ -558,7 +556,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
         external file. For example::
 
             @first #! /usr/bin/env python
-            @first # -*- coding: utf-8 -*-
 
         Similarly, @last forces lines to appear after the last sentinel.
 

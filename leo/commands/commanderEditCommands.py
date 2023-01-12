@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20171123135539.1: * @file ../commands/commanderEditCommands.py
-#@@first
 """Edit commands that used to be defined in leoCommands.py"""
 
 #@+<< commanderEditCommands imports & annotations >>

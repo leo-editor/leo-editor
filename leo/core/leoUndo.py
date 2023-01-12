@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3603: * @file leoUndo.py
-#@@first
-
 # Suppress all mypy errors (mypy doesn't like g.Bunch).
 # type: ignore
 """Leo's undo/redo manager."""

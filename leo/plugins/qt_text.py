@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
-#@@first
 """Text classes for the Qt version of Leo"""
 #@+<< qt_text imports & annotations>>
 #@+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120419093256.10048: * @file ../plugins/free_layout.py
-#@@first
 #@+<< free_layout docstring >>
 #@+node:ekr.20110319161401.14467: ** << free_layout docstring >>
 """

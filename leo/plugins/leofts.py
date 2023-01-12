@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20220823200700.1: * @file ../plugins/leofts.py
-#@@first
 import os
 from whoosh.index import create_in, open_dir
 from whoosh.fields import ID, TEXT, Schema

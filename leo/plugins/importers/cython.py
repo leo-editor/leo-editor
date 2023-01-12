@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
-#@@first
 """@auto importer for cython."""
 import re
 from typing import Optional

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20171124073126.1: * @file ../commands/commanderHelpCommands.py
-#@@first
 """Help commands that used to be defined in leoCommands.py"""
 #@+<< commanderHelpCommands imports & annotations >>
 #@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports & annotations >>

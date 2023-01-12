@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18078: * @file ../plugins/writers/otl.py
-#@@first
 """The @auto write code for vimoutline (.otl) files."""
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position

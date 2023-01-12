@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
-#@@first
 """The @auto importer for the dart language."""
 import re
 from leo.core.leoCommands import Commands as Cmdr

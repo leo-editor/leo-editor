@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2605: * @file runLeo.py
-#@@first
 #@@first
 """Entry point for Leo in Python."""
 #@+<< imports and inits >>

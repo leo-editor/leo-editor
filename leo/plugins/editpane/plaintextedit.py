@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.2: * @file ../plugins/editpane/plaintextedit.py
-#@@first
 #@+<< plaintextedit imports >>
 #@+node:tbrown.20171028115504.1: ** << plaintextedit imports >>
 import re

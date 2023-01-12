@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
-#@@first
 """Save and show tips to the user."""
 #@+<< leoTips imports & annotations >>
 #@+node:ekr.20220901094023.1: ** << leoTips imports & annotations >>
@@ -479,7 +477,6 @@ Within scripts, use section references only when code must
 be placed exactly. Here is a common pattern for @file nodes
 for python files:
 
-    @first # -*- coding: utf-8 -*-
     {g.angleBrackets('imports')}
     {'@others'}
 

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140821055201.18331: * @file leoPersistence.py
-#@@first
 """Support for persistent clones, gnx's and uA's using @persistence trees."""
 #@+<< leoPersistence imports & annotations >>
 #@+node:ekr.20220901064457.1: ** << leoPersistence imports & annotations >>

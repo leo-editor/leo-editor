@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
-#@@first
 """Tests for leo.core.leoFind"""
 
 import re

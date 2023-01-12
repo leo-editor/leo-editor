@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20130302121602.10208: * @file leoDebugger.py
-#@@first
 
 # Disable all mypy errors.
 # type:ignore

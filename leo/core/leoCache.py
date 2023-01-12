@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20100208065621.5894: * @file leoCache.py
-#@@first
 """A module encapsulating Leo's file caching"""
 #@+<< leoCache imports & annotations >>
 #@+node:ekr.20100208223942.10436: ** << leoCache imports & annotations >>

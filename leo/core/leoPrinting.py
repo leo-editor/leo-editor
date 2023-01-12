@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150419124739.1: * @file leoPrinting.py
-#@@first
 """
 Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.

@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20070227091955.1: * @file leoBridge.py
-#@@first
 #@@first
 """A module to allow full access to Leo commanders from outside Leo."""
 #@@language python

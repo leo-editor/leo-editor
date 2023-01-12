@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040142.1: * @file ../commands/killBufferCommands.py
-#@@first
 """Leo's kill-buffer commands."""
 #@+<< killBufferCommands imports & annotations >>
 #@+node:ekr.20150514050411.1: ** << killBufferCommands imports & annotations >>

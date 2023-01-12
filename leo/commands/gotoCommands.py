@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150624112334.1: * @file ../commands/gotoCommands.py
-#@@first
 """Leo's goto commands."""
 #@+<< gotoCommands imports & annotations >>
 #@+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>

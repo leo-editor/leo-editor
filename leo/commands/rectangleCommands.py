@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040146.1: * @file ../commands/rectangleCommands.py
-#@@first
 """Leo's rectangle commands."""
 #@+<< rectangleCommands imports & annotations >>
 #@+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>

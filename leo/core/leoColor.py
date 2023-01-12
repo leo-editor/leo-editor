@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2794: * @file leoColor.py
-#@@first
 #@+<< leoColor docstring >>
 #@+node:bob.20080115083029: ** << leoColor docstring >>
 """A color database for Leo.

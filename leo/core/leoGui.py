@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3719: * @file leoGui.py
-#@@first
 """
 A module containing the base gui-related classes.
 

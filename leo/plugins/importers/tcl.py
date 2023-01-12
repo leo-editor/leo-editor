@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170615153639.2: * @file ../plugins/importers/tcl.py
-#@@first
 """
 The @auto importer for the tcl language.
 

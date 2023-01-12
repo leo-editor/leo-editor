@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
-#@@first
 """This file contains the gui wrapper for Qt: g.app.gui."""
 # pylint: disable=import-error
 #@+<< qt_gui imports  >>

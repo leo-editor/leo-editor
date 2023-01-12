@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
-#@@first
 """Leo's spell-checking commands."""
 #@+<< spellCommands imports & annotations >>
 #@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>

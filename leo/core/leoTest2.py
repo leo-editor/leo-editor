@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20201129023817.1: * @file leoTest2.py
-#@@first
 """
 Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 

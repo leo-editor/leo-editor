@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
-#@@first
 """Gui-independent menu handling for Leo."""
 #@+<< leoMenu imports & annotations >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>

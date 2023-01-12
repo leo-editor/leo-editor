@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
-#@@first
 """The @auto importer for rust."""
 import re
 from leo.core.leoCommands import Commands as Cmdr

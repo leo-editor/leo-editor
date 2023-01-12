@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20190515070742.1: * @file leoMarkup.py
-#@@first
 """Supports @adoc, @pandoc and @sphinx nodes and related commands."""
 #@+<< leoMarkup imports & annotations >>
 #@+node:ekr.20190515070742.3: ** << leoMarkup imports & annotations >>

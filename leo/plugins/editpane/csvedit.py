@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20211210102459.1: * @file ../plugins/editpane/csvedit.py
-#@@first
 #@@language python
 #@@tabwidth -4
 #@@language python

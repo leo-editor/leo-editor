@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20221113062857.1: * @file ../unittests/commands/test_outlineCommands.py
-#@@first
 """
 New unit tests for Leo's outline commands.
 

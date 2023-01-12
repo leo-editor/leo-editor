@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
-#@@first
 """Leo's Qt-related commands defined by @g.command."""
 from typing import List
 from leo.core import leoGlobals as g

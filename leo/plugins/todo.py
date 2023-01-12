@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20090119215428.2: * @file ../plugins/todo.py
-#@@first
 #@+<< todo docstring >>
 #@+node:tbrown.20090119215428.3: ** << todo docstring >>
 """ Provides to-do list and simple task management.

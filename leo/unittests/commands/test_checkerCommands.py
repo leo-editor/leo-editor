@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_checkerCommands.py
-#@@first
 """Tests of leo.commands.leoCheckerCommands."""
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest

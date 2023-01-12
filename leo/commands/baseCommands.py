@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035943.1: * @file ../commands/baseCommands.py
-#@@first
 """The base class for all of Leo's user commands."""
 #@+<< baseCommands imports & abbreviations >>
 #@+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>

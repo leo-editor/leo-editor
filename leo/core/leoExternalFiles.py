@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
-#@@first
 #@+<< leoExternalFiles imports & annotations >>
 #@+node:ekr.20220821202943.1: ** << leoExternalFiles imports & annotations >>
 from __future__ import annotations

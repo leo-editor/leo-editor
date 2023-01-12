@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
-#@@first
 """Configuration classes for Leo."""
 # pylint: disable=unsubscriptable-object
 #@+<< leoConfig imports & annotations >>

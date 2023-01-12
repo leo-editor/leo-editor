@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170530024520.2: * @file ../plugins/importers/lua.py
-#@@first
 """
 The @auto importer for the lua language.
 

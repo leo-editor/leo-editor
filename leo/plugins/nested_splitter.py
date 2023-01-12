@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
-#@@first
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets

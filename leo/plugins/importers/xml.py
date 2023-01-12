@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
-#@@first
 """The @auto importer for the xml language."""
 import re
 from typing import List, Optional, Tuple

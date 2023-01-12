@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210902092024.1: * @file ../unittests/core/test_leoShadow.py
-#@@first
 """Tests of leoShadow.py"""
 
 import glob

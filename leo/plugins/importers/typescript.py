@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
-#@@first
 """The @auto importer for TypeScript."""
 import re
 from leo.core import leoGlobals as g  # Required.

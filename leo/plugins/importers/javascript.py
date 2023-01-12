@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
-#@@first
 """The @auto importer for JavaScript."""
 import re
 from typing import Any, Dict, Generator

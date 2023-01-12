@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18080: * @file ../plugins/writers/leo_rst.py
-#@@first
 """
 The write code for @auto-rst and other reStructuredText nodes.
 This is very different from rst3's write code.

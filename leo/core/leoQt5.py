@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210407010914.1: * @file leoQt5.py
-#@@first
 """Import wrapper for pyQt5"""
 
 # For now, suppress all mypy checks

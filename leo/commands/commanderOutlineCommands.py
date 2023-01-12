@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20171124080430.1: * @file ../commands/commanderOutlineCommands.py
-#@@first
 """Outline commands that used to be defined in leoCommands.py"""
 #@+<< commanderOutlineCommands imports & annotations >>
 #@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>

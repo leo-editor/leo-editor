@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18143: * @file ../plugins/writers/basewriter.py
-#@@first
 """A module defining the base class for all writers in leo.plugins.writers."""
 
 from leo.core.leoCommands import Commands as Cmdr

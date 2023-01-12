@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035559.1: * @file ../commands/bufferCommands.py
-#@@first
 """Leo's buffer commands."""
 #@+<< bufferCommands imports & annotations >>
 #@+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>

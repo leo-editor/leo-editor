@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:felix.20210621233316.1: * @file leoserver.py
-#@@first
 #@@language python
 #@@tabwidth -4
 """

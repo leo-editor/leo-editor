@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.4: * @file ../plugins/editpane/markdownview.py
-#@@first
 #@+<< markdownview imports >>
 #@+node:tbrown.20171028115507.1: ** << markdownview imports >>
 import markdown

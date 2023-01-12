@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
-#@@first
 """Tests for leo.core.leoNodes"""
 
 # pylint has troubles finding Commands methods.

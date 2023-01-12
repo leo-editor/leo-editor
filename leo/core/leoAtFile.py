@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
-#@@first
 """Classes to read and write @file nodes."""
 #@+<< leoAtFile imports & annotations >>
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>

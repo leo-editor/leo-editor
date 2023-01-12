@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20050301083306: * @file ../plugins/mod_read_dir_outline.py
-#@@first
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>

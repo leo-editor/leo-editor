@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3655: * @file leoFrame.py
-#@@first
 """
 The base classes for all Leo Windows, their body, log and tree panes,
 key bindings and menus.

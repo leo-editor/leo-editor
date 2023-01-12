@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
-#@@first
 """The @auto importer for the org language."""
 import re
 from typing import Dict, List

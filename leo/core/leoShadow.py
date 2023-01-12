@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
-#@@first
 #@+<< leoShadow docstring >>
 #@+node:ekr.20080708094444.78: ** << leoShadow docstring >>
 """

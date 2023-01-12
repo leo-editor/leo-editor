@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
-#@@first
 """The @auto importer for coffeescript."""
 import re
 from typing import Optional

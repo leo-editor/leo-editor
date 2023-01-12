@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210926044012.1: * @file ../unittests/test_doctests.py
-#@@first
 """Run all doctests."""
 import doctest
 import glob

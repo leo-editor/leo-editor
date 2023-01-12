@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
-#@@first
 """The @auto importer for the TreePad file format."""
 import re
 from typing import Dict, List
