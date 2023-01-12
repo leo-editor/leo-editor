@@ -31558,7 +31558,7 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         soup = BeautifulSoup(contents, features="html.parser")
         for link in soup.find_all("a"):
             ref = link.get("href")
-            if not ref.startswith(('#', 'mailto:')):
+            if not ref.startswith(('mailto:',)):
                 links.add(ref)
     return sorted(list(links))
 </t>
