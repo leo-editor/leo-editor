@@ -15820,7 +15820,8 @@ try:
     if html_path:
         os.chdir(html_path)
         if write_intermediate_files():
-            g.execute_shell_commands('make clean',trace=trace)
+            # Don't do make-clean by default.
+            # g.execute_shell_commands('make clean',trace=trace)
             g.execute_shell_commands('make html',trace=trace)
 finally:
     c.selectPosition(old_p)</t>
