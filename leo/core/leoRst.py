@@ -292,7 +292,7 @@ class RstCommands:
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             self.result_list.append(f".. _{anchorname}:")
             self.http_map[anchorname] = p.copy()
-    #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers
+    #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers (changed)
     def write_docutils_files(self, fn: str, p: Position, source: str) -> None:
         """Write source to the intermediate file and write the output from docutils.."""
         junk, ext = g.os_path_splitext(fn)
@@ -315,13 +315,13 @@ class RstCommands:
             s = self.addTitleToHtml(s)
         if not s:
             return
-        # with open(fn, 'wb') as f:
-            # f.write(g.toEncodedString(s, 'utf-8'))
-            # self.n_docutils += 1
-        changed = g.writeFileIfChanged(fn, s, binary_flag=True, encoding='utf-8')
+        changed = g.write_file_if_changed(fn, s, encoding='utf-8')
+        g.trace(changed, fn)  ###
         if changed:
             self.n_docutils += 1
             self.report(fn)
+            g.trace('Wrote:', fn)  ### Temp.
+            
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s: str) -> str:
         """
@@ -386,10 +386,12 @@ class RstCommands:
         if not ext.startswith('.'):
             ext = '.' + ext
         fn = fn + ext
-        changed = g.writeFileIfChanged(fn, s, binary_flag=False, encoding=self.encoding)
+        changed = g.write_file_if_changed(fn, s, encoding=self.encoding)
+        g.trace(changed, fn)  ###
         if changed:
             self.n_intermediate += 1
             self.report(fn)
+            g.trace('Wrote:', fn)  ### Temp.
         return changed
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:

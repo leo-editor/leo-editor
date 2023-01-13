@@ -3968,29 +3968,23 @@ def writeFile(contents: Union[bytes, str], encoding: str, fileName: str) -> bool
         # g.trace(g.callers())
         # g.es_exception()
         return False
-#@+node:ekr.20230112131042.1: *3* g.writeFileIfChanged (new)
-def writeFileIfChanged(fn: str, s: str, binary_flag: bool, encoding: str='utf-8') -> bool:
+#@+node:ekr.20230113043029.1: *3* g.write_file_if_changed (new)
+def write_file_if_changed(fn: str, s: str, encoding: str='utf-8') -> bool:
     """
-    Replace the file whose filename is give with s, but *only* if
-    - fn does not exist or,
-    - s is different from the present contents of the file.
+    Replace file whose filename is give with s, but *only* if file's
+    context has changed (or the file does not exist).
+    
+    Return True if the file was written.
     """
-    # Compute write_flag.
+    encoded_s = g.toEncodedString(s, encoding=encoding, reportErrors=True)
     if os.path.exists(fn):
-        # Read the file and compare its contents with s.
-        read_mode = 'rb' if binary_flag else 'r'
-        with open(fn, read_mode, encoding=encoding) as f:
+        with open(fn, 'rb') as f:
             contents = f.read()
-        write_flag = s == contents
-    else:
-        write_flag = True
-    # Write the file if necessary.
-    if write_flag:
-        write_mode = 'wb' if binary_flag else 'w'
-        with open(fn, write_mode, encoding=encoding) as f:
-            f.write(g.toEncodedString(s) if binary_flag else s)
-        g.trace('Wrote:', fn)
-    return write_flag
+        if contents == encoded_s:
+            return False
+    with open(fn, 'wb') as f:
+        f.write(encoded_s)
+    return True
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s: str, word: str, i: int=0) -> int:
