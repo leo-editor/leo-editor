@@ -105,7 +105,7 @@ class NodeIndices:
         # Leo will continue to work when gnxs are UUIDs or KSUIDs:
         # 1. The FastAtRead.node_start regex uses `([^:]+):` to find gnxs.
         #    In other words, the gnx is everthing up to the first colon.
-        #    Neither UUIDs nor KSUIDs contain colons, so the read code will 
+        #    Neither UUIDs nor KSUIDs contain colons, so the read code will
         #    parse all forms of gnx properly.
         # 2. NodeIndicds.compute_last_index ignores UUIDs and KSUIDs,
         #    so it and will allocate a new legacy gnx properly.
