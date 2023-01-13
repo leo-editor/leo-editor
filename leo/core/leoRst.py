@@ -72,6 +72,7 @@ class RstCommands:
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
+        self.changed_positions: List[Position] = []
         self.changed_vnodes: Set[VNode] = set()
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
@@ -171,11 +172,46 @@ class RstCommands:
             f"{self.n_intermediate:4} intermediate file{g.plural(self.n_intermediate)}\n"
             f"{self.n_docutils:4} docutils file{g.plural(self.n_docutils)}\n"
             f"in {t2 - t1:4.2f} sec.")
-    #@+node:ekr.20230113050522.1: *5* rst.do_actions
+    #@+node:ekr.20230113050522.1: *5* rst.do_actions & helper
     def do_actions(self):
         """Handle actions specified by @string rst3-action."""
-        g.trace('action:', self.rst3_action)
-        g.printObj([z.h for z in list(self.changed_vnodes)])
+        c = self.c
+        action = self.rst3_action
+        positions = self.changed_positions
+        n = len(positions)
+        if action == 'none' or not positions:
+            return
+        if action == 'mark':
+            g.es_print(f"action: marked {n} node{g.plural(n)}")
+            for p in positions:
+                p.setMarked()
+            c.redraw()
+        elif action == 'clone':
+            g.es_print(f"action: cloned {n} node{g.plural(n)}")
+            organizer = self.clone_action_nodes()
+            c.redraw(organizer)
+        else:
+            g.es_print(f"Can not happen: bad action: {action!r}")
+    #@+node:ekr.20230113053351.1: *6* rst.clone_action_nodes
+    def clone_action_nodes(self) -> Position:
+        """
+        Create an organizer node as the last node of the outline.
+
+        Clone all positions in self.positions as children of the organizer node.
+        """
+        c = self.c
+        positions = self.changed_positions
+        n = len(positions)
+        # Create the organizer node.
+        organizer = c.lastTopLevel().insertAfter()
+        organizer.h = f"Cloned {n} changed @rst node{g.plural(n)}"
+        organizer.b = ''
+        # Clone nodes as children of the organizer node.
+        for p in positions:
+            p2 = p.copy()
+            n = organizer.numberOfChildren()
+            p2._linkCopiedAsNthChild(organizer, n)
+        return organizer
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p: Position) -> None:
         """Call processTree for @rst and @slides node p's subtree or p's ancestors."""
@@ -183,6 +219,7 @@ class RstCommands:
         def predicate(p: Position) -> bool:
             return self.is_rst_node(p) or g.match_word(p.h, 0, '@slides')
 
+        self.changed_positions = []
         self.changed_vnodes = set()
         roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
         if roots:
@@ -328,7 +365,9 @@ class RstCommands:
         if changed:
             self.n_docutils += 1
             self.report(fn)
-            self.changed_vnodes.add(self.root.v)
+            if self.root.v not in self.changed_vnodes:
+                self.changed_positions.append(self.root.copy())
+                self.changed_vnodes.add(self.root.v)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s: str) -> str:
         """
@@ -397,7 +436,9 @@ class RstCommands:
         if changed:
             self.n_intermediate += 1
             self.report(fn)
-            self.changed_vnodes.add(self.root.v)
+            if self.root.v not in self.changed_vnodes:
+                self.changed_positions.append(self.root.copy())
+                self.changed_vnodes.add(self.root.v)
         return changed
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:

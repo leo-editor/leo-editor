@@ -11714,12 +11714,12 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # Headlines must match exactly.
 
 </t>
-<t tx="ekr.20230112123841.1">This setting tells what the rst3 should do when writing changed intermediate files.
+<t tx="ekr.20230112123841.1">This setting tells what the rst3 should do when writing changed files.
 The valid actions are:
 
-'none': take no extra action.
+'none':  take no extra action.
 'clone': clone all dirty `@rst` trees.
-'mark': mark all dirty `@rst` tree.
+'mark':  mark all dirty `@rst` trees.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
