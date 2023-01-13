@@ -90,7 +90,7 @@ class NodeIndices:
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
-        
+
         New in Leo 6.7.2: Support `@string gnx-kind` setting.
         """
         if v is None:  # pragma: no cover
