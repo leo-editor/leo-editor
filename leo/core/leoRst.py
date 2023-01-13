@@ -337,7 +337,7 @@ class RstCommands:
             anchorname = f"{self.node_begin_marker}{self.nodeNumber}"
             self.result_list.append(f".. _{anchorname}:")
             self.http_map[anchorname] = p.copy()
-    #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers (changed)
+    #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers
     def write_docutils_files(self, fn: str, p: Position, source: str) -> None:
         """Write source to the intermediate file and write the output from docutils.."""
         assert p == self.root, (repr(p), repr(self.root))
@@ -419,7 +419,7 @@ class RstCommands:
             if not ok:
                 g.error('did not create:', theDir)
         return bool(ok)
-    #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile (changed)
+    #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
     def writeIntermediateFile(self, fn: str, s: str) -> bool:
         """
         Write s to to the file whose name is fn.

@@ -3968,7 +3968,7 @@ def writeFile(contents: Union[bytes, str], encoding: str, fileName: str) -> bool
         # g.trace(g.callers())
         # g.es_exception()
         return False
-#@+node:ekr.20230113043029.1: *3* g.write_file_if_changed (new)
+#@+node:ekr.20230113043029.1: *3* g.write_file_if_changed
 def write_file_if_changed(fn: str, s: str, encoding: str='utf-8') -> bool:
     """
     Replace file whose filename is give with s, but *only* if file's
@@ -3976,15 +3976,20 @@ def write_file_if_changed(fn: str, s: str, encoding: str='utf-8') -> bool:
 
     Return True if the file was written.
     """
-    encoded_s = g.toEncodedString(s, encoding=encoding, reportErrors=True)
-    if os.path.exists(fn):
-        with open(fn, 'rb') as f:
-            contents = f.read()
-        if contents == encoded_s:
-            return False
-    with open(fn, 'wb') as f:
-        f.write(encoded_s)
-    return True
+    try:
+        encoded_s = g.toEncodedString(s, encoding=encoding, reportErrors=True)
+        if os.path.exists(fn):
+            with open(fn, 'rb') as f:
+                contents = f.read()
+            if contents == encoded_s:
+                return False
+        with open(fn, 'wb') as f:
+            f.write(encoded_s)
+        return True
+    except Exception:
+        g.es_print(f"Exception writing {fn}")
+        g.es_exception()
+        return False
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s: str, word: str, i: int=0) -> int:
