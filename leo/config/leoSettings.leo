@@ -11724,7 +11724,7 @@ The valid actions are:
 </t>
 <t tx="ekr.20230113102630.1">Specify the format of gnxs:
 
-none: Generate legacy gnx: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
+none: Generate legacy gnxs: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
 
 uuid: Generate uuids: See https://docs.python.org/3/library/uuid.html
 
