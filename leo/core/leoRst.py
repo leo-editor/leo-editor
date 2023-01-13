@@ -173,7 +173,7 @@ class RstCommands:
             f"{self.n_docutils:4} docutils file{g.plural(self.n_docutils)}\n"
             f"in {t2 - t1:4.2f} sec.")
     #@+node:ekr.20230113050522.1: *5* rst.do_actions & helper
-    def do_actions(self):
+    def do_actions(self) -> None:
         """Handle actions specified by @string rst3-action."""
         c = self.c
         action = self.rst3_action
