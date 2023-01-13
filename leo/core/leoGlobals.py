@@ -3973,7 +3973,7 @@ def write_file_if_changed(fn: str, s: str, encoding: str='utf-8') -> bool:
     """
     Replace file whose filename is give with s, but *only* if file's
     context has changed (or the file does not exist).
-    
+
     Return True if the file was written.
     """
     encoded_s = g.toEncodedString(s, encoding=encoding, reportErrors=True)

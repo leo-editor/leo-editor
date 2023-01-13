@@ -316,12 +316,9 @@ class RstCommands:
         if not s:
             return
         changed = g.write_file_if_changed(fn, s, encoding='utf-8')
-        g.trace(changed, fn)  ###
         if changed:
             self.n_docutils += 1
             self.report(fn)
-            g.trace('Wrote:', fn)  ### Temp.
-            
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s: str) -> str:
         """
@@ -387,11 +384,9 @@ class RstCommands:
             ext = '.' + ext
         fn = fn + ext
         changed = g.write_file_if_changed(fn, s, encoding=self.encoding)
-        g.trace(changed, fn)  ###
         if changed:
             self.n_intermediate += 1
             self.report(fn)
-            g.trace('Wrote:', fn)  ### Temp.
         return changed
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
