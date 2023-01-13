@@ -10,10 +10,13 @@
 <v t="ekr.20070610174018"><vh>Startup</vh>
 <v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
 <v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
-<v t="ekr.20211015110050.1"><vh>@gnxs</vh></v>
+<v t="ekr.20230113050849.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
-<v t="ekr.20201013034546.2"><vh>@gnxs</vh></v>
+<v t="ekr.20230113050849.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20230113050849.2"><vh>@data:@auto-md ../doc/colorizer.md</vh>
+<v t="ekr.20230113050849.3"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
@@ -30338,41 +30341,6 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
 See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
 <t tx="ekr.20201013034546.1">gnx: ekr.20161120073038.1
 </t>
-<t tx="ekr.20201013034546.2">gnx: ekr.20201013033341.30
-unl: Table of contents
-gnx: ekr.20201013033341.31
-unl: The grand overview
-gnx: ekr.20201013033341.32
-unl: The new importers vs. the old
-gnx: ekr.20201013033341.33
-unl: The Importer class
-gnx: ekr.20201013033341.34
-unl: The Importer class--&gt;i.gen lines &amp; helpers
-gnx: ekr.20201013033341.35
-unl: The Importer class--&gt;The line-oriented API
-gnx: ekr.20201013033341.36
-unl: The Importer class--&gt;Indentation
-gnx: ekr.20201013033341.37
-unl: The ScanState classes
-gnx: ekr.20201013033341.38
-unl: The ScanState classes--&gt;ScanState.context
-gnx: ekr.20201013033341.39
-unl: The ScanState classes--&gt;ScanState.level()
-gnx: ekr.20201013033341.40
-unl: The ScanState classes--&gt;ScanState protocols
-gnx: ekr.20201013033341.41
-unl: Using @button make-importer
-gnx: ekr.20201013033341.42
-unl: Notes
-gnx: ekr.20201013033341.43
-unl: Notes--&gt;Recognizing multi-line patterns
-gnx: ekr.20201013033341.44
-unl: Notes--&gt;The python importer must count brackets
-gnx: ekr.20201013033341.45
-unl: Notes--&gt;Scanning strings and comments
-gnx: ekr.20201013033341.46
-unl: Conclusion
-</t>
 <t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -30996,57 +30964,6 @@ are typescript type names.</t>
 - Many code-level cleanups.</t>
 <t tx="ekr.20211014165743.1">- leoTest2.py create temporary Leo applications and outlines for unit tests.
 - Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
-<t tx="ekr.20211015110050.1">gnx: ekr.20191216061356.4
-unl: Leo's demo.py plugin
-gnx: ekr.20191216061356.5
-unl: Overview
-gnx: ekr.20191216061356.6
-unl: A simpler work flow
-gnx: ekr.20191216061356.7
-unl: Graphics classes &amp; helpers
-gnx: ekr.20191216061356.8
-unl: Using demo scripts
-gnx: ekr.20191216061356.9
-unl: Using demo scripts--&gt;Script trees and lists
-gnx: ekr.20191216061356.10
-unl: Using demo scripts--&gt;Predefined symbols
-gnx: ekr.20191216061356.11
-unl: Using demo scripts--&gt;Positioning graphics
-gnx: ekr.20191216061356.12
-unl: Using demo scripts--&gt;Deleting graphics
-gnx: ekr.20191216061356.13
-unl: Using demo scripts--&gt;Details
-gnx: ekr.20191216061356.14
-unl: Example scripts
-gnx: ekr.20191216061356.15
-unl: Example scripts--&gt;Top-level script
-gnx: ekr.20191216061356.16
-unl: Example scripts--&gt;Simulate typing
-gnx: ekr.20191216061356.17
-unl: Example scripts--&gt;Change the demo namespace
-gnx: ekr.20191216061356.18
-unl: Example scripts--&gt;Add graphics
-gnx: ekr.20191216061356.19
-unl: Example scripts--&gt;Switch focus
-gnx: ekr.20191216061356.20
-unl: Helper methods
-gnx: ekr.20191216061356.21
-unl: Helper methods--&gt;Ivars
-gnx: ekr.20191216061356.22
-unl: Helper methods--&gt;Menus
-gnx: ekr.20191216061356.23
-unl: Helper methods--&gt;Magnification and styling
-gnx: ekr.20191216061356.24
-unl: Helper methods--&gt;Simulated typing
-gnx: ekr.20191216061356.25
-unl: Helper methods--&gt;Startup, setup and teardown
-gnx: ekr.20191216061356.26
-unl: Helper methods--&gt;Window position and ratios
-gnx: ekr.20191216061356.27
-unl: Summary
-gnx: ekr.20191216061356.28
-unl: History and change log
-</t>
 <t tx="ekr.20211105051031.1">Leo https://leo-editor.github.io/leo-editor/ 6.6 final is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6/).
@@ -31561,6 +31478,97 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
             if not ref.startswith(('mailto:',)):
                 links.add(ref)
     return sorted(list(links))
+</t>
+<t tx="ekr.20230113050849.1">gnx: ekr.20191216061356.4
+unl: Leo's demo.py plugin
+gnx: ekr.20191216061356.5
+unl: Overview
+gnx: ekr.20191216061356.6
+unl: A simpler work flow
+gnx: ekr.20191216061356.7
+unl: Graphics classes &amp; helpers
+gnx: ekr.20191216061356.8
+unl: Using demo scripts
+gnx: ekr.20191216061356.9
+unl: Using demo scripts--&gt;Script trees and lists
+gnx: ekr.20191216061356.10
+unl: Using demo scripts--&gt;Predefined symbols
+gnx: ekr.20191216061356.11
+unl: Using demo scripts--&gt;Positioning graphics
+gnx: ekr.20191216061356.12
+unl: Using demo scripts--&gt;Deleting graphics
+gnx: ekr.20191216061356.13
+unl: Using demo scripts--&gt;Details
+gnx: ekr.20191216061356.14
+unl: Example scripts
+gnx: ekr.20191216061356.15
+unl: Example scripts--&gt;Top-level script
+gnx: ekr.20191216061356.16
+unl: Example scripts--&gt;Simulate typing
+gnx: ekr.20191216061356.17
+unl: Example scripts--&gt;Change the demo namespace
+gnx: ekr.20191216061356.18
+unl: Example scripts--&gt;Add graphics
+gnx: ekr.20191216061356.19
+unl: Example scripts--&gt;Switch focus
+gnx: ekr.20191216061356.20
+unl: Helper methods
+gnx: ekr.20191216061356.21
+unl: Helper methods--&gt;Ivars
+gnx: ekr.20191216061356.22
+unl: Helper methods--&gt;Menus
+gnx: ekr.20191216061356.23
+unl: Helper methods--&gt;Magnification and styling
+gnx: ekr.20191216061356.24
+unl: Helper methods--&gt;Simulated typing
+gnx: ekr.20191216061356.25
+unl: Helper methods--&gt;Startup, setup and teardown
+gnx: ekr.20191216061356.26
+unl: Helper methods--&gt;Window position and ratios
+gnx: ekr.20191216061356.27
+unl: Summary
+gnx: ekr.20191216061356.28
+unl: History and change log
+</t>
+<t tx="ekr.20230113050849.2">gnx: ekr.20170202125807.1
+</t>
+<t tx="ekr.20230113050849.3">gnx: ekr.20230113050844.29
+unl: About Leo's colorizer code
+</t>
+<t tx="ekr.20230113050849.4">gnx: ekr.20201013033341.30
+unl: Table of contents
+gnx: ekr.20201013033341.31
+unl: The grand overview
+gnx: ekr.20201013033341.32
+unl: The new importers vs. the old
+gnx: ekr.20201013033341.33
+unl: The Importer class
+gnx: ekr.20201013033341.34
+unl: The Importer class--&gt;i.gen lines &amp; helpers
+gnx: ekr.20201013033341.35
+unl: The Importer class--&gt;The line-oriented API
+gnx: ekr.20201013033341.36
+unl: The Importer class--&gt;Indentation
+gnx: ekr.20201013033341.37
+unl: The ScanState classes
+gnx: ekr.20201013033341.38
+unl: The ScanState classes--&gt;ScanState.context
+gnx: ekr.20201013033341.39
+unl: The ScanState classes--&gt;ScanState.level()
+gnx: ekr.20201013033341.40
+unl: The ScanState classes--&gt;ScanState protocols
+gnx: ekr.20201013033341.41
+unl: Using @button make-importer
+gnx: ekr.20201013033341.42
+unl: Notes
+gnx: ekr.20201013033341.43
+unl: Notes--&gt;Recognizing multi-line patterns
+gnx: ekr.20201013033341.44
+unl: Notes--&gt;The python importer must count brackets
+gnx: ekr.20201013033341.45
+unl: Notes--&gt;Scanning strings and comments
+gnx: ekr.20201013033341.46
+unl: Conclusion
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

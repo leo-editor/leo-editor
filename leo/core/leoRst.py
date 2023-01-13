@@ -17,7 +17,7 @@ import io
 import os
 import re
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils
@@ -40,7 +40,7 @@ if 'plugins' in getattr(g.app, 'debug', []):
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
 #@-<< leoRst annotations >>
 
 def cmd(name: str) -> Callable:
@@ -72,6 +72,7 @@ class RstCommands:
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
+        self.changed_vnodes: Set[VNode] = set()
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: List[str] = []  # The intermediate results.
@@ -170,6 +171,11 @@ class RstCommands:
             f"{self.n_intermediate:4} intermediate file{g.plural(self.n_intermediate)}\n"
             f"{self.n_docutils:4} docutils file{g.plural(self.n_docutils)}\n"
             f"in {t2 - t1:4.2f} sec.")
+    #@+node:ekr.20230113050522.1: *5* rst.do_actions
+    def do_actions(self):
+        """Handle actions specified by @string rst3-action."""
+        g.trace('action:', self.rst3_action)
+        g.printObj([z.h for z in list(self.changed_vnodes)])
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p: Position) -> None:
         """Call processTree for @rst and @slides node p's subtree or p's ancestors."""
@@ -177,10 +183,12 @@ class RstCommands:
         def predicate(p: Position) -> bool:
             return self.is_rst_node(p) or g.match_word(p.h, 0, '@slides')
 
+        self.changed_vnodes = set()
         roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
         if roots:
             for p in roots:
                 self.processTree(p)
+            self.do_actions()
         else:
             g.warning('No @rst or @slides nodes in', p.h)
     #@+node:ekr.20090502071837.63: *5* rst.processTree
@@ -295,6 +303,7 @@ class RstCommands:
     #@+node:ekr.20100813041139.5919: *4* rst.write_docutils_files & helpers (changed)
     def write_docutils_files(self, fn: str, p: Position, source: str) -> None:
         """Write source to the intermediate file and write the output from docutils.."""
+        assert p == self.root, (repr(p), repr(self.root))
         junk, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
@@ -319,6 +328,7 @@ class RstCommands:
         if changed:
             self.n_docutils += 1
             self.report(fn)
+            self.changed_vnodes.add(self.root.v)
     #@+node:ekr.20100813041139.5913: *5* rst.addTitleToHtml
     def addTitleToHtml(self, s: str) -> str:
         """
@@ -387,6 +397,7 @@ class RstCommands:
         if changed:
             self.n_intermediate += 1
             self.report(fn)
+            self.changed_vnodes.add(self.root.v)
         return changed
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
