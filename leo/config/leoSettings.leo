@@ -650,14 +650,13 @@
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
-<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
-<v t="ekr.20230113095925.1"><vh>@string gxn-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
+<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -11721,18 +11720,6 @@ The valid actions are:
 'none':  take no extra action.
 'clone': clone all dirty `@rst` trees.
 'mark':  mark all dirty `@rst` trees.
-</t>
-<t tx="ekr.20230113095925.1">Specify the format of gnx's:
-
-none: Leo's legacy format: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
-
-uuid: A new uuid:
-    See https://docs.python.org/3/library/uuid.html
-
-ksuid: A new ksuid:
-    See https://github.com/saresend/KSUID
-    pip install ksuid
-    Leo will generate a legacy gnx if the ksuid module does not exist.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 

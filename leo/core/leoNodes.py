@@ -6,16 +6,10 @@
 from __future__ import annotations
 import copy
 import time
-import uuid
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-
-try:
-    import ksuid  # pylint: disable=import-error
-except Exception:
-    ksuid = None
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -95,20 +89,9 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
-        uuid_kind = (c.config.getString('gxn-kind') or 'none').lower()
-        gnx = None
-        try:
-            if uuid_kind == 'uuid':
-                gnx = str(uuid.uuid4())
-            elif ksuid and uuid_kind == 'ksuid':
-                gnx = str(ksuid.ksuid())
-        except Exception:
-            g.es_exception()
-        if not gnx:
-            # Generate a legacy gnx.
-            t_s = self.update()  # Updates self.lastTime and self.lastIndex.
-            gnx = f"{self.userId}.{t_s}.{self.lastIndex:d}"
-        v.fileIndex = g.toUnicode(gnx)
+        t_s = self.update()  # Updates self.lastTime and self.lastIndex.
+        gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
+        v.fileIndex = gnx
         self.check_gnx(c, gnx, v)
         fc.gnxDict[gnx] = v
         return gnx
