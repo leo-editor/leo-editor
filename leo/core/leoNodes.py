@@ -98,8 +98,6 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
-
-        # We can't cache c.config.getString because c may change.
         uuid_kind = (c.config.getString('gnx-kind') or 'none').lower()
 
         # Leo will continue to work when gnxs are UUIDs or KSUIDs:
