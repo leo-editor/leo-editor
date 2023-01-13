@@ -98,7 +98,7 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
-        uuid_kind = (c.config.getString('gxn-kind') or 'none').lower()
+        uuid_kind = (c.config.getString('gnx-kind') or 'none').lower()
         gnx = None
         try:
             if uuid_kind == 'uuid':
