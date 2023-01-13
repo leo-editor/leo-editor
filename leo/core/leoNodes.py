@@ -98,7 +98,13 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
+        
+        # We can't cache c.config.getString because c may change.
         uuid_kind = (c.config.getString('gnx-kind') or 'none').lower()
+
+        # The FastAtRead.node_start regex uses `([^:]+):` to find gnxs.
+        # In other words, the gnx is everthing up to the first colon.
+        # Neither UUIDs nor KSUIDs contain colons, so all is well.
         gnx = None
         try:
             if uuid_kind == 'uuid':
@@ -109,7 +115,7 @@ class NodeIndices:
             g.es_exception()
         if not gnx:
             # Generate a legacy gnx.
-            t_s = self.update()  # Updates self.lastTime and self.lastIndex.
+            t_s = self.update()  # Update self.lastTime and self.lastIndex.
             gnx = f"{self.userId}.{t_s}.{self.lastIndex:d}"
         v.fileIndex = g.toUnicode(gnx)
         self.check_gnx(c, gnx, v)
@@ -146,6 +152,7 @@ class NodeIndices:
         # Use self.defaultId for missing id entries.
         if not theId:
             theId = self.defaultId
+        # g.trace(f"id: {theId!r} t: {t!r} n: {n!r}", g.callers())
         return theId, t, n
     #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp(self) -> None:
