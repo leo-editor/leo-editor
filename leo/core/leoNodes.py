@@ -98,13 +98,15 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
-        
+
         # We can't cache c.config.getString because c may change.
         uuid_kind = (c.config.getString('gnx-kind') or 'none').lower()
 
-        # The FastAtRead.node_start regex uses `([^:]+):` to find gnxs.
-        # In other words, the gnx is everthing up to the first colon.
-        # Neither UUIDs nor KSUIDs contain colons, so all is well.
+        # Leo will continue to work when gnxs are UUIDs or KSUIDs:
+        # 1. The FastAtRead.node_start regex uses `([^:]+):` to find gnxs.
+        #    In other words, the gnx is everthing up to the first colon.
+        #    Neither UUIDs nor KSUIDs contain colons, so the read code find gnxs properly
+        # 2. NodeIndicds.compute_last_index will ignore UUIDs and KSUIDs.
         gnx = None
         try:
             if uuid_kind == 'uuid':
