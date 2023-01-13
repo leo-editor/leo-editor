@@ -11722,17 +11722,16 @@ The valid actions are:
 'clone': clone all dirty `@rst` trees.
 'mark':  mark all dirty `@rst` trees.
 </t>
-<t tx="ekr.20230113102630.1">Specify the format of gnx's:
+<t tx="ekr.20230113102630.1">Specify the format of gnxs:
 
-none: Leo's legacy format: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
+none: Generate legacy gnx: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
 
-uuid: A new uuid:
-    See https://docs.python.org/3/library/uuid.html
+uuid: Generate uuids: See https://docs.python.org/3/library/uuid.html
 
-ksuid: A new ksuid:
-    See https://github.com/saresend/KSUID
+ksuid: Generate ksuids: See https://github.com/saresend/KSUID
     pip install ksuid
-    Leo will generate a legacy gnx if the ksuid module does not exist.
+    
+Note: Leo will use legacy format if any error occurs.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
