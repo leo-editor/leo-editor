@@ -3485,10 +3485,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         # 2014/06/06: Work around a possible bug in QUrl.
             # fn = str(url.path()) # Fails.
         e = sys.getfilesystemencoding()
+        g.trace(url.path())
         fn = g.toUnicode(url.path(), encoding=e)
-        if sys.platform.lower().startswith('win'):
-            if fn.startswith('/'):
-                fn = fn[1:]
+        if sys.platform.lower().startswith('win') and fn.startswith('/'):
+            fn = fn[1:]
         if os.path.isdir(fn):
             # Just insert an @path directory.
             self.doPathUrlHelper(fn, p)
@@ -3513,6 +3513,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         If fn is a .leo file, insert a node containing its top-level nodes as children.
         """
         c = self.c
+        g.trace(fn)
         if self.isLeoFile(fn, s) and not self.was_control_drag:
             g.openWithFileName(fn, old_c=c)
             return False  # Don't set the changed marker in the original file.
@@ -3571,7 +3572,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         """
         c = self.c
         at = c.atFileCommands
-        p.h = f"@auto {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@auto {fn2}"
         at.readOneAtAutoNode(p)
         # No error recovery should be needed here.
         p.clearDirty()  # Don't automatically rewrite this node.
@@ -3582,14 +3584,16 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         # Use the full @edit logic, so dragging will be
         # exactly the same as reading.
         at.readOneAtEditNode(fn, p)
-        p.h = f"@edit {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@edit {fn2}"
         p.clearDirty()  # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18375: *9* LeoQTreeWidget.createAtFileTree
     def createAtFileTree(self, fn: str, p: Position, s: str) -> None:
         """Make p an @file node and create the tree using s, the file's contents."""
         c = self.c
         at = c.atFileCommands
-        p.h = f"@file {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@file {fn2}"
         # Read the file into p.
         ok = at.read(root=p.copy(), fromString=s)
         if not ok:
