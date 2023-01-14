@@ -11731,7 +11731,13 @@ uuid: Generate uuids: See https://docs.python.org/3/library/uuid.html
 ksuid: Generate ksuids: See https://github.com/saresend/KSUID
     pip install ksuid
     
-Note: Leo will use legacy format if any error occurs.
+Compatibility notes:
+    
+- All forms of gnx strings (legacy, UUIDs and KSUIDs) may safely coexist in the same document.
+- All versions of Leo from 4.1 onward can read all forms of gnxs.
+- The "sort by creation date" of the todo plugin will not work with UUIDs or KSUIDs.
+
+For more details, see https://github.com/leo-editor/leo-editor/issues/3047
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
