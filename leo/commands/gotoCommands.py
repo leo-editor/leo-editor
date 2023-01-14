@@ -63,13 +63,12 @@ class GoToCommands:
         if not root:
             return None
         assert root.isAnyAtFileNode()
-        if s is None:
-            s = self.get_external_file_with_sentinels(root)
+        contents = self.get_external_file_with_sentinels(root) if s is None else s
         delim1, delim2 = self.get_delims(root)
         # Match only the node with the correct gnx.
         node_pat = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape(delim1), re.escape(p.gnx)))
-        for i, s in enumerate(g.splitLines(s)):
+        for i, s in enumerate(g.splitLines(contents)):
             if node_pat.match(s):
                 return i + 1
         # #3010: Special case for .vue files.
@@ -77,7 +76,7 @@ class GoToCommands:
         if root.h.endswith('.vue'):
             node_pat2 = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape('//'), re.escape(p.gnx)))
-        for i, s in enumerate(g.splitLines(s)):
+        for i, s in enumerate(g.splitLines(contents)):
             if node_pat2.match(s):
                 return i + 1
         return None
@@ -391,10 +390,11 @@ def show_file_line(event: Event) -> None:
         return
     n0 = GoToCommands(c).find_node_start(p=c.p)
     if n0 is None:
+        g.es_print('Line not found')
         return
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print(1 + n0 + row)
+    g.es_print('line', 1 + n0 + row)
 #@-others
 #@-leo
