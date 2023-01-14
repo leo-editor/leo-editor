@@ -63,7 +63,7 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:mork.20041025115037: ** xslt elements
-#This dict contains elements that go into a stylesheet
+# This dict contains elements that go into a stylesheet
 xslt = {
 
 'apply-imports': '<xsl:apply-imports/>',

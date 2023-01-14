@@ -150,8 +150,8 @@ except ImportError:
     # raise
 try:
     # pylint: disable=import-error
-    #copyright ReportLab Inc. 2000
-    #see rllicense.txt for license details
+    # copyright ReportLab Inc. 2000
+    # see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
     from reportlab.lib.styles import StyleSheet1, ParagraphStyle
     from reportlab.lib.enums import TA_CENTER  # , TA_LEFT, TA_RIGHT, TA_JUSTIFY
@@ -515,7 +515,7 @@ if docutils:
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
             self.output = b'\n'.join(self.output.splitlines(False))
-            #self.output = self.output.replace(b'\r\n',b'\n')
+            # self.output = self.output.replace(b'\r\n',b'\n')
             if 0:  # This is the actual .pdf output returned from doc.build(story)
                 # doc is a Platypus (and this reportlab) document.
                 g.trace('output', '*' * 40)

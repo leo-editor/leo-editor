@@ -390,7 +390,6 @@ class ValueSpaceController:
     def let_body(self, var, val):
         if var.endswith(".yaml"):
             if yaml:
-                #print "set to yaml", `val`
                 sio = BytesIO(val)
                 try:
                     # Both mypy and pylint complaint.

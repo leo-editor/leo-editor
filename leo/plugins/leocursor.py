@@ -174,10 +174,8 @@ class LeoCursor:
                 else:
 
                     for i in stem.__v.children or []:
-                        #print 'V', step, i.h
                         if re.match(step, i.h):
                             new_stems.append(self.__at(i))
-                            #print 'N',i.h
 
             stems = new_stems
 

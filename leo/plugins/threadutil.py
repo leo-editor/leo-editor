@@ -24,11 +24,8 @@ def async_syscmd(cmd, onfinished):
         err = proc.readAllStandardError()
         onfinished(exitstatus, out, err)
 
-    # proc.finished[int].connect(cmd_handler)
     proc.finished.connect(cmd_handler)
-
     proc.start(cmd)
-    #garbage.append(proc)
 
 #@+node:ekr.20121126095734.12423: *3* enq_task
 def enq_task(r):
@@ -84,7 +81,6 @@ def main():
     b = QtWidgets.QPushButton("Say hello", None)
     g.procs.add(['ls', '/tmp'])
     g.procs.add(['ls', '-la'])
-    #a.setMainWidget(b)
     b.show()
     if isQt6:
         a.exec()
@@ -289,7 +285,7 @@ class UnitWorker(QtCore.QThread):  # type:ignore
 
     #@+node:ekr.20121126095734.12441: *3* do_work
     def do_work(self, inp):
-        #print("Doing work", self.worker, self.input)
+
         try:
             self.output = self.worker(inp)
         except Exception:
@@ -302,12 +298,12 @@ class UnitWorker(QtCore.QThread):  # type:ignore
             for line in lines:
                 print(line.rstrip())
             self.output = ''
-        #self.output_f(output)
 
         self.resultReady.emit()
+
         def L():
-            #print "Call output"
             self.output_f(self.output)
+
         later(L)
 
 

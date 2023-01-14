@@ -59,8 +59,6 @@ class EsCapture:
         Returns:
             None
         """
-
-        #leoG.trace('Begin Collection')
         self._colorDict = dict()
     #@+node:bob.20180116152729.1: *3* endCollection()
     def endCollection(self):
@@ -75,7 +73,8 @@ class EsCapture:
 
         self._collectedDict = self._colorDict
         self._colorDict = None
-        #leoG.trace('End Collection')
+
+        # leoG.trace('End Collection')
     #@+node:bob.20180116151252.1: *3* esCapture()
     def esCapture(self, *args, **keys):
         """ Capture the leoG.es() output and then pass it on
@@ -92,11 +91,10 @@ class EsCapture:
             None
         """
 
-        #leoG.trace('Entry - args="{0}" keys={1}'.format(args, keys))
+        # leoG.trace('Entry - args="{0}" keys={1}'.format(args, keys))
         color = keys.get('color', 'black')
         assert not color is None
         if self._colorDict is not None:
-            #leoG.trace('Save')
             listx = self._colorDict.get(color, list())
             listx.append((args, keys))
             self._colorDict[color] = listx

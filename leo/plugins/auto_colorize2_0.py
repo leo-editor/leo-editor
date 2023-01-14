@@ -62,7 +62,7 @@ def init_dict(c):
     except Exception as e:
         g.es_trace("Yaml file does not have proper heading.\n" + str(e))
         return
-    #preprocess multi headline styles
+    # preprocess multi headline styles
     g.app.permanentScriptDict[cs + 'formats'] = {}
     try:
         for k, f in formats.items():
@@ -85,13 +85,13 @@ def colorize(c, p, item):
         g.app.permanentScriptDict[cs + 'formats'] = {}
     for k, f in g.app.permanentScriptDict[cs + 'formats'].items():
         def format_one(f):
-            #color
+            # color
             try:
                 if f['color']:
                     item.setForeground(0, QBrush(QColor("#" + str(f['color']))))
             except Exception:
                 print(item)
-            #weight
+            # weight
             try:
                 if f['font-weight']:
                     font.setBold(True)

@@ -20,7 +20,6 @@ class Ui_LeoQuickSearchWidget:
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.lineEdit = QtGui.QLineEdit(LeoQuickSearchWidget)
-        #self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setObjectName("lineEditNav")
         self.verticalLayout.addWidget(self.lineEdit)
         self.listWidget = QtGui.QListWidget(LeoQuickSearchWidget)

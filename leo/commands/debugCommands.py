@@ -34,7 +34,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         winpdb = self.findDebugger()
         if not winpdb:
             return
-        #check for doctest examples
+        # check for doctest examples
         try:
             import doctest
             parser = doctest.DocTestParser()

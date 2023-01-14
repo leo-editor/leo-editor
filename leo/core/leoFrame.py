@@ -1698,7 +1698,7 @@ class LeoTree:
         c = self.c
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
-        #GS I believe this should also get into the select1 hook
+        # GS I believe this should also get into the select1 hook
         c.frame.scanForTabWidth(p)
         use_chapters = c.config.getBool('use-chapters')
         if use_chapters:

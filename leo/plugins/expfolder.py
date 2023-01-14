@@ -73,7 +73,6 @@ def on_icondclick(tag, keywords):
             while p.firstChild():
                 p.firstChild().doDelete()
 
-        #changed = c.isChanged()
         dir = h[11:]
         dirs = []
         files = []
@@ -83,9 +82,6 @@ def on_icondclick(tag, keywords):
                 dirs.append(path)
             else:
                 files.append(path)
-
-        #g.es('dirs: '+str(dirs))
-        #g.es('files: '+str(files))
 
         dirs.sort()
         files.sort()

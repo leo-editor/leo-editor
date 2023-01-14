@@ -260,7 +260,7 @@ class AttributeGetterUA(AttributeGetter):
             g.es("Cancelled")
             return
 
-        #FIXME type_ = {True: '_view', False: '_edit'}[readonly]
+        # FIXME type_ = {True: '_view', False: '_edit'}[readonly]
         type_ = '_edit'
 
         if '|' in ns[-1]:
@@ -275,7 +275,7 @@ class AttributeGetterUA(AttributeGetter):
 
             self.setAttrib(v, ns, '')
 
-            #FIXME self.attrPaths.add(tuple(ns))
+            # FIXME self.attrPaths.add(tuple(ns))
     #@+node:tbrown.20091103080354.1433: *3* longDescrip
     def longDescrip(self, path):
 
@@ -499,14 +499,6 @@ class editWatcher:
                 break
         else:
             self.c.redraw()
-
-    #X def setValue(a, path, value):
-    #X     """copy value into dict a on path,
-    #X     e.g. a['one']['more']['level'] = value
-    #X     """
-    #X     for i in path[:-1]:
-    #X         a = a.setdefault(i, {})
-    #X     a[path[-1]] = value
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
 class attrib_edit_Controller:
 

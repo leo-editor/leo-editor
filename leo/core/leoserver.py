@@ -256,7 +256,7 @@ class ServerExternalFilesController(ExternalFilesController):
         self.checksum_d[path] = self.checksum(path)
         # For now, ignore the #1888 fix method
         if self.ask(c, path):
-            #reload Commander
+            # reload Commander
             # self.lastCommander.close() Stops too much if last file closed
             g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
             g.leoServer.open_file({"filename": path})  # ignore returned value

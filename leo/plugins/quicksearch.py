@@ -393,7 +393,6 @@ class QuickSearchController:
 
         self.throttler = threadutil.NowOrLater(throttledDump)
         self.worker.set_worker(searcher)
-        #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
         # we want both single-clicks and activations (press enter)
@@ -624,17 +623,14 @@ class QuickSearchController:
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat:str) -> Tuple[Match_List, Match_List]:
-        #self.clear()
 
         if self.frozen:
             return None
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
-            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
-            # bpat = pat[2:]
             flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         hNodes: Iterable

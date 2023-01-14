@@ -40,27 +40,27 @@ def sync_node_to_folder(c, parent, d):
 
     oldlist = {}
     newlist = []
-    #get children info
+    # get children info
     v = parent
     after_v = parent.nodeAfterTree()
     while v != after_v:
         if not v.hasChildren():
             oldlist[v.h] = v.b
         v = v.threadNext()
-    #compare folder content to children
+    # compare folder content to children
     for name in os.listdir(d):
         if name in oldlist:
             del oldlist[name]
         else:
             newlist.append(name)
-    #insert newlist
+    # insert newlist
     newlist.sort()
     newlist.reverse()
     for name in newlist:
         v = parent.insertAsNthChild(0)
         v.h = name
         v.setMarked()
-    #warn for orphan oldlist
+    # warn for orphan oldlist
     if oldlist:
         g.es('missing: ' + ','.join(oldlist.keys()))
 #@-others

@@ -440,7 +440,7 @@ def openDir(c, parent, d):
     inc = [line.replace('inc=', '') for line in bodySplit if line.startswith('inc=')]
     exc = [line.replace('exc=', '') for line in bodySplit if line.startswith('exc=')]
 
-    #flatten lists if using comma separations
+    # flatten lists if using comma separations
     inc = [item for line in inc for item in line.strip(' ').split(',')]
     exc = [item for line in exc for item in line.strip(' ').split(',')]
 
@@ -451,8 +451,8 @@ def openDir(c, parent, d):
             directive = entry.split(None, 1)
             if len(directive) > 1:
                 entry = entry[len(directive[0]) :].strip()
-        #find existing inc/exc nodes to remove
-        #using p.h allows for example exc=/ to remove all directories
+        # find existing inc/exc nodes to remove
+        # using p.h allows for example exc=/ to remove all directories
         if not checkIncExc(p.h, inc, exc, regEx) or \
                (excdirs and entry in dirs) or \
                (excfiles and entry in files):

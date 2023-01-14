@@ -112,7 +112,6 @@ def init():
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
-        #g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:

@@ -2396,7 +2396,7 @@ class CoreLog(leoFrame.LeoLog):
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
-        #return [w.tabText(i) for i in range(w.count())]
+        # return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20170419143731.15: *4* CLog.put
     # Signature is different.
     def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False) -> None:  # type:ignore
@@ -3299,7 +3299,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.dump_values()
         # This is widget.display:
         # (when not self.hidden)
-        #self.update()
+        # self.update()
         # LeoMLTree.update or MultiLine.update
         # self.parent.refresh()
         # LeoForm.refresh

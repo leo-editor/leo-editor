@@ -1555,13 +1555,12 @@ class LocalConfigManager:
     def findSettingsPosition(self, setting: str) -> Position:
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
-        # c = self.c
         root = self.settingsRoot()
         if not root:
             return None
         setting = munge(setting)
         for p in root.subtree():
-            #BJ munge will return None if a headstring is empty
+            # BJ munge will return None if a headstring is empty
             h = munge(p.h) or ''
             if h.startswith(setting):
                 return p.copy()
