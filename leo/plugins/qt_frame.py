@@ -3485,7 +3485,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         # 2014/06/06: Work around a possible bug in QUrl.
             # fn = str(url.path()) # Fails.
         e = sys.getfilesystemencoding()
-        g.trace(url.path())
         fn = g.toUnicode(url.path(), encoding=e)
         if sys.platform.lower().startswith('win') and fn.startswith('/'):
             fn = fn[1:]
@@ -3513,7 +3512,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         If fn is a .leo file, insert a node containing its top-level nodes as children.
         """
         c = self.c
-        g.trace(fn)
         if self.isLeoFile(fn, s) and not self.was_control_drag:
             g.openWithFileName(fn, old_c=c)
             return False  # Don't set the changed marker in the original file.
@@ -3565,7 +3563,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             self.createAtEditNode(fn, p)
         self.warnIfNodeExists(p)
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20110605121601.18373: *9* LeoQTreeWidget.createAtAutoTree (QTreeWidget)
+    #@+node:ekr.20110605121601.18373: *9* LeoQTreeWidget.createAtAutoTree
     def createAtAutoTree(self, fn: str, p: Position) -> None:
         """
         Make p an @auto node and create the tree using s, the file's contents.
@@ -3604,7 +3602,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
     def createLeoFileTree(self, fn: str, p: Position) -> None:
         """Copy all nodes from fn, a .leo file, to the children of p."""
         c = self.c
-        p.h = f"From {g.shortFileName(fn)}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"From {g.shortFileName(fn2)}"
         c.selectPosition(p)
         # Create a dummy first child of p.
         dummy_p = p.insertAsNthChild(0)
@@ -3630,7 +3629,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         if prefix and len(prefix) > 3:  # Don't just strip off c:\.
             p.h = abs_fn[len(prefix) :].strip()
         else:
-            p.h = f"@url file://{fn}"
+            fn2 = fn.replace('\\', '/')
+            p.h = f"@url file://{fn2}"
     #@+node:ekr.20110605121601.18377: *9* LeoQTreeWidget.isAutoFile (LeoQTreeWidget)
     def isAutoFile(self, fn: str) -> bool:
         """Return true if fn (a file name) can be parsed with an @auto parser."""
