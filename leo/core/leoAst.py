@@ -614,7 +614,7 @@ if 1:  # pragma: no cover
                 else:
                     break
         return None
-    #@+node:ekr.20191231160225.1: *4* function: find_paren_token (changed signature)
+    #@+node:ekr.20191231160225.1: *4* function: find_paren_token
     def find_paren_token(i: int, global_token_list: List["Token"]) -> int:
         """Return i of the next paren token, starting at tokens[i]."""
         while i < len(global_token_list):
@@ -2184,7 +2184,8 @@ class IterativeTokenGenerator:
         return result
     #@+node:ekr.20220330133336.8: *6* iterative.FunctionDef
     # FunctionDef(
-    #   identifier name, arguments args,
+    #   identifier name,
+    #   arguments args,
     #   stmt* body,
     #   expr* decorator_list,
     #   expr? returns,
@@ -3366,10 +3367,9 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
 
-    *Important*: This is a predominantly a *token*-based beautifier.
-    However, orange.colon and orange.possible_unary_op use the parse
-    tree to provide context that would otherwise be difficult to
-    deduce.
+    This is a predominantly a *token-based* beautifier. However,
+    organge.do_op, orange.colon, and orange.possible_unary_op use the parse
+    tree to provide context that would otherwise be difficult to deduce.
     """
     # This switch is really a comment. It will always be false.
     # It marks the code that simulates the operation of the black tool.
@@ -3749,8 +3749,29 @@ class Orange:
             # Ditto.
             self.rt(val)
         elif val == '=':
-            # Pep 8: Don't use spaces around the = sign when used to indicate
-            # a keyword argument or a default parameter value.
+            #@+<< handle '=' op >>
+            #@+node:ekr.20230115082937.1: *6* << handle '=' op >>
+            # Pep 8:
+            # - Don't use spaces around the = sign when used to indicate
+            #   a keyword argument or a default parameter value.
+            # - When combining an argument annotation with a default value, however,
+            #   do use spaces around the = sign
+
+            ###
+                # statement_node = find_statement_node(self.token.node)
+                # g.trace(statement_node)
+                # if isinstance(statement_node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+
+            node, parents = self.token.node, []  # self.token.node.__class__.__name__]
+            while node.parent:
+                node = node.parent
+                parents.append(node.__class__.__name__)
+            if all(z in parents for z in ('arguments', 'FunctionDef')):
+                ### Line number of token???
+                node_tokens = tokens_for_node(self.filename, self.token.node.parent, self.tokens)
+                lines = g.splitLines(tokens_to_string(node_tokens))
+                g.trace(repr(lines[0]))
+                # g.printObj(parents, tag=self.val)
             if self.paren_level:
                 self.clean('blank')
                 self.add_token('op-no-blanks', val)
@@ -3758,6 +3779,7 @@ class Orange:
                 self.blank()
                 self.add_token('op', val)
                 self.blank()
+            #@-<< handle '=' op >>
         elif val in '~+-':
             self.possible_unary_op(val)
         elif val == '*':
@@ -4937,7 +4959,8 @@ class TokenOrderGenerator:
         self.level -= 1
     #@+node:ekr.20191113063144.17: *6* tog.FunctionDef
     # FunctionDef(
-    #   identifier name, arguments args,
+    #   identifier name,
+    #   arguments args,
     #   stmt* body,
     #   expr* decorator_list,
     #   expr? returns,
