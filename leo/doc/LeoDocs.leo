@@ -465,7 +465,6 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
-<v t="ekr.20050812123002"></v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
@@ -2416,6 +2415,12 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20050831195331.1"></v>
+<v t="ekr.20230115074903.1"><vh>--- To be changed</vh></v>
+<v t="ekr.20170228104217.1"></v>
+<v t="ekr.20050830115714.26"></v>
+<v t="ekr.20170906090516.1"></v>
+<v t="ekr.20050830115714.13"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31568,6 +31573,11 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
+<t tx="ekr.20230115074903.1">- Remove all mention of test.leo
+- Add more useful abbreviations.
+- Add FAQ entry about black vs. beautify.
+  --black-sentinels
+  unblacken-sentinels command.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
