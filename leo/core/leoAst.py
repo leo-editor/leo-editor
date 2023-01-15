@@ -4332,7 +4332,7 @@ class ReassignTokens:
         """The main entry point."""
         self.filename = filename
         self.tokens = tokens
-        # For now, just handle Call nodes.
+        # Just handle Call nodes.
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 self.visit_call(node)
