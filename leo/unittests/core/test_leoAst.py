@@ -1861,6 +1861,23 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected)
+    #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
+    def test_annotations(self):
+
+        table = (
+        # Case 0.
+        '''\
+    def annotated_f(s: str = None):
+        pass
+    ''',
+        )
+        for i, contents in enumerate(table):
+            contents, tokens, tree = self.make_data(contents)
+            expected = self.blacken(contents).rstrip() + '\n'
+            results = self.beautify(contents, tokens, tree)
+            g.printObj(expected, tag='expected (black)')
+            g.printObj(results, tag='results')
+            self.assertEqual(results, expected)
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """

@@ -3776,11 +3776,11 @@ class Orange:
                 # z = z.parent
                 # parents.append(z.__class__.__name__)
 
-        if True and isinstance(node, (ast.arg, ast.arguments)):
-            
+        if False and isinstance(node, (ast.arg, ast.arguments)):
+
             def print_token(node, tag):
                 tokens = tokens_for_node('<filename>', node, self.tokens)
-                lines = g.splitLines(tokens_to_string(tokens))
+                lines = g.splitLines(tokens_to_string(tokens) or [])
                 try:
                     n = str(node.lineno)
                     n_s = f"line {n}"
@@ -4874,6 +4874,8 @@ class TokenOrderGenerator:
     def do_arg(self, node: Node) -> None:
         """This is one argument of a list of ast.Function or ast.Lambda arguments."""
         self.name(node.arg)
+        if self.sync_equal_flag:
+            self.op('=')
         annotation = getattr(node, 'annotation', None)
         if annotation is not None:
             self.op(':')
@@ -4883,6 +4885,8 @@ class TokenOrderGenerator:
     #       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
     #       expr* kw_defaults, arg? kwarg, expr* defaults
     # )
+
+    sync_equal_flag = False  # A small hack.
 
     def do_arguments(self, node: Node) -> None:
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
@@ -4903,10 +4907,26 @@ class TokenOrderGenerator:
             self.op('/')
         # 2. Sync all args.
         for i, z in enumerate(node.args):
-            self.visit(z)
-            if i >= n_plain:
-                self.op('=')
-                self.visit(node.defaults[i - n_plain])
+            assert isinstance(z, ast.arg)
+            annotation = getattr(z, 'annotations', None)
+            if annotation:
+                g.trace(z, annotation)
+            if 1:  # Legacy, works
+                self.visit(z)
+                if i >= n_plain:
+                    self.op('=')
+                    self.visit(node.defaults[i - n_plain])
+            else:
+                if i >= n_plain:
+                    try:
+                        self.sync_equal_flag = True
+                        self.visit(z)
+                    finally:
+                        self.sync_equal_flag = False
+                    self.visit(node.defaults[i - n_plain])
+                else:
+                    self.visit(z)
+
         # 3. Sync the vararg.
         if vararg:
             self.op('*')
