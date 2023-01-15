@@ -2624,7 +2624,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
         contents = """\
-    #pragma: no beautify
+    # pragma: no beautify
 
     def addOptionsToParser(self, parser, trace_m):
 
