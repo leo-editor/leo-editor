@@ -3776,30 +3776,27 @@ class Orange:
                 # z = z.parent
                 # parents.append(z.__class__.__name__)
 
-        if isinstance(node, ast.arguments):
+        if True and isinstance(node, (ast.arg, ast.arguments)):
+            
+            def print_token(node, tag):
+                tokens = tokens_for_node('<filename>', node, self.tokens)
+                lines = g.splitLines(tokens_to_string(tokens))
+                try:
+                    n = str(node.lineno)
+                    n_s = f"line {n}"
+                except AttributeError:
+                    n_s = ''
+                print(f"{n_s:<8} {tag:>6} {lines[0]!r}")
 
             # The unit tests for leoAst.py do not call create_app and do not set g.unitTesting.
-            if 0:  ### Traces...
-                filename = '<filename>'
-                parent = node.parent
-                parent_tokens = tokens_for_node(filename, parent, self.tokens)
-                parent_lines = g.splitLines(tokens_to_string(parent_tokens))
-                print(f"parent: {parent.lineno:4} {parent_lines[0]!r}")
-                node_tokens = tokens_for_node(filename, node, self.tokens)
-                node_lines = g.splitLines(tokens_to_string(node_tokens))
-                print(f"  args:      {node_lines[0]!r}")
-                for i, arg in enumerate(node.args):  # Maybe posonlyargs
-                    arg_tokens = tokens_for_node(filename, arg, self.tokens)
-                    arg_lines = g.splitLines(tokens_to_string(arg_tokens))
-                    ### To do: handle node.defaults.
-                    annotation = getattr(arg, 'annotation', None)
-                    if False and annotation:
-                        annotation_tokens = tokens_for_node(filename, annotation, self.tokens)
-                        annotation_lines = g.splitLines(tokens_to_string(annotation_tokens))
-                        print(f" arg {i}:      {arg_lines[0]!r}: {annotation_lines[0]!r}")
-                    else:
-                        print(f" arg {i}:      {arg_lines[0]!r}")
-                print('')
+            print('')
+            print_token(node.parent, 'parent')
+            print_token(node, 'args')
+            for i, arg in enumerate(node.args):  # Maybe posonlyargs
+                annotation = getattr(arg, 'annotation', None)
+                print_token(arg, f"arg {i}")
+                if annotation:
+                    print_token(annotation, 'annotation')
 
         if self.paren_level:
             # Pep 8: Don't use spaces around the = sign when used to indicate
