@@ -145,7 +145,6 @@ class LeoCursor:
         while steps:
 
             step = steps.pop(0)
-            # print 'S',step
             if not step.strip():
                 continue
 

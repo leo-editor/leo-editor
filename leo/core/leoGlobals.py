@@ -6212,7 +6212,6 @@ def translateArgs(args: Iterable[Any], d: Dict[str, Any]) -> str:
     if not console_encoding:
         e = sys.getdefaultencoding()
         console_encoding = e if isValidEncoding(e) else 'utf-8'
-        # print 'translateArgs',console_encoding
     result: List[str] = []
     n, spaces = 0, d.get('spaces')
     for arg in args:

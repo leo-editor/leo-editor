@@ -117,11 +117,7 @@ class Recorder:
             # save .bmp in video mode because .png is too slow
 
         pm.save(filename)
-
         self.frame += 1
-
-        # print '  ', time.time() - self.last_time
-        # self.last_time = time.time()
     #@+node:tbrown.20130419143128.29672: *3* make_pointer
     def make_pointer(self):
         """Return a pixmap for a pointer."""
