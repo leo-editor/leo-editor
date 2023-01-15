@@ -31577,7 +31577,9 @@ unl: Conclusion
 - Add more useful abbreviations.
 - Add FAQ entry about black vs. beautify.
   --black-sentinels
-  unblacken-sentinels command.</t>
+  Advantages of beautify command:
+  - Does not split/join lines.
+  - Does not change Leo's sentinels.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
