@@ -3516,7 +3516,7 @@ class Orange:
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
 
-    comment_pat = re.compile(r'^(\s*)#[^@ \n]')
+    comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
 
     def do_comment(self) -> None:
         """Handle a comment token."""
