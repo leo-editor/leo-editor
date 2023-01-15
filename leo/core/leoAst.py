@@ -3751,26 +3751,48 @@ class Orange:
         elif val == '=':
             #@+<< handle '=' op >>
             #@+node:ekr.20230115082937.1: *6* << handle '=' op >>
-            # Pep 8:
+            node = self.token.node
 
+            ### Not necessary.
+                # z, parents = node, [node.__class__.__name__]
+                # while z.parent:
+                    # z = z.parent
+                    # parents.append(z.__class__.__name__)
 
-            node, parents = self.token.node, [self.token.node.__class__.__name__]
-            while node.parent:
-                node = node.parent
-                parents.append(node.__class__.__name__)
-            in_def = all(z in parents for z in ('arguments', 'FunctionDef'))
-            if in_def:
+            if isinstance(node, ast.arguments):
                 # Pep 8: When combining an argument annotation with a default value,
                 #        however, do use spaces around the = sign
-                parent = self.token.node.parent
-                node_tokens = tokens_for_node(self.filename, parent, self.tokens)
-                lines = g.splitLines(tokens_to_string(node_tokens))
-                g.trace(f"{parent.lineno:4} {lines[0]!r}")  ###
-                g.printObj(parents)  ### 
-                self.blank()
-                self.add_token('op', val)
-                self.blank()
-            elif self.paren_level:
+
+                # The unit tests for leoAst.py do not call create_app and do not set g.unitTesting.
+                if 0:  ### Traces...
+                    filename = '<filename>'
+                    parent = node.parent
+                    parent_tokens = tokens_for_node(filename, parent, self.tokens)
+                    parent_lines = g.splitLines(tokens_to_string(parent_tokens))
+                    print(f"parent: {parent.lineno:4} {parent_lines[0]!r}")
+                    node_tokens = tokens_for_node(filename, node, self.tokens)
+                    node_lines = g.splitLines(tokens_to_string(node_tokens))
+                    print(f"  args:      {node_lines[0]!r}")
+                    for i, arg in enumerate(node.args):  # Maybe posonlyargs
+                        arg_tokens = tokens_for_node(filename, arg, self.tokens)
+                        arg_lines = g.splitLines(tokens_to_string(arg_tokens))
+                        ### To do: handle node.defaults.
+                        annotation = getattr(arg, 'annotation', None)
+                        if False and annotation:
+                            annotation_tokens = tokens_for_node(filename, annotation, self.tokens)
+                            annotation_lines = g.splitLines(tokens_to_string(annotation_tokens))
+                            print(f" arg {i}:      {arg_lines[0]!r}: {annotation_lines[0]!r}")
+                        else:
+                            print(f" arg {i}:      {arg_lines[0]!r}")
+                    print('')
+                #
+                # Look behind: is ther a colon? Can we use the tree??
+
+                if 0:  ### Not yet
+                    self.blank()
+                    self.add_token('op', val)
+                    self.blank()
+            if self.paren_level:
                 # Pep 8: Don't use spaces around the = sign when used to indicate
                 #        a keyword argument or a default parameter value.
                 self.clean('blank')
