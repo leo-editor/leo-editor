@@ -3560,7 +3560,7 @@ class Orange:
             m = self.comment_pat.match(val)
             if m:
                 i = len(m.group(1))
-                val2 = val[:i] + '# ' + val[i+1:]
+                val2 = val[:i] + '# ' + val[i + 1 :]
                 g.trace(repr(val2))
         else:
             # Exactly two spaces before trailing comments.
