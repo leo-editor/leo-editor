@@ -556,7 +556,7 @@ class LeoFind:
         settings = self._compute_find_def_settings(find_pattern)
         return self.do_find_def(settings, word, strict)
 
-    def find_def_strict(self, event: Event=None) -> Tuple[Position, int, int]:  #pragma: no cover (cmd)
+    def find_def_strict(self, event: Event=None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
         """Same as find_def, but don't call _switch_style."""
         return self.find_def(event=event, strict=True)
 
