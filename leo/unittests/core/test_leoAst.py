@@ -1705,7 +1705,7 @@ class TestIterative(TestTOG):
         self.assertEqual(expected, results)
     #@+node:ekr.20220403062001.1: *5* TestIterative.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
-        
+
         # See https://peps.python.org/pep-0008/#pet-peeves
         # See https://peps.python.org/pep-0008/#other-recommendations
 
