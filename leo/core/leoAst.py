@@ -3516,7 +3516,7 @@ class Orange:
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
 
-    comment_pat = r'^(\s*)#[^@\n]'
+    comment_pat = re.compile(r'^(\s*)#[^@\n]')
 
     def do_comment(self) -> None:
         """Handle a comment token."""
@@ -3559,7 +3559,7 @@ class Orange:
             # #3056: Insure one space after '#' in non-sentinel comments.
             m = self.comment_pat.match(val)
             if m:
-                i = m.start(1)
+                i = len(m.group(1))
                 val2 = val[:i] + '# ' + val[i+1:]
                 g.trace(repr(val2))
         else:
