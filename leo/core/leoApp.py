@@ -284,7 +284,7 @@ class LeoApp:
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
-            #"rust": "c",
+            # "rust": "c",
             # "vue": "c",
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict

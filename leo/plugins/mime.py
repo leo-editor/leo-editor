@@ -172,7 +172,7 @@ _mime_open_cmd = ''
 if sys.platform == 'linux2':
     # detect KDE or Gnome to use their file associations
     if os.environ.get('KDE_FULL_SESSION'):
-        #_mime_open_cmd = 'kfmclient exec'
+        # _mime_open_cmd = 'kfmclient exec'
         open_func = exec_string_cmd('kfmclient exec')
 
     elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):

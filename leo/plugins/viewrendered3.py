@@ -2085,7 +2085,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'rst': pc.update_rst,
             'svg': pc.update_svg,
             'text': pc.update_text,
-            #'url': pc.update_url,
+            # 'url': pc.update_url,
         }
 
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']

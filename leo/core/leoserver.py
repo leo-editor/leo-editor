@@ -3292,23 +3292,23 @@ class LeoServer:
             'file-insert',
             'file-save-by-name',  # only body pane to file (confusing w/ save as...)
             'save-file-by-name',  # only body pane to file (confusing w/ save as...)
-            #'file-new',
-            #'file-open-by-name',
+            # 'file-new',
+            # 'file-open-by-name',
 
             # All others...
             'shell-command',
             'shell-command-on-region',
             'cheat-sheet',
             'dehoist',  # Duplicates of de-hoist.
-            #'find-clone-all',
-            #'find-clone-all-flattened',
-            #'find-clone-tag',
-            #'find-all',
+            # 'find-clone-all',
+            # 'find-clone-all-flattened',
+            # 'find-clone-tag',
+            # 'find-all',
             'find-all-unique-regex',
             'find-character',
             'find-character-extend-selection',
-            #'find-next',
-            #'find-prev',
+            # 'find-next',
+            # 'find-prev',
             'find-word',
             'find-word-in-line',
 
@@ -3320,16 +3320,16 @@ class LeoServer:
             'isearch-forward-regexp',
             'isearch-with-present-options',
 
-            #'replace',
-            #'replace-all',
+            # 'replace',
+            # 'replace-all',
             'replace-current-character',
-            #'replace-then-find',
+            # 'replace-then-find',
 
             're-search-backward',
             're-search-forward',
 
-            #'search-backward',
-            #'search-forward',
+            # 'search-backward',
+            # 'search-forward',
             'search-return-to-origin',
 
             'set-find-everywhere',
@@ -3338,18 +3338,18 @@ class LeoServer:
             'set-replace-string',
             'set-search-string',
 
-            #'show-find-options',
+            # 'show-find-options',
 
-            #'start-search',
+            # 'start-search',
 
             'toggle-find-collapses-nodes',
-            #'toggle-find-ignore-case-option',
-            #'toggle-find-in-body-option',
-            #'toggle-find-in-headline-option',
-            #'toggle-find-mark-changes-option',
-            #'toggle-find-mark-finds-option',
-            #'toggle-find-regex-option',
-            #'toggle-find-word-option',
+            # 'toggle-find-ignore-case-option',
+            # 'toggle-find-in-body-option',
+            # 'toggle-find-in-headline-option',
+            # 'toggle-find-mark-changes-option',
+            # 'toggle-find-mark-finds-option',
+            # 'toggle-find-regex-option',
+            # 'toggle-find-word-option',
             'toggle-find-wrap-around-option',
 
             'word-search-backward',
@@ -3432,9 +3432,9 @@ class LeoServer:
             'clear-extend-mode',
 
             # Outline... (Commented off by Félix, Should work)
-            #'contract-or-go-left',
-            #'contract-node',
-            #'contract-parent',
+            # 'contract-or-go-left',
+            # 'contract-node',
+            # 'contract-parent',
 
             # Scrolling...
             'scroll-down-half-page',
@@ -3463,7 +3463,7 @@ class LeoServer:
             'help-for-highlight-current-line',
             'help-for-right-margin-guide',
 
-            #'find-tab-open',
+            # 'find-tab-open',
 
             'hide-body-dock',
             'hide-body-pane',
@@ -3605,8 +3605,8 @@ class LeoServer:
             'find-quick-test-failures',
             'find-quick-timeline',
 
-            #'goto-next-history-node',
-            #'goto-prev-history-node',
+            # 'goto-next-history-node',
+            # 'goto-prev-history-node',
 
             'preview',
             'preview-body',
@@ -3633,7 +3633,7 @@ class LeoServer:
             'spell-tab-hide',
             'spell-tab-open',
 
-            #'tag-children',
+            # 'tag-children',
 
             'todo-children-todo',
             'todo-dec-pri',
@@ -3947,22 +3947,22 @@ class LeoServer:
 
             'unmark-all',
             'unmark-first-parents',
-            #'clean-main-spell-dict',
-            #'clean-persistence',
-            #'clean-recent-files',
-            #'clean-spellpyx',
-            #'clean-user-spell-dict',
+            # 'clean-main-spell-dict',
+            # 'clean-persistence',
+            # 'clean-recent-files',
+            # 'clean-spellpyx',
+            # 'clean-user-spell-dict',
 
             'clear-all-caches',
             'clear-all-hoists',
             'clear-all-uas',
             'clear-cache',
             'clear-node-uas',
-            #'clear-recent-files',
+            # 'clear-recent-files',
 
-            #'delete-first-icon', # ? maybe move to bad commands?
-            #'delete-last-icon', # ? maybe move to bad commands?
-            #'delete-node-icons', # ? maybe move to bad commands?
+            # 'delete-first-icon', # ? maybe move to bad commands?
+            # 'delete-last-icon', # ? maybe move to bad commands?
+            # 'delete-node-icons', # ? maybe move to bad commands?
 
             'dump-caches',
             'dump-clone-parents',
@@ -3970,7 +3970,7 @@ class LeoServer:
             'dump-node',
             'dump-outline',
 
-            #'insert-icon', # ? maybe move to bad commands?
+            # 'insert-icon', # ? maybe move to bad commands?
 
             'set-ua',
 
@@ -4003,13 +4003,13 @@ class LeoServer:
             # Save Files.
             'file-save',
             'file-save-as',
-            #'file-save-by-name',
+            # 'file-save-by-name',
             'file-save-to',
             'save',
             'save-as',
             'save-file',
             'save-file-as',
-            #'save-file-by-name',
+            # 'save-file-by-name',
             'save-file-to',
             'save-to',
 
@@ -4021,7 +4021,7 @@ class LeoServer:
             'write-dirty-at-file-nodes',
             'write-dirty-at-shadow-nodes',
             'write-edited-recent-files',
-            #'write-file-from-node',
+            # 'write-file-from-node',
             'write-missing-at-file-nodes',
             'write-outline-only',
 
@@ -4036,8 +4036,8 @@ class LeoServer:
 
             'clone-to-at-spot',
 
-            #'edit-setting',
-            #'edit-shortcut',
+            # 'edit-setting',
+            # 'edit-shortcut',
 
             'execute-pytest',
             'execute-script',
@@ -4046,7 +4046,7 @@ class LeoServer:
 
             'goto-any-clone',
             'goto-global-line',
-            #'goto-line',
+            # 'goto-line',
             'git-diff', 'gd',
 
             'log-kill-listener', 'kill-log-listener',
@@ -4054,7 +4054,7 @@ class LeoServer:
 
             'make-stub-files',
 
-            #'pdb',
+            # 'pdb',
 
             'redo',
             'rst3',
@@ -4068,17 +4068,17 @@ class LeoServer:
 
             'undo',
 
-            #'xdb',
+            # 'xdb',
 
             # Beautify, blacken, fstringify...
             'beautify-files',
             'beautify-files-diff',
             'blacken-files',
             'blacken-files-diff',
-            #'diff-and-open-leo-files',
+            # 'diff-and-open-leo-files',
             'diff-beautify-files',
             'diff-fstringify-files',
-            #'diff-leo-files',
+            # 'diff-leo-files',
             'diff-marked-nodes',
             'fstringify-files',
             'fstringify-files-diff',
@@ -4097,24 +4097,24 @@ class LeoServer:
             'check-derived-file',
             'check-outline',
             'code-to-rst',
-            #'compare-two-leo-files',
+            # 'compare-two-leo-files',
             'convert-all-blanks',
             'convert-all-tabs',
             'count-children',
             'count-pages',
             # 'count-region',
 
-            #'desktop-integration-leo',
+            # 'desktop-integration-leo',
 
-            #'edit-recent-files',
-            #'exit-leo',
+            # 'edit-recent-files',
+            # 'exit-leo',
 
-            #'file-compare-two-leo-files',
+            # 'file-compare-two-leo-files',
             'find-def',
             'find-long-lines',
             'find-missing-docstrings',
             'flake8-files',
-            #'flatten-outline',
+            # 'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
 
@@ -4124,31 +4124,31 @@ class LeoServer:
             'gc-dump-objects-verbose',
             'gc-show-summary',
 
-            #'help',  # To do.
-            #'help-for-abbreviations',
-            #'help-for-autocompletion',
-            #'help-for-bindings',
-            #'help-for-command',
-            #'help-for-creating-external-files',
-            #'help-for-debugging-commands',
-            #'help-for-drag-and-drop',
-            #'help-for-dynamic-abbreviations',
-            #'help-for-find-commands',
-            #'help-for-keystroke',
-            #'help-for-minibuffer',
-            #'help-for-python',
-            #'help-for-regular-expressions',
-            #'help-for-scripting',
-            #'help-for-settings',
+            # 'help',  # To do.
+            # 'help-for-abbreviations',
+            # 'help-for-autocompletion',
+            # 'help-for-bindings',
+            # 'help-for-command',
+            # 'help-for-creating-external-files',
+            # 'help-for-debugging-commands',
+            # 'help-for-drag-and-drop',
+            # 'help-for-dynamic-abbreviations',
+            # 'help-for-find-commands',
+            # 'help-for-keystroke',
+            # 'help-for-minibuffer',
+            # 'help-for-python',
+            # 'help-for-regular-expressions',
+            # 'help-for-scripting',
+            # 'help-for-settings',
 
             'insert-body-time',  # ?
             'insert-headline-time',
-            #'insert-jupyter-toc',
-            #'insert-markdown-toc',
+            # 'insert-jupyter-toc',
+            # 'insert-markdown-toc',
 
             'find-var',
 
-            #'join-leo-irc',
+            # 'join-leo-irc',
             'join-node-above',
             'join-node-below',
             'join-selection-to-node-below',
@@ -4165,42 +4165,42 @@ class LeoServer:
             'pandoc-with-preview',
             'paste-as-template',
 
-            #'print-body',
-            #'print-cmd-docstrings',
-            #'print-expanded-body',
-            #'print-expanded-html',
-            #'print-html',
-            #'print-marked-bodies',
-            #'print-marked-html',
-            #'print-marked-nodes',
-            #'print-node',
-            #'print-sep',
-            #'print-tree-bodies',
-            #'print-tree-html',
-            #'print-tree-nodes',
-            #'print-window-state',
+            # 'print-body',
+            # 'print-cmd-docstrings',
+            # 'print-expanded-body',
+            # 'print-expanded-html',
+            # 'print-html',
+            # 'print-marked-bodies',
+            # 'print-marked-html',
+            # 'print-marked-nodes',
+            # 'print-node',
+            # 'print-sep',
+            # 'print-tree-bodies',
+            # 'print-tree-html',
+            # 'print-tree-nodes',
+            # 'print-window-state',
 
             'pyflakes',
             'pylint',
             'pylint-kill',
             'python-to-coffeescript',
 
-            #'quit-leo',
+            # 'quit-leo',
 
-            #'reformat-body',
-            #'reformat-paragraph',
+            # 'reformat-body',
+            # 'reformat-paragraph',
             'refresh-from-disk',
             'reload-settings',
-            #'reload-style-sheets',
+            # 'reload-style-sheets',
             'revert',
 
-            #'save-buffers-kill-leo',
-            #'screen-capture-5sec',
-            #'screen-capture-now',
+            # 'save-buffers-kill-leo',
+            # 'screen-capture-5sec',
+            # 'screen-capture-now',
             'script-button',  # ?
-            #'set-reference-file',
-            #'show-style-sheet',
-            #'sort-recent-files',
+            # 'set-reference-file',
+            # 'show-style-sheet',
+            # 'sort-recent-files',
             'sphinx',
             'sphinx-with-preview',
             'style-reload',  # ?
@@ -4209,7 +4209,7 @@ class LeoServer:
             'untangle-all',
             'untangle-marked',
 
-            #'view-lossage',  # ?
+            # 'view-lossage',  # ?
 
             # Dubious commands (to do)...
             'act-on-node',
@@ -4220,18 +4220,18 @@ class LeoServer:
             'cffm',
             'cft',
 
-            #'buffer-append-to',
-            #'buffer-copy',
-            #'buffer-insert',
-            #'buffer-kill',
-            #'buffer-prepend-to',
-            #'buffer-switch-to',
-            #'buffers-list',
-            #'buffers-list-alphabetically',
+            # 'buffer-append-to',
+            # 'buffer-copy',
+            # 'buffer-insert',
+            # 'buffer-kill',
+            # 'buffer-prepend-to',
+            # 'buffer-switch-to',
+            # 'buffers-list',
+            # 'buffers-list-alphabetically',
 
             'chapter-back',
             'chapter-next',
-            #'chapter-select', #
+            # 'chapter-select', #
             'chapter-select-main'
         ]
         return good_list

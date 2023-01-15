@@ -459,7 +459,7 @@ class BaseColorizer:
             'comment2'      :'comment2_font',
             'comment3'      :'comment3_font',
             'comment4'      :'comment4_font',
-            #'default'       :'default_font',
+            # 'default'     :'default_font',
             'function'      :'function_font',
             'keyword1'      :'keyword1_font',
             'keyword2'      :'keyword2_font',

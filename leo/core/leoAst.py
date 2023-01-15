@@ -2693,7 +2693,6 @@ class IterativeTokenGenerator:
 
     def do_IfExp(self, node: Node) -> ActionList:
 
-        #'%s if %s else %s'
         return [
             (self.visit, node.body),
             (self.name, 'if'),
@@ -2802,7 +2801,6 @@ class IterativeTokenGenerator:
 
     def do_Await(self, node: Node) -> ActionList:
 
-        #'await %s\n'
         async_token_type = 'await' if has_async_tokens else 'name'
         return [
             (self.token, (async_token_type, 'await')),
@@ -5346,7 +5344,6 @@ class TokenOrderGenerator:
 
     def do_IfExp(self, node: Node) -> None:
 
-        #'%s if %s else %s'
         self.visit(node.body)
         self.name('if')
         self.visit(node.test)
@@ -5433,7 +5430,6 @@ class TokenOrderGenerator:
 
     def do_Await(self, node: Node) -> None:
 
-        #'await %s\n'
         async_token_type = 'await' if has_async_tokens else 'name'
         self.token(async_token_type, 'await')
         self.visit(node.value)

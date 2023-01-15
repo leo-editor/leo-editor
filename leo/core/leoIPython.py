@@ -213,7 +213,7 @@ class InternalIPKernel:
             args.append('--log-level=20')  # Higher is *quieter*
             # args.append('--debug')
             # Produces a verbose IPython log.
-            #'--log-level=10'
+            # '--log-level=10'
             # '--pdb', # User-level debugging
         try:
             # self.pdb()
