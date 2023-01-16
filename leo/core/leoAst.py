@@ -636,8 +636,7 @@ if 1:  # pragma: no cover
         if i is None:
             assert j is None, g.callers()
             return []
-        if 1:  ####
-            # g.trace(g.callers())
+        if False:
             name = node.__class__.__name__
             if abs(i - j) > 3:
                 tag = f"get_node_token_list: {name} {i}..{j}"
@@ -3455,7 +3454,6 @@ class Orange:
         #
         # Init output list and state...
         self.code_list: List[Token] = []  # The list of output tokens.
-        self.code_list_index = 0  # The token's index.
         self.tokens = tokens  # The list of input tokens.
         self.tree = tree
         self.add_token('file-start', '')
@@ -3777,11 +3775,13 @@ class Orange:
 
         node = self.token.node
 
-        if True and isinstance(node, ast.arguments):
+        # pylint: disable=simplifiable-condition  ### Temp.
+
+        if False and isinstance(node, ast.arguments):
             tokens = tokens_for_node('<filename>', node.parent, self.tokens)
             dump_tree(tokens, node.parent)
 
-        if True and isinstance(node, ast.arguments):
+        if False and isinstance(node, ast.arguments):
             tag = f"do_equal_op {node.__class__.__name__}"
             if 1:
                 g.printObj(get_node_token_list(node, self.tokens), tag=tag)
@@ -3893,8 +3893,7 @@ class Orange:
     def add_token(self, kind: str, value: Any) -> "Token":
         """Add an output token to the code list."""
         tok = Token(kind, value)
-        tok.index = self.code_list_index  # For debugging only.
-        self.code_list_index += 1
+        tok.index = len(self.code_list)
         self.code_list.append(tok)
         return tok
     #@+node:ekr.20200107165250.27: *5* orange.blank
