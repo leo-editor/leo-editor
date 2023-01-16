@@ -3773,43 +3773,11 @@ class Orange:
     #@+node:ekr.20230115141629.1: *6* orange.do_equal_op
     def do_equal_op(self, val: str) -> None:
 
-        node = self.token.node
+        ### node = self.token.node
 
-        # pylint: disable=simplifiable-condition  ### Temp.
-
-        if False and isinstance(node, ast.arguments):
-            tokens = tokens_for_node('<filename>', node.parent, self.tokens)
-            dump_tree(tokens, node.parent)
-
-        if False and isinstance(node, ast.arguments):
-            tag = f"do_equal_op {node.__class__.__name__}"
-            if 1:
-                g.printObj(get_node_token_list(node, self.tokens), tag=tag)
-            else:
-                for z in ast.walk(node.parent):
-                    g.printObj(get_node_token_list(z, self.tokens), tag=tag)
-
-        if False and isinstance(node, (ast.arg, ast.arguments)):
-
-            def print_token(node, tag):
-                tokens = tokens_for_node('<filename>', node, self.tokens)
-                lines = g.splitLines(tokens_to_string(tokens) or [])
-                try:
-                    n = str(node.lineno)
-                    n_s = f"line {n}"
-                except AttributeError:
-                    n_s = ''
-                print(f"{n_s:<8} {tag:>6} {lines[0]!r}")
-
-            # The unit tests for leoAst.py do not call create_app and do not set g.unitTesting.
-            print('')
-            print_token(node.parent, 'parent')
-            print_token(node, 'args')
-            for i, arg in enumerate(node.args):  # Maybe posonlyargs
-                annotation = getattr(arg, 'annotation', None)
-                print_token(arg, f"arg {i}")
-                if annotation:
-                    print_token(annotation, 'annotation')
+        if 0:
+            g.printObj(self.tokens, tag='do_equal_op')
+            dump_tree(self.tokens, self.tree)
 
         if self.paren_level:
             # Pep 8: Don't use spaces around the = sign when used to indicate
@@ -4395,16 +4363,11 @@ class Token:
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        # The n'th token in the token list has index n-1!
-        s = f"{self.kind:}.{self.index}"
-        return f"Token<{s}:{self.show_val(20)}>"
+        s = f"{self.index:<3} {self.kind:}"
+        return f"Token {s}:{self.show_val(20)}"
 
     __str__ = __repr__
 
-    # def __str__(self) -> str:  # pragma: no cover
-        # nl_kind = getattr(self, 'newline_kind', '')
-        # s = f"{self.kind:}.{self.index}.{nl_kind}"
-        # return f"{s:>20} {self.show_val(80)}"
 
     def to_string(self) -> str:
         """Return the contribution of the token to the source file."""
@@ -4927,9 +4890,6 @@ class TokenOrderGenerator:
         # 2. Sync all args.
         for i, z in enumerate(node.args):
             assert isinstance(z, ast.arg)
-            annotation = getattr(z, 'annotations', None)
-            if annotation:
-                g.trace(z, annotation)
             self.visit(z)
             if i >= n_plain:
                 self.op('=')
@@ -4952,6 +4912,8 @@ class TokenOrderGenerator:
         if kwarg:
             self.op('**')
             self.visit(kwarg)
+
+
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
