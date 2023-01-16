@@ -3678,10 +3678,11 @@ def getEncodingAt(p: Position, s: bytes=None) -> str:
 def guessExternalEditor(c: Cmdr=None) -> Optional[str]:
     """ Return a 'sensible' external editor """
     editor = (
+        c and c.config.getString('external-editor') or
         os.environ.get("LEO_EDITOR") or
         os.environ.get("EDITOR") or
-        g.app.db and g.app.db.get("LEO_EDITOR") or
-        c and c.config.getString('external-editor'))
+        g.app.db and g.app.db.get("LEO_EDITOR")
+        )
     if editor:
         return editor
     # fallbacks
