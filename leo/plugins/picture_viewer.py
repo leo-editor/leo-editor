@@ -60,6 +60,7 @@ The following keyword arguments may be supplied to the run method:
 import argparse
 import os
 import pathlib
+import shutil
 import sys
 import random
 import textwrap
@@ -218,6 +219,20 @@ if QtWidgets:
         def closeEvent(self, event):
             """Override QWidget.closeEvent."""
             self.quit()
+        #@+node:ekr.20230116092517.1: *3* Slides.copy
+        def copy(self):
+            """Issue a prompt and copy the file if the user agrees."""
+            file_name = self.files_list[self.slide_number]
+            path: str = QtWidgets.QFileDialog().getExistingDirectory()
+            if not path:
+                print('No path')
+                return
+            new_path = os.path.join(path, os.path.basename(file_name))
+            if os.path.exists(new_path):
+                print("File exists:", new_path)
+            else:
+                shutil.copy(file_name, new_path)
+                print('Copied to', new_path)
         #@+node:ekr.20211021200821.4: *3* Slides.delete
         send_to_trash_warning_given = False
 
@@ -281,7 +296,9 @@ if QtWidgets:
             if mods and 'ShiftModifier' not in repr(mods):
                 print(f"picture_viewer.py: ignoring modified key: {s!r} {i}")
                 return
-            if s == 'd':
+            if s == 'c':
+                self.copy()
+            elif s == 'd':
                 self.delete()
             elif s == 'f':
                 self.toggle_full_screen()
@@ -329,17 +346,18 @@ if QtWidgets:
             """Issue a prompt and move the file if the user agrees."""
             file_name = self.files_list[self.slide_number]
             path: str = QtWidgets.QFileDialog().getExistingDirectory()
-            if path:
-                new_path = os.path.join(path, os.path.basename(file_name))
-                if os.path.exists(new_path):
-                    print("File exists:", new_path)
-                    pathlib.Path(file_name).unlink(new_path)  # type:ignore
-                else:
-                    pathlib.Path(file_name).rename(new_path)
-                del self.files_list[self.slide_number]
-                self.slide_number = max(0, self.slide_number - 1)
-                self.next_slide()
-                self.raise_()
+            if not path:
+                return
+            new_path = os.path.join(path, os.path.basename(file_name))
+            if os.path.exists(new_path):
+                print("File exists:", new_path)
+                pathlib.Path(file_name).unlink(new_path)  # type:ignore
+            else:
+                pathlib.Path(file_name).rename(new_path)
+            del self.files_list[self.slide_number]
+            self.slide_number = max(0, self.slide_number - 1)
+            self.next_slide()
+            self.raise_()
         #@+node:ekr.20211021200821.8: *3* Slides.next_slide
         def next_slide(self):
 
