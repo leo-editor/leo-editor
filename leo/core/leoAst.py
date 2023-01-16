@@ -3775,7 +3775,7 @@ class Orange:
 
         node = self.token.node
 
-        if False and isinstance(node, ast.arguments):
+        if True and isinstance(node, ast.arguments):
             tokens = tokens_for_node('<filename>', node.parent, self.tokens)
             dump_tree(tokens, node.parent)
 

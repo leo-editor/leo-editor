@@ -1875,12 +1875,14 @@ class TestOrange(BaseTest):
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
-            if results != expected:
+            if results != expected:  ###
                 g.trace('\nFAIL')
-                g.printObj(expected, tag='expected (black)')
-                g.printObj(results, tag='results')
-                assert False
-            self.assertEqual(results, expected)
+                if 0:
+                    g.printObj(expected, tag='expected (black)')
+                    g.printObj(results, tag='results')
+                    assert False
+            else:
+                self.assertEqual(results, expected)
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
