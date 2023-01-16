@@ -633,7 +633,18 @@ if 1:  # pragma: no cover
         """
         i = getattr(node, 'first_i', None)
         j = getattr(node, 'last_i', None)
-        return [] if i is None else global_tokens_list[i : j + 1]
+        if i is None:
+            assert j is None, g.callers()
+            return []
+        if 1:  ####
+            # g.trace(g.callers())
+            name = node.__class__.__name__
+            if abs(i - j) > 3:
+                tag = f"get_node_token_list: {name} {i}..{j}"
+                g.printObj(global_tokens_list[i : j + 1], tag=tag)
+            else:
+                g.trace(f"{i!r:>3}..{j!r:3} {name} {global_tokens_list[i : j + 1]}")
+        return global_tokens_list[i : j + 1]
     #@+node:ekr.20191124123830.1: *4* function: is_significant & is_significant_token
     def is_significant(kind: str, value: str) -> bool:
         """
@@ -1065,8 +1076,7 @@ class AstDumper:  # pragma: no cover
         parent_id = getattr(parent, 'node_index', '??')
         parent_s = f"{parent_id:>3}.{parent.__class__.__name__} " if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(
-            class_name, node, 30)
+        descriptor_s = f"{node_id}.{class_name}: {self.show_fields(class_name, node, 20)}"
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<10} {indent}{descriptor_s} "
@@ -1132,7 +1142,7 @@ class AstDumper:  # pragma: no cover
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
     #@+node:ekr.20191113223425.1: *5* dumper.show_tokens
-    def show_tokens(self, node: Node, n: int, m: int, show_cruft: bool=False) -> str:
+    def show_tokens(self, node: Node, n: int, m: int) -> str:
         """
         Return a string showing node.token_list.
 
@@ -1143,37 +1153,29 @@ class AstDumper:  # pragma: no cover
         for z in token_list:
             val = None
             if z.kind == 'comment':
-                if show_cruft:
-                    val = g.truncate(z.value, 10)  # Short is good.
-                    result.append(f"{z.kind}.{z.index}({val})")
+                val = g.truncate(z.value, 10)  # Short is good.
+                result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'name':
                 val = g.truncate(z.value, 20)
                 result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'newline':
-                # result.append(f"{z.kind}.{z.index}({z.line_number}:{len(z.line)})")
                 result.append(f"{z.kind}.{z.index}")
             elif z.kind == 'number':
                 result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'op':
-                if z.value not in ',()' or show_cruft:
-                    result.append(f"{z.kind}.{z.index}({z.value})")
+                result.append(f"{z.kind}.{z.index}({z.value})")
             elif z.kind == 'string':
                 val = g.truncate(z.value, 30)
                 result.append(f"{z.kind}.{z.index}({val})")
             elif z.kind == 'ws':
-                if show_cruft:
-                    result.append(f"{z.kind}.{z.index}({len(z.value)})")
+                result.append(f"{z.kind}.{z.index}({len(z.value)})")
             else:
                 # Indent, dedent, encoding, etc.
                 # Don't put a blank.
                 continue
             if result and result[-1] != ' ':
                 result.append(' ')
-        #
         # split the line if it is too long.
-        # g.printObj(result, tag='show_tokens')
-        if 1:
-            return ''.join(result)
         line, lines = [], []
         for r in result:
             line.append(r)
@@ -3778,6 +3780,14 @@ class Orange:
         if True and isinstance(node, ast.arguments):
             tokens = tokens_for_node('<filename>', node.parent, self.tokens)
             dump_tree(tokens, node.parent)
+            
+        if True and isinstance(node, ast.arguments):
+            tag = f"do_equal_op {node.__class__.__name__}"
+            if 1:
+                g.printObj(get_node_token_list(node, self.tokens), tag=tag)
+            else:
+                for z in ast.walk(node.parent):
+                    g.printObj(get_node_token_list(z, self.tokens), tag=tag)
 
         if False and isinstance(node, (ast.arg, ast.arguments)):
 
@@ -4386,7 +4396,7 @@ class Token:
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        # nl_kind = getattr(self, 'newline_kind', '')
+        # The n'th token in the token list has index n-1!
         s = f"{self.kind:}.{self.index}"
         return f"Token<{s}:{self.show_val(20)}>"
 
