@@ -3780,7 +3780,7 @@ class Orange:
         if True and isinstance(node, ast.arguments):
             tokens = tokens_for_node('<filename>', node.parent, self.tokens)
             dump_tree(tokens, node.parent)
-            
+
         if True and isinstance(node, ast.arguments):
             tag = f"do_equal_op {node.__class__.__name__}"
             if 1:
