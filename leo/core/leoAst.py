@@ -972,11 +972,16 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
     def add_token_to_token_list(token: "Token", node: Node) -> None:
         """Insert token in the proper location of node.token_list."""
+
+        # Note: get_node_token_list returns global_tokens_list[first_i : last_i + 1]
+
         if getattr(node, 'first_i', None) is None:
             node.first_i = node.last_i = token.index
         else:
             node.first_i = min(node.first_i, token.index)
             node.last_i = max(node.last_i, token.index)
+
+        ### g.trace(f"{token!s:30} {node.__class__.__name__:16} {node.first_i}..{node.last_i}")
     #@+node:ekr.20191225055616.1: *4* function: replace_node
     def replace_node(new_node: Node, old_node: Node) -> None:
         """Replace new_node by old_node in the parse tree."""
@@ -3770,11 +3775,9 @@ class Orange:
 
         node = self.token.node
 
-        ### Not necessary.
-            # z, parents = node, [node.__class__.__name__]
-            # while z.parent:
-                # z = z.parent
-                # parents.append(z.__class__.__name__)
+        if False and isinstance(node, ast.arguments):
+            tokens = tokens_for_node('<filename>', node.parent, self.tokens)
+            dump_tree(tokens, node.parent)
 
         if False and isinstance(node, (ast.arg, ast.arguments)):
 
@@ -4383,13 +4386,16 @@ class Token:
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        nl_kind = getattr(self, 'newline_kind', '')
-        s = f"{self.kind:}.{self.index:<3}"
-        return f"{s:>18}:{nl_kind:7} {self.show_val(80)}"
+        # nl_kind = getattr(self, 'newline_kind', '')
+        s = f"{self.kind:}.{self.index}"
+        return f"Token<{s}:{self.show_val(20)}>"
 
-    def __str__(self) -> str:  # pragma: no cover
-        nl_kind = getattr(self, 'newline_kind', '')
-        return f"{self.kind}.{self.index:<3}{nl_kind:8} {self.show_val(80)}"
+    __str__ = __repr__
+
+    # def __str__(self) -> str:  # pragma: no cover
+        # nl_kind = getattr(self, 'newline_kind', '')
+        # s = f"{self.kind:}.{self.index}.{nl_kind}"
+        # return f"{s:>20} {self.show_val(80)}"
 
     def to_string(self) -> str:
         """Return the contribution of the token to the source file."""
@@ -4704,6 +4710,10 @@ class TokenOrderGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
+            if 0:  # Keep for now.
+                g.printObj(
+                    self.tokens[node.first_i:node.last_i],
+                    tag=f"{node.__class__.__name__:>16}: {node.first_i}:{node.last_i}")
     #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
     def sync_name(self, val: str) -> None:
         aList = val.split('.')
@@ -4746,10 +4756,12 @@ class TokenOrderGenerator:
         """
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        # g.trace(
-            # f"px: {self.px:2} "
-            # f"node: {node.__class__.__name__:<10} "
-            # f"kind: {kind:>10}: val: {val!r}")
+        if 0:  # A Superb trace.
+            g.trace(
+                f"px: {self.px:4} "
+                f"node: {node.__class__.__name__:<12} "
+                f"significant? {int(is_significant(kind, val))} "
+                f"kind/val: {kind:>10}: {val!r}")
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -4874,8 +4886,6 @@ class TokenOrderGenerator:
     def do_arg(self, node: Node) -> None:
         """This is one argument of a list of ast.Function or ast.Lambda arguments."""
         self.name(node.arg)
-        if self.sync_equal_flag:
-            self.op('=')
         annotation = getattr(node, 'annotation', None)
         if annotation is not None:
             self.op(':')
@@ -4911,22 +4921,10 @@ class TokenOrderGenerator:
             annotation = getattr(z, 'annotations', None)
             if annotation:
                 g.trace(z, annotation)
-            if 1:  # Legacy, works
-                self.visit(z)
-                if i >= n_plain:
-                    self.op('=')
-                    self.visit(node.defaults[i - n_plain])
-            else:
-                if i >= n_plain:
-                    try:
-                        self.sync_equal_flag = True
-                        self.visit(z)
-                    finally:
-                        self.sync_equal_flag = False
-                    self.visit(node.defaults[i - n_plain])
-                else:
-                    self.visit(z)
-
+            self.visit(z)
+            if i >= n_plain:
+                self.op('=')
+                self.visit(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
             self.op('*')

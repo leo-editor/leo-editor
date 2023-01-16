@@ -1867,7 +1867,7 @@ class TestOrange(BaseTest):
         table = (
         # Case 0.
         '''\
-    def annotated_f(s: str = None):
+    def annotated_f(s: str = None) -> None:
         pass
     ''',
         )
@@ -1875,8 +1875,11 @@ class TestOrange(BaseTest):
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
-            g.printObj(expected, tag='expected (black)')
-            g.printObj(results, tag='results')
+            if results != expected:
+                g.trace('\nFAIL')
+                g.printObj(expected, tag='expected (black)')
+                g.printObj(results, tag='results')
+                assert False
             self.assertEqual(results, expected)
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
