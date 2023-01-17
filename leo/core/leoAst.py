@@ -4268,7 +4268,7 @@ class TokenOrderGenerator:
         self.visit(node.value)
     #@-others
 #@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files, recursive = scan_ast_args()
     # Finalize arguments.

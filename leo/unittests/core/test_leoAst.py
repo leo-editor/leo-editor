@@ -1633,6 +1633,22 @@ class TestOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
+    def test_annotations(self):
+
+        table = (
+        # Case 0.
+        '''\
+    def annotated_f(s: str = None, x=None) -> None:
+        pass
+    ''',
+        )
+        for i, contents in enumerate(table):
+            contents, tokens, tree = self.make_data(contents)
+            expected = self.blacken(contents).rstrip() + '\n'
+            results = self.beautify(contents, tokens, tree)
+            self.assertEqual(results, expected)
+
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -1651,22 +1667,6 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected)
-    #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
-    def test_annotations(self):
-
-        table = (
-        # Case 0.
-        '''\
-    def annotated_f(s: str = None, x=None) -> None:
-        pass
-    ''',
-        )
-        for i, contents in enumerate(table):
-            contents, tokens, tree = self.make_data(contents)
-            expected = self.blacken(contents).rstrip() + '\n'
-            results = self.beautify(contents, tokens, tree)
-            self.assertEqual(results, expected)
-
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
@@ -1775,6 +1775,85 @@ class TestOrange(BaseTest):
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=0, max_split_line_length=0)
         self.assertEqual(results, expected)
+    #@+node:ekr.20200209152745.1: *4* TestOrange.test_comment_indented
+    def test_comment_indented(self):
+
+        line_length = 40  # For testing.
+        table = (
+    """\
+    if 1:
+        pass
+            # An indented comment.
+    """,
+    """\
+    table = (
+        # Indented comment.
+    )
+    """
+        )
+
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents)
+            expected = contents
+            if 0:
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+        assert not fails, fails
+    #@+node:ekr.20230117043931.1: *4* TestOrange.test_comment_space_after_delim
+    def test_comment_space_after_delim(self):
+
+        line_length = 40  # For testing.
+        table = (
+            # Test 1.
+            (
+                """#No space after delim.\n""",
+                """# No space after delim.\n""",
+            ),
+            # Test 2.  Don't change bang lines.
+            (
+                """#! /usr/bin/env python\n""",
+                """#! /usr/bin/env python\n""",
+            ),
+            # Test 3.  Don't change ### comments.
+            (
+                """### To do.\n""",
+                """### To do.\n""",
+            ),
+        )
+        fails = 0
+        for contents, expected in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 0:
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+        assert not fails, fails
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
 
@@ -1857,44 +1936,6 @@ class TestOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
             self.assertEqual(results, expected)
-    #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
-    def test_indented_comment(self):
-
-        line_length = 40  # For testing.
-        table = (
-    """\
-    if 1:
-        pass
-            # An indented comment.
-    """,
-    """\
-    table = (
-        # Indented comment.
-    )
-    """
-        )
-
-        fails = 0
-        for contents in table:
-            contents, tokens, tree = self.make_data(contents)
-            expected = contents
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-                # dump_tree(tokens, tree)
-            results = self.beautify(contents, tokens, tree,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        assert not fails, fails
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
 
