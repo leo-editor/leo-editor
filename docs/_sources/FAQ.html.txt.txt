@@ -314,6 +314,8 @@ Rob (Largo84)::
     li;;=<li><|ITEM|></li>
     link;;=<a href="<|URL|>" target="_blank"><|TEXT|></a>
     enum;;=\begin{enumerate}\n    \item <|item|>\n\end{enumerate}
+    
+For more examples, see LeoSettings.leo.
 
 Clones
 ++++++
@@ -813,113 +815,6 @@ You have two options:
 
 - Just send the @file file to me at edreamleo@gmail.com.
 
-Developing Leo
-++++++++++++++
-
-How can I use Leo to develop Leo itself?
-****************************************
-
-The trick is to create a workflow that separates editing from testing. Putting test code in LeoPy.leo would waste a lot of time. To run tests you would have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test code in a test.leo file. So to change and test code, do the following:
-
-1. Save LeoPy.leo but do **not** exit Leo.
-
-2. Quit the copy of Leo running test.leo, then reload test.leo.
-
-3. Run test scripts from test.leo.
-
-That's all. Python will recompile any changed .py files in the new copy of Leo. **Note**: I create a batch file called t.bat that runs test.leo, so to the "edit-reload-test" cycle is just:
-
-1. Control-S (in LeoPy.leo: saves the .leo file)
-2. t (in a console window: runs test.leo, compiling all changed .py files as a side effect)
-3. Control-E (in test.leo: runs the test script)
-
-The benefits of the new workflow:
-
-- test.leo loads  _much_ more quickly than LeoPy.leo does. This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10. Hitting Control-S, t, Control-E takes about 5 seconds.
-
-- LeoPy.leo runs with the *old* code, so it is much easier to fix syntax errors or exceptions in the *new* code: just fix the problem and save LeoPy.leo *without* closing LeoPy.leo, then restart test.leo. You run your tests on the new code, but you edit the new code with the old, stable code.
-
-- test.leo is the perfect place to develop test. I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
-
-How does EKR (Leo's developer) use Leo?
-***************************************
-
-.. _`This FAQ entry`: FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-
-Here is the workflow I use to develop Leo. The intention is to help present and potential developers use Leo effectively.
-
-Overview:
-
-- Develop in an outline containing all of Leo's source files. Close this outline rarely: this keeps the code I am using stable while I'm hacking the code.
-
-- Test in a *separate, private* .leo file, say ~/test.leo.
-
-On Windows I use the following *common* @button node, defined in the @buttons tree in myLeoSettings.leo::
-
-    @button load-test @key=F5
-    
-    import os
-    os.system("start  cmd /c t")
-    
-Now F5 runs t.bat in a separate console. Leo remains responsive. t.bat opens the test file. t.bat ends with the Windows "exit" command, so the console closes when I close Leo.
-
-Additional tips:
-
-A. Avoid using the mouse whenever possible. For example, use alt-tab to switch between windows.
-
-B. Always develop Leo in a console. This allows you to see the output of g.trace.
-
-Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name of the function or method in which it appears. The typical pattern for enabling traces is::
-
-    trace = True and not g.unitTesting
-    if trace: g.trace(whatever)
-
-This pattern is especially useful when a method contains multiple calls to g.trace.
-
-C. I use scripts to open particular Leo files. These are batch files on Windows, and aliases on Linux, but invoking them is the same on either platform::
-
-    all:     opens all my main development files using the qt-tabs gui.
-    t:       opens test.leo.
-    e:       opens ekr.leo.  I use this file for private testing.
-    d:       opens LeoDocs.leo.
-    s:       opens LeoPy.leo.
-    u:       opens unitTest.leo.
-
-These run Leo with Python 3.x. There are similar scripts, ending in 2, that run Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x. Thus, to run a test, I alt-tab to an available console window, then type 'e' or 't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
-
-D. Use clones to focus attention on the task at hand. For more details, see the tutorial's introduction to `clones`_.
-
-E. For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples of using clones to create view nodes. I typically delete the clones in the views shortly before a release.
-
-Writing documentation:
-
-- Use postings as pre-writing for documentation. I don't mind blabbing on and on about Leo because all my posts become pre-writing for Leo's documentation. I simply copy posts to nodes in the "documentation to-do" section. At release time, I edit these nodes and put them in Leo's main documentation or the release notes. This posting is an example.
-  
-- Use the vr command to debug reStructuredText documentation. The viewrendered pane updates as you type. This makes Leo a killer app for rST.
-   
-Administrative tips:
-
-- Never rely on memory. A project like this contains thousands and thousands of details. Everything eventually goes into a Leo node somewhere. If it doesn't it surely *will* be forgotten.
-
-- Do easy items first. This keeps to-do lists short, which keeps energy high.
-
-What is the Stupendous Aha and why does it matter?
-**************************************************
-
-The name "Stupendous Aha" is a bit ironical.  From one point of view it may seem obvious. Nevertheless, it was a true Aha for me.
-
-Unit tests permanent check of the correctness of a piece of code. Test Driven Development expands this view. But unit tests are much more important.  In fact, unit tests are *general-purpose helper scripts* that can be run at any time.
-
-1. Unit tests codify and make explicit desired or expected behavior.
-
-2. Unit tests are a way of "maintaining attention" on a problem.  Unit tests don't forget, and they are permanent.
-
-3. Unit tests *do whatever we want*, and they do it automatically.
-
-In short, unit tests are a *master tool* for any programmer or designer.
-
-You can also use @button to encapsulate your tests.  After running an @button script, you can quickly re-run @button scripts with Ctrl-P, repeat-complex-command.
-
 Excel
 +++++
 
@@ -1047,7 +942,6 @@ You can open files such as CheatSheet.leo, quickstart.leo, leoSettings.leo, myLe
     leo-quickstart-leo
     leo-scripts-leo
     leo-settings
-    leo-unittest-leo
 
 How can I specify the root directory of a thumb drive?
 ******************************************************

@@ -132,33 +132,48 @@ or::
 
 You will get something like the following::
 
-    Usage: launchLeo.py [options] file1, file2, ...
+    usage: launchLeo.py [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--gui GUI] [--listen-to-log]
+                        [--load-type TYPE] [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]
+                        [--screen-shot PATH] [--script PATH] [--script-window] [--select ID] [--silent] [--theme NAME]
+                        [--trace TRACE-KEY] [--trace-binding KEY] [--trace-setting NAME] [--window-size SIZE]
+                        [--window-spot SPOT] [-v]
+                        [FILES ...]
 
-    Options:
+    usage: launchLeo.py [options] file1, file2, ...
+
+    positional arguments:
+      FILES                 list of files
+
+    options:
       -h, --help            show this help message and exit
+      -b, --black-sentinels
+                            write black-compatible sentinel comments
       --diff                use Leo as an external git diff
+      --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
       --ipython             enable ipython support
-      --fail-fast           stop unit tests after the first failure
-      --gui=GUI             gui to use (qt/qttabs/console/null)
+      --gui GUI             gui to use (qt/console/null)
       --listen-to-log       start log_listener.py on startup
-      --load-type=TYPE      @<file> type for non-outlines
+      --load-type TYPE      @<file> type for non-outlines
       --maximized           start maximized
       --minimized           start minimized
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --screen-shot=PATH    take a screen shot and then exit
-      --script=PATH         execute a script and then exit
+      --quit                quit immediately after loading
+      --screen-shot PATH    take a screen shot and then exit
+      --script PATH         execute a script and then exit
       --script-window       execute script using default gui
-      --select=ID           headline or gnx of node to select
+      --select ID           headline or gnx of node to select
       --silent              disable all log messages
-      --theme=NAME          use the named theme file
-      --trace=coloring,drawing,events,focus,gnx,ipython,
-              keys,plugins,select,shutdown,startup,themes
-                            add one or more strings to g.app.debug
-      --trace-binding=KEY   trace commands bound to a key
-      --trace-setting=NAME  trace where named setting is set
-      --window-size=SIZE    initial window size (height x width)
+      --theme NAME          use the named theme file
+      --trace TRACE-KEY     add one or more strings to g.app.debug. One or more of...
+                            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+                            importers, ipython, keys, layouts, plugins, save, select, sections,
+                            shutdown, size, speed, startup, themes, undo, verbose, zoom
+      --trace-binding KEY   trace commands bound to a key
+      --trace-setting NAME  trace where named setting is set
+      --window-size SIZE    initial window size (height x width)
+      --window-spot SPOT    initial window position (top x left)
       -v, --version         print version number and exit
       
 **Important**

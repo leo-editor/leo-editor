@@ -625,11 +625,6 @@
 <v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
-<v t="ekr.20170906090516.1"><vh>Developing Leo</vh>
-<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
-<v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
-<v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
-</v>
 <v t="ekr.20180126190015.1"><vh>Excel</vh>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 </v>
@@ -2415,12 +2410,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20050831195331.1"></v>
-<v t="ekr.20230115074903.1"><vh>--- To be changed</vh></v>
-<v t="ekr.20170228104217.1"></v>
-<v t="ekr.20050830115714.26"></v>
-<v t="ekr.20170906090516.1"></v>
-<v t="ekr.20050830115714.13"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4493,28 +4482,6 @@ Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
 # 3 is the position in the menu.  Other kinds of indices are possible::
 
     fileMenu.insert(3,'command',label='Test2',command=callback)
-</t>
-<t tx="ekr.20050830120857">The trick is to create a workflow that separates editing from testing. Putting test code in LeoPy.leo would waste a lot of time. To run tests you would have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test code in a test.leo file. So to change and test code, do the following:
-
-1. Save LeoPy.leo but do **not** exit Leo.
-
-2. Quit the copy of Leo running test.leo, then reload test.leo.
-
-3. Run test scripts from test.leo.
-
-That's all. Python will recompile any changed .py files in the new copy of Leo. **Note**: I create a batch file called t.bat that runs test.leo, so to the "edit-reload-test" cycle is just:
-
-1. Control-S (in LeoPy.leo: saves the .leo file)
-2. t (in a console window: runs test.leo, compiling all changed .py files as a side effect)
-3. Control-E (in test.leo: runs the test script)
-
-The benefits of the new workflow:
-
-- test.leo loads  _much_ more quickly than LeoPy.leo does. This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10. Hitting Control-S, t, Control-E takes about 5 seconds.
-
-- LeoPy.leo runs with the *old* code, so it is much easier to fix syntax errors or exceptions in the *new* code: just fix the problem and save LeoPy.leo *without* closing LeoPy.leo, then restart test.leo. You run your tests on the new code, but you edit the new code with the old, stable code.
-
-- test.leo is the perfect place to develop test. I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
 </t>
 <t tx="ekr.20050831184021.4">.. |---| unicode:: U+02015 .. for quotes
    :trim:
@@ -11253,65 +11220,6 @@ Leo will never encourage cross-outline clones, because such clones are inherentl
 Indeed, the shared clones would be subject to the well-known multiple-update problem. Suppose the two outlines were open simultaneously, and each outline changed the shared clones in different ways. Whichever outline changed the data last would "win." The changes in the other outline would be lost forever!
 
 In short, Leo will never support features that encourage cross-outline clones.</t>
-<t tx="ekr.20110531155858.20559">.. _`This FAQ entry`: FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-
-Here is the workflow I use to develop Leo. The intention is to help present and potential developers use Leo effectively.
-
-Overview:
-
-- Develop in an outline containing all of Leo's source files. Close this outline rarely: this keeps the code I am using stable while I'm hacking the code.
-
-- Test in a *separate, private* .leo file, say ~/test.leo.
-
-On Windows I use the following *common* @button node, defined in the @buttons tree in myLeoSettings.leo::
-
-    @button load-test @key=F5
-    
-    import os
-    os.system("start  cmd /c t")
-    
-Now F5 runs t.bat in a separate console. Leo remains responsive. t.bat opens the test file. t.bat ends with the Windows "exit" command, so the console closes when I close Leo.
-
-Additional tips:
-
-A. Avoid using the mouse whenever possible. For example, use alt-tab to switch between windows.
-
-B. Always develop Leo in a console. This allows you to see the output of g.trace.
-
-Speaking of g.trace, I hardly ever use 'print' because g.trace prints the name of the function or method in which it appears. The typical pattern for enabling traces is::
-
-    trace = True and not g.unitTesting
-    if trace: g.trace(whatever)
-
-This pattern is especially useful when a method contains multiple calls to g.trace.
-
-C. I use scripts to open particular Leo files. These are batch files on Windows, and aliases on Linux, but invoking them is the same on either platform::
-
-    all:     opens all my main development files using the qt-tabs gui.
-    t:       opens test.leo.
-    e:       opens ekr.leo.  I use this file for private testing.
-    d:       opens LeoDocs.leo.
-    s:       opens LeoPy.leo.
-    u:       opens unitTest.leo.
-
-These run Leo with Python 3.x. There are similar scripts, ending in 2, that run Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x. Thus, to run a test, I alt-tab to an available console window, then type 'e' or 't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
-
-D. Use clones to focus attention on the task at hand. For more details, see the tutorial's introduction to `clones`_.
-
-E. For thousand of example of my programming style, see leoPy.leo and leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples of using clones to create view nodes. I typically delete the clones in the views shortly before a release.
-
-Writing documentation:
-
-- Use postings as pre-writing for documentation. I don't mind blabbing on and on about Leo because all my posts become pre-writing for Leo's documentation. I simply copy posts to nodes in the "documentation to-do" section. At release time, I edit these nodes and put them in Leo's main documentation or the release notes. This posting is an example.
-  
-- Use the vr command to debug reStructuredText documentation. The viewrendered pane updates as you type. This makes Leo a killer app for rST.
-   
-Administrative tips:
-
-- Never rely on memory. A project like this contains thousands and thousands of details. Everything eventually goes into a Leo node somewhere. If it doesn't it surely *will* be forgotten.
-
-- Do easy items first. This keeps to-do lists short, which keeps energy high.
-</t>
 <t tx="ekr.20110531155858.20563">The following script will create a minimal Leo outline::
 
     if 1:
@@ -14917,33 +14825,48 @@ or::
 
 You will get something like the following::
 
-    Usage: launchLeo.py [options] file1, file2, ...
+    usage: launchLeo.py [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--gui GUI] [--listen-to-log]
+                        [--load-type TYPE] [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]
+                        [--screen-shot PATH] [--script PATH] [--script-window] [--select ID] [--silent] [--theme NAME]
+                        [--trace TRACE-KEY] [--trace-binding KEY] [--trace-setting NAME] [--window-size SIZE]
+                        [--window-spot SPOT] [-v]
+                        [FILES ...]
 
-    Options:
+    usage: launchLeo.py [options] file1, file2, ...
+
+    positional arguments:
+      FILES                 list of files
+
+    options:
       -h, --help            show this help message and exit
+      -b, --black-sentinels
+                            write black-compatible sentinel comments
       --diff                use Leo as an external git diff
+      --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
       --ipython             enable ipython support
-      --fail-fast           stop unit tests after the first failure
-      --gui=GUI             gui to use (qt/qttabs/console/null)
+      --gui GUI             gui to use (qt/console/null)
       --listen-to-log       start log_listener.py on startup
-      --load-type=TYPE      @&lt;file&gt; type for non-outlines
+      --load-type TYPE      @&lt;file&gt; type for non-outlines
       --maximized           start maximized
       --minimized           start minimized
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --screen-shot=PATH    take a screen shot and then exit
-      --script=PATH         execute a script and then exit
+      --quit                quit immediately after loading
+      --screen-shot PATH    take a screen shot and then exit
+      --script PATH         execute a script and then exit
       --script-window       execute script using default gui
-      --select=ID           headline or gnx of node to select
+      --select ID           headline or gnx of node to select
       --silent              disable all log messages
-      --theme=NAME          use the named theme file
-      --trace=coloring,drawing,events,focus,gnx,ipython,
-              keys,plugins,select,shutdown,startup,themes
-                            add one or more strings to g.app.debug
-      --trace-binding=KEY   trace commands bound to a key
-      --trace-setting=NAME  trace where named setting is set
-      --window-size=SIZE    initial window size (height x width)
+      --theme NAME          use the named theme file
+      --trace TRACE-KEY     add one or more strings to g.app.debug. One or more of...
+                            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+                            importers, ipython, keys, layouts, plugins, save, select, sections,
+                            shutdown, size, speed, startup, themes, undo, verbose, zoom
+      --trace-binding KEY   trace commands bound to a key
+      --trace-setting NAME  trace where named setting is set
+      --window-size SIZE    initial window size (height x width)
+      --window-spot SPOT    initial window position (top x left)
       -v, --version         print version number and exit
       
 **Important**
@@ -20186,20 +20109,6 @@ Coding without Leo is not really fun any more. I recently finished a c++ socket 
 
 Anyway, thanks for the great perspective on Leo.
 </t>
-<t tx="ekr.20160309092522.1">The name "Stupendous Aha" is a bit ironical.  From one point of view it may seem obvious. Nevertheless, it was a true Aha for me.
-
-Unit tests permanent check of the correctness of a piece of code. Test Driven Development expands this view. But unit tests are much more important.  In fact, unit tests are *general-purpose helper scripts* that can be run at any time.
-
-1. Unit tests codify and make explicit desired or expected behavior.
-
-2. Unit tests are a way of "maintaining attention" on a problem.  Unit tests don't forget, and they are permanent.
-
-3. Unit tests *do whatever we want*, and they do it automatically.
-
-In short, unit tests are a *master tool* for any programmer or designer.
-
-You can also use @button to encapsulate your tests.  After running an @button script, you can quickly re-run @button scripts with Ctrl-P, repeat-complex-command.
-</t>
 <t tx="ekr.20160310060817.1">::
 
     @bool make-node-conflicts-node
@@ -22473,6 +22382,9 @@ Rob (Largo84)::
     li;;=&lt;li&gt;&lt;|ITEM|&gt;&lt;/li&gt;
     link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
     enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}
+    
+For more examples, see LeoSettings.leo.
+
 </t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
@@ -23659,7 +23571,6 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 </t>
 <t tx="ekr.20170906040814.1">https://github.com/leo-editor/leo-editor/issues/504</t>
 <t tx="ekr.20170906040849.1">https://github.com/leo-editor/leo-editor/issues/508</t>
-<t tx="ekr.20170906090516.1"></t>
 <t tx="ekr.20170911082347.1"></t>
 <t tx="ekr.20170911082432.101">- Added --trace-focus command-line argument.
 - Added @bool color_trailing_whitespace = True
@@ -25045,7 +24956,6 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     leo-quickstart-leo
     leo-scripts-leo
     leo-settings
-    leo-unittest-leo
 </t>
 <t tx="ekr.20180216043451.7">https://github.com/leo-editor/leo-editor/issues/718
 </t>
@@ -31316,11 +31226,12 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.2**
 
-- Leo's website has moved to https://leo-editor.github.io/leo-editor/
+- Move Leo's website to https://leo-editor.github.io/leo-editor/
 - Support the --black-sentinels command-line option.
+- Leo's beautify command is now PEP8 compliant.
 - A new script packages Leo as a MacOS .app bundle:
   https://github.com/leo-editor/leo-editor/issues/2966
-- Many minor bug fixes.
+- The usual minor bug fixes.
 
 **Links**
 
@@ -31434,6 +31345,7 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
 </t>
 <t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
 - Improve rst3 command: add `@string rst3-action` setting.
+- Leo's beautify command is now PEP8 compliant.
 - Support the --black-sentinels command-line option.
 - Many minor bug fixes.</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
@@ -31573,13 +31485,6 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20230115074903.1">- Remove all mention of test.leo
-- Add more useful abbreviations.
-- Add FAQ entry about black vs. beautify.
-  --black-sentinels
-  Advantages of beautify command:
-  - Does not split/join lines.
-  - Does not change Leo's sentinels.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
