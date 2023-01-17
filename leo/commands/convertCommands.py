@@ -458,7 +458,7 @@ def convert_at_test_nodes(
     c: Cmdr,
     converter: Any,
     root: Position,
-    copy_tree: bool=False,
+    copy_tree: bool = False,
 ) -> None:  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
@@ -1508,7 +1508,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str=None) -> None:
+        def __init__(self, c: Cmdr, alias: str = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []

@@ -325,7 +325,7 @@ class CPrettyPrinter:
             g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
-    def indent(self, p: Position, toList: bool=False, giveWarnings: bool=True) -> Union[str, List[str]]:
+    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, List[str]]:
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return [] if toList else ''  # #2271
@@ -343,7 +343,7 @@ class CPrettyPrinter:
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
-    def add_statement_braces(self, s: str, giveWarnings: bool=False) -> List[str]:
+    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> List[str]:
         p = self.p
 
         def oops(message: str, i: int, j: int) -> None:

@@ -32,7 +32,7 @@ class Python_Importer(Importer):
     Also, the base class of other importers.
     """
 
-    def __init__(self, c: Cmdr, language: str='python') -> None:
+    def __init__(self, c: Cmdr, language: str = 'python') -> None:
         """Py_Importer.ctor."""
         super().__init__(c, language=language, strict=True)
         self.string_list = ['"""', "'''", '"', "'"]  # longest first.

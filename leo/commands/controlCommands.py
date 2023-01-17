@@ -51,11 +51,11 @@ class ControlCommandsClass(BaseEditCommandsClass):
         g.es(f"Done: {command}")
     #@+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('show-plugin-handlers')
-    def printPluginHandlers(self, event: Event=None) -> None:
+    def printPluginHandlers(self, event: Event = None) -> None:
         """Print the handlers for each plugin."""
         g.app.pluginsController.printHandlers(self.c)
 
-    def printPlugins(self, event: Event=None) -> None:
+    def printPlugins(self, event: Event = None) -> None:
         """
         Print the file name responsible for loading a plugin.
 
@@ -65,7 +65,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         g.app.pluginsController.printPlugins(self.c)
 
     @cmd('show-plugins-info')
-    def printPluginsInfo(self, event: Event=None) -> None:
+    def printPluginsInfo(self, event: Event = None) -> None:
         """
         Print the file name responsible for loading a plugin.
 
@@ -75,7 +75,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         g.app.pluginsController.printPluginsInfo(self.c)
     #@+node:ekr.20150514063305.93: *3* setSilentMode
     @cmd('set-silent-mode')
-    def setSilentMode(self, event: Event=None) -> None:
+    def setSilentMode(self, event: Event = None) -> None:
         """
         Set the mode to be run silently, without the minibuffer.
         The only use for this command is to put the following in an @mode node::

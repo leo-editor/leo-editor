@@ -439,7 +439,7 @@ class ParserBaseClass:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
 
     #@+node:tbrown.20080514180046.9: *5* pbc.getName
-    def getName(self, val: str, val2: str=None) -> str:
+    def getName(self, val: str, val2: str = None) -> str:
         if val2 and val2.strip():
             val = val2
         val = val.split('\n', 1)[0]
@@ -447,7 +447,7 @@ class ParserBaseClass:
             val = val.replace(i, '')
         return val.lower()
     #@+node:tbrown.20080514180046.2: *5* pbc.dumpMenuTree
-    def dumpMenuTree(self, aList: List, level: int=0, path: str='') -> None:
+    def dumpMenuTree(self, aList: List, level: int = 0, path: str = '') -> None:
         for z in aList:
             kind, val, val2 = z
             pad = '    ' * level
@@ -459,7 +459,7 @@ class ParserBaseClass:
                 g.es_print(f"{pad} {kind}... [{path + '/' + name}]")
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
-    def patchMenuTree(self, orig: List[Any], targetPath: str, path: str='') -> Any:
+    def patchMenuTree(self, orig: List[Any], targetPath: str, path: str = '') -> Any:
 
         kind: str
         val: Any
@@ -637,7 +637,7 @@ class ParserBaseClass:
         except ValueError:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041120105609: *4* pbc.doShortcuts
-    def doShortcuts(self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str=None) -> None:
+    def doShortcuts(self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = None) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
         if s is None:
@@ -1125,7 +1125,7 @@ class ActiveSettingsOutline:
             else:
                 self.add(p)
     #@+node:ekr.20190905091614.12: *3* aso.add
-    def add(self, p: Position, h: str=None) -> None:
+    def add(self, p: Position, h: str = None) -> None:
         """
         Add a node for p.
 
@@ -1290,7 +1290,7 @@ class GlobalConfigManager:
         return None
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self,
-        d: Any, setting: str, requestedType: str, warn: bool=True,
+        d: Any, setting: str, requestedType: str, warn: bool = True,
     ) -> Tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
@@ -1348,7 +1348,7 @@ class GlobalConfigManager:
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20041117081009.3: *4* gcm.getBool
-    def getBool(self, setting: str, default: bool=None) -> bool:
+    def getBool(self, setting: str, default: bool = None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1371,7 +1371,7 @@ class GlobalConfigManager:
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
     def getData(self,
-        setting: str, strip_comments: bool=True, strip_data: bool=True,
+        setting: str, strip_comments: bool = True, strip_data: bool = True,
     ) -> List[str]:
         """Return a list of non-comment strings in the body text of @data setting."""
         data = self.get(setting, "data") or []
@@ -1408,7 +1408,7 @@ class GlobalConfigManager:
             return None
     #@+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int=12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
     ) -> Any:
         """Compute a font from font parameters.
 
@@ -1492,7 +1492,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: "PreviousSettings"=None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: "PreviousSettings" = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
@@ -1605,7 +1605,7 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20120215072959.12520: *6* c.config.getValFromDict
     def getValFromDict(self,
-        d: Any, setting: str, requestedType: str, warn: bool=True,
+        d: Any, setting: str, requestedType: str, warn: bool = True,
     ) -> Tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
@@ -1663,7 +1663,7 @@ class LocalConfigManager:
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting: str, default: bool=None) -> bool:
+    def getBool(self, setting: str, default: bool = None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1679,8 +1679,8 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self,
         setting: str,
-        strip_comments: bool=True,
-        strip_data: bool=True,
+        strip_comments: bool = True,
+        strip_data: bool = True,
     ) -> List[str]:
         """Return a list of non-comment strings in the body text of @data setting."""
         # 904: Add local abbreviations to global settings.
@@ -1738,7 +1738,7 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int=12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
     ) -> Any:
         """
         Compute a font from font parameters. This should be used *only*
@@ -1945,7 +1945,7 @@ class LocalConfigManager:
         result.append('\n' + legend)
         g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
-    def set(self, p: Position, kind: str, name: str, val: Any, warn: bool=True) -> None:
+    def set(self, p: Position, kind: str, name: str, val: Any, warn: bool = True) -> None:
         """
         Init the setting for name to val.
 

@@ -22,7 +22,7 @@ class BaseWriter:
         at.os(s[:-1] if s.endswith('\n') else s)
         at.onl()
     #@+node:ekr.20150626092140.1: ** basewriter.put_node_sentinel
-    def put_node_sentinel(self, p: Position, delim: str, delim2: str='') -> None:
+    def put_node_sentinel(self, p: Position, delim: str, delim2: str = '') -> None:
         """Put an @+node sentinel for node p."""
         at = self.at
         # Like at.nodeSentinelText.

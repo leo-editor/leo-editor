@@ -38,7 +38,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             'y': ('yank-rectangle', self.yankRectangle),
         }
     #@+node:ekr.20150514063305.451: *3* check
-    def check(self, event: Event, warning: str='No rectangle selected') -> bool:
+    def check(self, event: Event, warning: str = 'No rectangle selected') -> bool:
         """
         Return True if there is a selection.
         Otherwise, return False and issue a warning.

@@ -89,10 +89,10 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: LeoGui=None,
-        parentFrame: Wrapper=None,
-        previousSettings: "PreviousSettings"=None,
-        relativeFileName: str=None,
+        gui: LeoGui = None,
+        parentFrame: Wrapper = None,
+        previousSettings: "PreviousSettings" = None,
+        relativeFileName: str = None,
     ) -> None:
         t1 = time.process_time()
         c = self
@@ -606,7 +606,7 @@ class Commands:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: Event=None) -> None:
+    def execute_general_script_command(self, event: Event = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -659,7 +659,7 @@ class Commands:
             directory=directory, regex=regex, root=p)
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: Event=None) -> None:
+    def execute_pytest(self, event: Event = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -723,17 +723,17 @@ class Commands:
     @cmd('execute-script')
     def executeScript(
         self,
-        event: Event=None,
-        args: Any=None,
-        p: Position=None,
-        script: str=None,
-        useSelectedText: bool=True,
-        define_g: bool=True,
-        define_name: str='__main__',
-        silent: bool=False,
-        namespace: Dict=None,
-        raiseFlag: bool=False,
-        runPyflakes: bool=True,
+        event: Event = None,
+        args: Any = None,
+        p: Position = None,
+        script: str = None,
+        useSelectedText: bool = True,
+        define_g: bool = True,
+        define_name: str = '__main__',
+        silent: bool = False,
+        namespace: Dict = None,
+        raiseFlag: bool = False,
+        runPyflakes: bool = True,
     ) -> None:
         """
         Execute a *Leo* script, written in python.
@@ -848,7 +848,7 @@ class Commands:
             g.restoreStdout()
     #@+node:ekr.20080514131122.12: *3* @cmd recolor
     @cmd('recolor')
-    def recolorCommand(self, event: Event=None) -> None:
+    def recolorCommand(self, event: Event = None) -> None:
         """Force a full recolor."""
         c = self
         wrapper = c.frame.body.wrapper
@@ -878,7 +878,7 @@ class Commands:
     all_vnodes_iter = all_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self, copy: bool=True) -> Generator:
+    def all_positions(self, copy: bool = True) -> Generator:
         """A generator return all positions of the outline, in outline order."""
         c = self
         p = c.rootPosition()
@@ -891,7 +891,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: List[Tuple]=None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: List[Tuple] = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -930,7 +930,7 @@ class Commands:
                     yield from c.all_positions_for_v(v2, stack)
                 stack.pop(0)
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -952,7 +952,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy: bool=True) -> Generator:
+    def all_unique_positions(self, copy: bool = True) -> Generator:
         """
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -972,7 +972,7 @@ class Commands:
 
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
+    def all_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -996,7 +996,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool=True) -> Generator:
+    def safe_all_positions(self, copy: bool = True) -> Generator:
         """
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -1163,7 +1163,7 @@ class Commands:
                 break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Position=None, trace: bool=False) -> bool:
+    def positionExists(self, p: Position, root: Position = None, trace: bool = False) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -1446,7 +1446,7 @@ class Commands:
         p.setDirty()  # Defensive programming.
         g.doHook("set-mark", c=c, p=p)
     #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
-    def setRootPosition(self, unused_p: Position=None) -> None:
+    def setRootPosition(self, unused_p: Position = None) -> None:
         """Set c._rootPosition."""
         # 2011/03/03: No longer used.
     #@+node:ekr.20060906131836: *5* c.setRootVnode (A do-nothing)
@@ -1686,7 +1686,7 @@ class Commands:
                 return False
         return True
     #@+node:ekr.20031218072017.2072: *4* c.checkOutline
-    def checkOutline(self, event: Event=None, check_links: bool=False) -> int:
+    def checkOutline(self, event: Event = None, check_links: bool = False) -> int:
         """
         Check for errors in the outline.
         Return the count of serious structure errors.
@@ -1701,7 +1701,7 @@ class Commands:
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: Event=None) -> bool:
+    def validateOutline(self, event: Event = None) -> bool:
         c = self
         if not g.app.validate_outline:
             return True
@@ -1714,7 +1714,7 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event: Event=None, ignoreAtIgnore: bool=True) -> str:
+    def checkAllPythonCode(self, event: Event = None, ignoreAtIgnore: bool = True) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
         count = 0
@@ -1748,9 +1748,9 @@ class Commands:
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: Event=None,
-        ignoreAtIgnore: bool=True,
-        checkOnSave: bool=False,
+        event: Event = None,
+        ignoreAtIgnore: bool = True,
+        checkOnSave: bool = False,
     ) -> str:
         """Check the selected tree for syntax and tab errors."""
         c = self
@@ -1837,7 +1837,7 @@ class Commands:
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
-    def getTime(self, body: bool=True) -> str:
+    def getTime(self, body: bool = True) -> str:
         c = self
         default_format = "%m/%d/%Y %H:%M:%S"  # E.g., 1/30/2003 8:31:55
         # Try to get the format string from settings.
@@ -2504,7 +2504,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: Event, function: Callable=function) -> None:
+        def minibufferCallback(event: Event, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
@@ -2659,10 +2659,10 @@ class Commands:
         return p
     #@+node:ekr.20150422080541.1: *4* c.backup
     def backup(self,
-        fileName: str=None,
-        prefix: str=None,
-        silent: bool=False,
-        useTimeStamp: bool=True,
+        fileName: str = None,
+        prefix: str = None,
+        silent: bool = False,
+        useTimeStamp: bool = True,
     ) -> Optional[str]:
         """
         Back up given fileName or c.fileName().
@@ -2691,10 +2691,10 @@ class Commands:
     #@+node:ekr.20180210092235.1: *4* c.backup_helper
     def backup_helper(
         self,
-        base_dir: str=None,
-        env_key: str='LEO_BACKUP',
-        sub_dir: str=None,
-        use_git_prefix: bool=True,
+        base_dir: str = None,
+        env_key: str = 'LEO_BACKUP',
+        sub_dir: str = None,
+        use_git_prefix: bool = True,
     ) -> None:
         """
         A helper for scripts that back up a .leo file.
@@ -2786,7 +2786,7 @@ class Commands:
             g.es_exception()
             return False
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: Event=None) -> None:
+    def markAllAtFileNodesDirty(self, event: Event = None) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -2799,7 +2799,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: Event=None) -> None:
+    def markAtFileNodesDirty(self, event: Event = None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -2815,7 +2815,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event=None, d: Dict[str, Any]=None) -> None:
+    def openWith(self, event: Event = None, d: Dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -2852,7 +2852,7 @@ class Commands:
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
-    def diff_file(self, fn: str, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -2861,7 +2861,7 @@ class Commands:
         x = efc.GitDiffController(c=self)
         x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
-    def diff_two_revs(self, directory: str=None, rev1: str='', rev2: str='') -> None:
+    def diff_two_revs(self, directory: str = None, rev1: str = '', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -2878,7 +2878,7 @@ class Commands:
         efc.GitDiffController(c=self).diff_two_branches(
             branch1=branch1, branch2=branch2, fn=fn)
     #@+node:ekr.20180510105125.1: *4* c.git_diff
-    def git_diff(self, rev1: str='HEAD', rev2: str='') -> None:
+    def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
 
         from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).git_diff(rev1, rev2)
@@ -2901,14 +2901,14 @@ class Commands:
     def notValidInBatchMode(self, commandName: Any) -> None:
         g.es('the', commandName, "command is not valid in batch mode")
     #@+node:ekr.20110530082209.18250: *5* c.putHelpFor
-    def putHelpFor(self, s: str, short_title: str='') -> None:
+    def putHelpFor(self, s: str, short_title: str = '') -> None:
         """Helper for various help commands."""
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
     warnings_dict: Dict[str, bool] = {}
 
-    def raise_error_dialogs(self, kind: str='read') -> None:
+    def raise_error_dialogs(self, kind: str = 'read') -> None:
         """Warn about read/write failures."""
         c = self
         use_dialogs = False
@@ -3062,7 +3062,7 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2: "Commands"=None) -> None:
+    def bringToFront(self, c2: "Commands" = None) -> None:
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -3121,7 +3121,7 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, p: Position=None) -> None:
+    def recolor(self, p: Position = None) -> None:
         # Support QScintillaColorizer.colorize.
         c = self
         colorizer = c.frame.body.colorizer
@@ -3146,7 +3146,7 @@ class Commands:
         if c:
             c.redraw()
 
-    def redraw(self, p: Position=None) -> None:
+    def redraw(self, p: Position = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
@@ -3178,7 +3178,7 @@ class Commands:
     force_redraw = redraw
     redraw_now = redraw
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
-    def redraw_after_contract(self, p: Position=None) -> None:
+    def redraw_after_contract(self, p: Position = None) -> None:
         c = self
         if c.enableRedrawFlag:
             if p:
@@ -3327,7 +3327,7 @@ class Commands:
         return ''
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: Event=None) -> None:
+    def contractAllHeadlines(self, event: Event = None) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
@@ -3493,11 +3493,11 @@ class Commands:
     #@+node:ekr.20031218072017.2955: *4* c.Menus
     #@+node:ekr.20080610085158.2: *5* c.add_command
     def add_command(self, menu: Widget,
-        accelerator: str='',  # Not used.
-        command: Callable=None,
-        commandName: str=None,  # Not used.
-        label: str=None,  # Not used.
-        underline: int=0,
+        accelerator: str = '',  # Not used.
+        command: Callable = None,
+        commandName: str = None,  # Not used.
+        label: str = None,  # Not used.
+        underline: int = 0,
     ) -> None:
         c = self
         if command:
@@ -3505,7 +3505,7 @@ class Commands:
             # one of two callbacks defined in createMenuEntries or
             # recentFilesCallback, defined in createRecentFilesMenuItems.
 
-            def add_commandCallback(c: Commands=c, command: Callable=command) -> Any:
+            def add_commandCallback(c: Commands = c, command: Callable = command) -> Any:
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists:
@@ -3675,7 +3675,7 @@ class Commands:
             return current != limit.firstChild()
         return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
-    def canPasteOutline(self, s: str=None) -> bool:
+    def canPasteOutline(self, s: str = None) -> bool:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
@@ -3789,9 +3789,9 @@ class Commands:
     #@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
     def redrawAndEdit(self,
         p: Position,
-        selectAll: bool=False,
-        selection: Tuple=None,
-        keepMinibuffer: bool=False,
+        selectAll: bool = False,
+        selection: Tuple = None,
+        keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
         c, k = self, self.k
@@ -3871,14 +3871,14 @@ class Commands:
         self,
         dir_: str,
         kind: str,
-        add_context: Union[bool, None]=None,  # Override setting only if True/False
-        add_file_context: Union[bool, None]=None,  # Override setting only if True/False
-        add_path: bool=True,
-        recursive: bool=True,
-        safe_at_file: bool=True,
-        theTypes: List[str]=None,  # force_at_others=False, # tag:no-longer-used
-        ignore_pattern: re.Pattern=None,
-        verbose: bool=True,  # legacy value.
+        add_context: Union[bool, None] = None,  # Override setting only if True/False
+        add_file_context: Union[bool, None] = None,  # Override setting only if True/False
+        add_path: bool = True,
+        recursive: bool = True,
+        safe_at_file: bool = True,
+        theTypes: List[str] = None,  # force_at_others=False, # tag:no-longer-used
+        ignore_pattern: re.Pattern = None,
+        verbose: bool = True,  # legacy value.
     ) -> None:
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -3928,10 +3928,10 @@ class Commands:
         self,
         generator: Any,  # The generator used to traverse the tree.
         predicate: Callable,  # A function of one argument p, returning True  # if p should be included in the results.
-        failMsg: str=None,  # Failure message. Default is no message.
-        flatten: bool=False,  # True: Put all matches at the top level.
-        iconPath: str=None,  # Full path to icon to attach to all matches.
-        undoType: str=None,  # The undo name, shown in the Edit:Undo menu.  # The default is 'clone-find-predicate'
+        failMsg: str = None,  # Failure message. Default is no message.
+        flatten: bool = False,  # True: Put all matches at the top level.
+        iconPath: str = None,  # Full path to icon to attach to all matches.
+        undoType: str = None,  # The undo name, shown in the Edit:Undo menu.  # The default is 'clone-find-predicate'
     ) -> Position:
         """
         Traverse the tree given using the generator, cloning all positions for
@@ -4005,7 +4005,7 @@ class Commands:
         return root
     #@+node:peckj.20131023115434.10114: *4* c.createNodeHierarchy
     def createNodeHierarchy(self,
-        heads: List[str], parent: Position=None, forcecreate: bool=False,
+        heads: List[str], parent: Position = None, forcecreate: bool = False,
     ) -> Position:
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' under 'parent'
@@ -4122,7 +4122,7 @@ class Commands:
             redoHelper=redo,
         ))
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: List=None) -> None:
+    def doBatchOperations(self, aList: List = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []

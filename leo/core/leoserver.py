@@ -293,7 +293,7 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
     # The base class returns str.
-    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:  # type:ignore
+    def ask(self, c: Cmdr, path: str, p: Position = None) -> bool:  # type:ignore
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -747,7 +747,7 @@ class QuickSearchController:
     def find_b(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+        flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
     ) -> List[Tuple[Position, Match_Iter]]:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
@@ -773,7 +773,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag=re.IGNORECASE,
+        flags: RegexFlag = re.IGNORECASE,
     ) -> List[Tuple[Position, Match_Iter]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
@@ -793,7 +793,7 @@ class QuickSearchController:
         return aList
 
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
-    def onSelectItem(self, it: Any, it_prev: Any=None) -> None:  # it_prev not used. Hard to annotate.
+    def onSelectItem(self, it: Any, it_prev: Any = None) -> None:  # it_prev not used. Hard to annotate.
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
@@ -833,7 +833,7 @@ class LeoServer:
     """Leo Server Controller"""
     #@+others
     #@+node:felix.20210621233316.5: *3* server.__init__
-    def __init__(self, testing: bool=False) -> None:
+    def __init__(self, testing: bool = False) -> None:
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -896,7 +896,7 @@ class LeoServer:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
-    def _runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> None:
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -909,9 +909,9 @@ class LeoServer:
     def _runAskYesNoDialog(self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yes_all: bool=False,
-        no_all: bool=False,
+        message: str = None,
+        yes_all: bool = False,
+        no_all: bool = False,
     ) -> str:
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
@@ -935,12 +935,12 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yesMessage: str="Yes",
-        noMessage: str="No",
-        yesToAllMessage: str=None,
-        defaultButton: str="Yes",
-        cancelMessage: str=None,
+        message: str = None,
+        yesMessage: str = "Yes",
+        noMessage: str = "No",
+        yesToAllMessage: str = None,
+        defaultButton: str = "Yes",
+        cancelMessage: str = None,
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
@@ -977,9 +977,9 @@ class LeoServer:
         self,
         c: Cmdr,
         p: Position,
-        useSelectedText: bool=True,
-        forcePythonSentinels: bool=True,
-        useSentinels: bool=True,
+        useSelectedText: bool = True,
+        forcePythonSentinels: bool = True,
+        useSentinels: bool = True,
     ) -> str:
         """
         Return the expansion of the selected text of node p.
@@ -4657,7 +4657,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no c.p")
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p: Position, includeChildren: bool=False) -> Dict:
+    def _get_position_d(self, p: Position, includeChildren: bool = False) -> Dict:
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4719,7 +4719,7 @@ class LeoServer:
         except(TypeError, OverflowError):
             return False
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package: Package=None) -> str:
+    def _make_minimal_response(self, package: Package = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4744,7 +4744,7 @@ class LeoServer:
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package: Package=None) -> str:
+    def _make_response(self, package: Package = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4839,7 +4839,7 @@ class LeoServer:
                 return p
         return None
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package: Package, toAll: bool=False) -> None:
+    def _send_async_output(self, package: Package, toAll: bool = False) -> None:
         """
         Send data asynchronously to the client
         """
@@ -4854,7 +4854,7 @@ class LeoServer:
     #@+node:felix.20210621233316.89: *5* server._async_output
     async def _async_output(self,
         json: str,
-        toAll: bool=False,
+        toAll: bool = False,
     ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
@@ -4950,12 +4950,12 @@ def main() -> None:  # pragma: no cover (tested in client)
     def general_yes_no_dialog(
         c: Cmdr,
         title: str,  # Not used.
-        message: str=None,  # Must exist.
-        yesMessage: str="&Yes",  # Not used.
-        noMessage: str="&No",  # Not used.
-        yesToAllMessage: str=None,  # Not used.
-        defaultButton: str="Yes",  # Not used
-        cancelMessage: str=None,  # Not used.
+        message: str = None,  # Must exist.
+        yesMessage: str = "&Yes",  # Not used.
+        noMessage: str = "&No",  # Not used.
+        yesToAllMessage: str = None,  # Not used.
+        defaultButton: str = "Yes",  # Not used
+        cancelMessage: str = None,  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -4990,14 +4990,14 @@ def main() -> None:  # pragma: no cover (tested in client)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
             #@+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event: Event=None) -> None:
+            def noButton(event: Event = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event: Event=None) -> None:
+            def yesButton(event: Event = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -5157,7 +5157,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any=None) -> None:
+    async def notify_clients(action: str, excludedConn: Any = None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened

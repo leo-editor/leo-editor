@@ -30,7 +30,7 @@ class NewScanState:
 
     __slots__ = ['context', 'level']
 
-    def __init__(self, context: str='', level: int=0) -> None:
+    def __init__(self, context: str = '', level: int = 0) -> None:
         self.context = context
         self.level = level
 
@@ -51,9 +51,9 @@ class Importer:
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
         c: Cmdr,
-        language: str=None,  # For @language directive.
-        name: str=None,  # The kind of importer, usually the same as language
-        strict: bool=False,
+        language: str = None,  # For @language directive.
+        name: str = None,  # The kind of importer, usually the same as language
+        strict: bool = False,
     ) -> None:
         """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
@@ -242,7 +242,7 @@ class Importer:
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220807083207.1: *5* i.append_directives
-    def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str=None) -> None:
+    def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str = None) -> None:
         """
         Append directive lines to lines_dict.
         """

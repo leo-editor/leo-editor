@@ -53,7 +53,7 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: List[Any]=None) -> None:
+    def __init__(self, commands: List[Any] = None) -> None:
         if commands is None:
             self.chain = []
         else:
@@ -79,7 +79,7 @@ class CommandChainDispatcher:
     def __str__(self) -> str:
         return str(self.chain)
 
-    def add(self, func: Callable, priority: int=0) -> None:
+    def add(self, func: Callable, priority: int = 0) -> None:
         """ Add a func to the cmd chain with given priority """
         self.chain.append((priority, func),)
         self.chain.sort(key=lambda z: z[0])
@@ -217,9 +217,9 @@ class BaseLeoPlugin:
         self,
         commandName: Any,
         handler: Callable,
-        shortcut: str='',
-        pane: str='all',
-        verbose: bool=True,
+        shortcut: str = '',
+        pane: str = 'all',
+        verbose: bool = True,
     ) -> None:
         """Associate a command name with handler code,
         optionally defining a keystroke shortcut
@@ -231,7 +231,7 @@ class BaseLeoPlugin:
         self.c.k.registerCommand(commandName, handler,
             pane=pane, shortcut=shortcut, verbose=verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
-    def setMenuItem(self, menu: Wrapper, commandName: str=None, handler: Callable=None) -> None:
+    def setMenuItem(self, menu: Wrapper, commandName: str = None, handler: Callable = None) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
         """
@@ -247,7 +247,7 @@ class BaseLeoPlugin:
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
     #@+node:ekr.20100908125007.6015: *3* setButton
-    def setButton(self, buttonText: str=None, commandName: str=None, color: str=None) -> None:
+    def setButton(self, buttonText: str = None, commandName: str = None, color: str = None) -> None:
         """Associate an existing command with a 'button'
         """
         if buttonText is None:
@@ -475,7 +475,7 @@ class LeoPluginsController:
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
-    def loadOnePlugin(self, moduleOrFileName: Any, tag: str='open0', verbose: bool=False) -> Any:
+    def loadOnePlugin(self, moduleOrFileName: Any, tag: str = 'open0', verbose: bool = False) -> Any:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.
@@ -602,7 +602,7 @@ class LeoPluginsController:
         self.signonModule = result  # for self.plugin_signon.
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
-    def plugin_signon(self, module_name: str, verbose: bool=False) -> None:
+    def plugin_signon(self, module_name: str, verbose: bool = False) -> None:
         """Print the plugin signon."""
         # This is called from as the result of the imports
         # in self.loadOnePlugin
@@ -612,7 +612,7 @@ class LeoPluginsController:
             g.pr(m.__name__, m.__version__)
         self.signonModule = None  # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* plugins.unloadOnePlugin
-    def unloadOnePlugin(self, moduleOrFileName: str, verbose: bool=False) -> None:
+    def unloadOnePlugin(self, moduleOrFileName: str, verbose: bool = False) -> None:
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             if verbose:

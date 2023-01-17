@@ -45,7 +45,7 @@ class ShadowController:
     """A class to manage @shadow files"""
     #@+others
     #@+node:ekr.20080708094444.79: *3*  x.ctor & x.reloadSettings
-    def __init__(self, c: Cmdr, trace: bool=False, trace_writers: bool=False) -> None:
+    def __init__(self, c: Cmdr, trace: bool = False, trace_writers: bool = False) -> None:
         """Ctor for ShadowController class."""
         self.c = c
         # Opcode dispatch dict.
@@ -208,7 +208,7 @@ class ShadowController:
         new_public_lines: List[str],
         old_private_lines: List[str],
         marker: "Marker",
-        p: Position=None,
+        p: Position = None,
     ) -> List[str]:
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
@@ -437,7 +437,7 @@ class ShadowController:
                 # x.message("created public %s from private %s " % (fn, shadow_fn))
     #@+node:ekr.20080708094444.89: *3* x.Utils...
     #@+node:ekr.20080708094444.85: *4* x.error & message & verbatim_error
-    def error(self, s: str, silent: bool=False) -> None:
+    def error(self, s: str, silent: bool = False) -> None:
         x = self
         if not silent:
             g.error(s)
@@ -560,7 +560,7 @@ class ShadowController:
                 return self.delim1, ''
             return self.delim2, self.delim3
         #@+node:ekr.20090529061522.6259: *4* isSentinel
-        def isSentinel(self, s: str, suffix: str='') -> bool:
+        def isSentinel(self, s: str, suffix: str = '') -> bool:
             """Return True is line s contains a valid sentinel comment."""
             s = s.strip()
             if self.delim1 and s.startswith(self.delim1):

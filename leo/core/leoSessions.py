@@ -60,7 +60,7 @@ class SessionManager:
                 return g.os_path_finalize_join(path, 'leo.session')
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
-    def load_session(self, c: Cmdr=None, unls: List[str]=None) -> None:
+    def load_session(self, c: Cmdr = None, unls: List[str] = None) -> None:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
             return

@@ -740,7 +740,7 @@ for key in leo_color_database:
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor
-def getColor(name: str, default: str=None) -> str:
+def getColor(name: str, default: str = None) -> str:
     """ Translate a named color into #rrggbb' format.
 
     if 'name' is not a string it is returned unchanged.
@@ -764,7 +764,7 @@ def getColor(name: str, default: str=None) -> str:
 
 get = getColor
 #@+node:bob.20080115070511.4: *3* getRGB / getColorRGB
-def getColorRGB(name: str, default: str=None) -> Tuple[int, int, int]:
+def getColorRGB(name: str, default: str = None) -> Tuple[int, int, int]:
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
@@ -775,7 +775,7 @@ def getColorRGB(name: str, default: str=None) -> Tuple[int, int, int]:
 
 getRGB = getColorRGB
 #@+node:bob.20080115072302: *3* getCairo / getColorCairo
-def getColorCairo(name: str, default: str=None) -> Tuple[float, float, float]:
+def getColorCairo(name: str, default: str = None) -> Tuple[float, float, float]:
     """Convert a named color into a cairo color tuple."""
     # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)

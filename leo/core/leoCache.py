@@ -70,7 +70,7 @@ class CommanderCacher:
         """Dump the indicated cache if --trace-cache is in effect."""
         dump_cache(g.app.commander_db, tag='Commander Cache')
     #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
-    def get_wrapper(self, c: Cmdr, fn: str=None) -> "CommanderWrapper":
+    def get_wrapper(self, c: Cmdr, fn: str = None) -> "CommanderWrapper":
         """Return a new wrapper for c."""
         return CommanderWrapper(c, fn=fn)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
@@ -117,13 +117,13 @@ class CommanderCacher:
 class CommanderWrapper:
     """A class to distinguish keys from separate commanders."""
 
-    def __init__(self, c: Cmdr, fn: str=None) -> None:
+    def __init__(self, c: Cmdr, fn: str = None) -> None:
         self.c = c
         self.db = g.app.db
         self.key = fn or c.mFileName
         self.user_keys: Set[str] = set()
 
-    def get(self, key: str, default: Any=None) -> Any:
+    def get(self, key: str, default: Any = None) -> Any:
         value = self.db.get(f"{self.key}:::{key}")
         return default if value is None else value
 
@@ -189,7 +189,7 @@ class GlobalCacher:
             self.db.conn.commit()
             self.db.conn.close()
     #@+node:ekr.20180627045953.1: *3* g_cacher.dump
-    def dump(self, tag: str='') -> None:
+    def dump(self, tag: str = '') -> None:
         """Dump the indicated cache if --trace-cache is in effect."""
         tag0 = 'Global Cache'
         tag2 = f"{tag0}: {tag}" if tag else tag0
@@ -297,11 +297,11 @@ class PickleShareDB:
             if e.errno != 2:
                 raise
     #@+node:ekr.20100208223942.10452: *3* _makedirs
-    def _makedirs(self, fn: str, mode: int=0o777) -> None:
+    def _makedirs(self, fn: str, mode: int = 0o777) -> None:
 
         os.makedirs(fn, mode)
     #@+node:ekr.20100208223942.10458: *3* _openFile (PickleShareDB)
-    def _openFile(self, fn: str, mode: str='r') -> Optional[Any]:
+    def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
         """ Open this file.  Return a file object.
 
         Do not print an error message.
@@ -312,7 +312,7 @@ class PickleShareDB:
         except Exception:
             return None
     #@+node:ekr.20100208223942.10454: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: str=None) -> Generator:
+    def _walkfiles(self, s: str, pattern: str = None) -> Generator:
         """ D.walkfiles() -> iterator over files in D, recursively.
 
         The optional argument, pattern, limits the results to files
@@ -328,7 +328,7 @@ class PickleShareDB:
                 for f in self._walkfiles(child, pattern):
                     yield f
     #@+node:ekr.20100208223942.10456: *4* _listdir
-    def _listdir(self, s: str, pattern: str=None) -> List[str]:
+    def _listdir(self, s: str, pattern: str = None) -> List[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -358,7 +358,7 @@ class PickleShareDB:
         for z in self.keys():
             self.__delitem__(z)
     #@+node:ekr.20100208223942.5979: *3* get
-    def get(self, key: str, default: Any=None) -> Any:
+    def get(self, key: str, default: Any = None) -> Any:
 
         try:
             val = self[key]
@@ -379,7 +379,7 @@ class PickleShareDB:
     #@+node:ekr.20100208223942.5982: *3* keys & helpers (PickleShareDB)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str=None) -> List[str]:
+    def keys(self, globpat: str = None) -> List[str]:
         """Return all keys in DB, or all keys matching a glob"""
         files: List[str]
         if globpat is None:
@@ -563,11 +563,11 @@ class SqlitePickleShare:
         except sqlite3.OperationalError:
             g.es_exception()
     #@+node:vitalije.20170716201700.10: *3* _makedirs
-    def _makedirs(self, fn: str, mode: int=0o777) -> None:
+    def _makedirs(self, fn: str, mode: int = 0o777) -> None:
 
         os.makedirs(fn, mode)
     #@+node:vitalije.20170716201700.11: *3* _openFile (SqlitePickleShare)
-    def _openFile(self, fn: str, mode: str='r') -> Optional[Any]:
+    def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
         """ Open this file.  Return a file object.
 
         Do not print an error message.
@@ -578,7 +578,7 @@ class SqlitePickleShare:
         except Exception:
             return None
     #@+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: str=None) -> None:
+    def _walkfiles(self, s: str, pattern: str = None) -> None:
         """ D.walkfiles() -> iterator over files in D, recursively.
 
         The optional argument, pattern, limits the results to files
@@ -587,7 +587,7 @@ class SqlitePickleShare:
         extension.
         """
     #@+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str=None) -> List[str]:
+    def _listdir(self, s: str, pattern: str = None) -> List[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -616,7 +616,7 @@ class SqlitePickleShare:
         # below the root directory, but it's not necessary.
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
-    def get(self, key: str, default: Any=None) -> Any:
+    def get(self, key: str, default: Any = None) -> Any:
 
         if not self.has_key(key):  # noqa
             return default
@@ -639,7 +639,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.19: *3* keys
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str=None) -> Generator:
+    def keys(self, globpat: str = None) -> Generator:
         """Return all keys in DB, or all keys matching a glob"""
         if globpat is None:
             sql = 'select key from cachevalues;'

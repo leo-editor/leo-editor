@@ -25,7 +25,7 @@ class GoToCommands:
 
     #@+others
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
-    def find_file_line(self, n: int, p: Position=None) -> Tuple[Position, int, bool]:
+    def find_file_line(self, n: int, p: Position = None) -> Tuple[Position, int, bool]:
         """
         Place the cursor on the n'th line (one-based) of an external file.
         Return (p, offset, found) for unit testing.
@@ -56,7 +56,7 @@ class GoToCommands:
             return None, -1, False
         return self.find_script_line(n, p)
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start
-    def find_node_start(self, p: Position, s: str=None) -> Optional[int]:
+    def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
         """Return the global line number of the first line of p.b"""
         # See #283.
         root, fileName = self.find_root(p)
