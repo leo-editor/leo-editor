@@ -200,7 +200,7 @@ class LeoGlobals:  # pragma: no cover
         except Exception:
             return ''
     #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
-    def callers(self, n: int=4) -> str:
+    def callers(self, n: int = 4) -> str:
         """
         Return a string containing a comma-separated list of the callers
         of the function that called g.callerList.
@@ -215,7 +215,7 @@ class LeoGlobals:  # pragma: no cover
             i += 1
         return ','.join(reversed(result))
     #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self, full: bool=True) -> Tuple[str, int]:
+    def es_exception(self, full: bool = True) -> Tuple[str, int]:
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
@@ -236,7 +236,7 @@ class LeoGlobals:  # pragma: no cover
         filename, n, functionName, text = item
         return filename, n
     #@+node:ekr.20200220065737.1: *3* LeoGlobals.objToString
-    def objToString(self, obj: Any, tag: str=None) -> str:
+    def objToString(self, obj: Any, tag: str = None) -> str:
         """Simplified version of g.printObj."""
         result = []
         if tag:
@@ -271,7 +271,7 @@ class LeoGlobals:  # pragma: no cover
             n = obj
         return '' if n == 1 else 's'
     #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
-    def printObj(self, obj: Any, tag: str=None) -> None:
+    def printObj(self, obj: Any, tag: str = None) -> None:
         """Simplified version of g.printObj."""
         print(self.objToString(obj, tag))
     #@+node:ekr.20220327120618.1: *3* LeoGlobals.shortFileName
@@ -287,7 +287,7 @@ class LeoGlobals:  # pragma: no cover
             return s.splitlines(True)  # This is a Python string function!
         return []
     #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
-    def toEncodedString(self, s: Any, encoding: str='utf-8') -> bytes:
+    def toEncodedString(self, s: Any, encoding: str = 'utf-8') -> bytes:
         """Convert unicode string to an encoded string."""
         if not isinstance(s, str):
             return s
@@ -298,7 +298,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s: Any, encoding: str='utf-8') -> str:
+    def toUnicode(self, s: Any, encoding: str = 'utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         tag = 'g.toUnicode'
         if isinstance(s, str):
@@ -368,7 +368,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
     #@+node:ekr.20200702115002.1: *3* command: orange_command
-    def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
+    def orange_command(files: List[str], settings: Optional[Dict[str, Any]] = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -378,7 +378,7 @@ if 1:  # pragma: no cover
                 print(f"file not found: {filename}")
         # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-    def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
+    def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]] = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -477,7 +477,7 @@ if 1:  # pragma: no cover
                 pass
         return 'UTF-8'
     #@+node:ekr.20200103113417.1: *4* function: read_file
-    def read_file(filename: str, encoding: str='utf-8') -> Optional[str]:
+    def read_file(filename: str, encoding: str = 'utf-8') -> Optional[str]:
         """
         Return the contents of the file with the given name.
         Print an error message and return None on error.
@@ -549,7 +549,7 @@ if 1:  # pragma: no cover
                 return e, bb[len(bom) :]
         return None, bb
     #@+node:ekr.20200103163100.1: *4* function: write_file
-    def write_file(filename: str, s: str, encoding: str='utf-8') -> None:
+    def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
         Write the string s to the file whose name is given.
 
@@ -923,18 +923,18 @@ if 1:  # pragma: no cover
         return None
     #@+node:ekr.20191231110051.1: *3* node/token dumpers...
     #@+node:ekr.20191027074436.1: *4* function: dump_ast
-    def dump_ast(ast: Node, tag: str='dump_ast') -> None:
+    def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
         """Utility to dump an ast tree."""
         g.printObj(AstDumper().dump_ast(ast), tag=tag)
     #@+node:ekr.20191228095945.4: *4* function: dump_contents
-    def dump_contents(contents: str, tag: str='Contents') -> None:
+    def dump_contents(contents: str, tag: str = 'Contents') -> None:
         print('')
         print(f"{tag}...\n")
         for i, z in enumerate(g.splitLines(contents)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *4* function: dump_lines
-    def dump_lines(tokens: List["Token"], tag: str='Token lines') -> None:
+    def dump_lines(tokens: List["Token"], tag: str = 'Token lines') -> None:
         print('')
         print(f"{tag}...\n")
         for z in tokens:
@@ -944,13 +944,13 @@ if 1:  # pragma: no cover
                 print(repr(z.line))
         print('')
     #@+node:ekr.20191228095945.7: *4* function: dump_results
-    def dump_results(tokens: List["Token"], tag: str='Results') -> None:
+    def dump_results(tokens: List["Token"], tag: str = 'Results') -> None:
         print('')
         print(f"{tag}...\n")
         print(tokens_to_string(tokens))
         print('')
     #@+node:ekr.20191228095945.8: *4* function: dump_tokens
-    def dump_tokens(tokens: List["Token"], tag: str='Tokens') -> None:
+    def dump_tokens(tokens: List["Token"], tag: str = 'Tokens') -> None:
         print('')
         print(f"{tag}...\n")
         if not tokens:
@@ -961,12 +961,12 @@ if 1:  # pragma: no cover
             print(z.dump())
         print('')
     #@+node:ekr.20191228095945.9: *4* function: dump_tree
-    def dump_tree(tokens: List["Token"], tree: Node, tag: str='Tree') -> None:
+    def dump_tree(tokens: List["Token"], tree: Node, tag: str = 'Tree') -> None:
         print('')
         print(f"{tag}...\n")
         print(AstDumper().dump_tree(tokens, tree))
     #@+node:ekr.20200107040729.1: *4* function: show_diffs
-    def show_diffs(s1: str, s2: str, filename: str='') -> None:
+    def show_diffs(s1: str, s2: str, filename: str = '') -> None:
         """Print diffs between strings s1 and s2."""
         lines = list(difflib.unified_diff(
             g.splitLines(s1),
@@ -1195,7 +1195,7 @@ class AstDumper:  # pragma: no cover
     include_attributes = False
     indent_ws = ' '
 
-    def dump_ast(self, node: Node, level: int=0) -> str:
+    def dump_ast(self, node: Node, level: int = 0) -> str:
         """
         Dump an ast tree. Adapted from ast.dump.
         """
@@ -1722,7 +1722,7 @@ class IterativeTokenGenerator:
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
     #@+node:ekr.20220402095550.3: *5* iterative.create_links (init all ivars)
-    def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
+    def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
 
@@ -3397,7 +3397,7 @@ class Orange:
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[Dict[str, Any]]=None):
+    def __init__(self, settings: Optional[Dict[str, Any]] = None):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
@@ -3423,7 +3423,7 @@ class Orange:
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
     #@+node:ekr.20200107165250.51: *4* orange.push_state
-    def push_state(self, kind: str, value: str=None) -> None:
+    def push_state(self, kind: str, value: str = None) -> None:
         """Append a state to the state stack."""
         state = ParseState(kind, value)
         self.state_stack.append(state)
@@ -3434,11 +3434,11 @@ class Orange:
 
     def beautify(self, contents: str, filename: str, tokens: List["Token"], tree: Node,
 
-        max_join_line_length: Optional[int]=None, max_split_line_length: Optional[int]=None,
+        max_join_line_length: Optional[int] = None, max_split_line_length: Optional[int] = None,
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
-        
+
         beautify_file and beautify_file_def call this method.
         """
         # Config overrides
@@ -3783,7 +3783,7 @@ class Orange:
     dump_flag = True
 
     def do_equal_op(self, val: str) -> None:
-        
+
         if 0:
             token = self.token
             g.trace(
@@ -4579,7 +4579,7 @@ class TokenOrderGenerator:
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
     #@+node:ekr.20191113063144.4: *5* tog.create_links (inits all ivars)
-    def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
+    def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
 
@@ -5560,7 +5560,12 @@ class TokenOrderGenerator:
                         self.arg_helper(z.value)
                     else:
                         self.arg_helper(z.arg)
-                        self.op('=')
+                        try:
+                            old_equal_sign_spaces = self.equal_sign_spaces
+                            self.equal_sign_spaces = False
+                            self.op('=')
+                        finally:
+                            self.equal_sign_spaces = old_equal_sign_spaces
                         self.arg_helper(z.value)
                 else:
                     self.arg_helper(z)
