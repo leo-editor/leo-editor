@@ -1872,18 +1872,11 @@ class TestOrange(BaseTest):
     ''',
         )
         for i, contents in enumerate(table):
-            ### g.printObj(g.splitLines(textwrap.dedent(contents).rstrip() + '\n'), tag='contents')  ###
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
-            if results != expected:  ###
-                g.trace('\nFAIL')
-                if 1:
-                    g.printObj(expected, tag='expected (black)')
-                    g.printObj(results, tag='results')
-                    assert False
-            else:
-                self.assertEqual(results, expected)
+            self.assertEqual(results, expected)
+            
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
@@ -1964,7 +1957,7 @@ class TestOrange(BaseTest):
         """bug 1429 docstring"""
         try:
             import semantic_version
-            version = str(semantic_version.Version.coerce(tag, partial=True))
+            version = str(semantic_version.Version.coerce(tag, partial = True))
                 # tuple of major, minor, build, pre-release, patch
                 # 5.6b2 --> 5.6-b2
         except(ImportError, ValueError) as err:

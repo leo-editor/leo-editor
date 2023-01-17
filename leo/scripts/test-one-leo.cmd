@@ -7,6 +7,10 @@ rem call python -m unittest leo.unittests.test_plugins.TestPlugins.test_cursesGu
 rem echo test-one-leo: TestFstringify
 rem call python -m unittest leo.unittests.core.test_leoAst.TestFstringify
 
-echo test-one-leo: TestOrange.test_annotations
-call python -m unittest leo.unittests.core.test_leoAst.TestOrange.test_annotations
+rem echo test-one-leo: TestOrange.test_annotations
+rem call python -m unittest leo.unittests.core.test_leoAst.TestOrange.test_annotations
+
+echo test-one-leo: TestOrange.test_bug_1429
+call python -m unittest leo.unittests.core.test_leoAst.TestOrange.test_bug_1429
+
 
