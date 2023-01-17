@@ -161,7 +161,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: Event=None) -> None:
+    def convert_at_root(self, event: Event = None) -> None:
         #@+<< convert-at-root docstring >>
         #@+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         #@@wrap
@@ -486,7 +486,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Not Deleted: {k.arg}")
     #@+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: Event=None) -> None:
+    def diff(self, event: Event = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
         c = self.c
         fn = self.getReadableTextFile()
@@ -519,13 +519,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: Event=None) -> None:  # 2020/07/18, for leoInteg.
+    def gitDiff(self, event: Event = None) -> None:  # 2020/07/18, for leoInteg.
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: Event=None) -> None:
+    def gitDiffPullRequest(self, event: Event = None) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
@@ -703,7 +703,7 @@ class GitDiffController:
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
-    def diff_file(self, fn: str, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for fn.
         """
@@ -801,7 +801,7 @@ class GitDiffController:
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -837,7 +837,7 @@ class GitDiffController:
         u.afterChangeGroup(c.p, undoType=undoType)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
-    def git_diff(self, rev1: str='HEAD', rev2: str='') -> None:
+    def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """The main line of the git diff command."""
         if not self.get_directory():
             return
@@ -1079,7 +1079,7 @@ class GitDiffController:
                 if not z.strip().endswith(('.db', '.zip'))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
-    def get_revno(self, revspec: str, abbreviated: bool=True) -> str:
+    def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
         """Return the abbreviated hash the given revision spec."""
         if not revspec:
             return 'uncommitted'
@@ -1152,8 +1152,8 @@ class GitDiffController:
         c1: Cmdr,
         c2: Cmdr,
         fn: str,
-        rev1: str='',
-        rev2: str='',
+        rev1: str = '',
+        rev2: str = '',
     ) -> None:
         """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
         added, deleted, changed = self.compute_dicts(c1, c2)

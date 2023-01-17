@@ -11,7 +11,7 @@ from leo.plugins.importers.linescanner import Importer
 class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
-    def __init__(self, c: Cmdr, tags_setting: str='import_xml_tags') -> None:
+    def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""
         # Init the base class.
         super().__init__(c, language='xml')

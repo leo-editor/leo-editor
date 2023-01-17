@@ -62,13 +62,13 @@ gBridgeController = None  # The singleton bridge controller.
 #@+others
 #@+node:ekr.20070227092442: ** function: controller
 def controller(
-    gui: str='nullGui',
-    loadPlugins: bool=True,
-    readSettings: bool=True,
-    silent: bool=False,
-    tracePlugins: bool=False,
-    useCaches: bool=True,
-    verbose: bool=False,
+    gui: str = 'nullGui',
+    loadPlugins: bool = True,
+    readSettings: bool = True,
+    silent: bool = False,
+    tracePlugins: bool = False,
+    useCaches: bool = True,
+    verbose: bool = False,
 ) -> Any:
     """Create an singleton instance of a bridge controller."""
     global gBridgeController
@@ -96,7 +96,7 @@ class BridgeController:
         tracePlugins: bool,
         useCaches: bool,
         verbose: bool,
-        vs_code_flag: bool=False,  # #2098.
+        vs_code_flag: bool = False,  # #2098.
     ) -> None:
         """Ctor for the BridgeController class."""
         self.g: Any = None  # leo.core.leoGlobals.  Hard to annotate.

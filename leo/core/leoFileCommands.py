@@ -186,7 +186,7 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: Any, val: Any, kind: str=None) -> str:  # Kind is for unit testing.
+    def resolveUa(self, attr: Any, val: Any, kind: str = None) -> str:  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
             val = g.toEncodedString(val)
@@ -619,7 +619,7 @@ class FileCommands:
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event: Event=None) -> None:
+    def writeAtFileNodes(self, event: Event = None) -> None:
         """Write all @file nodes in the selected outline."""
         c = self.c
         c.endEditing()
@@ -628,7 +628,7 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.3050: *4* fc.write-outline-only
     @cmd('write-outline-only')
-    def writeOutlineOnly(self, event: Event=None) -> None:
+    def writeOutlineOnly(self, event: Event = None) -> None:
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
@@ -636,7 +636,7 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
     @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event: Event=None) -> None:
+    def writeDirtyAtFileNodes(self, event: Event = None) -> None:
         """Write all changed @file Nodes."""
         c = self.c
         c.endEditing()
@@ -645,7 +645,7 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.2013: *4* fc.writeMissingAtFileNodes
     @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event: Event=None) -> None:
+    def writeMissingAtFileNodes(self, event: Event = None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
@@ -867,9 +867,9 @@ class FileCommands:
         self,
         theFile: Any,
         fileName: str,
-        readAtFileNodesFlag: bool=True,
-        silent: bool=False,
-        checkOpenFiles: bool=True,
+        readAtFileNodesFlag: bool = True,
+        silent: bool = False,
+        checkOpenFiles: bool = True,
     ) -> Tuple[VNode, float]:
         """
             Read a .leo file.
@@ -926,8 +926,8 @@ class FileCommands:
     def openLeoFile(self,
         theFile: Any,
         fileName: str,
-        readAtFileNodesFlag: bool=True,
-        silent: bool=False,
+        readAtFileNodesFlag: bool = True,
+        silent: bool = False,
     ) -> VNode:
         """
         Open a Leo file.
@@ -1247,7 +1247,7 @@ class FileCommands:
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
     #@+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
-    def getDescendentAttributes(self, s: str, tag: str="") -> List[str]:
+    def getDescendentAttributes(self, s: str, tag: str = "") -> List[str]:
         """s is a list of gnx's, separated by commas from a <v> or <t> element.
         Parses s into a list.
 
@@ -1260,7 +1260,7 @@ class FileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes(self, s: str, v: VNode=None) -> Any:
+    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Any:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
@@ -1399,7 +1399,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3032: *3* fc: Writing
     #@+node:ekr.20070413045221.2: *4* fc: Writing save*
     #@+node:ekr.20031218072017.1720: *5* fc.save
-    def save(self, fileName: str, silent: bool=False) -> bool:
+    def save(self, fileName: str, silent: bool = False) -> bool:
         """fc.save: A helper for c.save."""
         c = self.c
         p = c.p
@@ -1534,7 +1534,7 @@ class FileCommands:
                 c.ignoreChangedPaths = False  # #1367.
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
-    def saveTo(self, fileName: str, silent: bool=False) -> None:
+    def saveTo(self, fileName: str, silent: bool = False) -> None:
         """fc.saveTo: A helper for c.saveTo."""
         c = self.c
         p = c.p
@@ -1690,7 +1690,7 @@ class FileCommands:
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x: (x[1], md5(x[0])), files))
     #@+node:ekr.20031218072017.1573: *5* fc.outline_to_clipboard_string
-    def outline_to_clipboard_string(self, p: Position=None) -> str:
+    def outline_to_clipboard_string(self, p: Position = None) -> str:
         """
         Return a string suitable for pasting to the clipboard.
         """
@@ -1780,11 +1780,12 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_file
-    def leojs_file(self, p: Position=None) -> Dict[str, Any]:
+    def leojs_file(self, p: Position = None) -> Dict[str, Any]:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
-        gnxSet: Set[str] = set()  # holds all gnx found so far, to exclude adding headlines of already defined gnx.
+        # holds all gnx found so far, to exclude adding headlines of already defined gnx.
+        gnxSet: Set[str] = set()
 
         if self.usingClipboard:  # write the current tree.
             # Node to be root of tree to be put on clipboard
@@ -1852,7 +1853,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool=False) -> Dict[str, Any]:
+    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> Dict[str, Any]:
         """Return a jsonized vnode."""
         c = self.c
         fc = self
@@ -2206,7 +2207,7 @@ class FileCommands:
         g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
     #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
-    def put_v_element(self, p: Position, isIgnore: bool=False) -> None:
+    def put_v_element(self, p: Position, isIgnore: bool = False) -> None:
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
@@ -2262,7 +2263,7 @@ class FileCommands:
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
-    def put_v_elements(self, p: Position=None) -> None:
+    def put_v_elements(self, p: Position = None) -> None:
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
         c.clearAllVisited()

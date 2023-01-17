@@ -123,7 +123,7 @@ class RstCommands:
     #@+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: Event=None) -> None:
+    def convert_legacy_outline(self, event: Event = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -161,7 +161,7 @@ class RstCommands:
         print(f"{old_h} => {p.h}")
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: Event=None) -> None:
+    def rst3(self, event: Event = None) -> None:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -519,7 +519,7 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, s: str=None) -> Dict[str, str]:
+    def handleMissingStyleSheetArgs(self, s: str = None) -> Dict[str, str]:
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.

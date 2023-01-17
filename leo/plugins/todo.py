@@ -361,7 +361,6 @@ class todoController:
         self.donePriority = 100
         self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
         self.recentIcons: List[Icon] = []
-        #X self.smiley = None
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()

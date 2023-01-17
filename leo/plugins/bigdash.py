@@ -129,9 +129,8 @@ class BigDash:
             # PyQt5
             pass  # Not clear what to do.
         w.setLayout(lay)
-        #web.load(QUrl("http://google.fi"))
         self.show_help()
-        # w.show()
+
         def help_handler(tgt, qs):
             if qs == "help":
                 self.show_help()
@@ -196,7 +195,6 @@ class GlobalSearch:
         self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
         self.bd = BigDash()
         self.gnxcache = GnxCache()
-        #self.bd.show()
         self.bd.add_cmd_handler(self.do_search)
         if whoosh:
             self.fts = LeoFts(self.gnxcache, g.app.homeLeoDir + "/fts_index")
@@ -251,7 +249,6 @@ class GlobalSearch:
             hits.append("<div id='%s'><p><b>%s</b></p>" % (outline, outline))
             res = outlines[outline]
             for r in res:
-                #print("hit", r)
                 hits.append("<p>")
                 hits.append("<div>")
                 self.add_anchor(hits, r["gnx"], r["h"])
@@ -438,7 +435,6 @@ class LeoFts:
         writer = self.ix.writer()
         doc = c.mFileName
         for p in c.all_unique_positions():
-            #print "pushing",p
             if p.hasParent():
                 par = p.parent().get_UNL()
             else:
@@ -504,10 +500,8 @@ class LeoFts:
         gnxcache = self.gnxcache
         gnxcache.update_new_cs()
         with self.ix.searcher() as searcher:
-            #print (list(searcher.lexicon("b")))
             query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
             results = searcher.search(query, limit=limit)
-            # print (results)
             for r in results:
                 rr = r.fields()
                 gnx = rr["gnx"]

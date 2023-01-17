@@ -102,8 +102,8 @@ def insertDirectoryString(c):
         w = c.frame.body.wrapper
         ins = w.getInsertPoint()
         w.insert(ins, d)
-        #w.event_generate('<Key>')
-        #w.update_idletasks()
+        # w.event_generate('<Key>')
+        # w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decorated_precheck
 def decorated_precheck(self, fileName, root):
     """Call at.precheck, then add fileName to the global files list."""

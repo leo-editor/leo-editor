@@ -340,7 +340,7 @@ class Undoer:
             v.unknownAttributes = uA
             v._p_changed = True
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
-    def saveTree(self, p: Position, treeInfo: List[g.Bunch]=None) -> List[g.Bunch]:
+    def saveTree(self, p: Position, treeInfo: List[g.Bunch] = None) -> List[g.Bunch]:
         """Return a list of tuples with all info needed to handle a general undo operation."""
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
@@ -454,7 +454,7 @@ class Undoer:
     def afterChangeGroup(self,
         p: Position,
         undoType: str,
-        reportFlag: bool=False,  # unused: retained for compatiblility with existing scripts.
+        reportFlag: bool = False,  # unused: retained for compatiblility with existing scripts.
     ) -> None:
         """
         Create an undo node for general tree operations using d created by
@@ -785,7 +785,7 @@ class Undoer:
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     changeGroupWarning = False
 
-    def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool=False) -> None:
+    def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool = False) -> None:
         """Prepare to undo a group of undoable operations."""
         c, u = self.c, self
         if p != c.p:  # Prepare to ignore p argument.
@@ -859,7 +859,11 @@ class Undoer:
         bunch.oldParent = p.parent()
         return bunch
     #@+node:ekr.20050411193627.4: *5* u.beforeInsertNode
-    def beforeInsertNode(self, p: Position, pasteAsClone: bool=False, copiedBunchList: List[g.Bunch]=None) -> None:
+    def beforeInsertNode(self,
+        p: Position,
+        pasteAsClone: bool = False,
+        copiedBunchList: List[g.Bunch] = None,
+    ) -> None:
         u = self
         if copiedBunchList is None:
             copiedBunchList = []
@@ -923,10 +927,10 @@ class Undoer:
         undo_type: str,
         oldText: str,
         newText: str,
-        newInsert: int=None,
-        oldSel: Tuple[int, int]=None,
-        newSel: Tuple[int, int]=None,
-        oldYview: int=None,
+        newInsert: int = None,
+        oldSel: Tuple[int, int] = None,
+        newSel: Tuple[int, int] = None,
+        oldYview: int = None,
     ) -> None:
         """
         Save enough information to undo or redo a typing operation efficiently,
@@ -1287,7 +1291,7 @@ class Undoer:
         w.setFocus()
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(self, event: Event=None) -> None:
+    def redo(self, event: Event = None) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1620,7 +1624,7 @@ class Undoer:
             w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(self, event: Event=None) -> None:
+    def undo(self, event: Event = None) -> None:
         """Undo the operation described by the undo parameters."""
         u = self
         c = u.c
@@ -1938,8 +1942,8 @@ class Undoer:
         newMidLines: List[str],  # Lists of unmatched lines.
         oldNewlines: List[str],
         newNewlines: List[str],  # Number of trailing newlines.
-        tag: str="undo",  # "undo" or "redo"
-        undoType: str=None,
+        tag: str = "undo",  # "undo" or "redo"
+        undoType: str = None,
     ) -> None:
         """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.

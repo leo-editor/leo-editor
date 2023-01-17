@@ -23,7 +23,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.104: ** debug.debug & helper
     @cmd('debug')
-    def invoke_debugger(self, event: Event=None) -> None:
+    def invoke_debugger(self, event: Event = None) -> None:
         """
         Start an external debugger in another process to debug a script. The
         script is the presently selected text or then entire tree's script.
@@ -34,7 +34,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         winpdb = self.findDebugger()
         if not winpdb:
             return
-        #check for doctest examples
+        # check for doctest examples
         try:
             import doctest
             parser = doctest.DocTestParser()
@@ -80,7 +80,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         return None
     #@+node:ekr.20170713112849.1: ** debug.dump-node
     @cmd('dump-node')
-    def dumpNode(self, event: Event=None) -> None:
+    def dumpNode(self, event: Event = None) -> None:
         """Dump c.p.v, including gnx, uA's, etc."""
         p = self.c.p
         if p:
@@ -92,24 +92,24 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 g.es_print('no uAs')
     #@+node:ekr.20150514063305.103: ** debug.gc-collect-garbage
     @cmd('gc-collect-garbage')
-    def collectGarbage(self, event: Event=None) -> None:
+    def collectGarbage(self, event: Event = None) -> None:
         """Run Python's Garbage Collector."""
         import gc
         gc.collect()
     #@+node:ekr.20150514063305.106: ** debug.gc-dump-all-objects
     @cmd('gc-dump-all-objects')
-    def dumpAllObjects(self, event: Event=None) -> None:
+    def dumpAllObjects(self, event: Event = None) -> None:
         """Print a summary of all existing Python objects."""
         g.printGc()
     #@+node:ekr.20150514063305.111: ** debug.gc-show-summary
     @cmd('gc-show-summary')
-    def printGcSummary(self, event: Event=None) -> None:
+    def printGcSummary(self, event: Event = None) -> None:
         """Print a brief summary of all Python objects."""
         g.printGcSummary()
     #@+node:ekr.20170429154309.1: ** debug.kill-log-listener
     @cmd('kill-log-listener')
     @cmd('log-kill-listener')
-    def killLogListener(self, event: Event=None) -> None:
+    def killLogListener(self, event: Event = None) -> None:
         """Kill the listener started by listen-for-log."""
         if g.app.log_listener:
             try:
@@ -122,12 +122,12 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('log listener not active.')
     #@+node:ekr.20150514063305.109: ** debug.pdb
     @cmd('pdb')
-    def pdb(self, event: Event=None) -> None:
+    def pdb(self, event: Event = None) -> None:
         """Fall into pdb."""
         g.pdb()
     #@+node:ekr.20150514063305.110: ** debug.show-focus
     @cmd('show-focus')
-    def printFocus(self, event: Event=None) -> None:
+    def printFocus(self, event: Event = None) -> None:
         """
         Print information about the requested focus.
 

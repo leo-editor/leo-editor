@@ -102,7 +102,7 @@ class controller:
         c = self.c
         current = c.p
         try:
-            #ici, on liste le contenu du répertoire
+            # ici, on liste le contenu du répertoire
             body = ""
             #@+<< listdir >>
             #@+node:ekr.20050301083306.11: *4* << listdir >>
@@ -132,7 +132,7 @@ class controller:
                 for d in dossiers:
                     compteurglobal = self.importDir(d, compteurglobal)
             c.setChanged()
-            #sélectionne le noeud parent
+            # sélectionne le noeud parent
             c.selectPosition(current)
         except Exception:
             if language == 'french':

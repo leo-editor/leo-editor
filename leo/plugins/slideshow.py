@@ -191,8 +191,6 @@ class slideshowController:
         h = p.h.strip()
         w = c.frame.body.wrapper
         g.es('%s' % h)
-        #c.expandAllAncestors(p)
-        #c.selectPosition(p)
         c.redraw(p)
         w.see(0)
         if h.startswith('@slideshow'):

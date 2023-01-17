@@ -70,7 +70,7 @@ class NodeHistory:
         # Fix bug #180: Always call self.update here.
         self.update(p, change=False)
     #@+node:ville.20090724234020.14676: *3* NodeHistory.update
-    def update(self, p: Position, change: bool=True) -> None:
+    def update(self, p: Position, change: bool = True) -> None:
         """
         Update the beadList while p is being selected.
         Called *only* from c.frame.tree.selectHelper.

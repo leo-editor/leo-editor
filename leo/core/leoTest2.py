@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app
-def create_app(gui_name: str='null') -> Cmdr:
+def create_app(gui_name: str = 'null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
 
@@ -174,12 +174,12 @@ class LeoUnitTest(unittest.TestCase):
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
     #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
-    def dump_string(self, s: str, tag: str=None) -> None:
+    def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
     #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+    def dump_headlines(self, root: Position, tag: str = None) -> None:  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
         print('')
         if tag:
@@ -187,7 +187,7 @@ class LeoUnitTest(unittest.TestCase):
         for p in root.self_and_subtree():
             print('level:', p.level(), p.h)
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+    def dump_tree(self, root: Position, tag: str = None) -> None:  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
         print('')
         if tag:

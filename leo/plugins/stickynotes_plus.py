@@ -70,7 +70,6 @@ def init():
     """Return True if the plugin has loaded successfully."""
     ok = markdown is not None and g.app.gui.guiName() == "qt"
     if ok:
-        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
     g.app.stickynotes = {}
     return ok
@@ -83,7 +82,6 @@ class FocusingPlaintextEdit(QPlainTextEdit):
         self.focusout = focusout
 
     def focusOutEvent(self, event):
-        #print "focus out"
         self.focusout()
 
     def focusInEvent(self, event):
@@ -102,10 +100,7 @@ class SimpleRichText(QTextEdit):
         self.focusout = focusout
         self.createActions()
 
-        #self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
     def focusOutEvent(self, event):
-        #print "focus out"
         self.focusout()
 
     def focusInEvent(self, event):
@@ -132,7 +127,6 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setCheckable(True)
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
-        # self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.triggered.connect(self.setItalic)
         self.addAction(self.italicAct)
 
@@ -147,7 +141,6 @@ class SimpleRichText(QTextEdit):
 
     def setItalic(self):
         format = QTextCharFormat()
-        #format.setFontItalic(self.__italic.isChecked())
         format.setFontItalic(self.italicAct.isChecked())
         self.setFormat(format)
 
@@ -196,7 +189,6 @@ class notetextedit(QTextEdit):
         QTimer.singleShot(0, get_markdown)
     #@+node:ekr.20100103100944.5398: *3* focusOutEvent
     def focusOutEvent__(self, event):
-        #print "focus out"
         self.focusout()
 
     #@+node:ekr.20100103100944.5399: *3* focusInEvent
@@ -207,7 +199,6 @@ class notetextedit(QTextEdit):
     def toggleItalic(self):
         if self.which_header():
             return
-        #self.setFontItalic(not self.fontItalic())
         italic = self.fontItalic()
         cursor = self.textCursor()
         char_format = QTextCharFormat()
@@ -217,7 +208,7 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5401: *3* toggleUnderline
     def toggleUnderline(self):
-        #not in use, markdown doesn't support
+        # not in use, markdown doesn't support
         self.setFontUnderline(not self.fontUnderline())
 
     #@+node:ekr.20100103100944.5402: *3* make_plain_text
@@ -267,9 +258,6 @@ class notetextedit(QTextEdit):
         if self.which_header():
             return
         cursor = self.textCursor()
-        #if not cursor.hasSelection():
-        #    return
-
         char_format = cursor.charFormat()
 
         if char_format.fontFixedPitch():
@@ -298,11 +286,11 @@ class notetextedit(QTextEdit):
         #
         # The below works but doesn't pick up highlighting of an anchor
         # would have to do the underlining and blue color
-            #format = QTextCharFormat()
-            #format.setAnchor(True)
-            #format.setAnchorHref(text)
-            #cursor.setCharFormat(format)
-            #self.setTextCursor(cursor)
+            # format = QTextCharFormat()
+            # format.setAnchor(True)
+            # format.setAnchorHref(text)
+            # cursor.setCharFormat(format)
+            # self.setTextCursor(cursor)
         #
         # This also works and generates highlighting
         cursor.deleteChar()
@@ -322,7 +310,6 @@ class notetextedit(QTextEdit):
         cursor.select(QTextCursor.BlockUnderCursor)  #QTextCursor.LineUnderCursor
 
         char_format = QTextCharFormat()
-        #font = self.font this is a problem  because it changes self.font gets changed below
         font = QFont()
         font.setFamily("helvetica")
         font.setPointSize({1: 20, 2: 15, 3: 12}[heading])
@@ -355,9 +342,6 @@ class notetextedit(QTextEdit):
             elif event.key() == Qt.Key_I:
                 self.toggleItalic()
                 handled = True
-            #elif event.key() == Qt.Key_K:
-                #self.colorMenu()
-                #handled = True
             elif event.key() == Qt.Key_M:
                 self.textEffectMenu()
                 handled = True
@@ -406,8 +390,6 @@ class notetextedit(QTextEdit):
                 ):
 
             action = menu.addAction(text, self.setTextEffect)
-            #if shortcut is not None:
-                #action.setShortcut(QKeySequence(shortcut)) # becau
             action.setData(QVariant(data))
             action.setCheckable(True)
             action.setChecked(checked)
@@ -493,7 +475,7 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes.py)
     def mouseMoveEvent(self, event):
-        #print "mouseMoveEvent"
+
         pos = event.pos()
         anch = self.anchorAt(pos)
         self.viewport().setCursor(
@@ -502,7 +484,7 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5417: *3* mouseReleaseEvent
     def mouseReleaseEvent(self, event):
-        #print("mouseReleaseEvent")
+
         pos = event.pos()
         url = self.anchorAt(pos)
         if url:
@@ -592,16 +574,14 @@ def stickynote_f(event):
     c = event['c']
     p = c.p
     v = p.v
+
     def focusin():
-        #print "focus in"
         if v is c.p.v:
             nf.setPlainText(v.b)
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
-
     def focusout():
-        #print "focus out"
         if not nf.dirty:
             return
         v.b = nf.toPlainText()
@@ -610,7 +590,6 @@ def stickynote_f(event):
         p = c.p
         if p.v is v:
             c.selectPosition(c.p)
-
 
     nf = FocusingPlaintextEdit(focusin, focusout)
     nf.dirty = False

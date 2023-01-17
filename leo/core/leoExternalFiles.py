@@ -62,7 +62,7 @@ class ExternalFilesController:
     """
     #@+others
     #@+node:ekr.20150404083533.1: *3* efc.ctor
-    def __init__(self, c: Cmdr=None) -> None:
+    def __init__(self, c: Cmdr = None) -> None:
         """Ctor for ExternalFiles class."""
         self.checksum_d: Dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
@@ -394,7 +394,7 @@ class ExternalFilesController:
         self.files.append(ExternalFile(c, ext, p, path, time))
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
-    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool=False) -> str:
+    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool = False) -> str:
         """
         Open a file fn in an external editor.
 
@@ -494,7 +494,7 @@ class ExternalFilesController:
     #@+node:ekr.20150405110219.1: *3* efc.utilities
     # pylint: disable=no-value-for-parameter
     #@+node:ekr.20150405200212.1: *4* efc.ask
-    def ask(self, c: Cmdr, path: str, p: Position=None) -> str:
+    def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
         """
         Ask user whether to overwrite an @<file> tree.
 
@@ -610,7 +610,7 @@ class ExternalFilesController:
         """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
-    def set_time(self, path: str, new_time: float=None) -> None:
+    def set_time(self, path: str, new_time: float = None) -> None:
         """
         Implements c.setTimeStamp.
 

@@ -256,7 +256,7 @@ class ServerExternalFilesController(ExternalFilesController):
         self.checksum_d[path] = self.checksum(path)
         # For now, ignore the #1888 fix method
         if self.ask(c, path):
-            #reload Commander
+            # reload Commander
             # self.lastCommander.close() Stops too much if last file closed
             g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
             g.leoServer.open_file({"filename": path})  # ignore returned value
@@ -293,7 +293,7 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
     # The base class returns str.
-    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:  # type:ignore
+    def ask(self, c: Cmdr, path: str, p: Position = None) -> bool:  # type:ignore
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -747,7 +747,7 @@ class QuickSearchController:
     def find_b(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+        flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
     ) -> List[Tuple[Position, Match_Iter]]:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
@@ -773,7 +773,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag=re.IGNORECASE,
+        flags: RegexFlag = re.IGNORECASE,
     ) -> List[Tuple[Position, Match_Iter]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
@@ -793,7 +793,7 @@ class QuickSearchController:
         return aList
 
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
-    def onSelectItem(self, it: Any, it_prev: Any=None) -> None:  # it_prev not used. Hard to annotate.
+    def onSelectItem(self, it: Any, it_prev: Any = None) -> None:  # it_prev not used. Hard to annotate.
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
@@ -833,7 +833,7 @@ class LeoServer:
     """Leo Server Controller"""
     #@+others
     #@+node:felix.20210621233316.5: *3* server.__init__
-    def __init__(self, testing: bool=False) -> None:
+    def __init__(self, testing: bool = False) -> None:
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -896,7 +896,7 @@ class LeoServer:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
-    def _runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> None:
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -909,9 +909,9 @@ class LeoServer:
     def _runAskYesNoDialog(self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yes_all: bool=False,
-        no_all: bool=False,
+        message: str = None,
+        yes_all: bool = False,
+        no_all: bool = False,
     ) -> str:
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
@@ -935,12 +935,12 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yesMessage: str="Yes",
-        noMessage: str="No",
-        yesToAllMessage: str=None,
-        defaultButton: str="Yes",
-        cancelMessage: str=None,
+        message: str = None,
+        yesMessage: str = "Yes",
+        noMessage: str = "No",
+        yesToAllMessage: str = None,
+        defaultButton: str = "Yes",
+        cancelMessage: str = None,
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
@@ -977,9 +977,9 @@ class LeoServer:
         self,
         c: Cmdr,
         p: Position,
-        useSelectedText: bool=True,
-        forcePythonSentinels: bool=True,
-        useSentinels: bool=True,
+        useSelectedText: bool = True,
+        forcePythonSentinels: bool = True,
+        useSentinels: bool = True,
     ) -> str:
         """
         Return the expansion of the selected text of node p.
@@ -3292,23 +3292,23 @@ class LeoServer:
             'file-insert',
             'file-save-by-name',  # only body pane to file (confusing w/ save as...)
             'save-file-by-name',  # only body pane to file (confusing w/ save as...)
-            #'file-new',
-            #'file-open-by-name',
+            # 'file-new',
+            # 'file-open-by-name',
 
             # All others...
             'shell-command',
             'shell-command-on-region',
             'cheat-sheet',
             'dehoist',  # Duplicates of de-hoist.
-            #'find-clone-all',
-            #'find-clone-all-flattened',
-            #'find-clone-tag',
-            #'find-all',
+            # 'find-clone-all',
+            # 'find-clone-all-flattened',
+            # 'find-clone-tag',
+            # 'find-all',
             'find-all-unique-regex',
             'find-character',
             'find-character-extend-selection',
-            #'find-next',
-            #'find-prev',
+            # 'find-next',
+            # 'find-prev',
             'find-word',
             'find-word-in-line',
 
@@ -3320,16 +3320,16 @@ class LeoServer:
             'isearch-forward-regexp',
             'isearch-with-present-options',
 
-            #'replace',
-            #'replace-all',
+            # 'replace',
+            # 'replace-all',
             'replace-current-character',
-            #'replace-then-find',
+            # 'replace-then-find',
 
             're-search-backward',
             're-search-forward',
 
-            #'search-backward',
-            #'search-forward',
+            # 'search-backward',
+            # 'search-forward',
             'search-return-to-origin',
 
             'set-find-everywhere',
@@ -3338,18 +3338,18 @@ class LeoServer:
             'set-replace-string',
             'set-search-string',
 
-            #'show-find-options',
+            # 'show-find-options',
 
-            #'start-search',
+            # 'start-search',
 
             'toggle-find-collapses-nodes',
-            #'toggle-find-ignore-case-option',
-            #'toggle-find-in-body-option',
-            #'toggle-find-in-headline-option',
-            #'toggle-find-mark-changes-option',
-            #'toggle-find-mark-finds-option',
-            #'toggle-find-regex-option',
-            #'toggle-find-word-option',
+            # 'toggle-find-ignore-case-option',
+            # 'toggle-find-in-body-option',
+            # 'toggle-find-in-headline-option',
+            # 'toggle-find-mark-changes-option',
+            # 'toggle-find-mark-finds-option',
+            # 'toggle-find-regex-option',
+            # 'toggle-find-word-option',
             'toggle-find-wrap-around-option',
 
             'word-search-backward',
@@ -3432,9 +3432,9 @@ class LeoServer:
             'clear-extend-mode',
 
             # Outline... (Commented off by Félix, Should work)
-            #'contract-or-go-left',
-            #'contract-node',
-            #'contract-parent',
+            # 'contract-or-go-left',
+            # 'contract-node',
+            # 'contract-parent',
 
             # Scrolling...
             'scroll-down-half-page',
@@ -3463,7 +3463,7 @@ class LeoServer:
             'help-for-highlight-current-line',
             'help-for-right-margin-guide',
 
-            #'find-tab-open',
+            # 'find-tab-open',
 
             'hide-body-dock',
             'hide-body-pane',
@@ -3605,8 +3605,8 @@ class LeoServer:
             'find-quick-test-failures',
             'find-quick-timeline',
 
-            #'goto-next-history-node',
-            #'goto-prev-history-node',
+            # 'goto-next-history-node',
+            # 'goto-prev-history-node',
 
             'preview',
             'preview-body',
@@ -3633,7 +3633,7 @@ class LeoServer:
             'spell-tab-hide',
             'spell-tab-open',
 
-            #'tag-children',
+            # 'tag-children',
 
             'todo-children-todo',
             'todo-dec-pri',
@@ -3947,22 +3947,22 @@ class LeoServer:
 
             'unmark-all',
             'unmark-first-parents',
-            #'clean-main-spell-dict',
-            #'clean-persistence',
-            #'clean-recent-files',
-            #'clean-spellpyx',
-            #'clean-user-spell-dict',
+            # 'clean-main-spell-dict',
+            # 'clean-persistence',
+            # 'clean-recent-files',
+            # 'clean-spellpyx',
+            # 'clean-user-spell-dict',
 
             'clear-all-caches',
             'clear-all-hoists',
             'clear-all-uas',
             'clear-cache',
             'clear-node-uas',
-            #'clear-recent-files',
+            # 'clear-recent-files',
 
-            #'delete-first-icon', # ? maybe move to bad commands?
-            #'delete-last-icon', # ? maybe move to bad commands?
-            #'delete-node-icons', # ? maybe move to bad commands?
+            # 'delete-first-icon', # ? maybe move to bad commands?
+            # 'delete-last-icon', # ? maybe move to bad commands?
+            # 'delete-node-icons', # ? maybe move to bad commands?
 
             'dump-caches',
             'dump-clone-parents',
@@ -3970,7 +3970,7 @@ class LeoServer:
             'dump-node',
             'dump-outline',
 
-            #'insert-icon', # ? maybe move to bad commands?
+            # 'insert-icon', # ? maybe move to bad commands?
 
             'set-ua',
 
@@ -4003,13 +4003,13 @@ class LeoServer:
             # Save Files.
             'file-save',
             'file-save-as',
-            #'file-save-by-name',
+            # 'file-save-by-name',
             'file-save-to',
             'save',
             'save-as',
             'save-file',
             'save-file-as',
-            #'save-file-by-name',
+            # 'save-file-by-name',
             'save-file-to',
             'save-to',
 
@@ -4021,7 +4021,7 @@ class LeoServer:
             'write-dirty-at-file-nodes',
             'write-dirty-at-shadow-nodes',
             'write-edited-recent-files',
-            #'write-file-from-node',
+            # 'write-file-from-node',
             'write-missing-at-file-nodes',
             'write-outline-only',
 
@@ -4036,8 +4036,8 @@ class LeoServer:
 
             'clone-to-at-spot',
 
-            #'edit-setting',
-            #'edit-shortcut',
+            # 'edit-setting',
+            # 'edit-shortcut',
 
             'execute-pytest',
             'execute-script',
@@ -4046,7 +4046,7 @@ class LeoServer:
 
             'goto-any-clone',
             'goto-global-line',
-            #'goto-line',
+            # 'goto-line',
             'git-diff', 'gd',
 
             'log-kill-listener', 'kill-log-listener',
@@ -4054,7 +4054,7 @@ class LeoServer:
 
             'make-stub-files',
 
-            #'pdb',
+            # 'pdb',
 
             'redo',
             'rst3',
@@ -4068,17 +4068,17 @@ class LeoServer:
 
             'undo',
 
-            #'xdb',
+            # 'xdb',
 
             # Beautify, blacken, fstringify...
             'beautify-files',
             'beautify-files-diff',
             'blacken-files',
             'blacken-files-diff',
-            #'diff-and-open-leo-files',
+            # 'diff-and-open-leo-files',
             'diff-beautify-files',
             'diff-fstringify-files',
-            #'diff-leo-files',
+            # 'diff-leo-files',
             'diff-marked-nodes',
             'fstringify-files',
             'fstringify-files-diff',
@@ -4097,24 +4097,24 @@ class LeoServer:
             'check-derived-file',
             'check-outline',
             'code-to-rst',
-            #'compare-two-leo-files',
+            # 'compare-two-leo-files',
             'convert-all-blanks',
             'convert-all-tabs',
             'count-children',
             'count-pages',
             # 'count-region',
 
-            #'desktop-integration-leo',
+            # 'desktop-integration-leo',
 
-            #'edit-recent-files',
-            #'exit-leo',
+            # 'edit-recent-files',
+            # 'exit-leo',
 
-            #'file-compare-two-leo-files',
+            # 'file-compare-two-leo-files',
             'find-def',
             'find-long-lines',
             'find-missing-docstrings',
             'flake8-files',
-            #'flatten-outline',
+            # 'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
 
@@ -4124,31 +4124,31 @@ class LeoServer:
             'gc-dump-objects-verbose',
             'gc-show-summary',
 
-            #'help',  # To do.
-            #'help-for-abbreviations',
-            #'help-for-autocompletion',
-            #'help-for-bindings',
-            #'help-for-command',
-            #'help-for-creating-external-files',
-            #'help-for-debugging-commands',
-            #'help-for-drag-and-drop',
-            #'help-for-dynamic-abbreviations',
-            #'help-for-find-commands',
-            #'help-for-keystroke',
-            #'help-for-minibuffer',
-            #'help-for-python',
-            #'help-for-regular-expressions',
-            #'help-for-scripting',
-            #'help-for-settings',
+            # 'help',  # To do.
+            # 'help-for-abbreviations',
+            # 'help-for-autocompletion',
+            # 'help-for-bindings',
+            # 'help-for-command',
+            # 'help-for-creating-external-files',
+            # 'help-for-debugging-commands',
+            # 'help-for-drag-and-drop',
+            # 'help-for-dynamic-abbreviations',
+            # 'help-for-find-commands',
+            # 'help-for-keystroke',
+            # 'help-for-minibuffer',
+            # 'help-for-python',
+            # 'help-for-regular-expressions',
+            # 'help-for-scripting',
+            # 'help-for-settings',
 
             'insert-body-time',  # ?
             'insert-headline-time',
-            #'insert-jupyter-toc',
-            #'insert-markdown-toc',
+            # 'insert-jupyter-toc',
+            # 'insert-markdown-toc',
 
             'find-var',
 
-            #'join-leo-irc',
+            # 'join-leo-irc',
             'join-node-above',
             'join-node-below',
             'join-selection-to-node-below',
@@ -4165,42 +4165,42 @@ class LeoServer:
             'pandoc-with-preview',
             'paste-as-template',
 
-            #'print-body',
-            #'print-cmd-docstrings',
-            #'print-expanded-body',
-            #'print-expanded-html',
-            #'print-html',
-            #'print-marked-bodies',
-            #'print-marked-html',
-            #'print-marked-nodes',
-            #'print-node',
-            #'print-sep',
-            #'print-tree-bodies',
-            #'print-tree-html',
-            #'print-tree-nodes',
-            #'print-window-state',
+            # 'print-body',
+            # 'print-cmd-docstrings',
+            # 'print-expanded-body',
+            # 'print-expanded-html',
+            # 'print-html',
+            # 'print-marked-bodies',
+            # 'print-marked-html',
+            # 'print-marked-nodes',
+            # 'print-node',
+            # 'print-sep',
+            # 'print-tree-bodies',
+            # 'print-tree-html',
+            # 'print-tree-nodes',
+            # 'print-window-state',
 
             'pyflakes',
             'pylint',
             'pylint-kill',
             'python-to-coffeescript',
 
-            #'quit-leo',
+            # 'quit-leo',
 
-            #'reformat-body',
-            #'reformat-paragraph',
+            # 'reformat-body',
+            # 'reformat-paragraph',
             'refresh-from-disk',
             'reload-settings',
-            #'reload-style-sheets',
+            # 'reload-style-sheets',
             'revert',
 
-            #'save-buffers-kill-leo',
-            #'screen-capture-5sec',
-            #'screen-capture-now',
+            # 'save-buffers-kill-leo',
+            # 'screen-capture-5sec',
+            # 'screen-capture-now',
             'script-button',  # ?
-            #'set-reference-file',
-            #'show-style-sheet',
-            #'sort-recent-files',
+            # 'set-reference-file',
+            # 'show-style-sheet',
+            # 'sort-recent-files',
             'sphinx',
             'sphinx-with-preview',
             'style-reload',  # ?
@@ -4209,7 +4209,7 @@ class LeoServer:
             'untangle-all',
             'untangle-marked',
 
-            #'view-lossage',  # ?
+            # 'view-lossage',  # ?
 
             # Dubious commands (to do)...
             'act-on-node',
@@ -4220,18 +4220,18 @@ class LeoServer:
             'cffm',
             'cft',
 
-            #'buffer-append-to',
-            #'buffer-copy',
-            #'buffer-insert',
-            #'buffer-kill',
-            #'buffer-prepend-to',
-            #'buffer-switch-to',
-            #'buffers-list',
-            #'buffers-list-alphabetically',
+            # 'buffer-append-to',
+            # 'buffer-copy',
+            # 'buffer-insert',
+            # 'buffer-kill',
+            # 'buffer-prepend-to',
+            # 'buffer-switch-to',
+            # 'buffers-list',
+            # 'buffers-list-alphabetically',
 
             'chapter-back',
             'chapter-next',
-            #'chapter-select', #
+            # 'chapter-select', #
             'chapter-select-main'
         ]
         return good_list
@@ -4657,7 +4657,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no c.p")
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p: Position, includeChildren: bool=False) -> Dict:
+    def _get_position_d(self, p: Position, includeChildren: bool = False) -> Dict:
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4719,7 +4719,7 @@ class LeoServer:
         except(TypeError, OverflowError):
             return False
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package: Package=None) -> str:
+    def _make_minimal_response(self, package: Package = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4744,7 +4744,7 @@ class LeoServer:
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package: Package=None) -> str:
+    def _make_response(self, package: Package = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4839,7 +4839,7 @@ class LeoServer:
                 return p
         return None
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package: Package, toAll: bool=False) -> None:
+    def _send_async_output(self, package: Package, toAll: bool = False) -> None:
         """
         Send data asynchronously to the client
         """
@@ -4854,7 +4854,7 @@ class LeoServer:
     #@+node:felix.20210621233316.89: *5* server._async_output
     async def _async_output(self,
         json: str,
-        toAll: bool=False,
+        toAll: bool = False,
     ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
@@ -4950,12 +4950,12 @@ def main() -> None:  # pragma: no cover (tested in client)
     def general_yes_no_dialog(
         c: Cmdr,
         title: str,  # Not used.
-        message: str=None,  # Must exist.
-        yesMessage: str="&Yes",  # Not used.
-        noMessage: str="&No",  # Not used.
-        yesToAllMessage: str=None,  # Not used.
-        defaultButton: str="Yes",  # Not used
-        cancelMessage: str=None,  # Not used.
+        message: str = None,  # Must exist.
+        yesMessage: str = "&Yes",  # Not used.
+        noMessage: str = "&No",  # Not used.
+        yesToAllMessage: str = None,  # Not used.
+        defaultButton: str = "Yes",  # Not used
+        cancelMessage: str = None,  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -4990,14 +4990,14 @@ def main() -> None:  # pragma: no cover (tested in client)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
             #@+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event: Event=None) -> None:
+            def noButton(event: Event = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event: Event=None) -> None:
+            def yesButton(event: Event = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -5157,7 +5157,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any=None) -> None:
+    async def notify_clients(action: str, excludedConn: Any = None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened

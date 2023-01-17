@@ -33,8 +33,8 @@ class ProcessData:
         c: Cmdr,
         kind: str,
         fn: str,
-        link_pattern: Optional[Pattern]=None,
-        link_root: Optional[Position]=None,
+        link_pattern: Optional[Pattern] = None,
+        link_root: Optional[Position] = None,
     ) -> None:
         """Ctor for the ProcessData class."""
         self.c = c
@@ -146,7 +146,7 @@ class BackgroundProcessManager:
         self.timer.stop()
         self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
-    def kill(self, kind: str=None) -> None:
+    def kill(self, kind: str = None) -> None:
         """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
@@ -246,9 +246,9 @@ class BackgroundProcessManager:
 
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
     def start_process(self, c: Cmdr, command: str, kind: str,
-        fn: str=None,
-        link_pattern: Pattern=None,  # None, string, or re.pattern.
-        link_root: Position=None,
+        fn: str = None,
+        link_pattern: Pattern = None,  # None, string, or re.pattern.
+        link_root: Position = None,
     ) -> None:
         """
         Start or queue a process described by command and fn.
@@ -283,7 +283,7 @@ class BackgroundProcessManager:
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-            def callback(data: Any=data, kind: str=kind) -> None:
+            def callback(data: Any = data, kind: str = kind) -> None:
                 """This is called when a process ends."""
                 self.pid = open_process(data)
                 start_timer()

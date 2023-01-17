@@ -945,10 +945,6 @@ class graphcanvasController:
         if self.lastNodeItem == nodeItem:
             return
 
-        #X node = self.node[nodeItem]
-        #X node.u['_bklnk']['x'] = nodeItem.x()
-        #X node.u['_bklnk']['y'] = nodeItem.y()
-
         # text only node needs pen used to indicate selection removed
         lastNode = self.lastNodeItem
         if (lastNode and

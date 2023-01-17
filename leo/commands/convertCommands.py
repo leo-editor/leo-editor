@@ -458,7 +458,7 @@ def convert_at_test_nodes(
     c: Cmdr,
     converter: Any,
     root: Position,
-    copy_tree: bool=False,
+    copy_tree: bool = False,
 ) -> None:  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
@@ -987,7 +987,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if kk > k:
                 headString = ''.join(head[k:kk])
                 # C keywords that might be followed by '{'
-                # print "headString:", headString
                 if headString in [
                     "class", "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(lines, i)
@@ -1073,7 +1072,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 del result[-1]
             result.append(')')
             result.append(':')
-            # print "new args:", ''.join(result)
             return result
         #@+node:ekr.20150514063305.171: *7* massageFunctionBody & helpers
         def massageFunctionBody(self, body: List[str]) -> List[str]:
@@ -1149,10 +1147,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif body[i].isalpha():
                     j = self.skip_past_word(body, i)
                     word = ''.join(body[i:j])
-                    # print "looking up:", word
                     if word in ivars:
                         # replace word by self.word
-                        # print "replacing", word, " by self.", word
                         word = "self." + word
                         word = list(word)  # type:ignore
                         body[i:j] = word
@@ -1183,7 +1179,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             i = self.skip_ws(body, i)
                             if self.match(body, i, ')'):
                                 i += 1
-                                # print "removing cast:", ''.join(body[start:i])
                                 del body[start:i]
                                 i = start
                 else:
@@ -1209,7 +1204,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.skip_ws(body, j)
                         while self.match(body, j, '*'):
                             j += 1
-                        # print "Deleting type name:", ''.join(body[i:j])
                         j = self.skip_ws(body, j)
                         del body[i:j]
                     else:
@@ -1514,7 +1508,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str=None) -> None:
+        def __init__(self, c: Cmdr, alias: str = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2485,7 +2479,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if kk > k:
                     headString = ''.join(head[k:kk])
                     # C keywords that might be followed by '{'
-                    # print "headString:", headString
                     if headString in ["do", "for", "if", "struct", "switch", "while"]:
                         return 1 + self.skip_to_matching_bracket(lines, i)
                 args = lines[open_paren : close + 1]

@@ -1390,7 +1390,7 @@ def decorate_window(w):
 #@+node:TomP.20191215195433.9: *3* vr3.init
 def init():
     """Return True if the plugin has loaded successfully."""
-    #global got_docutils
+    # global got_docutils
     if g.app.gui.guiName() != 'qt':
         return False  # #1248.
     # if g.app.gui.guiName()
@@ -1591,11 +1591,9 @@ def pause_play_movie(event):
     """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
-
     vp = vr3.vp
     if not vp:
         return
-    #g.es('===', vp.state())
     _state = vp.state()
     f = vp.pause if _state == 1 else vp.play
     f()
@@ -1886,7 +1884,7 @@ def vr3_plot_2d(event):
         # will be used. "stylename" has priority
         # over "stylefile".
         stylename = ggplot
-        #stylefile = styles.mpl
+        # stylefile = styles.mpl
 
     The section may be placed anywhere in the node.
 
@@ -2014,7 +2012,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.c = c
         # Create the widget.
         QtWidgets.QWidget.__init__(self)  # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
-        #super().__init__(parent)
+        # super().__init__(parent)
 
         self.create_pane(parent)
         # Set the ivars.
@@ -2087,7 +2085,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'rst': pc.update_rst,
             'svg': pc.update_svg,
             'text': pc.update_text,
-            #'url': pc.update_url,
+            # 'url': pc.update_url,
         }
 
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
@@ -3012,10 +3010,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
         assert pc.w
-
-        #if s:
         pc.show()
-
         self.rst_html = ''
 
         ascdoc = self.process_asciidoc_nodes(node_list)
@@ -3926,7 +3921,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             args['report_level'] = RST_NO_WARNINGS
 
         # Suppress RsT warnings
-        #args['report_level'] = 5
+        # args['report_level'] = 5
 
         if self.math_output:
             if self.mathjax_url:
@@ -4053,8 +4048,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _quotes_type = None
         _in_skipblock = False
 
-        #c = self.c
-        #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        # c = self.c
+        # environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
             #@+<< omit at-others >>
@@ -4373,8 +4368,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 w.show()
     #@+node:TomP.20191215195433.78: *4* vr3.update_url
     def update_url(self, s, keywords):
-        #VrC.update_url(self, s, keywords)
-
         pc = self
         c, p = self.c, self.c.p
         colorizer = c.frame.body.colorizer
@@ -4491,8 +4484,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.83: *5* vr3.get_url
     def get_url(self, s, tag):
-        #VrC.get_url(self, s, tag)
-
         p = self.c.p
         url = s or p.h[len(tag) :]
         url = url.strip()
@@ -4601,8 +4592,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
-        #VrC.deactivate(self)
-
         pc = self
         # Never disable the idle-time hook: other plugins may need it.
         g.unregisterHandler('select2', pc.update)
@@ -4623,7 +4612,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
     def lock(self):
         """Lock the vr3 pane to the current node ."""
-        #g.note('rendering pane locked')
         action = self.action_lock_to_tree
         action.setChecked(True)
         self.lock_to_tree = True
@@ -4631,7 +4619,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def unlock(self):
         """Unlock the vr3 pane."""
-        #g.note('rendering pane unlocked')
         action = self.action_lock_to_tree
         action.setChecked(False)
         self.lock_to_tree = False

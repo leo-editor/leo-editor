@@ -131,7 +131,7 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: List[str]=None) -> None:
+    def __init__(self, words: List[str] = None) -> None:
         self.added_words: Set[str] = set()
         self.ignored_words: Set[str] = set()
         self.words: Set[str] = set() if words is None else set(words)
@@ -259,7 +259,7 @@ class DefaultWrapper(BaseSpellWrapper):
             g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
     #@+node:ekr.20180207110718.1: *3* default.save_dict
-    def save_dict(self, kind: str, fn: str, trace: bool=False) -> None:
+    def save_dict(self, kind: str, fn: str, trace: bool = False) -> None:
         """
         Save the dictionary whose name is given, alphabetizing the file.
         Write added words to the file if kind is 'user'.
@@ -279,11 +279,11 @@ class DefaultWrapper(BaseSpellWrapper):
         f.write(g.toEncodedString(s))
         f.close()
     #@+node:ekr.20180211104628.1: *3* default.save_main/user_dict
-    def save_main_dict(self, trace: bool=False) -> None:
+    def save_main_dict(self, trace: bool = False) -> None:
 
         self.save_dict('main', self.main_fn, trace=trace)
 
-    def save_user_dict(self, trace: bool=False) -> None:
+    def save_user_dict(self, trace: bool = False) -> None:
 
         self.save_dict('user', self.user_fn, trace=trace)
     #@+node:ekr.20180209141933.1: *3* default.show_info
@@ -447,7 +447,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         self.page_width = c.config.getInt("page-width")  # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab(self, event: Event=None) -> None:
+    def openSpellTab(self, event: Event = None) -> None:
         """Open the Spell Checker tab in the log pane."""
         if g.unitTesting:
             return
@@ -471,7 +471,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.485: *3* commands...(SpellCommandsClass)
     #@+node:ekr.20171205043931.1: *4* add
     @cmd('spell-add')
-    def add(self, event: Event=None) -> None:
+    def add(self, event: Event = None) -> None:
         """
         Simulate pressing the 'add' button in the Spell tab.
 
@@ -486,7 +486,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.486: *4* find
     @cmd('spell-find')
-    def find(self, event: Event=None) -> None:
+    def find(self, event: Event = None) -> None:
         """
         Simulate pressing the 'Find' button in the Spell tab.
 
@@ -501,7 +501,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
-    def change(self, event: Event=None) -> None:
+    def change(self, event: Event = None) -> None:
         """Simulate pressing the 'Change' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -510,7 +510,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
-    def changeThenFind(self, event: Event=None) -> None:
+    def changeThenFind(self, event: Event = None) -> None:
         """Simulate pressing the 'Change, Find' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -520,14 +520,14 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
-    def hide(self, event: Event=None) -> None:
+    def hide(self, event: Event = None) -> None:
         """Hide the Spell tab."""
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
-    def ignore(self, event: Event=None) -> None:
+    def ignore(self, event: Event = None) -> None:
         """Simulate pressing the 'Ignore' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -536,7 +536,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.491: *4* focusToSpell
     @cmd('focus-to-spell-tab')
-    def focusToSpell(self, event: Event=None) -> None:
+    def focusToSpell(self, event: Event = None) -> None:
         """Put focus in the spell tab."""
         self.openSpellTab()  # Makes Spell tab visible.
         # This is not a great idea. There is no indication of focus.
@@ -704,7 +704,7 @@ class SpellTabHandler:
             self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
     #@+node:ekr.20150514063305.503: *4* add (spellTab)
-    def add(self, event: Event=None) -> None:
+    def add(self, event: Event = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -712,7 +712,7 @@ class SpellTabHandler:
                 self.spellController.add(w)
                 self.tab.onFindButton()
     #@+node:ekr.20150514063305.504: *4* change (spellTab)
-    def change(self, event: Event=None) -> bool:
+    def change(self, event: Event = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
@@ -744,7 +744,7 @@ class SpellTabHandler:
         c.bodyWantsFocus()
         return False
     #@+node:ekr.20150514063305.505: *4* find & helper
-    def find(self, event: Event=None) -> None:
+    def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
         if not self.loaded:
             return
@@ -815,10 +815,10 @@ class SpellTabHandler:
         else:
             c.selectPosition(p)
     #@+node:ekr.20150514063305.508: *4* hide
-    def hide(self, event: Event=None) -> None:
+    def hide(self, event: Event = None) -> None:
         self.c.frame.log.selectTab('Log')
     #@+node:ekr.20150514063305.509: *4* ignore
-    def ignore(self, event: Event=None) -> None:
+    def ignore(self, event: Event = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord
@@ -828,7 +828,7 @@ class SpellTabHandler:
     #@-others
 #@+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
-def show_spell_info(event: Event=None) -> None:
+def show_spell_info(event: Event = None) -> None:
     c = event.get('c')
     if c:
         c.spellCommands.handler.spellController.show_info()

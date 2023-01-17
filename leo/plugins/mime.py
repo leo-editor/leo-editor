@@ -117,8 +117,8 @@ def open_mimetype(tag, keywords, val=None):
                 mime_cmd += ' %s'
             open_func = exec_string_cmd(mime_cmd)
 
-        #no special handler function specified (unknown platform),
-        #try mailcap/mimetype entries explicitly
+        # no special handler function specified (unknown platform),
+        # try mailcap/mimetype entries explicitly
         if open_func is None:
             (ftype, encoding) = mimetypes.guess_type(fname)
             if ftype:
@@ -170,9 +170,9 @@ _mime_open_cmd = ''
 
 # default methods of opening files
 if sys.platform == 'linux2':
-    #detect KDE or Gnome to use their file associations
+    # detect KDE or Gnome to use their file associations
     if os.environ.get('KDE_FULL_SESSION'):
-        #_mime_open_cmd = 'kfmclient exec'
+        # _mime_open_cmd = 'kfmclient exec'
         open_func = exec_string_cmd('kfmclient exec')
 
     elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):

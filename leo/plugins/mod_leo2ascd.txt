@@ -2323,7 +2323,7 @@ have OpenTreeInXEmacs visibly traverse the tree.
 
 def OpenTreeInXEmacs (c):
     from leo.core import leoCommands
-    #XEmacsCommand = "/usr/bin/gnuclient -q "
+    # XEmacsCommand = "/usr/bin/gnuclient -q "
     XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
     vnode = c.currentVnode() # get the current vnode.
     stopHere = vnode.nodeAfterTree()

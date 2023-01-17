@@ -194,7 +194,6 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         """
         p = self.c.vnode2position(v)
         DBG("after body key")
-        #X if self.update:
         self.update_position(p)
     #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):

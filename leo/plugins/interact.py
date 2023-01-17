@@ -152,7 +152,6 @@ class InteractPSQL(Interact):
             try:
                 dat = self.leftover + proc.read_nonblocking(size=10240, timeout=1)
                 self.leftover = ''
-                #X print dat
                 if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n', 1)
@@ -165,16 +164,10 @@ class InteractPSQL(Interact):
             except pexpect.TIMEOUT:
                 timeout = True
 
-            #X if self.leftover == self.prompt:
-            #X     timeout = True
-
             if dat:
                 for d in dat:
                     cnt += 1
-                    #X if d == self.prompt:
-                    #X     timeout = True
-                    #X else:
-                    yield d.replace(self.prompt, '# ')  # '%4d: %s' % (cnt,d)
+                    yield d.replace(self.prompt, '# ')
     #@-others
 #@+node:tbrown.20090603104805.4953: ** class InteractBASH
 class InteractBASH(Interact):
@@ -258,7 +251,6 @@ class InteractBASH(Interact):
             try:
                 dat = self.leftover + proc.read_nonblocking(size=10240, timeout=1)
                 self.leftover = ''
-                #X print dat
                 if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n', 1)
@@ -271,15 +263,9 @@ class InteractBASH(Interact):
             except pexpect.TIMEOUT:
                 timeout = True
 
-            #X if self.leftover == self.prompt:
-            #X     timeout = True
-
             if dat:
                 for d in dat:
                     cnt += 1
-                    #X if d == self.prompt:
-                    #X     timeout = True
-                    #X else:
                     yield d.replace(self.prompt, '# ')  # '%4d: %s' % (cnt,d)
 
     #@+node:tbrown.20090603104805.4960: *3* getPath
@@ -306,14 +292,6 @@ class InteractController:
     def __init__(self, c):
 
         self.c = c
-
-        #X table = (
-        #X     ("Add To First Child Button",None,self.addToFirstChildButton),
-        #X     ("Add To Last Child Button",None,self.addToLastChildButton),
-        #X )
-
-        #X  c.frame.menu.createMenuItemsFromTable('Outline', table)
-
         self.addButton(InteractPSQL)
         self.addButton(InteractBASH)
     #@+node:tbrown.20090603104805.4963: *3* addToFirstChildButton

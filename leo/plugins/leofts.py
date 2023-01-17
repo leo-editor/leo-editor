@@ -120,7 +120,6 @@ class LeoFts:
         writer = self.ix.writer()
         doc = c.mFileName
         for p in c.all_unique_positions():
-            #print "pushing",p
             if p.hasParent():
                 par = p.parent().get_UNL()
             else:
@@ -153,7 +152,6 @@ class LeoFts:
         res = []
         g._gnxcache.update_new_cs()
         with self.ix.searcher() as searcher:
-            #print (list(searcher.lexicon("b")))
             query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
             results = searcher.search(query, limit=limit)
             print(results)

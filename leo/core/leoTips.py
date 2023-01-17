@@ -54,7 +54,7 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int=0, tags: List[str]=None, text: str='', title: str='') -> None:
+    def __init__(self, n: int = 0, tags: List[str] = None, text: str = '', title: str = '') -> None:
         self.n = n  # Not used.
         self.tags: List[str] = tags or []  # Not used.
         self.title = title.strip()

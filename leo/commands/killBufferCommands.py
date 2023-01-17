@@ -101,7 +101,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
-    def clearKillRing(self, event: Event=None) -> None:
+    def clearKillRing(self, event: Event = None) -> None:
         """Clear the kill ring."""
         g.app.globalKillbuffer = []
     #@+node:ekr.20150514063305.415: *3* getClipboard
@@ -151,7 +151,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def iterateKillBuffer(self) -> KillBufferIterClass:
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* ec.killHelper
-    def killHelper(self, event: Event, frm: int, to: int, w: Wrapper, undoType: str=None) -> None:
+    def killHelper(self, event: Event, frm: int, to: int, w: Wrapper, undoType: str = None) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
         """
@@ -175,7 +175,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
         g.app.gui.set_focus(c, w)  # 2607
     #@+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
-    def killParagraphHelper(self, event: Event, frm: Any, to: Any, undoType: str=None) -> None:
+    def killParagraphHelper(self, event: Event, frm: Any, to: Any, undoType: str = None) -> None:
         """A helper method for kill-paragraph commands."""
         w = self.editWidget(event)
         if not w:
@@ -281,7 +281,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
-    def killWs(self, event: Event, undoType: str='kill-ws') -> None:
+    def killWs(self, event: Event, undoType: str = 'kill-ws') -> None:
         """Kill whitespace."""
         ws = ''
         w = self.editWidget(event)
@@ -307,12 +307,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
     @cmd('yank')
-    def yank(self, event: Event=None) -> None:
+    def yank(self, event: Event = None) -> None:
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
 
     @cmd('yank-pop')
-    def yankPop(self, event: Event=None) -> None:
+    def yankPop(self, event: Event = None) -> None:
         """Insert the first entry of the kill ring."""
         self.yankHelper(event, pop=True)
 

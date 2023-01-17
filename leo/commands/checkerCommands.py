@@ -168,7 +168,10 @@ def check_nodes(event: Event) -> None:
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event: Event) -> None:
-    """Report long lines in the log, with clickable links."""
+    """
+    Report long lines in c.p's tree.
+    Generate clickable links in the log.
+    """
     c = event and event.get('c')
     if not c:
         return
@@ -191,7 +194,7 @@ def find_long_lines(event: Event) -> None:
     log = c.frame.log
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
-    for p in c.all_unique_positions():
+    for p in c.p.self_and_subtree():
         if in_nopylint(p):
             continue
         root = get_root(p)
@@ -490,7 +493,7 @@ class PyflakesCommand:
 
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n: int=0, roots: List[Position]=None) -> None:
+        def __init__(self, fn_n: int = 0, roots: List[Position] = None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
@@ -580,7 +583,7 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str=None) -> Optional[Tuple[str, Position]]:
+    def run(self, last_path: str = None) -> Optional[Tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not lint:

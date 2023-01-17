@@ -513,7 +513,7 @@ class LeoImportCommands:
                     theFile.write(nl)
         theFile.close()
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: List[str], toString: bool=False) -> Optional[str]:
+    def removeSentinelsCommand(self, paths: List[str], toString: bool = False) -> Optional[str]:
         c = self.c
         self.setEncoding()
         for fileName in paths:
@@ -630,7 +630,7 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, parent: Position, ext: str=None, s: str=None) -> Position:
+    def createOutline(self, parent: Position, ext: str = None, s: str = None) -> Position:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -772,9 +772,9 @@ class LeoImportCommands:
         c.redraw()
     #@+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(self,
-        parent: Position=None,
-        paths: List[str]=None,
-        command: str='Import',
+        parent: Position = None,
+        paths: List[str] = None,
+        command: str = 'Import',
     ) -> Optional[Position]:
         """
         Import one or more external files.
@@ -816,11 +816,11 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
         self,
-        files: List[str]=None,
-        parent: Position=None,
-        shortFn: bool=False,
-        treeType: str=None,
-        verbose: bool=True,  # Legacy value.
+        files: List[str] = None,
+        parent: Position = None,
+        shortFn: bool = False,
+        treeType: str = None,
+        verbose: bool = True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -1106,7 +1106,7 @@ class LeoImportCommands:
     # We canonicalize strings before looking them up,
     # but strings are entered in the form they are first encountered.
 
-    def cstCanonicalize(self, s: str, lower: bool=True) -> str:
+    def cstCanonicalize(self, s: str, lower: bool = True) -> str:
         if lower:
             s = s.lower()
         s = s.replace("\t", " ").replace("\r", "")
@@ -1323,7 +1323,7 @@ class LeoImportCommands:
         s = s.rstrip()
         return s
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
-    def setEncoding(self, p: Position=None, default: str=None) -> None:
+    def setEncoding(self, p: Position = None, default: str = None) -> None:
         c = self.c
         encoding = g.getEncodingAt(p or c.p) or default
         if encoding and g.isValidEncoding(encoding):
@@ -1654,14 +1654,14 @@ class RecursiveImportController:
         self,
         c: Cmdr,
         kind: str,
-        add_context: bool=None,  # Override setting only if True/False
-        add_file_context: bool=None,  # Override setting only if True/False
-        add_path: bool=True,
-        recursive: bool=True,
-        safe_at_file: bool=True,
-        theTypes: List[str]=None,
-        ignore_pattern: re.Pattern=None,
-        verbose: bool=True,  # legacy value.
+        add_context: bool = None,  # Override setting only if True/False
+        add_file_context: bool = None,  # Override setting only if True/False
+        add_path: bool = True,
+        recursive: bool = True,
+        safe_at_file: bool = True,
+        theTypes: List[str] = None,
+        ignore_pattern: re.Pattern = None,
+        verbose: bool = True,  # legacy value.
     ) -> None:
         """Ctor for RecursiveImportController class."""
         self.c = c
@@ -1904,7 +1904,7 @@ class TabImporter:
     leading tabs or blanks (but not both).
     """
 
-    def __init__(self, c: Cmdr, separate: bool=True) -> None:
+    def __init__(self, c: Cmdr, separate: bool = True) -> None:
         """Ctor for the TabImporter class."""
         self.c = c
         self.root: Position = None
@@ -1913,7 +1913,7 @@ class TabImporter:
 
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
-    def check(self, lines: List[str], warn: bool=True) -> bool:
+    def check(self, lines: List[str], warn: bool = True) -> bool:
         """Return False and warn if lines contains mixed leading tabs/blanks."""
         blanks, tabs = 0, 0
         for s in lines:
@@ -1983,7 +1983,7 @@ class TabImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20161006071801.5: *3* tabbed.scan
-    def scan(self, s1: str, fn: str=None, root: Position=None) -> Position:
+    def scan(self, s1: str, fn: str = None, root: Position = None) -> Position:
         """Create the outline corresponding to s1."""
         c = self.c
         # Self.root can be None if we are called from a script or unit test.

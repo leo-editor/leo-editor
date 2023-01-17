@@ -654,7 +654,6 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
 
         self.tb = self.addToolBar("toolbar")
         self.tb.setObjectName("toolbar")
-        #self.addToolBar(Qt.BottomToolBarArea, self.tb)
 
         def do_tile():
             self.mdi.setViewMode(QMdiArea.SubWindowView)

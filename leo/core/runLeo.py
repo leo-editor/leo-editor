@@ -81,7 +81,7 @@ def profile_leo():
 
 prof = profile_leo
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
-def run(fileName=None, pymacs: bool=None, *args, **keywords):
+def run(fileName=None, pymacs: bool = None, *args, **keywords):
     """Initialize and run Leo"""
     # #1403: sys.excepthook doesn't help.
     # sys.excepthook = leo_excepthook

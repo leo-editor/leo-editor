@@ -866,7 +866,7 @@ if QtWidgets:
                 bg = f'#{bg_hex:x}'
 
                 if (params['last_fg'] != fg or params['last_bg'] != bg):
-                    #bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    # bg_color = QColor(bg) if bg else self.assign_bg(fg)
                     hl_color = self.calc_hl(palette)
                     params['last_hl_color'] = hl_color
                     params['last_fg'] = fg
@@ -1122,7 +1122,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         """
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        #width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        # width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if isQt6:
             width = self.fm.boundingRect(str(max(1000, self.highest_line))).width() + self.w_adjust
         else:

@@ -135,7 +135,7 @@ def main() -> None:
         def do_work(self) -> None:
             emit(self.relay, 'work_done', 4.2, animal='otters', _sig_lock=self)
 
-        def check_work(self, num: Any, animal: str='eels') -> None:
+        def check_work(self, num: Any, animal: str = 'eels') -> None:
             if is_locked(self):
                 return
             print(f"{self.name} heard about {num} {animal}")
