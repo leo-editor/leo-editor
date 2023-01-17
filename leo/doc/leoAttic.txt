@@ -2925,6 +2925,9 @@ def do_arguments(self, node: Node) -> ActionList:
         result.append((self.visit, z))
         if i >= n_plain:
             result.extend([
+                # We *could* handle the TOG.equal_sign_spaces hack by
+                # queuing, say, self.wrapped_equal_op instead of self.op.
+                # Details left as an excercise for the reader.
                 (self.op, '='),
                 (self.visit, node.defaults[i - n_plain]),
             ])
@@ -3727,6 +3730,9 @@ def handle_call_arguments(self, node: Node) -> ActionList:
                     (self.arg_helper, z.value),
                 ])
             else:
+                # We *could* handle the TOG.equal_sign_spaces hack by
+                # queuing, say, self.wrapped_equal_op instead of self.op.
+                # Details left as an excercise for the reader.
                 result.extend([
                     (self.arg_helper, z.arg),
                     (self.op, '='),
@@ -4355,10 +4361,8 @@ def test_one_line_pet_peeves(self):
             """f(2 + name)""",
             """f(a)""",
             """f(a.b)""",
-            # Alas, the equal_sign_spaces hack in the TokenOrderGenerator class
-            # does not work in this class.
-            # """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
-            # """f(a=2, *args)""",
+            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+            """f(a=2, *args)""",
             """f(a[1 + 2])""",
             """f({key: 1})""",
             """t = (0,)""",
