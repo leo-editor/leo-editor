@@ -1867,17 +1867,18 @@ class TestOrange(BaseTest):
         table = (
         # Case 0.
         '''\
-    def annotated_f(s: str = None) -> None:
+    def annotated_f(s: str = None, x=None) -> None:
         pass
     ''',
         )
         for i, contents in enumerate(table):
+            ### g.printObj(g.splitLines(textwrap.dedent(contents).rstrip() + '\n'), tag='contents')  ###
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
             if results != expected:  ###
                 g.trace('\nFAIL')
-                if 0:
+                if 1:
                     g.printObj(expected, tag='expected (black)')
                     g.printObj(results, tag='results')
                     assert False
@@ -2345,6 +2346,9 @@ class TestOrange(BaseTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20200110014220.95: *4* TestOrange.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
+        
+        # See https://peps.python.org/pep-0008/#pet-peeves
+        # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_one_line_pet_peeves'
         # Except where noted, all entries are expected values....

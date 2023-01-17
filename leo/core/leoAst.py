@@ -1721,7 +1721,7 @@ class IterativeTokenGenerator:
         if stack:  # pragma: no cover
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
-    #@+node:ekr.20220402095550.3: *5* iterative.create_links (changed)
+    #@+node:ekr.20220402095550.3: *5* iterative.create_links (init all ivars)
     def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
@@ -1737,6 +1737,7 @@ class IterativeTokenGenerator:
                 Created by parse_ast().
         """
         # Init all ivars.
+        self.equal_sign_spaces = True  # For a special case in set_links().
         self.file_name = file_name  # For tests.
         self.node = None  # The node being visited.
         self.tokens = tokens  # The immutable list of input tokens.
@@ -1843,6 +1844,9 @@ class IterativeTokenGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
+            if token.kind == 'op' and token.value == '=':
+                token.equal_sign_spaces = self.equal_sign_spaces
+
     #@+node:ekr.20220402094825.4: *5* iterative.sync_name (aka name)
     def sync_name(self, val: str) -> None:
         aList = val.split('.')
@@ -3434,6 +3438,8 @@ class Orange:
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
+        
+        beautify_file and beautify_file_def call this method.
         """
         # Config overrides
         if max_join_line_length is not None:
@@ -3458,7 +3464,7 @@ class Orange:
         self.tree = tree
         self.add_token('file-start', '')
         self.push_state('file-start')
-        for token in tokens:
+        for i, token in enumerate(tokens):
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
             if self.verbatim:
@@ -3771,27 +3777,32 @@ class Orange:
             self.add_token('op', val)
             self.blank()
     #@+node:ekr.20230115141629.1: *6* orange.do_equal_op
+    # Keys: token.index of '=' token. Values: count of ???s
+    arg_dict: Dict[int, int] = {}
+
+    dump_flag = True
+
     def do_equal_op(self, val: str) -> None:
-
-        ### node = self.token.node
-
+        
         if 0:
-            g.printObj(self.tokens, tag='do_equal_op')
-            dump_tree(self.tokens, self.tree)
-
-        if self.paren_level:
+            token = self.token
+            g.trace(
+                f"token.index: {token.index:2} paren_level: {self.paren_level} "
+                f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
+                # f"{token.node.__class__.__name__}"
+            )
+            # dump_tree(self.tokens, self.tree)
+        if self.token.equal_sign_spaces:
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+        else:
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
             #        However, hen combining an argument annotation with a default value,
             #        *do* use spaces around the = sign
-
-            # Look behind???
             self.clean('blank')
             self.add_token('op-no-blanks', val)
-        else:
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
     #@+node:ekr.20200107165250.24: *5* orange.do_string
     def do_string(self) -> None:
         """Handle a 'string' token."""
@@ -4567,7 +4578,7 @@ class TokenOrderGenerator:
         if stack:  # pragma: no cover
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
-    #@+node:ekr.20191113063144.4: *5* tog.create_links
+    #@+node:ekr.20191113063144.4: *5* tog.create_links (inits all ivars)
     def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
@@ -4583,6 +4594,7 @@ class TokenOrderGenerator:
                 Created by parse_ast().
         """
         # Init all ivars.
+        self.equal_sign_spaces = True  # For a special case in set_links().
         self.file_name = file_name  # For tests.
         self.level = 0  # Python indentation level.
         self.node = None  # The node being visited.
@@ -4682,10 +4694,10 @@ class TokenOrderGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
-            if 0:  # Keep for now.
-                g.printObj(
-                    self.tokens[node.first_i:node.last_i],
-                    tag=f"{node.__class__.__name__:>16}: {node.first_i}:{node.last_i}")
+            # Special case. Inject equal_sign_spaces into '=' tokens.
+            if token.kind == 'op' and token.value == '=':
+                ### g.trace('equal_sign_spaces', self.equal_sign_spaces)
+                token.equal_sign_spaces = self.equal_sign_spaces
     #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
     def sync_name(self, val: str) -> None:
         aList = val.split('.')
@@ -4892,7 +4904,12 @@ class TokenOrderGenerator:
             assert isinstance(z, ast.arg)
             self.visit(z)
             if i >= n_plain:
-                self.op('=')
+                try:
+                    old_equal_sign_spaces = self.equal_sign_spaces
+                    self.equal_sign_spaces = getattr(z, 'annotation', None) is not None
+                    self.op('=')
+                finally:
+                    self.equal_sign_spaces = old_equal_sign_spaces
                 self.visit(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
