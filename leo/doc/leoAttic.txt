@@ -30,539 +30,7 @@ An explanation/discussion
     explains
     provides background and context
 #@+node:ekr.20211014154538.1: ** Abandoned classes (do not delete)
-#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
-class SyntaxSanitizer:
-
-    << SyntaxSanitizer docstring >>
-
-    def __init__(self, c, keep_comments):
-        self.c = c
-        self.keep_comments = keep_comments
-
-    @others
-#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
-r"""
-This class converts section references, @others and Leo directives to
-comments. This allows ast.parse to handle the result.
-
-Within section references, these comments must *usually* be executable:
-    
-BEFORE:
-    if condition:
-        <\< do something >\>
-AFTER:
-    if condition:
-        pass # do something
-        
-Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
-    
-BEFORE:
-    tips = [
-        <\< define tips >\>
-        ]
-
-AFTER:
-    tips = [
-        pass # define tips
-    ]
-    
-This fails because tips = [pass] is a SyntaxError.
-
-The beautify* and black* commands clearly report such failures.
-"""
-#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
-def comment_leo_lines(self, p=None, s0=None):
-    """
-    Replace lines containing Leonine syntax with **special comment lines** of the form:
-        
-        {lws}#{lws}{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    This convention allows uncomment_special_lines to restore these lines.
-    """
-    # Choose a marker that appears nowhere in s.
-    if p:
-        s0 = p.b
-    n = 5
-    while('#'+ ('!'*n)) in s0:
-        n += 1
-    comment = '#' + ('!' * n)
-    # Create a dict of directives.
-    d = {z: True for z in g.globalDirectiveList}
-    # Convert all Leonine lines to special comments.
-    i, lines, result = 0, g.splitLines(s0), []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        s_lstrip = s.lstrip()
-        # Comment out any containing a section reference.
-        j = s.find('<<')
-        k = s.find('>>') if j > -1 else -1
-        if -1 < j < k:
-            result.append(comment+s)
-            # Generate a properly-indented pass line.
-            j2 = g.skip_ws(s, 0)
-            result.append(f'{" "*j2}pass\n')
-        elif s_lstrip.startswith('@'):
-            # Comment out all other Leonine constructs.
-            if self.starts_doc_part(s):
-                # Comment the entire doc part, until @c or @code.
-                result.append(comment+s)
-                i += 1
-                while i < len(lines):
-                    s = lines[i]
-                    result.append(comment+s)
-                    i += 1
-                    if self.ends_doc_part(s):
-                        break
-            else:
-                j = g.skip_ws(s, 0)
-                assert s[j] == '@'
-                j += 1
-                k = g.skip_id(s, j, chars='-')
-                if k > j:
-                    word = s[j : k]
-                    if word == 'others':
-                        # Remember the original @others line.
-                        result.append(comment+s)
-                        # Generate a properly-indented pass line.
-                        result.append(f'{" "*(j-1)}pass\n')
-                    else:
-                        # Comment only Leo directives, not decorators.
-                        result.append(comment+s if word in d else s)
-                else:
-                    result.append(s)
-        elif s_lstrip.startswith('#') and self.keep_comments:
-            # A leading comment.
-            # Bug fix: Preserve lws in comments, too.
-            j2 = g.skip_ws(s, 0)
-            result.append(" "*j2+comment+s)
-        else:
-            # A plain line.
-            result.append(s)
-        if i == progress:
-            i += 1
-    return comment, ''.join(result)
-#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
-def starts_doc_part(self, s):
-    """Return True if s word matches @ or @doc."""
-    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
-
-def ends_doc_part(self, s):
-    """Return True if s word matches @c or @code."""
-    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
-#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
-def uncomment_leo_lines(self, comment, p, s0):
-    """Reverse the effect of comment_leo_lines."""
-    lines = g.splitLines(s0)
-    i, result = 0, []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        i += 1
-        if comment in s:
-            # One or more special lines.
-            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
-        else:
-            # A regular line.
-            result.append(s)
-        assert progress < i
-    return ''.join(result).rstrip() + '\n'
-#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
-def uncomment_special_lines(self, comment, i, lines, p, result, s):
-    """
-    This method restores original lines from the special comment lines
-    created by comment_leo_lines. These lines have the form:
-        
-        {lws}#{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    s is a line containing the comment delim.
-    i points at the *next* line.
-    Handle one or more lines, appending stripped lines to result.
-    """
-    #
-    # Delete the lws before the comment.
-    # This works because the tail contains the original whitespace.
-    assert comment in s
-    s = s.lstrip().replace(comment, '')
-    #
-    # Here, s is the original line.
-    if comment in s:
-        g.trace(f"can not happen: {s!r}")
-        return i
-    if self.starts_doc_part(s):
-        result.append(s)
-        while i < len(lines):
-            s = lines[i].lstrip().replace(comment, '')
-            i += 1
-            result.append(s)
-            if self.ends_doc_part(s):
-                break
-        return i
-    j = s.find('<<')
-    k = s.find('>>') if j > -1 else -1
-    if -1 < j < k or '@others' in s:
-        #
-        # A section reference line or an @others line.
-        # Such lines are followed by a pass line.
-        #
-        # The beautifier may insert blank lines before the pass line.
-        kind = 'section ref' if -1 < j < k else '@others'
-        # Restore the original line, including leading whitespace.
-        result.append(s)
-        # Skip blank lines.
-        while i < len(lines) and not lines[i].strip():
-            i += 1
-        # Skip the pass line.
-        if i < len(lines) and lines[i].lstrip().startswith('pass'):
-            i += 1
-        else:
-            g.trace(f"*** no pass after {kind}: {p.h}")
-    else:
-        # A directive line or a comment line.
-        result.append(s)
-    return i
-#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
-class TokenSync:
-    """A class to sync and remember tokens."""
-    # To do: handle comments, line breaks...
-    @others
-#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
-def __init__(self, s, tokens):
-    """Ctor for TokenSync class."""
-    assert isinstance(tokens, list)  # Not a generator.
-    self.s = s
-    self.first_leading_line = None
-    self.lines = [z.rstrip() for z in g.splitLines(s)]
-    # Order is important from here on...
-    self.nl_token = self.make_nl_token()
-    self.line_tokens = self.make_line_tokens(tokens)
-    self.blank_lines = self.make_blank_lines()
-    self.string_tokens = self.make_string_tokens()
-    self.ignored_lines = self.make_ignored_lines()
-#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
-def make_blank_lines(self):
-    """Return of list of line numbers of blank lines."""
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        # if any([self.token_kind(z) == 'nl' for z in aList]):
-        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
-            result.append(i)
-    return result
-#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
-def make_ignored_lines(self):
-    """
-    Return a copy of line_tokens containing ignored lines,
-    that is, full-line comments or blank lines.
-    These are the lines returned by leading_lines().
-    """
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        for z in aList:
-            if self.is_line_comment(z):
-                result.append(z)
-                break
-        else:
-            if i in self.blank_lines:
-                result.append(self.nl_token)
-            else:
-                result.append(None)
-    assert len(result) == len(self.line_tokens)
-    for i, aList in enumerate(result):
-        if aList:
-            self.first_leading_line = i
-            break
-    else:
-        self.first_leading_line = len(result)
-    return result
-#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
-def make_line_tokens(self, tokens):
-    """
-    Return a list of lists of tokens for each list in self.lines.
-    The strings in self.lines may end in a backslash, so care is needed.
-    """
-    import token as tm
-    n, result = len(self.lines), []
-    for i in range(0, n+1):
-        result.append([])
-    for token in tokens:
-        t1, t2, t3, t4, t5 = token
-        kind = tm.tok_name[t1].lower()
-        srow, scol = t3
-        erow, ecol = t4
-        line = erow - 1 if kind == 'string' else srow - 1
-        result[line].append(token)
-    assert len(self.lines) + 1 == len(result), len(result)
-    return result
-#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
-def make_nl_token(self):
-    """Return a newline token with '\n' as both val and raw_val."""
-    import token as tm
-    t1 = tm.NEWLINE
-    t2 = '\n'
-    t3 = (0, 0)  # Not used.
-    t4 = (0, 0)  # Not used.
-    t5 = '\n'
-    return t1, t2, t3, t4, t5
-#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
-def make_string_tokens(self):
-    """Return a copy of line_tokens containing only string tokens."""
-    result = []
-    for aList in self.line_tokens:
-        result.append([z for z in aList if self.token_kind(z) == 'string'])
-    assert len(result) == len(self.line_tokens)
-    return result
-#@+node:ekr.20160225102931.8: *4* ts.check_strings
-def check_strings(self):
-    """Check that all strings have been consumed."""
-    for i, aList in enumerate(self.string_tokens):
-        if aList:
-            g.trace(f"warning: line {i}. unused strings: {aList}")
-#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
-def is_line_comment(self, token):
-    """Return True if the token represents a full-line comment."""
-    import token as tm
-    t1, t2, t3, t4, t5 = token
-    kind = tm.tok_name[t1].lower()
-    raw_val = t5
-    return kind == 'comment' and raw_val.lstrip().startswith('#')
-#@+node:ekr.20160225102931.12: *4* ts.last_node
-def last_node(self, node):
-    """Return the node of node's tree with the largest lineno field."""
-
-    class LineWalker(ast.NodeVisitor):
-
-        def __init__(self):
-            """Ctor for LineWalker class."""
-            self.node = None
-            self.lineno = -1
-
-        def visit(self, node):
-            """LineWalker.visit."""
-            if hasattr(node, 'lineno'):
-                if node.lineno > self.lineno:
-                    self.lineno = node.lineno
-                    self.node = node
-            if isinstance(node, list):
-                for z in node:
-                    self.visit(z)
-            else:
-                self.generic_visit(node)
-
-    w = LineWalker()
-    w.visit(node)
-    return w.node
-#@+node:ekr.20160225102931.13: *4* ts.leading_lines
-def leading_lines(self, node):
-    """Return a list of the preceding comment and blank lines"""
-    # This can be called on arbitrary nodes.
-    leading = []
-    if hasattr(node, 'lineno'):
-        i, n = self.first_leading_line, node.lineno
-        while i < n:
-            token = self.ignored_lines[i]
-            if token:
-                s = self.token_raw_val(token).rstrip() + '\n'
-                leading.append(s)
-            i += 1
-        self.first_leading_line = i
-    return leading
-#@+node:ekr.20160225102931.14: *4* ts.leading_string
-def leading_string(self, node):
-    """Return a string containing all lines preceding node."""
-    return ''.join(self.leading_lines(node))
-#@+node:ekr.20160225102931.15: *4* ts.line_at
-def line_at(self, node, continued_lines=True):
-    """Return the lines at the node, possibly including continuation lines."""
-    n = getattr(node, 'lineno', None)
-    if n is None:
-        return f'<no line> for %s' % node.__class__.__name__
-    if continued_lines:
-        aList, n = [], n - 1
-        while n < len(self.lines):
-            s = self.lines[n]
-            if s.endswith('\\'):
-                aList.append(s[:-1])
-                n += 1
-            else:
-                aList.append(s)
-                break
-        return ''.join(aList)
-    return self.lines[n - 1]
-#@+node:ekr.20160225102931.16: *4* ts.sync_string
-def sync_string(self, node):
-    """Return the spelling of the string at the given node."""
-    n = node.lineno
-    tokens = self.string_tokens[n - 1]
-    if tokens:
-        token = tokens.pop(0)
-        self.string_tokens[n - 1] = tokens
-        return self.token_val(token)
-    g.trace('===== underflow', n, node.s)
-    return node.s
-#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
-def tokens_for_statement(self, node):
-    assert isinstance(node, ast.AST), node
-    name = node.__class__.__name__
-    if hasattr(node, 'lineno'):
-        tokens = self.line_tokens[node.lineno - 1]
-        g.trace(' '.join([self.dump_token(z) for z in tokens]))
-    else:
-        g.trace('no lineno', name)
-#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
-def trailing_comment(self, node):
-    """
-    Return a string containing the trailing comment for the node, if any.
-    The string always ends with a newline.
-    """
-    if hasattr(node, 'lineno'):
-        return self.trailing_comment_at_lineno(node.lineno)
-    g.trace('no lineno', node.__class__.__name__, g.callers())
-    return '\n'
-#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
-def trailing_comment_at_lineno(self, lineno):
-    """Return any trailing comment at the given node.lineno."""
-    tokens = self.line_tokens[lineno - 1]
-    for token in tokens:
-        if self.token_kind(token) == 'comment':
-            raw_val = self.token_raw_val(token).rstrip()
-            if not raw_val.strip().startswith('#'):
-                val = self.token_val(token).rstrip()
-                s = f' %s\n' % val
-                return s
-    return '\n'
-#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
-def trailing_lines(self):
-    """return any remaining ignored lines."""
-    trailing = []
-    i = self.first_leading_line
-    while i < len(self.ignored_lines):
-        token = self.ignored_lines[i]
-        if token:
-            s = self.token_raw_val(token).rstrip() + '\n'
-            trailing.append(s)
-        i += 1
-    self.first_leading_line = i
-    return trailing
-#@+node:ekr.20191122105543.1: *4* ts:dumps
-#@+node:ekr.20160225102931.9: *5* ts.dump_token
-def dump_token(self, token, verbose=False):
-    """Dump the token. It is either a string or a 5-tuple."""
-    import token as tm
-    if isinstance(token, str):
-        return token
-    t1, t2, t3, t4, t5 = token
-    kind = g.toUnicode(tm.tok_name[t1].lower())
-    # raw_val = g.toUnicode(t5)
-    val = g.toUnicode(t2)
-    if verbose:
-        return f'token: %10s %r' % (kind, val)
-    return val
-#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
-def token_kind(self, token):
-    """Return the token's type."""
-    t1, t2, t3, t4, t5 = token
-    import token as tm
-    return g.toUnicode(tm.tok_name[t1].lower())
-
-def token_raw_val(self, token):
-    """Return the value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t5)
-
-def token_val(self, token):
-    """Return the raw value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t2)
-#@+node:ekr.20160225102931.11: *5* ts.join
-def join(self, aList, sep=','):
-    """return the items of the list joined by sep string."""
-    tokens = []
-    for i, token in enumerate(aList or []):
-        tokens.append(token)
-        if i < len(aList) - 1:
-            tokens.append(sep)
-    return tokens
-#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
-def scan_for_values(self):  # pragma: no cover
-    """
-    **Important**: This method is not used. It shows how to "parse"
-    the RHS of an % operator using tokens instead of a parse tree. 
-    
-    This is a recursive descent parser. It is comprable in complexity
-    to fs.scan_format_string.
-    
-    Return a list of possibly parenthesized values for the format string.
-    
-    This method never actually consumes tokens.
-    
-    If all goes well, we'll skip all tokens in the tokens list.
-    """
-
-    # pylint: disable=no-member # This is example code.
-    # Skip the '%'
-    new_token = self.new_token
-    assert self.look_ahead(0) == ('op', '%')
-    token_i, tokens = self.skip_ahead(0, 'op', '%')
-    # Skip '(' if it's next
-    include_paren = self.look_ahead(token_i) == ('op', '(')
-    if include_paren:
-        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
-        tokens.extend(skipped_tokens)
-    # Find all tokens up to the first ')' or 'for'
-    values, value_list = [], []
-    while token_i < len(self.tokens):
-        # Don't use look_ahead here: handle each token exactly once.
-        token = self.tokens[token_i]
-        token_i += 1
-        tokens.append(token)
-        kind, val = token.kind, token.value
-        if kind == 'ws':
-            continue
-        if kind in ('newline', 'nl'):
-            if include_paren or val.endswith('\\\n'):
-                # Continue scanning, ignoring the newline.
-                continue
-            # The newline ends the scan.
-            values.append(value_list)  # Retain the tokens!
-            if not include_paren:  # Bug fix.
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('op', ')'):
-            values.append(value_list)
-            if not include_paren:
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('name', 'for'):
-            self.add_trailing_ws = True
-            tokens.pop()  # Rescan the 'for'
-            values.append(value_list)
-            break
-        if (kind, val) == ('op', ','):
-            values.append(value_list)
-            value_list = []
-        elif kind == 'op' and val in '([{':
-            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
-            value_list.extend(values_list2)
-            tokens.extend(self.tokens[token_i:token_i2])
-            token_i = token_i2
-        elif kind == 'name':
-            # Ensure separation of names.
-            value_list.append(new_token(kind, val))
-            value_list.append(new_token('ws', ' '))
-        else:
-            value_list.append(new_token(kind, val))
-    return values, tokens
-#@+node:ekr.20200729081252.1: *3* FullTraverser classes
+#@+node:ekr.20200729081252.1: *3* --- FullTraverser classes
 #@+node:ekr.20141012064706.18399: *4* class AstFormatter
 class AstFormatter:
     """
@@ -3029,6 +2497,2553 @@ def do_YieldFrom(self, node):
     self.keyword('yield from')
     self.visit(node.value)
     self.end_div('statement')
+#@+node:ekr.20230116201507.1: *3* --- Iterative traversal classes
+#@+node:ekr.20220330191947.1: *4* class IterativeTokenGenerator
+class IterativeTokenGenerator:
+    """
+    Self-contained iterative token syncing class. It shows how to traverse
+    any tree with neither recursion nor iterators.
+
+    This class is almost exactly as fast as the TokenOrderGenerator class.
+
+    This class is another curio: Leo does not use this code.
+
+    The main_loop method executes **actions**: (method, argument) tuples.
+
+    The key idea: visitors (and visit), never execute code directly.
+    Instead, they queue methods to be executed in the main loop.
+
+    *Important*: find_next_significant_token must be called only *after*
+    actions have eaten all previous tokens. So do_If (and other visitors)
+    must queue up **helper actions** for later (delayed) execution.
+    """
+
+    begin_end_stack: List[str] = []  # A stack of node names.
+    n_nodes = 0  # The number of nodes that have been visited.
+    node = None  # The current node.
+    node_index = 0  # The index into the node_stack.
+    node_stack: List[ast.AST] = []  # The stack of parent nodes.
+
+    @others
+#@+node:ekr.20220402095550.1: *5* iterative: Init...
+# Same as in the TokenOrderGenerator class.
+#@+node:ekr.20220402095550.2: *6* iterative.balance_tokens
+def balance_tokens(self, tokens: List["Token"]) -> int:
+    """
+    TOG.balance_tokens.
+
+    Insert two-way links between matching paren tokens.
+    """
+    count, stack = 0, []
+    for token in tokens:
+        if token.kind == 'op':
+            if token.value == '(':
+                count += 1
+                stack.append(token.index)
+            if token.value == ')':
+                if stack:
+                    index = stack.pop()
+                    tokens[index].matching_paren = token.index
+                    tokens[token.index].matching_paren = index
+                else:  # pragma: no cover
+                    g.trace(f"unmatched ')' at index {token.index}")
+    if stack:  # pragma: no cover
+        g.trace("unmatched '(' at {','.join(stack)}")
+    return count
+#@+node:ekr.20220402095550.3: *6* iterative.create_links (init all ivars)
+def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -> List:
+    """
+    A generator creates two-way links between the given tokens and ast-tree.
+
+    Callers should call this generator with list(tog.create_links(...))
+
+    The sync_tokens method creates the links and verifies that the resulting
+    tree traversal generates exactly the given tokens in exact order.
+
+    tokens: the list of Token instances for the input.
+            Created by make_tokens().
+    tree:   the ast tree for the input.
+            Created by parse_ast().
+    """
+    # Init all ivars.
+    self.equal_sign_spaces = True  # For a special case in set_links().
+    self.file_name = file_name  # For tests.
+    self.node = None  # The node being visited.
+    self.tokens = tokens  # The immutable list of input tokens.
+    self.tree = tree  # The tree of ast.AST nodes.
+    # Traverse the tree.
+    self.main_loop(tree)
+    # Ensure that all tokens are patched.
+    self.node = tree
+    self.token(('endmarker', ''))
+    # Return [] for compatibility with legacy code: list(tog.create_links).
+    return []
+#@+node:ekr.20220402095550.4: *6* iterative.init_from_file
+def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:  # pragma: no cover
+    """
+    Create the tokens and ast tree for the given file.
+    Create links between tokens and the parse tree.
+    Return (contents, encoding, tokens, tree).
+    """
+    self.filename = filename
+    encoding, contents = read_file_with_encoding(filename)
+    if not contents:
+        return None, None, None, None
+    self.tokens = tokens = make_tokens(contents)
+    self.tree = tree = parse_ast(contents)
+    self.create_links(tokens, tree)
+    return contents, encoding, tokens, tree
+#@+node:ekr.20220402095550.5: *6* iterative.init_from_string
+def init_from_string(self, contents: str, filename: str) -> Tuple[List["Token"], Node]:  # pragma: no cover
+    """
+    Tokenize, parse and create links in the contents string.
+
+    Return (tokens, tree).
+    """
+    self.filename = filename
+    self.tokens = tokens = make_tokens(contents)
+    self.tree = tree = parse_ast(contents)
+    self.create_links(tokens, tree)
+    return tokens, tree
+#@+node:ekr.20220402094825.1: *5* iterative: Synchronizers...
+# These synchronizer methods sync various kinds of tokens to nodes.
+#
+# These methods are (mostly) the same as in the TokenOrderGenerator class.
+#
+# Important: The sync_token in this class has a different signature from its TOG counterpart.
+#            This slight difference makes it difficult to reuse the TOG methods,
+#            say via monkey-patching.
+#
+#            So I just copied/pasted these methods. This strategy suffices
+#            to illustrate the ideas presented in this class.
+
+#@+node:ekr.20220402094825.2: *6* iterative.find_next_significant_token
+def find_next_significant_token(self) -> Optional["Token"]:
+    """
+    Scan from *after* self.tokens[px] looking for the next significant
+    token.
+
+    Return the token, or None. Never change self.px.
+    """
+    px = self.px + 1
+    while px < len(self.tokens):
+        token = self.tokens[px]
+        px += 1
+        if is_significant_token(token):
+            return token
+    # This will never happen, because endtoken is significant.
+    return None  # pragma: no cover
+#@+node:ekr.20220402094825.3: *6* iterative.set_links
+last_statement_node: Optional[Node] = None
+
+def set_links(self, node: Node, token: "Token") -> None:
+    """Make two-way links between token and the given node."""
+    # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
+    if token.kind == 'comment':
+        # Append the comment to node.comment_list.
+        comment_list: List["Token"] = getattr(node, 'comment_list', [])
+        node.comment_list = comment_list + [token]
+        return
+    if token.kind in ('endmarker', 'ws'):
+        return
+    if token.kind == 'op' and token.value in ',()':
+        return
+    # *Always* remember the last statement.
+    statement = find_statement_node(node)
+    if statement:
+        self.last_statement_node = statement
+        assert not isinstance(self.last_statement_node, ast.Module)
+    if token.node is not None:  # pragma: no cover
+        line_s = f"line {token.line_number}:"
+        raise AssignLinksError(
+                f"       file: {self.filename}\n"
+                f"{line_s:>12} {token.line.strip()}\n"
+                f"token index: {self.px}\n"
+                f"token.node is not None\n"
+                f" token.node: {token.node.__class__.__name__}\n"
+                f"    callers: {g.callers()}")
+    # Assign newlines to the previous statement node, if any.
+    if token.kind in ('newline', 'nl'):
+        # Set an *auxillary* link for the split/join logic.
+        # Do *not* set token.node!
+        token.statement_node = self.last_statement_node
+        return
+    if is_significant_token(token):
+        # Link the token to the ast node.
+        token.node = node
+        # Add the token to node's token_list.
+        add_token_to_token_list(token, node)
+        if token.kind == 'op' and token.value == '=':
+            token.equal_sign_spaces = self.equal_sign_spaces
+
+#@+node:ekr.20220402094825.4: *6* iterative.sync_name (aka name)
+def sync_name(self, val: str) -> None:
+    aList = val.split('.')
+    if len(aList) == 1:
+        self.sync_token(('name', val))
+    else:
+        for i, part in enumerate(aList):
+            self.sync_token(('name', part))
+            if i < len(aList) - 1:
+                self.sync_op('.')
+
+name = sync_name  # for readability.
+#@+node:ekr.20220402094825.5: *6* iterative.sync_op (aka op)
+def sync_op(self, val: str) -> None:
+    """
+    Sync to the given operator.
+
+    val may be '(' or ')' *only* if the parens *will* actually exist in the
+    token list.
+    """
+    self.sync_token(('op', val))
+
+op = sync_op  # For readability.
+#@+node:ekr.20220402094825.6: *6* iterative.sync_token (aka token)
+px = -1  # Index of the previously synced token.
+
+def sync_token(self, data: Tuple[Any, Any]) -> None:
+    """
+    Sync to a token whose kind & value are given. The token need not be
+    significant, but it must be guaranteed to exist in the token list.
+
+    The checks in this method constitute a strong, ever-present, unit test.
+
+    Scan the tokens *after* px, looking for a token T matching (kind, val).
+    raise AssignLinksError if a significant token is found that doesn't match T.
+    Otherwise:
+    - Create two-way links between all assignable tokens between px and T.
+    - Create two-way links between T and self.node.
+    - Advance by updating self.px to point to T.
+    """
+    kind, val = data
+    node, tokens = self.node, self.tokens
+    assert isinstance(node, ast.AST), repr(node)
+    # g.trace(
+        # f"px: {self.px:2} "
+        # f"node: {node.__class__.__name__:<10} "
+        # f"kind: {kind:>10}: val: {val!r}")
+    #
+    # Step one: Look for token T.
+    old_px = px = self.px + 1
+    while px < len(self.tokens):
+        token = tokens[px]
+        if (kind, val) == (token.kind, token.value):
+            break  # Success.
+        if kind == token.kind == 'number':
+            val = token.value
+            break  # Benign: use the token's value, a string, instead of a number.
+        if is_significant_token(token):  # pragma: no cover
+            line_s = f"line {token.line_number}:"
+            val = str(val)  # for g.truncate.
+            raise AssignLinksError(
+                f"       file: {self.filename}\n"
+                f"{line_s:>12} {token.line.strip()}\n"
+                f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
+                f"      found: {token.kind}.{token.value!r}\n"
+                f"token.index: {token.index}\n")
+        # Skip the insignificant token.
+        px += 1
+    else:  # pragma: no cover
+        val = str(val)  # for g.truncate.
+        raise AssignLinksError(
+             f"       file: {self.filename}\n"
+             f"Looking for: {kind}.{g.truncate(val, 40)}\n"
+             f"      found: end of token list")
+    #
+    # Step two: Assign *secondary* links only for newline tokens.
+    #           Ignore all other non-significant tokens.
+    while old_px < px:
+        token = tokens[old_px]
+        old_px += 1
+        if token.kind in ('comment', 'newline', 'nl'):
+            self.set_links(node, token)
+    #
+    # Step three: Set links in the found token.
+    token = tokens[px]
+    self.set_links(node, token)
+    #
+    # Step four: Advance.
+    self.px = px
+
+token = sync_token  # For readability.
+#@+node:ekr.20220330164313.1: *5* iterative: Traversal...
+#@+node:ekr.20220402094946.2: *6* iterative.enter_node
+def enter_node(self, node: Node) -> None:
+    """Enter a node."""
+    # Update the stats.
+    self.n_nodes += 1
+    # Create parent/child links first, *before* updating self.node.
+    #
+    # Don't even *think* about removing the parent/child links.
+    # The nearest_common_ancestor function depends upon them.
+    node.parent = self.node
+    if self.node:
+        children: List[Node] = getattr(self.node, 'children', [])
+        children.append(node)
+        self.node.children = children
+    # Inject the node_index field.
+    assert not hasattr(node, 'node_index'), g.callers()
+    node.node_index = self.node_index
+    self.node_index += 1
+    # begin_visitor and end_visitor must be paired.
+    self.begin_end_stack.append(node.__class__.__name__)
+    # Push the previous node.
+    self.node_stack.append(self.node)
+    # Update self.node *last*.
+    self.node = node
+#@+node:ekr.20220402094946.3: *6* iterative.leave_node
+def leave_node(self, node: Node) -> None:
+    """Leave a visitor."""
+    # Make *sure* that begin_visitor and end_visitor are paired.
+    entry_name = self.begin_end_stack.pop()
+    assert entry_name == node.__class__.__name__, f"{entry_name!r} {node.__class__.__name__}"
+    assert self.node == node, (repr(self.node), repr(node))
+    # Restore self.node.
+    self.node = self.node_stack.pop()
+#@+node:ekr.20220330120220.1: *6* iterative.main_loop
+def main_loop(self, node: Node) -> None:
+
+    func = getattr(self, 'do_' + node.__class__.__name__, None)
+    if not func:  # pragma: no cover (defensive code)
+        print('main_loop: invalid ast node:', repr(node))
+        return
+    exec_list: ActionList = [(func, node)]
+    while exec_list:
+        func, arg = exec_list.pop(0)
+        result = func(arg)
+        if result:
+            # Prepend the result, a list of tuples.
+            assert isinstance(result, list), repr(result)
+            exec_list[:0] = result
+
+# For debugging...
+        # try:
+            # func, arg = data
+            # if 0:
+                # func_name = g.truncate(func.__name__, 15)
+                # print(
+                    # f"{self.node.__class__.__name__:>10}:"
+                    # f"{func_name:>20} "
+                    # f"{arg.__class__.__name__}")
+        # except ValueError:
+            # g.trace('BAD DATA', self.node.__class__.__name__)
+            # if isinstance(data, (list, tuple)):
+                # for z in data:
+                    # print(data)
+            # else:
+                # print(repr(data))
+            # raise
+#@+node:ekr.20220330155314.1: *6* iterative.visit
+def visit(self, node: Node) -> ActionList:
+    """'Visit' an ast node by return a new list of tuples."""
+    # Keep this trace.
+    if False:  # pragma: no cover
+        cn = node.__class__.__name__ if node else ' '
+        caller1, caller2 = g.callers(2).split(',')
+        g.trace(f"{caller1:>15} {caller2:<14} {cn}")
+    if node is None:
+        return []
+    # More general, more convenient.
+    if isinstance(node, (list, tuple)):
+        result = []
+        for z in node:
+            if isinstance(z, ast.AST):
+                result.append((self.visit, z))
+            else:  # pragma: no cover (This might never happen).
+                # All other fields should contain ints or strings.
+                assert isinstance(z, (int, str)), z.__class__.__name__
+        return result
+    # We *do* want to crash if the visitor doesn't exist.
+    assert isinstance(node, ast.AST), repr(node)
+    method = getattr(self, 'do_' + node.__class__.__name__)
+    # Don't call *anything* here. Just return a new list of tuples.
+    return [
+        (self.enter_node, node),
+        (method, node),
+        (self.leave_node, node),
+    ]
+#@+node:ekr.20220330133336.1: *5* iterative: Visitors
+#@+node:ekr.20220330133336.2: *6*  iterative.keyword: not called!
+# keyword arguments supplied to call (NULL identifier for **kwargs)
+
+# keyword = (identifier? arg, expr value)
+
+def do_keyword(self, node: Node) -> List:  # pragma: no cover
+    """A keyword arg in an ast.Call."""
+    # This should never be called.
+    # iterative.hande_call_arguments calls self.visit(kwarg_arg.value) instead.
+    filename = getattr(self, 'filename', '<no file>')
+    raise AssignLinksError(
+        f"file: {filename}\n"
+        f"do_keyword should never be called\n"
+        f"{g.callers(8)}")
+#@+node:ekr.20220330133336.3: *6* iterative: Contexts
+#@+node:ekr.20220330133336.4: *7*  iterative.arg
+# arg = (identifier arg, expr? annotation)
+
+def do_arg(self, node: Node) -> ActionList:
+    """This is one argument of a list of ast.Function or ast.Lambda arguments."""
+
+    annotation = getattr(node, 'annotation', None)
+    result: ActionList = [
+        (self.name, node.arg),
+    ]
+    if annotation:
+        result.extend([
+            (self.op, ':'),
+            (self.visit, annotation),
+        ])
+    return result
+
+#@+node:ekr.20220330133336.5: *7*  iterative.arguments
+# arguments = (
+#       arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
+#       expr* kw_defaults, arg? kwarg, expr* defaults
+# )
+
+def do_arguments(self, node: Node) -> ActionList:
+    """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
+    #
+    # No need to generate commas anywhere below.
+    #
+    # Let block. Some fields may not exist pre Python 3.8.
+    n_plain = len(node.args) - len(node.defaults)
+    posonlyargs = getattr(node, 'posonlyargs', [])
+    vararg = getattr(node, 'vararg', None)
+    kwonlyargs = getattr(node, 'kwonlyargs', [])
+    kw_defaults = getattr(node, 'kw_defaults', [])
+    kwarg = getattr(node, 'kwarg', None)
+    result: ActionList = []
+    # 1. Sync the position-only args.
+    if posonlyargs:
+        for z in posonlyargs:
+            result.append((self.visit, z))
+        result.append((self.op, '/'))
+    # 2. Sync all args.
+    for i, z in enumerate(node.args):
+        result.append((self.visit, z))
+        if i >= n_plain:
+            result.extend([
+                (self.op, '='),
+                (self.visit, node.defaults[i - n_plain]),
+            ])
+    # 3. Sync the vararg.
+    if vararg:
+        result.extend([
+            (self.op, '*'),
+            (self.visit, vararg),
+        ])
+    # 4. Sync the keyword-only args.
+    if kwonlyargs:
+        if not vararg:
+            result.append((self.op, '*'))
+        for n, z in enumerate(kwonlyargs):
+            result.append((self.visit, z))
+            val = kw_defaults[n]
+            if val is not None:
+                result.extend([
+                    (self.op, '='),
+                    (self.visit, val),
+                ])
+    # 5. Sync the kwarg.
+    if kwarg:
+        result.extend([
+            (self.op, '**'),
+            (self.visit, kwarg),
+        ])
+    return result
+
+
+
+#@+node:ekr.20220330133336.6: *7* iterative.AsyncFunctionDef
+# AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
+#                expr? returns)
+
+def do_AsyncFunctionDef(self, node: Node) -> ActionList:
+
+    returns = getattr(node, 'returns', None)
+    result: ActionList = []
+    # Decorators...
+        #@verbatim
+        # @{z}\n
+    for z in node.decorator_list or []:
+        result.extend([
+            (self.op, '@'),
+            (self.visit, z)
+        ])
+    # Signature...
+        # def name(args): -> returns\n
+        # def name(args):\n
+    result.extend([
+        (self.name, 'async'),
+        (self.name, 'def'),
+        (self.name, node.name),  # A string.
+        (self.op, '('),
+        (self.visit, node.args),
+        (self.op, ')'),
+    ])
+    if returns is not None:
+        result.extend([
+            (self.op, '->'),
+            (self.visit, node.returns),
+        ])
+    # Body...
+    result.extend([
+        (self.op, ':'),
+        (self.visit, node.body),
+    ])
+    return result
+#@+node:ekr.20220330133336.7: *7* iterative.ClassDef
+def do_ClassDef(self, node: Node) -> ActionList:
+
+    result: ActionList = []
+    for z in node.decorator_list or []:
+        #@verbatim
+        # @{z}\n
+        result.extend([
+            (self.op, '@'),
+            (self.visit, z),
+        ])
+    # class name(bases):\n
+    result.extend([
+        (self.name, 'class'),
+        (self.name, node.name),  # A string.
+    ])
+    if node.bases:
+        result.extend([
+            (self.op, '('),
+            (self.visit, node.bases),
+            (self.op, ')'),
+        ])
+    result.extend([
+        (self.op, ':'),
+        (self.visit, node.body),
+    ])
+    return result
+#@+node:ekr.20220330133336.8: *7* iterative.FunctionDef
+# FunctionDef(
+#   identifier name,
+#   arguments args,
+#   stmt* body,
+#   expr* decorator_list,
+#   expr? returns,
+#   string? type_comment)
+
+def do_FunctionDef(self, node: Node) -> ActionList:
+
+    returns = getattr(node, 'returns', None)
+    result: ActionList = []
+    # Decorators...
+        #@verbatim
+        # @{z}\n
+    for z in node.decorator_list or []:
+        result.extend([
+            (self.op, '@'),
+            (self.visit, z)
+        ])
+    # Signature...
+        # def name(args): -> returns\n
+        # def name(args):\n
+    result.extend([
+        (self.name, 'def'),
+        (self.name, node.name),  # A string.
+        (self.op, '('),
+        (self.visit, node.args),
+        (self.op, ')'),
+    ])
+    if returns is not None:
+        result.extend([
+            (self.op, '->'),
+            (self.visit, node.returns),
+        ])
+    # Body...
+    result.extend([
+        (self.op, ':'),
+        (self.visit, node.body),
+    ])
+    return result
+#@+node:ekr.20220330133336.9: *7* iterative.Interactive
+def do_Interactive(self, node: Node) -> ActionList:  # pragma: no cover
+
+    return [
+        (self.visit, node.body),
+    ]
+#@+node:ekr.20220330133336.10: *7* iterative.Lambda
+def do_Lambda(self, node: Node) -> ActionList:
+
+    return [
+        (self.name, 'lambda'),
+        (self.visit, node.args),
+        (self.op, ':'),
+        (self.visit, node.body),
+    ]
+
+#@+node:ekr.20220330133336.11: *7* iterative.Module
+def do_Module(self, node: Node) -> ActionList:
+
+    # Encoding is a non-syncing statement.
+    return [
+        (self.visit, node.body),
+    ]
+#@+node:ekr.20220330133336.12: *6* iterative: Expressions
+#@+node:ekr.20220330133336.13: *7* iterative.Expr
+def do_Expr(self, node: Node) -> ActionList:
+    """An outer expression."""
+    # No need to put parentheses.
+    return [
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.14: *7* iterative.Expression
+def do_Expression(self, node: Node) -> ActionList:  # pragma: no cover
+    """An inner expression."""
+    # No need to put parentheses.
+    return [
+        (self.visit, node.body),
+    ]
+#@+node:ekr.20220330133336.15: *7* iterative.GeneratorExp
+def do_GeneratorExp(self, node: Node) -> ActionList:
+    # '<gen %s for %s>' % (elt, ','.join(gens))
+    # No need to put parentheses or commas.
+    return [
+        (self.visit, node.elt),
+        (self.visit, node.generators),
+    ]
+#@+node:ekr.20220330133336.16: *7* iterative.NamedExpr
+# NamedExpr(expr target, expr value)
+
+def do_NamedExpr(self, node: Node) -> ActionList:  # Python 3.8+
+
+    return [
+        (self.visit, node.target),
+        (self.op, ':='),
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220402160128.1: *6* iterative: Operands
+#@+node:ekr.20220402160128.2: *7* iterative.Attribute
+# Attribute(expr value, identifier attr, expr_context ctx)
+
+def do_Attribute(self, node: Node) -> ActionList:
+
+    return [
+        (self.visit, node.value),
+        (self.op, '.'),
+        (self.name, node.attr),  # A string.
+    ]
+#@+node:ekr.20220402160128.3: *7* iterative.Bytes
+def do_Bytes(self, node: Node) -> ActionList:
+
+    """
+    It's invalid to mix bytes and non-bytes literals, so just
+    advancing to the next 'string' token suffices.
+    """
+    token = self.find_next_significant_token()
+    return [
+        (self.token, ('string', token.value)),
+    ]
+#@+node:ekr.20220402160128.4: *7* iterative.comprehension
+# comprehension = (expr target, expr iter, expr* ifs, int is_async)
+
+def do_comprehension(self, node: Node) -> ActionList:
+
+    # No need to put parentheses.
+    result: ActionList = [
+        (self.name, 'for'),
+        (self.visit, node.target),  # A name
+        (self.name, 'in'),
+        (self.visit, node.iter),
+    ]
+    for z in node.ifs or []:
+        result.extend([
+            (self.name, 'if'),
+            (self.visit, z),
+        ])
+    return result
+#@+node:ekr.20220402160128.5: *7* iterative.Constant
+def do_Constant(self, node: Node) -> ActionList:  # pragma: no cover
+    """
+
+    https://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+    A constant. The value attribute holds the Python object it represents.
+    This can be simple types such as a number, string or None, but also
+    immutable container types (tuples and frozensets) if all of their
+    elements are constant.
+    """
+    # Support Python 3.8.
+    if node.value is None or isinstance(node.value, bool):
+        # Weird: return a name!
+        return [
+            (self.token, ('name', repr(node.value))),
+        ]
+    if node.value == Ellipsis:
+        return [
+            (self.op, '...'),
+        ]
+    if isinstance(node.value, str):
+        return self.do_Str(node)
+    if isinstance(node.value, (int, float)):
+        return [
+            (self.token, ('number', repr(node.value))),
+        ]
+    if isinstance(node.value, bytes):
+        return self.do_Bytes(node)
+    if isinstance(node.value, tuple):
+        return self.do_Tuple(node)
+    if isinstance(node.value, frozenset):
+        return self.do_Set(node)
+    g.trace('----- Oops -----', repr(node.value), g.callers())
+    return []
+
+#@+node:ekr.20220402160128.6: *7* iterative.Dict
+# Dict(expr* keys, expr* values)
+
+def do_Dict(self, node: Node) -> ActionList:
+
+    assert len(node.keys) == len(node.values)
+    result: ActionList = [
+        (self.op, '{'),
+    ]
+    # No need to put commas.
+    for i, key in enumerate(node.keys):
+        key, value = node.keys[i], node.values[i]
+        result.extend([
+            (self.visit, key),  # a Str node.
+            (self.op, ':'),
+        ])
+        if value is not None:
+            result.append((self.visit, value))
+    result.append((self.op, '}'))
+    return result
+#@+node:ekr.20220402160128.7: *7* iterative.DictComp
+# DictComp(expr key, expr value, comprehension* generators)
+
+# d2 = {val: key for key, val in d}
+
+def do_DictComp(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.token, ('op', '{')),
+        (self.visit, node.key),
+        (self.op, ':'),
+        (self.visit, node.value),
+    ]
+    for z in node.generators or []:
+        result.extend([
+            (self.visit, z),
+            (self.token, ('op', '}')),
+        ])
+    return result
+
+#@+node:ekr.20220402160128.8: *7* iterative.Ellipsis
+def do_Ellipsis(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist for python 3.8+)
+
+    return [
+        (self.op, '...'),
+    ]
+#@+node:ekr.20220402160128.9: *7* iterative.ExtSlice
+# https://docs.python.org/3/reference/expressions.html#slicings
+
+# ExtSlice(slice* dims)
+
+def do_ExtSlice(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
+
+    result: ActionList = []
+    for i, z in enumerate(node.dims):
+        result.append((self.visit, z))
+        if i < len(node.dims) - 1:
+            result.append((self.op, ','))
+    return result
+#@+node:ekr.20220402160128.10: *7* iterative.Index
+def do_Index(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
+
+    return [
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220402160128.11: *7* iterative.FormattedValue: not called!
+# FormattedValue(expr value, int? conversion, expr? format_spec)
+
+def do_FormattedValue(self, node: Node) -> ActionList:  # pragma: no cover
+    """
+    This node represents the *components* of a *single* f-string.
+
+    Happily, JoinedStr nodes *also* represent *all* f-strings,
+    so the TOG should *never visit this node!
+    """
+    filename = getattr(self, 'filename', '<no file>')
+    raise AssignLinksError(
+        f"file: {filename}\n"
+        f"do_FormattedValue should never be called")
+
+    # This code has no chance of being useful...
+        # conv = node.conversion
+        # spec = node.format_spec
+        # self.visit(node.value)
+        # if conv is not None:
+            # self.token('number', conv)
+        # if spec is not None:
+            # self.visit(node.format_spec)
+#@+node:ekr.20220402160128.12: *7* iterative.JoinedStr & helpers
+# JoinedStr(expr* values)
+
+def do_JoinedStr(self, node: Node) -> ActionList:
+    """
+    JoinedStr nodes represent at least one f-string and all other strings
+    concatenated to it.
+
+    Analyzing JoinedStr.values would be extremely tricky, for reasons that
+    need not be explained here.
+
+    Instead, we get the tokens *from the token list itself*!
+    """
+    return [
+        (self.token, (z.kind, z.value))
+            for z in self.get_concatenated_string_tokens()
+    ]
+#@+node:ekr.20220402160128.13: *7* iterative.List
+def do_List(self, node: Node) -> ActionList:
+
+    # No need to put commas.
+    return [
+        (self.op, '['),
+        (self.visit, node.elts),
+        (self.op, ']'),
+    ]
+#@+node:ekr.20220402160128.14: *7* iterative.ListComp
+# ListComp(expr elt, comprehension* generators)
+
+def do_ListComp(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.op, '['),
+        (self.visit, node.elt),
+    ]
+    for z in node.generators:
+        result.append((self.visit, z))
+    result.append((self.op, ']'))
+    return result
+#@+node:ekr.20220402160128.15: *7* iterative.Name & NameConstant
+def do_Name(self, node: Node) -> ActionList:
+
+    return [
+        (self.name, node.id),
+    ]
+
+def do_NameConstant(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist in Python 3.8+)
+
+    return [
+        (self.name, repr(node.value)),
+    ]
+#@+node:ekr.20220402160128.16: *7* iterative.Num
+def do_Num(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist in Python 3.8+)
+
+    return [
+        (self.token, ('number', node.n)),
+    ]
+#@+node:ekr.20220402160128.17: *7* iterative.Set
+# Set(expr* elts)
+
+def do_Set(self, node: Node) -> ActionList:
+
+    return [
+        (self.op, '{'),
+        (self.visit, node.elts),
+        (self.op, '}'),
+    ]
+#@+node:ekr.20220402160128.18: *7* iterative.SetComp
+# SetComp(expr elt, comprehension* generators)
+
+def do_SetComp(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.op, '{'),
+        (self.visit, node.elt),
+    ]
+    for z in node.generators or []:
+        result.append((self.visit, z))
+    result.append((self.op, '}'))
+    return result
+#@+node:ekr.20220402160128.19: *7* iterative.Slice
+# slice = Slice(expr? lower, expr? upper, expr? step)
+
+def do_Slice(self, node: Node) -> ActionList:
+
+    lower = getattr(node, 'lower', None)
+    upper = getattr(node, 'upper', None)
+    step = getattr(node, 'step', None)
+    result: ActionList = []
+    if lower is not None:
+        result.append((self.visit, lower))
+    # Always put the colon between upper and lower.
+    result.append((self.op, ':'))
+    if upper is not None:
+        result.append((self.visit, upper))
+    # Put the second colon if it exists in the token list.
+    if step is None:
+        result.append((self.slice_helper, node))
+    else:
+        result.extend([
+            (self.op, ':'),
+            (self.visit, step),
+        ])
+    return result
+
+def slice_helper(self, node: Node) -> ActionList:
+    """Delayed evaluation!"""
+    token = self.find_next_significant_token()
+    if token and token.value == ':':
+        return [
+            (self.op, ':'),
+        ]
+    return []
+#@+node:ekr.20220402160128.20: *7* iterative.Str & helper
+def do_Str(self, node: Node) -> ActionList:
+    """This node represents a string constant."""
+    # This loop is necessary to handle string concatenation.
+    return [
+        (self.token, (z.kind, z.value))
+            for z in self.get_concatenated_string_tokens()
+    ]
+
+#@+node:ekr.20220402160128.21: *8* iterative.get_concatenated_tokens
+def get_concatenated_string_tokens(self) -> List:
+    """
+    Return the next 'string' token and all 'string' tokens concatenated to
+    it. *Never* update self.px here.
+    """
+    trace = False
+    tag = 'iterative.get_concatenated_string_tokens'
+    i = self.px
+    # First, find the next significant token.  It should be a string.
+    i, token = i + 1, None
+    while i < len(self.tokens):
+        token = self.tokens[i]
+        i += 1
+        if token.kind == 'string':
+            # Rescan the string.
+            i -= 1
+            break
+        # An error.
+        if is_significant_token(token):  # pragma: no cover
+            break
+    # Raise an error if we didn't find the expected 'string' token.
+    if not token or token.kind != 'string':  # pragma: no cover
+        if not token:
+            token = self.tokens[-1]
+        filename = getattr(self, 'filename', '<no filename>')
+        raise AssignLinksError(
+            f"\n"
+            f"{tag}...\n"
+            f"file: {filename}\n"
+            f"line: {token.line_number}\n"
+            f"   i: {i}\n"
+            f"expected 'string' token, got {token!s}")
+    # Accumulate string tokens.
+    assert self.tokens[i].kind == 'string'
+    results = []
+    while i < len(self.tokens):
+        token = self.tokens[i]
+        i += 1
+        if token.kind == 'string':
+            results.append(token)
+        elif token.kind == 'op' or is_significant_token(token):
+            # Any significant token *or* any op will halt string concatenation.
+            break
+        # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+    # The (significant) 'endmarker' token ensures we will have result.
+    assert results
+    if trace:  # pragma: no cover
+        g.printObj(results, tag=f"{tag}: Results")
+    return results
+#@+node:ekr.20220402160128.22: *7* iterative.Subscript
+# Subscript(expr value, slice slice, expr_context ctx)
+
+def do_Subscript(self, node: Node) -> ActionList:
+
+    return [
+        (self.visit, node.value),
+        (self.op, '['),
+        (self.visit, node.slice),
+        (self.op, ']'),
+    ]
+#@+node:ekr.20220402160128.23: *7* iterative.Tuple
+# Tuple(expr* elts, expr_context ctx)
+
+def do_Tuple(self, node: Node) -> ActionList:
+
+    # Do not call gen_op for parens or commas here.
+    # They do not necessarily exist in the token list!
+
+    return [
+        (self.visit, node.elts),
+    ]
+#@+node:ekr.20220330133336.40: *6* iterative: Operators
+#@+node:ekr.20220330133336.41: *7* iterative.BinOp
+def do_BinOp(self, node: Node) -> ActionList:
+
+    return [
+        (self.visit, node.left),
+        (self.op, op_name(node.op)),
+        (self.visit, node.right),
+    ]
+
+#@+node:ekr.20220330133336.42: *7* iterative.BoolOp
+# BoolOp(boolop op, expr* values)
+
+def do_BoolOp(self, node: Node) -> ActionList:
+
+    result: ActionList = []
+    op_name_ = op_name(node.op)
+    for i, z in enumerate(node.values):
+        result.append((self.visit, z))
+        if i < len(node.values) - 1:
+            result.append((self.name, op_name_))
+    return result
+#@+node:ekr.20220330133336.43: *7* iterative.Compare
+# Compare(expr left, cmpop* ops, expr* comparators)
+
+def do_Compare(self, node: Node) -> ActionList:
+
+    assert len(node.ops) == len(node.comparators)
+    result: ActionList = [(self.visit, node.left)]
+    for i, z in enumerate(node.ops):
+        op_name_ = op_name(node.ops[i])
+        if op_name_ in ('not in', 'is not'):
+            for z in op_name_.split(' '):
+                result.append((self.name, z))
+        elif op_name_.isalpha():
+            result.append((self.name, op_name_))
+        else:
+            result.append((self.op, op_name_))
+        result.append((self.visit, node.comparators[i]))
+    return result
+#@+node:ekr.20220330133336.44: *7* iterative.UnaryOp
+def do_UnaryOp(self, node: Node) -> ActionList:
+
+    op_name_ = op_name(node.op)
+    result: ActionList = []
+    if op_name_.isalpha():
+        result.append((self.name, op_name_))
+    else:
+        result.append((self.op, op_name_))
+    result.append((self.visit, node.operand))
+    return result
+#@+node:ekr.20220330133336.45: *7* iterative.IfExp (ternary operator)
+# IfExp(expr test, expr body, expr orelse)
+
+def do_IfExp(self, node: Node) -> ActionList:
+
+    return [
+        (self.visit, node.body),
+        (self.name, 'if'),
+        (self.visit, node.test),
+        (self.name, 'else'),
+        (self.visit, node.orelse),
+    ]
+
+#@+node:ekr.20220330133336.46: *6* iterative: Statements
+#@+node:ekr.20220330133336.47: *7*  iterative.Starred
+# Starred(expr value, expr_context ctx)
+
+def do_Starred(self, node: Node) -> ActionList:
+    """A starred argument to an ast.Call"""
+    return [
+        (self.op, '*'),
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.48: *7* iterative.AnnAssign
+# AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+def do_AnnAssign(self, node: Node) -> ActionList:
+
+    # {node.target}:{node.annotation}={node.value}\n'
+    result: ActionList = [
+        (self.visit, node.target),
+        (self.op, ':'),
+        (self.visit, node.annotation),
+    ]
+    if node.value is not None:  # #1851
+        result.extend([
+            (self.op, '='),
+            (self.visit, node.value),
+        ])
+    return result
+#@+node:ekr.20220330133336.49: *7* iterative.Assert
+# Assert(expr test, expr? msg)
+
+def do_Assert(self, node: Node) -> ActionList:
+
+    # No need to put parentheses or commas.
+    msg = getattr(node, 'msg', None)
+    result: ActionList = [
+        (self.name, 'assert'),
+        (self.visit, node.test),
+    ]
+    if msg is not None:
+        result.append((self.visit, node.msg))
+    return result
+#@+node:ekr.20220330133336.50: *7* iterative.Assign
+def do_Assign(self, node: Node) -> ActionList:
+
+    result: ActionList = []
+    for z in node.targets:
+        result.extend([
+            (self.visit, z),
+            (self.op, '=')
+        ])
+    result.append((self.visit, node.value))
+    return result
+#@+node:ekr.20220330133336.51: *7* iterative.AsyncFor
+def do_AsyncFor(self, node: Node) -> ActionList:
+
+    # The def line...
+    # Py 3.8 changes the kind of token.
+    async_token_type = 'async' if has_async_tokens else 'name'
+    result: ActionList = [
+        (self.token, (async_token_type, 'async')),
+        (self.name, 'for'),
+        (self.visit, node.target),
+        (self.name, 'in'),
+        (self.visit, node.iter),
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ]
+    # Else clause...
+    if node.orelse:
+        result.extend([
+            (self.name, 'else'),
+            (self.op, ':'),
+            (self.visit, node.orelse),
+        ])
+    return result
+#@+node:ekr.20220330133336.52: *7* iterative.AsyncWith
+def do_AsyncWith(self, node: Node) -> ActionList:
+
+    async_token_type = 'async' if has_async_tokens else 'name'
+    return [
+        (self.token, (async_token_type, 'async')),
+        (self.do_With, node),
+    ]
+#@+node:ekr.20220330133336.53: *7* iterative.AugAssign
+# AugAssign(expr target, operator op, expr value)
+
+def do_AugAssign(self, node: Node) -> ActionList:
+
+    # %s%s=%s\n'
+    return [
+        (self.visit, node.target),
+        (self.op, op_name(node.op) + '='),
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.54: *7* iterative.Await
+# Await(expr value)
+
+def do_Await(self, node: Node) -> ActionList:
+
+    async_token_type = 'await' if has_async_tokens else 'name'
+    return [
+        (self.token, (async_token_type, 'await')),
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.55: *7* iterative.Break
+def do_Break(self, node: Node) -> ActionList:
+
+    return [
+        (self.name, 'break'),
+    ]
+#@+node:ekr.20220330133336.56: *7* iterative.Call & helpers
+# Call(expr func, expr* args, keyword* keywords)
+
+# Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
+
+def do_Call(self, node: Node) -> ActionList:
+
+    # The calls to op(')') and op('(') do nothing by default.
+    # No need to generate any commas.
+    # Subclasses might handle them in an overridden iterative.set_links.
+    return [
+        (self.visit, node.func),
+        (self.op, '('),
+        (self.handle_call_arguments, node),
+        (self.op, ')'),
+    ]
+#@+node:ekr.20220330133336.57: *8* iterative.arg_helper
+def arg_helper(self, node: Node) -> ActionList:
+    """
+    Yield the node, with a special case for strings.
+    """
+    result: ActionList = []
+    if isinstance(node, str):
+        result.append((self.token, ('name', node)))
+    else:
+        result.append((self.visit, node))
+    return result
+#@+node:ekr.20220330133336.58: *8* iterative.handle_call_arguments
+def handle_call_arguments(self, node: Node) -> ActionList:
+    """
+    Generate arguments in the correct order.
+
+    Call(expr func, expr* args, keyword* keywords)
+
+    https://docs.python.org/3/reference/expressions.html#calls
+
+    Warning: This code will fail on Python 3.8 only for calls
+             containing kwargs in unexpected places.
+    """
+    # *args:    in node.args[]:     Starred(value=Name(id='args'))
+    # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
+    # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
+    #
+    # Scan args for *name or *List
+    args = node.args or []
+    keywords = node.keywords or []
+
+    def get_pos(obj: Any) -> Tuple:
+        line1 = getattr(obj, 'lineno', None)
+        col1 = getattr(obj, 'col_offset', None)
+        return line1, col1, obj
+
+    def sort_key(aTuple: Tuple) -> int:
+        line, col, obj = aTuple
+        return line * 1000 + col
+
+    assert py_version >= (3, 9)
+
+    places = [get_pos(z) for z in args + keywords]
+    places.sort(key=sort_key)
+    ordered_args = [z[2] for z in places]
+    result: ActionList = []
+    for z in ordered_args:
+        if isinstance(z, ast.Starred):
+            result.extend([
+                (self.op, '*'),
+                (self.visit, z.value),
+            ])
+        elif isinstance(z, ast.keyword):
+            if getattr(z, 'arg', None) is None:
+                result.extend([
+                    (self.op, '**'),
+                    (self.arg_helper, z.value),
+                ])
+            else:
+                result.extend([
+                    (self.arg_helper, z.arg),
+                    (self.op, '='),
+                    (self.arg_helper, z.value),
+                ])
+        else:
+            result.append((self.arg_helper, z))
+    return result
+#@+node:ekr.20220330133336.59: *7* iterative.Continue
+def do_Continue(self, node: Node) -> ActionList:
+
+    return [
+        (self.name, 'continue'),
+    ]
+#@+node:ekr.20220330133336.60: *7* iterative.Delete
+def do_Delete(self, node: Node) -> ActionList:
+
+    # No need to put commas.
+    return [
+        (self.name, 'del'),
+        (self.visit, node.targets),
+    ]
+#@+node:ekr.20220330133336.61: *7* iterative.ExceptHandler
+def do_ExceptHandler(self, node: Node) -> ActionList:
+
+    # Except line...
+    result: ActionList = [
+        (self.name, 'except'),
+    ]
+    if getattr(node, 'type', None):
+        result.append((self.visit, node.type))
+    if getattr(node, 'name', None):
+        result.extend([
+            (self.name, 'as'),
+            (self.name, node.name),
+        ])
+    result.extend([
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ])
+    return result
+#@+node:ekr.20220330133336.62: *7* iterative.For
+def do_For(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        # The def line...
+        (self.name, 'for'),
+        (self.visit, node.target),
+        (self.name, 'in'),
+        (self.visit, node.iter),
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ]
+    # Else clause...
+    if node.orelse:
+        result.extend([
+            (self.name, 'else'),
+            (self.op, ':'),
+            (self.visit, node.orelse),
+        ])
+    return result
+#@+node:ekr.20220330133336.63: *7* iterative.Global
+# Global(identifier* names)
+
+def do_Global(self, node: Node) -> ActionList:
+
+    result = [
+        (self.name, 'global'),
+    ]
+    for z in node.names:
+        result.append((self.name, z))
+    return result
+#@+node:ekr.20220330133336.64: *7* iterative.If & helpers
+# If(expr test, stmt* body, stmt* orelse)
+
+def do_If(self, node: Node) -> ActionList:
+    << do_If docstring >>
+    # Use the next significant token to distinguish between 'if' and 'elif'.
+    token = self.find_next_significant_token()
+    result: ActionList = [
+        (self.name, token.value),
+        (self.visit, node.test),
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ]
+    # Else and elif clauses...
+    if node.orelse:
+        # We *must* delay the evaluation of the else clause.
+        result.append((self.if_else_helper, node))
+    return result
+
+def if_else_helper(self, node: Node) -> ActionList:
+    """Delayed evaluation!"""
+    token = self.find_next_significant_token()
+    if token.value == 'else':
+        return [
+            (self.name, 'else'),
+            (self.op, ':'),
+            (self.visit, node.orelse),
+        ]
+    return [
+        (self.visit, node.orelse),
+    ]
+#@+node:ekr.20220330133336.65: *8* << do_If docstring >>
+"""
+The parse trees for the following are identical!
+
+  if 1:            if 1:
+      pass             pass
+  else:            elif 2:
+      if 2:            pass
+          pass
+
+So there is *no* way for the 'if' visitor to disambiguate the above two
+cases from the parse tree alone.
+
+Instead, we scan the tokens list for the next 'if', 'else' or 'elif' token.
+"""
+#@+node:ekr.20220330133336.66: *7* iterative.Import & helper
+def do_Import(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.name, 'import'),
+    ]
+    for alias in node.names:
+        result.append((self.name, alias.name))
+        if alias.asname:
+            result.extend([
+                (self.name, 'as'),
+                (self.name, alias.asname),
+            ])
+    return result
+#@+node:ekr.20220330133336.67: *7* iterative.ImportFrom
+# ImportFrom(identifier? module, alias* names, int? level)
+
+def do_ImportFrom(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.name, 'from'),
+    ]
+    for _i in range(node.level):
+        result.append((self.op, '.'))
+    if node.module:
+        result.append((self.name, node.module))
+    result.append((self.name, 'import'))
+    # No need to put commas.
+    for alias in node.names:
+        if alias.name == '*':  # #1851.
+            result.append((self.op, '*'))
+        else:
+            result.append((self.name, alias.name))
+        if alias.asname:
+            result.extend([
+                (self.name, 'as'),
+                (self.name, alias.asname),
+            ])
+    return result
+#@+node:ekr.20220402124844.1: *7* iterative.Match* (Python 3.10+)
+# Match(expr subject, match_case* cases)
+
+# match_case = (pattern pattern, expr? guard, stmt* body)
+
+# Full syntax diagram: # https://peps.python.org/pep-0634/#appendix-a
+
+def do_Match(self, node: Node) -> ActionList:
+
+    cases = getattr(node, 'cases', [])
+    result: ActionList = [
+        (self.name, 'match'),
+        (self.visit, node.subject),
+        (self.op, ':'),
+    ]
+    for case in cases:
+        result.append((self.visit, case))
+    return result
+#@+node:ekr.20220402124844.2: *8* iterative.match_case
+#  match_case = (pattern pattern, expr? guard, stmt* body)
+
+def do_match_case(self, node: Node) -> ActionList:
+
+    guard = getattr(node, 'guard', None)
+    body = getattr(node, 'body', [])
+    result: ActionList = [
+        (self.name, 'case'),
+        (self.visit, node.pattern),
+    ]
+    if guard:
+        result.extend([
+            (self.name, 'if'),
+            (self.visit, guard),
+        ])
+    result.append((self.op, ':'))
+    for statement in body:
+        result.append((self.visit, statement))
+    return result
+#@+node:ekr.20220402124844.3: *8* iterative.MatchAs
+# MatchAs(pattern? pattern, identifier? name)
+
+def do_MatchAs(self, node: Node) -> ActionList:
+    pattern = getattr(node, 'pattern', None)
+    name = getattr(node, 'name', None)
+    result: ActionList = []
+    if pattern and name:
+        result.extend([
+            (self.visit, pattern),
+            (self.name, 'as'),
+            (self.name, name),
+        ])
+    elif pattern:
+        result.append((self.visit, pattern))  # pragma: no cover
+    else:
+        result.append((self.name, name or '_'))
+    return result
+#@+node:ekr.20220402124844.4: *8* iterative.MatchClass
+# MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
+
+def do_MatchClass(self, node: Node) -> ActionList:
+
+    patterns = getattr(node, 'patterns', [])
+    kwd_attrs = getattr(node, 'kwd_attrs', [])
+    kwd_patterns = getattr(node, 'kwd_patterns', [])
+    result: ActionList = [
+        (self.visit, node.cls),
+        (self.op, '('),
+    ]
+    for pattern in patterns:
+        result.append((self.visit, pattern))
+    for i, kwd_attr in enumerate(kwd_attrs):
+        result.extend([
+            (self.name, kwd_attr),  # a String.
+            (self.op, '='),
+            (self.visit, kwd_patterns[i]),
+        ])
+    result.append((self.op, ')'))
+    return result
+#@+node:ekr.20220402124844.5: *8* iterative.MatchMapping
+# MatchMapping(expr* keys, pattern* patterns, identifier? rest)
+
+def do_MatchMapping(self, node: Node) -> ActionList:
+    keys = getattr(node, 'keys', [])
+    patterns = getattr(node, 'patterns', [])
+    rest = getattr(node, 'rest', None)
+    result: ActionList = [
+        (self.op, '{'),
+    ]
+    for i, key in enumerate(keys):
+        result.extend([
+            (self.visit, key),
+            (self.op, ':'),
+            (self.visit, patterns[i]),
+        ])
+    if rest:
+        result.extend([
+            (self.op, '**'),
+            (self.name, rest),  # A string.
+        ])
+    result.append((self.op, '}'))
+    return result
+#@+node:ekr.20220402124844.6: *8* iterative.MatchOr
+# MatchOr(pattern* patterns)
+
+def do_MatchOr(self, node: Node) -> ActionList:
+
+    patterns = getattr(node, 'patterns', [])
+    result: ActionList = []
+    for i, pattern in enumerate(patterns):
+        if i > 0:
+            result.append((self.op, '|'))
+        result.append((self.visit, pattern))
+    return result
+#@+node:ekr.20220402124844.7: *8* iterative.MatchSequence
+# MatchSequence(pattern* patterns)
+
+def do_MatchSequence(self, node: Node) -> ActionList:
+    patterns = getattr(node, 'patterns', [])
+    result: ActionList = []
+    # Scan for the next '(' or '[' token, skipping the 'case' token.
+    token = None
+    for token in self.tokens[self.px + 1 :]:
+        if token.kind == 'op' and token.value in '([':
+            break
+        if is_significant_token(token):
+            # An implicit tuple: there is no '(' or '[' token.
+            token = None
+            break
+    else:
+        raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
+    if token:
+        result.append((self.op, token.value))
+    for pattern in patterns:
+        result.append((self.visit, pattern))
+    if token:
+        val = ']' if token.value == '[' else ')'
+        result.append((self.op, val))
+    return result
+#@+node:ekr.20220402124844.8: *8* iterative.MatchSingleton
+# MatchSingleton(constant value)
+
+def do_MatchSingleton(self, node: Node) -> ActionList:
+    """Match True, False or None."""
+    return [
+        (self.token, ('name', repr(node.value))),
+    ]
+#@+node:ekr.20220402124844.9: *8* iterative.MatchStar
+# MatchStar(identifier? name)
+
+def do_MatchStar(self, node: Node) -> ActionList:
+
+    name = getattr(node, 'name', None)
+    result: ActionList = [
+        (self.op, '*'),
+    ]
+    if name:
+        result.append((self.name, name))
+    return result
+#@+node:ekr.20220402124844.10: *8* iterative.MatchValue
+# MatchValue(expr value)
+
+def do_MatchValue(self, node: Node) -> ActionList:
+
+    return [
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.78: *7* iterative.Nonlocal
+# Nonlocal(identifier* names)
+
+def do_Nonlocal(self, node: Node) -> ActionList:
+
+    # nonlocal %s\n' % ','.join(node.names))
+    # No need to put commas.
+    result: ActionList = [
+        (self.name, 'nonlocal'),
+    ]
+    for z in node.names:
+        result.append((self.name, z))
+    return result
+#@+node:ekr.20220330133336.79: *7* iterative.Pass
+def do_Pass(self, node: Node) -> ActionList:
+
+    return ([
+        (self.name, 'pass'),
+    ])
+#@+node:ekr.20220330133336.80: *7* iterative.Raise
+# Raise(expr? exc, expr? cause)
+
+def do_Raise(self, node: Node) -> ActionList:
+
+    # No need to put commas.
+    exc = getattr(node, 'exc', None)
+    cause = getattr(node, 'cause', None)
+    tback = getattr(node, 'tback', None)
+    result: ActionList = [
+        (self.name, 'raise'),
+        (self.visit, exc),
+    ]
+    if cause:
+        result.extend([
+            (self.name, 'from'),  # #2446.
+            (self.visit, cause),
+        ])
+    result.append((self.visit, tback))
+    return result
+
+#@+node:ekr.20220330133336.81: *7* iterative.Return
+def do_Return(self, node: Node) -> ActionList:
+
+    return [
+        (self.name, 'return'),
+        (self.visit, node.value),
+    ]
+#@+node:ekr.20220330133336.82: *7* iterative.Try
+# Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+def do_Try(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        # Try line...
+        (self.name, 'try'),
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+        (self.visit, node.handlers),
+    ]
+    # Else...
+    if node.orelse:
+        result.extend([
+            (self.name, 'else'),
+            (self.op, ':'),
+            (self.visit, node.orelse),
+        ])
+    # Finally...
+    if node.finalbody:
+        result.extend([
+            (self.name, 'finally'),
+            (self.op, ':'),
+            (self.visit, node.finalbody),
+        ])
+    return result
+#@+node:ekr.20220330133336.83: *7* iterative.While
+def do_While(self, node: Node) -> ActionList:
+
+    # While line...
+        # while %s:\n'
+    result: ActionList = [
+        (self.name, 'while'),
+        (self.visit, node.test),
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ]
+    # Else clause...
+    if node.orelse:
+        result.extend([
+            (self.name, 'else'),
+            (self.op, ':'),
+            (self.visit, node.orelse),
+        ])
+    return result
+#@+node:ekr.20220330133336.84: *7* iterative.With
+# With(withitem* items, stmt* body)
+
+# withitem = (expr context_expr, expr? optional_vars)
+
+def do_With(self, node: Node) -> ActionList:
+
+    expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
+    items: List[ast.AST] = getattr(node, 'items', [])
+    result: ActionList = [
+        (self.name, 'with'),
+        (self.visit, expr),
+    ]
+    # No need to put commas.
+    for item in items:
+        result.append((self.visit, item.context_expr))
+        optional_vars = getattr(item, 'optional_vars', None)
+        if optional_vars is not None:
+            result.extend([
+                (self.name, 'as'),
+                (self.visit, item.optional_vars),
+            ])
+    result.extend([
+        # End the line.
+        (self.op, ':'),
+        # Body...
+        (self.visit, node.body),
+    ])
+    return result
+#@+node:ekr.20220330133336.85: *7* iterative.Yield
+def do_Yield(self, node: Node) -> ActionList:
+
+    result: ActionList = [
+        (self.name, 'yield'),
+    ]
+    if hasattr(node, 'value'):
+        result.extend([
+            (self.visit, node.value),
+        ])
+    return result
+#@+node:ekr.20220330133336.86: *7* iterative.YieldFrom
+# YieldFrom(expr value)
+
+def do_YieldFrom(self, node: Node) -> ActionList:
+
+    return ([
+        (self.name, 'yield'),
+        (self.name, 'from'),
+        (self.visit, node.value),
+    ])
+#@+node:ekr.20220402152331.1: *4* class TestIterative(TestTOG)
+class TestIterative(TestTOG):
+    """
+    Tests for the IterativeTokenGenerator class.
+
+    This class inherits:
+    - all the tests from the TestTOG class.
+    - most of the support code from the BaseTest class.
+    """
+    debug_list = []  # 'full-traceback', 'tokens', 'tree'
+
+    @others
+#@+node:edreamleo.20220429071246.1: *5* TestIterative.setUp
+def setUp(self):
+
+    if py_version < (3, 9):  # pragma: no cover
+        self.skipTest('Requires Python 3.9 or above')
+#@+node:ekr.20220402150424.1: *5* TestIterative.make_data (override)
+def make_data(self, contents, description=None):  # pragma: no cover
+    """Return (contents, tokens, tree) for the given contents."""
+    contents = contents.lstrip('\\\n')
+    if not contents:
+        return '', None, None
+    self.link_error = None
+    t1 = get_time()
+    self.update_counts('characters', len(contents))
+    # Ensure all tests end in exactly one newline.
+    contents = textwrap.dedent(contents).rstrip() + '\n'
+    # Create the TOG instance.
+    # This next line is why we must copy this entire method.
+    self.tog = IterativeTokenGenerator()  # Was TokenOrderGenerator().
+    self.tog.filename = description or g.callers(2).split(',')[0]
+    # Pass 0: create the tokens and parse tree
+    tokens = self.make_tokens(contents)
+    if not tokens:
+        self.fail('make_tokens failed')
+    tree = self.make_tree(contents)
+    if not tree:
+        self.fail('make_tree failed')
+    if 'contents' in self.debug_list:
+        dump_contents(contents)
+    if 'ast' in self.debug_list:
+        if py_version >= (3, 9):
+            # pylint: disable=unexpected-keyword-arg
+            g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+        else:
+            g.printObj(ast.dump(tree), tag='ast.dump')
+    if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
+        dump_ast(tree)  # pragma: no cover
+    if 'tokens' in self.debug_list:
+        dump_tokens(tokens)  # pragma: no cover
+    self.balance_tokens(tokens)
+    # Pass 1: create the links.
+    self.create_links(tokens, tree)
+    if 'post-tree' in self.debug_list:
+        dump_tree(tokens, tree)  # pragma: no cover
+    if 'post-tokens' in self.debug_list:
+        dump_tokens(tokens)  # pragma: no cover
+    t2 = get_time()
+    self.update_times('90: TOTAL', t2 - t1)
+    if self.link_error:
+        self.fail(self.link_error)  # pragma: no cover
+    return contents, tokens, tree
+#@+node:ekr.20220403063148.1: *5* Copies of TestOrange tests
+# Required for full coverage.
+# These might migrate to the TestTOG class.
+#@+node:ekr.20220403063936.1: *6* TestIterative.test_relative_imports
+def test_relative_imports(self):
+
+    # #2533.
+    contents = """\
+        from .module1 import w
+        from . module2 import x
+        from ..module1 import y
+        from .. module2 import z
+        from . import a
+        from.import b
+        from leo.core import leoExternalFiles
+        import leo.core.leoGlobals as g
+"""
+    expected = textwrap.dedent("""\
+        from .module1 import w
+        from .module2 import x
+        from ..module1 import y
+        from ..module2 import z
+        from . import a
+        from . import b
+        from leo.core import leoExternalFiles
+        import leo.core.leoGlobals as g
+""")
+    contents, tokens, tree = self.make_data(contents)
+    results = self.beautify(contents, tokens, tree)
+    self.assertEqual(expected, results)
+#@+node:ekr.20220403062001.1: *6* TestIterative.test_one_line_pet_peeves
+def test_one_line_pet_peeves(self):
+
+    # See https://peps.python.org/pep-0008/#pet-peeves
+    # See https://peps.python.org/pep-0008/#other-recommendations
+
+    # A copy of TestOrange.test_one_line_pet_peeves.
+    # Necessary for coverage testings for slices.
+
+    tag = 'test_one_line_pet_peeves'
+    # Except where noted, all entries are expected values....
+    if 0:
+        # Test fails or recents...
+        table = (
+            # """a[: 1 if True else 2 :]""",
+            """a[:-1]""",
+        )
+    else:
+        table = (
+            # Assignments...
+            # Slices (colons)...
+            """a[:-1]""",
+            """a[: 1 if True else 2 :]""",
+            """a[1 : 1 + 2]""",
+            """a[lower:]""",
+            """a[lower::]""",
+            """a[:upper]""",
+            """a[:upper:]""",
+            """a[::step]""",
+            """a[lower:upper:]""",
+            """a[lower:upper:step]""",
+            """a[lower + offset : upper + offset]""",
+            """a[: upper_fn(x) :]""",
+            """a[: upper_fn(x) : step_fn(x)]""",
+            """a[:: step_fn(x)]""",
+            """a[: upper_fn(x) :]""",
+            """a[: upper_fn(x) : 2 + 1]""",
+            """a[:]""",
+            """a[::]""",
+            """a[1:]""",
+            """a[1::]""",
+            """a[:2]""",
+            """a[:2:]""",
+            """a[::3]""",
+            """a[1:2]""",
+            """a[1:2:]""",
+            """a[:2:3]""",
+            """a[1:2:3]""",
+            # * and **, inside and outside function calls.
+            """a = b * c""",
+            # Now done in test_star_star_operator
+            # """a = b ** c""",  # Black has changed recently.
+            """f(*args)""",
+            """f(**kwargs)""",
+            """f(*args, **kwargs)""",
+            """f(a, *args)""",
+            # Calls...
+            """f(-1)""",
+            """f(-1 < 2)""",
+            """f(1)""",
+            """f(2 * 3)""",
+            """f(2 + name)""",
+            """f(a)""",
+            """f(a.b)""",
+            # Alas, the equal_sign_spaces hack in the TokenOrderGenerator class
+            # does not work in this class.
+            # """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+            # """f(a=2, *args)""",
+            """f(a[1 + 2])""",
+            """f({key: 1})""",
+            """t = (0,)""",
+            """x, y = y, x""",
+            # Dicts...
+            """d = {key: 1}""",
+            """d['key'] = a[i]""",
+            # Trailing comments: expect two spaces.
+            """whatever # comment""",
+            """whatever  # comment""",
+            """whatever   # comment""",
+            # Word ops...
+            """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
+            """print(v7 for v8 in v9)""",
+            # Unary ops...
+            """v = -1 if a < b else -2""",
+            # Returns...
+            """return -1""",
+        )
+    fails = 0
+    for i, contents in enumerate(table):
+        description = f"{tag} part {i}"
+        contents, tokens, tree = self.make_data(contents, description)
+        expected = self.blacken(contents)
+        results = self.beautify(contents, tokens, tree, filename=description)
+        if results != expected:  # pragma: no cover
+            fails += 1
+            print('')
+            print(f"TestIterative.test_one_line_pet_peeves: FAIL {fails}\n"
+                f"  contents: {contents.rstrip()}\n"
+                f"     black: {expected.rstrip()}\n"
+                f"    orange: {results.rstrip()}")
+    self.assertEqual(fails, 0)
+#@+node:ekr.20220403062532.1: *6* TestIterative.blacken
+def blacken(self, contents, line_length=None):  # pragma: no cover
+    """Return the results of running black on contents"""
+    # A copy of TestOrange.blacken
+    if not black:
+        self.skipTest('Can not import black')
+    # Suppress string normalization!
+    try:
+        mode = black.FileMode()
+        mode.string_normalization = False
+        if line_length is not None:
+            mode.line_length = line_length
+    except TypeError:
+        self.skipTest('old version of black')
+    return black.format_str(contents, mode=mode)
+#@+node:ekr.20191226195813.1: *4* class TokenOrderTraverser
+class TokenOrderTraverser:
+    """
+    Traverse an ast tree using the parent/child links created by the
+    TokenOrderGenerator class.
+
+    **Important**:
+
+    This class is a curio. It is no longer used in this file!
+    The Fstringify and ReassignTokens classes now use ast.walk.
+    """
+    @others
+#@+node:ekr.20191226200154.1: *5* TOT.traverse
+def traverse(self, tree: Node) -> int:
+    """
+    Call visit, in token order, for all nodes in tree.
+
+    Recursion is not allowed.
+
+    The code follows p.moveToThreadNext exactly.
+    """
+
+    def has_next(i: int, node: Node, stack: List[int]) -> bool:
+        """Return True if stack[i] is a valid child of node.parent."""
+        # g.trace(node.__class__.__name__, stack)
+        parent = node.parent
+        return bool(parent and parent.children and i < len(parent.children))
+
+    # Update stats
+
+    self.last_node_index = -1  # For visit
+    # The stack contains child indices.
+    node, stack = tree, [0]
+    seen = set()
+    while node and stack:
+        # g.trace(
+            # f"{node.node_index:>3} "
+            # f"{node.__class__.__name__:<12} {stack}")
+        # Visit the node.
+        assert node.node_index not in seen, node.node_index
+        seen.add(node.node_index)
+        self.visit(node)
+        # if p.v.children: p.moveToFirstChild()
+        children: List[ast.AST] = getattr(node, 'children', [])
+        if children:
+            # Move to the first child.
+            stack.append(0)
+            node = children[0]
+            # g.trace(' child:', node.__class__.__name__, stack)
+            continue
+        # elif p.hasNext(): p.moveToNext()
+        stack[-1] += 1
+        i = stack[-1]
+        if has_next(i, node, stack):
+            node = node.parent.children[i]
+            continue
+        # else...
+        # p.moveToParent()
+        node = node.parent
+        stack.pop()
+        # while p:
+        while node and stack:
+            # if p.hasNext():
+            stack[-1] += 1
+            i = stack[-1]
+            if has_next(i, node, stack):
+                # Move to the next sibling.
+                node = node.parent.children[i]
+                break  # Found.
+            # p.moveToParent()
+            node = node.parent
+            stack.pop()
+        # not found.
+        else:
+            break  # pragma: no cover
+    return self.last_node_index
+#@+node:ekr.20191227160547.1: *5* TOT.visit
+def visit(self, node: Node) -> None:
+
+    self.last_node_index += 1
+    assert self.last_node_index == node.node_index, (
+        self.last_node_index, node.node_index)
+#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
+class SyntaxSanitizer:
+
+    << SyntaxSanitizer docstring >>
+
+    def __init__(self, c, keep_comments):
+        self.c = c
+        self.keep_comments = keep_comments
+
+    @others
+#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
+r"""
+This class converts section references, @others and Leo directives to
+comments. This allows ast.parse to handle the result.
+
+Within section references, these comments must *usually* be executable:
+    
+BEFORE:
+    if condition:
+        <\< do something >\>
+AFTER:
+    if condition:
+        pass # do something
+        
+Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
+    
+BEFORE:
+    tips = [
+        <\< define tips >\>
+        ]
+
+AFTER:
+    tips = [
+        pass # define tips
+    ]
+    
+This fails because tips = [pass] is a SyntaxError.
+
+The beautify* and black* commands clearly report such failures.
+"""
+#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
+def comment_leo_lines(self, p=None, s0=None):
+    """
+    Replace lines containing Leonine syntax with **special comment lines** of the form:
+        
+        {lws}#{lws}{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    This convention allows uncomment_special_lines to restore these lines.
+    """
+    # Choose a marker that appears nowhere in s.
+    if p:
+        s0 = p.b
+    n = 5
+    while('#'+ ('!'*n)) in s0:
+        n += 1
+    comment = '#' + ('!' * n)
+    # Create a dict of directives.
+    d = {z: True for z in g.globalDirectiveList}
+    # Convert all Leonine lines to special comments.
+    i, lines, result = 0, g.splitLines(s0), []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        s_lstrip = s.lstrip()
+        # Comment out any containing a section reference.
+        j = s.find('<<')
+        k = s.find('>>') if j > -1 else -1
+        if -1 < j < k:
+            result.append(comment+s)
+            # Generate a properly-indented pass line.
+            j2 = g.skip_ws(s, 0)
+            result.append(f'{" "*j2}pass\n')
+        elif s_lstrip.startswith('@'):
+            # Comment out all other Leonine constructs.
+            if self.starts_doc_part(s):
+                # Comment the entire doc part, until @c or @code.
+                result.append(comment+s)
+                i += 1
+                while i < len(lines):
+                    s = lines[i]
+                    result.append(comment+s)
+                    i += 1
+                    if self.ends_doc_part(s):
+                        break
+            else:
+                j = g.skip_ws(s, 0)
+                assert s[j] == '@'
+                j += 1
+                k = g.skip_id(s, j, chars='-')
+                if k > j:
+                    word = s[j : k]
+                    if word == 'others':
+                        # Remember the original @others line.
+                        result.append(comment+s)
+                        # Generate a properly-indented pass line.
+                        result.append(f'{" "*(j-1)}pass\n')
+                    else:
+                        # Comment only Leo directives, not decorators.
+                        result.append(comment+s if word in d else s)
+                else:
+                    result.append(s)
+        elif s_lstrip.startswith('#') and self.keep_comments:
+            # A leading comment.
+            # Bug fix: Preserve lws in comments, too.
+            j2 = g.skip_ws(s, 0)
+            result.append(" "*j2+comment+s)
+        else:
+            # A plain line.
+            result.append(s)
+        if i == progress:
+            i += 1
+    return comment, ''.join(result)
+#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
+def starts_doc_part(self, s):
+    """Return True if s word matches @ or @doc."""
+    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
+
+def ends_doc_part(self, s):
+    """Return True if s word matches @c or @code."""
+    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
+#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
+def uncomment_leo_lines(self, comment, p, s0):
+    """Reverse the effect of comment_leo_lines."""
+    lines = g.splitLines(s0)
+    i, result = 0, []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        i += 1
+        if comment in s:
+            # One or more special lines.
+            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
+        else:
+            # A regular line.
+            result.append(s)
+        assert progress < i
+    return ''.join(result).rstrip() + '\n'
+#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
+def uncomment_special_lines(self, comment, i, lines, p, result, s):
+    """
+    This method restores original lines from the special comment lines
+    created by comment_leo_lines. These lines have the form:
+        
+        {lws}#{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    s is a line containing the comment delim.
+    i points at the *next* line.
+    Handle one or more lines, appending stripped lines to result.
+    """
+    #
+    # Delete the lws before the comment.
+    # This works because the tail contains the original whitespace.
+    assert comment in s
+    s = s.lstrip().replace(comment, '')
+    #
+    # Here, s is the original line.
+    if comment in s:
+        g.trace(f"can not happen: {s!r}")
+        return i
+    if self.starts_doc_part(s):
+        result.append(s)
+        while i < len(lines):
+            s = lines[i].lstrip().replace(comment, '')
+            i += 1
+            result.append(s)
+            if self.ends_doc_part(s):
+                break
+        return i
+    j = s.find('<<')
+    k = s.find('>>') if j > -1 else -1
+    if -1 < j < k or '@others' in s:
+        #
+        # A section reference line or an @others line.
+        # Such lines are followed by a pass line.
+        #
+        # The beautifier may insert blank lines before the pass line.
+        kind = 'section ref' if -1 < j < k else '@others'
+        # Restore the original line, including leading whitespace.
+        result.append(s)
+        # Skip blank lines.
+        while i < len(lines) and not lines[i].strip():
+            i += 1
+        # Skip the pass line.
+        if i < len(lines) and lines[i].lstrip().startswith('pass'):
+            i += 1
+        else:
+            g.trace(f"*** no pass after {kind}: {p.h}")
+    else:
+        # A directive line or a comment line.
+        result.append(s)
+    return i
+#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
+class TokenSync:
+    """A class to sync and remember tokens."""
+    # To do: handle comments, line breaks...
+    @others
+#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
+def __init__(self, s, tokens):
+    """Ctor for TokenSync class."""
+    assert isinstance(tokens, list)  # Not a generator.
+    self.s = s
+    self.first_leading_line = None
+    self.lines = [z.rstrip() for z in g.splitLines(s)]
+    # Order is important from here on...
+    self.nl_token = self.make_nl_token()
+    self.line_tokens = self.make_line_tokens(tokens)
+    self.blank_lines = self.make_blank_lines()
+    self.string_tokens = self.make_string_tokens()
+    self.ignored_lines = self.make_ignored_lines()
+#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
+def make_blank_lines(self):
+    """Return of list of line numbers of blank lines."""
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        # if any([self.token_kind(z) == 'nl' for z in aList]):
+        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
+            result.append(i)
+    return result
+#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
+def make_ignored_lines(self):
+    """
+    Return a copy of line_tokens containing ignored lines,
+    that is, full-line comments or blank lines.
+    These are the lines returned by leading_lines().
+    """
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        for z in aList:
+            if self.is_line_comment(z):
+                result.append(z)
+                break
+        else:
+            if i in self.blank_lines:
+                result.append(self.nl_token)
+            else:
+                result.append(None)
+    assert len(result) == len(self.line_tokens)
+    for i, aList in enumerate(result):
+        if aList:
+            self.first_leading_line = i
+            break
+    else:
+        self.first_leading_line = len(result)
+    return result
+#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
+def make_line_tokens(self, tokens):
+    """
+    Return a list of lists of tokens for each list in self.lines.
+    The strings in self.lines may end in a backslash, so care is needed.
+    """
+    import token as tm
+    n, result = len(self.lines), []
+    for i in range(0, n+1):
+        result.append([])
+    for token in tokens:
+        t1, t2, t3, t4, t5 = token
+        kind = tm.tok_name[t1].lower()
+        srow, scol = t3
+        erow, ecol = t4
+        line = erow - 1 if kind == 'string' else srow - 1
+        result[line].append(token)
+    assert len(self.lines) + 1 == len(result), len(result)
+    return result
+#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
+def make_nl_token(self):
+    """Return a newline token with '\n' as both val and raw_val."""
+    import token as tm
+    t1 = tm.NEWLINE
+    t2 = '\n'
+    t3 = (0, 0)  # Not used.
+    t4 = (0, 0)  # Not used.
+    t5 = '\n'
+    return t1, t2, t3, t4, t5
+#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
+def make_string_tokens(self):
+    """Return a copy of line_tokens containing only string tokens."""
+    result = []
+    for aList in self.line_tokens:
+        result.append([z for z in aList if self.token_kind(z) == 'string'])
+    assert len(result) == len(self.line_tokens)
+    return result
+#@+node:ekr.20160225102931.8: *4* ts.check_strings
+def check_strings(self):
+    """Check that all strings have been consumed."""
+    for i, aList in enumerate(self.string_tokens):
+        if aList:
+            g.trace(f"warning: line {i}. unused strings: {aList}")
+#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
+def is_line_comment(self, token):
+    """Return True if the token represents a full-line comment."""
+    import token as tm
+    t1, t2, t3, t4, t5 = token
+    kind = tm.tok_name[t1].lower()
+    raw_val = t5
+    return kind == 'comment' and raw_val.lstrip().startswith('#')
+#@+node:ekr.20160225102931.12: *4* ts.last_node
+def last_node(self, node):
+    """Return the node of node's tree with the largest lineno field."""
+
+    class LineWalker(ast.NodeVisitor):
+
+        def __init__(self):
+            """Ctor for LineWalker class."""
+            self.node = None
+            self.lineno = -1
+
+        def visit(self, node):
+            """LineWalker.visit."""
+            if hasattr(node, 'lineno'):
+                if node.lineno > self.lineno:
+                    self.lineno = node.lineno
+                    self.node = node
+            if isinstance(node, list):
+                for z in node:
+                    self.visit(z)
+            else:
+                self.generic_visit(node)
+
+    w = LineWalker()
+    w.visit(node)
+    return w.node
+#@+node:ekr.20160225102931.13: *4* ts.leading_lines
+def leading_lines(self, node):
+    """Return a list of the preceding comment and blank lines"""
+    # This can be called on arbitrary nodes.
+    leading = []
+    if hasattr(node, 'lineno'):
+        i, n = self.first_leading_line, node.lineno
+        while i < n:
+            token = self.ignored_lines[i]
+            if token:
+                s = self.token_raw_val(token).rstrip() + '\n'
+                leading.append(s)
+            i += 1
+        self.first_leading_line = i
+    return leading
+#@+node:ekr.20160225102931.14: *4* ts.leading_string
+def leading_string(self, node):
+    """Return a string containing all lines preceding node."""
+    return ''.join(self.leading_lines(node))
+#@+node:ekr.20160225102931.15: *4* ts.line_at
+def line_at(self, node, continued_lines=True):
+    """Return the lines at the node, possibly including continuation lines."""
+    n = getattr(node, 'lineno', None)
+    if n is None:
+        return f'<no line> for %s' % node.__class__.__name__
+    if continued_lines:
+        aList, n = [], n - 1
+        while n < len(self.lines):
+            s = self.lines[n]
+            if s.endswith('\\'):
+                aList.append(s[:-1])
+                n += 1
+            else:
+                aList.append(s)
+                break
+        return ''.join(aList)
+    return self.lines[n - 1]
+#@+node:ekr.20160225102931.16: *4* ts.sync_string
+def sync_string(self, node):
+    """Return the spelling of the string at the given node."""
+    n = node.lineno
+    tokens = self.string_tokens[n - 1]
+    if tokens:
+        token = tokens.pop(0)
+        self.string_tokens[n - 1] = tokens
+        return self.token_val(token)
+    g.trace('===== underflow', n, node.s)
+    return node.s
+#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
+def tokens_for_statement(self, node):
+    assert isinstance(node, ast.AST), node
+    name = node.__class__.__name__
+    if hasattr(node, 'lineno'):
+        tokens = self.line_tokens[node.lineno - 1]
+        g.trace(' '.join([self.dump_token(z) for z in tokens]))
+    else:
+        g.trace('no lineno', name)
+#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
+def trailing_comment(self, node):
+    """
+    Return a string containing the trailing comment for the node, if any.
+    The string always ends with a newline.
+    """
+    if hasattr(node, 'lineno'):
+        return self.trailing_comment_at_lineno(node.lineno)
+    g.trace('no lineno', node.__class__.__name__, g.callers())
+    return '\n'
+#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
+def trailing_comment_at_lineno(self, lineno):
+    """Return any trailing comment at the given node.lineno."""
+    tokens = self.line_tokens[lineno - 1]
+    for token in tokens:
+        if self.token_kind(token) == 'comment':
+            raw_val = self.token_raw_val(token).rstrip()
+            if not raw_val.strip().startswith('#'):
+                val = self.token_val(token).rstrip()
+                s = f' %s\n' % val
+                return s
+    return '\n'
+#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
+def trailing_lines(self):
+    """return any remaining ignored lines."""
+    trailing = []
+    i = self.first_leading_line
+    while i < len(self.ignored_lines):
+        token = self.ignored_lines[i]
+        if token:
+            s = self.token_raw_val(token).rstrip() + '\n'
+            trailing.append(s)
+        i += 1
+    self.first_leading_line = i
+    return trailing
+#@+node:ekr.20191122105543.1: *4* ts:dumps
+#@+node:ekr.20160225102931.9: *5* ts.dump_token
+def dump_token(self, token, verbose=False):
+    """Dump the token. It is either a string or a 5-tuple."""
+    import token as tm
+    if isinstance(token, str):
+        return token
+    t1, t2, t3, t4, t5 = token
+    kind = g.toUnicode(tm.tok_name[t1].lower())
+    # raw_val = g.toUnicode(t5)
+    val = g.toUnicode(t2)
+    if verbose:
+        return f'token: %10s %r' % (kind, val)
+    return val
+#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
+def token_kind(self, token):
+    """Return the token's type."""
+    t1, t2, t3, t4, t5 = token
+    import token as tm
+    return g.toUnicode(tm.tok_name[t1].lower())
+
+def token_raw_val(self, token):
+    """Return the value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t5)
+
+def token_val(self, token):
+    """Return the raw value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t2)
+#@+node:ekr.20160225102931.11: *5* ts.join
+def join(self, aList, sep=','):
+    """return the items of the list joined by sep string."""
+    tokens = []
+    for i, token in enumerate(aList or []):
+        tokens.append(token)
+        if i < len(aList) - 1:
+            tokens.append(sep)
+    return tokens
+#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
+def scan_for_values(self):  # pragma: no cover
+    """
+    **Important**: This method is not used. It shows how to "parse"
+    the RHS of an % operator using tokens instead of a parse tree. 
+    
+    This is a recursive descent parser. It is comprable in complexity
+    to fs.scan_format_string.
+    
+    Return a list of possibly parenthesized values for the format string.
+    
+    This method never actually consumes tokens.
+    
+    If all goes well, we'll skip all tokens in the tokens list.
+    """
+
+    # pylint: disable=no-member # This is example code.
+    # Skip the '%'
+    new_token = self.new_token
+    assert self.look_ahead(0) == ('op', '%')
+    token_i, tokens = self.skip_ahead(0, 'op', '%')
+    # Skip '(' if it's next
+    include_paren = self.look_ahead(token_i) == ('op', '(')
+    if include_paren:
+        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+        tokens.extend(skipped_tokens)
+    # Find all tokens up to the first ')' or 'for'
+    values, value_list = [], []
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        token = self.tokens[token_i]
+        token_i += 1
+        tokens.append(token)
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('newline', 'nl'):
+            if include_paren or val.endswith('\\\n'):
+                # Continue scanning, ignoring the newline.
+                continue
+            # The newline ends the scan.
+            values.append(value_list)  # Retain the tokens!
+            if not include_paren:  # Bug fix.
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('op', ')'):
+            values.append(value_list)
+            if not include_paren:
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('name', 'for'):
+            self.add_trailing_ws = True
+            tokens.pop()  # Rescan the 'for'
+            values.append(value_list)
+            break
+        if (kind, val) == ('op', ','):
+            values.append(value_list)
+            value_list = []
+        elif kind == 'op' and val in '([{':
+            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
+            value_list.extend(values_list2)
+            tokens.extend(self.tokens[token_i:token_i2])
+            token_i = token_i2
+        elif kind == 'name':
+            # Ensure separation of names.
+            value_list.append(new_token(kind, val))
+            value_list.append(new_token('ws', ' '))
+        else:
+            value_list.append(new_token(kind, val))
+    return values, tokens
+#@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
+class TestTOT(BaseTest):
+    """Tests for the TokenOrderTraverser class."""
+    @others
+#@+node:ekr.20200111115318.1: *4* test_tot.test_traverse
+def test_traverse(self):
+
+    contents = """\
+f(1)
+b = 2 + 3
+"""
+# print('%s = %s' % (2+3, 4*5))
+    if 1:
+        contents, tokens, tree = self.make_file_data('leoApp.py')
+    else:
+        contents, tokens, tree = self.make_data(contents)
+    tot = TokenOrderTraverser()
+    t1 = get_time()
+    n_nodes = tot.traverse(tree)
+    t2 = get_time()
+    self.update_counts('nodes', n_nodes)
+    self.update_times('50: TOT.traverse', t2 - t1)
+    # self.dump_stats()
 #@+node:ekr.20211014154452.1: ** Abandoned files
 #@+node:ekr.20160517182239.1: *3* ../../flake8-leo.py
 """
