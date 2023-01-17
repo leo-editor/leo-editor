@@ -990,8 +990,6 @@ if 1:  # pragma: no cover
         else:
             node.first_i = min(node.first_i, token.index)
             node.last_i = max(node.last_i, token.index)
-
-        ### g.trace(f"{token!s:30} {node.__class__.__name__:16} {node.first_i}..{node.last_i}")
     #@+node:ekr.20191225055616.1: *4* function: replace_node
     def replace_node(new_node: Node, old_node: Node) -> None:
         """Replace new_node by old_node in the parse tree."""
@@ -2995,7 +2993,6 @@ class TokenOrderGenerator:
             add_token_to_token_list(token, node)
             # Special case. Inject equal_sign_spaces into '=' tokens.
             if token.kind == 'op' and token.value == '=':
-                ### g.trace('equal_sign_spaces', self.equal_sign_spaces)
                 token.equal_sign_spaces = self.equal_sign_spaces
     #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
     def sync_name(self, val: str) -> None:
