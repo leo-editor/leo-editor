@@ -1784,7 +1784,8 @@ class FileCommands:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
-        gnxSet: Set[str] = set()  # holds all gnx found so far, to exclude adding headlines of already defined gnx.
+        # holds all gnx found so far, to exclude adding headlines of already defined gnx.
+        gnxSet: Set[str] = set()
 
         if self.usingClipboard:  # write the current tree.
             # Node to be root of tree to be put on clipboard

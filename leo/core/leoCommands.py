@@ -796,7 +796,13 @@ class Commands:
             g.app.log = oldLog
             self.unredirectScriptOutput()
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
-    def executeScriptHelper(self, args: Any, define_g: Any, define_name: Any, namespace: Any, script: Any) -> None:
+    def executeScriptHelper(self,
+        args: Any,
+        define_g: Any,
+        define_name: Any,
+        namespace: Any,
+        script: Any,
+    ) -> None:
         c = self
         if c.p:
             p = c.p.copy()  # *Always* use c.p and pass c.p to script.
@@ -3513,7 +3519,12 @@ class Commands:
                 return val
 
             menu.add_command(menu,
-                accelerator=accelerator, command=command, commandName=commandName, label=label, underline=underline)
+                accelerator=accelerator,
+                command=command,
+                commandName=commandName,
+                label=label,
+                underline=underline,
+            )
         else:
             g.trace('can not happen: no "command" arg')
     #@+node:ekr.20171123203044.1: *5* c.Menu Enablers
@@ -3924,14 +3935,18 @@ class Commands:
             g.es_print(f"Does not exist: {dir_}")
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
+    #@@nobeautify
+
     def cloneFindByPredicate(
         self,
-        generator: Any,  # The generator used to traverse the tree.
-        predicate: Callable,  # A function of one argument p, returning True  # if p should be included in the results.
-        failMsg: str = None,  # Failure message. Default is no message.
+        generator: Any,         # The generator used to traverse the tree.
+        predicate: Callable,    # A function of one argument p, returning True
+                                # if p should be included in the results.
+        failMsg: str = None,    # Failure message. Default is no message.
         flatten: bool = False,  # True: Put all matches at the top level.
-        iconPath: str = None,  # Full path to icon to attach to all matches.
-        undoType: str = None,  # The undo name, shown in the Edit:Undo menu.  # The default is 'clone-find-predicate'
+        iconPath: str = None,   # Full path to icon to attach to all matches.
+        undoType: str = None,   # The undo name, shown in the Edit:Undo menu.
+                                # The default is 'clone-find-predicate'
     ) -> Position:
         """
         Traverse the tree given using the generator, cloning all positions for

@@ -859,7 +859,11 @@ class Undoer:
         bunch.oldParent = p.parent()
         return bunch
     #@+node:ekr.20050411193627.4: *5* u.beforeInsertNode
-    def beforeInsertNode(self, p: Position, pasteAsClone: bool = False, copiedBunchList: List[g.Bunch] = None) -> None:
+    def beforeInsertNode(self,
+        p: Position,
+        pasteAsClone: bool = False,
+        copiedBunchList: List[g.Bunch] = None,
+    ) -> None:
         u = self
         if copiedBunchList is None:
             copiedBunchList = []

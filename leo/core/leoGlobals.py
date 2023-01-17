@@ -3867,7 +3867,11 @@ def readFileIntoString(
         g.es_exception()
     return None, None
 #@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString
-def readFileIntoUnicodeString(fn: str, encoding: Optional[str] = None, silent: bool = False) -> Optional[str]:
+def readFileIntoUnicodeString(
+    fn: str,
+    encoding: Optional[str] = None,
+    silent: bool = False,
+) -> Optional[str]:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -6086,7 +6090,12 @@ def prettyPrintType(obj: Any) -> str:
         t = t[:-2]
     return t
 #@+node:ekr.20111107181638.9741: *3* g.print_exception
-def print_exception(full: bool = True, c: Cmdr = None, flush: bool = False, color: str = "red") -> Tuple[str, int]:
+def print_exception(
+    full: bool = True,
+    c: Cmdr = None,
+    flush: bool = False,
+    color: str = "red",
+) -> Tuple[str, int]:
     """Print exception info about the last exception."""
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()

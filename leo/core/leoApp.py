@@ -2407,8 +2407,10 @@ class LoadManager:
         """Create the data structures describing importer plugins."""
         # Allow plugins to be defined in ~/.leo/plugins.
         for pattern in (
-            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
-            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),  # leo/plugins/importers.
+            # ~/.leo/plugins.
+            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),
+            # leo/plugins/importers.
+            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),
         ):
             filenames = g.glob_glob(pattern)
             for filename in filenames:
