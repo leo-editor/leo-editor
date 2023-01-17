@@ -3200,12 +3200,12 @@ class TokenOrderGenerator:
             assert isinstance(z, ast.arg)
             self.visit(z)
             if i >= n_plain:
+                old = self.equal_sign_spaces
                 try:
-                    old_equal_sign_spaces = self.equal_sign_spaces
                     self.equal_sign_spaces = getattr(z, 'annotation', None) is not None
                     self.op('=')
                 finally:
-                    self.equal_sign_spaces = old_equal_sign_spaces  # pylint: disable=used-before-assignment
+                    self.equal_sign_spaces = old
                 self.visit(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
@@ -3856,12 +3856,12 @@ class TokenOrderGenerator:
                         self.arg_helper(z.value)
                     else:
                         self.arg_helper(z.arg)
+                        old = self.equal_sign_spaces
                         try:
-                            old_equal_sign_spaces = self.equal_sign_spaces
                             self.equal_sign_spaces = False
                             self.op('=')
                         finally:
-                            self.equal_sign_spaces = old_equal_sign_spaces  # pylint: disable=used-before-assignment
+                            self.equal_sign_spaces = old
                         self.arg_helper(z.value)
                 else:
                     self.arg_helper(z)
