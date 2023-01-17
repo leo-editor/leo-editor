@@ -3464,7 +3464,7 @@ class Orange:
         self.tree = tree
         self.add_token('file-start', '')
         self.push_state('file-start')
-        for i, token in enumerate(tokens):
+        for token in tokens:
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
             if self.verbatim:
