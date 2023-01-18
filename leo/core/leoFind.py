@@ -422,8 +422,8 @@ class LeoFind:
         if not self.check_args('change-then-find'):
             return False
         if self.change_selection(p):
-            self.do_find_next(settings)
-        return True
+            return bool(self.do_find_next(settings))
+        return False
 
     #@+node:ekr.20160224175312.1: *4* find.clone-find_marked & helper
     @cmd('clone-find-all-marked')
