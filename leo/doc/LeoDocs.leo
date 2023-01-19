@@ -543,6 +543,7 @@
 <v t="ekr.20230119101215.1"><vh>@rst-no-head Leo's vips</vh></v>
 <v t="ekr.20230119101405.1"><vh>@rst-no-head Contributors</vh></v>
 <v t="ekr.20230119101501.1"><vh>@rst-no-head Plugin authores</vh></v>
+<v t="ekr.20230119134825.1"><vh>@rst-no-head Licensing</vh></v>
 </v>
 <v t="ekr.20090221070927.1"><vh>@rst html/license.html</vh></v>
 </v>
@@ -2421,8 +2422,8 @@
 <v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20050831184021.4"></v>
-<v t="ekr.20230119084156.1"><vh>Update acknowledgements</vh></v>
 <v t="ekr.20040414172218.4"></v>
+<v t="ekr.20230119134825.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8742,7 +8743,7 @@ Nevertheless, these sentinels can be useful in special situations.
   Tribal Lion: licensed from:
   www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
   --&gt;
-  &lt;img class="Leo's lion logo" src="_static/LeoLogo-Small.jpg" alt="Logo"/&gt;&lt;/a&gt;
+  &lt;img class="Leo's lion logo" src="_static/LeoLogo.svg" alt="Logo"/&gt;&lt;/a&gt;
 &lt;/p&gt;
 
 &lt;p&gt;
@@ -31508,9 +31509,6 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20230119084156.1">- Paul S. Wilson cleaned up Leo's Wikipedia entry.
-
-- [Leo's Lion Logo](https://www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018) is licensed from [dreamstime](https://www.dreamstime.com/).</t>
 <t tx="ekr.20230119101059.1">From the movie, My Cousin Vinny::
 
     Mona Lisa Vito: So what's your problem?
@@ -31572,6 +31570,10 @@ Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Be
 This list is out of date!
 </t>
 <t tx="ekr.20230119101501.1"></t>
+<t tx="ekr.20230119134825.1">.. _`Tribal Lion`: www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
+.. _`dreamstime.com`: www.dreamstime.com
+
+Leo's Logo is the `Tribal Lion` image licensed from `dreamstime.com`.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
