@@ -8812,8 +8812,11 @@ Nevertheless, these sentinels can be useful in special situations.
 <t tx="ekr.20100808060203.4283">@language html
 
 &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
-  &lt;!-- &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt; --&gt;
-  &lt;img class="logo" src="_static/LeoLogo-Small.jpg" alt="Logo"/&gt;&lt;/a&gt;
+  &lt;!--
+  Tribal Lion: licensed from:
+  www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
+  --&gt;
+  &lt;img class="Leo's lion logo" src="_static/LeoLogo-Small.jpg" alt="Logo"/&gt;&lt;/a&gt;
 &lt;/p&gt;
 
 &lt;p&gt;
@@ -10676,8 +10679,7 @@ The following nodes may appear *either* as a direct child of the @slideshow node
 
 @sphinx_path = &lt;path&gt;
   This directory contains the slides directory,
-  and the following files: 'conf.py',
-  'Leo4-80-border.jpg', 'Makefile' and 'make.bat'.
+  and the following files: 'conf.py', 'Makefile' and 'make.bat'.
 
 @screenshot_height = &lt;int&gt;
   The height in pixels of screenshots.
