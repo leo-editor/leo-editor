@@ -1614,8 +1614,7 @@ The following nodes may appear *either* as a direct child of the @slideshow node
 
 @sphinx_path = <path>
   This directory contains the slides directory,
-  and the following files: 'conf.py',
-  'Leo4-80-border.jpg', 'Makefile' and 'make.bat'.
+  and the following files: 'conf.py', 'Makefile' and 'make.bat'.
 
 @screenshot_height = <int>
   The height in pixels of screenshots.
