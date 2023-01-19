@@ -537,7 +537,13 @@
 <v t="ekr.20180303013355.1"><vh>Matt Wilkie</vh></v>
 </v>
 </v>
-<v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh></v>
+<v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh>
+<v t="ekr.20230119101059.1"><vh>@rst-no-head Opening quote</vh></v>
+<v t="ekr.20230119101129.1"><vh>@rst-no-head Leo and More</vh></v>
+<v t="ekr.20230119101215.1"><vh>@rst-no-head Leo's vips</vh></v>
+<v t="ekr.20230119101405.1"><vh>@rst-no-head Contributors</vh></v>
+<v t="ekr.20230119101501.1"><vh>@rst-no-head Plugin authores</vh></v>
+</v>
 <v t="ekr.20090221070927.1"><vh>@rst html/license.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
@@ -2414,7 +2420,9 @@
 <v t="ekr.20100808060203.4283"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
 <v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20050831184021.4"></v>
 <v t="ekr.20230119084156.1"><vh>Update acknowledgements</vh></v>
+<v t="ekr.20040414172218.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3639,88 +3647,6 @@ Important files:
 Acknowledgements
 ################
 
-From the movie, My Cousin Vinny::
-
-    Mona Lisa Vito: So what's your problem?
-    Vinny Gambini: My problem is, I wanted to win my first case
-    without any help from anybody.
-    Mona Lisa: Well, I guess that plan's moot.
-    Vinny : Yeah.
-    Mona Lisa: You know, this could be a sign of things to come.
-    You win all your cases, but with somebody else's help, right?
-    You win case after case, and then afterwards you have to go up
-    to somebody and you have to say, "thank you."
-    [pause]
-    Oh my God, what a fucking nightmare! 
-
-Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. Leo's clone nodes are inspired by MORE.
-
-**Leo's VIPs**
-
-::
-
-    When, in disgrace with fortune and men’s eyes,
-    I all alone beweep my outcast state,
-    And trouble deaf heaven with my bootless cries,
-    And look upon myself and curse my fate,
-    Wishing me like to one more rich in hope,
-    Featured like him, like him with friends possessed,
-    Desiring this man’s art and that man’s scope,
-    With what I most enjoy contented least;
-    Yet in these thoughts myself almost despising,
-    Haply I think on thee, and then my state,
-    (Like to the lark at break of day arising
-    From sullen earth) sings hymns at heaven’s gate;
-           For thy sweet love remembered such wealth brings
-           That then I scorn to change my state with kings.
-
-    —William Shakespeare, Sonnet 29.
-
-Leo's very important people:
-
-- David Brock wrote TSyntaxMemo, used in early versions of Leo.
-- Terry Brown wrote important plugins, including Leo's user-modifiable panes.
-- e inspired @button nodes, a brilliant idea.
-- The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
-- Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
-- The Jupyter development team taught me how to support pygments colorizing.
-- Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
-- Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
-- Donald Knuth invented the CWEB language and literate programming.
-- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean.
-  Bernhard also inspired Leo's generators and position class.
-- Joe Orr created LeoVue and XSLT stylesheets for Leo.
-- John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
-- Tsuchi Noko created transparent icons.
-- Neal Norwitz wrote PyChecker.
-- Félix Malboeuf wrote leoInteg, leoserver.py and leoclient.py.
-- Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
-- Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
-- François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
-- Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
-- Edward K. Ream is Leo's project leader and chief programmer.
-- Rich Ries has contributed a huge number of suggestions.
-- Guido van Rossum created Python.
-- Steven P. Schaefer pointed out security problems.
-- Gil Shwartz helped with unicode support.
-- Phil Straus has been a great friend and constant support.
-- Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
-- Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
-- Dave Winer created MORE, the foundation of Leo's visual design.
-- Dan Winkler helped support Leo on the Mac.
-
-Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
-
-The following people reported bugs, answered questions, and made suggestions for improving Leo:
-
-Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown, Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe Elza, Reinhard Engle, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P. Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis, Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli, Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin Montcrieffe, Will Munslow, Lewis Neal, Chad Netzer, Derick van Niekerk, Jeff Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson, Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck, Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley, Wim Wijnders, Dan Winkler, Vadim Zeitlin.
-
-The following have contributed plugins to Leo:
-
-Rodrigo Benenson, Félix Malboeuf, Felix Breuer, Terry Brown, Mike Crowe, Josef Dalcolmo, Michael Dawson, e, Roger Erens, Andrea Galimberti, Engelbert Gruber, Timo Honkasalo, Jaakko Kourula, Maxim Krikun, Zhang Le, LeoUser, Frédéric Momméja, Bernhard Mulder, Mark Ng, Alexis Gendron Paquette, Paul Paterson, Jacob Peck, Dan Rahmel, Davide Salomoni, Ed Taekema, Kent Tenney, Brian Theado, Ville M. Vainio, Steve Zatz.
-
-The following people have made generous donations to the Leo project: Robert Low, Nic Cave-Lynch.
 </t>
 <t tx="ekr.20041201080436">def appendToRecentFiles(self, files):
     rf = self
@@ -31585,6 +31511,67 @@ unl: Conclusion
 <t tx="ekr.20230119084156.1">- Paul S. Wilson cleaned up Leo's Wikipedia entry.
 
 - [Leo's Lion Logo](https://www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018) is licensed from [dreamstime](https://www.dreamstime.com/).</t>
+<t tx="ekr.20230119101059.1">From the movie, My Cousin Vinny::
+
+    Mona Lisa Vito: So what's your problem?
+    Vinny Gambini: My problem is, I wanted to win my first case
+    without any help from anybody.
+    Mona Lisa: Well, I guess that plan's moot.
+    Vinny : Yeah.
+    Mona Lisa: You know, this could be a sign of things to come.
+    You win all your cases, but with somebody else's help, right?
+    You win case after case, and then afterwards you have to go up
+    to somebody and you have to say, "thank you."
+    [pause]
+    Oh my God, what a fucking nightmare!
+</t>
+<t tx="ekr.20230119101129.1">Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written.
+More inspired Leo's cloned nodes.
+</t>
+<t tx="ekr.20230119101215.1">Leo's very important people:
+
+- David Brock wrote TSyntaxMemo, used in early versions of Leo.
+- Terry Brown wrote important plugins, including Leo's user-modifiable panes.
+- e inspired @button nodes, a brilliant idea.
+- The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
+- Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
+- The Jupyter development team taught me how to support pygments colorizing.
+- Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
+- Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
+- Donald Knuth invented the CWEB language and literate programming.
+- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean.
+  Bernhard also inspired Leo's generators and position class.
+- Joe Orr created LeoVue and XSLT stylesheets for Leo.
+- John K. Ousterhout created tcl/Tk, used in early versions of Leo.
+- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
+- Tsuchi Noko created transparent icons.
+- Neal Norwitz wrote PyChecker.
+- Félix Malboeuf wrote leoInteg, leoserver.py and leoclient.py.
+- Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
+- Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
+- François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
+- Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
+- Edward K. Ream is Leo's project leader and chief programmer.
+- Rich Ries has contributed a huge number of suggestions.
+- Guido van Rossum created Python.
+- Steven P. Schaefer pointed out security problems.
+- Gil Shwartz helped with unicode support.
+- Phil Straus has been a great friend and constant support.
+- Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
+- Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
+- Paul S. Wilson cleaned up Leo's Wikipedia entry.
+- Dave Winer created MORE, the foundation of Leo's visual design.
+- Dan Winkler helped support Leo on the Mac.
+
+Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
+</t>
+<t tx="ekr.20230119101405.1">The following people reported bugs, answered questions, and made suggestions for improving Leo:
+
+Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown, Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe Elza, Reinhard Engle, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P. Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis, Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli, Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin Montcrieffe, Will Munslow, Lewis Neal, Chad Netzer, Derick van Niekerk, Jeff Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson, Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck, Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley, Wim Wijnders, Dan Winkler, Vadim Zeitlin.
+
+This list is out of date!
+</t>
+<t tx="ekr.20230119101501.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
