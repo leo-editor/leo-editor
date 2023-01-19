@@ -2414,6 +2414,7 @@
 <v t="ekr.20100808060203.4283"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
 <v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20230119084156.1"><vh>Update acknowledgements</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8812,7 +8813,7 @@ Nevertheless, these sentinels can be useful in special situations.
 
 &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
   &lt;!-- &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt; --&gt;
-  &lt;img class="logo" src="_static/LeoLogo.tif" alt="Logo"/&gt;&lt;/a&gt;
+  &lt;img class="logo" src="_static/LeoLogo-Small.jpg" alt="Logo"/&gt;&lt;/a&gt;
 &lt;/p&gt;
 
 &lt;p&gt;
@@ -31579,6 +31580,9 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
+<t tx="ekr.20230119084156.1">- Paul S. Wilson cleaned up Leo's Wikipedia entry.
+
+- [Leo's Lion Logo](https://www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018) is licensed from [dreamstime](https://www.dreamstime.com/).</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
