@@ -106,7 +106,7 @@ html_theme_options = {
 
 # The name of an image file (relative to this directory) at the top of the sidebar.
 #html_logo = None
-html_logo = 'LeoLogo-Small.jpg'
+html_logo = 'LeoLogo.svg'
 
 # The name of an image file (within the static path) to use as favicon of the docs.
 # Should be a Windows icon file (.ico) being 16x16 or 32x32 pixels large.

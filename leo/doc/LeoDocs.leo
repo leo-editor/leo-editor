@@ -2418,6 +2418,7 @@
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20100808060203.4273"></v>
+<v t="ekr.20040414172218.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3642,6 +3643,10 @@ Important files:
 Acknowledgements
 ################
 
+.. |br| raw:: html
+
+   &lt;br /&gt;
+   
 </t>
 <t tx="ekr.20041201080436">def appendToRecentFiles(self, files):
     rf = self
@@ -31424,7 +31429,7 @@ unl: Conclusion
     [pause]
     Oh my God, what a fucking nightmare!
 </t>
-<t tx="ekr.20230119101129.1">Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written.
+<t tx="ekr.20230119101129.1">Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. |br|
 More inspired Leo's cloned nodes.
 </t>
 <t tx="ekr.20230119101215.1">Leo's very important people:
@@ -31432,20 +31437,21 @@ More inspired Leo's cloned nodes.
 - David Brock wrote TSyntaxMemo, used in early versions of Leo.
 - Terry Brown wrote important plugins, including Leo's user-modifiable panes.
 - e inspired @button nodes, a brilliant idea.
-- The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
+- The late Bob Fitzwater kept me focused on design. |br|
+  Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
 - The Jupyter development team taught me how to support pygments colorizing.
 - Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
 - Donald Knuth invented the CWEB language and literate programming.
-- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean.
+- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean. |br|
   Bernhard also inspired Leo's generators and position class.
 - Joe Orr created LeoVue and XSLT stylesheets for Leo.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
 - Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
-- Félix Malboeuf wrote leoInteg, leoserver.py and leoclient.py.
+- Félix Malboeuf wrote leoInteg, LeoJs, leoserver.py and leoclient.py.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
 - François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
@@ -31458,7 +31464,7 @@ More inspired Leo's cloned nodes.
 - Phil Straus has been a great friend and constant support.
 - Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
 - Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
-- Paul S. Wilson cleaned up Leo's Wikipedia entry.
+- Paul S. Wilson greatly improved Leo's Wikipedia entry.
 - Dave Winer created MORE, the foundation of Leo's visual design.
 - Dan Winkler helped support Leo on the Mac.
 
