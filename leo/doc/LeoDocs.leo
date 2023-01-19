@@ -2411,8 +2411,8 @@
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20230118191810.1"><vh>Cloned 1 changed @rst node</vh>
-<v t="ekr.20170215075612.1"></v>
+<v t="ekr.20100808060203.4283"><vh>&lt;&lt; sidebar contents &gt;&gt; (home page)</vh>
+<v t="ekr.20110518101739.18154"><vh>&lt;&lt; flattr icon &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8808,6 +8808,84 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
+<t tx="ekr.20100808060203.4283">@language html
+
+&lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+  &lt;!-- &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt; --&gt;
+  &lt;img class="logo" src="_static/LeoLogo.tif" alt="Logo"/&gt;&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: Click the lion!
+&lt;/p&gt;
+&lt;p&gt;
+&lt;form&gt;
+  &lt;input type="button"
+    style="background-color:#6CA6CD;"
+    value="Download Leo"
+    onClick="window.location.href='download.html'"&gt;
+&lt;/form&gt;
+&lt;/p&gt;
+
+&lt;a class="reference external"
+  href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
+  Joe Orr's &lt;strong&gt;must see&lt;/strong&gt; demo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="tutorial.html"&gt;
+  Tutorial&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="leo_toc.html"&gt;
+  Documentation&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screen-shots.html"&gt;
+  Screen shots&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="screencasts.html"&gt;
+  Videos&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="testimonials.html"&gt;
+  What people are saying&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="slides.html"&gt;
+  Tutorial Slide Shows&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1064"&gt;
+  Leo's Public To Do List&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&amp;uio=d4"&gt;
+  #leo IRC&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+  Leo at Google Groups&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor"&gt;
+  Leo at GitHub&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="https://github.com/leo-editor/snippets"&gt;
+  Code Snippets&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues"&gt;
+  Report a bug&lt;/a&gt;&lt;br&gt;
+  
+&lt;a class="reference external" href="leoLinks.html"&gt;
+  More links...&lt;/a&gt;&lt;br&gt;
+  
+&lt;/p&gt;
+&lt;p&gt;
+&lt;div id="searchbox" style=""&gt;
+    &lt;input id='q' type="text" name="q" onkeypress="search(event)"&gt;
+  &lt;div&gt;&lt;button onclick="search(null)"&gt;Google Search&lt;/button&gt;&lt;/div&gt;
+  &lt;div class="searchtip" style="font-size: 90%"&gt;
+    &lt;!-- Use quotes for "@file" and similar symbols. --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Written by &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;br&gt;
+and &lt;a HREF="acknowledgements.html"&gt;many others&lt;/a&gt;.
+&lt;&lt; flattr icon &gt;&gt;
+&lt;/p&gt;
+</t>
 <t tx="ekr.20100821182153.4343">######
 Slides
 ######
@@ -11214,6 +11292,18 @@ To install Python, see http://python.org.
 **Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.9 or later.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
+</t>
+<t tx="ekr.20110518101739.18154">&lt;!--
+    &lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+        href="https://leo-editor.github.io/leo-editor/"&gt;
+    &lt;/a&gt;
+    &lt;noscript&gt;
+    &lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
+    &lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
+    alt="Flattr this" title="Flattr this" border="0" /&gt;
+    &lt;/a&gt;
+    &lt;/noscript&gt;
+--&gt;
 </t>
 <t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
@@ -31489,7 +31579,6 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20230118191810.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
