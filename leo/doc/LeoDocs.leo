@@ -2421,7 +2421,7 @@
 <v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
 <v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
-<v t="ekr.20230120101307.1"><vh>@edit html/slides/clones-and-views/slide-001.html</vh></v>
+<v t="ekr.20230120101307.1"><vh>@file html/slides/clones-and-views/slide-001.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
