@@ -11086,7 +11086,6 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 </t>
 <t tx="ekr.20101115152915.4937">{{Infobox software
 | name = Leo: Leonine Editor with Outlines
-| logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
