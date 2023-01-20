@@ -1,0 +1,15 @@
+=========================
+Leo Basics Step By Step:3
+=========================
+
+
+Ctrl-H edits the presently selected headline.
+
+You can type Ctrl-H at any time, regardless of
+where the focus is.
+
+The body pane is now blue, indicating that it no
+longer has focus.
+
+.. image:: slide-003.png
+
