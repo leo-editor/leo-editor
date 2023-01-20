@@ -236,12 +236,12 @@ class RstCommands:
                 if self.in_rst_tree(p):
                     g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
-                    h = p.h.strip()
-                    fn = h[4:].strip()
+                    p.h = p.h.strip()
+                    fn = p.h[4:].strip()
                     if fn:
                         source = self.write_rst_tree(p, fn)
                         self.write_docutils_files(fn, p, source)
-            elif g.match_word(h, 0, "@slides"):
+            elif g.match_word(p.h, 0, "@slides"):
                 if self.in_slides_tree(p):
                     g.trace(f"ignoring nested @slides node: {p.h}")
                 else:
