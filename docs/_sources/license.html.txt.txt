@@ -18,6 +18,9 @@ The above copyright notice and this permission notice shall be included in all c
 Other Copyrights
 ################
 
+.. _`Tribal Lion`: http://www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
+.. _`dreamstime.com`: http://www.dreamstime.com
+
 Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
 
 These parts are are clearly marked in Leo's code as follows:
@@ -34,4 +37,6 @@ Portions of Leo's pyzo interface uses code from pyzo:
     
     Yoton is distributed under the terms of the (new) BSD License.
     The full license can be found in 'license.txt'.
+    
+Leo's `Tribal Lion`_ Logo is Copyright (c) by `dreamstime.com`_ and is used by permission.
 

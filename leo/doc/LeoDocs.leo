@@ -2418,7 +2418,7 @@
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20090428133936.2"></v>
-<v t="ekr.20230120045950.1"><vh>newHeadline</vh></v>
+<v t="ekr.20090221070927.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7073,6 +7073,9 @@ The above copyright notice and this permission notice shall be included in all c
 Other Copyrights
 ################
 
+.. _`Tribal Lion`: http://www.dreamstime.com/royalty-free-stock-photos-tribal-lion-image3490018
+.. _`dreamstime.com`: http://www.dreamstime.com
+
 Portions of Leo's pygments interface use code from the Jupyter qtconsole package.
 
 These parts are are clearly marked in Leo's code as follows:
@@ -7089,7 +7092,8 @@ Portions of Leo's pyzo interface uses code from pyzo:
     
     Yoton is distributed under the terms of the (new) BSD License.
     The full license can be found in 'license.txt'.
-</t>
+    
+Leo's `Tribal Lion`_ Logo is Copyright (c) by `dreamstime.com`_ and is used by permission.</t>
 <t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
 
     def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
@@ -31481,11 +31485,6 @@ This list is out of date!
 .. _`dreamstime.com`: http://www.dreamstime.com
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
-<t tx="ekr.20230120045950.1"># These paths are either relative to html_static_path
-# or fully qualified paths (eg. https://...)
-html_css_files = [
-    'css/custom.css',
-]</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
