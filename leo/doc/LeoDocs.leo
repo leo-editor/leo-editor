@@ -2418,6 +2418,10 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
+<v t="ekr.20100808060203.4273"></v>
+<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
+<v t="ekr.20230120101307.1"><vh>@edit html/slides/clones-and-views/slide-001.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31150,6 +31154,18 @@ needed attention.
   The body of the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
+<t tx="ekr.20230110051126.1">
+&lt;script type="text/javascript"&gt;
+var DOCUMENTATION_OPTIONS = {
+  URL_ROOT:    './',
+  VERSION:     '6.7.2',
+  COLLAPSE_INDEX: false,
+  FILE_SUFFIX: '.html',
+  HAS_SOURCE:  true,
+  SOURCELINK_SUFFIX: '.txt'
+};
+&lt;/script&gt;
+</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -31484,6 +31500,7 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
+<t tx="ekr.20230120113025.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
