@@ -483,6 +483,7 @@
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
 </v>
+<v t="ekr.20230120090521.1"><vh>Slides</vh></v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -31482,6 +31483,7 @@ This list is out of date!
 .. _`dreamstime.com`: http://www.dreamstime.com
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
+<t tx="ekr.20230120090521.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
