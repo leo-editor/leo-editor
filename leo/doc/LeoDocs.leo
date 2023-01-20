@@ -2417,8 +2417,8 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20040414172218.4"></v>
+<v t="ekr.20090428133936.2"></v>
+<v t="ekr.20230120045950.1"><vh>newHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31481,6 +31481,11 @@ This list is out of date!
 .. _`dreamstime.com`: http://www.dreamstime.com
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
+<t tx="ekr.20230120045950.1"># These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'css/custom.css',
+]</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
