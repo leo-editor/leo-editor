@@ -2419,9 +2419,13 @@
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
+<v t="ekr.20100821182153.4343"></v>
 <v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
-<v t="ekr.20230120101307.1"><vh>@file html/slides/clones-and-views/slide-001.html</vh></v>
+<v t="ekr.20230120120556.1"><vh>@@rst html/slides/clones-and-views/slide-001.html</vh></v>
+<v t="ekr.20230120101307.1"><vh>@@file html/slides/clones-and-views/slide-001.html</vh>
+<v t="ekr.20230120115752.1"><vh>&lt;&lt; html slide: common head content &gt;&gt;</vh></v>
+<v t="ekr.20230120120408.1"><vh>&lt;&lt; html slide: common footer &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31154,18 +31158,6 @@ needed attention.
   The body of the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
-<t tx="ekr.20230110051126.1">
-&lt;script type="text/javascript"&gt;
-var DOCUMENTATION_OPTIONS = {
-  URL_ROOT:    './',
-  VERSION:     '6.7.2',
-  COLLAPSE_INDEX: false,
-  FILE_SUFFIX: '.html',
-  HAS_SOURCE:  true,
-  SOURCELINK_SUFFIX: '.txt'
-};
-&lt;/script&gt;
-</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -31500,7 +31492,118 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
+<t tx="ekr.20230120101307.1">@language html
+@tabwidth -2
+
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+  &lt;title&gt;Clones and views&lt;/title&gt;
+  &lt;&lt; html slide: common head content &gt;&gt;
+  &lt;link rel="next" title="Clones are the same node" href="slide-002.html" /&gt;
+  &lt;link rel="prev" title="Clones And Views" href="leo_toc.html" /&gt; 
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="related"&gt;
+    &lt;h3&gt;Navigation&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li class="right" style="margin-right: 10px"&gt;
+        &lt;a href="genindex.html" title="General Index"
+           accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="slide-002.html" title="Clones are the same node"
+           accesskey="N"&gt;next&lt;/a&gt; |&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="leo_toc.html" title="Clones And Views"
+           accesskey="P"&gt;previous&lt;/a&gt; |&lt;/li&gt;
+      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v6.7.2 documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
+    &lt;/ul&gt;
+  &lt;/div&gt;  
+
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;div class="section" id="clones-and-views"&gt;
+
+&lt;h1&gt;Clones and views&lt;a class="headerlink" href="#clones-and-views" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Clones are one of Leo&amp;#8217;s most unusual and most useful features.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;clone&lt;/strong&gt; is a node that appears in more than one place in a Leo outline.&lt;/p&gt;
+&lt;p&gt;Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)&lt;/p&gt;
+&lt;p&gt;Clones are marked with a small red &lt;em&gt;clone arrow*&lt;/em&gt; in the icon box.
+Deleting the penultimate clone removes the red arrow from the node.&lt;/p&gt;
+&lt;img alt="_images/slide-001.png" src="_images/slide-001.png" /&gt;
+
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;div class="sphinxsidebar"&gt;
+    &lt;div class="sphinxsidebarwrapper"&gt;
+        &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+            &lt;img class="logo" src="../_static/LeoLogo.svg" alt="Logo"/&gt;
+        &lt;/a&gt;&lt;/p&gt;
+  &lt;h4&gt;Previous topic&lt;/h4&gt;
+  &lt;p class="topless"&gt;&lt;a href="leo_toc.html"
+                        title="previous chapter"&gt;Clones And Views&lt;/a&gt;&lt;/p&gt;
+  &lt;h4&gt;Next topic&lt;/h4&gt;
+  &lt;p class="topless"&gt;&lt;a href="slide-002.html"
+                        title="next chapter"&gt;Clones are the same node&lt;/a&gt;&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="clearer"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="related"&gt;
+      &lt;h3&gt;Navigation&lt;/h3&gt;
+      &lt;ul&gt;
+        &lt;li class="right" style="margin-right: 10px"&gt;
+          &lt;a href="genindex.html" title="General Index"
+             &gt;index&lt;/a&gt;&lt;/li&gt;
+        &lt;li class="right" &gt;
+          &lt;a href="slide-002.html" title="Clones are the same node"
+             &gt;next&lt;/a&gt; |&lt;/li&gt;
+        &lt;li class="right" &gt;
+          &lt;a href="leo_toc.html" title="Clones And Views"
+             &gt;previous&lt;/a&gt; |&lt;/li&gt;
+        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.8 documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;&lt; html slide: common footer &gt;&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</t>
 <t tx="ekr.20230120113025.1"></t>
+<t tx="ekr.20230120115752.1">&lt;link rel="stylesheet" href="../_static/default.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="../_static/pygments.css" type="text/css" /&gt;
+&lt;link rel="stylesheet" href="../_static/custom.css" type="text/css" /&gt;
+&lt;script type="text/javascript"&gt;
+  var DOCUMENTATION_OPTIONS = {
+    URL_ROOT:    './',
+    VERSION:     '6.7.2',
+    COLLAPSE_INDEX: false,
+    FILE_SUFFIX: '.html',
+    HAS_SOURCE:  true
+  };
+&lt;!-- scale screen-shot to fit parent container --&gt;
+&lt;/script&gt;
+    &lt;style type="text/css"&gt;
+    img {
+        max-width:50%; max-height:50%;
+    }
+&lt;/style&gt;
+&lt;script type="text/javascript" src="../_static/jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="../_static/underscore.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="../_static/doctools.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="../_static/sidebar.js"&gt;&lt;/script&gt;
+&lt;link rel="top" title="Leo v4.8 documentation" href="index.html" /&gt;
+</t>
+<t tx="ekr.20230120120408.1">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2023, Edward K. Ream.
+  Last updated on January 20, 2023.
+  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 6.1.2&lt;/a&gt;.
+&lt;/div&gt;
+</t>
+<t tx="ekr.20230120120556.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
