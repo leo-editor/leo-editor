@@ -14,7 +14,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.89
+About Viewrendered3 V3.90
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -59,14 +59,18 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+An external Ruby asciidoctor processor is found more reliably.  The complete
+path to the processor can be specified in the *vr3-prefer-external* setting
+(sometimes Ruby can be installed into a location not on the PATH).
+
+Previous Recent Changes
+========================
 Asciidoctor enhancements
 
     - New setting to suppress the default footer (``@bool vr3-asciidoctor-nofooter = True``).
     - Set default directory for asciidoctor icons (``@string vr3-asciidoctor-icons=''``).
     - Set default image directory (``@string vr3-asciidoctor-imagesdir=''``).
 
-Previous Recent Changes
-========================
 The Dart programming language is now supported.
 
 New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
