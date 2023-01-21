@@ -7,6 +7,7 @@ Clones and views
 .. toctree::
     :maxdepth: 1
     
-    About clones             <slide-001>
-    Clones are the same node <slide-002>
+    About clones                <slide-001>
+    Clones are the same node    <slide-002>
+    Changing cloned headlines   <slide-003>
 

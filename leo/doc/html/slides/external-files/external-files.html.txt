@@ -1,8 +1,8 @@
 .. rst3: filename: html/slides/external-files/external-files.html
 
-####################
-Using External Files
-####################
+====================
+Using external files
+====================
 
 .. toctree::
     :maxdepth: 1

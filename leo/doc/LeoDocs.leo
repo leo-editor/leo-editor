@@ -491,6 +491,7 @@
 <v t="ekr.20230121054117.1"><vh>@rst html/slides/clones-and-views/clones-and-views.html</vh></v>
 <v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
 <v t="ekr.20230121060347.1"><vh>@rst html/slides/clones-and-views/slide-002.html</vh></v>
+<v t="ekr.20230121164642.1"><vh>@rst html/slides/clones-and-views/slide-003.html</vh></v>
 </v>
 <v t="ekr.20230121061300.1"><vh>Slides: External files</vh>
 <v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
@@ -2468,11 +2469,11 @@
 <v t="ekr.20230121093037.1"><vh>--- recent files</vh>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
-</v>
-<v t="ekr.20230121052337.1"></v>
 <v t="ekr.20170215075612.1"></v>
 <v t="ekr.20100821182153.4343"></v>
-<v t="ekr.20230121061309.1"></v>
+</v>
+<v t="ekr.20230121052337.1"></v>
+<v t="ekr.20230121060317.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31588,12 +31589,13 @@ Clones and views
 .. toctree::
     :maxdepth: 1
     
-    About clones             &lt;slide-001&gt;
-    Clones are the same node &lt;slide-002&gt;
+    About clones                &lt;slide-001&gt;
+    Clones are the same node    &lt;slide-002&gt;
+    Changing cloned headlines   &lt;slide-003&gt;
 </t>
-<t tx="ekr.20230121054859.1">####################
-Using External Files
-####################
+<t tx="ekr.20230121054859.1">====================
+Using external files
+====================
 
 .. toctree::
     :maxdepth: 1
@@ -31644,9 +31646,9 @@ Scripting Leo
     
 ..    To do &lt;slide-001&gt;
 </t>
-<t tx="ekr.20230121055019.1">####################
-Using the Minibuffer
-####################
+<t tx="ekr.20230121055019.1">====================
+Using the minibuffer
+====================
 
 .. toctree::
     :maxdepth: 1
@@ -31681,7 +31683,7 @@ results in the same changes being made to all other clones.
 In fact, all clones of a node are actually the exactly the same node, so
 any change to one clone inevitably affects all other clones.
 
-.. image for this slide.</t>
+.. no image for this slide.</t>
 <t tx="ekr.20230121061300.1"></t>
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
@@ -32027,6 +32029,14 @@ This concludes the introduction to Leo's outline operations:
 - Arrow keys and other shortcuts move, expand and contract nodes.
 - Shift-Ctrl-C: copies the selected node and all its descendants.
 - Shift-Ctrl-V: pastes the copied outline.
+</t>
+<t tx="ekr.20230121164642.1">=========================
+Changing cloned headlines
+=========================
+
+Changing the headline of node A changes the headlines of all cloned nodes.
+
+.. image:: _images/slide-003.png
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

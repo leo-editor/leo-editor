@@ -1,8 +1,8 @@
 .. rst3: filename: html/slides/using-leos-minibuffer/using-leos-minibuffer.html
 
-####################
-Using the Minibuffer
-####################
+====================
+Using the minibuffer
+====================
 
 .. toctree::
     :maxdepth: 1
