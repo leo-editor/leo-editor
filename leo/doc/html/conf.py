@@ -84,6 +84,11 @@ pygments_style = 'sphinx'
 
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 
+# Paths containing custom static files (such as style sheets), relative to this directory.
+# They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
 # The theme to use for HTML and HTML Help pages.
 html_theme = 'classic'  # 'default', 'sphinxdoc'.
 
@@ -121,11 +126,6 @@ html_logo = 'LeoLogo.svg'
 # The name of an image file (within the static path) to use as favicon of the docs.
 # Should be a Windows icon file (.ico) being 16x16 or 32x32 pixels large.
 #html_favicon = None
-
-# Paths containing custom static files (such as style sheets), relative to this directory.
-# They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
 
 # If not '', insert 'Last updated on:' at the bottom of every pages.
 # using the given strftime format.
