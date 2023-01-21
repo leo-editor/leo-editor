@@ -4859,7 +4859,7 @@ class Chunk:
     """Holds a block of text, with various metadata about it."""
 
     def __init__(self, tag='', structure=RST, language=''):
-        self.text_lines = ['']  # The text as a sequence of lines, free of directives
+        self.text_lines = []  # The text as a sequence of lines, free of directives
         self.tag = tag  # A descriptive value for the kind of chunk, such as CODE, TEXT.
         self.structure = structure  # The type of structure (rst, md, etc.).
         self.language = language  # The programming language, if any, for this chunk.
