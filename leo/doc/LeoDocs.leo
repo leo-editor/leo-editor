@@ -450,20 +450,18 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
 <v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
 </v>
-<v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
-</v>
-<v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
@@ -2419,9 +2417,7 @@
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
-<v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
-<v t="ekr.20230120101307.1"><vh>@file html/slides/clones-and-views/slide-001.html</vh></v>
+<v t="ekr.20100821182153.4343"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8756,6 +8752,14 @@ This is the front page for various slide shows about Leo.
 .. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
 .. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/slide-001.html
 
+.. toctree::
+    :maxdepth: 1
+    clones-and-views
+    external-files
+    leo-basics-step-by-step
+    scripting-leo
+    using-leos-minibuffer
+
 Basic slide shows
 -----------------
 
@@ -8784,7 +8788,6 @@ Intermediate slide shows
 </t>
 <t tx="ekr.20100907092300.4442">Path to Inkscape executable
 </t>
-<t tx="ekr.20101007100904.4372"></t>
 <t tx="ekr.20101009114830.4723">@nocolor-node
 
 Formerly, this had to be on because the expansion bits
@@ -31154,18 +31157,6 @@ needed attention.
   The body of the @data node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
-<t tx="ekr.20230110051126.1">
-&lt;script type="text/javascript"&gt;
-var DOCUMENTATION_OPTIONS = {
-  URL_ROOT:    './',
-  VERSION:     '6.7.2',
-  COLLAPSE_INDEX: false,
-  FILE_SUFFIX: '.html',
-  HAS_SOURCE:  true,
-  SOURCELINK_SUFFIX: '.txt'
-};
-&lt;/script&gt;
-</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
