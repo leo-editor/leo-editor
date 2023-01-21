@@ -14,7 +14,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.89
+About Viewrendered3 V3.90
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -59,14 +59,18 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+An external Ruby asciidoctor processor is found more reliably.  The complete
+path to the processor can be specified in the *vr3-prefer-external* setting
+(sometimes Ruby can be installed into a location not on the PATH).
+
+Previous Recent Changes
+========================
 Asciidoctor enhancements
 
     - New setting to suppress the default footer (``@bool vr3-asciidoctor-nofooter = True``).
     - Set default directory for asciidoctor icons (``@string vr3-asciidoctor-icons=''``).
     - Set default image directory (``@string vr3-asciidoctor-imagesdir=''``).
 
-Previous Recent Changes
-========================
 The Dart programming language is now supported.
 
 New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
@@ -1360,8 +1364,6 @@ def configure_asciidoc():
 configure_asciidoc()
 #@+node:TomP.20200508125029.1: ** Find External Executables
 pandoc_exec = find_exe('pandoc') or None
-asciidoctor = find_exe('asciidoctor') or None
-
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
 # Get paths for executables from the VR3_CONFIG_FILE file
@@ -2351,6 +2353,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
+        if self.prefer_external:
+            self.asciidoctor = find_exe(self.prefer_external) or None
+
         self.asciidoc_show_proc_fail_msgs = True
         self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
         self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
@@ -3131,7 +3136,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
         global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
         h = ''
-        if self.prefer_external == 'asciidoctor' and asciidoctor:
+        if self.asciidoctor:
             h = self.convert_to_asciidoc_external(s)
             self.rst_html = h
             return h
@@ -3255,7 +3260,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         with open(i_path, 'w', encoding='utf-8') as f:
             f.write(s)
 
-        # Set up special commkand-line asciidoctor attributes
+        # Set up special command-line asciidoctor attributes
         attrs = []
         if self.math_output:
             attrs.append('stem')
@@ -3270,7 +3275,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             att_str += f'-a {att} '
 
         # Call the external program to write the output file.
-        command = (f'asciidoctor -b html5 {att_str} {i_path}')
+        command = (f'{self.asciidoctor} -b html5 {att_str} {i_path}')
 
         # If find asciidoctor-diagram converter config, then use it.
         if self.asciidoctor_diagram:
