@@ -31510,6 +31510,8 @@ Deployment notes:
 
 ENB: Discuss the difficulties and the patterns.
 
+??? Leo rst setting for location of intermediate files???
+
 @language python
 @nosearch
 </t>
