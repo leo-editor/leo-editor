@@ -4,8 +4,34 @@
 Leo's Basics
 ############
 
+This is a step-by-step introduction showing you how to use Leo outlines.
+
+.. no slide 1
 .. toctree::
     :maxdepth: 1
     
-..    To do <slide-001>
+    The workbook file       <slide-002>
+    Editing headlines       <slide-003>
+    Typing in a headline    <slide-004>
+    The icon box            <slide-005>
+    Keyboard shortcuts      <slide-006>
+    Saving your work        <slide-007>
+    Inserting new nodes     <slide-008>
+    Editing body text       <slide-009>
+    The blue square         <slide-010>
+    Moving nodes right      <slide-011>
+    Moving nodes left       <slide-012>
+    Undo and redo           <slide-013>
+    slide 14    <slide-014>
+    slide 15    <slide-015>
+    slide 16    <slide-016>
+    slide 17    <slide-017>
+    slide 18    <slide-018>
+    slide 19    <slide-019>
+    slide 20    <slide-020>
+    slide 21    <slide-021>
+    slide 22    <slide-022>
+    slide 23    <slide-023>
+    slide 24    <slide-024>
+    slide 25    <slide-025>
 

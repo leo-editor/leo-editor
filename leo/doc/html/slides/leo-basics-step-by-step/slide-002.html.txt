@@ -1,0 +1,18 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-002.html
+
+#################
+The workbook file
+#################
+
+Leo opens the **workbook file** when you start
+Leo without a filename.
+
+The body has focus--it is colored a pale pink, and
+contains a blinking cursor.
+
+**Note**: on some monitors the colors will be almost
+invisible.  You can choose such colors to suit your
+taste.
+
+.. image:: _images/slide-002.png
+

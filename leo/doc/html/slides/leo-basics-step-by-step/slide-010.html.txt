@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-010.html
+
+===============
+The blue square
+===============
+
+Whatever I type will appear in the body pane.
+
+I added a shopping list.
+
+The blue square in the icon area indicates that the body pane contains text.
+
+.. image:: _images/slide-010.png
+

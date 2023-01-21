@@ -1,0 +1,18 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-006.html
+
+==================
+Keyboard shortcuts
+==================
+
+
+You can use Leo without ever using the mouse. For
+instance, you can select any Leo pane by using
+keystrokes instead of clicking the pane:
+
+- Regardless of where the focus is, Alt-D puts
+  focus in the body pane and Alt-T puts foucs in
+  the outline pane.
+
+- With the focus in the tree pane, hitting the
+  return key puts the focus in the body pane.
+

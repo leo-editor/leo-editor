@@ -1,0 +1,17 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-013.html
+
+=============
+Undo and redo
+=============
+
+
+Leo has unlimited undo/redo capabilities.
+
+Here, I typed Ctrl-Z to undo the previous move.
+The "go shopping" node is once again a child of
+the "to do" node.
+
+**Note**: Ctrl-Shift-Z redoes a previous undo.
+
+.. image:: _images/slide-013.png
+

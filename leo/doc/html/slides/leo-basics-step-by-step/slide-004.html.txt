@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-004.html
+
+======================
+Typing in the headline
+======================
+
+I typed "to do" in the headline.
+
+.. image:: _images/slide-004.png
+

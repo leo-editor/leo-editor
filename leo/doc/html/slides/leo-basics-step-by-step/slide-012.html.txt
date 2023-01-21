@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-012.html
+
+=================
+Moving nodes left
+=================
+
+
+Ctrl-L moves the "go shopping" node left.
+
+The "go shopping" node becomes a **sibling**
+of the "to do" node.
+
+.. image:: _images/slide-012.png
+

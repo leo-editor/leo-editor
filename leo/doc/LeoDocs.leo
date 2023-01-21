@@ -497,6 +497,29 @@
 </v>
 <v t="ekr.20230121061309.1"><vh>Slides: Leo's basics</vh>
 <v t="ekr.20230121054950.1"><vh>@rst html/slides/leo-basics-step-by-step/leo-basics-step-by-step.html</vh></v>
+<v t="ekr.20230121135204.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-002.html</vh></v>
+<v t="ekr.20230121135205.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-003.html</vh></v>
+<v t="ekr.20230121135205.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-004.html</vh></v>
+<v t="ekr.20230121135205.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-005.html</vh></v>
+<v t="ekr.20230121135206.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-006.html</vh></v>
+<v t="ekr.20230121135206.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-007.html</vh></v>
+<v t="ekr.20230121135206.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-008.html</vh></v>
+<v t="ekr.20230121135206.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-009.html</vh></v>
+<v t="ekr.20230121135206.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-010.html</vh></v>
+<v t="ekr.20230121135312.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-011.html</vh></v>
+<v t="ekr.20230121135312.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-012.html</vh></v>
+<v t="ekr.20230121135312.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-013.html</vh></v>
+<v t="ekr.20230121135312.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-014.html</vh></v>
+<v t="ekr.20230121135312.6"><vh>@rst html/slides/leo-basics-step-by-step/slide-015.html</vh></v>
+<v t="ekr.20230121135312.7"><vh>@rst html/slides/leo-basics-step-by-step/slide-016.html</vh></v>
+<v t="ekr.20230121135312.8"><vh>@rst html/slides/leo-basics-step-by-step/slide-017.html</vh></v>
+<v t="ekr.20230121135312.9"><vh>@rst html/slides/leo-basics-step-by-step/slide-018.html</vh></v>
+<v t="ekr.20230121135312.10"><vh>@rst html/slides/leo-basics-step-by-step/slide-019.html</vh></v>
+<v t="ekr.20230121135312.11"><vh>@rst html/slides/leo-basics-step-by-step/slide-020.html</vh></v>
+<v t="ekr.20230121135448.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-021.html</vh></v>
+<v t="ekr.20230121135448.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-022.html</vh></v>
+<v t="ekr.20230121135448.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-023.html</vh></v>
+<v t="ekr.20230121135448.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-024.html</vh></v>
 </v>
 <v t="ekr.20230121061335.1"><vh>Slides: Scripting</vh>
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
@@ -2448,6 +2471,7 @@
 <v t="ekr.20230121052337.1"></v>
 <v t="ekr.20170215075612.1"></v>
 <v t="ekr.20100821182153.4343"></v>
+<v t="ekr.20230121061309.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31579,10 +31603,37 @@ Using External Files
 Leo's Basics
 ############
 
+This is a step-by-step introduction showing you how to use Leo outlines.
+
+.. no slide 1
 .. toctree::
     :maxdepth: 1
     
-..    To do &lt;slide-001&gt;
+    The workbook file       &lt;slide-002&gt;
+    Editing headlines       &lt;slide-003&gt;
+    Typing in a headline    &lt;slide-004&gt;
+    The icon box            &lt;slide-005&gt;
+    Keyboard shortcuts      &lt;slide-006&gt;
+    Saving your work        &lt;slide-007&gt;
+    Inserting new nodes     &lt;slide-008&gt;
+    Editing body text       &lt;slide-009&gt;
+    The blue square         &lt;slide-010&gt;
+    Moving nodes right      &lt;slide-011&gt;
+    Moving nodes left       &lt;slide-012&gt;
+    Undo and redo           &lt;slide-013&gt;
+    slide 14    &lt;slide-014&gt;
+    slide 15    &lt;slide-015&gt;
+    slide 16    &lt;slide-016&gt;
+    slide 17    &lt;slide-017&gt;
+    slide 18    &lt;slide-018&gt;
+    slide 19    &lt;slide-019&gt;
+    slide 20    &lt;slide-020&gt;
+    slide 21    &lt;slide-021&gt;
+    slide 22    &lt;slide-022&gt;
+    slide 23    &lt;slide-023&gt;
+    slide 24    &lt;slide-024&gt;
+    slide 25    &lt;slide-025&gt;
+
 </t>
 <t tx="ekr.20230121055005.1">#############
 Scripting Leo
@@ -31616,9 +31667,7 @@ Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
 Clones are marked with a small red clone arrow* in the icon box. Deleting
 the penultimate clone removes the red arrow from the node.
 
-.. |clones-and-views1| image:: _images/slide-001.png
-
-|clones-and-views1|
+.. image:: _images/slide-001.png
 </t>
 <t tx="ekr.20230121060347.1">########################
 Clones are the same node
@@ -31630,7 +31679,9 @@ descendants of a clone, including inserting, deleting or moving nodes,
 results in the same changes being made to all other clones.
 
 In fact, all clones of a node are actually the exactly the same node, so
-any change to one clone inevitably affects all other clones.</t>
+any change to one clone inevitably affects all other clones.
+
+.. image for this slide.</t>
 <t tx="ekr.20230121061300.1"></t>
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
@@ -31652,6 +31703,192 @@ echo off
 cd C:\Repos\leo-editor\leo\doc\html
 echo make html
 make html</t>
+<t tx="ekr.20230121135204.1">#################
+The workbook file
+#################
+
+Leo opens the **workbook file** when you start
+Leo without a filename.
+
+The body has focus--it is colored a pale pink, and
+contains a blinking cursor.
+
+**Note**: on some monitors the colors will be almost
+invisible.  You can choose such colors to suit your
+taste.
+
+.. image:: _images/slide-002.png
+</t>
+<t tx="ekr.20230121135205.1">#################
+Editing headlines
+#################
+
+Ctrl-H edits the presently selected headline.
+
+You can type Ctrl-H at any time, regardless of
+where the focus is.
+
+The body pane is now blue, indicating that it no longer has focus.
+
+.. image:: _images/slide-003.png
+
+</t>
+<t tx="ekr.20230121135205.2">======================
+Typing in the headline
+======================
+
+I typed "to do" in the headline.
+
+.. image:: _images/slide-004.png
+</t>
+<t tx="ekr.20230121135205.3">============
+The icon box
+============
+
+Typing the &lt;return&gt; key ends editing of the headline
+and puts focus back in the body pane.
+
+Notice that the **icon box** to the left of the
+headline now has a darker outline that it had
+before. This indicates that the contents of the
+node has been changed. We say the node is
+**dirty**.
+
+.. image:: _images/slide-005.png</t>
+<t tx="ekr.20230121135206.1">==================
+Keyboard shortcuts
+==================
+
+
+You can use Leo without ever using the mouse. For
+instance, you can select any Leo pane by using
+keystrokes instead of clicking the pane:
+
+- Regardless of where the focus is, Alt-D puts
+  focus in the body pane and Alt-T puts foucs in
+  the outline pane.
+
+- With the focus in the tree pane, hitting the
+  return key puts the focus in the body pane.
+
+</t>
+<t tx="ekr.20230121135206.2">================
+Saving your work
+================
+
+Ctrl-S saves the outline.
+
+Notice that the icon box once again has a gray outline,
+indicating that the node has not been changed since
+the file was last saved.
+
+.. Arrow to icon box.
+
+.. image:: _images/slide-007.png
+
+</t>
+<t tx="ekr.20230121135206.3">===================
+Inserting new nodes
+===================
+
+
+Ctrl-I inserts a new node.
+
+.. image:: _images/slide-008.png
+
+</t>
+<t tx="ekr.20230121135206.4">====================
+The blue text marker
+====================
+
+
+I typed "go shopping" followed by a return.
+
+The focus is now in the body pane.
+
+.. image:: _images/slide-009.png
+
+</t>
+<t tx="ekr.20230121135206.5">===============
+The blue square
+===============
+
+Whatever I type will appear in the body pane.
+
+I added a shopping list.
+
+The blue square in the icon area indicates that the body pane contains text.
+
+.. image:: _images/slide-010.png</t>
+<t tx="ekr.20230121135312.10"></t>
+<t tx="ekr.20230121135312.11"></t>
+<t tx="ekr.20230121135312.2">==================
+Moving nodes right
+==================
+
+
+Ctrl-R moves a node right.
+
+The "go shopping" node becomes a **child**
+of the "to do" node.
+
+The "to do" node is the **parent** node.
+
+.. image:: _images/slide-011.png
+
+</t>
+<t tx="ekr.20230121135312.3">=================
+Moving nodes left
+=================
+
+
+Ctrl-L moves the "go shopping" node left.
+
+The "go shopping" node becomes a **sibling**
+of the "to do" node.
+
+.. image:: _images/slide-012.png
+
+</t>
+<t tx="ekr.20230121135312.4">=============
+Undo and redo
+=============
+
+
+Leo has unlimited undo/redo capabilities.
+
+Here, I typed Ctrl-Z to undo the previous move.
+The "go shopping" node is once again a child of
+the "to do" node.
+
+**Note**: Ctrl-Shift-Z redoes a previous undo.
+
+.. image:: _images/slide-013.png
+
+</t>
+<t tx="ekr.20230121135312.5">=============
+Undo and redo
+==============
+
+Leo has unlimited undo/redo capabilities.
+
+Here, I typed Ctrl-Z to undo the previous move.
+The "go shopping" node is once again a child of
+the "to do" node.
+
+**Note**: Ctrl-Shift-Z redoes a previous undo.
+
+.. image:: slide-013.png
+
+</t>
+<t tx="ekr.20230121135312.6"></t>
+<t tx="ekr.20230121135312.7"></t>
+<t tx="ekr.20230121135312.8"></t>
+<t tx="ekr.20230121135312.9"></t>
+<t tx="ekr.20230121135448.2"></t>
+<t tx="ekr.20230121135448.3"></t>
+<t tx="ekr.20230121135448.4"></t>
+<t tx="ekr.20230121135448.5"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

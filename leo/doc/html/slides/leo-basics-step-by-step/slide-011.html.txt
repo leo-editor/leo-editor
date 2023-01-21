@@ -1,0 +1,16 @@
+.. rst3: filename: html/slides/leo-basics-step-by-step/slide-011.html
+
+==================
+Moving nodes right
+==================
+
+
+Ctrl-R moves a node right.
+
+The "go shopping" node becomes a **child**
+of the "to do" node.
+
+The "to do" node is the **parent** node.
+
+.. image:: _images/slide-011.png
+
