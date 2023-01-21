@@ -2419,13 +2419,125 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
+<v t="ekr.20230120202659.1"><vh>---- good files</vh></v>
 <v t="ekr.20100821182153.4343"></v>
 <v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20230120120556.1"><vh>@@rst html/slides/clones-and-views/slide-001.html</vh></v>
-<v t="ekr.20230120101307.1"><vh>@@file html/slides/clones-and-views/slide-001.html</vh>
-<v t="ekr.20230120115752.1"><vh>&lt;&lt; html slide: common head content &gt;&gt;</vh></v>
-<v t="ekr.20230120120408.1"><vh>&lt;&lt; html slide: common footer &gt;&gt;</vh></v>
+<v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
+<v t="ekr.20230120202451.4"><vh>@path html/slides/clones-and-views</vh>
+<v t="ekr.20230120202451.5"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.6"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.7"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.8"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.9"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.10"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.11"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.12"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.13"><vh>@edit slide-007.html</vh></v>
+<v t="ekr.20230120202451.14"><vh>@edit slide-008.html</vh></v>
+<v t="ekr.20230120202451.15"><vh>@edit slide-009.html</vh></v>
+<v t="ekr.20230120202451.16"><vh>@edit slide-010.html</vh></v>
+<v t="ekr.20230120202451.17"><vh>@edit slide-011.html</vh></v>
+<v t="ekr.20230120202451.18"><vh>@edit slide-012.html</vh></v>
+<v t="ekr.20230120202451.19"><vh>@path _images</vh></v>
+</v>
+<v t="ekr.20230120202451.20"><vh>@path html/slides/external-files</vh>
+<v t="ekr.20230120202451.21"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.22"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.23"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.24"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.25"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.26"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.27"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.28"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.29"><vh>@edit slide-007.html</vh></v>
+<v t="ekr.20230120202451.30"><vh>@edit slide-008.html</vh></v>
+<v t="ekr.20230120202451.31"><vh>@edit slide-009.html</vh></v>
+<v t="ekr.20230120202451.32"><vh>@edit slide-010.html</vh></v>
+<v t="ekr.20230120202451.33"><vh>@edit slide-011.html</vh></v>
+<v t="ekr.20230120202451.34"><vh>@edit slide-012.html</vh></v>
+<v t="ekr.20230120202451.35"><vh>@edit slide-013.html</vh></v>
+<v t="ekr.20230120202451.36"><vh>@edit slide-014.html</vh></v>
+<v t="ekr.20230120202451.37"><vh>@edit slide-015.html</vh></v>
+<v t="ekr.20230120202451.38"><vh>@edit slide-016.html</vh></v>
+<v t="ekr.20230120202451.39"><vh>@edit slide-017.html</vh></v>
+<v t="ekr.20230120202451.40"><vh>@edit slide-018.html</vh></v>
+<v t="ekr.20230120202451.41"><vh>@edit slide-019.html</vh></v>
+<v t="ekr.20230120202451.42"><vh>@edit slide-020.html</vh></v>
+<v t="ekr.20230120202451.43"><vh>@edit slide-021.html</vh></v>
+<v t="ekr.20230120202451.44"><vh>@edit slide-022.html</vh></v>
+<v t="ekr.20230120202451.45"><vh>@path _images</vh></v>
+<v t="ekr.20230120202451.46"><vh>@path _static</vh></v>
+</v>
+<v t="ekr.20230120202451.47"><vh>@path html/slides/installation</vh>
+<v t="ekr.20230120202451.48"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.49"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.50"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.51"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.52"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.53"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.54"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.55"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.56"><vh>@path _sources</vh></v>
+<v t="ekr.20230120202451.57"><vh>@path _static</vh></v>
+</v>
+<v t="ekr.20230120202451.58"><vh>@path html/slides/leo-basics-step-by-step</vh>
+<v t="ekr.20230120202451.59"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.60"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.61"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.62"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.63"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.64"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.65"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.66"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.67"><vh>@edit slide-007.html</vh></v>
+<v t="ekr.20230120202451.68"><vh>@edit slide-008.html</vh></v>
+<v t="ekr.20230120202451.69"><vh>@edit slide-009.html</vh></v>
+<v t="ekr.20230120202451.70"><vh>@edit slide-010.html</vh></v>
+<v t="ekr.20230120202451.71"><vh>@edit slide-011.html</vh></v>
+<v t="ekr.20230120202451.72"><vh>@edit slide-012.html</vh></v>
+<v t="ekr.20230120202451.73"><vh>@edit slide-013.html</vh></v>
+<v t="ekr.20230120202451.74"><vh>@edit slide-014.html</vh></v>
+<v t="ekr.20230120202451.75"><vh>@edit slide-015.html</vh></v>
+<v t="ekr.20230120202451.76"><vh>@edit slide-016.html</vh></v>
+<v t="ekr.20230120202451.77"><vh>@edit slide-017.html</vh></v>
+<v t="ekr.20230120202451.78"><vh>@edit slide-018.html</vh></v>
+<v t="ekr.20230120202451.79"><vh>@edit slide-019.html</vh></v>
+<v t="ekr.20230120202451.80"><vh>@edit slide-020.html</vh></v>
+<v t="ekr.20230120202451.81"><vh>@edit slide-021.html</vh></v>
+<v t="ekr.20230120202451.82"><vh>@edit slide-022.html</vh></v>
+<v t="ekr.20230120202451.83"><vh>@edit slide-023.html</vh></v>
+<v t="ekr.20230120202451.84"><vh>@edit slide-024.html</vh></v>
+<v t="ekr.20230120202451.85"><vh>@edit slide-025.html</vh></v>
+</v>
+<v t="ekr.20230120202451.89"><vh>@path html/slides/scripting-leo</vh>
+<v t="ekr.20230120202451.90"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.91"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.92"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.93"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.94"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.95"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.96"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.97"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.98"><vh>@edit slide-007.html</vh></v>
+<v t="ekr.20230120202451.99"><vh>@edit slide-008.html</vh></v>
+<v t="ekr.20230120202451.100"><vh>@edit slide-009.html</vh></v>
+<v t="ekr.20230120202451.101"><vh>@edit slide-010.html</vh></v>
+<v t="ekr.20230120202451.102"><vh>@edit slide-011.html</vh></v>
+</v>
+<v t="ekr.20230120202451.104"><vh>@path html/slides/using-leos-minibuffer</vh>
+<v t="ekr.20230120202451.105"><vh>@edit genindex.html</vh></v>
+<v t="ekr.20230120202451.106"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20230120202451.107"><vh>@edit slide-001.html</vh></v>
+<v t="ekr.20230120202451.108"><vh>@edit slide-002.html</vh></v>
+<v t="ekr.20230120202451.109"><vh>@edit slide-003.html</vh></v>
+<v t="ekr.20230120202451.110"><vh>@edit slide-004.html</vh></v>
+<v t="ekr.20230120202451.111"><vh>@edit slide-005.html</vh></v>
+<v t="ekr.20230120202451.112"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120202451.113"><vh>@edit slide-007.html</vh></v>
+<v t="ekr.20230120202451.114"><vh>@edit slide-008.html</vh></v>
+<v t="ekr.20230120202451.115"><vh>@edit slide-009.html</vh></v>
+<v t="ekr.20230120202451.116"><vh>@edit slide-010.html</vh></v>
+<v t="ekr.20230120202451.117"><vh>@edit slide-011.html</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -31493,118 +31605,7 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
-<t tx="ekr.20230120101307.1">@language html
-@tabwidth -2
-
-&lt;!DOCTYPE html&gt;
-&lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-  &lt;title&gt;Clones and views&lt;/title&gt;
-  &lt;&lt; html slide: common head content &gt;&gt;
-  &lt;link rel="next" title="Clones are the same node" href="slide-002.html" /&gt;
-  &lt;link rel="prev" title="Clones And Views" href="leo_toc.html" /&gt; 
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div class="related"&gt;
-    &lt;h3&gt;Navigation&lt;/h3&gt;
-    &lt;ul&gt;
-      &lt;li class="right" style="margin-right: 10px"&gt;
-        &lt;a href="genindex.html" title="General Index"
-           accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
-      &lt;li class="right" &gt;
-        &lt;a href="slide-002.html" title="Clones are the same node"
-           accesskey="N"&gt;next&lt;/a&gt; |&lt;/li&gt;
-      &lt;li class="right" &gt;
-        &lt;a href="leo_toc.html" title="Clones And Views"
-           accesskey="P"&gt;previous&lt;/a&gt; |&lt;/li&gt;
-      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v6.7.2 documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
-    &lt;/ul&gt;
-  &lt;/div&gt;  
-
-  &lt;div class="document"&gt;
-    &lt;div class="documentwrapper"&gt;
-      &lt;div class="bodywrapper"&gt;
-        &lt;div class="body"&gt;
-          &lt;div class="section" id="clones-and-views"&gt;
-
-&lt;h1&gt;Clones and views&lt;a class="headerlink" href="#clones-and-views" title="Permalink to this headline"&gt;¶&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;Clones are one of Leo&amp;#8217;s most unusual and most useful features.&lt;/p&gt;
-&lt;p&gt;A &lt;strong&gt;clone&lt;/strong&gt; is a node that appears in more than one place in a Leo outline.&lt;/p&gt;
-&lt;p&gt;Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)&lt;/p&gt;
-&lt;p&gt;Clones are marked with a small red &lt;em&gt;clone arrow*&lt;/em&gt; in the icon box.
-Deleting the penultimate clone removes the red arrow from the node.&lt;/p&gt;
-&lt;img alt="_images/slide-001.png" src="_images/slide-001.png" /&gt;
-
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;div class="sphinxsidebar"&gt;
-    &lt;div class="sphinxsidebarwrapper"&gt;
-        &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
-            &lt;img class="logo" src="../_static/LeoLogo.svg" alt="Logo"/&gt;
-        &lt;/a&gt;&lt;/p&gt;
-  &lt;h4&gt;Previous topic&lt;/h4&gt;
-  &lt;p class="topless"&gt;&lt;a href="leo_toc.html"
-                        title="previous chapter"&gt;Clones And Views&lt;/a&gt;&lt;/p&gt;
-  &lt;h4&gt;Next topic&lt;/h4&gt;
-  &lt;p class="topless"&gt;&lt;a href="slide-002.html"
-                        title="next chapter"&gt;Clones are the same node&lt;/a&gt;&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="clearer"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="related"&gt;
-      &lt;h3&gt;Navigation&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li class="right" style="margin-right: 10px"&gt;
-          &lt;a href="genindex.html" title="General Index"
-             &gt;index&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="slide-002.html" title="Clones are the same node"
-             &gt;next&lt;/a&gt; |&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="leo_toc.html" title="Clones And Views"
-             &gt;previous&lt;/a&gt; |&lt;/li&gt;
-        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.8 documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;&lt; html slide: common footer &gt;&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20230120113025.1"></t>
-<t tx="ekr.20230120115752.1">&lt;link rel="stylesheet" href="../_static/default.css" type="text/css" /&gt;
-&lt;link rel="stylesheet" href="../_static/pygments.css" type="text/css" /&gt;
-&lt;link rel="stylesheet" href="../_static/custom.css" type="text/css" /&gt;
-&lt;script type="text/javascript"&gt;
-  var DOCUMENTATION_OPTIONS = {
-    URL_ROOT:    './',
-    VERSION:     '6.7.2',
-    COLLAPSE_INDEX: false,
-    FILE_SUFFIX: '.html',
-    HAS_SOURCE:  true
-  };
-&lt;!-- scale screen-shot to fit parent container --&gt;
-&lt;/script&gt;
-    &lt;style type="text/css"&gt;
-    img {
-        max-width:50%; max-height:50%;
-    }
-&lt;/style&gt;
-&lt;script type="text/javascript" src="../_static/jquery.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="../_static/underscore.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="../_static/doctools.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="../_static/sidebar.js"&gt;&lt;/script&gt;
-&lt;link rel="top" title="Leo v4.8 documentation" href="index.html" /&gt;
-</t>
-<t tx="ekr.20230120120408.1">&lt;div class="footer"&gt;
-  &amp;copy; Copyright 1997-2023, Edward K. Ream.
-  Last updated on January 20, 2023.
-  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 6.1.2&lt;/a&gt;.
-&lt;/div&gt;
-</t>
-<t tx="ekr.20230120120556.1"></t>
 <t tx="ekr.20230120162143.1">@language python
 '''Recursively import all python files in a directory and clean the result.'''
 @tabwidth -4 # For a better match.
@@ -31614,7 +31615,7 @@ c.recursiveImport(
     add_context=True,  # Override setting only if True/False
     add_file_context=False,  # Override setting only if True/False
     dir_=dir_,
-    kind = '@clean', # '@auto', '@clean', '@nosent','@file',
+    kind = '@edit', # '@auto', '@clean', '@nosent','@file',
     add_path = True,
     recursive = True,
     safe_at_file = False,
@@ -31628,6 +31629,18 @@ if 1:
     # c.expandAllSubheads()
     c.redraw(last)
 print('Done')</t>
+<t tx="ekr.20230120202451.104"></t>
+<t tx="ekr.20230120202451.19"></t>
+<t tx="ekr.20230120202451.20"></t>
+<t tx="ekr.20230120202451.4"></t>
+<t tx="ekr.20230120202451.45"></t>
+<t tx="ekr.20230120202451.46"></t>
+<t tx="ekr.20230120202451.47"></t>
+<t tx="ekr.20230120202451.56"></t>
+<t tx="ekr.20230120202451.57"></t>
+<t tx="ekr.20230120202451.58"></t>
+<t tx="ekr.20230120202451.89"></t>
+<t tx="ekr.20230120202659.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
