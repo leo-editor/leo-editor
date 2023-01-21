@@ -1,10 +1,19 @@
 .. rst3: filename: html/slides/clones-and-views/slide-011.html
 
-=========================
-Changing cloned headlines
-=========================
+=====================
+Views focus attention
+=====================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+Views focus attention on tasks. I track issues as follows:
 
-.. image:: _images/slide-003.png
+I create a **task node** whose children contain all the relevant data.
+  
+Cloned children gather data from all parts of the outline.
+
+Non-cloned children contain supplemental data:
+- A summary of the task.
+- Test data.
+- Any other notes.
+
+.. image:: _images/slide-011.png
 

@@ -1,10 +1,14 @@
 .. rst3: filename: html/slides/clones-and-views/slide-008.html
 
-=========================
-Changing cloned headlines
-=========================
+======================
+Tracking changed files
+======================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+After changing either clone, Leo marks both as changed.
 
-.. image:: _images/slide-003.png
+Leo also marks any ancestor @file nodes as changed, ensuring
+that Leo will also update all changed external files.
+
+
+.. image:: _images/slide-008.png
 

@@ -1,10 +1,16 @@
 .. rst3: filename: html/slides/clones-and-views/slide-009.html
 
-=========================
-Changing cloned headlines
-=========================
+===========================
+The ultimate filing cabinet
+===========================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+Clones are important because they allow you to create as many views of the
+data in the outline as you like.
 
-.. image:: _images/slide-003.png
+Leo acts like flexible filing cabinet.
+
+Any ordinary node can act like a folder in the filing cabinet. Using
+clones, you can “file” a node in as many folders as you like.
+
+.. no image for this slide.
 

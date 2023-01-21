@@ -1,10 +1,14 @@
 .. rst3: filename: html/slides/clones-and-views/slide-007.html
 
 =========================
-Changing cloned headlines
+Tracking changed nodes
 =========================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+Changing a node marks all clones of that node as changed.
 
-.. image:: _images/slide-003.png
+When saving an outline, Leo automatically writes all the external files that contain dirty nodes.
+
+For example, the cloned spam node appears in two places.
+
+.. image:: _images/slide-007.png
 

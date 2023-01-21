@@ -496,8 +496,8 @@
 <v t="ekr.20230121165507.1"><vh>@rst html/slides/clones-and-views/slide-005.html</vh></v>
 <v t="ekr.20230121165507.2"><vh>@rst html/slides/clones-and-views/slide-006.html</vh></v>
 <v t="ekr.20230121165507.3"><vh>@rst html/slides/clones-and-views/slide-007.html</vh></v>
-<v t="ekr.20230121165507.4"><vh>@rst html/slides/clones-and-views/slide-008.html</vh></v>
 <v t="ekr.20230121165508.1"><vh>@rst html/slides/clones-and-views/slide-009.html</vh></v>
+<v t="ekr.20230121165507.4"><vh>@rst html/slides/clones-and-views/slide-008.html</vh></v>
 <v t="ekr.20230121165508.2"><vh>@rst html/slides/clones-and-views/slide-010.html</vh></v>
 <v t="ekr.20230121165549.1"><vh>@rst html/slides/clones-and-views/slide-011.html</vh></v>
 <v t="ekr.20230121165549.2"><vh>@rst html/slides/clones-and-views/slide-012.html</vh></v>
@@ -31597,19 +31597,19 @@ Clones and views
 
 .. toctree::
     :maxdepth: 1
-    
+
     About clones                &lt;slide-001&gt;
     Clones are the same node    &lt;slide-002&gt;
     Changing cloned headlines   &lt;slide-003&gt;
-    xxx &lt;slide-004&gt;
-    xxx &lt;slide-005&gt;
-    xxx &lt;slide-006&gt;
-    xxx &lt;slide-007&gt;
-    xxx &lt;slide-008&gt;
-    xxx &lt;slide-009&gt;
-    xxx &lt;slide-010&gt;
-    xxx &lt;slide-011&gt;
-    xxx &lt;slide-012&gt;
+    A new node                  &lt;slide-004&gt;
+    Adding a child node         &lt;slide-005&gt;
+    Creating a second child     &lt;slide-006&gt;
+    Tracking changed nodes      &lt;slide-007&gt;
+    Tracking changed files      &lt;slide-008&gt;
+    The ultimate filing cabinet &lt;slide-009&gt;
+    Views are sets of nodes     &lt;slide-010&gt;
+    Views focus attention       &lt;slide-011&gt;
+    Views concentrate data      &lt;slide-012&gt;
 </t>
 <t tx="ekr.20230121054859.1">====================
 Using external files
@@ -32056,59 +32056,117 @@ Changing the headline of node A changes the headlines of all cloned nodes.
 
 .. image:: _images/slide-003.png
 </t>
-<t tx="ekr.20230121165506.1">=========================
-Changing cloned headlines
-=========================
+<t tx="ekr.20230121165506.1">==========
+A new node
+==========
+
+Here we have created a node C following the first clone of B.
 
 .. image:: _images/slide-004.png
 </t>
-<t tx="ekr.20230121165507.1">=========================
-xxx
-=========================
+<t tx="ekr.20230121165507.1">===================
+Adding a child node
+===================
 
+Moving C to the right makes C a child of node B. As you can see, C appears as a child of both cloned nodes.
 
+Even the expansion state of cloned nodes are identical: both clones are now expanded.
 
 .. image:: _images/slide-005.png
 </t>
 <t tx="ekr.20230121165507.2">=========================
-xxx
+Creating a second child
 =========================
 
+Here, I have created a new node D with Ctrl-I (insert-node).
+
+The node appears as a child of both cloned nodes.
+
+In general, any change to one clone produces the corresponding change in all other clones.
 
 .. image:: _images/slide-006.png
 </t>
 <t tx="ekr.20230121165507.3">=========================
-xxxx
+Tracking changed nodes
 =========================
 
+Changing a node marks all clones of that node as changed.
+
+When saving an outline, Leo automatically writes all the external files that contain dirty nodes.
+
+For example, the cloned spam node appears in two places.
 
 .. image:: _images/slide-007.png
 </t>
-<t tx="ekr.20230121165507.4">=========================
-xxxx
-=========================
+<t tx="ekr.20230121165507.4">======================
+Tracking changed files
+======================
+
+After changing either clone, Leo marks both as changed.
+
+Leo also marks any ancestor @file nodes as changed, ensuring
+that Leo will also update all changed external files.
 
 
 .. image:: _images/slide-008.png
 </t>
-<t tx="ekr.20230121165508.1">
+<t tx="ekr.20230121165508.1">===========================
+The ultimate filing cabinet
+===========================
+
+Clones are important because they allow you to create as many views of the
+data in the outline as you like.
+
+Leo acts like flexible filing cabinet.
+
+Any ordinary node can act like a folder in the filing cabinet. Using
+clones, you can “file” a node in as many folders as you like.
 
 .. no image for this slide.</t>
-<t tx="ekr.20230121165508.2">=========================
-xxxx
-=========================
+<t tx="ekr.20230121165508.2">=======================
+Views are sets of nodes
+=======================
 
+A Leo **view** is just a subset of the nodes of the outline.
+
+We represent a view as ordinary node, called a view node (1).
+
+The children of the view node are the subset of nodes that define the view.
+
+An outline may contain arbitrarily many views.
+You don't have to choose just one "correct" view.
 
 .. image:: _images/slide-010.png
 </t>
-<t tx="ekr.20230121165549.1">=========================
-xxxx
-=========================
+<t tx="ekr.20230121165549.1">=====================
+Views focus attention
+=====================
 
+Views focus attention on tasks. I track issues as follows:
+
+I create a **task node** whose children contain all the relevant data.
+  
+Cloned children gather data from all parts of the outline.
+
+Non-cloned children contain supplemental data:
+- A summary of the task.
+- Test data.
+- Any other notes.
 
 .. image:: _images/slide-011.png
 </t>
-<t tx="ekr.20230121165549.2">
+<t tx="ekr.20230121165549.2">======================
+Views concentrate data
+======================
+
+Task nodes focus attention on the task at hand.
+
+There is no need to jump around the outline!
+
+No matter how complex the task (or the outline!), all relevant data appear in one place (the task node and its descendants).
+
+Leo will mark as dirty all @&lt;file&gt; nodes containing any changed clones.
+As a result, Leo will update all external files automatically. Everything “just works”.
 
 .. no image for this slide.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the

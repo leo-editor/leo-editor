@@ -1,10 +1,18 @@
 .. rst3: filename: html/slides/clones-and-views/slide-012.html
 
-=========================
-Changing cloned headlines
-=========================
+======================
+Views concentrate data
+======================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+Task nodes focus attention on the task at hand.
 
-.. image:: _images/slide-003.png
+There is no need to jump around the outline!
+
+No matter how complex the task (or the outline!), all relevant data appear in one place (the task node and its descendants).
+
+Leo will mark as dirty all @<file> nodes containing any changed clones.
+As a result, Leo will update all external files automatically. Everything “just works”.
+
+
+.. no image for this slide.
 

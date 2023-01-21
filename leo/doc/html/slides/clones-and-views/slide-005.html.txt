@@ -1,10 +1,12 @@
 .. rst3: filename: html/slides/clones-and-views/slide-005.html
 
-=========================
-Changing cloned headlines
-=========================
+===================
+Adding a child node
+===================
 
-Changing the headline of node A changes the headlines of all cloned nodes.
+Moving C to the right makes C a child of node B. As you can see, C appears as a child of both cloned nodes.
 
-.. image:: _images/slide-003.png
+Even the expansion state of cloned nodes are identical: both clones are now expanded.
+
+.. image:: _images/slide-005.png
 
