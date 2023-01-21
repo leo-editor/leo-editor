@@ -2449,7 +2449,7 @@
 <v t="ekr.20230120202451.26"><vh>@edit slide-004.html</vh></v>
 <v t="ekr.20230120202451.27"><vh>@edit slide-005.html</vh></v>
 <v t="ekr.20230120202451.28"><vh>@edit slide-006.html</vh></v>
-<v t="ekr.20230120214939.1"><vh>---</vh></v>
+<v t="ekr.20230120214939.1"><vh>------- start here</vh></v>
 <v t="ekr.20230120202451.29"><vh>@edit slide-007.html</vh></v>
 <v t="ekr.20230120202451.30"><vh>@edit slide-008.html</vh></v>
 <v t="ekr.20230120202451.31"><vh>@edit slide-009.html</vh></v>
@@ -31604,7 +31604,13 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
-<t tx="ekr.20230120113025.1"></t>
+<t tx="ekr.20230120113025.1">@language rest
+@wrap
+
+To do:
+- Use @file ?
+- Update (eliminate?) version.
+- Unindent &lt;body&gt; elements.</t>
 <t tx="ekr.20230120162143.1">@language python
 '''Recursively import all python files in a directory and clean the result.'''
 @tabwidth -4 # For a better match.
