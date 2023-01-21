@@ -31629,17 +31629,23 @@ if 1:
     # c.expandAllSubheads()
     c.redraw(last)
 print('Done')</t>
-<t tx="ekr.20230120202451.104"></t>
+<t tx="ekr.20230120202451.104">@tabwidth -2
+</t>
 <t tx="ekr.20230120202451.19"></t>
-<t tx="ekr.20230120202451.20"></t>
-<t tx="ekr.20230120202451.4"></t>
+<t tx="ekr.20230120202451.20">@tabwidth -2
+</t>
+<t tx="ekr.20230120202451.4">@tabwidth -2
+</t>
 <t tx="ekr.20230120202451.45"></t>
 <t tx="ekr.20230120202451.46"></t>
-<t tx="ekr.20230120202451.47"></t>
+<t tx="ekr.20230120202451.47">@tabwidth -2
+</t>
 <t tx="ekr.20230120202451.56"></t>
 <t tx="ekr.20230120202451.57"></t>
-<t tx="ekr.20230120202451.58"></t>
-<t tx="ekr.20230120202451.89"></t>
+<t tx="ekr.20230120202451.58">@tabwidth -2
+</t>
+<t tx="ekr.20230120202451.89">@tabwidth -2
+</t>
 <t tx="ekr.20230120202659.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
