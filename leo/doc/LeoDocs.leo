@@ -31608,9 +31608,15 @@ Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 @wrap
 
 To do:
+*** Remove installation slides.
 - Use @file ?
 - Update (eliminate?) version.
-- Unindent &lt;body&gt; elements.</t>
+- Update "Last Updated" line.
+- Unindent &lt;body&gt; elements.
+- Remove Sphinx version.
+
+OLD: http://sphinx.pocoo.org/
+NEW: https://www.sphinx-doc.org/en/master/</t>
 <t tx="ekr.20230120162143.1">@language python
 '''Recursively import all python files in a directory and clean the result.'''
 @tabwidth -4 # For a better match.
