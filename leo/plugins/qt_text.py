@@ -974,7 +974,7 @@ if QtWidgets:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
 
-            if w == c.frame.body.widget and \
+            if hasattr(c.frame.body, 'widget') and  w == c.frame.body.widget and \
                     c.config.getBool('show-rmargin-guide'):
                 #@+<< paint margin guides >>
                 #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
