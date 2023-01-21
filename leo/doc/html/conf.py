@@ -87,7 +87,7 @@ html_theme_options = {
 }
 
 # The name of an image file (relative to this directory) at the top of the sidebar.
-html_logo = 'LeoLogo.svg'
+html_logo = '_static/LeoLogo.svg'  #### 
 
 # If not '', insert 'Last updated on:' at the bottom of every pages.
 # using the given strftime format.

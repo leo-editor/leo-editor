@@ -47,7 +47,7 @@ Leo's Documentation Page
 .. toctree::
    :hidden:
 
-   slides/slides
+   slides
    leoLinks
    screen-shots
 
