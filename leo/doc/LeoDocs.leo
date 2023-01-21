@@ -385,6 +385,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20230120162143.1"><vh> Recursive import script</vh></v>
 <v t="ekr.20210326081805.1"><vh>Archive</vh>
 <v t="ekr.20180523093753.1"><vh>Backup of GitHub issues</vh>
 <v t="ekr.20180523101625.1"><vh>GitHub LeoU issues</vh>
@@ -31604,6 +31605,29 @@ Deleting the penultimate clone removes the red arrow from the node.&lt;/p&gt;
 &lt;/div&gt;
 </t>
 <t tx="ekr.20230120120556.1"></t>
+<t tx="ekr.20230120162143.1">@language python
+'''Recursively import all python files in a directory and clean the result.'''
+@tabwidth -4 # For a better match.
+g.cls()
+dir_ = r'C:\Repos\leo-editor\leo\doc\html\slides'
+c.recursiveImport(
+    add_context=True,  # Override setting only if True/False
+    add_file_context=False,  # Override setting only if True/False
+    dir_=dir_,
+    kind = '@clean', # '@auto', '@clean', '@nosent','@file',
+    add_path = True,
+    recursive = True,
+    safe_at_file = False,
+    theTypes = ['.html'],
+    verbose = False,
+)
+if 1:
+    last = c.lastTopLevel()
+    # for p in last.self_and_subtree():
+        # p.expand()
+    # c.expandAllSubheads()
+    c.redraw(last)
+print('Done')</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
