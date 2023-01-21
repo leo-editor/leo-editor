@@ -7,5 +7,5 @@ Using the Minibuffer
 .. toctree::
     :maxdepth: 1
     
-    slide-001 <to do>
+..    To do <slide-001>
 

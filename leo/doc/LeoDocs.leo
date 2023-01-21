@@ -483,7 +483,7 @@
 <v t="ekr.20230120090521.1"><vh>Slides</vh></v>
 </v>
 <v t="ekr.20230121052337.1"><vh>Slides</vh>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides/slides.html</vh></v>
 <v t="ekr.20230121060317.1"><vh>Slides: Clones and views</vh>
 <v t="ekr.20230121054117.1"><vh>@rst html/slides/clones-and-views/clones-and-views.html</vh></v>
 <v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
@@ -2441,8 +2441,10 @@
 <v t="ekr.20230121093037.1"><vh>--- recent files</vh>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
+<v t="ekr.20100808060203.4273"></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
+<v t="ekr.20170215075612.1"></v>
 <v t="ekr.20100821182153.4343"></v>
 </vnodes>
 <tnodes>
@@ -8773,11 +8775,11 @@ This is the front page for various slide shows about Leo.
 .. toctree::
     :maxdepth: 1
 
-    slides/clones-and-views/clones-and-views
-    slides/external-files/external-files
-    slides/leo-basics-step-by-step/leo-basics-step-by-step
-    slides/scripting-leo/scripting-leo
-    slides/using-leos-minibuffer/using-leos-minibuffer
+    clones-and-views/clones-and-views
+    external-files/external-files
+    leo-basics-step-by-step/leo-basics-step-by-step
+    scripting-leo/scripting-leo
+    using-leos-minibuffer/using-leos-minibuffer
 
 </t>
 <t tx="ekr.20100831090251.5838"></t>
@@ -14635,7 +14637,6 @@ Advanced Topics
 
    coloring
    writingPlugins
-   unitTesting
    debuggers
    console-gui
    leoserver
@@ -21882,7 +21883,7 @@ Leo's Documentation Page
 .. toctree::
    :hidden:
 
-   slides
+   slides/slides
    leoLinks
    screen-shots
 
@@ -31559,7 +31560,7 @@ Using External Files
 .. toctree::
     :maxdepth: 1
     
-    slide-001 &lt;to do&gt;
+..    To do &lt;slide-001&gt;
 </t>
 <t tx="ekr.20230121054950.1">############
 Leo's Basics
@@ -31568,7 +31569,7 @@ Leo's Basics
 .. toctree::
     :maxdepth: 1
     
-    slide-001 &lt;to do&gt;
+..    To do &lt;slide-001&gt;
 </t>
 <t tx="ekr.20230121055005.1">#############
 Scripting Leo
@@ -31577,7 +31578,7 @@ Scripting Leo
 .. toctree::
     :maxdepth: 1
     
-    slide-001 &lt;to do&gt;
+..    To do &lt;slide-001&gt;
 </t>
 <t tx="ekr.20230121055019.1">####################
 Using the Minibuffer
@@ -31586,7 +31587,7 @@ Using the Minibuffer
 .. toctree::
     :maxdepth: 1
     
-    slide-001 &lt;to do&gt;
+..    To do &lt;slide-001&gt;
 </t>
 <t tx="ekr.20230121060317.1"></t>
 <t tx="ekr.20230121060325.1">############
