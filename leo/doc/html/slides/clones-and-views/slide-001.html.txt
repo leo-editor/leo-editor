@@ -1,5 +1,9 @@
 .. rst3: filename: html/slides/clones-and-views/slide-001.html
 
+############
+About clones
+############
+
 Clones are one of Leo’s most unusual and most useful features.
 
 A clone is a node that appears in more than one place in a Leo outline.
@@ -8,8 +12,6 @@ Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
 
 Clones are marked with a small red clone arrow* in the icon box. Deleting
 the penultimate clone removes the red arrow from the node.
-
-.. slides/clones-and-views/_images/slide-001.png
 
 .. |clones-and-views1| image:: _images/slide-001.png
 

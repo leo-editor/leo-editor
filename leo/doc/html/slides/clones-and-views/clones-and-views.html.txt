@@ -1,12 +1,12 @@
 .. rst3: filename: html/slides/clones-and-views/clones-and-views.html
 
 ################
-Clones and Views
+Clones and views
 ################
 
 .. toctree::
     :maxdepth: 1
     
-    slide-001 <Clones and views>
-    slide-002 <Clones are the same node>
+    About clones             <slide-001>
+    Clones are the same node <slide-002>
 

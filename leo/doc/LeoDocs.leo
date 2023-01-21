@@ -484,15 +484,23 @@
 </v>
 <v t="ekr.20230121052337.1"><vh>Slides</vh>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-<v t="ekr.20230121060317.1"><vh>Clones and views</vh>
+<v t="ekr.20230121060317.1"><vh>Slides: Clones and views</vh>
 <v t="ekr.20230121054117.1"><vh>@rst html/slides/clones-and-views/clones-and-views.html</vh></v>
 <v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
 <v t="ekr.20230121060347.1"><vh>@rst html/slides/clones-and-views/slide-002.html</vh></v>
 </v>
+<v t="ekr.20230121061300.1"><vh>Slides: External files</vh>
 <v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
+</v>
+<v t="ekr.20230121061309.1"><vh>Slides: Leo's basics</vh>
 <v t="ekr.20230121054950.1"><vh>@rst html/slides/leo-basics-step-by-step/leo-basics-step-by-step.html</vh></v>
+</v>
+<v t="ekr.20230121061335.1"><vh>Slides: Scripting</vh>
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
+</v>
+<v t="ekr.20230121061433.1"><vh>Slides: Minibuffer</vh>
 <v t="ekr.20230121055019.1"><vh>@rst html/slides/using-leos-minibuffer/using-leos-minibuffer.html</vh></v>
+</v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -8761,7 +8769,7 @@ This is the front page for various slide shows about Leo.
 .. toctree::
     :maxdepth: 1
 
-    slides/clones-and-views/slide-001
+    slides/clones-and-views/clones-and-views
     slides/external-files/external-files
     slides/leo-basics-step-by-step/leo-basics-step-by-step
     slides/scripting-leo/scripting-leo
@@ -31524,14 +31532,14 @@ Intermediate slide shows
 `Scripting Leo`_ explains how to use Python scripting in Leo.
 </t>
 <t tx="ekr.20230121054117.1">################
-Clones and Views
+Clones and views
 ################
 
 .. toctree::
     :maxdepth: 1
     
-    slide-001 &lt;Clones and views&gt;
-    slide-002 &lt;Clones are the same node&gt;
+    About clones             &lt;slide-001&gt;
+    Clones are the same node &lt;slide-002&gt;
 </t>
 <t tx="ekr.20230121054859.1">####################
 Using External Files
@@ -31570,7 +31578,11 @@ Using the Minibuffer
     slide-001 &lt;to do&gt;
 </t>
 <t tx="ekr.20230121060317.1"></t>
-<t tx="ekr.20230121060325.1">Clones are one of Leo’s most unusual and most useful features.
+<t tx="ekr.20230121060325.1">############
+About clones
+############
+
+Clones are one of Leo’s most unusual and most useful features.
 
 A clone is a node that appears in more than one place in a Leo outline.
 
@@ -31579,19 +31591,25 @@ Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
 Clones are marked with a small red clone arrow* in the icon box. Deleting
 the penultimate clone removes the red arrow from the node.
 
-.. slides/clones-and-views/_images/slide-001.png
-
 .. |clones-and-views1| image:: _images/slide-001.png
 
 |clones-and-views1|
 </t>
-<t tx="ekr.20230121060347.1">Changing the headline or body text of a clone changes the headline or body
+<t tx="ekr.20230121060347.1">########################
+Clones are the same node
+########################
+
+Changing the headline or body text of a clone changes the headline or body
 text of all other clones of that node. Furthermore, changing any
 descendants of a clone, including inserting, deleting or moving nodes,
 results in the same changes being made to all other clones.
 
 In fact, all clones of a node are actually the exactly the same node, so
 any change to one clone inevitably affects all other clones.</t>
+<t tx="ekr.20230121061300.1"></t>
+<t tx="ekr.20230121061309.1"></t>
+<t tx="ekr.20230121061335.1"></t>
+<t tx="ekr.20230121061433.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
