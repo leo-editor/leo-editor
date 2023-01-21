@@ -2466,7 +2466,7 @@
 <v t="ekr.20230120202451.43"><vh>@edit slide-021.html</vh></v>
 <v t="ekr.20230120202451.44"><vh>@edit slide-022.html</vh></v>
 <v t="ekr.20230120202451.45"><vh>@path _images</vh></v>
-<v t="ekr.20230120202451.46"><vh>@path _static</vh></v>
+<v t="ekr.20230120202451.46"><vh>@path ../_static</vh></v>
 </v>
 <v t="ekr.20230120202451.47"><vh>@path html/slides/installation</vh>
 <v t="ekr.20230120202451.48"><vh>@edit genindex.html</vh></v>
@@ -2478,7 +2478,7 @@
 <v t="ekr.20230120202451.54"><vh>@edit slide-005.html</vh></v>
 <v t="ekr.20230120202451.55"><vh>@edit slide-006.html</vh></v>
 <v t="ekr.20230120202451.56"><vh>@path _sources</vh></v>
-<v t="ekr.20230120202451.57"><vh>@path _static</vh></v>
+<v t="ekr.20230120202451.57"><vh>@path ../_static</vh></v>
 </v>
 <v t="ekr.20230120202451.58"><vh>@path html/slides/leo-basics-step-by-step</vh>
 <v t="ekr.20230120202451.59"><vh>@edit genindex.html</vh></v>
