@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/clones-and-views/slide-008.html
+
+=========================
+Changing cloned headlines
+=========================
+
+Changing the headline of node A changes the headlines of all cloned nodes.
+
+.. image:: _images/slide-003.png
+

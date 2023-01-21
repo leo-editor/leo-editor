@@ -10,4 +10,13 @@ Clones and views
     About clones                <slide-001>
     Clones are the same node    <slide-002>
     Changing cloned headlines   <slide-003>
+    xxx <slide-004>
+    xxx <slide-005>
+    xxx <slide-006>
+    xxx <slide-007>
+    xxx <slide-008>
+    xxx <slide-009>
+    xxx <slide-010>
+    xxx <slide-011>
+    xxx <slide-012>
 

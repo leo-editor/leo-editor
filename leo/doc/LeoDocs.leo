@@ -492,6 +492,15 @@
 <v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
 <v t="ekr.20230121060347.1"><vh>@rst html/slides/clones-and-views/slide-002.html</vh></v>
 <v t="ekr.20230121164642.1"><vh>@rst html/slides/clones-and-views/slide-003.html</vh></v>
+<v t="ekr.20230121165506.1"><vh>@rst html/slides/clones-and-views/slide-004.html</vh></v>
+<v t="ekr.20230121165507.1"><vh>@rst html/slides/clones-and-views/slide-005.html</vh></v>
+<v t="ekr.20230121165507.2"><vh>@rst html/slides/clones-and-views/slide-006.html</vh></v>
+<v t="ekr.20230121165507.3"><vh>@rst html/slides/clones-and-views/slide-007.html</vh></v>
+<v t="ekr.20230121165507.4"><vh>@rst html/slides/clones-and-views/slide-008.html</vh></v>
+<v t="ekr.20230121165508.1"><vh>@rst html/slides/clones-and-views/slide-009.html</vh></v>
+<v t="ekr.20230121165508.2"><vh>@rst html/slides/clones-and-views/slide-010.html</vh></v>
+<v t="ekr.20230121165549.1"><vh>@rst html/slides/clones-and-views/slide-011.html</vh></v>
+<v t="ekr.20230121165549.2"><vh>@rst html/slides/clones-and-views/slide-012.html</vh></v>
 </v>
 <v t="ekr.20230121061300.1"><vh>Slides: External files</vh>
 <v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
@@ -31592,6 +31601,15 @@ Clones and views
     About clones                &lt;slide-001&gt;
     Clones are the same node    &lt;slide-002&gt;
     Changing cloned headlines   &lt;slide-003&gt;
+    xxx &lt;slide-004&gt;
+    xxx &lt;slide-005&gt;
+    xxx &lt;slide-006&gt;
+    xxx &lt;slide-007&gt;
+    xxx &lt;slide-008&gt;
+    xxx &lt;slide-009&gt;
+    xxx &lt;slide-010&gt;
+    xxx &lt;slide-011&gt;
+    xxx &lt;slide-012&gt;
 </t>
 <t tx="ekr.20230121054859.1">====================
 Using external files
@@ -32038,6 +32056,61 @@ Changing the headline of node A changes the headlines of all cloned nodes.
 
 .. image:: _images/slide-003.png
 </t>
+<t tx="ekr.20230121165506.1">=========================
+Changing cloned headlines
+=========================
+
+.. image:: _images/slide-004.png
+</t>
+<t tx="ekr.20230121165507.1">=========================
+xxx
+=========================
+
+
+
+.. image:: _images/slide-005.png
+</t>
+<t tx="ekr.20230121165507.2">=========================
+xxx
+=========================
+
+
+.. image:: _images/slide-006.png
+</t>
+<t tx="ekr.20230121165507.3">=========================
+xxxx
+=========================
+
+
+.. image:: _images/slide-007.png
+</t>
+<t tx="ekr.20230121165507.4">=========================
+xxxx
+=========================
+
+
+.. image:: _images/slide-008.png
+</t>
+<t tx="ekr.20230121165508.1">
+
+.. no image for this slide.</t>
+<t tx="ekr.20230121165508.2">=========================
+xxxx
+=========================
+
+
+.. image:: _images/slide-010.png
+</t>
+<t tx="ekr.20230121165549.1">=========================
+xxxx
+=========================
+
+
+.. image:: _images/slide-011.png
+</t>
+<t tx="ekr.20230121165549.2">
+
+.. no image for this slide.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
