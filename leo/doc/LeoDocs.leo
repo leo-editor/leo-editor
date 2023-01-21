@@ -2449,6 +2449,7 @@
 <v t="ekr.20230120202451.26"><vh>@edit slide-004.html</vh></v>
 <v t="ekr.20230120202451.27"><vh>@edit slide-005.html</vh></v>
 <v t="ekr.20230120202451.28"><vh>@edit slide-006.html</vh></v>
+<v t="ekr.20230120214939.1"><vh>---</vh></v>
 <v t="ekr.20230120202451.29"><vh>@edit slide-007.html</vh></v>
 <v t="ekr.20230120202451.30"><vh>@edit slide-008.html</vh></v>
 <v t="ekr.20230120202451.31"><vh>@edit slide-009.html</vh></v>
@@ -2465,8 +2466,6 @@
 <v t="ekr.20230120202451.42"><vh>@edit slide-020.html</vh></v>
 <v t="ekr.20230120202451.43"><vh>@edit slide-021.html</vh></v>
 <v t="ekr.20230120202451.44"><vh>@edit slide-022.html</vh></v>
-<v t="ekr.20230120202451.45"><vh>@path _images</vh></v>
-<v t="ekr.20230120202451.46"><vh>@path ../_static</vh></v>
 </v>
 <v t="ekr.20230120202451.47"><vh>@path html/slides/installation</vh>
 <v t="ekr.20230120202451.48"><vh>@edit genindex.html</vh></v>
@@ -31636,8 +31635,6 @@ print('Done')</t>
 </t>
 <t tx="ekr.20230120202451.4">@tabwidth -2
 </t>
-<t tx="ekr.20230120202451.45"></t>
-<t tx="ekr.20230120202451.46"></t>
 <t tx="ekr.20230120202451.47">@tabwidth -2
 </t>
 <t tx="ekr.20230120202451.56"></t>
@@ -31647,6 +31644,7 @@ print('Done')</t>
 <t tx="ekr.20230120202451.89">@tabwidth -2
 </t>
 <t tx="ekr.20230120202659.1"></t>
+<t tx="ekr.20230120214939.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
