@@ -475,13 +475,15 @@
 <v t="ekr.20170322084909.1"><vh>Using Leo to manage a PhD thesis</vh></v>
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 <v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 <v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
 </v>
 <v t="ekr.20230120090521.1"><vh>Slides</vh></v>
+</v>
+<v t="ekr.20230121052337.1"><vh>Slides</vh>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -2416,8 +2418,12 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230120113025.1"><vh>----- slides</vh></v>
+<v t="ekr.20230120113025.1"><vh>----- slides</vh>
+<v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
+</v>
+<v t="ekr.20230121052337.1"></v>
 <v t="ekr.20100821182153.4343"></v>
+<v t="ekr.20230121053006.1"><vh>Crash</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8754,29 +8760,13 @@ This is the front page for various slide shows about Leo.
 
 .. toctree::
     :maxdepth: 1
+
     clones-and-views
     external-files
     leo-basics-step-by-step
     scripting-leo
     using-leos-minibuffer
 
-Basic slide shows
------------------
-
-`Installation`_  tells how to install Leo.
-
-`Leo Basics Step By Step`_  explains the basics of Leo outlines.
-
-`External Files`_ discusses creating external files with @file, @clean and @edit.
-
-`Clones and views`_ illustrates how clones work and show how they create views.
-
-`Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
-
-Intermediate slide shows
-------------------------
-
-`Scripting Leo`_ explains how to use Python scripting in Leo.
 </t>
 <t tx="ekr.20100831090251.5838"></t>
 <t tx="ekr.20100831090251.5840">def createCursesGui(self, fileName='', verbose=False):
@@ -31492,6 +31482,68 @@ This list is out of date!
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
 <t tx="ekr.20230120113025.1"></t>
+<t tx="ekr.20230121052337.1"></t>
+<t tx="ekr.20230121052838.1">######
+Slides
+######
+
+This is the front page for various slide shows about Leo.
+
+.. links
+.. _`Clones and views`:         slides/clones-and-views/slide-001.html
+.. _`External files`:           slides/external-files/slide-005.html
+.. _`Installation`:             slides/installation/slide-001.html
+.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
+.. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
+.. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/slide-001.html
+
+.. toctree::
+    :maxdepth: 1
+    clones-and-views
+    external-files
+    leo-basics-step-by-step
+    scripting-leo
+    using-leos-minibuffer
+
+Basic slide shows
+-----------------
+
+`Installation`_  tells how to install Leo.
+
+`Leo Basics Step By Step`_  explains the basics of Leo outlines.
+
+`External Files`_ discusses creating external files with @file, @clean and @edit.
+
+`Clones and views`_ illustrates how clones work and show how they create views.
+
+`Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
+
+Intermediate slide shows
+------------------------
+
+`Scripting Leo`_ explains how to use Python scripting in Leo.
+</t>
+<t tx="ekr.20230121053006.1">Traceback (most recent call last):
+
+  File "c:\Repos\leo-editor\leo\core\leoGlobals.py", line 303, in new_cmd_wrapper
+    func(self, event=event)
+
+  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 168, in rst3
+    self.processTopTree(self.c.p)
+
+  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 227, in processTopTree
+    self.processTree(p)
+
+  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 243, in processTree
+    self.write_docutils_files(fn, p, source)
+
+  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 347, in write_docutils_files
+    ok = self.createDirectoryForFile(fn)
+
+  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 421, in createDirectoryForFile
+    return bool(ok)
+
+UnboundLocalError: local variable 'ok' referenced before assignment</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
