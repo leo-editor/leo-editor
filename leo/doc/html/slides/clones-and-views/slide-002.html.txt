@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/clones-and-views/slide-002.html
+
+Changing the headline or body text of a clone changes the headline or body
+text of all other clones of that node. Furthermore, changing any
+descendants of a clone, including inserting, deleting or moving nodes,
+results in the same changes being made to all other clones.
+
+In fact, all clones of a node are actually the exactly the same node, so
+any change to one clone inevitably affects all other clones.
+

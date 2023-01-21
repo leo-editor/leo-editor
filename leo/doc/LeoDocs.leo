@@ -484,6 +484,15 @@
 </v>
 <v t="ekr.20230121052337.1"><vh>Slides</vh>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+<v t="ekr.20230121060317.1"><vh>Clones and views</vh>
+<v t="ekr.20230121054117.1"><vh>@rst html/slides/clones-and-views/clones-and-views.html</vh></v>
+<v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
+<v t="ekr.20230121060347.1"><vh>@rst html/slides/clones-and-views/slide-002.html</vh></v>
+</v>
+<v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
+<v t="ekr.20230121054950.1"><vh>@rst html/slides/leo-basics-step-by-step/leo-basics-step-by-step.html</vh></v>
+<v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
+<v t="ekr.20230121055019.1"><vh>@rst html/slides/using-leos-minibuffer/using-leos-minibuffer.html</vh></v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -2423,7 +2432,6 @@
 </v>
 <v t="ekr.20230121052337.1"></v>
 <v t="ekr.20100821182153.4343"></v>
-<v t="ekr.20230121053006.1"><vh>Crash</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8750,22 +8758,14 @@ Slides
 
 This is the front page for various slide shows about Leo.
 
-.. links
-.. _`Clones and views`:         slides/clones-and-views/slide-001.html
-.. _`External files`:           slides/external-files/slide-005.html
-.. _`Installation`:             slides/installation/slide-001.html
-.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
-.. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
-.. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/slide-001.html
-
 .. toctree::
     :maxdepth: 1
 
-    clones-and-views
-    external-files
-    leo-basics-step-by-step
-    scripting-leo
-    using-leos-minibuffer
+    slides/clones-and-views/slide-001
+    slides/external-files/external-files
+    slides/leo-basics-step-by-step/leo-basics-step-by-step
+    slides/scripting-leo/scripting-leo
+    slides/using-leos-minibuffer/using-leos-minibuffer
 
 </t>
 <t tx="ekr.20100831090251.5838"></t>
@@ -31523,27 +31523,75 @@ Intermediate slide shows
 
 `Scripting Leo`_ explains how to use Python scripting in Leo.
 </t>
-<t tx="ekr.20230121053006.1">Traceback (most recent call last):
+<t tx="ekr.20230121054117.1">################
+Clones and Views
+################
 
-  File "c:\Repos\leo-editor\leo\core\leoGlobals.py", line 303, in new_cmd_wrapper
-    func(self, event=event)
+.. toctree::
+    :maxdepth: 1
+    
+    slide-001 &lt;Clones and views&gt;
+    slide-002 &lt;Clones are the same node&gt;
+</t>
+<t tx="ekr.20230121054859.1">####################
+Using External Files
+####################
 
-  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 168, in rst3
-    self.processTopTree(self.c.p)
+.. toctree::
+    :maxdepth: 1
+    
+    slide-001 &lt;to do&gt;
+</t>
+<t tx="ekr.20230121054950.1">############
+Leo's Basics
+############
 
-  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 227, in processTopTree
-    self.processTree(p)
+.. toctree::
+    :maxdepth: 1
+    
+    slide-001 &lt;to do&gt;
+</t>
+<t tx="ekr.20230121055005.1">#############
+Scripting Leo
+#############
 
-  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 243, in processTree
-    self.write_docutils_files(fn, p, source)
+.. toctree::
+    :maxdepth: 1
+    
+    slide-001 &lt;to do&gt;
+</t>
+<t tx="ekr.20230121055019.1">####################
+Using the Minibuffer
+####################
 
-  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 347, in write_docutils_files
-    ok = self.createDirectoryForFile(fn)
+.. toctree::
+    :maxdepth: 1
+    
+    slide-001 &lt;to do&gt;
+</t>
+<t tx="ekr.20230121060317.1"></t>
+<t tx="ekr.20230121060325.1">Clones are one of Leo’s most unusual and most useful features.
 
-  File "c:\Repos\leo-editor\leo\core\leoRst.py", line 421, in createDirectoryForFile
-    return bool(ok)
+A clone is a node that appears in more than one place in a Leo outline.
 
-UnboundLocalError: local variable 'ok' referenced before assignment</t>
+Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
+
+Clones are marked with a small red clone arrow* in the icon box. Deleting
+the penultimate clone removes the red arrow from the node.
+
+.. slides/clones-and-views/_images/slide-001.png
+
+.. |clones-and-views1| image:: _images/slide-001.png
+
+|clones-and-views1|
+</t>
+<t tx="ekr.20230121060347.1">Changing the headline or body text of a clone changes the headline or body
+text of all other clones of that node. Furthermore, changing any
+descendants of a clone, including inserting, deleting or moving nodes,
+results in the same changes being made to all other clones.
+
+In fact, all clones of a node are actually the exactly the same node, so
+any change to one clone inevitably affects all other clones.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
