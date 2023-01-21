@@ -454,7 +454,7 @@
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
-<v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
+<v t="ekr.20090428133936.2"><vh>@file html/conf.py</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -2435,11 +2435,12 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230120113025.1"><vh>----- slides</vh>
+<v t="ekr.20230120113025.1"><vh>=== #3074</vh>
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
 <v t="ekr.20100821182153.4343"></v>
+<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31489,7 +31490,14 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
-<t tx="ekr.20230120113025.1"></t>
+<t tx="ekr.20230120113025.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/3073
+
+@language python
+@nosearch
+</t>
 <t tx="ekr.20230121052337.1"></t>
 <t tx="ekr.20230121052838.1">######
 Slides
