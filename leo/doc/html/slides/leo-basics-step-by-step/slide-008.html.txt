@@ -4,7 +4,6 @@
 Inserting new nodes
 ===================
 
-
 Ctrl-I inserts a new node.
 
 .. image:: _images/slide-008.png

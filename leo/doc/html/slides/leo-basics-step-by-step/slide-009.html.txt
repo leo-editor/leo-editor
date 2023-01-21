@@ -1,11 +1,8 @@
 .. rst3: filename: html/slides/leo-basics-step-by-step/slide-009.html
 
-====================
-The blue text marker
-====================
-
-
-I typed "go shopping" followed by a return.
+===============================
+<Return> ends headline editing
+===============================
 
 The focus is now in the body pane.
 

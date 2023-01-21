@@ -1,2 +1,14 @@
 .. rst3: filename: html/slides/leo-basics-step-by-step/slide-019.html
 
+============================
+Left-Arrow: contracts a node
+============================
+
+
+With the "to-do today" node selected,
+hitting the Left-Arrow key will contract the node.
+
+.. "to do" contracted.
+
+.. image:: _images/slide-019.png
+

@@ -1,2 +1,10 @@
 .. rst3: filename: html/slides/leo-basics-step-by-step/slide-023.html
 
+===============
+Shift-Ctrl-V
+===============
+
+Shift-Ctrl-V pastes the outline.
+
+.. image:: _images/slide-023.png
+

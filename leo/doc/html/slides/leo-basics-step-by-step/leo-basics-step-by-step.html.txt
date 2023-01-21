@@ -10,28 +10,28 @@ This is a step-by-step introduction showing you how to use Leo outlines.
 .. toctree::
     :maxdepth: 1
     
-    The workbook file       <slide-002>
-    Editing headlines       <slide-003>
-    Typing in a headline    <slide-004>
-    The icon box            <slide-005>
-    Keyboard shortcuts      <slide-006>
-    Saving your work        <slide-007>
-    Inserting new nodes     <slide-008>
-    Editing body text       <slide-009>
-    The blue square         <slide-010>
-    Moving nodes right      <slide-011>
-    Moving nodes left       <slide-012>
-    Undo and redo           <slide-013>
-    slide 14    <slide-014>
-    slide 15    <slide-015>
-    slide 16    <slide-016>
-    slide 17    <slide-017>
-    slide 18    <slide-018>
-    slide 19    <slide-019>
-    slide 20    <slide-020>
-    slide 21    <slide-021>
-    slide 22    <slide-022>
-    slide 23    <slide-023>
-    slide 24    <slide-024>
-    slide 25    <slide-025>
+    The workbook file               <slide-002>
+    Editing headlines               <slide-003>
+    Typing in a headline            <slide-004>
+    The icon box                    <slide-005>
+    Swithing focus                  <slide-006>
+    Saving your work                <slide-007>
+    Inserting new nodes             <slide-008>
+    <Return> ends headline editing  <slide-009>
+    The blue square                 <slide-010>
+    Move a node right               <slide-011>
+    Move a node left                <slide-012>
+    Undo and redo                   <slide-013>
+    Add a to-do node                <slide-014>
+    Add a to-do item                <slide-015>
+    Move a node up                  <slide-016>
+    Hide child nodes                <slide-017>
+    Changing focus                  <slide-018>
+    Left-Arrow: contract a node     <slide-019>
+    Right-Arrow: expand a node      <slide-020>
+    Summary: arrow keys             <slide-021>
+    Shift-Ctrl-C: copy an outline   <slide-022>
+    Shift-Ctrl-V: paste an outline  <slide-023>
+    Copy works on entire trees      <slide-024>
+    Summary                         <slide-025>
 

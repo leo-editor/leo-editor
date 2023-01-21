@@ -520,6 +520,7 @@
 <v t="ekr.20230121135448.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-022.html</vh></v>
 <v t="ekr.20230121135448.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-023.html</vh></v>
 <v t="ekr.20230121135448.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-024.html</vh></v>
+<v t="ekr.20230121161822.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-025.html</vh></v>
 </v>
 <v t="ekr.20230121061335.1"><vh>Slides: Scripting</vh>
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
@@ -31609,31 +31610,30 @@ This is a step-by-step introduction showing you how to use Leo outlines.
 .. toctree::
     :maxdepth: 1
     
-    The workbook file       &lt;slide-002&gt;
-    Editing headlines       &lt;slide-003&gt;
-    Typing in a headline    &lt;slide-004&gt;
-    The icon box            &lt;slide-005&gt;
-    Keyboard shortcuts      &lt;slide-006&gt;
-    Saving your work        &lt;slide-007&gt;
-    Inserting new nodes     &lt;slide-008&gt;
-    Editing body text       &lt;slide-009&gt;
-    The blue square         &lt;slide-010&gt;
-    Moving nodes right      &lt;slide-011&gt;
-    Moving nodes left       &lt;slide-012&gt;
-    Undo and redo           &lt;slide-013&gt;
-    slide 14    &lt;slide-014&gt;
-    slide 15    &lt;slide-015&gt;
-    slide 16    &lt;slide-016&gt;
-    slide 17    &lt;slide-017&gt;
-    slide 18    &lt;slide-018&gt;
-    slide 19    &lt;slide-019&gt;
-    slide 20    &lt;slide-020&gt;
-    slide 21    &lt;slide-021&gt;
-    slide 22    &lt;slide-022&gt;
-    slide 23    &lt;slide-023&gt;
-    slide 24    &lt;slide-024&gt;
-    slide 25    &lt;slide-025&gt;
-
+    The workbook file               &lt;slide-002&gt;
+    Editing headlines               &lt;slide-003&gt;
+    Typing in a headline            &lt;slide-004&gt;
+    The icon box                    &lt;slide-005&gt;
+    Swithing focus                  &lt;slide-006&gt;
+    Saving your work                &lt;slide-007&gt;
+    Inserting new nodes             &lt;slide-008&gt;
+    &lt;Return&gt; ends headline editing  &lt;slide-009&gt;
+    The blue square                 &lt;slide-010&gt;
+    Move a node right               &lt;slide-011&gt;
+    Move a node left                &lt;slide-012&gt;
+    Undo and redo                   &lt;slide-013&gt;
+    Add a to-do node                &lt;slide-014&gt;
+    Add a to-do item                &lt;slide-015&gt;
+    Move a node up                  &lt;slide-016&gt;
+    Hide child nodes                &lt;slide-017&gt;
+    Changing focus                  &lt;slide-018&gt;
+    Left-Arrow: contract a node     &lt;slide-019&gt;
+    Right-Arrow: expand a node      &lt;slide-020&gt;
+    Summary: arrow keys             &lt;slide-021&gt;
+    Shift-Ctrl-C: copy an outline   &lt;slide-022&gt;
+    Shift-Ctrl-V: paste an outline  &lt;slide-023&gt;
+    Copy works on entire trees      &lt;slide-024&gt;
+    Summary                         &lt;slide-025&gt;
 </t>
 <t tx="ekr.20230121055005.1">#############
 Scripting Leo
@@ -31737,8 +31737,6 @@ The body pane is now blue, indicating that it no longer has focus.
 Typing in the headline
 ======================
 
-I typed "to do" in the headline.
-
 .. image:: _images/slide-004.png
 </t>
 <t tx="ekr.20230121135205.3">============
@@ -31748,41 +31746,27 @@ The icon box
 Typing the &lt;return&gt; key ends editing of the headline
 and puts focus back in the body pane.
 
-Notice that the **icon box** to the left of the
-headline now has a darker outline that it had
-before. This indicates that the contents of the
-node has been changed. We say the node is
-**dirty**.
+The **icon box** to the left of the headline now has a dark outline,
+indicating that the node is **dirty**, that is, the node's headline or body
+text has changed.
 
 .. image:: _images/slide-005.png</t>
-<t tx="ekr.20230121135206.1">==================
-Keyboard shortcuts
-==================
+<t tx="ekr.20230121135206.1">==============
+Swithing focus
+==============
 
-
-You can use Leo without ever using the mouse. For
-instance, you can select any Leo pane by using
-keystrokes instead of clicking the pane:
-
-- Regardless of where the focus is, Alt-D puts
-  focus in the body pane and Alt-T puts foucs in
-  the outline pane.
-
-- With the focus in the tree pane, hitting the
-  return key puts the focus in the body pane.
-
+- Alt-D always puts focus in the body.
+- Alt-T always puts foucs in the outline.
+- When the focus is in the tree, &lt;return&gt; puts the focus in the body.
 </t>
-<t tx="ekr.20230121135206.2">================
-Saving your work
-================
+<t tx="ekr.20230121135206.2">==================
+Saving the outline
+==================
 
 Ctrl-S saves the outline.
 
-Notice that the icon box once again has a gray outline,
-indicating that the node has not been changed since
-the file was last saved.
-
-.. Arrow to icon box.
+Afterwards, all icon boxes once have gray borders,
+indicating that no nodes are now dirty.
 
 .. image:: _images/slide-007.png
 
@@ -31791,18 +31775,14 @@ the file was last saved.
 Inserting new nodes
 ===================
 
-
 Ctrl-I inserts a new node.
 
 .. image:: _images/slide-008.png
 
 </t>
-<t tx="ekr.20230121135206.4">====================
-The blue text marker
-====================
-
-
-I typed "go shopping" followed by a return.
+<t tx="ekr.20230121135206.4">===============================
+&lt;Return&gt; ends headline editing
+===============================
 
 The focus is now in the body pane.
 
@@ -31820,8 +31800,32 @@ I added a shopping list.
 The blue square in the icon area indicates that the body pane contains text.
 
 .. image:: _images/slide-010.png</t>
-<t tx="ekr.20230121135312.10"></t>
-<t tx="ekr.20230121135312.11"></t>
+<t tx="ekr.20230121135312.10">============================
+Left-Arrow: contracts a node
+============================
+
+
+With the "to-do today" node selected,
+hitting the Left-Arrow key will contract the node.
+
+.. "to do" contracted.
+
+.. image:: _images/slide-019.png
+
+</t>
+<t tx="ekr.20230121135312.11">==========================
+Right-Arrow: expand a node
+==========================
+
+
+To expand the "to do" node,
+I merely hit the Right-Arrow key.
+
+We can now see the entire to-do list.
+
+.. image:: _images/slide-020.png
+
+</t>
 <t tx="ekr.20230121135312.2">==================
 Moving nodes right
 ==================
@@ -31866,29 +31870,164 @@ the "to do" node.
 .. image:: _images/slide-013.png
 
 </t>
-<t tx="ekr.20230121135312.5">=============
-Undo and redo
-==============
+<t tx="ekr.20230121135312.5">================
+Add a to-do node
+================
 
-Leo has unlimited undo/redo capabilities.
+Let's add a new node with Ctrl-I.
 
-Here, I typed Ctrl-Z to undo the previous move.
-The "go shopping" node is once again a child of
-the "to do" node.
-
-**Note**: Ctrl-Shift-Z redoes a previous undo.
-
-.. image:: slide-013.png
+.. image:: _images/slide-014.png
 
 </t>
-<t tx="ekr.20230121135312.6"></t>
-<t tx="ekr.20230121135312.7"></t>
-<t tx="ekr.20230121135312.8"></t>
-<t tx="ekr.20230121135312.9"></t>
-<t tx="ekr.20230121135448.2"></t>
-<t tx="ekr.20230121135448.3"></t>
-<t tx="ekr.20230121135448.4"></t>
-<t tx="ekr.20230121135448.5"></t>
+<t tx="ekr.20230121135312.6">================
+Add a to-do item
+================
+
+.. image:: _images/slide-015.png
+
+</t>
+<t tx="ekr.20230121135312.7">==============
+Move a node up
+==============
+
+
+The car should have first priority.
+
+Type Ctrl-U to move the "fix car" node up.
+The node becomes the first child of the "to do" node.
+
+.. image:: _images/slide-016.png
+
+</t>
+<t tx="ekr.20230121135312.8">================
+Hide child nodes
+================
+
+
+After creating the to-do list, I want to hide it
+by **collapsing** the "to do" node.
+
+I could do that by clicking the black triangle
+to the left of the "to do" node.
+
+However, using the mouse is not recommended--there are much easier ways.
+
+.. arrow points to black triangle.
+
+.. image:: _images/slide-017.png
+
+</t>
+<t tx="ekr.20230121135312.9">==============
+Changing focus
+==============
+
+With the focus in the tree pane, the Up-Arrow key selects the previous node.
+
+There are several ways to put focus in the tree:
+
+- Alt-T (focus to the tree pane) followed by Up-Arrow.
+- Alt-Up-Arrow.
+
+.. image:: _images/slide-018.png
+
+</t>
+<t tx="ekr.20230121135448.2">===================
+Summary: arrow keys
+===================
+
+
+The arrow keys do different things depending on
+which pane has focus. Using arrow keys is **much**
+easier than using the mouse.
+
+**Focus in outline pane**
+    
+    The **plain** arrow keys **select** nodes,
+    expanding or contracting nodes as needed.
+    
+    The **shift** arrow keys **move** nodes. The
+    Shift-Left-Arrow and Shift-Up-Arrow contract
+    nodes as needed. **Note**: the
+    Shift-Down-Arrow and Shift-Right-Arrow keys
+    never expand nodes.
+
+**Focus in body pane**
+
+    As usual, the **plain** arrow keys move the
+    cursor and the **shift** arrow keys move the
+    cursor and extend the solution.
+    
+    The **alt** arrow keys move the focus to the
+    outline pane and then select nodes. The
+    **alt-shift** arrow keys move the focus to the
+    outline pane and then move nodes.
+
+..  - The Up-Arrow and Down-Arrow keys select
+..  the previous or next visible nodes.
+
+..  - The Right-Arrow key contracts a node if the node
+..  is expanded. Otherwise the Right-Arrow key
+..  selects the node's parent.
+  
+..  - The Left-Arrow key does nothing if the selected
+..  node has no children.  If the node does have
+..  children, the Left-Arrow key expands the node
+..  (if the children or invisible) or selects the
+..  first child (if the children are visible).
+
+..  This is exactly how Windows explorer works, and
+..  it quickly becomes second nature.
+
+</t>
+<t tx="ekr.20230121135448.3">=============================
+Shift-Ctrl-C: copy an outline
+=============================
+
+
+We can copy and paste nodes and all their descendants.
+
+Using the arrow keys as necessary, I select the
+"to do" node.
+
+The Shift-Ctrl-C key copies the selected outline.
+
+I want to do the paste *after* the to-do list, so I collapse
+the original node before doing the paste:
+
+.. image:: _images/slide-022.png
+
+</t>
+<t tx="ekr.20230121135448.4">===============
+Shift-Ctrl-V
+===============
+
+Shift-Ctrl-V pastes the outline.
+
+.. image:: _images/slide-023.png
+
+</t>
+<t tx="ekr.20230121135448.5">==========================
+Copy works on entire trees
+==========================
+
+Expanding the node shows that the copy operation
+copied the node and all its descendants.
+
+.. image:: _images/slide-024.png
+
+</t>
+<t tx="ekr.20230121161822.1">=======
+Summary
+=======
+
+This concludes the introduction to Leo's outline operations:
+
+- Ctrl-I: Create a new node.
+- &lt;Return&gt; ends headline editing and puts focus in the body.
+- Arrow keys and other shortcuts move, expand and contract nodes.
+- Shift-Ctrl-C: copies the selected node and all its descendants.
+- Shift-Ctrl-V: pastes the copied outline.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

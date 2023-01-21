@@ -1,16 +1,13 @@
 .. rst3: filename: html/slides/leo-basics-step-by-step/slide-007.html
 
-================
-Saving your work
-================
+==================
+Saving the outline
+==================
 
 Ctrl-S saves the outline.
 
-Notice that the icon box once again has a gray outline,
-indicating that the node has not been changed since
-the file was last saved.
-
-.. Arrow to icon box.
+Afterwards, all icon boxes once have gray borders,
+indicating that no nodes are now dirty.
 
 .. image:: _images/slide-007.png
 
