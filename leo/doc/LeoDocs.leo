@@ -460,7 +460,7 @@
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
@@ -468,7 +468,7 @@
 <v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
 </v>
 <v t="ekr.20140216125129.16666"><vh>Additonal web pages</vh>
-<v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
+<v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html</vh></v>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
 <v t="ekr.20170322084431.1"><vh>Leo's main window</vh></v>
 <v t="ekr.20090811090022.14452"><vh>Leo's rendering pane</vh></v>
@@ -2438,9 +2438,12 @@
 <v t="ekr.20230120113025.1"><vh>=== #3074</vh>
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
 </v>
+<v t="ekr.20230121093037.1"><vh>--- recent files</vh>
+<v t="ekr.20090428133936.2"></v>
+<v t="ekr.20100808060203.4273"></v>
+</v>
 <v t="ekr.20230121052337.1"></v>
 <v t="ekr.20100821182153.4343"></v>
-<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31618,6 +31621,7 @@ any change to one clone inevitably affects all other clones.</t>
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
+<t tx="ekr.20230121093037.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

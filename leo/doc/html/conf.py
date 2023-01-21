@@ -6,12 +6,11 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
 
+# leo/doc/html is the current directory.
 # This file is execfile()d with the current directory set to its containing dir.
 
 import os
 tag = 'leo/doc/html/conf.py'
-
-# leo/doc/html is the current directory.
 print(f"\n{tag}\ncwd: {os.getcwd()}")
 
 #@+<< general settings >>
