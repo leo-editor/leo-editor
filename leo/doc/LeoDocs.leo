@@ -452,6 +452,9 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 </v>
+<v t="ekr.20230121110345.1"><vh>Script files</vh></v>
+<v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
+<v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@file html/conf.py</vh></v>
@@ -31504,10 +31507,6 @@ https://github.com/leo-editor/leo-editor/issues/3073
 Deployment notes:
 - Copy everything from _build/html to docs.
   conf.py now tells sphinx to copy the screenshots folder to _build.html.
-  
-Make @clean nodes for
-- make-clean.cmd
-- make-html.cmd
 
 ENB: Discuss the difficulties and the patterns.
 
@@ -31635,6 +31634,22 @@ any change to one clone inevitably affects all other clones.</t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
 <t tx="ekr.20230121093037.1"></t>
+<t tx="ekr.20230121110340.1">@language batch
+echo off
+echo off
+cd C:\Repos\leo-editor\leo\doc\html
+echo make clean
+call make clean
+echo .
+echo make html
+call make html</t>
+<t tx="ekr.20230121110345.1"></t>
+<t tx="ekr.20230121110533.1">@language batch
+echo off
+echo off
+cd C:\Repos\leo-editor\leo\doc\html
+echo make html
+make html</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
