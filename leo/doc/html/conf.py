@@ -67,7 +67,7 @@ pygments_style = 'sphinx'
 # relative to this directory.
 # They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']  # leo/docs/static
+html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 
 # The theme to use for HTML and HTML Help pages.
 html_theme = 'classic'  # 'default', 'sphinxdoc'.
@@ -87,7 +87,7 @@ html_theme_options = {
 }
 
 # The name of an image file (relative to this directory) at the top of the sidebar.
-html_logo = '_static/LeoLogo.svg'  #### 
+html_logo = '_static/LeoLogo.svg'
 
 # If not '', insert 'Last updated on:' at the bottom of every pages.
 # using the given strftime format.

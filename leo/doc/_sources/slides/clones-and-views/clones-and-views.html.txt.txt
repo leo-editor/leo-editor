@@ -1,0 +1,12 @@
+.. rst3: filename: html/slides/clones-and-views/clones-and-views.html
+
+################
+Clones and views
+################
+
+.. toctree::
+    :maxdepth: 1
+    
+    About clones             <slide-001>
+    Clones are the same node <slide-002>
+

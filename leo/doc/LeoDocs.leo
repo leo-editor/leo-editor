@@ -460,7 +460,7 @@
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
@@ -483,7 +483,7 @@
 <v t="ekr.20230120090521.1"><vh>Slides</vh></v>
 </v>
 <v t="ekr.20230121052337.1"><vh>Slides</vh>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides/slides.html</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 <v t="ekr.20230121060317.1"><vh>Slides: Clones and views</vh>
 <v t="ekr.20230121054117.1"><vh>@rst html/slides/clones-and-views/clones-and-views.html</vh></v>
 <v t="ekr.20230121060325.1"><vh>@rst html/slides/clones-and-views/slide-001.html</vh></v>
@@ -2440,7 +2440,6 @@
 </v>
 <v t="ekr.20230121093037.1"><vh>--- recent files</vh>
 <v t="ekr.20090428133936.2"></v>
-<v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20100808060203.4273"></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
@@ -8766,7 +8765,9 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
-<t tx="ekr.20100821182153.4343">######
+<t tx="ekr.20100821182153.4343">.. This file must be located in the leo/doc/html.
+
+######
 Slides
 ######
 
@@ -8775,12 +8776,11 @@ This is the front page for various slide shows about Leo.
 .. toctree::
     :maxdepth: 1
 
-    clones-and-views/clones-and-views
-    external-files/external-files
-    leo-basics-step-by-step/leo-basics-step-by-step
-    scripting-leo/scripting-leo
-    using-leos-minibuffer/using-leos-minibuffer
-
+    slides/clones-and-views/clones-and-views
+    slides/external-files/external-files
+    slides/leo-basics-step-by-step/leo-basics-step-by-step
+    slides/scripting-leo/scripting-leo
+    slides/using-leos-minibuffer/using-leos-minibuffer
 </t>
 <t tx="ekr.20100831090251.5838"></t>
 <t tx="ekr.20100831090251.5840">def createCursesGui(self, fileName='', verbose=False):
@@ -21883,7 +21883,7 @@ Leo's Documentation Page
 .. toctree::
    :hidden:
 
-   slides/slides
+   slides
    leoLinks
    screen-shots
 
@@ -31498,6 +31498,18 @@ Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/3073
+
+*** To do:
+
+Deployment notes:
+- Copy everything from _build/html to docs.
+  conf.py now tells sphinx to copy the screenshots folder to _build.html.
+  
+Make @clean nodes for
+- make-clean.cmd
+- make-html.cmd
+
+ENB: Discuss the difficulties and the patterns.
 
 @language python
 @nosearch
