@@ -14,7 +14,7 @@ This is a step-by-step introduction showing you how to use Leo outlines.
     Editing headlines               <slide-003>
     Typing in a headline            <slide-004>
     The icon box                    <slide-005>
-    Swithing focus                  <slide-006>
+    Switching focus                 <slide-006>
     Saving your work                <slide-007>
     Inserting new nodes             <slide-008>
     <Return> ends headline editing  <slide-009>

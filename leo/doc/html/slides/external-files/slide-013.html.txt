@@ -12,7 +12,7 @@ section definition node. That expansion may include expansions of other
 references appearing in that node.
     
 The expansion of an @others directive is the expansion of all descendant
-nodes that *aren’t* section definition nodes.
+nodes that are *not* section definition nodes.
 
 No node is ever included in the expansion of more than one @other
 directive. If several ancestors contain @others directives, the @others
