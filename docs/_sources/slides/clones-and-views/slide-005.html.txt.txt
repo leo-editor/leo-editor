@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/clones-and-views/slide-005.html
+
+Adding a child node
+===================
+
+Moving C to the right makes C a child of node B. As you can see, C appears as a child of both cloned nodes.
+
+Even the expansion state of cloned nodes are identical: both clones are now expanded.
+
+.. image:: _images/slide-005.png
+

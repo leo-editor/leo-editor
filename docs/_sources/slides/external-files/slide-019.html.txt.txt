@@ -1,0 +1,12 @@
+.. rst3: filename: html/slides/external-files/slide-019.html
+
+Alternatives to @file
+=====================
+
+The next few slides discuss two alternatives to @file, @auto and @edit.
+
+@auto and @edit create external files without sentinel lines. The cost of avoiding sentinel lines is that Leo can not preserve outline structure exactly.
+
+
+.. image:: _images/slide-019.png
+

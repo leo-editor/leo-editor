@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/minibuffer/slide-002.html
+
+Tab completion
+==============
+
+You can execute any Leo command by typing the command's **full name**
+in the minibuffer, followed by the <return> key.
+
+You can use **tab completion** to avoid typing full command names.
+
+With tab completion *you don't have to remember the exact names of Leo’s commands*.
+
+.. This slides contains no image.
+

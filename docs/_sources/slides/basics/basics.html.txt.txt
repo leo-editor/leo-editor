@@ -1,0 +1,37 @@
+.. rst3: filename: html/slides/basics/basics.html
+
+############
+Leo's Basics
+############
+
+This is a step-by-step introduction showing you how to use Leo outlines.
+
+.. no slide 1
+.. toctree::
+    :maxdepth: 1
+    
+    The workbook file               <slide-002>
+    Editing headlines               <slide-003>
+    Typing in a headline            <slide-004>
+    The icon box                    <slide-005>
+    Swithing focus                  <slide-006>
+    Saving your work                <slide-007>
+    Inserting new nodes             <slide-008>
+    <Return> ends headline editing  <slide-009>
+    The blue square                 <slide-010>
+    Move a node right               <slide-011>
+    Move a node left                <slide-012>
+    Undo and redo                   <slide-013>
+    Add a to-do node                <slide-014>
+    Add a to-do item                <slide-015>
+    Move a node up                  <slide-016>
+    Hide child nodes                <slide-017>
+    Changing focus                  <slide-018>
+    Left-Arrow: contract a node     <slide-019>
+    Right-Arrow: expand a node      <slide-020>
+    Summary: arrow keys             <slide-021>
+    Shift-Ctrl-C: copy an outline   <slide-022>
+    Shift-Ctrl-V: paste an outline  <slide-023>
+    Copy works on entire trees      <slide-024>
+    Summary                         <slide-025>
+

@@ -1,0 +1,7 @@
+.. rst3: filename: html/slides/basics/slide-004.html
+
+Typing in the headline
+======================
+
+.. image:: _images/slide-004.png
+

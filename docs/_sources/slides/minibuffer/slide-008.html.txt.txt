@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/minibuffer/slide-008.html
+
+Search string
+=============
+
+Now type the search string.
+
+
+.. image:: _images/slide-008.png
+

@@ -1,0 +1,12 @@
+.. rst3: filename: html/slides/external-files/slide-015.html
+
+A common pattern
+================
+
+The next two slides illustrate a common pattern for a file that defines two classes.
+
+In each example, a top-level node includes imports, and then uses @others to include the expansion of the rest of the outline.
+
+.. Misleading slide number.
+.. image:: _images/slide-018.png
+

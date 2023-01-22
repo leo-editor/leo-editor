@@ -1,0 +1,16 @@
+.. rst3: filename: html/slides/clones-and-views/slide-010.html
+
+Views are sets of nodes
+=======================
+
+A Leo **view** is just a subset of the nodes of the outline.
+
+We represent a view as ordinary node, called a view node (1).
+
+The children of the view node are the subset of nodes that define the view.
+
+An outline may contain arbitrarily many views.
+You don't have to choose just one "correct" view.
+
+.. image:: _images/slide-010.png
+

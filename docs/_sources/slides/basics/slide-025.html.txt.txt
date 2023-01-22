@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/basics/slide-025.html
+
+Summary
+=======
+
+This concludes the introduction to Leo's outline operations:
+
+- Ctrl-I: Create a new node.
+- <Return> ends headline editing and puts focus in the body.
+- Arrow keys and other shortcuts move, expand and contract nodes.
+- Shift-Ctrl-C: copies the selected node and all its descendants.
+- Shift-Ctrl-V: pastes the copied outline.
+
