@@ -20,6 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     MousePressEvent = Any
     Widget = Any
 #@-<< qt_text imports & annotations>>
+# pylint: disable = c-extension-no-member
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor
@@ -390,11 +391,8 @@ class QLineEditWrapper(QTextMixin):
     def see(self, i: int) -> None:
         """QHeadlineWrapper."""
 
-        pass
-
     def seeInsertPoint(self) -> None:
         """QHeadlineWrapper."""
-        pass
     #@+node:ekr.20110605121601.18125: *4* qlew.setAllText
     def setAllText(self, s: str) -> None:
         """Set all text of a Qt headline widget."""
@@ -483,7 +481,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
     #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
-
 
     class LeoQTextBrowser(QtWidgets.QTextBrowser):  # type:ignore
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
@@ -963,6 +960,7 @@ if QtWidgets:
                             This is as close as possible to vim's look.
             New in Leo 6.6.2: Draw right margin guideline.
             """
+            # pylint: disable = too-many-locals
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
             #
             # First, call the base class paintEvent.
@@ -974,8 +972,9 @@ if QtWidgets:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
 
-            if w == c.frame.body.widget and \
-                    c.config.getBool('show-rmargin-guide'):
+            if (w == getattr(c.frame.body, 'widget', None)
+                and c.config.getBool('show-rmargin-guide')
+                ):
                 #@+<< paint margin guides >>
                 #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
                 # based on https://stackoverflow.com/questions/30371613
@@ -1964,13 +1963,13 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast)
-    def toPythonIndexRowCol(self, i: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
 
         te = self.widget
         doc = te.document()
-        bl = doc.findBlock(i)
+        bl = doc.findBlock(index)
         row = bl.blockNumber()
-        col = i - bl.position()
+        col = index - bl.position()
         return row, col
     #@-others
 #@-others
