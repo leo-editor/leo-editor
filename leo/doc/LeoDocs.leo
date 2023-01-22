@@ -31574,19 +31574,9 @@ Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 
 https://github.com/leo-editor/leo-editor/issues/3073
 
-**spell check.
+PR: https://github.com/leo-editor/leo-editor/pull/3083
 
-*** Reduce size of screenshots in minibuffer slideshow.
-
-*** To do:
-
-Deployment notes:
-- Copy everything from _build/html to docs.
-  conf.py now tells sphinx to copy the screenshots folder to _build.html.
-
-ENB: Discuss the difficulties and the patterns.
-
-??? Leo rst setting for location of intermediate files???
+PR2: https://github.com/leo-editor/leo-editor/pull/3086
 
 @language python
 @nosearch
@@ -31697,7 +31687,7 @@ This is a step-by-step introduction showing you how to use Leo outlines.
     Editing headlines               &lt;slide-003&gt;
     Typing in a headline            &lt;slide-004&gt;
     The icon box                    &lt;slide-005&gt;
-    Swithing focus                  &lt;slide-006&gt;
+    Switching focus                 &lt;slide-006&gt;
     Saving your work                &lt;slide-007&gt;
     Inserting new nodes             &lt;slide-008&gt;
     &lt;Return&gt; ends headline editing  &lt;slide-009&gt;
@@ -31850,11 +31840,11 @@ indicating that the node is **dirty**, that is, the node's headline or body
 text has changed.
 
 .. image:: _images/slide-005.png</t>
-<t tx="ekr.20230121135206.1">Swithing focus
-==============
+<t tx="ekr.20230121135206.1">Switching focus
+===============
 
 - Alt-D always puts focus in the body.
-- Alt-T always puts foucs in the outline.
+- Alt-T always puts focus in the outline.
 - When the focus is in the tree, &lt;return&gt; puts the focus in the body.
 </t>
 <t tx="ekr.20230121135206.2">Saving the outline
@@ -32313,7 +32303,7 @@ Each section definition node must be a descendant of the node containing the sec
 <t tx="ekr.20230122011228.4">The @others directive
 =====================
 
-The **@others** directive is similar to a section reference; @others tells Leo to insert text into the output file. Instead of inserting the body text of one particular node, as in a section reference, @others tells Leo to insert the body text of all nodes that *aren’t* section definition nodes. That’s where the name comes from: it inserts all the *other* nodes.
+The **@others** directive is similar to a section reference; @others tells Leo to insert text into the output file. Instead of inserting the body text of one particular node, as in a section reference, @others tells Leo to insert the body text of all nodes that are *not* section definition nodes. That’s where the name comes from: it inserts all the *other* nodes.
 
 .. image:: _images/slide-009.png
 </t>
@@ -32360,7 +32350,7 @@ section definition node. That expansion may include expansions of other
 references appearing in that node.
     
 The expansion of an @others directive is the expansion of all descendant
-nodes that *aren’t* section definition nodes.
+nodes that are *not* section definition nodes.
 
 No node is ever included in the expansion of more than one @other
 directive. If several ancestors contain @others directives, the @others
