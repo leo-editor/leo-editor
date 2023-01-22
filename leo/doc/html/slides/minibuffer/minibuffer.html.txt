@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/using-leos-minibuffer/using-leos-minibuffer.html
+.. rst3: filename: html/slides/minibuffer/minibuffer.html
 
 ====================
 Using the minibuffer
