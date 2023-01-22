@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/scripting-leo/slide-001.html
+
+Introduction to scripting
+=========================
+
+For me, scripting is the most fun part of Leo.
+
+Leo can execute any body text as a Leo script, Python scripts that have full access to all data in any open Leo outline, as well as full access to all parts of Leo’s source code.
+
+Leo’s Ctrl-B (execute-script) command runs the body text of a node as a Leo script.
+

@@ -1,0 +1,5 @@
+.. rst3: filename: html/slides/scripting-leo/slide-007.html
+
+Using iterators
+===============
+
