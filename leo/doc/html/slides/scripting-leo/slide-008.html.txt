@@ -3,3 +3,20 @@
 Building scripts from outlines
 ==============================
 
+Leo scripts can be composed of more than one node, just as with external files.
+
+The Execute Script command expands expanding section references and @others directives. For example::
+
+    """docstring"""
+    @others
+    controller(c).run()
+
+A child node will contain something like the following::
+
+    class controller:
+        def __init__(self,c):
+            self.c = c
+        @others
+
+The children of the top-level class node will contain all the methods of the controller class.
+

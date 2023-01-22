@@ -1,5 +1,11 @@
 .. rst3: filename: html/slides/scripting-leo/slide-010.html
 
-g.pdb
-=====
+Debugging scripts
+=================
+
+**g.pdb()** invokes Python's debugger.
+
+You must run Leo from a console if your script calls g.pdb().
+
+Leo's pudb plugin changes g.pdb so that it invokes the Pudb debugger instead of Python's pdb.
 

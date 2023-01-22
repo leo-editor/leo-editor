@@ -556,6 +556,17 @@
 </v>
 <v t="ekr.20230121061335.1"><vh>Slides: Scripting</vh>
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
+<v t="ekr.20230122081543.1"><vh>@rst html/slides/scripting-leo/slide-001.html</vh></v>
+<v t="ekr.20230122081601.1"><vh>@rst html/slides/scripting-leo/slide-002.html</vh></v>
+<v t="ekr.20230122081602.1"><vh>@rst html/slides/scripting-leo/slide-003.html</vh></v>
+<v t="ekr.20230122081602.2"><vh>@rst html/slides/scripting-leo/slide-004.html</vh></v>
+<v t="ekr.20230122081602.3"><vh>@rst html/slides/scripting-leo/slide-005.html</vh></v>
+<v t="ekr.20230122081603.1"><vh>@rst html/slides/scripting-leo/slide-006.html</vh></v>
+<v t="ekr.20230122081603.2"><vh>@rst html/slides/scripting-leo/slide-007.html</vh></v>
+<v t="ekr.20230122081628.1"><vh>@rst html/slides/scripting-leo/slide-008.html</vh></v>
+<v t="ekr.20230122081635.1"><vh>@rst html/slides/scripting-leo/slide-009.html</vh></v>
+<v t="ekr.20230122081949.1"><vh>@rst html/slides/scripting-leo/slide-010.html</vh></v>
+<v t="ekr.20230122081950.1"><vh>@rst html/slides/scripting-leo/slide-011.html</vh></v>
 </v>
 <v t="ekr.20230121061433.1"><vh>Slides: Minibuffer</vh>
 <v t="ekr.20230121055019.1"><vh>@rst html/slides/minibuffer/minibuffer.html</vh></v>
@@ -2498,7 +2509,7 @@
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
-<v t="ekr.20230121061300.1"></v>
+<v t="ekr.20230121061335.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31653,11 +31664,12 @@ Using external files
     A common pattern                    &lt;slide-015&gt;
     SpamClass                           &lt;slide-016&gt;
     EggsClass                           &lt;slide-017&gt;
-..  Using @others to group code         &lt;slide-018&gt;
     Alternatives to @file               &lt;slide-019&gt;
     Using @auto nodes                   &lt;slide-020&gt;
     @auto example                       &lt;slide-021&gt;
     Using @edit nodes                   &lt;slide-022&gt;
+    
+..  Using @others to group code         &lt;slide-018&gt;
 </t>
 <t tx="ekr.20230121054950.1">############
 Leo's Basics
@@ -31701,7 +31713,17 @@ Scripting Leo
 .. toctree::
     :maxdepth: 1
     
-..    To do &lt;slide-001&gt;
+    Introduction to scripting       &lt;slide-001&gt;
+    c, g and p                      &lt;slide-002&gt;
+    Official ivars                  &lt;slide-003&gt;
+    Hello world                     &lt;slide-004&gt;
+    p.h and p.b                     &lt;slide-005&gt;
+    Iterators                       &lt;slide-006&gt;
+    Using iterators                 &lt;slide-007&gt;
+    Building scripts from outlines  &lt;slide-008&gt;
+    g.openWithFileName              &lt;slide-009&gt;
+    Debugging scripts               &lt;slide-010&gt;
+    Further reading                 &lt;slide-011&gt;
 </t>
 <t tx="ekr.20230121055019.1">####################
 Using the minibuffer
@@ -32405,6 +32427,154 @@ When Leo reads and @edit node, Leo reads the entire contents of the external fil
 
 .. image number is misleading.
 .. image:: _images/slide-023.png</t>
+<t tx="ekr.20230122081543.1">Introduction to scripting
+=========================
+
+For me, scripting is the most fun part of Leo.
+
+Leo can execute any body text as a Leo script, Python scripts that have full access to all data in any open Leo outline, as well as full access to all parts of Leo’s source code.
+
+Leo’s Ctrl-B (execute-script) command runs the body text of a node as a Leo script.
+</t>
+<t tx="ekr.20230122081601.1">c, g and p
+==========
+
+Leo scripts execute in an environment containing three predefined objects: c, g and p.
+
+**g** is Leo’s leoGlobals module. This module contains dozens of utility functions and classes.
+
+**c** is the commander of the outline containing the script. Commanders
+define all of Leo’s commands, as well as other data.
+
+**p** is the position of the presently selected node. Positions objects
+represent positions in the traversal of Leo outlines.
+
+This slideshow shows how to use c, g and p in Leo scripts. For full details
+about scripting in Leo, see the Scripting Chapter in Leo’s Users Guide.</t>
+<t tx="ekr.20230122081602.1">Official ivars
+==============
+
+The c, g and p objects give Leo scripts access to all parts of Leo and Leo outlines. There are many official ivars (instance variables) that scripts may use. Here are a few:
+
+**c.frame** is an object representing the actual parts of Leo screen.
+
+For any frame, frame.c is the frame’s commander, so c.frame.c is always c.
+
+**g.app** is the object representing the entire Leo application.
+
+The ivars of g.app represent Leo’s global variables.
+
+**p.v** is the **vnode** at position p.
+
+A vnode represents an outline node. Vnodes hold most of the data in Leo outlines. For any vnode v, v.h is the node’s headline, and v.b is the node’s body text.
+
+**p.h** and **p.b** are synonyms for p.v.h and p.v.b.
+
+Because of clones, a *vnode may appear in several positions in a traversal*.
+</t>
+<t tx="ekr.20230122081602.2">Hello world
+===========
+
+g.es is a function that prints its arguments to Leo’s log pane.
+
+Here is the hello world program as a Leo script::
+
+    g.es('Hello world!')
+
+Leo scripts may also use Python’s print command provided that Leo is running in a console.</t>
+<t tx="ekr.20230122081602.3">p.h and p.b
+===========
+
+For any position p, p.h is the headline text of p.v, and p.b is the body text of p.v.
+
+p.h and p.b are Python properties, which means you can set the headline and body text by assigning to them::
+
+    p.h = p.h + ' more'
+
+After changing a headline, Leo scripts should redraw the outline::
+
+    c.redraw()
+
+
+</t>
+<t tx="ekr.20230122081603.1">Iterators
+=========
+
+Leo defines Python iterators that return positions. These iterators are the easiest way of gaining access to the nodes of Leo outlines. Here are just a few examples:
+
+- **c.all_positions()** returns all the positions of the outline in order.
+
+  *Note*: Cloned nodes will appear several times in this list.
+  
+- **c.all_unique_nodes()** returns all the vnodes of the outline.
+- **p.self_and_subtree()** returns p and all its descendants.
+- **p.children()** returns all of p’s direct children.
+</t>
+<t tx="ekr.20230122081603.2">Using iterators
+===============
+
+Iterators give access to all the data in a Leo outline. For example, the following script prints all headlines in an outline, indented to show outline level::
+
+    for p in c.all_positions():
+        g.es(' '*p.level(),p.h)
+
+The output of this script, when run from LeoDocs.leo, will look something like this::
+
+    Startup
+     @file doc-startup.txt
+      @chapters
+      Buttons
+       Disabled buttons
+    ... and hundreds of other nodes.
+
+*Note*: p.level() is a method of the position class that returns the outline level of the node at position p: 0 for top-level nodes, 1 for their children, and so on.
+</t>
+<t tx="ekr.20230122081628.1">Building scripts from outlines
+==============================
+
+Leo scripts can be composed of more than one node, just as with external files.
+
+The Execute Script command expands expanding section references and @others directives. For example::
+
+    """docstring"""
+    @others
+    controller(c).run()
+
+A child node will contain something like the following::
+
+    class controller:
+        def __init__(self,c):
+            self.c = c
+        @others
+
+The children of the top-level class node will contain all the methods of the controller class.</t>
+<t tx="ekr.20230122081635.1">g.openWithFileName
+==================
+
+g.openWithFileName opens a .leo file::
+
+    ok, frame = g.openWithFileName(fileName,c)
+    new_c = frame.c
+
+The returned frame value represents the frame of the visual outline.
+
+frame.c is the frame’s commander, so new_c is the commander of the newly-created outline.</t>
+<t tx="ekr.20230122081949.1">Debugging scripts
+=================
+
+**g.pdb()** invokes Python's debugger.
+
+You must run Leo from a console if your script calls g.pdb().
+
+Leo's pudb plugin changes g.pdb so that it invokes the Pudb debugger instead of Python's pdb.
+</t>
+<t tx="ekr.20230122081950.1">Further reading
+===============
+
+This concludes our brief introduction to scripting in Leo.
+
+For full details about scripting in Leo, see the Scripting Chapter in Leo’s Users Guide.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

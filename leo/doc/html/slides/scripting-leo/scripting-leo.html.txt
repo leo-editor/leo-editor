@@ -16,6 +16,6 @@ Scripting Leo
     Using iterators                 <slide-007>
     Building scripts from outlines  <slide-008>
     g.openWithFileName              <slide-009>
-    g.pdb                           <slide-010>
+    Debugging scripts               <slide-010>
     Further reading                 <slide-011>
 

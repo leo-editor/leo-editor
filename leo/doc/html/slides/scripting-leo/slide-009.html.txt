@@ -3,3 +3,12 @@
 g.openWithFileName
 ==================
 
+g.openWithFileName opens a .leo file::
+
+    ok, frame = g.openWithFileName(fileName,c)
+    new_c = frame.c
+
+The returned frame value represents the frame of the visual outline.
+
+frame.c is the frame’s commander, so new_c is the commander of the newly-created outline.
+

@@ -3,3 +3,19 @@
 Using iterators
 ===============
 
+Iterators give access to all the data in a Leo outline. For example, the following script prints all headlines in an outline, indented to show outline level::
+
+    for p in c.all_positions():
+        g.es(' '*p.level(),p.h)
+
+The output of this script, when run from LeoDocs.leo, will look something like this::
+
+    Startup
+     @file doc-startup.txt
+      @chapters
+      Buttons
+       Disabled buttons
+    ... and hundreds of other nodes.
+
+*Note*: p.level() is a method of the position class that returns the outline level of the node at position p: 0 for top-level nodes, 1 for their children, and so on.
+
