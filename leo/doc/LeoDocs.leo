@@ -31578,6 +31578,8 @@ PR: https://github.com/leo-editor/leo-editor/pull/3083
 
 PR2: https://github.com/leo-editor/leo-editor/pull/3086
 
+redundant(?) url: leo-editor.github.io/leo-editor
+
 @language python
 @nosearch
 </t>
