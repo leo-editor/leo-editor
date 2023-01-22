@@ -3,3 +3,15 @@
 Orphan nodes
 ============
 
+**Orphan nodes** are descendants of @<file> nodes that would not be included the external file.
+
+Leo checks for orphan nodes when writing any @<file> tree:
+
+- There must be a section reference for section definition node.
+- There must be an @others directive for nodes that aren't section
+  definitions nodes.
+
+Leo will issue an error if an @<file> tree contains orphan nodes.
+
+.. This slides contains no image.
+

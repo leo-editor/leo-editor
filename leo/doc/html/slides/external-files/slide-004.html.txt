@@ -3,3 +3,13 @@
 External files without sentinels
 ================================
 
+.. _`Leo's directives documentation`: https://leo-editor.github.io/leo-editor/directives.html#part-1-file-directives
+
+Sentinels may be objectionable in collaborative environments.
+
+There are several ways of creating external files that don't use sentinels,
+including `@auto` and `@clean`.
+See `Leo's directives documentation`_ for full details.
+
+.. This slides contains no image.
+

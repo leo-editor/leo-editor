@@ -3,3 +3,14 @@
 Indentation
 ===========
 
+The indentation of references is significant. Leo indents each line of the expansion of a reference by the total amount of leading whitespace that is in effect at the point of the reference. This allows Leo to handle languages like Python in which indentation is especially important.
+
+Here there is no leading whitespace before the reference to `<<imports >>`,
+but there are four spaces before the @others directives. So:
+
+- Leo writes the import statements without additional indentation.
+- Leo adds 4 spaces before all nodes written as the result of the @others
+  directive.
+ 
+.. This slides contains no image.
+

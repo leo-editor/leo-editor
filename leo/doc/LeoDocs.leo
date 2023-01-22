@@ -452,9 +452,10 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 </v>
-<v t="ekr.20230121110345.1"><vh>Script files</vh></v>
+<v t="ekr.20230121110345.1"><vh>Script files</vh>
 <v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
 <v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
+</v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@file html/conf.py</vh></v>
@@ -521,7 +522,6 @@
 <v t="ekr.20230122011229.5"><vh>@rst html/slides/external-files/slide-015.html</vh></v>
 <v t="ekr.20230122011230.1"><vh>@rst html/slides/external-files/slide-016.html</vh></v>
 <v t="ekr.20230122011230.2"><vh>@rst html/slides/external-files/slide-017.html</vh></v>
-<v t="ekr.20230122011230.3"><vh>@rst html/slides/external-files/slide-018.html</vh></v>
 <v t="ekr.20230122011230.4"><vh>@rst html/slides/external-files/slide-019.html</vh></v>
 <v t="ekr.20230122011230.5"><vh>@rst html/slides/external-files/slide-020.html</vh></v>
 <v t="ekr.20230122011444.1"><vh>@rst html/slides/external-files/slide-021.html</vh></v>
@@ -2496,12 +2496,6 @@
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20230120113025.1"><vh>=== #3074: slideshows</vh>
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
-</v>
-<v t="ekr.20230121093037.1"><vh>--- recent files</vh>
-<v t="ekr.20090428133936.2"></v>
-<v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20170215075612.1"></v>
-<v t="ekr.20100821182153.4343"></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
 <v t="ekr.20230121061300.1"></v>
@@ -31559,6 +31553,8 @@ Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 
 https://github.com/leo-editor/leo-editor/issues/3073
 
+**spell check.
+
 *** To do:
 
 Deployment notes:
@@ -31645,7 +31641,7 @@ Using external files
     Sentinel lines                      &lt;slide-003&gt;
     External files without sentinels    &lt;slide-004&gt;
     Using @file trees                   &lt;slide-005&gt;
-    Top-level design pattern            &lt;slide-006&gt;
+    Top-level markup                    &lt;slide-006&gt;
     Section references                  &lt;slide-007&gt;
     Section definitions                 &lt;slide-008&gt;
     The @others directive               &lt;slide-009&gt;
@@ -31654,11 +31650,11 @@ Using external files
     More about indentation              &lt;slide-012&gt;
     More about expansions               &lt;slide-013&gt;
     Orphan nodes                        &lt;slide-014&gt;
-    Using multiple @others nodes        &lt;slide-015&gt;
+    A common pattern                    &lt;slide-015&gt;
     SpamClass                           &lt;slide-016&gt;
     EggsClass                           &lt;slide-017&gt;
-    Using @others to group code         &lt;slide-018&gt;
-    Summary of @file                    &lt;slide-019&gt;
+..  Using @others to group code         &lt;slide-018&gt;
+    Alternatives to @file               &lt;slide-019&gt;
     Using @auto nodes                   &lt;slide-020&gt;
     @auto example                       &lt;slide-021&gt;
     Using @edit nodes                   &lt;slide-022&gt;
@@ -31749,7 +31745,6 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121093037.1"></t>
 <t tx="ekr.20230121110340.1">@language batch
 echo off
 echo off
@@ -31765,7 +31760,7 @@ echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
 echo make html
-make html</t>
+call make html</t>
 <t tx="ekr.20230121135204.1">The workbook file
 =================
 
@@ -32181,99 +32176,235 @@ As a result, Leo will update all external files automatically. Everything “jus
 <t tx="ekr.20230122011127.1">About external files
 ====================
 
-Trees whose root headline starts with @file, @auto or @edit create external files on your file system. Here are some example headlines::
+Trees whose root headline starts with @file, @auto or @edit create external
+files on your file system. Here are some example headlines::
 
     @file myClass.py
     @auto ../graphics/circles.cpp
     @edit ~/.leo/.leoID.txt
 
-As you can see, these nodes specify file names, which can be an absolute path or a path relative to the directory containing the Leo outline.
+As you can see, these nodes specify file names, which can be an absolute
+path or a path relative to the directory containing the Leo outline.
 
-Collectively, nodes that create external files are known as @&lt;file&gt; nodes. Leo defines several other kinds of @&lt;file&gt; nodes, but this slideshow will not discuss them.</t>
+Collectively, nodes that create external files are known as @&lt;file&gt; nodes.
+Leo defines several other kinds of @&lt;file&gt; nodes, but this slideshow will
+not discuss them.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011226.1">Loading and saving files
 ========================
 
-Leo automatically loads all @&lt;file&gt; trees when you open a Leo outline, and Leo writes any modified @&lt;file&gt; tree when you save an outline. Reading external files is very fast because of an efficient file-caching scheme.
+Leo automatically loads all @&lt;file&gt; trees when you open a Leo outline, and
+Leo writes any modified @&lt;file&gt; tree when you save an outline. Reading
+external files is very fast because of an efficient file-caching scheme.
 
-A single Leo outline may be connected to dozens of external files: this makes Leo work like an Integrated Development Environment (IDE). Leo outlines act like project files. For example, one Leo outline, leoPyRef.leo, contains @file trees for all of Leo’s core source files. Another Leo outline, leoPluginsRef.leo, creates the external files for all of Leo’s plugins, and LeoDocs.leo contains all of Leo’s documentation.</t>
+A single Leo outline may be connected to dozens of external files: this
+makes Leo work like an Integrated Development Environment (IDE). Leo
+outlines act like project files. For example, one Leo outline,
+leoPyRef.leo, contains @file trees for all of Leo’s core source files.
+Another Leo outline, leoPluginsRef.leo, creates the external files for all
+of Leo’s plugins, and LeoDocs.leo contains all of Leo’s documentation.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011227.1">Sentinel lines
 ==============
 
-</t>
+Leo stores the structure of @file trees in external files themselves using
+comment lines called **sentinel lines** (sentinels, for short). Sentinels
+represent outline structure, including clone relationships.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011227.2">External files without sentinels
-================================</t>
+================================
+
+.. _`Leo's directives documentation`: https://leo-editor.github.io/leo-editor/directives.html#part-1-file-directives
+
+Sentinels may be objectionable in collaborative environments.
+
+There are several ways of creating external files that don't use sentinels,
+including `@auto` and `@clean`.
+See `Leo's directives documentation`_ for full details.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011227.3">Using @file trees
 =================
 
-</t>
-<t tx="ekr.20230122011228.1">Top-level design pattern
-========================
+The next few slides will show how to create external files with @file trees.
 
+First, create an @file node giving the path to the external file. This path
+can be a full, absolute path, or a relative path. Relative paths start at
+Leo’s load directory, the directory containing the .leo file for the
+present outline. No path prefix is usually required.
+
+.. image:: _images/slide-005.png
 </t>
+<t tx="ekr.20230122011228.1">Top-level markup
+================
+
+The body text contains Leo markup.
+
+The next few slides will discuss this markup line by line.
+
+.. image:: _images/slide-006.png</t>
 <t tx="ekr.20230122011228.2">Section references
-==================</t>
+==================
+
+The `&lt;&lt; imports &gt;&gt;` line is a section reference. “Imports” is the section name. This line tells Leo to insert the section definition into the output file at the place where section reference occurs.
+
+.. image:: _images/slide-007.png</t>
 <t tx="ekr.20230122011228.3">Section definitions
 ===================
 
-</t>
+Section definition nodes create section definitions. Section definition nodes contain a section name in the headline. The body text contains the section definition.
+
+The definition of &lt;&lt; imports &gt;&gt; are the lines::
+
+    import os
+    import sys
+
+Each section definition node must be a descendant of the node containing the section reference.
+
+.. image:: _images/slide-008.png</t>
 <t tx="ekr.20230122011228.4">The @others directive
 =====================
 
+The **@others** directive is similar to a section reference; @others tells Leo to insert text into the output file. Instead of inserting the body text of one particular node, as in a section reference, @others tells Leo to insert the body text of all nodes that *aren’t* section definition nodes. That’s where the name comes from: it inserts all the *other* nodes.
+
+.. image:: _images/slide-009.png
 </t>
 <t tx="ekr.20230122011228.5">References &amp; expansions
 =======================
 
-</t>
+The term **reference** means either a section reference or an @others directive. 
+
+The **expansion** of a reference is the set of all lines that Leo writes to the output file as the result of that reference.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011229.1">Indentation
 ===========
+
+The indentation of references is significant. Leo indents each line of the expansion of a reference by the total amount of leading whitespace that is in effect at the point of the reference. This allows Leo to handle languages like Python in which indentation is especially important.
+
+Here there is no leading whitespace before the reference to `&lt;&lt;imports &gt;&gt;`,
+but there are four spaces before the @others directives. So:
+
+- Leo writes the import statements without additional indentation.
+- Leo adds 4 spaces before all nodes written as the result of the @others
+  directive.
  
-</t>
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011229.2">More about indentation
 ======================
 
-</t>
+Indentation is controlled *only* by the indentation of references. The outline level of nodes in expansions does not affect indentation in any way.
+
+This *decoupling* of outline structure from indentation is crucial:
+
+  *organizer nodes do not affect the indentation of the lines*.
+  
+.. image:: _images/slide-012.png</t>
 <t tx="ekr.20230122011229.3">More about expansions
 =====================
 
-</t>
+Node may contain arbitrarily many section references.
+
+No node may contain more than one @others directive.
+
+The expansion of a section reference is the expansion of the body of the
+section definition node. That expansion may include expansions of other
+references appearing in that node.
+    
+The expansion of an @others directive is the expansion of all descendant
+nodes that *aren’t* section definition nodes.
+
+No node is ever included in the expansion of more than one @other
+directive. If several ancestors contain @others directives, the @others
+directive in the nearest ancestor applies.
+
+.. This slides contains no image.</t>
 <t tx="ekr.20230122011229.4">Orphan nodes
 ============
 
-</t>
-<t tx="ekr.20230122011229.5">Using multiple @others nodes
-============================
+**Orphan nodes** are descendants of @&lt;file&gt; nodes that would not be included the external file.
 
+Leo checks for orphan nodes when writing any @&lt;file&gt; tree:
+
+- There must be a section reference for section definition node.
+- There must be an @others directive for nodes that aren't section
+  definitions nodes.
+
+Leo will issue an error if an @&lt;file&gt; tree contains orphan nodes.
+
+.. This slides contains no image.
 </t>
+<t tx="ekr.20230122011229.5">A common pattern
+================
+
+The next two slides illustrate a common pattern for a file that defines two classes.
+
+In each example, a top-level node includes imports, and then uses @others to include the expansion of the rest of the outline.
+
+.. Misleading slide number.
+.. image:: _images/slide-018.png</t>
 <t tx="ekr.20230122011230.1">SpamClass
 =========
 
+The first child node creates the expansion of SpamClass. The lines::
 
-    </t>
+    class SpamClass:
+        '''A class representing spam.'''
+
+have no extra indentation, because the @others in the top-level node has no leading whitespace.
+
+However, the two methods of the class will have 4 spaces of indentation because the @others directive in this node is indented by 4 spaces.
+
+.. image:: _images/slide-016.png</t>
 <t tx="ekr.20230122011230.2">EggsClass
 =========
 
-</t>
-<t tx="ekr.20230122011230.3">Using @others to group code
-===========================
+The second child node creates the expansion of EggsClass in a similar manner.
 
-</t>
-<t tx="ekr.20230122011230.4">Summary of @file
-================
+.. image:: _images/slide-017.png</t>
+<t tx="ekr.20230122011230.4">Alternatives to @file
+=====================
+
+The next few slides discuss two alternatives to @file, @auto and @edit.
+
+@auto and @edit create external files without sentinel lines. The cost of avoiding sentinel lines is that Leo can not preserve outline structure exactly.
 
 
-    </t>
+.. image:: _images/slide-019.png</t>
 <t tx="ekr.20230122011230.5">Using @auto nodes
 =================
 
+When reading an @auto node, Leo uses an **importer** to create an outline.
+
+Leo has importers for many languages including C, html, Java, Javascript, PHP, Python, and xml.
+
+The file's extension determines which importer to use.
+
+If no importer exists for a language, @auto copies the entire file into the @auto node.
+
+.. This slides contains no image.
 </t>
 <t tx="ekr.20230122011444.1">@auto example
 =============
 
-</t>
+Here is an example of an actual Python file imported into Leo.
+
+The importer has created the entire outline, including the body text of the root @auto node.
+
+The importer created an @others directive (1) to place the expansion of the descendant nodes properly, before the final top-level lines of the file (2).
+
+.. image number is misleading.
+.. image:: _images/slide-022.png</t>
 <t tx="ekr.20230122011445.1">Using @edit nodes
 =================
 
-</t>
+When Leo reads and @edit node, Leo reads the entire contents of the external file into the body text of the @edit node. Any changes to the external file will appear in the @edit node the next time Leo loads the external file. Rather than creating new files with @edit, it is more common to use @edit to connect Leo with files that already exist on your file system.
+
+.. image number is misleading.
+.. image:: _images/slide-023.png</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

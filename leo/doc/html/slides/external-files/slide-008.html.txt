@@ -3,3 +3,14 @@
 Section definitions
 ===================
 
+Section definition nodes create section definitions. Section definition nodes contain a section name in the headline. The body text contains the section definition.
+
+The definition of << imports >> are the lines::
+
+    import os
+    import sys
+
+Each section definition node must be a descendant of the node containing the section reference.
+
+.. image:: _images/slide-008.png
+

@@ -1,5 +1,0 @@
-.. rst3: filename: html/slides/external-files/slide-018.html
-
-Using @others to group code
-===========================
-

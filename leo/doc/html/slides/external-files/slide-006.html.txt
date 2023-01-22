@@ -1,5 +1,11 @@
 .. rst3: filename: html/slides/external-files/slide-006.html
 
-Top-level design pattern
-========================
+Top-level markup
+================
+
+The body text contains Leo markup.
+
+The next few slides will discuss this markup line by line.
+
+.. image:: _images/slide-006.png
 

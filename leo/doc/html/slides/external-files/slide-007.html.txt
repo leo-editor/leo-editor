@@ -3,3 +3,7 @@
 Section references
 ==================
 
+The `<< imports >>` line is a section reference. “Imports” is the section name. This line tells Leo to insert the section definition into the output file at the place where section reference occurs.
+
+.. image:: _images/slide-007.png
+

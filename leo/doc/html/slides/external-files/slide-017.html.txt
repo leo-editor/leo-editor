@@ -3,3 +3,7 @@
 EggsClass
 =========
 
+The second child node creates the expansion of EggsClass in a similar manner.
+
+.. image:: _images/slide-017.png
+

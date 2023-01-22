@@ -3,3 +3,13 @@
 Using @auto nodes
 =================
 
+When reading an @auto node, Leo uses an **importer** to create an outline.
+
+Leo has importers for many languages including C, html, Java, Javascript, PHP, Python, and xml.
+
+The file's extension determines which importer to use.
+
+If no importer exists for a language, @auto copies the entire file into the @auto node.
+
+.. This slides contains no image.
+

@@ -3,3 +3,11 @@
 More about indentation
 ======================
 
+Indentation is controlled *only* by the indentation of references. The outline level of nodes in expansions does not affect indentation in any way.
+
+This *decoupling* of outline structure from indentation is crucial:
+
+  *organizer nodes do not affect the indentation of the lines*.
+  
+.. image:: _images/slide-012.png
+

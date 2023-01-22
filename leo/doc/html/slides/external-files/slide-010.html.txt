@@ -3,3 +3,9 @@
 References & expansions
 =======================
 
+The term **reference** means either a section reference or an @others directive. 
+
+The **expansion** of a reference is the set of all lines that Leo writes to the output file as the result of that reference.
+
+.. This slides contains no image.
+
