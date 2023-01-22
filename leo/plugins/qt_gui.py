@@ -1354,23 +1354,24 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self) -> Widget:
-        """Put up a splash screen with the Leo logo."""
-        splash = None
-        if sys.platform.startswith('win'):
-            table = ('SplashScreen.jpg', 'SplashScreen.png', 'SplashScreen.ico')
-        else:
-            table = ('SplashScreen.xpm',)
-        for name in table:
-            fn = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', name)
-            if g.os_path_exists(fn):
-                pm = QtGui.QPixmap(fn)
-                if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm, WindowType.WindowStaysOnTopHint)
-                    splash.show()
-                    # This sleep is required to do the repaint.
-                    QtCore.QThread.msleep(10)
-                    splash.repaint()
-                    break
+        """Put up a splash screen with Leo's logo."""
+        
+        ### To do: render svg.
+       
+        # Fallback: render Leo's public domain bitmaped image.
+        fn = 'Leosplash.GIF'
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', fn)
+        if not g.os_path_exists(path):
+            return None
+        g.trace(path)
+        pm = QtGui.QPixmap(path)
+        if pm.isNull():
+            return None
+        splash = QtWidgets.QSplashScreen(pm, WindowType.WindowStaysOnTopHint)
+        splash.show()
+        # This sleep is required to do the repaint.
+        QtCore.QThread.msleep(10)
+        splash.repaint()
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self) -> None:
