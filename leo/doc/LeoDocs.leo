@@ -2494,7 +2494,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230120113025.1"><vh>=== #3074</vh>
+<v t="ekr.20230120113025.1"><vh>=== #3074: slideshows</vh>
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20230121093037.1"><vh>--- recent files</vh>
