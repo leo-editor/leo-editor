@@ -1,9 +1,0 @@
-==========================
-Leo Basics Step By Step:23
-==========================
-
-
-And here is the pasted node.
-
-.. image:: slide-023.png
-
