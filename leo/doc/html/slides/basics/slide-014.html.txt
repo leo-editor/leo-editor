@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/basics/slide-014.html
 
-================
 Add a to-do node
 ================
 

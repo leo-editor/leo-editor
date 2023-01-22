@@ -1,0 +1,5 @@
+.. rst3: filename: html/slides/external-files/slide-004.html
+
+External files without sentinels
+================================
+

@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/basics/slide-008.html
 
-===================
 Inserting new nodes
 ===================
 

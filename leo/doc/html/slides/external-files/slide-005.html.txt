@@ -1,0 +1,5 @@
+.. rst3: filename: html/slides/external-files/slide-005.html
+
+Using @file trees
+=================
+

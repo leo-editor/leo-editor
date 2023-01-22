@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/basics/slide-004.html
 
-======================
 Typing in the headline
 ======================
 

@@ -1,0 +1,5 @@
+.. rst3: filename: html/slides/external-files/slide-020.html
+
+Using @auto nodes
+=================
+

@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/clones-and-views/slide-005.html
 
-===================
 Adding a child node
 ===================
 

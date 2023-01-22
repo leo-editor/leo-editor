@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/external-files/slide-002.html
+
+Loading and saving files
+========================
+
+Leo automatically loads all @<file> trees when you open a Leo outline, and Leo writes any modified @<file> tree when you save an outline. Reading external files is very fast because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external files: this makes Leo work like an Integrated Development Environment (IDE). Leo outlines act like project files. For example, one Leo outline, leoPyRef.leo, contains @file trees for all of Leo’s core source files. Another Leo outline, leoPluginsRef.leo, creates the external files for all of Leo’s plugins, and LeoDocs.leo contains all of Leo’s documentation.
+

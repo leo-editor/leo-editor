@@ -1,8 +1,7 @@
 .. rst3: filename: html/slides/basics/slide-002.html
 
-#################
 The workbook file
-#################
+=================
 
 Leo opens the **workbook file** when you start
 Leo without a filename.

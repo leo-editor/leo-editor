@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/clones-and-views/slide-006.html
 
-=========================
 Creating a second child
 =========================
 

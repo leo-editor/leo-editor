@@ -504,6 +504,28 @@
 </v>
 <v t="ekr.20230121061300.1"><vh>Slides: External files</vh>
 <v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
+<v t="ekr.20230122011127.1"><vh>@rst html/slides/external-files/slide-001.html</vh></v>
+<v t="ekr.20230122011226.1"><vh>@rst html/slides/external-files/slide-002.html</vh></v>
+<v t="ekr.20230122011227.1"><vh>@rst html/slides/external-files/slide-003.html</vh></v>
+<v t="ekr.20230122011227.2"><vh>@rst html/slides/external-files/slide-004.html</vh></v>
+<v t="ekr.20230122011227.3"><vh>@rst html/slides/external-files/slide-005.html</vh></v>
+<v t="ekr.20230122011228.1"><vh>@rst html/slides/external-files/slide-006.html</vh></v>
+<v t="ekr.20230122011228.2"><vh>@rst html/slides/external-files/slide-007.html</vh></v>
+<v t="ekr.20230122011228.3"><vh>@rst html/slides/external-files/slide-008.html</vh></v>
+<v t="ekr.20230122011228.4"><vh>@rst html/slides/external-files/slide-009.html</vh></v>
+<v t="ekr.20230122011228.5"><vh>@rst html/slides/external-files/slide-010.html</vh></v>
+<v t="ekr.20230122011229.1"><vh>@rst html/slides/external-files/slide-011.html</vh></v>
+<v t="ekr.20230122011229.2"><vh>@rst html/slides/external-files/slide-012.html</vh></v>
+<v t="ekr.20230122011229.3"><vh>@rst html/slides/external-files/slide-013.html</vh></v>
+<v t="ekr.20230122011229.4"><vh>@rst html/slides/external-files/slide-014.html</vh></v>
+<v t="ekr.20230122011229.5"><vh>@rst html/slides/external-files/slide-015.html</vh></v>
+<v t="ekr.20230122011230.1"><vh>@rst html/slides/external-files/slide-016.html</vh></v>
+<v t="ekr.20230122011230.2"><vh>@rst html/slides/external-files/slide-017.html</vh></v>
+<v t="ekr.20230122011230.3"><vh>@rst html/slides/external-files/slide-018.html</vh></v>
+<v t="ekr.20230122011230.4"><vh>@rst html/slides/external-files/slide-019.html</vh></v>
+<v t="ekr.20230122011230.5"><vh>@rst html/slides/external-files/slide-020.html</vh></v>
+<v t="ekr.20230122011444.1"><vh>@rst html/slides/external-files/slide-021.html</vh></v>
+<v t="ekr.20230122011445.1"><vh>@rst html/slides/external-files/slide-022.html</vh></v>
 </v>
 <v t="ekr.20230121061309.1"><vh>Slides: Leo's basics</vh>
 <v t="ekr.20230121054950.1"><vh>@rst html/slides/basics/basics.html</vh></v>
@@ -536,7 +558,7 @@
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
 </v>
 <v t="ekr.20230121061433.1"><vh>Slides: Minibuffer</vh>
-<v t="ekr.20230121055019.1"><vh>@rst html/slides/using-leos-minibuffer/using-leos-minibuffer.html</vh></v>
+<v t="ekr.20230121055019.1"><vh>@rst html/slides/minibuffer/minibuffer.html</vh></v>
 </v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
@@ -2482,7 +2504,7 @@
 <v t="ekr.20100821182153.4343"></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
-<v t="ekr.20230121060317.1"></v>
+<v t="ekr.20230121061300.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8818,7 +8840,7 @@ This is the front page for various slide shows about Leo.
     slides/external-files/external-files
     slides/basics/basics
     slides/scripting-leo/scripting-leo
-    slides/using-leos-minibuffer/using-leos-minibuffer
+    slides/minibuffer/minibuffer
 </t>
 <t tx="ekr.20100831090251.5838"></t>
 <t tx="ekr.20100831090251.5840">def createCursesGui(self, fileName='', verbose=False):
@@ -31611,14 +31633,35 @@ Clones and views
     Views focus attention       &lt;slide-011&gt;
     Views concentrate data      &lt;slide-012&gt;
 </t>
-<t tx="ekr.20230121054859.1">====================
+<t tx="ekr.20230121054859.1">####################
 Using external files
-====================
+####################
 
 .. toctree::
     :maxdepth: 1
     
-..    To do &lt;slide-001&gt;
+    About external files                &lt;slide-001&gt;
+    Loading and saving files            &lt;slide-002&gt;
+    Sentinel lines                      &lt;slide-003&gt;
+    External files without sentinels    &lt;slide-004&gt;
+    Using @file trees                   &lt;slide-005&gt;
+    Top-level design pattern            &lt;slide-006&gt;
+    Section references                  &lt;slide-007&gt;
+    Section definitions                 &lt;slide-008&gt;
+    The @others directive               &lt;slide-009&gt;
+    References &amp; expansions             &lt;slide-010&gt;
+    Indentation                         &lt;slide-011&gt;
+    More about indentation              &lt;slide-012&gt;
+    More about expansions               &lt;slide-013&gt;
+    Orphan nodes                        &lt;slide-014&gt;
+    Using multiple @others nodes        &lt;slide-015&gt;
+    SpamClass                           &lt;slide-016&gt;
+    EggsClass                           &lt;slide-017&gt;
+    Using @others to group code         &lt;slide-018&gt;
+    Summary of @file                    &lt;slide-019&gt;
+    Using @auto nodes                   &lt;slide-020&gt;
+    @auto example                       &lt;slide-021&gt;
+    Using @edit nodes                   &lt;slide-022&gt;
 </t>
 <t tx="ekr.20230121054950.1">############
 Leo's Basics
@@ -31664,9 +31707,9 @@ Scripting Leo
     
 ..    To do &lt;slide-001&gt;
 </t>
-<t tx="ekr.20230121055019.1">====================
+<t tx="ekr.20230121055019.1">####################
 Using the minibuffer
-====================
+####################
 
 .. toctree::
     :maxdepth: 1
@@ -31723,9 +31766,8 @@ echo off
 cd C:\Repos\leo-editor\leo\doc\html
 echo make html
 make html</t>
-<t tx="ekr.20230121135204.1">#################
-The workbook file
-#################
+<t tx="ekr.20230121135204.1">The workbook file
+=================
 
 Leo opens the **workbook file** when you start
 Leo without a filename.
@@ -31739,9 +31781,8 @@ taste.
 
 .. image:: _images/slide-002.png
 </t>
-<t tx="ekr.20230121135205.1">#################
-Editing headlines
-#################
+<t tx="ekr.20230121135205.1">Editing headlines
+=================
 
 Ctrl-H edits the presently selected headline.
 
@@ -31753,14 +31794,12 @@ The body pane is now blue, indicating that it no longer has focus.
 .. image:: _images/slide-003.png
 
 </t>
-<t tx="ekr.20230121135205.2">======================
-Typing in the headline
+<t tx="ekr.20230121135205.2">Typing in the headline
 ======================
 
 .. image:: _images/slide-004.png
 </t>
-<t tx="ekr.20230121135205.3">============
-The icon box
+<t tx="ekr.20230121135205.3">The icon box
 ============
 
 Typing the &lt;return&gt; key ends editing of the headline
@@ -31771,16 +31810,14 @@ indicating that the node is **dirty**, that is, the node's headline or body
 text has changed.
 
 .. image:: _images/slide-005.png</t>
-<t tx="ekr.20230121135206.1">==============
-Swithing focus
+<t tx="ekr.20230121135206.1">Swithing focus
 ==============
 
 - Alt-D always puts focus in the body.
 - Alt-T always puts foucs in the outline.
 - When the focus is in the tree, &lt;return&gt; puts the focus in the body.
 </t>
-<t tx="ekr.20230121135206.2">==================
-Saving the outline
+<t tx="ekr.20230121135206.2">Saving the outline
 ==================
 
 Ctrl-S saves the outline.
@@ -31791,8 +31828,7 @@ indicating that no nodes are now dirty.
 .. image:: _images/slide-007.png
 
 </t>
-<t tx="ekr.20230121135206.3">===================
-Inserting new nodes
+<t tx="ekr.20230121135206.3">Inserting new nodes
 ===================
 
 Ctrl-I inserts a new node.
@@ -31800,8 +31836,7 @@ Ctrl-I inserts a new node.
 .. image:: _images/slide-008.png
 
 </t>
-<t tx="ekr.20230121135206.4">===============================
-&lt;Return&gt; ends headline editing
+<t tx="ekr.20230121135206.4">&lt;Return&gt; ends headline editing
 ===============================
 
 The focus is now in the body pane.
@@ -31809,8 +31844,7 @@ The focus is now in the body pane.
 .. image:: _images/slide-009.png
 
 </t>
-<t tx="ekr.20230121135206.5">===============
-The blue square
+<t tx="ekr.20230121135206.5">The blue square
 ===============
 
 Whatever I type will appear in the body pane.
@@ -31820,8 +31854,7 @@ I added a shopping list.
 The blue square in the icon area indicates that the body pane contains text.
 
 .. image:: _images/slide-010.png</t>
-<t tx="ekr.20230121135312.10">============================
-Left-Arrow: contracts a node
+<t tx="ekr.20230121135312.10">Left-Arrow: contracts a node
 ============================
 
 
@@ -31833,8 +31866,7 @@ hitting the Left-Arrow key will contract the node.
 .. image:: _images/slide-019.png
 
 </t>
-<t tx="ekr.20230121135312.11">==========================
-Right-Arrow: expand a node
+<t tx="ekr.20230121135312.11">Right-Arrow: expand a node
 ==========================
 
 
@@ -31846,8 +31878,7 @@ We can now see the entire to-do list.
 .. image:: _images/slide-020.png
 
 </t>
-<t tx="ekr.20230121135312.2">==================
-Moving nodes right
+<t tx="ekr.20230121135312.2">Moving nodes right
 ==================
 
 
@@ -31861,8 +31892,7 @@ The "to do" node is the **parent** node.
 .. image:: _images/slide-011.png
 
 </t>
-<t tx="ekr.20230121135312.3">=================
-Moving nodes left
+<t tx="ekr.20230121135312.3">Moving nodes left
 =================
 
 
@@ -31874,8 +31904,7 @@ of the "to do" node.
 .. image:: _images/slide-012.png
 
 </t>
-<t tx="ekr.20230121135312.4">=============
-Undo and redo
+<t tx="ekr.20230121135312.4">Undo and redo
 =============
 
 
@@ -31890,8 +31919,7 @@ the "to do" node.
 .. image:: _images/slide-013.png
 
 </t>
-<t tx="ekr.20230121135312.5">================
-Add a to-do node
+<t tx="ekr.20230121135312.5">Add a to-do node
 ================
 
 Let's add a new node with Ctrl-I.
@@ -31899,15 +31927,13 @@ Let's add a new node with Ctrl-I.
 .. image:: _images/slide-014.png
 
 </t>
-<t tx="ekr.20230121135312.6">================
-Add a to-do item
+<t tx="ekr.20230121135312.6">Add a to-do item
 ================
 
 .. image:: _images/slide-015.png
 
 </t>
-<t tx="ekr.20230121135312.7">==============
-Move a node up
+<t tx="ekr.20230121135312.7">Move a node up
 ==============
 
 
@@ -31919,8 +31945,7 @@ The node becomes the first child of the "to do" node.
 .. image:: _images/slide-016.png
 
 </t>
-<t tx="ekr.20230121135312.8">================
-Hide child nodes
+<t tx="ekr.20230121135312.8">Hide child nodes
 ================
 
 
@@ -31937,8 +31962,7 @@ However, using the mouse is not recommended--there are much easier ways.
 .. image:: _images/slide-017.png
 
 </t>
-<t tx="ekr.20230121135312.9">==============
-Changing focus
+<t tx="ekr.20230121135312.9">Changing focus
 ==============
 
 With the focus in the tree pane, the Up-Arrow key selects the previous node.
@@ -31951,8 +31975,7 @@ There are several ways to put focus in the tree:
 .. image:: _images/slide-018.png
 
 </t>
-<t tx="ekr.20230121135448.2">===================
-Summary: arrow keys
+<t tx="ekr.20230121135448.2">Summary: arrow keys
 ===================
 
 
@@ -31999,8 +32022,7 @@ easier than using the mouse.
 ..  it quickly becomes second nature.
 
 </t>
-<t tx="ekr.20230121135448.3">=============================
-Shift-Ctrl-C: copy an outline
+<t tx="ekr.20230121135448.3">Shift-Ctrl-C: copy an outline
 =============================
 
 
@@ -32017,8 +32039,7 @@ the original node before doing the paste:
 .. image:: _images/slide-022.png
 
 </t>
-<t tx="ekr.20230121135448.4">===============
-Shift-Ctrl-V
+<t tx="ekr.20230121135448.4">Shift-Ctrl-V
 ===============
 
 Shift-Ctrl-V pastes the outline.
@@ -32026,8 +32047,7 @@ Shift-Ctrl-V pastes the outline.
 .. image:: _images/slide-023.png
 
 </t>
-<t tx="ekr.20230121135448.5">==========================
-Copy works on entire trees
+<t tx="ekr.20230121135448.5">Copy works on entire trees
 ==========================
 
 Expanding the node shows that the copy operation
@@ -32036,8 +32056,7 @@ copied the node and all its descendants.
 .. image:: _images/slide-024.png
 
 </t>
-<t tx="ekr.20230121161822.1">=======
-Summary
+<t tx="ekr.20230121161822.1">Summary
 =======
 
 This concludes the introduction to Leo's outline operations:
@@ -32048,24 +32067,21 @@ This concludes the introduction to Leo's outline operations:
 - Shift-Ctrl-C: copies the selected node and all its descendants.
 - Shift-Ctrl-V: pastes the copied outline.
 </t>
-<t tx="ekr.20230121164642.1">=========================
-Changing cloned headlines
+<t tx="ekr.20230121164642.1">Changing cloned headlines
 =========================
 
 Changing the headline of node A changes the headlines of all cloned nodes.
 
 .. image:: _images/slide-003.png
 </t>
-<t tx="ekr.20230121165506.1">==========
-A new node
+<t tx="ekr.20230121165506.1">A new node
 ==========
 
 Here we have created a node C following the first clone of B.
 
 .. image:: _images/slide-004.png
 </t>
-<t tx="ekr.20230121165507.1">===================
-Adding a child node
+<t tx="ekr.20230121165507.1">Adding a child node
 ===================
 
 Moving C to the right makes C a child of node B. As you can see, C appears as a child of both cloned nodes.
@@ -32074,8 +32090,7 @@ Even the expansion state of cloned nodes are identical: both clones are now expa
 
 .. image:: _images/slide-005.png
 </t>
-<t tx="ekr.20230121165507.2">=========================
-Creating a second child
+<t tx="ekr.20230121165507.2">Creating a second child
 =========================
 
 Here, I have created a new node D with Ctrl-I (insert-node).
@@ -32086,8 +32101,7 @@ In general, any change to one clone produces the corresponding change in all oth
 
 .. image:: _images/slide-006.png
 </t>
-<t tx="ekr.20230121165507.3">=========================
-Tracking changed nodes
+<t tx="ekr.20230121165507.3">Tracking changed nodes
 =========================
 
 Changing a node marks all clones of that node as changed.
@@ -32098,8 +32112,7 @@ For example, the cloned spam node appears in two places.
 
 .. image:: _images/slide-007.png
 </t>
-<t tx="ekr.20230121165507.4">======================
-Tracking changed files
+<t tx="ekr.20230121165507.4">Tracking changed files
 ======================
 
 After changing either clone, Leo marks both as changed.
@@ -32110,8 +32123,7 @@ that Leo will also update all changed external files.
 
 .. image:: _images/slide-008.png
 </t>
-<t tx="ekr.20230121165508.1">===========================
-The ultimate filing cabinet
+<t tx="ekr.20230121165508.1">The ultimate filing cabinet
 ===========================
 
 Clones are important because they allow you to create as many views of the
@@ -32123,8 +32135,7 @@ Any ordinary node can act like a folder in the filing cabinet. Using
 clones, you can “file” a node in as many folders as you like.
 
 .. no image for this slide.</t>
-<t tx="ekr.20230121165508.2">=======================
-Views are sets of nodes
+<t tx="ekr.20230121165508.2">Views are sets of nodes
 =======================
 
 A Leo **view** is just a subset of the nodes of the outline.
@@ -32138,8 +32149,7 @@ You don't have to choose just one "correct" view.
 
 .. image:: _images/slide-010.png
 </t>
-<t tx="ekr.20230121165549.1">=====================
-Views focus attention
+<t tx="ekr.20230121165549.1">Views focus attention
 =====================
 
 Views focus attention on tasks. I track issues as follows:
@@ -32155,8 +32165,7 @@ Non-cloned children contain supplemental data:
 
 .. image:: _images/slide-011.png
 </t>
-<t tx="ekr.20230121165549.2">======================
-Views concentrate data
+<t tx="ekr.20230121165549.2">Views concentrate data
 ======================
 
 Task nodes focus attention on the task at hand.
@@ -32169,6 +32178,102 @@ Leo will mark as dirty all @&lt;file&gt; nodes containing any changed clones.
 As a result, Leo will update all external files automatically. Everything “just works”.
 
 .. no image for this slide.</t>
+<t tx="ekr.20230122011127.1">About external files
+====================
+
+Trees whose root headline starts with @file, @auto or @edit create external files on your file system. Here are some example headlines::
+
+    @file myClass.py
+    @auto ../graphics/circles.cpp
+    @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be an absolute path or a path relative to the directory containing the Leo outline.
+
+Collectively, nodes that create external files are known as @&lt;file&gt; nodes. Leo defines several other kinds of @&lt;file&gt; nodes, but this slideshow will not discuss them.</t>
+<t tx="ekr.20230122011226.1">Loading and saving files
+========================
+
+Leo automatically loads all @&lt;file&gt; trees when you open a Leo outline, and Leo writes any modified @&lt;file&gt; tree when you save an outline. Reading external files is very fast because of an efficient file-caching scheme.
+
+A single Leo outline may be connected to dozens of external files: this makes Leo work like an Integrated Development Environment (IDE). Leo outlines act like project files. For example, one Leo outline, leoPyRef.leo, contains @file trees for all of Leo’s core source files. Another Leo outline, leoPluginsRef.leo, creates the external files for all of Leo’s plugins, and LeoDocs.leo contains all of Leo’s documentation.</t>
+<t tx="ekr.20230122011227.1">Sentinel lines
+==============
+
+</t>
+<t tx="ekr.20230122011227.2">External files without sentinels
+================================</t>
+<t tx="ekr.20230122011227.3">Using @file trees
+=================
+
+</t>
+<t tx="ekr.20230122011228.1">Top-level design pattern
+========================
+
+</t>
+<t tx="ekr.20230122011228.2">Section references
+==================</t>
+<t tx="ekr.20230122011228.3">Section definitions
+===================
+
+</t>
+<t tx="ekr.20230122011228.4">The @others directive
+=====================
+
+</t>
+<t tx="ekr.20230122011228.5">References &amp; expansions
+=======================
+
+</t>
+<t tx="ekr.20230122011229.1">Indentation
+===========
+ 
+</t>
+<t tx="ekr.20230122011229.2">More about indentation
+======================
+
+</t>
+<t tx="ekr.20230122011229.3">More about expansions
+=====================
+
+</t>
+<t tx="ekr.20230122011229.4">Orphan nodes
+============
+
+</t>
+<t tx="ekr.20230122011229.5">Using multiple @others nodes
+============================
+
+</t>
+<t tx="ekr.20230122011230.1">SpamClass
+=========
+
+
+    </t>
+<t tx="ekr.20230122011230.2">EggsClass
+=========
+
+</t>
+<t tx="ekr.20230122011230.3">Using @others to group code
+===========================
+
+</t>
+<t tx="ekr.20230122011230.4">Summary of @file
+================
+
+
+    </t>
+<t tx="ekr.20230122011230.5">Using @auto nodes
+=================
+
+</t>
+<t tx="ekr.20230122011444.1">@auto example
+=============
+
+</t>
+<t tx="ekr.20230122011445.1">Using @edit nodes
+=================
+
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

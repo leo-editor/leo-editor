@@ -1,6 +1,5 @@
 .. rst3: filename: html/slides/clones-and-views/slide-011.html
 
-=====================
 Views focus attention
 =====================
 

@@ -1,8 +1,8 @@
 .. rst3: filename: html/slides/minibuffer/minibuffer.html
 
-====================
+####################
 Using the minibuffer
-====================
+####################
 
 .. toctree::
     :maxdepth: 1
