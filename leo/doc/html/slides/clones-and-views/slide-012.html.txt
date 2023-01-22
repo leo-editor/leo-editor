@@ -13,6 +13,5 @@ No matter how complex the task (or the outline!), all relevant data appear in on
 Leo will mark as dirty all @<file> nodes containing any changed clones.
 As a result, Leo will update all external files automatically. Everything “just works”.
 
-
 .. no image for this slide.
 

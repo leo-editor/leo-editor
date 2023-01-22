@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-005.html
+.. rst3: filename: html/slides/basics/slide-005.html
 
 ============
 The icon box

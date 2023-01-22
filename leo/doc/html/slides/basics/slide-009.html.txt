@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-009.html
+.. rst3: filename: html/slides/basics/slide-009.html
 
 ===============================
 <Return> ends headline editing

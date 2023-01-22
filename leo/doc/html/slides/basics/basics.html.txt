@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/leo-basics-step-by-step.html
+.. rst3: filename: html/slides/basics/basics.html
 
 ############
 Leo's Basics

@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-018.html
+.. rst3: filename: html/slides/basics/slide-018.html
 
 ==============
 Changing focus

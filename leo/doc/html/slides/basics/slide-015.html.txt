@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-015.html
+.. rst3: filename: html/slides/basics/slide-015.html
 
 ================
 Add a to-do item

@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-023.html
+.. rst3: filename: html/slides/basics/slide-023.html
 
 ===============
 Shift-Ctrl-V

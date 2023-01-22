@@ -506,31 +506,31 @@
 <v t="ekr.20230121054859.1"><vh>@rst html/slides/external-files/external-files.html</vh></v>
 </v>
 <v t="ekr.20230121061309.1"><vh>Slides: Leo's basics</vh>
-<v t="ekr.20230121054950.1"><vh>@rst html/slides/leo-basics-step-by-step/leo-basics-step-by-step.html</vh></v>
-<v t="ekr.20230121135204.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-002.html</vh></v>
-<v t="ekr.20230121135205.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-003.html</vh></v>
-<v t="ekr.20230121135205.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-004.html</vh></v>
-<v t="ekr.20230121135205.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-005.html</vh></v>
-<v t="ekr.20230121135206.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-006.html</vh></v>
-<v t="ekr.20230121135206.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-007.html</vh></v>
-<v t="ekr.20230121135206.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-008.html</vh></v>
-<v t="ekr.20230121135206.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-009.html</vh></v>
-<v t="ekr.20230121135206.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-010.html</vh></v>
-<v t="ekr.20230121135312.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-011.html</vh></v>
-<v t="ekr.20230121135312.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-012.html</vh></v>
-<v t="ekr.20230121135312.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-013.html</vh></v>
-<v t="ekr.20230121135312.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-014.html</vh></v>
-<v t="ekr.20230121135312.6"><vh>@rst html/slides/leo-basics-step-by-step/slide-015.html</vh></v>
-<v t="ekr.20230121135312.7"><vh>@rst html/slides/leo-basics-step-by-step/slide-016.html</vh></v>
-<v t="ekr.20230121135312.8"><vh>@rst html/slides/leo-basics-step-by-step/slide-017.html</vh></v>
-<v t="ekr.20230121135312.9"><vh>@rst html/slides/leo-basics-step-by-step/slide-018.html</vh></v>
-<v t="ekr.20230121135312.10"><vh>@rst html/slides/leo-basics-step-by-step/slide-019.html</vh></v>
-<v t="ekr.20230121135312.11"><vh>@rst html/slides/leo-basics-step-by-step/slide-020.html</vh></v>
-<v t="ekr.20230121135448.2"><vh>@rst html/slides/leo-basics-step-by-step/slide-021.html</vh></v>
-<v t="ekr.20230121135448.3"><vh>@rst html/slides/leo-basics-step-by-step/slide-022.html</vh></v>
-<v t="ekr.20230121135448.4"><vh>@rst html/slides/leo-basics-step-by-step/slide-023.html</vh></v>
-<v t="ekr.20230121135448.5"><vh>@rst html/slides/leo-basics-step-by-step/slide-024.html</vh></v>
-<v t="ekr.20230121161822.1"><vh>@rst html/slides/leo-basics-step-by-step/slide-025.html</vh></v>
+<v t="ekr.20230121054950.1"><vh>@rst html/slides/basics/basics.html</vh></v>
+<v t="ekr.20230121135204.1"><vh>@rst html/slides/basics/slide-002.html</vh></v>
+<v t="ekr.20230121135205.1"><vh>@rst html/slides/basics/slide-003.html</vh></v>
+<v t="ekr.20230121135205.2"><vh>@rst html/slides/basics/slide-004.html</vh></v>
+<v t="ekr.20230121135205.3"><vh>@rst html/slides/basics/slide-005.html</vh></v>
+<v t="ekr.20230121135206.1"><vh>@rst html/slides/basics/slide-006.html</vh></v>
+<v t="ekr.20230121135206.2"><vh>@rst html/slides/basics/slide-007.html</vh></v>
+<v t="ekr.20230121135206.3"><vh>@rst html/slides/basics/slide-008.html</vh></v>
+<v t="ekr.20230121135206.4"><vh>@rst html/slides/basics/slide-009.html</vh></v>
+<v t="ekr.20230121135206.5"><vh>@rst html/slides/basics/slide-010.html</vh></v>
+<v t="ekr.20230121135312.2"><vh>@rst html/slides/basics/slide-011.html</vh></v>
+<v t="ekr.20230121135312.3"><vh>@rst html/slides/basics/slide-012.html</vh></v>
+<v t="ekr.20230121135312.4"><vh>@rst html/slides/basics/slide-013.html</vh></v>
+<v t="ekr.20230121135312.5"><vh>@rst html/slides/basics/slide-014.html</vh></v>
+<v t="ekr.20230121135312.6"><vh>@rst html/slides/basics/slide-015.html</vh></v>
+<v t="ekr.20230121135312.7"><vh>@rst html/slides/basics/slide-016.html</vh></v>
+<v t="ekr.20230121135312.8"><vh>@rst html/slides/basics/slide-017.html</vh></v>
+<v t="ekr.20230121135312.9"><vh>@rst html/slides/basics/slide-018.html</vh></v>
+<v t="ekr.20230121135312.10"><vh>@rst html/slides/basics/slide-019.html</vh></v>
+<v t="ekr.20230121135312.11"><vh>@rst html/slides/basics/slide-020.html</vh></v>
+<v t="ekr.20230121135448.2"><vh>@rst html/slides/basics/slide-021.html</vh></v>
+<v t="ekr.20230121135448.3"><vh>@rst html/slides/basics/slide-022.html</vh></v>
+<v t="ekr.20230121135448.4"><vh>@rst html/slides/basics/slide-023.html</vh></v>
+<v t="ekr.20230121135448.5"><vh>@rst html/slides/basics/slide-024.html</vh></v>
+<v t="ekr.20230121161822.1"><vh>@rst html/slides/basics/slide-025.html</vh></v>
 </v>
 <v t="ekr.20230121061335.1"><vh>Slides: Scripting</vh>
 <v t="ekr.20230121055005.1"><vh>@rst html/slides/scripting-leo/scripting-leo.html</vh></v>
@@ -8816,7 +8816,7 @@ This is the front page for various slide shows about Leo.
 
     slides/clones-and-views/clones-and-views
     slides/external-files/external-files
-    slides/leo-basics-step-by-step/leo-basics-step-by-step
+    slides/basics/basics
     slides/scripting-leo/scripting-leo
     slides/using-leos-minibuffer/using-leos-minibuffer
 </t>

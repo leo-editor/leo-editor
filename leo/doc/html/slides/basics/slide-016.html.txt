@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-016.html
+.. rst3: filename: html/slides/basics/slide-016.html
 
 ==============
 Move a node up

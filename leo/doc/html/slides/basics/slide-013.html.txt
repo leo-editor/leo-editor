@@ -1,4 +1,4 @@
-.. rst3: filename: html/slides/leo-basics-step-by-step/slide-013.html
+.. rst3: filename: html/slides/basics/slide-013.html
 
 =============
 Undo and redo
