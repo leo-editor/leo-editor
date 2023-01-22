@@ -1,0 +1,12 @@
+/*
+custom.css to set the background of the logo.
+*/
+
+img.logo {
+    background-color: white;
+    width: 100%;
+}
+
+img {
+    width: 50%;
+}
