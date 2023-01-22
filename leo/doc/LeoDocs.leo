@@ -570,6 +570,17 @@
 </v>
 <v t="ekr.20230121061433.1"><vh>Slides: Minibuffer</vh>
 <v t="ekr.20230121055019.1"><vh>@rst html/slides/minibuffer/minibuffer.html</vh></v>
+<v t="ekr.20230122101310.1"><vh>@rst html/slides/minibuffer/slide-001.html</vh></v>
+<v t="ekr.20230122101506.1"><vh>@rst html/slides/minibuffer/slide-002.html</vh></v>
+<v t="ekr.20230122101506.2"><vh>@rst html/slides/minibuffer/slide-003.html</vh></v>
+<v t="ekr.20230122101507.1"><vh>@rst html/slides/minibuffer/slide-004.html</vh></v>
+<v t="ekr.20230122101507.2"><vh>@rst html/slides/minibuffer/slide-005.html</vh></v>
+<v t="ekr.20230122101507.3"><vh>@rst html/slides/minibuffer/slide-006.html</vh></v>
+<v t="ekr.20230122101507.4"><vh>@rst html/slides/minibuffer/slide-007.html</vh></v>
+<v t="ekr.20230122101507.5"><vh>@rst html/slides/minibuffer/slide-008.html</vh></v>
+<v t="ekr.20230122101508.1"><vh>@rst html/slides/minibuffer/slide-009.html</vh></v>
+<v t="ekr.20230122101508.2"><vh>@rst html/slides/minibuffer/slide-010.html</vh></v>
+<v t="ekr.20230122101508.3"><vh>@rst html/slides/minibuffer/slide-011.html</vh></v>
 </v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
@@ -2509,7 +2520,7 @@
 <v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20230121052337.1"></v>
-<v t="ekr.20230121061335.1"></v>
+<v t="ekr.20230121061433.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31566,6 +31577,8 @@ https://github.com/leo-editor/leo-editor/issues/3073
 
 **spell check.
 
+*** Reduce size of screenshots in minibuffer slideshow.
+
 *** To do:
 
 Deployment notes:
@@ -31731,8 +31744,19 @@ Using the minibuffer
 
 .. toctree::
     :maxdepth: 1
-    
-..    To do &lt;slide-001&gt;
+
+    Introduction        &lt;slide-001&gt;
+    Tab completion      &lt;slide-002&gt;
+    Example             &lt;slide-003&gt;
+    Example, continued  &lt;slide-004&gt;
+    Example, concluded  &lt;slide-005&gt;
+    Shortcuts           &lt;slide-006&gt;
+    Search arguments    &lt;slide-007&gt;
+    Search string       &lt;slide-008&gt;
+    Replace string      &lt;slide-009&gt;
+    Doing the find      &lt;slide-010&gt;
+    Doing the replace   &lt;slide-011&gt;
+
 </t>
 <t tx="ekr.20230121060317.1"></t>
 <t tx="ekr.20230121060325.1">############
@@ -32575,6 +32599,115 @@ This concludes our brief introduction to scripting in Leo.
 
 For full details about scripting in Leo, see the Scripting Chapter in Leo’s Users Guide.
 </t>
+<t tx="ekr.20230122101310.1">Introduction
+============
+
+Leo’s minibuffer appears at the bottom of Leo’s main window.
+
+You use the minibuffer to execute commands by name.
+
+Type &lt;Alt-x&gt; to put the cursor in the minibuffer.
+
+.. image:: _images/slide-001.png
+</t>
+<t tx="ekr.20230122101506.1">Tab completion
+==============
+
+You can execute any Leo command by typing the command's **full name**
+in the minibuffer, followed by the &lt;return&gt; key.
+
+You can use **tab completion** to avoid typing full command names.
+
+With tab completion *you don't have to remember the exact names of Leo’s commands*.
+
+.. This slides contains no image.
+</t>
+<t tx="ekr.20230122101506.2">Example
+=======
+
+Suppose you want to print out the list of Leo’s commands.
+
+You need only remember that commands start with “print”. Just type::
+
+    &lt;alt-x&gt;pri&lt;tab&gt;
+
+You will see “print-” in the minibuffer.
+
+The Completion tab in the log pane shows all the commands that start with “print-”.
+
+.. image:: _images/slide-003.png</t>
+<t tx="ekr.20230122101507.1">Example, continued
+==================
+
+Now just type `c&lt;tab&gt;`.
+
+You will see one the single print-commands command in the minibuffer.
+
+Finally, type &lt;return&gt; to execute the command.
+
+.. image:: _images/slide-004.png</t>
+<t tx="ekr.20230122101507.2">Example, concluded
+==================
+
+You will see the output of the print-commands command in the commands tab.
+
+Focus returns to the body pane.
+
+.. image:: _images/slide-005.png</t>
+<t tx="ekr.20230122101507.3">Shortcuts
+=========
+
+- &lt;tag&gt; shows all valid completions.
+- &lt;BackSpace&gt; removes previously-typed characters, showing more completions.
+- &lt;Ctrl-G&gt; exits the minibuffer without executing any command.
+
+.. This slides contains no image.
+</t>
+<t tx="ekr.20230122101507.4">Search arguments
+================
+
+Leo’s find command accumulates the search and replace strings in the minibuffer.
+
+&lt;Ctrl-F&gt; invoke the find command, type &lt;Ctrl-F&gt;.
+
+Focus moves to the minibuffer and shows the Find tab.
+
+.. image:: _images/slide-007.png</t>
+<t tx="ekr.20230122101507.5">Search string
+=============
+
+Now type the search string.
+
+
+.. image:: _images/slide-008.png</t>
+<t tx="ekr.20230122101508.1">Replace string
+==============
+
+You can invoke the find by typing &lt;return&gt;.
+
+You can also specify a replacement strings.
+
+Type &lt;tab&gt;. The minibuffer prompts for the replacement string.
+
+.. image:: _images/slide-009.png</t>
+<t tx="ekr.20230122101508.2">Doing the find
+==============
+
+Type a replacement string.
+
+Type &lt;return&gt; to start the find-next command.
+
+.. image:: _images/slide-010.png</t>
+<t tx="ekr.20230122101508.3">Doing the replace
+=================
+
+Now Leo has found the next instance of “def” in the body pane.
+
+- &lt;Ctrl-minus&gt; makes the replacement.
+- &lt;F3&gt; continues searching without making a replacement.
+- &lt;Ctrl-G&gt; ends the search.
+
+.. image:: _images/slide-011.png</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
