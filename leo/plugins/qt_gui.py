@@ -1397,6 +1397,7 @@ class LeoQtGui(leoGui.LeoGui):
                 if not pixmap.isNull():
                     splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
                     splash.show()
+                    splash.repaint()
                     break  # Done.
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
