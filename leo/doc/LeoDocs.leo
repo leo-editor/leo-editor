@@ -2516,10 +2516,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230120113025.1"><vh>=== #3074: slideshows</vh>
-<v t="ekr.20230121052838.1"><vh>COPY: @rst html/slides.html</vh></v>
-</v>
-<v t="ekr.20230121052337.1"></v>
+<v t="ekr.20230123051708.1"><vh>=== PR #3086: navigation tweaks</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31569,61 +31566,7 @@ This list is out of date!
 
 Leo's Logo is the `Tribal Lion`_ image licensed from `dreamstime.com`_.</t>
 <t tx="ekr.20230120090521.1"></t>
-<t tx="ekr.20230120113025.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/3073
-
-PR: https://github.com/leo-editor/leo-editor/pull/3083
-
-PR2: https://github.com/leo-editor/leo-editor/pull/3086
-
-redundant(?) url: leo-editor.github.io/leo-editor
-
-@language python
-@nosearch
-</t>
 <t tx="ekr.20230121052337.1"></t>
-<t tx="ekr.20230121052838.1">######
-Slides
-######
-
-This is the front page for various slide shows about Leo.
-
-.. links
-.. _`Clones and views`:         slides/clones-and-views/slide-001.html
-.. _`External files`:           slides/external-files/slide-005.html
-.. _`Installation`:             slides/installation/slide-001.html
-.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
-.. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
-.. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/slide-001.html
-
-.. toctree::
-    :maxdepth: 1
-    clones-and-views
-    external-files
-    leo-basics-step-by-step
-    scripting-leo
-    using-leos-minibuffer
-
-Basic slide shows
------------------
-
-`Installation`_  tells how to install Leo.
-
-`Leo Basics Step By Step`_  explains the basics of Leo outlines.
-
-`External Files`_ discusses creating external files with @file, @clean and @edit.
-
-`Clones and views`_ illustrates how clones work and show how they create views.
-
-`Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
-
-Intermediate slide shows
-------------------------
-
-`Scripting Leo`_ explains how to use Python scripting in Leo.
-</t>
 <t tx="ekr.20230121054117.1">################
 Clones and views
 ################
@@ -32699,6 +32642,26 @@ Now Leo has found the next instance of “def” in the body pane.
 - &lt;Ctrl-G&gt; ends the search.
 
 .. image:: _images/slide-011.png</t>
+<t tx="ekr.20230123051708.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/3077
+
+PR2: https://github.com/leo-editor/leo-editor/pull/3086
+
+Change Leo's home page as follows:
+
+- [ ] Add a prominent link to the underlying git repo:
+      https://github.com/leo-editor/leo-editor
+   
+- [ ] Add a link to the 'how to install Leo from git' instructions at
+      https://leo-editor.github.io/leo-editor/installing.html#installing-leo-with-git
+
+Add downloading links and installing links:
+
+- [ ] In leo-editor/README.md.
+- [ ] In README.md in leoDist.leo
+- [ ] To Leo's release notes.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
