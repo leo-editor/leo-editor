@@ -1365,7 +1365,7 @@ class LeoQtGui(leoGui.LeoGui):
                 pixmap = QtGui.QPixmap(path)
                 if not pixmap.isNull():
                     if fn.endswith('.svg'):
-                        pixmap = pixmap.scaledToHeight(800)
+                        pixmap = pixmap.scaledToHeight(600)
                     splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
                     splash.show()
                     break  # Done.
