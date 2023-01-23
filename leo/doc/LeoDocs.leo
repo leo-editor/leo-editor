@@ -469,7 +469,7 @@
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
-<v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
+<v t="ekr.20170215075612.1"><vh>@rst html/leo_toc.html</vh></v>
 </v>
 <v t="ekr.20140216125129.16666"><vh>Additonal web pages</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html</vh></v>
@@ -1539,6 +1539,9 @@
 </v>
 </v>
 </v>
+<v t="ekr.20230123101622.1"><vh>More TOC links</vh>
+<v t="ekr.20230123101657.1"><vh>@rst html/toc-more-links.html</vh></v>
+</v>
 <v t="ekr.20150312080344.67"><vh>History of Leo</vh>
 <v t="ekr.20150312080344.68"><vh>@rst html/history.html</vh>
 <v t="ekr.20050902105852"><vh>1995: Beginnings</vh></v>
@@ -2516,8 +2519,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230123061135.1"><vh>*** Use bigger logo on home page</vh></v>
-<v t="ekr.20230123051708.1"><vh>=== PR #3086: navigation tweaks</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14634,8 +14635,6 @@ Preliminaries
 
 .. Use maxdepth 1 to emphasize top-level entries.
 
-**Contents**
-
 .. toctree::
    :maxdepth: 1
 
@@ -16528,6 +16527,7 @@ More Leo Resources
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
 .. _`web viewer`:           load-leo.html
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
+.. _`Leo's IRC channel`:    http://webchat.freenode.net/?channels=%23leo&amp;uio=d4
 
 Videos:
 
@@ -16549,7 +16549,6 @@ More resources:
 - `Icons`_ telling the world that you used Leo.
 - `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
 - Rickard Lindberg's `blog post`_ about how Leo improves computer code.
-
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core::
 
@@ -21914,54 +21913,33 @@ Clones allow you to create multiple views of data within a single outline. For e
 Leo's Documentation Page
 ========================
 
-**Important**: the easiest way to search Leo's documentation is to search LeoDocs.leo.
+.. |br| raw:: html
 
-.. _`Leo's home page`: https://leo-editor.github.io/leo-editor/
+   &lt;br /&gt;
 
-`Leo's home page`_
+**Note**: the easiest way to search Leo's documentation is to search LeoDocs.leo.
 
-.. toctree::
-   :maxdepth: 2
-   
-   preliminaries
-   
-.. toctree::
-   :maxdepth: 1
+.. _`Leo's forum`:          https://groups.google.com/g/leo-editor
+.. _`Leo's home page`:      https://leo-editor.github.io/leo-editor/
+.. _`Leo's IRC channel`:    http://webchat.freenode.net/?channels=%23leo&amp;uio=d4
+.. _`Leo's Wikipedia page`: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
-   getting-started
-   
-.. toctree::
-   :maxdepth: 1
-
-   Cheat Sheet &lt;cheatsheet&gt;
-   
-.. toctree::
-   :maxdepth: 2
-
-   screencasts
-   Tutorials &lt;tutorial&gt;
-   Users Guide &lt;usersguide&gt;
-   leoandotherprograms
-   intermediatetopics
-   appendices
+`Leo's home page`_ |br|
+`Leo's forum`_ |br|
+`Leo's IRC channel`_ |br|
+`Leo's Wikipedia page`_
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   history
-   FAQ
-   glossary
-   What's New &lt;what-is-new&gt;
-
-.. toctree::
-   :hidden:
-
-   slides
-   leoLinks
-   screen-shots
-
-`Leo's home page`_.
-
+    Preliminaries           &lt;preliminaries&gt;
+    Getting Started         &lt;getting-started&gt;
+    Tutorials               &lt;tutorial&gt;
+    Users Guide             &lt;usersguide&gt;
+    Leo and other programs  &lt;leoandotherprograms&gt;
+    Advanced Topics         &lt;intermediatetopics&gt;
+    Appendices              &lt;appendices&gt;
+    More links              &lt;toc-more-links&gt;
 </t>
 <t tx="ekr.20170215081358.1"></t>
 <t tx="ekr.20170215082032.1">Non-programmers: feel free to skip this part.</t>
@@ -31250,6 +31228,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Links**
 
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
 - [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
@@ -32643,27 +32623,25 @@ Now Leo has found the next instance of “def” in the body pane.
 - &lt;Ctrl-G&gt; ends the search.
 
 .. image:: _images/slide-011.png</t>
-<t tx="ekr.20230123051708.1">@language rest
-@wrap
+<t tx="ekr.20230123101622.1"></t>
+<t tx="ekr.20230123101657.1">##############
+More Leo Links
+##############
 
-https://github.com/leo-editor/leo-editor/issues/3077
+.. toctree::
+    :maxdepth: 1
 
-PR2: https://github.com/leo-editor/leo-editor/pull/3086
-
-Change Leo's home page as follows:
-
-- [ ] Add a prominent link to the underlying git repo:
-      https://github.com/leo-editor/leo-editor
-   
-- [ ] Add a link to the 'how to install Leo from git' instructions at
-      https://leo-editor.github.io/leo-editor/installing.html#installing-leo-with-git
-
-Add downloading links and installing links:
-
-- [ ] In leo-editor/README.md.
-- [ ] In README.md in leoDist.leo
-- [ ] To Leo's release notes.</t>
-<t tx="ekr.20230123061135.1">- Don't scale logo in custom.css</t>
+    FAQ                 &lt;FAQ&gt;
+    Cheat Sheet         &lt;cheatsheet&gt;
+    Code Snippets       &lt;https://github.com/leo-editor/snippets&gt;
+    Tutorial slides     &lt;slides&gt;
+    Screen shots        &lt;screen-shots&gt;
+    Screencasts         &lt;screencasts&gt;
+    History of Leo      &lt;history&gt;
+    Glossary            &lt;glossary&gt;
+    What's New          &lt;what-is-new&gt;
+    Still more links    &lt;leoLinks&gt;
+    </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

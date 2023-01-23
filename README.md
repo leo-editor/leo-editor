@@ -1,6 +1,4 @@
-Leo http://leo-editor.github.io/leo-editor 6.7.1 is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/).
+Leo http://leo-editor.github.io/leo-editor 6.7.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](http://leo-editor.github.io/leo-editor/preface.html).
 
@@ -15,6 +13,8 @@ Leo is an [IDE, outliner and PIM](http://leo-editor.github.io/leo-editor/preface
 
 **Links**
 
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
 - [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
 - [Documentation](http://leo-editor.github.io/leo-editor/leo_toc.html)
