@@ -6,8 +6,6 @@ Preliminaries
 
 .. Use maxdepth 1 to emphasize top-level entries.
 
-**Contents**
-
 .. toctree::
    :maxdepth: 1
 

@@ -3,7 +3,7 @@
 The @others directive
 =====================
 
-The **@others** directive is similar to a section reference; @others tells Leo to insert text into the output file. Instead of inserting the body text of one particular node, as in a section reference, @others tells Leo to insert the body text of all nodes that *aren’t* section definition nodes. That’s where the name comes from: it inserts all the *other* nodes.
+The **@others** directive is similar to a section reference; @others tells Leo to insert text into the output file. Instead of inserting the body text of one particular node, as in a section reference, @others tells Leo to insert the body text of all nodes that are *not* section definition nodes. That’s where the name comes from: it inserts all the *other* nodes.
 
 .. image:: _images/slide-009.png
 

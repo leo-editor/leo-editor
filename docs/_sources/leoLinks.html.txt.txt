@@ -18,6 +18,7 @@ More Leo Resources
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
 .. _`web viewer`:           load-leo.html
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
+.. _`Leo's IRC channel`:    http://webchat.freenode.net/?channels=%23leo&uio=d4
 
 Videos:
 
