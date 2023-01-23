@@ -1384,7 +1384,7 @@ class LeoQtGui(leoGui.LeoGui):
                     scaleby = target_height_px / svg_height
                     target_width_px = int(svg_width * scaleby)
 
-                    image = QImage(target_width_px, target_height_px, 
+                    image = QImage(target_width_px, target_height_px,
                                    QImage.Format(Format_RGB32))
                     image.fill(0xffffffff)  # MUST fill background
                     painter = QPainter(image)
