@@ -2516,6 +2516,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230123061135.1"><vh>*** Use bigger logo on home page</vh></v>
 <v t="ekr.20230123051708.1"><vh>=== PR #3086: navigation tweaks</vh></v>
 </vnodes>
 <tnodes>
@@ -32662,6 +32663,7 @@ Add downloading links and installing links:
 - [ ] In leo-editor/README.md.
 - [ ] In README.md in leoDist.leo
 - [ ] To Leo's release notes.</t>
+<t tx="ekr.20230123061135.1">- Don't scale logo in custom.css</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
