@@ -15,7 +15,8 @@ from typing import TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore
+from leo.core.leoQt import QtGui, QtWidgets, QtSvg
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 # This import causes pylint to fail on this file and on leoBridge.py.
 # The failure is in astroid: raw_building.py.
@@ -1355,6 +1356,14 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self) -> Widget:
         """Put up a splash screen with Leo's logo."""
+        QApplication = QtWidgets.QApplication
+        QPixmap = QtGui.QPixmap
+        QSvgRenderer = QtSvg.QSvgRenderer
+        QPainter = QtGui.QPainter
+        QImage = QtGui.QImage
+        QScreen = QtGui.QScreen
+        Format_RGB32 = 4  # a Qt enumeration value
+
         splash = None
         for fn in (
             'SplashScreen.svg',  # Leo's licensed .svg logo.
@@ -1362,10 +1371,30 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', fn)
             if g.os_path_exists(path):
-                pixmap = QtGui.QPixmap(path)
+                if fn.endswith('svg'):
+                    # Convert SVG to un-pixelated pixmap
+                    renderer = QSvgRenderer(path)
+                    size = renderer.defaultSize()
+                    svg_height, svg_width = size.height(), size.width()
+
+                    # Scale to fraction of screen height
+                    geom = QScreen.availableGeometry(QApplication.primaryScreen())
+                    screen_height = geom.height()
+                    target_height_px = screen_height // 4
+                    scaleby = target_height_px / svg_height
+                    target_width_px = int(svg_width * scaleby)
+
+                    image = QImage(target_width_px, target_height_px, 
+                                   QImage.Format(Format_RGB32))
+                    image.fill(0xffffffff)  # MUST fill background
+                    painter = QPainter(image)
+                    renderer.render(painter);
+                    painter.end();
+
+                    pixmap = QPixmap.fromImage(image)
+                else:
+                    pixmap = QtGui.QPixmap(path)
                 if not pixmap.isNull():
-                    if fn.endswith('.svg'):
-                        pixmap = pixmap.scaledToHeight(600)
                     splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
                     splash.show()
                     break  # Done.
