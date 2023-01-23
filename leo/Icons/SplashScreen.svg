@@ -4,6 +4,9 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="3217.000000pt" height="4094.000000pt" viewBox="0 0 3217.000000 4094.000000"
  preserveAspectRatio="xMidYMid meet">
+ 
+ <!-- EKR Using 100% works in a browser, but not in Qt. -->
+ <rect width="3217.000000pt" height="4094.000000pt" fill-opacity="1.0" fill="white"/>
 
 <g transform="translate(0.000000,4094.000000) scale(0.100000,-0.100000)"
 fill="#000000" stroke="none">
