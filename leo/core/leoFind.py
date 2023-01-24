@@ -1096,9 +1096,7 @@ class LeoFind:
         if not self.check_args('change-all'):
             return 0
         n = self._change_all_helper(settings)
-        #
-        # Bugs #947, #880 and #722:
-        # Set ancestor @<file> nodes by brute force.
+        # #947, #880 and #722: Set ancestor @<file> nodes by brute force.
         for p in c.all_positions():  # pragma: no cover
             if (
                 p.anyAtFileNodeName()
@@ -1112,23 +1110,11 @@ class LeoFind:
     def _change_all_helper(self, settings: Settings) -> int:
         """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
-
         c, current, u = self.c, self.c.p, self.c.undoer
         undoType = 'Replace All'
         t1 = time.process_time()
-        if not self.check_args('change-all'):  # pragma: no cover
-            return 0
-        self.init_in_headline()
+
         saveData = self.save()
-        self.in_headline = self.search_headline  # Search headlines first.
-        # Remember the start of the search.
-        p = self.root = c.p.copy()
-        # Set the work widget.
-        s = p.h if self.in_headline else p.b
-        ins = len(s) if self.reverse else 0
-        self.work_s = s
-        self.work_sel = (ins, ins, ins)
-        count = 0
         u.beforeChangeGroup(current, undoType)
         # Fix bug 338172: ReplaceAll will not replace newlines
         # indicated as \n in target string.
@@ -1164,8 +1150,8 @@ class LeoFind:
                     p.b = new_b
             if count_h or count_b:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
-        self.ftm.set_radio_button('entire-outline')
         # suboutline-only is a one-shot for batch commands.
+        self.ftm.set_radio_button('entire-outline')
         self.root = None
         self.node_only = self.suboutline_only = False
         p = c.p
@@ -1538,62 +1524,27 @@ class LeoFind:
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
     def do_find_all(self, settings: Settings) -> int:
         """Top-level helper for find-all command."""
-        c = self.c
-        count = 0
         self.init_ivars_from_settings(settings)
         if not self.check_args('find-all'):  # pragma: no cover
-            return count
-        # Init data.
-        self.init_in_headline()
-        data = self.save()
-        self.in_headline = self.search_headline  # Search headlines first.
-        self.unique_matches = set()  # 2021/02/20.
-        # Remember the start of the search.
-        p = self.root = c.p.copy()
-        # Set the work widget.
-        s = p.h if self.in_headline else p.b
-        ins = len(s) if self.reverse else 0
-        self.work_s = s
-        self.work_sel = (ins, ins, ins)
-        if self.pattern_match:
-            ok = self.compile_pattern()
-            if not ok:  # pragma: no cover
-                return count
-        if self.suboutline_only:
-            p = c.p
-            after = p.nodeAfterTree()
-        else:
-            # Always search the entire outline.
-            p = c.rootPosition()
-            after = None
-        # Fix #292: Never collapse nodes during find-all commands.
-        old_sparse_find = c.sparse_find
-        try:
-            c.sparse_find = False
-            count = self._find_all_helper(after, data, p, 'Find All')
-            c.contractAllHeadlines()
-        finally:
-            c.sparse_find = old_sparse_find
-            self.root = None
-        if count:
-            c.redraw()
-        g.es("found", count, "matches for", self.find_text)
-        return count
+            return 0
+        n = self._find_all_helper(settings)
+        return n
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers (REWRITE)
-    def _find_all_helper(self,
-        after: Optional[Position],
-        data: UndoData,
-        p: Position,
-        undoType: str,
-    ) -> int:
+    def _find_all_helper(self, settings: Settings) -> int:
+        # after: Optional[Position],
+        # data: UndoData,
+        # p: Position,
+        # undoType: str,
         """
         Handle the find-all command from p to after.
 
         Return the number of matches.
         """
         c, log, u = self.c, self.c.frame.log, self.c.undoer
+        undoType = 'Find All'
+        saveData = self.save()
 
-        #@+others # define helpers
+        #@+others  # Define helpers.
         #@+node:ekr.20150717105329.1: *7* function: create_find_all_node
         def create_find_all_node(result: List[str]) -> Position:
             """Create a "Found All" node as the last node of the outline."""
@@ -1604,26 +1555,8 @@ class LeoFind:
             status = status.strip().lstrip('(').rstrip(')').strip()
             found.b = f"# {status}\n{''.join(result)}"
             return found
-        #@+node:ekr.20230124101551.1: *7* function: find_all_matches_in_string
-        def find_all_matches_in_string(s: str) -> List[Tuple[int, str]]:
-            """
-            Find all matches in string s.
-
-            Return a list of tuples(i, line).
-            """
-            return []  ###
-        #@+node:ekr.20230124102225.1: *7* function: put_link
-        def put_link(line: str, line_number: int, p: Position) -> None:  # pragma: no cover  # #2023
-            """Put a link to the given line at the given line_number in p.h."""
-
-            if g.unitTesting:
-                return
-            unl = p.get_UNL()
-            if self.in_headline:
-                line_number = 1
-            log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
-        #@+node:ekr.20230124103253.1: *7* function: show_all_matches_for_node
-        def show_all_matches_for_node(new_matches: Tuple, p: Position) -> List[str]:
+        #@+node:ekr.20230124103253.1: *7* function: make_results_from_matches (to do)
+        def make_results_from_matches(new_matches: Tuple, p: Position) -> List[str]:
 
             if not new_matches:
                 return []
@@ -1631,75 +1564,149 @@ class LeoFind:
             result = []
             # both = self.search_body and self.search_headline
             return result
+        #@+node:ekr.20230124102225.1: *7* function: put_link
+        def put_link(line: str, line_number: int, p: Position) -> None:  # pragma: no cover  # #2023
+            """Put a link to the given line at the given line_number in p.h."""
+            if g.unitTesting:
+                return
+            unl = p.get_UNL()
+            if self.in_headline:
+                line_number = 1
+            log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
+        #@+node:ekr.20230124101551.1: *7* function: find_all_matches_in_string & helpers
+        def find_all_matches_in_string(s: str) -> List[Tuple[int, str]]:
+            """
+            Find all matches in string s.
+
+            Return a list of tuples(i, line).
+            """
+            # m = self.match_obj
+                # if m:
+                    # self.unique_matches.add(m.group(0).strip())
+                    # put_link(line, line_number, p)  # #2023
+            return []  ###
+        #@+node:ekr.20230124130028.2: *8* function: find_all_plain (new, revise)
+        def find_all_plain(s: str) -> List[Tuple[int, int, str]]: ###
+            """
+            Perform all plain finds s.
+            return a list of tuples (line_number, index, line).
+            """
+            lines0 = g.splitLines(s)  # The unchanged lines.
+            find_s= self.replace_back_slashes(self.find_text)
+            if self.ignore_case:
+                find_s = find_s.lower()
+                lines = g.splitLines(s.lower())
+            else:
+                lines = g.splitLines(s)
+            result = []
+            for line_number, line in enumerate(lines):
+                # A line may contain more than one match.
+                i = 0
+                while True:
+                    i = s.find(find_s, i)
+                    if i == -1:
+                        break
+                    result.append((line_number, i, lines0[i]))  # Return the original line.
+                    i += len(find_s)
+            return result
+        #@+node:ekr.20230124130028.3: *8* function: find_all_regex (new, revise)
+        def find_all_regex(s: str) -> Tuple[int, str]:
+            """
+            Perform all regex find/replace on s.
+            return (count, new_s)
+            """
+            count, prev_i, result = 0, 0, []
+
+            flags = re.MULTILINE
+            if self.ignore_case:
+                flags |= re.IGNORECASE
+            for m in re.finditer(self.find_text, s, flags):
+                count += 1
+                i = m.start()
+                result.append(s[prev_i:i])
+                # #1748.
+                groups = m.groups()
+                if groups:
+                    change_text = self.make_regex_subs(self.change_text, groups)
+                else:
+                    change_text = self.change_text
+                result.append(change_text)
+                prev_i = m.end()
+            # Compute the result.
+            result.append(s[prev_i:])
+            s = ''.join(result)
+            return count, s
+        #@+node:ekr.20230124130028.4: *8* function: find_all_word (new, revise)
+        def find_all_word(s: str) -> Tuple[int, str]:
+            """
+            Perform all whole word find/replace on s.
+            return (count, new_s)
+            """
+            find, change = self.find_text, self.change_text
+            # #1166: s0 and find0 aren't affected by ignore-case.
+            s0 = s
+            find0 = self.replace_back_slashes(find)
+            if self.ignore_case:
+                s = s0.lower()
+                find = find0.lower()
+            count, prev_i, result = 0, 0, []
+            while True:
+                # #1166: Scan using s and find.
+                i = s.find(find, prev_i)
+                if i == -1:
+                    break
+                # #1166: Replace using s0, change & find0.
+                result.append(s0[prev_i:i])
+                if g.match_word(s, i, find):
+                    count += 1
+                    result.append(change)
+                else:
+                    result.append(find0)
+                prev_i = i + len(find)
+            # #1166: Complete the result using s0.
+            result.append(s0[prev_i:])
+            return count, ''.join(result)
         #@-others
 
-        seen: List[VNode] = []  ### OLD: # List of (vnode, pos).
-        ### both = self.search_body and self.search_headline
-        ### count = 0
-        ### found: Position = None
+        if self.pattern_match:
+            ok = self.compile_pattern()
+            if not ok:
+                return 0
+        # Honor limiters
+        if self.node_only:
+            positions = [c.p]
+        elif self.suboutline_only:
+            positions = list(c.p.self_and_subtree())
+        else:
+            positions = list(c.all_unique_positions())
+        ### New
         result: List[str] = []
-        while p and p != after:
+        seen: List[VNode] = []
+        for p in positions:
             if p.v in seen:
                 continue
-            ### p, pos, newpos = self.find_next_match(p)   ###
             seen.append(p.v)
             matches = []
             if self.search_headline:
                 matches.extend(find_all_matches_in_string(p.h))
             if self.search_body:
                 matches.extend(find_all_matches_in_string(p.b))
-            new_results = show_all_matches_for_node(matches, p)
+            new_results = make_results_from_matches(matches, p)
             result.extend(new_results)
-            p.moveToThreadNext()
+        # suboutline-only is a one-shot for batch commands.
+        self.ftm.set_radio_button('entire-outline')
+        self.root = None
+        self.node_only = self.suboutline_only = False
         # Summarize...
         if not result:
-            self.restore(data)
+            self.restore(saveData)
             return 0
-        ### Ignore findAllUniqueFlag
         undoData = u.beforeInsertNode(c.p)
         found_p = create_find_all_node(result)
         u.afterInsertNode(found_p, undoType, undoData)
         c.selectPosition(found_p)
         c.setChanged()
         return len(result)
-
-                # count += 1
-                # s = self.work_s
-                # i, j = g.getLine(s, pos)
-                # line = s[i:j]
-                # row, col = g.convertPythonIndexToRowCol(s, i)
-                # line_number = row + 1
-                # if self.findAllUniqueFlag:
-                    # m = self.match_obj
-                    # if m:
-                        # self.unique_matches.add(m.group(0).strip())
-                        # put_link(line, line_number, p)  # #2023
-                # elif both:
-                    # result.append('%s%s\n%s%s\n' % (
-                        # '-' * 20, p.h,
-                        # "head: " if self.in_headline else "body: ",
-                        # line.rstrip() + '\n'))
-                    # put_link(line, line_number, p)  # #2023
-                # elif p.isVisited():
-                    # result.append(line.rstrip() + '\n')
-                    # put_link(line, line_number, p)  # #2023
-                # else:
-                    # result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
-                    # put_link(line, line_number, p)  # #2023
-                    # p.setVisited()
-            # if result or self.unique_matches:
-                # undoData = u.beforeInsertNode(c.p)
-                # if self.findAllUniqueFlag:
-                    # found = self._create_find_unique_node()
-                    # count = len(list(self.unique_matches))
-                # else:
-                    # found = self._create_find_all_node(result)
-                # u.afterInsertNode(found, undoType, undoData)
-                # c.selectPosition(found)
-                # c.setChanged()
-            # else:
-                # self.restore(data)
-            # return count
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
     def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
