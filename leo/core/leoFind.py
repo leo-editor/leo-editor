@@ -1944,7 +1944,7 @@ class LeoFind:
         self.whole_word = True
         self.show_find_options()
         # Set flag for do_find_next().
-        self.request_whole_world = True
+        self.request_whole_word = True
         # Go.
         self.start_state_machine(event,
             prefix='Word Search: ',
@@ -1960,7 +1960,7 @@ class LeoFind:
         self.show_find_options()
         # Set flags for do_find_next().
         self.request_reverse = True
-        self.request_whole_world = True
+        self.request_whole_word = True
         # Go
         self.start_state_machine(event,
             prefix='Word Search Backward: ',
