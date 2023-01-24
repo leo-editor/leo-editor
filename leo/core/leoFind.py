@@ -538,7 +538,11 @@ class LeoFind:
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
-    def find_def(self, event: Event = None, strict: bool = False) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
+    def find_def(
+        self,
+        event: Event = None,
+        strict: bool = False,
+    ) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
         ftm, p = self.ftm, self.c.p
         # Check.
@@ -1898,6 +1902,39 @@ class LeoFind:
             tc.add_tag(p, tag)
         if not g.unitTesting:  # pragma: no cover (skip)
             g.es_print(f"Added {tag} tag to {n} node{g.plural(n)}")
+    #@+node:ekr.20230124043210.1: *4* find.tag-node & helper
+    @cmd('tag-node')
+    def interactive_tag_node(self, event: Event = None) -> None:  # pragma: no cover (interactive)
+        """tag-node: prompt for a tag and add it to c.p."""
+        w = self.c.frame.body.wrapper
+        if not w:
+            return
+        self.start_state_machine(event,
+            prefix='Tag Node: ',
+            handler=self.interactive_tag_node1)
+
+    def interactive_tag_node1(self, event: Event) -> None:  # pragma: no cover (interactive)
+        c, k, p = self.c, self.k, self.c.p
+        # Settings...
+        tag = k.arg
+        # Gui...
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.do_tag_node(p, tag)
+        c.treeWantsFocus()
+    #@+node:ekr.20230124043210.2: *5* find.do_tag_node
+    def do_tag_node(self, p: Position, tag: str) -> None:
+        """Handle the tag-node command."""
+        c = self.c
+        tc = getattr(c, 'theTagController', None)
+        if not tc:
+            if not g.unitTesting:  # pragma: no cover (skip)
+                g.es_print('nodetags not active')
+            return
+        tc.add_tag(p, tag)
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print(f"Added {tag} tag to {p.h}")
     #@+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
