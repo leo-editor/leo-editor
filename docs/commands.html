@@ -1995,10 +1995,7 @@ selected headline and its offspring.</p>
 </dl>
 <p>These commands skip any nodes for which &#64;language python (or c) is not in effect.</p>
 <p>The <strong>Python beautifier</strong> (beautify-tree and beautify-node) is <a class="reference external" href="https://peps.python.org/pep-0008/">PEP8</a> compliant. The beautifier will <em>just work</em> for most people.</p>
-<p>The Python beautifier is <em>safe</em>.  It can never alter the meaning of a program because it compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such <strong>beautifier errors</strong> produce debugging dumps. Please report any such errors to Leo’s developers.</p>
 <p>The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.</p>
-<p>The Python beautifier converts <strong>Leonine syntax</strong> (directives, section references and &#64;doc parts) to comments, possibly with a trailing <code class="docutils literal notranslate"><span class="pre">pass</span></code> statement.  Usually this produces syntactically correct text.  As discussed below, the trailing <code class="docutils literal notranslate"><span class="pre">pass</span></code> can create SyntaxError’s.</p>
-<p>Optionally, the beautifier can remove blank lines <em>within</em> classes and defs, controlled by the setting <em>&#64;bool tidy-keep-blank-lines</em>.</p>
 <section id="comparison-with-black">
 <h4><a class="toc-backref" href="#id95" role="doc-backlink">Comparison with Black</a><a class="headerlink" href="#comparison-with-black" title="Permalink to this heading">¶</a></h4>
 <p>Leo’s beautify command differs from <a class="reference external" href="https://github.com/psf/black">Black</a> as follows:</p>

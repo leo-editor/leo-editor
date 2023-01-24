@@ -19803,13 +19803,8 @@ These commands skip any nodes for which @language python (or c) is not in effect
 
 The **Python beautifier** (beautify-tree and beautify-node) is `PEP8`_ compliant. The beautifier will *just work* for most people. 
 
-The Python beautifier is *safe*.  It can never alter the meaning of a program because it compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such **beautifier errors** produce debugging dumps. Please report any such errors to Leo's developers.
-
 The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.
-
-The Python beautifier converts **Leonine syntax** (directives, section references and @doc parts) to comments, possibly with a trailing ``pass`` statement.  Usually this produces syntactically correct text.  As discussed below, the trailing ``pass`` can create SyntaxError's.
-
-Optionally, the beautifier can remove blank lines *within* classes and defs, controlled by the setting *@bool tidy-keep-blank-lines*.</t>
+</t>
 <t tx="ekr.20150621062355.1">def runAlreadyOpenDialog(self, c):
     '''Warn about possibly already-open files.'''
     # g.trace(g.app.already_open_files)
