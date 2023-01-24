@@ -29,6 +29,7 @@ from leo.plugins import qt_text
 from leo.plugins import qt_commands
 assert qt_commands
 from leo.core.leoTips import UserTip
+from time import sleep
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
@@ -1397,6 +1398,7 @@ class LeoQtGui(leoGui.LeoGui):
                 if not pixmap.isNull():
                     splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
                     splash.show()
+                    sleep(.2)
                     splash.repaint()
                     break  # Done.
         return splash
