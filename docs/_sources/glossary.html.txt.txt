@@ -16,7 +16,7 @@ This is a short glossary of important terms in Leo's world. For more information
 .. .. glossary::
 ..    :sorted:
 
-.. contents:: Contents
+.. contents::
     :depth: 2
     :local:
 

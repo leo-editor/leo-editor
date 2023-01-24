@@ -1209,14 +1209,9 @@
 </v>
 <v t="ekr.20150318110552.65"><vh>Settings commands</vh></v>
 <v t="ekr.20150603161559.1"><vh>Code beautification commands</vh>
-<v t="ekr.20150603120140.1"><vh>What the Python beautifier does</vh></v>
-<v t="ekr.20150603120515.1"><vh>What the Python beautifier doesn't do</vh></v>
+<v t="ekr.20230124061650.1"><vh>Comparison with Black</vh></v>
 <v t="ekr.20150603115243.1"><vh>Beautifier directives</vh></v>
-<v t="ekr.20150603115204.1"><vh>Beautifier settings</vh></v>
-<v t="ekr.20150603115311.1"><vh>Beautifier rough edges</vh></v>
 <v t="ekr.20150603115400.1"><vh>Stand-alone beautifier</vh></v>
-<v t="ekr.20150603120245.1"><vh>Enough is enough</vh></v>
-<v t="ekr.20150603120150.1"><vh>Summary of the beautifier</vh></v>
 </v>
 <v t="ekr.20150318110552.66"><vh>Window-related commands</vh></v>
 <v t="ekr.20150318110552.87"><vh>Vim mode commands</vh></v>
@@ -2518,6 +2513,8 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20050901101608.2"></v>
+<v t="ekr.20150603161559.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19742,12 +19739,6 @@ def openUrlUnderCursor(event=None):
     '''Open the url under the cursor.'''
     return g.openUrlOnClick(event)
 </t>
-<t tx="ekr.20150603115204.1">``@bool tidy-autobeautify = False``
-    When True, Leo beautifies all changed files when saving an outline. The default must always be False in leoSettings.leo and in unitTest.leo.
-
-``@bool tidy-keep-blank-lines = False``
-    When True, the beautifier retains blank lines within classes, functions and methods.
-</t>
 <t tx="ekr.20150603115243.1">``@killbeautify``
     This directive completely disables beautification for an entire tree. This is typically required for files containing ``@all``.
 
@@ -19768,151 +19759,40 @@ beautifies the entire node.  Otoh::
 
 skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough for now.
 </t>
-<t tx="ekr.20150603115311.1">The following 5 problems are relatively minor.  They apply only to the Python beautifier. The workaround in most cases is to use ``@nobeautify``.
+<t tx="ekr.20150603115400.1">You can run leoBeautify.py from the command line::
 
-**1. Syntax Errors**
-
-The pass hack converts::
-
-    if 1:
-        &lt;&lt; a section &gt;&gt;
-
-to::
-
-    if 1:
-        #!!!!! &lt;&lt; a section &gt;&gt;
-        pass
-
-which is usually, but not always, syntactically correct Python. Here is an example from Leo's core::
-
-    patterns = [
-        &lt;&lt; Sherlock patterns for pylint &gt;&gt;
-    ]
-
-The pass hack produces syntactically incorrect code::
-
-    patterns = [
-        #!!!!! &lt;&lt; Sherlock patterns for pylint &gt;&gt;
-        pass
-    ]
-
-**2. Alignment**
-
-The beautifier eliminates blanks used to align code.  For example::
-
-    d = {
-        key1:     value1,
-        longKey2: value2,
-    }
-
-The beautifier might preserve such lines, but there are no plans at present to do so.
-
-The regular expression: ``=([ ])*\{([^}])*$`` will discover complex dictionaries that you may want to protect with ``@nobeautify``.
-
-**3. Operator priority**
-
-Pep 8 suggests considering eliminating blanks around higher-priority operators.  The beautifier puts blank lines about all operators, except unary operators.
-
-This is a difficult problem of style, for which no approach works in all cases.  Surprisingly, retaining blanks around ``*`` usually looks best in Leo's own code.
-
-**4. @clean &amp; @auto**
-
-Consider adding @nobeautify for all ``@auto`` and ``@clean`` nodes, on the theory that such nodes are not primarily your responsibility.  But adding ``@nobeautify`` is completely up to you.
-
-**5. Extra blank lines**
-
-The beautifier will sometimes insert extra spaces between class/def lines and preceding comments.
-</t>
-<t tx="ekr.20150603115400.1">You may invoke a *lightly tested* stand-alone version the Python beautifier from the command line.
-
-You can run leoBeautify.py from any directory, provided that a copy of leoGlobals.py exists in the same directory.
-
-Run the stand-alone beautifier as follows::
-
-    python -m leoBeautify file1, file2, ...
-
-To get a usage message, do::
-
-    python -m leoBeautify -h
-
-This produces::
-
-    Usage: python leoBeautify -m file1, file2, ...
+    python -m leo.core.leoAst --orange file1, file2...
     
-    Options:
-      -h, --help             show this help message and exit
-      -d, --debug            print the list of files and exit
-      -k, --keep-blank-lines keep-blank-lines
+Running::
 
-</t>
-<t tx="ekr.20150603120140.1">.. _`Pep 8 recommendations for whitespace`: https://www.python.org/dev/peps/pep-0008/#whitespace-in-expressions-and-statements
-.. _`pep 8 recommendations for blank lines`: https://www.python.org/dev/peps/pep-0008/#blank-lines
-
-The beautifier will *just work* for most people. 
-
-The beautifier follows the `Pep 8 recommendations for whitespace`_. It ensures that names, operators, strings and comments are separated by zero or one blanks::
-
-    def spam(a, b, c=5, *args, **keys):
-        foo(a, 25, b=2)
-        a = b + c - 5
-        b = -d
-        if 0 &lt; b &lt; 26:
-            ...
-
-Leo follows the `pep 8 recommendations for blank lines`_ *between* classes and defs, with minor variations due to Leo's node structure.
-
-Optionally, the beautifier can remove blank lines *within* classes and defs, controlled by the setting *@bool tidy-keep-blank-lines*.
-</t>
-<t tx="ekr.20150603120150.1">Except for dictionary definitions, the beautifier does what is expected, leaving difficult or idiosyncratic cases completely at the user's discretion.
-
-- For the first time ever, Leo's beautify commands work properly with Leonine syntax.
-- All files in leoPy.leo can now be beautified without fuss.
-- Except for spacing around operators, the beautifier mostly leaves your code **as it is**.
-- The beautifier makes no difficult choices. It preserves your choices.
-</t>
-<t tx="ekr.20150603120245.1">The following could be done only at the cost of more settings and debates about what the default settings should be.
-
-- Splitting long lines.
-- Improving spacing around operators.
-- Moving or indenting comment lines.
-
-All these involve significant personal judgments and preferences. Pep 8 explicitly allows various approaches.
-</t>
-<t tx="ekr.20150603120515.1">The Python beautifier never creates new lines! The beautifier never adds or changes:
-
-- Line breaks for "long" lines.
-- Line breaks in function argument lists.
-- Leading whitespace in continued argument lines.
-- Line breaks call arguments.
-- Leading whitespace in continue function call arguments.
-- Whitespace (including line breaks) within statements.
-
-Pep 8 allows considerable flexibility regarding continued lines. The beautifier will leave all of the following unchanged, whether or not they conform to the pep 8 recommendation::
-
-    def function1 (a, b, c):
-        pass
+    python -m leo.core.leoAst -h
     
-    def function2 (
-    a = 2, # a comment
-    b = 3, # another comment
-    ):
-        pass
-    
-    def function3 (
-        a = 2, # a comment
-        b = 3, # another comment
-    ):
-        pass
-    
-    def function4(
-                  a = 2, # a comment
-                  b = 3, # another comment
-                 ):
-        pass
+Produces something like this::
 
-Similarly, the beautifier will not touch arguments in function calls.
+    usage: leoAst.py [-h] [--fstringify | --fstringify-diff | --orange | --orange-diff] [--allow-joined] [--max-join N]
+                     [--max-split N] [--recursive] [--tab-width N]
+                     [PATHS ...]
+
+    Execute fstringify or beautify commands contained in leoAst.py.
+
+    positional arguments:
+      PATHS              directory or list of files
+
+    options:
+      -h, --help         show this help message and exit
+      --fstringify       fstringify PATHS
+      --fstringify-diff  fstringify diff PATHS
+      --orange           beautify PATHS
+      --orange-diff      diff beautify PATHS
+      --allow-joined     allow joined strings
+      --max-join N       max unsplit line length (default 0)
+      --max-split N      max unjoined line length (default 0)
+      --recursive        include directories recursively
+      --tab-width N      tab-width (default -4)
 </t>
-<t tx="ekr.20150603161559.1">``beautify-node``
+<t tx="ekr.20150603161559.1">.. _`PEP8`: https://peps.python.org/pep-0008/
+
+``beautify-node``
     Beautifies the Python code in the selected node.
 ``beautify-tree``
     Beautifies all the Python code in the selected tree.
@@ -19921,13 +19801,10 @@ Similarly, the beautifier will not touch arguments in function calls.
     
 These commands skip any nodes for which @language python (or c) is not in effect.
 
-The **Python beautifier** (beautify-tree and beautify-node) is *safe*.  It can never alter the meaning of a program because it compare the parse trees of the original and beautified code. The code remains unchanged if there is a mismatch. Such **beautifier errors** produce debugging dumps. Please report any such errors to Leo's developers.
+The **Python beautifier** (beautify-tree and beautify-node) is `PEP8`_ compliant. The beautifier will *just work* for most people. 
 
 The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.
-
-The Python beautifier converts **Leonine syntax** (directives, section references and @doc parts) to comments, possibly with a trailing ``pass`` statement.  Usually this produces syntactically correct text.  As discussed below, the trailing ``pass`` can create SyntaxError's.
-
-The following sections describe how the beautify-tree and beautify-node commands work in more detail.</t>
+</t>
 <t tx="ekr.20150621062355.1">def runAlreadyOpenDialog(self, c):
     '''Warn about possibly already-open files.'''
     # g.trace(g.app.already_open_files)
@@ -32641,6 +32518,17 @@ More Leo Links
     What's New          &lt;what-is-new&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
+<t tx="ekr.20230124061650.1">.. _`Black`: https://github.com/psf/black
+
+Leo's beautify command differs from `Black`_ as follows:
+
+- beautify never changes Leo's sentinel comments.
+- beautify never splits or joints lines (with the default settings).
+  Black sometimes inserts horrible line breaks.
+- beautify never converts single-quote strings to double-quote strings.
+  That is, beautify simulates Black's --skip-string-normalization command-line option.
+- beautify doesn't insert extra blank lines at the end of nodes.
+  Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

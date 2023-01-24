@@ -6,7 +6,7 @@ Leo and Emacs, including org mode
 
 This chapter several topics relating to the Emacs editor.
 
-.. contents:: Contents
+.. contents::
     :depth: 2
     :local:
 

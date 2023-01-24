@@ -4,7 +4,7 @@
 ILeo: Leo's IPython Bridge
 ##########################
 
-.. contents:: Contents
+.. contents::
     :depth: 2
     :local:
 
