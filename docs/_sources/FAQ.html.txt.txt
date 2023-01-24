@@ -8,7 +8,7 @@ This is Leo's Frequently Asked Questions document.
 
 .. index:: FAQ
 
-.. contents:: Contents
+.. contents::
     :depth: 4
     :local:
 

@@ -4,7 +4,7 @@
 What's New in Leo
 ##################
 
-.. contents:: Contents
+.. contents::
     :depth: 2
     :local:
 
