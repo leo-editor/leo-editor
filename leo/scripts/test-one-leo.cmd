@@ -11,8 +11,13 @@ rem call python -m unittest leo.unittests.core.test_leoAst.TestFstringify
 rem echo test-one-leo: test_leoAst.TestOrange
 rem call python -m unittest leo.unittests.core.test_leoAst.TestOrange
 
-echo test-one-leo: test_importers.TestHtml.test_structure
-call python -m unittest leo.unittests.test_importers.TestHtml.test_structure
+rem echo test-one-leo: test_importers.TestHtml.test_structure
+rem call python -m unittest leo.unittests.test_importers.TestHtml.test_structure
+
+echo test-one-leo: test_leoFind.TestFind.test_find_all
+call python -m unittest leo.unittests.core.test_leoFind.TestFind.test_find_all
+
+
 
 
 

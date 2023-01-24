@@ -26,6 +26,14 @@ class TestFind(LeoUnitTest):
     def make_test_tree(self):
         """Make a test tree for other tests"""
         c = self.c
+        
+        # 2023/01/24: Remove any previous tree.
+        root = c.rootPosition()
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        while root.hasNext():
+            root.next().doDelete()
+
         root = c.rootPosition()
         root.h = '@file test.py'
         root.b = "def root():\n    pass\n"
@@ -34,13 +42,21 @@ class TestFind(LeoUnitTest):
         def make_child(n, p):
             p2 = p.insertAsLastChild()
             p2.h = f"child {n}"
-            p2.b = f"def child{n}():\n    v{n} = 2\n"
+            p2.b = (
+                f"def child{n}():\n"
+                f"    v{n} = 2\n"
+                f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
+                f"    # node {n} line 2: blabla second blabla bla second ble blu"
+            )
             return p2
 
         def make_top(n, sib):
             p = sib.insertAfter()
             p.h = f"Node {n}"
-            p.b = f"def top{n}():\n    v{n} = 3\n"
+            p.b = (
+                f"def top{n}():\n:"
+                f"    v{n} = 3\n"
+            )
             return p
 
         for n in range(0, 4, 3):
@@ -227,22 +243,40 @@ class TestFind(LeoUnitTest):
             self.make_test_tree()  # Reinit the whole tree.
             x.findAllUniqueFlag = False
             x.unique_matches = set()
-            settings.change_text = '_DEF_'
-            settings.find_text = 'def'
+            settings.change_text = ''
+            settings.find_text = ''
             settings.ignore_case = False
             settings.node_only = False
             settings.pattern_match = False
             settings.suboutline_only = False
             settings.whole_word = True
+            
+        # Debugging.
+        if 0:
+            init()
+            g.cls()
+            g.trace('test_find_all')
+            for i, p in enumerate(self.c.all_positions()):
+                g.printObj(g.splitLines(p.b), tag=f"node {i}: {p.h}")
 
         # Test 1.
-        init()
-        settings.pattern_match = True
-        x.do_find_all(settings)
+        for find_text, pattern_match, expected_count in (
+            ('def', False, 7),
+            ('bla', False, 6),
+        ):
+            init()
+            self.assertTrue(self.c, self.c.rootPosition())
+            settings.find_text = find_text
+            settings.pattern_match = pattern_match
+            count = x.do_find_all(settings)
+            self.assertEqual(count, expected_count, msg=find_text)
+            
+        ### return
+
         # Test 2.
         init()
         settings.suboutline_only = True
-        x.do_find_all(settings)
+        count = x.do_find_all(settings)
         # Test 3.
         init()
         settings.search_headline = False

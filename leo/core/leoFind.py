@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import FindTabManager
     from leo.core.leoKeys import KeyHandlerClass as KeyHandler
     from leo.core.leoGlobals import KeyStroke as Stroke
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     MatchGroups = Tuple  # Best we can do so far.
     Settings = g.Bunch
@@ -1534,7 +1534,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        self.do_change_all(settings)
+        self.do_change_all(settings)  # Correct: convert to change-all.
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
     def do_find_all(self, settings: Settings) -> int:
         """Top-level helper for find-all command."""
@@ -1579,16 +1579,40 @@ class LeoFind:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
         return count
-    #@+node:ekr.20160422073500.1: *6* find._find_all_helper
+    #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers (REWRITE)
     def _find_all_helper(self,
         after: Optional[Position],
         data: UndoData,
         p: Position,
         undoType: str,
     ) -> int:
-        """Handle the find-all command from p to after."""
+        """
+        Handle the find-all command from p to after.
+
+        Return the number of matches.
+        """
         c, log, u = self.c, self.c.frame.log, self.c.undoer
 
+        #@+others # define helpers
+        #@+node:ekr.20150717105329.1: *7* function: create_find_all_node
+        def create_find_all_node(result: List[str]) -> Position:
+            """Create a "Found All" node as the last node of the outline."""
+            found = c.lastTopLevel().insertAfter()
+            assert found
+            found.h = f"Found All:{self.find_text}"
+            status = self.compute_result_status(find_all_flag=True)
+            status = status.strip().lstrip('(').rstrip(')').strip()
+            found.b = f"# {status}\n{''.join(result)}"
+            return found
+        #@+node:ekr.20230124101551.1: *7* function: find_all_matches_in_string
+        def find_all_matches_in_string(s: str) -> List[Tuple[int, str]]:
+            """
+            Find all matches in string s.
+
+            Return a list of tuples(i, line).
+            """
+            return []  ###
+        #@+node:ekr.20230124102225.1: *7* function: put_link
         def put_link(line: str, line_number: int, p: Position) -> None:  # pragma: no cover  # #2023
             """Put a link to the given line at the given line_number in p.h."""
 
@@ -1598,77 +1622,84 @@ class LeoFind:
             if self.in_headline:
                 line_number = 1
             log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
+        #@+node:ekr.20230124103253.1: *7* function: show_all_matches_for_node
+        def show_all_matches_for_node(new_matches: Tuple, p: Position) -> List[str]:
 
-        seen: List = []  # List of (vnode, pos).
-        both = self.search_body and self.search_headline
-        count = 0
-        found: Position = None
+            if not new_matches:
+                return []
+            ### To do ###
+            result = []
+            # both = self.search_body and self.search_headline
+            return result
+        #@-others
+
+        seen: List[VNode] = []  ### OLD: # List of (vnode, pos).
+        ### both = self.search_body and self.search_headline
+        ### count = 0
+        ### found: Position = None
         result: List[str] = []
-        while 1:
-            p, pos, newpos = self.find_next_match(p)
-            if pos is None:
-                break
-            if (p.v, pos) in seen:  # 2076
-                continue  # pragma: no cover
-            seen.append((p.v, pos))
-            count += 1
-            s = self.work_s
-            i, j = g.getLine(s, pos)
-            line = s[i:j]
-            row, col = g.convertPythonIndexToRowCol(s, i)
-            line_number = row + 1
-            if self.findAllUniqueFlag:
-                m = self.match_obj
-                if m:
-                    self.unique_matches.add(m.group(0).strip())
-                    put_link(line, line_number, p)  # #2023
-            elif both:
-                result.append('%s%s\n%s%s\n' % (
-                    '-' * 20, p.h,
-                    "head: " if self.in_headline else "body: ",
-                    line.rstrip() + '\n'))
-                put_link(line, line_number, p)  # #2023
-            elif p.isVisited():
-                result.append(line.rstrip() + '\n')
-                put_link(line, line_number, p)  # #2023
-            else:
-                result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
-                put_link(line, line_number, p)  # #2023
-                p.setVisited()
-        if result or self.unique_matches:
-            undoData = u.beforeInsertNode(c.p)
-            if self.findAllUniqueFlag:
-                found = self._create_find_unique_node()
-                count = len(list(self.unique_matches))
-            else:
-                found = self._create_find_all_node(result)
-            u.afterInsertNode(found, undoType, undoData)
-            c.selectPosition(found)
-            c.setChanged()
-        else:
+        while p and p != after:
+            if p.v in seen:
+                continue
+            ### p, pos, newpos = self.find_next_match(p)   ###
+            seen.append(p.v)
+            matches = []
+            if self.search_headline:
+                matches.extend(find_all_matches_in_string(p.h))
+            if self.search_body:
+                matches.extend(find_all_matches_in_string(p.b))
+            new_results = show_all_matches_for_node(matches, p)
+            result.extend(new_results)
+            p.moveToThreadNext()
+        # Summarize...
+        if not result:
             self.restore(data)
-        return count
-    #@+node:ekr.20150717105329.1: *6* find._create_find_all_node
-    def _create_find_all_node(self, result: List[str]) -> Position:
-        """Create a "Found All" node as the last node of the outline."""
-        c = self.c
-        found = c.lastTopLevel().insertAfter()
-        assert found
-        found.h = f"Found All:{self.find_text}"
-        status = self.compute_result_status(find_all_flag=True)
-        status = status.strip().lstrip('(').rstrip(')').strip()
-        found.b = f"# {status}\n{''.join(result)}"
-        return found
-    #@+node:ekr.20171226143621.1: *6* find._create_find_unique_node
-    def _create_find_unique_node(self) -> Position:
-        """Create a "Found Unique" node as the last node of the outline."""
-        c = self.c
-        found = c.lastTopLevel().insertAfter()
-        assert found
-        found.h = f"Found Unique Regex:{self.find_text}"
-        result = sorted(self.unique_matches)
-        found.b = '\n'.join(result)
-        return found
+            return 0
+        ### Ignore findAllUniqueFlag
+        undoData = u.beforeInsertNode(c.p)
+        found_p = create_find_all_node(result)
+        u.afterInsertNode(found_p, undoType, undoData)
+        c.selectPosition(found_p)
+        c.setChanged()
+        return len(result)
+
+                # count += 1
+                # s = self.work_s
+                # i, j = g.getLine(s, pos)
+                # line = s[i:j]
+                # row, col = g.convertPythonIndexToRowCol(s, i)
+                # line_number = row + 1
+                # if self.findAllUniqueFlag:
+                    # m = self.match_obj
+                    # if m:
+                        # self.unique_matches.add(m.group(0).strip())
+                        # put_link(line, line_number, p)  # #2023
+                # elif both:
+                    # result.append('%s%s\n%s%s\n' % (
+                        # '-' * 20, p.h,
+                        # "head: " if self.in_headline else "body: ",
+                        # line.rstrip() + '\n'))
+                    # put_link(line, line_number, p)  # #2023
+                # elif p.isVisited():
+                    # result.append(line.rstrip() + '\n')
+                    # put_link(line, line_number, p)  # #2023
+                # else:
+                    # result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
+                    # put_link(line, line_number, p)  # #2023
+                    # p.setVisited()
+            # if result or self.unique_matches:
+                # undoData = u.beforeInsertNode(c.p)
+                # if self.findAllUniqueFlag:
+                    # found = self._create_find_unique_node()
+                    # count = len(list(self.unique_matches))
+                # else:
+                    # found = self._create_find_all_node(result)
+                # u.afterInsertNode(found, undoType, undoData)
+                # c.selectPosition(found)
+                # c.setChanged()
+            # else:
+                # self.restore(data)
+            # return count
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
     def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
