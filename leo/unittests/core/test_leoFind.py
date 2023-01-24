@@ -653,6 +653,51 @@ class TestFind(LeoUnitTest):
         partial_settings.wrapping = True
         x.init_ivars_from_settings(partial_settings)
         x.compute_result_status(find_all_flag=False)
+    #@+node:ekr.20230124162455.1: *4* TestFind.test_find_all_plain
+    #@@nobeautify
+    def test_find_all_plain(self):
+        c = self.c
+        fc = c.findCommands
+        table = (
+            (False, False),
+            # s         find    expected
+            ('aA',      'a',    [0]),
+            ('aAa',     'A',    [1]),
+            ('AAbabc',  'b',    [2, 4]),
+
+            (True, False),
+            ('axA',     'a',    [0, 2]),
+            ('aAa',     'A',    [0, 1, 2]),
+            ('ABbabc',  'b',    [1, 2, 4]),
+            
+            (True, True),
+            ('ax aba ab abc'    'ab', [7]),
+            ('ax aba\nab abc'   'ab', [7]),
+            ('ax aba ab\babc'   'ab', [7]),
+        )
+        for aTuple in table:
+            if len(aTuple) == 2:
+                fc.ignore_case, fc.whole_word = aTuple
+            else:
+                s, find, expected = aTuple
+                aList = fc.find_all_plain(find, s)
+                self.assertEqual(aList, expected, msg=s)
+    #@+node:ekr.20230124162609.1: *4* TestFind.test_find_all_regex
+    #@@nobeautify
+    def test_find_all_regex(self):
+        c = self.c
+        fc = c.findCommands
+        regex_table = (
+            # s                  find        expected
+            ('a ba aa a ab a',   r'\b\w+\b', [0, 2, 5, 8, 10, 13]),
+            ('a AA aa aab ab a', r'\baa\b',  [5]),
+            # Multi-line
+            ('aaa AA\naa aab',   r'\baa\b',  [7]),
+        )
+        for s, find, expected in regex_table:
+            fc.ignore_case = False
+            aList = fc.find_all_regex(find, s)
+            self.assertEqual(aList, expected, msg=s)
     #@+node:ekr.20210829203927.12: *4* TestFind.test_inner_search_backward
     def test_inner_search_backward(self):
         c = self.c

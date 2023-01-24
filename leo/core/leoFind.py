@@ -1658,7 +1658,7 @@ class LeoFind:
         flags = re.MULTILINE
         if self.ignore_case:
             flags |= re.IGNORECASE
-        return [m.start() for m in re.finditer(self.find_text, s, flags)]
+        return [m.start() for m in re.finditer(find_s, s, flags)]
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
     def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
