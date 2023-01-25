@@ -1471,6 +1471,8 @@ class LeoFind:
         search string.
 
         Typing tab converts this to the change-all command.
+
+
         """
         self.ftm.clear_focus()
         self.ftm.set_entry_focus()
@@ -1523,7 +1525,24 @@ class LeoFind:
         self.do_change_all(settings)  # Correct: convert to change-all.
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
     def do_find_all(self, settings: Settings) -> Dict[str, Any]:
-        """Top-level helper for find-all command."""
+        """
+        Top-level helper for find-all command.
+
+        Returns a dict of the form:
+            {
+                'distinct_body_lines': distinct_body_lines,
+                'match_dict': matches_dict,
+                'result_string': result_string,
+                'total_matches': total_matches,
+                'total_nodes': total_nodes,
+            }
+        where the matches_dict has the form:
+            {
+                'body': body,  # List of indices into v.b
+                'head': head,  # List of indices into v.h
+                'v': v,        # The vnode containing the mateches.
+            }
+        """
         self.init_ivars_from_settings(settings)
         if not self.check_args('find-all'):  # pragma: no cover
             return {}
