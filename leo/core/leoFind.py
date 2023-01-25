@@ -1606,7 +1606,7 @@ class LeoFind:
         c = self.c
         found = c.lastTopLevel().insertAfter()
         assert found
-        found.h = f"Found All:{self.find_text}"
+        found.h = f"find-all:{self.find_text}"
         status = self.compute_result_status(find_all_flag=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = f"@nosearch\n# {status}\n{result}"
