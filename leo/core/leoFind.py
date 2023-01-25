@@ -1559,6 +1559,10 @@ class LeoFind:
         distinct_body_lines, total_matches, total_nodes = 0, 0, 0
         for v in vnodes:
             body, head = [], []
+            # Ignore @nosearch nodes.
+            for line in g.splitLines(v.b):
+                if line.startswith('@nosearch'):
+                    continue
             if self.search_body:
                 body = self.find_all_matches_in_string(v.b)
                 total_matches += len(body)
@@ -1591,14 +1595,16 @@ class LeoFind:
 
     #@+node:ekr.20150717105329.1: *7* find._create_find_all_node
     def create_find_all_node(self, result: str) -> Position:
-        """Create a "Found All" node as the last node of the outline."""
+        """
+        Create a "Found All" node as the last node of the outline.
+        """
         c = self.c
         found = c.lastTopLevel().insertAfter()
         assert found
         found.h = f"Found All:{self.find_text}"
         status = self.compute_result_status(find_all_flag=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
-        found.b = f"# {status}\n{result}"
+        found.b = f"@nosearch\n# {status}\n{result}"
         return found
     #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
     def make_result_from_matches(self, matches: List[Dict]) -> str:
@@ -1609,16 +1615,25 @@ class LeoFind:
             row, col = g.convertPythonIndexToRowCol(s, i)
             return row + 1, line
 
-        results: List[str] = []
+        results: List[str] = ['\n']
+        # Report settings.
+        results.append(
+            f"  ignore-case: {self.ignore_case}\n"
+            f"        regex: {self.pattern_match}\n"
+            f"   whole-word: {self.whole_word}\n"
+            f"search string: {self.find_text}\n"
+        )
         for d in matches:
             body, head, v = d['body'], d['head'], d['v']
+            if head or body:
+                results.append(f"\nnode: {v.h}...\n")
             if head:
-                results.append(f"head: found {len(head)} match: {v.h}\n")
+                results.append(f"head: matches: {len(head)}\n")
             if body:
-                results.append(f"body: found {len(body)} match{g.plural(len(body))}\n")
+                results.append(f"body: matches: {len(body)}\n")
                 for i in body:
                     n, line = index_to_line_info(i, v.b)
-                    line_col_s = f"line {n}, col {i}"
+                    line_col_s = f"line {n:2}, col {i:2}"
                     results.append(f"{line_col_s:>20}: {line.rstrip()}\n")
                     self.put_link(line, n, v)
         return ''.join(results)
