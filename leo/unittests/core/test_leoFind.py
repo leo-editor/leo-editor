@@ -275,7 +275,8 @@ class TestFind(LeoUnitTest):
                 settings.pattern_match = regex
                 settings.whole_word = word
                 self.assertTrue(self.c, self.c.rootPosition())
-                count = x.do_find_all(settings)
+                result_dict = x.do_find_all(settings)
+                count = result_dict['total_matches']
                 self.assertEqual(count, expected_count, msg=find_text)
 
         ### return

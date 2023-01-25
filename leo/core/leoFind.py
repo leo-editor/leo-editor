@@ -8,7 +8,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -1522,19 +1522,19 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         self.do_change_all(settings)  # Correct: convert to change-all.
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
-    def do_find_all(self, settings: Settings) -> int:
+    def do_find_all(self, settings: Settings) -> Dict[str, Any]:
         """Top-level helper for find-all command."""
         self.init_ivars_from_settings(settings)
         if not self.check_args('find-all'):  # pragma: no cover
-            return 0
-        n = self._find_all_helper(settings)
+            return {}
+        result_dict = self._find_all_helper(settings)
         # Suboutline-only is a one-shot for batch commands.
         self.ftm.set_radio_button('entire-outline')
         self.root = None
         self.node_only = self.suboutline_only = False
-        return n
+        return result_dict
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers
-    def _find_all_helper(self, settings: Settings) -> int:
+    def _find_all_helper(self, settings: Settings) -> Dict[str, Any]:
         """
         Handle the find-all command from p to after.
 
@@ -1546,7 +1546,7 @@ class LeoFind:
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
-                return 0
+                return {}
         # Create a list of vnodes, honoring limiters.
         vnodes: List[VNode]
         if self.node_only:
@@ -1555,31 +1555,40 @@ class LeoFind:
             vnodes = list(set(z.v for z in c.p.self_and_subtree()))
         else:
             vnodes = list(c.all_unique_nodes())
-        matches: List[Dict] = []
-        number_of_matches = 0
+        matches_dict: List[Dict] = []
+        distinct_body_lines, total_matches, total_nodes = 0, 0, 0
         for v in vnodes:
             body, head = [], []
             if self.search_body:
                 body = self.find_all_matches_in_string(v.b)
-                number_of_matches += len(body)
+                total_matches += len(body)
             if self.search_headline:
                 head = self.find_all_matches_in_string(v.h)
-                number_of_matches += len(head)
+                total_matches += len(head)
             if body or head:
-                matches.append({'body': body, 'head': head, 'v': v})
-        if not matches:
+                total_nodes += 1
+                matches_dict.append({'body': body, 'head': head, 'v': v})
+        if not matches_dict:
             self.restore(saveData)
-            return 0
-        # g.printObj(matches)
-        result = self.make_result_from_matches(matches)
+            return {}
+        # Create the result dict.
+        result_string = self.make_result_from_matches(matches_dict)
         # Create the summary node.
         undoData = u.beforeInsertNode(c.p)
-        found_p = self.create_find_all_node(result)
+        found_p = self.create_find_all_node(result_string)
         u.afterInsertNode(found_p, undoType, undoData)
         c.selectPosition(found_p)
         c.setChanged()
-        # Return the numger of matches.
-        return number_of_matches
+        c.redraw()
+        # Return a dict containing the actual results and statistics.
+        return {
+            'distinct_body_lines': distinct_body_lines,  ### To do.
+            'match_dict': matches_dict,
+            'result_string': result_string,
+            'total_matches': total_matches,
+            'total_nodes': total_nodes,
+        }
+
     #@+node:ekr.20150717105329.1: *7* find._create_find_all_node
     def create_find_all_node(self, result: str) -> Position:
         """Create a "Found All" node as the last node of the outline."""
@@ -1604,13 +1613,13 @@ class LeoFind:
         for d in matches:
             body, head, v = d['body'], d['head'], d['v']
             if head:
-                results.append(f"head: found {len(head)} match: {v.h}")
+                results.append(f"head: found {len(head)} match: {v.h}\n")
             if body:
-                results.append(f"body: found {len(body)} match{g.plural(len(body))}")
+                results.append(f"body: found {len(body)} match{g.plural(len(body))}\n")
                 for i in body:
                     n, line = index_to_line_info(i, v.b)
                     line_col_s = f"line {n}, col {i}"
-                    results.append(f"{line_col_s:>20}: {line.rstrip()}")
+                    results.append(f"{line_col_s:>20}: {line.rstrip()}\n")
                     self.put_link(line, n, v)
         return ''.join(results)
     #@+node:ekr.20230124102225.1: *7* find.put_link
@@ -1692,7 +1701,10 @@ class LeoFind:
             escape_handler=self.interactive_change_all_unique_regex1,
         )
 
-    def interactive_find_all_unique_regex1(self, event: Event = None) -> int:  # pragma: no cover (interactive)
+    def interactive_find_all_unique_regex1(
+        self,
+        event: Event = None,
+    ) -> Dict[str, Any]:  # pragma: no cover (interactive)
         k = self.k
         # Settings...
         find_pattern = k.arg
