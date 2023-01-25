@@ -1533,7 +1533,7 @@ class LeoFind:
         self.root = None
         self.node_only = self.suboutline_only = False
         return n
-    #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers (test)
+    #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers
     def _find_all_helper(self, settings: Settings) -> int:
         """
         Handle the find-all command from p to after.
@@ -1560,7 +1560,7 @@ class LeoFind:
         for v in vnodes:
             body, head = [], []
             if self.search_body:
-                body =self.find_all_matches_in_string(v.b)
+                body = self.find_all_matches_in_string(v.b)
                 number_of_matches += len(body)
             if self.search_headline:
                 head = self.find_all_matches_in_string(v.h)
@@ -1591,27 +1591,41 @@ class LeoFind:
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = f"# {status}\n{result}"
         return found
-    #@+node:ekr.20230124103253.1: *7* find._make_result_from_matches (to do)
+    #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
     def make_result_from_matches(self, matches: List[Dict]) -> str:
 
-        both = self.search_headline and self.search_body
+        def index_to_line_info(index: int, s: str) -> Tuple[int, str]:
+            i, j = g.getLine(s, index)
+            line = s[i:j]
+            row, col = g.convertPythonIndexToRowCol(s, i)
+            return row + 1, line
 
         results: List[str] = []
         for d in matches:
-            if both:
-                pass
-            else:
-                pass
+            body, head, v = d['body'], d['head'], d['v']
+            if head:
+                results.append(f"head: found {len(head)} match: {v.h}")
+            if body:
+                results.append(f"body: found {len(body)} match{g.plural(len(body))}")
+                for i in body:
+                    n, line = index_to_line_info(i, v.b)
+                    line_col_s = f"line {n}, col {i}"
+                    results.append(f"{line_col_s:>20}: {line.rstrip()}")
+                    self.put_link(line, n, v)
         return ''.join(results)
     #@+node:ekr.20230124102225.1: *7* find.put_link
-    def put_link(self, line: str, line_number: int, p: Position) -> None:  # pragma: no cover  # #2023
-        """Put a link to the given line at the given line_number in p.h."""
-        if g.unitTesting:
+    def put_link(self, line: str, line_number: int, v: VNode) -> None:  # pragma: no cover  # #2023
+        """Put a link to the given line at the given line_number in v.h."""
+        c = self.c
+        log = c.frame.log
+        # Find the first position with the given vnode.
+        for p in c.all_positions():
+            if p.v == v:
+                break
+        else:
+            g.trace(f"Can not happen: no position for {v}")
             return
-        log = self.c.frame.log
         unl = p.get_UNL()
-        if self.in_headline:
-            line_number = 1
         log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
     #@+node:ekr.20230124101551.1: *7* find.find_all_matches_in_string & helpers
     def find_all_matches_in_string(self, s: str) -> List[int]:
@@ -1627,7 +1641,7 @@ class LeoFind:
             s = s.replace('\r', '')
         if not s.strip():
             return []
-        find_s= self.replace_back_slashes(self.find_text)
+        find_s = self.replace_back_slashes(self.find_text)
         f = self.find_all_regex if self.pattern_match else self.find_all_plain
         return f(find_s, s)
     #@+node:ekr.20230124130028.2: *8* find.find_all_plain

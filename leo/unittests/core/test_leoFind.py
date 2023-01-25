@@ -26,7 +26,7 @@ class TestFind(LeoUnitTest):
     def make_test_tree(self):
         """Make a test tree for other tests"""
         c = self.c
-        
+
         # 2023/01/24: Remove any previous tree.
         root = c.rootPosition()
         while root.hasChildren():
@@ -250,7 +250,7 @@ class TestFind(LeoUnitTest):
             settings.pattern_match = False
             settings.suboutline_only = False
             settings.whole_word = True
-            
+
         # Debugging.
         if 0:
             init()
@@ -277,7 +277,7 @@ class TestFind(LeoUnitTest):
                 self.assertTrue(self.c, self.c.rootPosition())
                 count = x.do_find_all(settings)
                 self.assertEqual(count, expected_count, msg=find_text)
-            
+
         ### return
 
         # Test 2.
@@ -676,7 +676,7 @@ class TestFind(LeoUnitTest):
             ('axA',     'a',    [0, 2]),
             ('aAa',     'A',    [0, 1, 2]),
             ('ABbabc',  'b',    [1, 2, 4]),
-            
+
             (True, True),
             ('ax aba ab abc'    'ab', [7]),
             ('ax aba\nab abc'   'ab', [7]),
