@@ -1648,7 +1648,7 @@ class LeoFind:
         c = self.c
         log = c.frame.log
         # Find the first position with the given vnode.
-        for p in c.all_positions():
+        for p in c.all_unique_positions():
             if p.v == v:
                 break
         else:
