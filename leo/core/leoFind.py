@@ -1566,6 +1566,12 @@ class LeoFind:
             if self.search_body:
                 body = self.find_all_matches_in_string(v.b)
                 total_matches += len(body)
+                # Update the distinct line numbers in this body.
+                line_number_set = set()
+                for index in body:
+                    line_number, _unused = self.index_to_line_info(index, v.b)
+                    line_number_set.add(line_number)
+                distinct_body_lines += len(list(line_number_set))
             if self.search_headline:
                 head = self.find_all_matches_in_string(v.h)
                 total_matches += len(head)
@@ -1586,14 +1592,13 @@ class LeoFind:
         c.redraw()
         # Return a dict containing the actual results and statistics.
         return {
-            'distinct_body_lines': distinct_body_lines,  ### To do.
+            'distinct_body_lines': distinct_body_lines,
             'match_dict': matches_dict,
             'result_string': result_string,
             'total_matches': total_matches,
             'total_nodes': total_nodes,
         }
-
-    #@+node:ekr.20150717105329.1: *7* find._create_find_all_node
+    #@+node:ekr.20150717105329.1: *7* find.create_find_all_node
     def create_find_all_node(self, result: str) -> Position:
         """
         Create a "Found All" node as the last node of the outline.
@@ -1606,14 +1611,14 @@ class LeoFind:
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = f"@nosearch\n# {status}\n{result}"
         return found
+    #@+node:ekr.20230125072433.1: *7* find.index_to_line_info
+    def index_to_line_info(self, index: int, s: str) -> Tuple[int, str]:
+        i, j = g.getLine(s, index)
+        line = s[i:j]
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return row + 1, line
     #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
     def make_result_from_matches(self, matches: List[Dict]) -> str:
-
-        def index_to_line_info(index: int, s: str) -> Tuple[int, str]:
-            i, j = g.getLine(s, index)
-            line = s[i:j]
-            row, col = g.convertPythonIndexToRowCol(s, i)
-            return row + 1, line
 
         results: List[str] = ['\n']
         # Report settings.
@@ -1632,7 +1637,7 @@ class LeoFind:
             if body:
                 results.append(f"body: matches: {len(body)}\n")
                 for i in body:
-                    n, line = index_to_line_info(i, v.b)
+                    n, line = self.index_to_line_info(i, v.b)
                     line_col_s = f"line {n:2}, col {i:2}"
                     results.append(f"{line_col_s:>20}: {line.rstrip()}\n")
                     self.put_link(line, n, v)
