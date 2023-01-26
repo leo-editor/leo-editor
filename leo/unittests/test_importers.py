@@ -1386,11 +1386,12 @@ class TestHtml(BaseTestImporter):
                     '</body>\n'
             ),
         ))
-    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line (poor)
+    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
         # pylint: disable=line-too-long
-
+        #@+<< define s >>
+        #@+node:ekr.20230126042723.1: *4* << define s >>
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
         s = """
@@ -1438,81 +1439,18 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         """
-        p = self.run_test(s)
-        # The importer doesn't do a good job.
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '@others\n'
-            ),
-            (2, '<body>',
-                    '<body>\n'
-                    '    @others\n'
-                    '</html>\n'
-                    '\n'
-            ),
-            (3, '<table id="0">',
-                    '<table id="0">\n'
-                    '    <tr valign="top">\n'
-                    '    <td width="619">\n'
-                    '    @others\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>\n'
-                    '<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>\n'
-                    '<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>\n'
-                    '</body>\n'
-            ),
-            (4, '<table id="2">',
-                    '<table id="2"> <tr valign="top"> <td width="377">\n'
-                    '@others\n'
-                    '<!-- View First part --> </td> <td width="242"> <!-- View Second part -->\n'
-                    '<!-- View Second part --> </td> </tr></table>\n'
-            ),
-            (5, '<table id="3">',
-                    '<table id="3">\n'
-                    '<tr>\n'
-                    '<td width="368">\n'
-                    '@others\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '</table>\n'
-            ),
-            (6, '<table id="4">',
-                    '<table id="4">\n'
-                    '<tbody id="5">\n'
-                    '<tr valign="top">\n'
-                    '<td width="550">\n'
-                    '@others\n'
-                    '</td>\n'
-                    '</tr><tr>\n'
-                    '<td width="100%" colspan="2">\n'
-                    '<br />\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '</tbody>\n'
-                    '</table>\n'
-            ),
-            (7, '<table id="6">',
-                    '<table id="6">\n'
-                    '    <tbody id="6">\n'
-                    '    <tr>\n'
-                    '    <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>\n'
-                    '    </tr>\n'
-                    '    </tbody>\n'
-                    '</table>\n'
-            ),
-            (4, '<DIV class="webonly">',
-                    '<DIV class="webonly">\n'
-                    '<script src="/scripts/footer.js"></script>\n'
-                    '</DIV>\n'
-            ),
-        ))
+        #@-<< define s >>
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # xml.preprocess_lines should insert two newlines.
+        expected_s = s.replace('</tr><tr>', '</tr>\n<tr>').replace('</td> <td', '</td>\n<td')
+        self.check_round_trip(p, expected_s)
+
+        # This dump now looks good!
+        # self.dump_tree()
+
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
@@ -1520,14 +1458,28 @@ class TestHtml(BaseTestImporter):
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
         """
-        p = self.run_test(s)
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # xml.preprocess_lines should one newlines.
+        expected_s = s.replace('</head><body>','</head>\n<body>')
+        self.check_round_trip(p, expected_s)
+
+        # This dump now looks good!
+        # self.dump_tree()
+
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
-                    '<html><head>headline</head><body>body</body></html>\n'
-                    '\n'
+                    '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html><head>headline</head>\n'
+                    '<body>body</body></html>\n'
+                    '\n'
             ),
         ))
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
@@ -1695,11 +1647,11 @@ class TestHtml(BaseTestImporter):
         # Don't run the standard round-trip test.
         p = self.run_test(s, check_flag=False)
 
-        # We expect that xml.preprocess_lines will insert a newline.
+        # xml.preprocess_lines should insert a newline.
         expected_s = s.replace('</head><body>', '</head>\n<body>')
         self.check_round_trip(p, expected_s)
 
-        # This dump looks good when </head> and <body> are on separate lines.
+        # This dump now looks good!
         # self.dump_tree()
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
