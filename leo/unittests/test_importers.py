@@ -1557,7 +1557,7 @@ class TestHtml(BaseTestImporter):
     #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
     def test_slideshow_slide(self):
 
-        # s is the contents of slides/basics/slide-002.html 
+        # s is the contents of slides/basics/slide-002.html
         #@+<< define s >>
         #@+node:ekr.20230126031120.1: *4* << define s >>
         s = '''\
@@ -1572,20 +1572,22 @@ class TestHtml(BaseTestImporter):
             <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
             <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
             <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
-            
+
             <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
             <script src="../../_static/doctools.js"></script>
             <script src="../../_static/sphinx_highlight.js"></script>
-            
+
             <script src="../../_static/sidebar.js"></script>
-            
+
             <link rel="index" title="Index" href="../../genindex.html" />
             <link rel="search" title="Search" href="../../search.html" />
             <link rel="next" title="Editing headlines" href="slide-003.html" />
-            <link rel="prev" title="Leoâ€™s Basics" href="basics.html" /> 
-          </head>
-          <!-- EKR: Inserted newline here -->
-          <body>
+            <link rel="prev" title="Leoâ€™s Basics" href="basics.html" />
+          <!--
+            EKR: Xml_Importer.preprocess_lines should insert put </head> and <body> on separate lines.
+            As with this comment, there is a risk that preprocessing might affect comments...
+          -->
+          </head><body>
             <div class="related" role="navigation" aria-label="related navigation">
               <h3>Navigation</h3>
               <ul>
@@ -1602,15 +1604,15 @@ class TestHtml(BaseTestImporter):
                   <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
                   <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
                   <li class="nav-item nav-item-3"><a href="basics.html" accesskey="U">Leoâ€™s Basics</a> &#187;</li>
-                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li> 
+                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
               </ul>
-            </div>  
+            </div>
 
             <div class="document">
               <div class="documentwrapper">
                 <div class="bodywrapper">
                   <div class="body" role="main">
-                    
+
           <section id="the-workbook-file">
         <h1>The workbook file<a class="headerlink" href="#the-workbook-file" title="Permalink to this heading">Â¶</a></h1>
         <p>Leo opens the <strong>workbook file</strong> when you start
@@ -1677,7 +1679,7 @@ class TestHtml(BaseTestImporter):
                   <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
                   <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
                   <li class="nav-item nav-item-3"><a href="basics.html" >Leoâ€™s Basics</a> &#187;</li>
-                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li> 
+                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
               </ul>
             </div>
             <div class="footer" role="contentinfo">
@@ -1689,14 +1691,16 @@ class TestHtml(BaseTestImporter):
         </html>
         '''
         #@-<< define s >>
-        
-        # run_test calls check_round_trip with strict_flag=False
-        self.run_test(s)
-        
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # We expect that xml.preprocess_lines will insert a newline.
+        expected_s = s.replace('</head><body>', '</head>\n<body>')
+        self.check_round_trip(p, expected_s)
+
         # This dump looks good when </head> and <body> are on separate lines.
         # self.dump_tree()
-        
-
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 

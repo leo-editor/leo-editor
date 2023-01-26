@@ -56,6 +56,26 @@ class Xml_Importer(Importer):
         if this_state.level > prev_state.level:
             return i + 1
         return None
+    #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
+    # Match an end tag followed by an open tag.
+    adjacent_tags_pat = re.compile(r'^(.*?</.*?>)\s*(<[^/!].*?>.*)$')
+
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        """
+        Xml_Importer.preprocess_lines.
+
+        Ensure that closing tags are followed by a newline.
+        """
+        result_lines = []
+        for i, line in enumerate(lines):
+            m = self.adjacent_tags_pat.match(line)
+            if m:
+                # print(f"preprocess {i:<4}: {line.rstrip()}")
+                result_lines.append(m.group(1).rstrip() + '\n')
+                result_lines.append(m.group(2).rstrip() + '\n')
+            else:
+                result_lines.append(line)
+        return result_lines
     #@+node:ekr.20220815111538.1: *3* xml_i.update_level
     ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 

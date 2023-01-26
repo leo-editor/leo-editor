@@ -127,6 +127,9 @@ class Importer:
         if not ws_ok:
             lines = self.regularize_whitespace(lines)
 
+        # A hook for xml importer: preprocess lines.
+        lines = self.preprocess_lines(lines)
+
         # New: just call gen_lines.
         self.gen_lines(lines, parent)
 
@@ -134,6 +137,14 @@ class Importer:
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
+    #@+node:ekr.20230126034143.1: *4* i.preprocess_lines
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        """
+        A hook for the xml/html importers.
+
+        These importers ensure that closing tags are followed by a newline.
+        """
+        return lines
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
         """
