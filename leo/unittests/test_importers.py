@@ -1557,8 +1557,9 @@ class TestHtml(BaseTestImporter):
     #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
     def test_slideshow_slide(self):
 
-        #@+<< define s, the contents of slides/basics/slide-002.html >>
-        #@+node:ekr.20230126024859.1: *4* << define s, the contents of slides/basics/slide-002.html >>
+        # s is the contents of slides/basics/slide-002.html 
+        #@+<< define s >>
+        #@+node:ekr.20230126031120.1: *4* << define s >>
         s = '''\
         <!DOCTYPE html>
 
@@ -1582,7 +1583,9 @@ class TestHtml(BaseTestImporter):
             <link rel="search" title="Search" href="../../search.html" />
             <link rel="next" title="Editing headlines" href="slide-003.html" />
             <link rel="prev" title="Leoâ€™s Basics" href="basics.html" /> 
-          </head><body>
+          </head>
+          <!-- EKR: Inserted newline here -->
+          <body>
             <div class="related" role="navigation" aria-label="related navigation">
               <h3>Navigation</h3>
               <ul>
@@ -1685,43 +1688,15 @@ class TestHtml(BaseTestImporter):
           </body>
         </html>
         '''
-        #@-<< define s, the contents of slides/basics/slide-002.html >>
-        p = self.run_test(s)
-        self.dump_headlines()
-        if 0: self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '@others\n'
-                    '</html>\n'
-                    '\n'
-            ),
-            (2, '<head>',
-                    '<head>\n'
-                    '    <meta charset="utf-8" />\n'
-                    '</head>\n'
-            ),
-            (2, '<body>',
-                     '<body>\n'
-                     '    @others\n'
-                     '</body>\n'
-            ),
-            (3, '<div class="a">',
-                     '<div class="a">\n'
-                     '    @others\n'
-                     '</div>\n'
-            ),
-            (4, '<div class="a-1">',
+        #@-<< define s >>
+        
+        # run_test calls check_round_trip with strict_flag=False
+        self.run_test(s)
+        
+        # This dump looks good when </head> and <body> are on separate lines.
+        # self.dump_tree()
+        
 
-                     '<div class="a-1">\n'
-                     '    some text\n'
-                     '</div>\n'
-            ),
-        ))
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
