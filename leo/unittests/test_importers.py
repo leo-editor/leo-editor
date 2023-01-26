@@ -1454,6 +1454,9 @@ class TestHtml(BaseTestImporter):
 
         # xml.preprocess_lines should insert two newlines.
         expected_s = (s
+            .replace('Form 25 Filings</a></td>\n', 'Form 25 Filings</a>\n</td>\n')
+            .replace('</tr><tr>\n', '</tr>\n<tr>\n')
+            .replace('</tr></table>\n', '</tr>\n</table>\n')
             .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
             .replace('<noscript><img', '<noscript>\n<img')
         )
