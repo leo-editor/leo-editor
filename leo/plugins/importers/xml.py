@@ -44,9 +44,9 @@ class Xml_Importer(Importer):
     #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
-        Return None if lines[i] does not start a class, function or method.
+        Return None if lines[i] does not start a tag.
 
-        Otherwise, return the index of the first line of the body.
+        Otherwise, return the index of the first line tag.
         """
         lines, states = self.lines, self.line_states
         prev_state = states[i - 1] if i > 0 else self.state_class()

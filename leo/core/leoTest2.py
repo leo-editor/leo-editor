@@ -179,20 +179,26 @@ class LeoUnitTest(unittest.TestCase):
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
     #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, root: Position, tag: str = None) -> None:  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
+    def dump_headlines(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's headlines, or all headlines if root is None.
+        """
         print('')
         if tag:
             print(tag)
-        for p in root.self_and_subtree():
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
             print('level:', p.level(), p.h)
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position, tag: str = None) -> None:  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
+    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's tree, or the entire tree if root is None.
+        """
         print('')
         if tag:
             print(tag)
-        for p in root.self_and_subtree():
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
             print('')
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))

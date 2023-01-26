@@ -1554,6 +1554,58 @@ class TestHtml(BaseTestImporter):
                     '\n'
             ),
         ))
+    #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
+    def test_slideshow_slide(self):
+
+        s = '''
+            <html>
+            <head>
+                <meta charset="utf-8" />
+            </head>
+            <body>
+                <div class="a">
+                    <div class="a-1">
+                        some text
+                    </div>
+                </div>
+            </body>
+            </html>
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '@others\n'
+                    '</html>\n'
+                    '\n'
+            ),
+            (2, '<head>',
+                    '<head>\n'
+                    '    <meta charset="utf-8" />\n'
+                    '</head>\n'
+            ),
+            (2, '<body>',
+                     '<body>\n'
+                     '    @others\n'
+                     '</body>\n'
+            ),
+            (3, '<div class="a">',
+                     '<div class="a">\n'
+                     '    @others\n'
+                     '</div>\n'
+            ),
+            (4, '<div class="a-1">',
+
+                     '<div class="a-1">\n'
+                     '    some text\n'
+                     '</div>\n'
+            ),
+        ))
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
