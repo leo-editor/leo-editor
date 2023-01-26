@@ -72,25 +72,21 @@ class Xml_Importer(Importer):
         """
 
         def repl(m: re.Match) -> str:
+            """
+                Split lines, adding leading whitespace to the second line.
+                *Don't* separate tags if the tags open and close the same element.
+            """
             m2 = self.tag_name_pat.match(m.group(2))
             m3 = self.tag_name_pat.match(m.group(3))
             tag_name2 = m2 and m2.group(1) or ''
             tag_name3 = m3 and m3.group(1) or ''
-            # Separate the elements only if their tag names are different and the second tag is an open tag.
-            # make_sub = tag_name2 != tag_name3 and not m.group(3).startswith('</')
-
-            # *Don't* separate tags if the tags open and close the same element.
-            make_sub = not (
+            same_element = (
                 tag_name2 == tag_name3
                 and not m.group(2).startswith('</')
                 and m.group(3).startswith('</')
             )
-            if False and make_sub:  ###
-                print('')
-                g.trace(m.group(2), m.group(3))
-                g.trace(repr(tag_name2), repr(tag_name3))
             lws = g.get_leading_ws(m.group(1))
-            sep = '\n' + lws if make_sub else ''
+            sep = '' if same_element else '\n' + lws
             return m.group(1) + m.group(2).rstrip() + sep + m.group(3)
 
         result_lines = []

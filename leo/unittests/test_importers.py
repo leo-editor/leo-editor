@@ -925,6 +925,8 @@ class TestHtml(BaseTestImporter):
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
+        #@+<< define s >>
+        #@+node:ekr.20230126081859.1: *4* << define s >>
         s = '''
             <!DOCTYPE html>
             <html>
@@ -1063,8 +1065,11 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         '''
+        #@-<< define s >>
         p = self.run_test(s)
         self.check_outline(p, (
+            #@+<< define comparison tuples >>
+            #@+node:ekr.20230126082712.1: *4* << define comparison tuples >>
             (0, '',  # check_outline ignores the first headline.
                     '<!DOCTYPE html>\n'
                     '@others\n'
@@ -1214,6 +1219,7 @@ class TestHtml(BaseTestImporter):
                     '</html>\n'
                     '\n'
             ),
+            #@-<< define comparison tuples >>
         ))
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
@@ -1454,7 +1460,8 @@ class TestHtml(BaseTestImporter):
         # Don't run the standard round-trip test.
         p = self.run_test(s, check_flag=False)
 
-        # xml.preprocess_lines should insert two newlines.
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
         expected_s = (s
             .replace('Form 25 Filings</a></td>\n', 'Form 25 Filings</a>\n</td>\n')
             .replace('</tr><tr>\n', '</tr>\n<tr>\n')
@@ -1475,6 +1482,8 @@ class TestHtml(BaseTestImporter):
             <html><head>headline</head><body>body</body></html>
         """
 
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
         expected_s = textwrap.dedent("""\
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html>
@@ -1672,12 +1681,13 @@ class TestHtml(BaseTestImporter):
         # Don't run the standard round-trip test.
         p = self.run_test(s, check_flag=False)
 
-        # xml.preprocess_lines should insert a newline.
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
         expected_s = (s
             .replace('</head><body>', '</head>\n<body>')
             .replace('><meta', '>\n<meta')
             .replace('index</a></li>', 'index</a>\n</li>')
-            # .replace('"><a', '">\n<a')  # Too many matches.
+            # .replace('"><a', '">\n<a')  # This replacement would affect too many lines.
             .replace('m-0"><a', 'm-0">\n<a')
             .replace('m-1"><a', 'm-1">\n<a')
             .replace('item-2"><a', 'item-2">\n<a')
