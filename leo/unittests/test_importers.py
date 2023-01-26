@@ -80,8 +80,8 @@ class BaseTestImporter(LeoUnitTest):
             result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
         if s_lines != result_lines:
             g.trace('FAIL', p.h)
-            g.printObj(s_lines, tag=f"expected: {p.h}")
-            g.printObj(result_lines, tag=f"results: {p.h}")
+            g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
+            g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
@@ -1400,7 +1400,8 @@ class TestHtml(BaseTestImporter):
                 <table id="0">
                     <tr valign="top">
                     <td width="619">
-                    <table id="2"> <tr valign="top"> <td width="377">
+                    
+
                         <table id="3">
                         <tr>
                         <td width="368">
@@ -1411,7 +1412,10 @@ class TestHtml(BaseTestImporter):
                             <table id="6">
                                 <tbody id="6">
                                 <tr>
-                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> | 
+                                    <a href="href2">Fees</a> |
+                                    <strong>Non-compliant Issuers</strong> |
+                                    <a href="href3">Form 25 Filings</a></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -1426,8 +1430,12 @@ class TestHtml(BaseTestImporter):
                         </td>
                         </tr>
                     </table>
-                    <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-                    <!-- View Second part --> </td> </tr></table>
+                    <!-- View First part -->
+                    </td>
+                    <td width="242">
+                    <!-- View Second part -->
+                    </td>
+                    </tr></table>
                 <DIV class="webonly">
                     <script src="/scripts/footer.js"></script>
                 </DIV>
@@ -1445,12 +1453,15 @@ class TestHtml(BaseTestImporter):
         p = self.run_test(s, check_flag=False)
 
         # xml.preprocess_lines should insert two newlines.
-        expected_s = s.replace('</tr><tr>', '</tr>\n<tr>').replace('</td> <td', '</td>\n<td')
-        self.check_round_trip(p, expected_s)
+        expected_s = (s
+            .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
+            .replace('<noscript><img', '<noscript>\n<img')
+        )
 
         # This dump now looks good!
-        # self.dump_tree()
+        # self.dump_tree(p)
 
+        self.check_round_trip(p, expected_s)
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
@@ -1458,17 +1469,24 @@ class TestHtml(BaseTestImporter):
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
         """
+        
+        expected_s = textwrap.dedent("""\
+            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
+            <html>
+            <head>headline</head>
+            <body>body</body>
+            </html>
+        """)
 
         # Don't run the standard round-trip test.
         p = self.run_test(s, check_flag=False)
 
-        # xml.preprocess_lines should one newlines.
-        expected_s = s.replace('</head><body>','</head>\n<body>')
+        # xml.preprocess_lines should insert various newlines.
         self.check_round_trip(p, expected_s)
 
         # This dump now looks good!
-        # self.dump_tree()
-
+        # self.dump_tree(p)
+        
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
@@ -1477,11 +1495,14 @@ class TestHtml(BaseTestImporter):
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    '<html><head>headline</head>\n'
-                    '<body>body</body></html>\n'
+                    '<html>\n'
+                    '<head>headline</head>\n'
+                    '<body>body</body>\n'
+                    '</html>\n'
                     '\n'
             ),
         ))
+                   
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
 

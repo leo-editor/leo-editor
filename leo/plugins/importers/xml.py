@@ -3,6 +3,7 @@
 """The @auto importer for the xml language."""
 import re
 from typing import List, Optional, Tuple
+from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
@@ -57,8 +58,11 @@ class Xml_Importer(Importer):
             return i + 1
         return None
     #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
-    # Match an end tag followed by an open tag.
-    adjacent_tags_pat = re.compile(r'^(.*?</.*?>)\s*(<[^/!].*?>.*)$')
+    # Match two adjacent elements. Don't match comments.
+    adjacent_tags_pat = re.compile(r'(.*?)(<[^!].*?>)\s*(<[^!].*?>)')
+
+    # Match the tag name of the element.
+    tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
 
     def preprocess_lines(self, lines: List[str]) -> List[str]:
         """
@@ -66,15 +70,28 @@ class Xml_Importer(Importer):
 
         Ensure that closing tags are followed by a newline.
         """
+
+        def repl(m: re.Match) -> str:
+            m2 = self.tag_name_pat.match(m.group(2))
+            m3 = self.tag_name_pat.match(m.group(3))
+            tag_name2 = m2 and m2.group(1) or ''
+            tag_name3 = m3 and m3.group(1) or ''
+            # Separate the elements only if:
+            # - their tag names are different and
+            # - The second tag is an open tag.
+            make_sub = tag_name2 != tag_name3 and not m.group(3).startswith('</')
+            if False and make_sub:  ###
+                print('')
+                g.trace(m.group(2), m.group(3))
+                g.trace(repr(tag_name2), repr(tag_name3))
+            lws = g.get_leading_ws(m.group(1))
+            sep = '\n' + lws if make_sub else ''
+            return m.group(1) + m.group(2).rstrip() + sep + m.group(3)
+
         result_lines = []
         for i, line in enumerate(lines):
-            m = self.adjacent_tags_pat.match(line)
-            if m:
-                # print(f"preprocess {i:<4}: {line.rstrip()}")
-                result_lines.append(m.group(1).rstrip() + '\n')
-                result_lines.append(m.group(2).rstrip() + '\n')
-            else:
-                result_lines.append(line)
+            s = re.sub(self.adjacent_tags_pat, repl, line)
+            result_lines.extend(g.splitLines(s))
         return result_lines
     #@+node:ekr.20220815111538.1: *3* xml_i.update_level
     ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
