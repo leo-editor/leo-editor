@@ -85,7 +85,7 @@ class Xml_Importer(Importer):
                 and not m.group(2).startswith('</')
                 and m.group(3).startswith('</')
             )
-            if True and make_sub:  ###
+            if False and make_sub:  ###
                 print('')
                 g.trace(m.group(2), m.group(3))
                 g.trace(repr(tag_name2), repr(tag_name3))

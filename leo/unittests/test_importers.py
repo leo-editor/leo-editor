@@ -1649,8 +1649,7 @@ class TestHtml(BaseTestImporter):
                   <a href="slide-003.html" title="Editing headlines"
                      >next</a> |</li>
                 <li class="right" >
-                  <a href="basics.html" title="Leoâ€™s Basics"
-                     >previous</a> |</li>
+                  <a href="basics.html" title="Leoâ€™s Basics">previous</a> |</li>
                 <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
                   <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
                   <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
@@ -1672,7 +1671,21 @@ class TestHtml(BaseTestImporter):
         p = self.run_test(s, check_flag=False)
 
         # xml.preprocess_lines should insert a newline.
-        expected_s = s.replace('</head><body>', '</head>\n<body>')
+        expected_s = (s
+            .replace('</head><body>', '</head>\n<body>')
+            .replace('><meta', '>\n<meta')
+            .replace('index</a></li>', 'index</a>\n</li>')
+            # .replace('"><a', '">\n<a')  # Too many matches.
+            .replace('m-0"><a', 'm-0">\n<a')
+            .replace('m-1"><a', 'm-1">\n<a')
+            .replace('item-2"><a', 'item-2">\n<a')
+            .replace('m-3"><a', 'm-3">\n<a')
+            .replace('nav-item-this"><a', 'nav-item-this">\n<a')
+            .replace('<p class="logo"><a', '<p class="logo">\n<a')
+            .replace('</a></li>', '</a>\n</li>')
+            .replace('<p><strong>', '<p>\n<strong>')
+            .replace('</a></p>', '</a>\n</p>')
+        )
         self.check_round_trip(p, expected_s)
 
         # This dump now looks good!
