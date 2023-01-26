@@ -78,7 +78,7 @@ class Xml_Importer(Importer):
             tag_name3 = m3 and m3.group(1) or ''
             # Separate the elements only if their tag names are different and the second tag is an open tag.
             # make_sub = tag_name2 != tag_name3 and not m.group(3).startswith('</')
-            
+
             # *Don't* separate tags if the tags open and close the same element.
             make_sub = not (
                 tag_name2 == tag_name3

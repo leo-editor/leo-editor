@@ -1060,7 +1060,8 @@ class TestHtml(BaseTestImporter):
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
             <body onload="brython({debug:1, cache:'none'})">
-            </body></html>
+            </body>
+            </html>
         '''
         p = self.run_test(s)
         self.check_outline(p, (
@@ -1209,7 +1210,8 @@ class TestHtml(BaseTestImporter):
             ),
             (2, '<body onload="brython({debug:1, cache:\'none\'})">',
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
-                    '</body></html>\n'
+                    '</body>\n'
+                    '</html>\n'
                     '\n'
             ),
         ))
@@ -1400,7 +1402,7 @@ class TestHtml(BaseTestImporter):
                 <table id="0">
                     <tr valign="top">
                     <td width="619">
-                    
+
 
                         <table id="3">
                         <tr>
@@ -1412,7 +1414,7 @@ class TestHtml(BaseTestImporter):
                             <table id="6">
                                 <tbody id="6">
                                 <tr>
-                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> | 
+                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> |
                                     <a href="href2">Fees</a> |
                                     <strong>Non-compliant Issuers</strong> |
                                     <a href="href3">Form 25 Filings</a></td>
@@ -1472,7 +1474,7 @@ class TestHtml(BaseTestImporter):
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html><head>headline</head><body>body</body></html>
         """
-        
+
         expected_s = textwrap.dedent("""\
             <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
             <html>
@@ -1489,7 +1491,7 @@ class TestHtml(BaseTestImporter):
 
         # This dump now looks good!
         # self.dump_tree(p)
-        
+
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
@@ -1505,7 +1507,7 @@ class TestHtml(BaseTestImporter):
                     '\n'
             ),
         ))
-                   
+
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
 
