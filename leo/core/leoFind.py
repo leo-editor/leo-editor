@@ -1579,9 +1579,8 @@ class LeoFind:
         for v in vnodes:
             body, head = [], []
             # Ignore @nosearch nodes.
-            for line in g.splitLines(v.b):
-                if line.startswith('@nosearch'):
-                    continue
+            if any(z.startswith('@nosearch') for z in g.splitLines(v.b)):
+                continue
             if self.search_body:
                 body = self.find_all_matches_in_string(v.b)
                 total_matches += len(body)
@@ -1655,11 +1654,14 @@ class LeoFind:
                 results.append(f"head: matches: {len(head)}\n")
             if body:
                 results.append(f"body: matches: {len(body)}\n")
+                seen = set()
                 for i in body:
                     n, line = self.index_to_line_info(i, v.b)
-                    line_col_s = f"line {n:2}, col {i:2}"
-                    results.append(f"{line_col_s:>20}: {line.rstrip()}\n")
-                    self.put_link(line, n, v)
+                    if (n, line) not in seen:
+                        seen.add((n, line))
+                        line_col_s = f"line {n:2}, col {i:2}"
+                        results.append(f"{line_col_s:>20}: {line.rstrip()}\n")
+                        self.put_link(line, n, v)
         return ''.join(results)
     #@+node:ekr.20230124102225.1: *7* find.put_link
     def put_link(self, line: str, line_number: int, v: VNode) -> None:  # pragma: no cover  # #2023
@@ -1674,7 +1676,7 @@ class LeoFind:
             g.trace(f"Can not happen: no position for {v}")
             return
         unl = p.get_UNL()
-        log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
+        log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number - 1}")  # Local line.
     #@+node:ekr.20230124101551.1: *7* find.find_all_matches_in_string & helpers
     def find_all_matches_in_string(self, s: str) -> List[int]:
         """

@@ -7278,6 +7278,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
+
     # Define the unl patterns.
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
@@ -7304,7 +7305,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
                         pass
             # Finally, just add the whole UNL.
             result.append(s)
-        return result
+        return list(set(result))
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
@@ -7328,8 +7329,9 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
     targets = []
     m = new_pat.match(unlList[-1])
     target = m and m.group(1) or unlList[-1]
-    targets.append(target)
+    targets.append(target.strip())
     targets.extend(unlList[:-1])
+
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
     while unlList:
@@ -7346,15 +7348,14 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
                         n = int(line)
                     except(TypeError, ValueError):
                         g.trace('bad line number', line)
-                if n == 0:
-                    c.redraw(p)
-                elif n < 0:
+                if n < 0:
                     p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    if not ok:
+                        g.trace(f"Not found: global line {n} in {p.h}")
                     return p if ok else None
-                elif n > 0:
-                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[: n - 1])
-                    c.redraw(p)
-                    c.frame.body.wrapper.setInsertPoint(insert_point)
+                insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
+                c.redraw(p)
+                c.frame.body.wrapper.setInsertPoint(insert_point)
                 c.frame.bringToFront()
                 c.bodyWantsFocusNow()
                 return p
