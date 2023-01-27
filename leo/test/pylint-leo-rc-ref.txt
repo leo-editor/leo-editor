@@ -85,6 +85,10 @@ disable=
         redefined-builtin, # all, next, etc. so what?
         redefined-outer-name,
         too-few-public-methods,
+        too-many-branches,
+        too-many-locals,
+        too-many-public-methods,
+        too-many-statements,
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-dunder-call,  # pylint for python 3.10 only.

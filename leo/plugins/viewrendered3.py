@@ -2005,7 +2005,7 @@ class ViewRenderedProvider3:
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
 
-    # pylint: disable=too-many-public-methods
+    # py--lint: disable=too-many-public-methods
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
@@ -2559,8 +2559,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
-        # pylint: disable = too-many-branches, too-many-locals
-        # pylint: disable = too-many-statements
+        # py--lint: disable = too-many-branches, too-many-locals
+        # py--lint: disable = too-many-statements
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -3483,7 +3483,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing
         """
 
-        # pylint: disable = R0914  #Too many local variables (26/20) (too-many-locals)
+        # py--lint: disable=too-many-locals
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
@@ -3527,7 +3527,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the HTML returned by markdown.
         """
 
-        # pylint: disable=R0914 #Too many local variables
+        # py--lint: disable=too-many-locals
         #@+others
         #@+node:TomP.20200208211132.1: *6* setup
         pc = self
@@ -3737,7 +3737,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
         g.es('@pyplot nodes not implemented', color='gray')
-        # pylint: disable = using-constant-test
+        # py--lint: disable = using-constant-test
         if 0:  # Keep old code here for possible resurrection
             c = self.c
             if not self.pyplot_imported:
@@ -3844,8 +3844,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by docutils.
         """
 
-        # pylint: disable=R0914 # Too many local variables
-        # pylint: disable=R0912 # too-many-branches
+        # py--lint: disable=too-many-locals
+        # py--lint: disable=too-many-branches
 
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
@@ -3982,7 +3982,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         cmd.append(progfile)
 
         # We are not checking the return code here, so:
-        # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
+        # pylint: disable=subprocess-run-check
         result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
@@ -4007,9 +4007,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
            a string having the code parts formatted as rst code blocks.
         """
 
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-statements
+        # py--lint: disable=too-many-locals
+        # py--lint: disable=too-many-branches
+        # py--lint: disable=too-many-statements
 
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
