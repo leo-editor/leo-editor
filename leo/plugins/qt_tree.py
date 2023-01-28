@@ -45,8 +45,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount = 0  # Count for debugging.
         self.revertHeadline = None  # Previous headline text for abortEditLabel.
         self.busy = False
-        # Debugging...
-        self.traceCallersFlag = False  # Enable traceCallers method.
         # Associating items with position and vnodes...
         self.items: List[Item] = []
         self.item2positionDict: Dict[str, Position] = {}  # Keys are gnxs.
@@ -144,11 +142,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # A QTreeWidgetItem.
             return f"item {id(item)}: {self.getItemText(item)}"
         return '<no item>'
-
-    def traceCallers(self) -> str:
-        if self.traceCallersFlag:
-            return g.callers(5, excludeCaller=True)
-        return ''
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self) -> None:
