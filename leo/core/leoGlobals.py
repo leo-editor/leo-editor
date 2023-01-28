@@ -2491,47 +2491,54 @@ def _assert(condition: Any, show_callers: bool = True) -> bool:
     if show_callers:
         g.es_print(g.callers())
     return False
-#@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
-def callers(n: int = 4, count: int = 0, excludeCaller: bool = True, verbose: bool = False) -> str:
+#@+node:ekr.20051023083258: *4* g.callers, caller,  _callerName, callers_list
+#@+node:ekr.20230128025911.1: *5* g.callers
+def callers(n: int = 4) -> str:
     """
-    Return a string containing a comma-separated list of the callers
-    of the function that called g.callerList.
-
-    excludeCaller: True (the default), g.callers itself is not on the list.
-
-    If the `verbose` keyword is True, return a list separated by newlines.
+    Return a string containing a comma-separated list of the calling
+    function's callers.
     """
     # Be careful to call g._callerName with smaller values of i first:
     # sys._getframe throws ValueError if there are less than i entries.
-    result = []
-    i = 3 if excludeCaller else 2
+    i, result = 3, []
     while 1:
-        s = _callerName(n=i, verbose=verbose)
+        s = _callerName(n=i)
         if s:
             result.append(s)
         if not s or len(result) >= n:
             break
         i += 1
-    result.reverse()
-    if count > 0:
-        result = result[:count]
-    if verbose:
-        return ''.join([f"\n  {z}" for z in result])
-    return ','.join(result)
+    return ','.join(reversed(result))
+#@+node:ekr.20230128030346.1: *5* g.callers_list
+def callers_list(n: int = 4) -> List[str]:
+    """
+    Return a string containing a comma-separated list of the calling
+    function's callers.
+    """
+    # Be careful to call g._callerName with smaller values of i first:
+    # sys._getframe throws ValueError if there are less than i entries.
+    i, result = 3, []
+    while 1:
+        s = _callerName(n=i)
+        if s:
+            result.append(s)
+        if not s or len(result) >= n:
+            break
+        i += 1
+    return list(reversed(result))
 #@+node:ekr.20031218072017.3107: *5* g._callerName
-def _callerName(n: int, verbose: bool = False) -> str:
+def _callerName(n: int) -> str:
     try:
         # get the function name from the call stack.
         f1 = sys._getframe(n)  # The stack frame, n levels up.
         code1 = f1.f_code  # The code object
-        sfn = shortFilename(code1.co_filename)  # The file name.
         locals_ = f1.f_locals  # The local namespace.
         name = code1.co_name
-        line = code1.co_firstlineno
-        if verbose:
-            obj = locals_.get('self')
-            full_name = f"{obj.__class__.__name__}.{name}" if obj else name
-            return f"line {line:4} {sfn:>30} {full_name}"
+        # sfn = shortFilename(code1.co_filename)  # The file name.
+        # line = code1.co_firstlineno
+        obj = locals_.get('self')
+        if obj and name == '__init__':
+            return f"{obj.__class__.__name__}.{name}"
         return name
     except ValueError:
         # The stack is not deep enough OR
