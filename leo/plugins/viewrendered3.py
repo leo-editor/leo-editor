@@ -2,9 +2,6 @@
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
-# pylint: disable=line-too-long,multiple-statements
-# pylint: disable = c-extension-no-member
-
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -2004,8 +2001,6 @@ class ViewRenderedProvider3:
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
-
-    # py--lint: disable=too-many-public-methods
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
@@ -2170,8 +2165,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         NAMES CREATED
         'vr3-toolbar-label' -- the toolbar label.
         """
-        # pylint: disable=unnecessary-lambda
-
         # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
@@ -2559,8 +2552,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
-        # py--lint: disable = too-many-branches, too-many-locals
-        # py--lint: disable = too-many-statements
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -3466,7 +3457,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
         template = textwrap.dedent(template).strip()
@@ -3482,8 +3472,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
-
-        # py--lint: disable=too-many-locals
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
@@ -3527,7 +3515,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the HTML returned by markdown.
         """
 
-        # py--lint: disable=too-many-locals
         #@+others
         #@+node:TomP.20200208211132.1: *6* setup
         pc = self
@@ -3619,10 +3606,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_movie(self, s, keywords):
         """Update a movie in the vr3 pane."""
-        # pylint: disable=maybe-no-member
-            # 'PyQt4.phonon' has no 'VideoPlayer' member
-            # 'PyQt4.phonon' has no 'VideoCategory' member
-            # 'PyQt4.phonon' has no 'MediaSource' member
         pc = self
         ok, path = pc.get_fn(s, '@movie')
         if not ok:
@@ -3642,15 +3625,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
-        # if QtMultimedia:
-            # url = QtCore.QUrl.fromLocalFile(path)
-            # content = QtMultimedia.QMediaContent(url)
-            # pc.vp = vp = QtMultimedia.QMediaPlayer()
-            # vp.setMedia(content)
-            # # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
-            # vp.play()
-        # else:
-            # pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
         vw = vp.videoWidget()
         vw.setObjectName('video-renderer')
         # Embed the widgets
@@ -3737,7 +3711,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
         g.es('@pyplot nodes not implemented', color='gray')
-        # py--lint: disable = using-constant-test
+
         if 0:  # Keep old code here for possible resurrection
             c = self.c
             if not self.pyplot_imported:
@@ -3843,9 +3817,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         RETURNS
         the html returned by docutils.
         """
-
-        # py--lint: disable=too-many-locals
-        # py--lint: disable=too-many-branches
 
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
@@ -4006,11 +3977,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
            RETURNS
            a string having the code parts formatted as rst code blocks.
         """
-
-        # py--lint: disable=too-many-locals
-        # py--lint: disable=too-many-branches
-        # py--lint: disable=too-many-statements
-
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
