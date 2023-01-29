@@ -5988,8 +5988,12 @@ def function_name() -> str:
         name = name[:-1]
     return name
 #@+node:ekr.20230129093329.1: *3* g.get_ctor_name
-def get_ctor_name(self, file_name, width=25):
-    """Return <module-name>.<class-name>:>width"""
+def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
+    """
+    Return <module-name>.<class-name>:>width.
+
+    self: Any object.
+    """
     class_name = self.__class__.__name__
     module_name = shortFileName(file_name).replace(".py", "")
     combined_name = f"{module_name}.{class_name}"
