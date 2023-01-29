@@ -7257,7 +7257,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
                         pass
             # Finally, just add the whole UNL.
             result.append(s)
-        # Do *not* return duplicates!
+        # Do *not* remove duplicates!
         return result
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
