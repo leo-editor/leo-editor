@@ -5987,6 +5987,14 @@ def function_name() -> str:
     if name.endswith('.pyc'):
         name = name[:-1]
     return name
+#@+node:ekr.20230129093329.1: *3* g.get_ctor_name
+def get_ctor_name(self, file_name, width=25):
+    """Return <module-name>.<class-name>:>width"""
+    class_name = self.__class__.__name__
+    module_name = shortFileName(file_name).replace(".py", "")
+    combined_name = f"{module_name}.{class_name}"
+    padding = " " * max(0, 25 - len(combined_name))
+    return f"{padding}{combined_name}"
 #@+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber() -> Tuple[str, int]:
     typ, val, tb = sys.exc_info()
