@@ -6163,7 +6163,7 @@ def trace(*args: Any, **keys: Any) -> None:
     name = g._callerName(2)
     if name.endswith(".pyc"):
         name = name[:-1]
-    pr(name, args)
+    g.pr(name, args)
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
 
