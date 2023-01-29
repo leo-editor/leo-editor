@@ -7257,10 +7257,10 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
                         pass
             # Finally, just add the whole UNL.
             result.append(s)
-        return list(set(result))
+        return result
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
-        """Return True if the headlines of p and all p's parents match unlList."""
+        """Return True if the stripped headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p1 = unlList[:], p.copy()
         while aList and p1:
@@ -7281,10 +7281,12 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
     targets = []
     m = new_pat.match(unlList[-1])
     target = m and m.group(1) or unlList[-1]
-    targets.append(target)
+    targets.append(target.strip())  ###
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
+    g.printObj(targets,tag='g.findUNL: targets')
+    g.printObj([z.h for z in positions],tag='g.findUNL: positions')
     while unlList:
         for p in positions:
             p1 = p.copy()
