@@ -7600,21 +7600,43 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     p, pos, newpos = c.findCommands.find_def_strict(event)
     if p:
         return None
+    #@+<< look for filename or import>>
+    #@+node:tom.20230130102836.1: *5* << look for filename or import >>
     # Part 4: #2546: look for a file name.
     s = w.getAllText()
     i, j = w.getSelectionRange()
     m = re.match(r'(\w+)\.(\w){1,4}\b', s[i:])
-    if not m:
-        return None
-    # Find the first node whose headline ends with the filename.
-    filename = m.group(0)
-    for p in c.all_unique_positions():
-        if p.h.strip().endswith(filename):
-            # Set the find text.
-            c.findCommands.ftm.set_find_text(filename)
-            # Select.
-            c.redraw(p)
-            break
+    filename, filename_w = '', ''
+    if m:
+        filename = m.group(0)
+    # Part 5: #3112: look for import statement
+    else:
+        FROMre = r'^from [\./\\]*([^\s/\\].+)\s+import'
+        IMPORTre = r'^import\s+[\./\\]*([^\s/\\].+)'
+        IMPORTSre = FROMre + '|' + IMPORTre
+
+        m = re.match(IMPORTSre, line)
+        module = m and (m[2] or m[1])
+        if module:
+            filename = module + '.py'
+            filename_w = module + '.pyw'
+
+    if filename:
+        # Navigate to the first node whose headline ends with the filename.
+        effective_filename = ''
+        for p in c.all_unique_positions():
+            headline = p.h.strip()
+            if headline.endswith(filename):
+                effective_filename = filename
+            elif filename_w and headline.endswith(filename_w):
+                effective_filename = filename_w
+            if effective_filename:
+                # Set the find text.
+                c.findCommands.ftm.set_find_text(effective_filename)
+                # Select.
+                c.redraw(p)
+                break
+    #@-<< look for filename or import>>
     return None
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
 def unquoteUrl(url: str) -> str:
