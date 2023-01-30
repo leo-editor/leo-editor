@@ -62,13 +62,14 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 5)
+version_tuple = (1, 0, 6)
 # Version History
 # 1.0.1 Initial commit
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
 # 1.0.3 July 2022: Fixed original node selection upon opening a file.
 # 1.0.4 September 2022: Full type checking
 # 1.0.5 October 2022: Fixed node commands when used from client's context menu
+# 1.0.6 January 2023: Preventing errors with JSON serialization
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -94,9 +95,22 @@ wsPort = 32125
 class SetEncoder(json.JSONEncoder):
 
     def default(self, obj: Any) -> Any:
+        # Sets become basic javascript arrays
         if isinstance(obj, set):
             return list(obj)
-        return json.JSONEncoder.default(self, obj)
+        # Leo Positions get converted with same simple algo as p_to_ap
+        if isinstance(obj, Position):
+            stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+                for (v, childIndex) in obj.stack]
+            return {
+                'childIndex': obj._childIndex,
+                'gnx': obj.v.gnx,
+                'stack': stack,
+            }
+        # Leo VNodes are represented as their gnx
+        if isinstance(obj, VNode):
+            return {'gnx': obj.gnx}
+        return json.JSONEncoder.default(self, obj) # otherwise, return default
 #@+node:felix.20210621233316.3: ** Exception classes
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
@@ -4712,7 +4726,7 @@ class LeoServer:
             d['selected'] = True
         return d
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
-    def _is_jsonable(self, x: int) -> bool:
+    def _is_jsonable(self, x: Any) -> bool:
         try:
             json.dumps(x, cls=SetEncoder)
             return True
@@ -4737,6 +4751,9 @@ class LeoServer:
         response.
         """
         if package is None:
+            package = {}
+
+        if not self._is_jsonable(package):
             package = {}
 
         # Always add id.
@@ -4773,6 +4790,13 @@ class LeoServer:
         p = package.get("p")
         if p:
             del package["p"]
+        # if not serializable, include 'p' if present at best.
+        if not self._is_jsonable(package):
+            if p:
+                package = {'p': p}
+            else:
+                package = {}
+
         # Raise an *internal* error if checks fail.
         if isinstance(package, str):  # pragma: no cover
             raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
