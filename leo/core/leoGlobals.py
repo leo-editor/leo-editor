@@ -2708,9 +2708,6 @@ def pdb(message: str = '') -> None:
 def objToString(obj: Any, indent: int = 0, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
-
-    concise=False: return a detailed string.
-    concise=True:  return a summary string.
     """
 
     s = pprint.pformat(obj,
