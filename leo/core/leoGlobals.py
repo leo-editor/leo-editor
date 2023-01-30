@@ -23,6 +23,7 @@ import operator
 import os
 from pathlib import Path
 # import pdb  # Do NOT import pdb here! g.pdb is a *function*
+import pprint
 import re
 import shlex
 import string
@@ -2741,46 +2742,38 @@ def listToString(obj: Any, indent: str = '', tag: str = None) -> str:
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent: str = '', tag: str = '', concise: bool = False) -> str:
+def objToString(obj: Any, *,
+    concise: bool = True,  # Not used.
+    indent: Union[int, str] = 0,
+    width: int = 120,
+) -> str:
     """
     Pretty print any Python object to a string.
 
-    concise=False: (Legacy) return a detailed string.
-    concise=True: Return a summary string.
+    concise=False: return a detailed string.
+    concise=True:  return a summary string.
     """
-    if tag:
-        print(tag.strip())
-    if concise:
-        r = repr(obj)
-        if obj is None:
-            return f"{indent}None"
-        if isinstance(obj, dict):
-            return f"{indent}dict: {len(obj.keys())} keys"
-        if isinstance(obj, list):
-            return f"{indent}list: {len(obj)} itemg.plural(len(obj))"
-        if isinstance(obj, tuple):
-            return f"{indent}tuple: {len(obj)} item{g.plural(len(obj))}"
-        if 'method' in r:
-            return f"{indent}method: {obj.__name__}"
-        if 'class' in r:
-            return f"{indent}class"
-        if 'module' in r:
-            return f"{indent}module"
-        return f"{indent}object: {obj!r}"
 
-    # concise = False
-    if isinstance(obj, dict):
-        return dictToString(obj, indent=indent)
-    if isinstance(obj, list):
-        return listToString(obj, indent=indent)
-    if isinstance(obj, tuple):
-        return tupleToString(obj, indent=indent)
-    if isinstance(obj, str):
-        # Print multi-line strings as lists.
-        lines = g.splitLines(obj)
-        if len(lines) > 1:
-            return listToString(lines, indent=indent)
-    return f"{indent} {obj!r}"
+    s = pprint.pformat(obj,
+        compact=False,
+        depth=None,
+        indent=len(indent) if isinstance(indent, str) else indent,
+        sort_dicts=True,
+        # underscore_numbers=False,
+        width=width,
+    )
+    if s and isinstance(obj, str) and '\n' in s:
+        # Weird: strip ()
+        if s[0] == '(':
+            s = s[1:]
+        if s and s[-1] == ')':
+            s = s[:-1]
+        results = ['[\n']
+        for i, z in enumerate(g.splitLines(s)):
+            results.append(f"  {i:4}: {z!s}")
+        results.append('\n]\n')
+        return ''.join(results)
+    return s
 
 toString = objToString
 #@+node:ekr.20120912153732.10597: *4* g.wait
@@ -2789,9 +2782,15 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, indent: str = '', tag: str = None) -> None:
+def printObj(obj: Any, *,
+    concise: bool = False,
+    indent: Union[int, str] = 0,
+    tag: str = None,
+) -> None:
     """Pretty print any Python object using g.pr."""
-    g.pr(objToString(obj, indent=indent, tag=tag))
+    if tag:
+        print(tag.strip())
+    print(objToString(obj, indent=indent))
 
 printDict = printObj
 printList = printObj
