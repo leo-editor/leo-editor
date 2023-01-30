@@ -2704,45 +2704,8 @@ def pdb(message: str = '') -> None:
         print(message)
     # pylint: disable=forgotten-debug-statement
     pdb.set_trace()
-#@+node:ekr.20041224080039: *4* g.dictToString
-def dictToString(d: Dict[str, str], indent: str = '', tag: str = None) -> str:
-    """Pretty print a Python dict to a string."""
-    # pylint: disable=unnecessary-lambda
-    if not d:
-        return '{}'
-    result = ['{\n']
-    indent2 = indent + ' ' * 4
-    n = 2 + len(indent) + max([len(repr(z)) for z in d.keys()])
-    for i, key in enumerate(sorted(d, key=lambda z: repr(z))):
-        pad = ' ' * max(0, (n - len(repr(key))))
-        result.append(f"{pad}{key}:")
-        result.append(objToString(d.get(key), indent=len(indent2)))
-        if i + 1 < len(d.keys()):
-            result.append(',')
-        result.append('\n')
-    result.append(indent + '}')
-    s = ''.join(result)
-    return f"{tag}...\n{s}\n" if tag else s
-#@+node:ekr.20041126060136: *4* g.listToString
-def listToString(obj: Any, indent: str = '', tag: str = None) -> str:
-    """Pretty print a Python list to a string."""
-    if not obj:
-        return indent + '[]'
-    result = [indent, '[']
-    indent2 = indent + ' ' * 4
-    # I prefer not to compress lists.
-    for i, obj2 in enumerate(obj):
-        result.append('\n' + indent2)
-        result.append(objToString(obj2, indent=len(indent2)))
-        if i + 1 < len(obj) > 1:
-            result.append(',')
-        else:
-            result.append('\n' + indent)
-    result.append(']')
-    s = ''.join(result)
-    return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, *, indent: int = 0, width: int = 120) -> str:
+def objToString(obj: Any, indent: int = 0, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
 
@@ -2773,13 +2736,16 @@ def objToString(obj: Any, *, indent: int = 0, width: int = 120) -> str:
     return s
 
 toString = objToString
+dictToString = objToString
+listToString = objToString
+tupleToString = objToString
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n: float) -> None:
     """Wait about n milliseconds."""
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
+def printObj(obj: Any, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     if tag:
         print(tag.strip())
@@ -2788,24 +2754,6 @@ def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
 printDict = printObj
 printList = printObj
 printTuple = printObj
-#@+node:ekr.20171023110057.1: *4* g.tupleToString
-def tupleToString(obj: Any, indent: str = '', tag: str = None) -> str:
-    """Pretty print a Python tuple to a string."""
-    if not obj:
-        return '(),'
-    result = ['(']
-    indent2 = indent + ' ' * 4
-    for i, obj2 in enumerate(obj):
-        if len(obj) > 1:
-            result.append('\n' + indent2)
-        result.append(objToString(obj2, indent=len(indent2)))
-        if len(obj) == 1 or i + 1 < len(obj):
-            result.append(',')
-        elif len(obj) > 1:
-            result.append('\n' + indent)
-    result.append(')')
-    s = ''.join(result)
-    return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 #@+node:ekr.20031218072017.1589: *4* g.clearAllIvars
 def clearAllIvars(o: Any) -> None:
