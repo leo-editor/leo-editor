@@ -1039,9 +1039,7 @@ class Commands:
         g.es_print('dump-expanded...')
         for p in c.all_positions():
             if p.v.expandedPositions:
-                indent = ' ' * p.level()
-                print(f"{indent}{p.h}")
-                g.printObj(p.v.expandedPositions, indent=indent)
+                g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p: Position) -> Widget:
         c = self

@@ -1250,7 +1250,7 @@ class GlobalConfigManager:
                     elif limit == 0 or len(aList) < limit:
                         val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
                         # The following doesn't work well.
-                        # val = g.objToString(aList, indent=' '*4)
+                        # val = g.objToString(aList, indent=4)
                     else:
                         val = f"<{len(aList)} non-comment lines>"
                 elif isinstance(val, str) and val.startswith('<?xml'):

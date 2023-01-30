@@ -1696,7 +1696,7 @@ class SherlockTracer:
             args_s2 = f"({args_s})"
             if len(args_s2) > 100:
                 print(f"{path}:{indent}{leadin}{full_name}")
-                g.printObj(args_list, indent=indent + ' ' * 22)
+                g.printObj(args_list, indent=len(indent) + 22)
             else:
                 print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
         else:
@@ -1799,7 +1799,7 @@ class SherlockTracer:
             elif isinstance(arg, (tuple, list)):
                 ret_s = ','.join([self.show(z) for z in arg])
                 if len(ret_s) > 40:
-                    g.printObj(arg, indent=indent)
+                    g.printObj(arg, indent=len(indent))
                     ret = ''
                 else:
                     ret = f"[{ret_s}]"
@@ -2716,7 +2716,7 @@ def dictToString(d: Dict[str, str], indent: str = '', tag: str = None) -> str:
     for i, key in enumerate(sorted(d, key=lambda z: repr(z))):
         pad = ' ' * max(0, (n - len(repr(key))))
         result.append(f"{pad}{key}:")
-        result.append(objToString(d.get(key), indent=indent2))
+        result.append(objToString(d.get(key), indent=len(indent2)))
         if i + 1 < len(d.keys()):
             result.append(',')
         result.append('\n')
@@ -2733,7 +2733,7 @@ def listToString(obj: Any, indent: str = '', tag: str = None) -> str:
     # I prefer not to compress lists.
     for i, obj2 in enumerate(obj):
         result.append('\n' + indent2)
-        result.append(objToString(obj2, indent=indent2))
+        result.append(objToString(obj2, indent=len(indent2)))
         if i + 1 < len(obj) > 1:
             result.append(',')
         else:
@@ -2742,11 +2742,7 @@ def listToString(obj: Any, indent: str = '', tag: str = None) -> str:
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, *,
-    concise: bool = True,  # Not used.
-    indent: Union[int, str] = 0,
-    width: int = 120,
-) -> str:
+def objToString(obj: Any, *, indent: int = 0, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
 
@@ -2757,7 +2753,8 @@ def objToString(obj: Any, *,
     s = pprint.pformat(obj,
         compact=False,
         depth=None,
-        indent=len(indent) if isinstance(indent, str) else indent,
+        # indent=len(indent) if isinstance(indent, str) else indent,
+        indent=indent,
         sort_dicts=True,
         # underscore_numbers=False,
         width=width,
@@ -2782,11 +2779,7 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, *,
-    concise: bool = False,
-    indent: Union[int, str] = 0,
-    tag: str = None,
-) -> None:
+def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     if tag:
         print(tag.strip())
@@ -2805,7 +2798,7 @@ def tupleToString(obj: Any, indent: str = '', tag: str = None) -> str:
     for i, obj2 in enumerate(obj):
         if len(obj) > 1:
             result.append('\n' + indent2)
-        result.append(objToString(obj2, indent=indent2))
+        result.append(objToString(obj2, indent=len(indent2)))
         if len(obj) == 1 or i + 1 < len(obj):
             result.append(',')
         elif len(obj) > 1:
