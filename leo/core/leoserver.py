@@ -110,7 +110,7 @@ class SetEncoder(json.JSONEncoder):
         # Leo VNodes are represented as their gnx
         if isinstance(obj, VNode):
             return {'gnx': obj.gnx}
-        return json.JSONEncoder.default(self, obj) # otherwise, return default
+        return json.JSONEncoder.default(self, obj)  # otherwise, return default
 #@+node:felix.20210621233316.3: ** Exception classes
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
