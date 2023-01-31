@@ -2704,7 +2704,7 @@ def pdb(message: str = '') -> None:
         print(message)
     # pylint: disable=forgotten-debug-statement
     pdb.set_trace()
-#@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
+#@+node:ekr.20050819064157: *4* g.objToString & g.toString
 def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
