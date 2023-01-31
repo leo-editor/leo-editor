@@ -4606,7 +4606,6 @@ class LeoServer:
             'keyHandlerCommands',
             'killBufferCommands',
             'leoCommands',
-            'leoTestManager',
             'macroCommands',
             'miniBufferWidget',
             'printingController',
