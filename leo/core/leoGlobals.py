@@ -2719,7 +2719,7 @@ def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) ->
             f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
         ])
         result = f"[\n{lines}]\n"
-    return f"{tag.strip()}: {result}" if tag else result
+    return f"{tag.strip()}: {result}" if tag.strip() else result
 
 toString = objToString
 dictToString = objToString
