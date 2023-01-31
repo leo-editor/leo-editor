@@ -2705,20 +2705,21 @@ def pdb(message: str = '') -> None:
     # pylint: disable=forgotten-debug-statement
     pdb.set_trace()
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent: int = 0, width: int = 120) -> str:
+def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
     """
     if not isinstance(obj, str):
-        s = pprint.pformat(obj, indent=indent, width=width)
-        return f"{obj.__class__.__name__}: {pprint.saferepr(s)}"
-    if '\n' not in obj:
-        return f"str: {obj!r}"
-    # Return the enumerated lines of the string.
-    lines = ''.join([
-        f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
-    ])
-    return f"str: [\n{lines}]\n"
+        result = pprint.pformat(obj, indent=indent, width=width)
+    elif '\n' not in obj:
+        result = repr(obj)
+    else:
+        # Return the enumerated lines of the string.
+        lines = ''.join([
+            f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
+        ])
+        result = f"[\n{lines}]\n"
+    return f"{tag.strip()}: {result}" if tag else result
 
 toString = objToString
 dictToString = objToString
@@ -2732,9 +2733,7 @@ def sleep(n: float) -> None:
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
 def printObj(obj: Any, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
-    if tag:
-        print(tag.strip())
-    print(objToString(obj, indent=indent))
+    print(objToString(obj, indent=indent, tag=tag))
 
 printDict = printObj
 printList = printObj
