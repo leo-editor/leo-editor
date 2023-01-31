@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.90
+About Viewrendered3 V3.91
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -56,12 +56,19 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+#@@language plain is equivalent to @language text.
+
+For both plain and text, an @language directive at the top of a node is removed.
+
+For both plain and text, the command *vr3-open-markup-in-editor* can display
+the entire subtree's text when that option is active.
+
+Previous Recent Changes
+========================
 An external Ruby asciidoctor processor is found more reliably.  The complete
 path to the processor can be specified in the *vr3-prefer-external* setting
 (sometimes Ruby can be installed into a location not on the PATH).
 
-Previous Recent Changes
-========================
 Asciidoctor enhancements
 
     - New setting to suppress the default footer (``@bool vr3-asciidoctor-nofooter = True``).
@@ -1051,6 +1058,7 @@ JULIA = 'julia'
 LUA = 'lua'
 MATH = 'math'
 MD = 'md'
+PLAIN = 'plain'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
 RESPONSE = 'response'
@@ -2078,6 +2086,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
+            'plain': pc.update_text,
             'pyplot': pc.update_pyplot,
             'rst': pc.update_rst,
             'svg': pc.update_svg,
@@ -2897,13 +2906,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 except UnboundLocalError as e:
                     g.trace('=======', tag, e)
                     return
-            if kind in (ASCIIDOC, MD, RST, REST, TEXT) and _tree and self.show_whole_tree:
+            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
                 f = pc.update_rst
-            if kind in (ASCIIDOC, MD, RST, REST, TEXT):
+            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
                 f(_tree, keywords)
             else:
                 f(s, keywords)
@@ -4519,8 +4528,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w = self.w
         lines = []
         for node in node_list:
-            lines.append(node.b)
+            body = node.b
+            if body.startswith('@language'):
+                i = body.find('\n')
+                if i > -1:
+                    body = body[i + 1:]
+            lines.append(body)
         s = '\n'.join(lines)
+        self.last_markup = s
+
         s = html.escape(s, quote=True)
         s = f'{TEXT_HTML_HEADER}<pre>{s}</pre></html>'
         h = s.encode('utf-8')
