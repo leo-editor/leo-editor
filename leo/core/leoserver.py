@@ -1882,8 +1882,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            settings = fc.ftm.get_settings()
-            fc.change(settings)
+            fc.change()
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
