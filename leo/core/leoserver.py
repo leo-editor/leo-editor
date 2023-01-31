@@ -1882,8 +1882,7 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         try:
-            settings = fc.ftm.get_settings()
-            fc.change(settings)
+            fc.change()
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
@@ -3571,17 +3570,17 @@ class LeoServer:
             'show-color-names',
             'show-color-wheel',
             'show-commands',
-            'show-file-line',
+            # 'show-file-line',
 
             'show-focus',
             'show-fonts',
 
             'show-invisibles',
-            'show-node-uas',
+            # 'show-node-uas',
             'show-outline-dock',
             'show-plugin-handlers',
             'show-plugins-info',
-            'show-settings',
+            # 'show-settings',
             'show-settings-outline',
             'show-spell-info',
             'show-stats',
@@ -4606,7 +4605,6 @@ class LeoServer:
             'keyHandlerCommands',
             'killBufferCommands',
             'leoCommands',
-            'leoTestManager',
             'macroCommands',
             'miniBufferWidget',
             'printingController',

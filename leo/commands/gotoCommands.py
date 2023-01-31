@@ -382,6 +382,10 @@ class GoToCommands:
 #@+node:ekr.20180517041303.1: ** show-file-line
 @g.command('show-file-line')
 def show_file_line(event: Event) -> None:
+    """
+    Prints the external file line number that corresponds to
+    the line the cursor is relatively positioned in Leo's body.
+    """
     c = event.get('c')
     if not c:
         return
