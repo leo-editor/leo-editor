@@ -2710,21 +2710,11 @@ def objToString(obj: Any, indent: int = 0, width: int = 120) -> str:
     Pretty print any Python object to a string.
     """
 
-    s = pprint.pformat(obj,
-        compact=False,
-        depth=None,
-        # indent=len(indent) if isinstance(indent, str) else indent,
-        indent=indent,
-        sort_dicts=True,
-        # underscore_numbers=False,
-        width=width,
-    )
+    s = pprint.pformat(obj, indent=indent, width=width)
     if s and isinstance(obj, str) and '\n' in s:
-        # Weird: strip ()
-        if s[0] == '(':
-            s = s[1:]
-        if s and s[-1] == ')':
-            s = s[:-1]
+        # When len(s) > width, parens enclose the representation!
+        if len(s) >= width and s.startswith('(') and s.endswith(')'):
+            s = s[1:-1]
         results = ['[\n']
         for i, z in enumerate(g.splitLines(s)):
             results.append(f"  {i:4}: {z!s}")
