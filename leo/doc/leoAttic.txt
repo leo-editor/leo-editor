@@ -10000,6 +10000,104 @@ def do_qcompleter_tab(self, prefix: str, options: List[str]) -> str:
     matches, common_prefix = g.itemsMatchingPrefixInList(
         prefix, options, matchEmptyPrefix=False)
     return common_prefix
+#@+node:ekr.20230131132752.1: *3* LEGACY: g.objToString & helpers
+def objToString(obj: Any, indent: str='', tag: str='', concise: bool=False) -> str:
+    """
+    Pretty print any Python object to a string.
+
+    concise=False: (Legacy) return a detailed string.
+    concise=True: Return a summary string.
+    """
+    if tag:
+        print(tag.strip())  ### Print ???
+    if concise:
+        r = repr(obj)
+        if obj is None:
+            return f"{indent}None"
+        if isinstance(obj, dict):
+            return f"{indent}dict: {len(obj.keys())} keys"
+        if isinstance(obj, list):
+            return f"{indent}list: {len(obj)} itemg.plural(len(obj))"
+        if isinstance(obj, tuple):
+            return f"{indent}tuple: {len(obj)} item{g.plural(len(obj))}"
+        if 'method' in r:
+            return f"{indent}method: {obj.__name__}"
+        if 'class' in r:
+            return f"{indent}class"
+        if 'module' in r:
+            return f"{indent}module"
+        return f"{indent}object: {obj!r}"
+
+    # concise = False
+    if isinstance(obj, dict):
+        return dictToString(obj, indent=indent)
+    if isinstance(obj, list):
+        return listToString(obj, indent=indent)
+    if isinstance(obj, tuple):
+        return tupleToString(obj, indent=indent)
+    if isinstance(obj, str):
+        # Print multi-line strings as lists.
+        lines = g.splitLines(obj)
+        if len(lines) > 1:
+            return listToString(lines, indent=indent)
+    return f"{indent} {obj!r}"
+
+toString = objToString
+#@+node:ekr.20230131132837.2: *4* LEGACY: g.dictToString
+def dictToString(d: Dict[str, str], indent: str='', tag: str=None) -> str:
+    """Pretty print a Python dict to a string."""
+    # pylint: disable=unnecessary-lambda
+    if not d:
+        return '{}'
+    result = ['{\n']
+    indent2 = indent + ' ' * 4
+    n = 2 + len(indent) + max([len(repr(z)) for z in d.keys()])
+    for i, key in enumerate(sorted(d, key=lambda z: repr(z))):
+        pad = ' ' * max(0, (n - len(repr(key))))
+        result.append(f"{pad}{key}:")
+        result.append(objToString(d.get(key), indent=indent2))
+        if i + 1 < len(d.keys()):
+            result.append(',')
+        result.append('\n')
+    result.append(indent + '}')
+    s = ''.join(result)
+    return f"{tag}...\n{s}\n" if tag else s
+#@+node:ekr.20230131132837.3: *4* LEGACY: g.listToString
+def listToString(obj: Any, indent: str='', tag: str=None) -> str:
+    """Pretty print a Python list to a string."""
+    if not obj:
+        return indent + '[]'
+    result = [indent, '[']
+    indent2 = indent + ' ' * 4
+    # I prefer not to compress lists.
+    for i, obj2 in enumerate(obj):
+        result.append('\n' + indent2)
+        result.append(objToString(obj2, indent=indent2))
+        if i + 1 < len(obj) > 1:
+            result.append(',')
+        else:
+            result.append('\n' + indent)
+    result.append(']')
+    s = ''.join(result)
+    return f"{tag}...\n{s}\n" if tag else s
+#@+node:ekr.20230131132837.4: *4* LEGACY: g.tupleToString
+def tupleToString(obj: Any, indent: str='', tag: str=None) -> str:
+    """Pretty print a Python tuple to a string."""
+    if not obj:
+        return '(),'
+    result = ['(']
+    indent2 = indent + ' ' * 4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n' + indent2)
+        result.append(objToString(obj2, indent=indent2))
+        if len(obj) == 1 or i + 1 < len(obj):
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n' + indent)
+    result.append(')')
+    s = ''.join(result)
+    return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20220917052540.1: ** Old commands
 #@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
 @first # -*- coding: utf-8 -*-

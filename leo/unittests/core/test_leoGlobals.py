@@ -300,6 +300,70 @@ class TestGlobals(LeoUnitTest):
             expected, i, word, line = data
             got = g.match_word(line + '\n', i, word)
             self.assertEqual(expected, got)
+    #@+node:ekr.20230131234527.1: *3* TestGlobals.test_g_objToString
+    def test_g_objToString(self):
+
+        #@+<< define s >>
+        #@+node:ekr.20230131234637.1: *4* << define s >>
+        s = """g.cls()
+
+        def f1():
+            g.trace(g.callers(1))
+            g.trace(g.callers_list(1))
+            f2()
+
+        def f2():
+            print('')
+            g.trace(g.callers(2))
+            g.trace(g.callers_list(2))
+            f3()
+
+        def f3():
+            print('')
+            g.trace(g.callers(2))
+            g.trace(g.callers_list(2))
+            t = TestClass()
+            assert t
+
+        def f4():
+            print('')
+            g.trace(g.callers())
+            g.trace(g.callers_list())
+
+        class TestClass:
+            def __init__(self):
+                print('')
+                g.trace('(TestClass)')
+                f4()
+
+        f1()
+        """
+        #@-<< define s >>
+        #@+<< define class TestClass >>
+        #@+node:ekr.20230131234648.1: *4* << define class TestClass >>
+        class TestClass:
+
+            def test_function(self):
+                pass
+        #@-<< define class TestClass >>
+        table = (
+            (s, 'String1'),
+            ('This is a test', "String2"),
+            ({'a': 1, 'b': 2}, 'Dict'),
+            (['one', 'two', 'three'], 'List'),
+            (('x', 'y'), 'Tuple'),
+            (g.printObj, 'Function'),
+            (TestClass, "Class"),
+            (TestClass(), "Instance"),
+            (TestClass.test_function, 'unbound method'),
+            (TestClass().test_function,'bound method')
+        )
+        for data, tag in table:
+            result = g.objToString(data, tag=tag)
+            self.assertTrue(tag in result, msg=data)
+            self.assertTrue(isinstance(result, str))
+            result2 = g.objToString(data)
+            self.assertTrue(isinstance(result2, str))
     #@+node:ekr.20210905203541.26: *3* TestGlobals.test_g_os_path_finalize_join_with_thumb_drive
     def test_g_os_path_finalize_join_with_thumb_drive(self):
         path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
