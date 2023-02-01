@@ -911,6 +911,41 @@ def writeFileFromNode(self: Self, event: Event = None) -> None:
                 g.blue('wrote:', fileName)
         except IOError:
             g.error('can not write %s', fileName)
+#@+node:tom.20230201124905.1: *3* c_file.writeFileFromSubtree
+@g.commander_command('write-file-from-subtree')
+def writeFileFromSubtree(self: Self, event: Event = None) -> None:
+    """Write the entire tree from the selected node as text to a file.
+    
+    If node starts with @read-file-into-node, use the full path name in the headline.
+    Otherwise, prompt for a file name.
+    """
+    c, p = self, self.p
+    c.endEditing()
+    h = p.h.rstrip()
+    s = ''
+    for p1 in p.self_and_subtree():
+        s += p1.b + '\n'
+    tag = '@read-file-into-node'
+    if h.startswith(tag):
+        fileName = h[len(tag) :].strip()
+    else:
+        fileName = None
+    if not fileName:
+        fileName = g.app.gui.runSaveFileDialog(c,
+            title='Write File From Node',
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
+            defaultextension=None)
+    if fileName:
+        try:
+            with open(fileName, 'w') as f:
+                g.chdir(fileName)
+                if s.startswith('@nocolor\n'):
+                    s = s[len('@nocolor\n') :]
+                f.write(s)
+                f.flush()
+                g.blue('wrote:', fileName)
+        except IOError:
+            g.error('can not write %s', fileName)
 #@+node:ekr.20031218072017.2079: ** Recent Files
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
