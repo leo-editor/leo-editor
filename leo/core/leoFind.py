@@ -2165,9 +2165,6 @@ class LeoFind:
         gui_w.setSelectionRange(start, start + len(change_text))
         c.widgetWantsFocus(gui_w)
         # No redraws here: they would destroy the headline selection.
-        if self.mark_changes:  # pragma: no cover
-            p.setMarked()
-            p.setDirty()
         if self.in_headline:
             # #2220: Let onHeadChanged handle undo, etc.
             c.frame.tree.onHeadChanged(p, undoType='Change Headline')
@@ -2179,6 +2176,13 @@ class LeoFind:
         else:
             p.v.b = gui_w.getAllText()
             u.afterChangeBody(p, 'Change Body', bunch)
+
+        if self.mark_changes and not p.isMarked():  # pragma: no cover
+            undoType = 'Mark Changes'
+            bunch = u.beforeMark(p, undoType)
+            p.setMarked()
+            p.setDirty()
+            u.afterMark(p, undoType, bunch)
         return True
     #@+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:
@@ -2226,6 +2230,7 @@ class LeoFind:
         if not self.find_text:  # pragma: no cover
             return None, None, None
         attempts = 0
+        u = self.c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
@@ -2234,9 +2239,12 @@ class LeoFind:
             pos, newpos = self._fnm_search(p)
             if pos is not None:
                 # Success.
-                if self.mark_finds:  # pragma: no cover
+                if self.mark_finds and not p.isMarked():  # pragma: no cover
+                    undoType = 'Mark Finds'
+                    bunch = u.beforeMark(p, undoType)
                     p.setMarked()
                     p.setDirty()
+                    u.afterMark(p, undoType, bunch)
                 return p, pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self._fnm_should_stay_in_node(p):
