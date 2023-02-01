@@ -2704,7 +2704,7 @@ def pdb(message: str = '') -> None:
         print(message)
     # pylint: disable=forgotten-debug-statement
     pdb.set_trace()
-#@+node:ekr.20050819064157: *4* g.objToString & g.toString
+#@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
@@ -2719,7 +2719,7 @@ def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) ->
             f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
         ])
         result = f"[\n{lines}]\n"
-    return f"{tag.strip()}: {result}" if tag.strip() else result
+    return f"{tag.strip()}: {result}" if tag and tag.strip() else result
 
 toString = objToString
 dictToString = objToString
@@ -2733,7 +2733,7 @@ def sleep(n: float) -> None:
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
 def printObj(obj: Any, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
-    print(objToString(obj, indent=indent, tag=tag))
+    g.pr(objToString(obj, indent=indent, tag=tag))
 
 printDict = printObj
 printList = printObj
