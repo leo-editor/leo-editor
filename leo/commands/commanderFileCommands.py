@@ -915,7 +915,7 @@ def writeFileFromNode(self: Self, event: Event = None) -> None:
 @g.commander_command('write-file-from-subtree')
 def writeFileFromSubtree(self: Self, event: Event = None) -> None:
     """Write the entire tree from the selected node as text to a file.
-    
+
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
