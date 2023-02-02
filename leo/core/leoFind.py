@@ -1613,6 +1613,27 @@ class LeoFind:
         if self.mark_finds:
             # Start an undo-group instead of a single 'InsertNode' undo
             u.beforeChangeGroup(c.p, undoType)
+
+        # ! PLACING THIS HERE MAKES THE FIRST NODE UNDER THE ROOT NOT 'MARK-REDOABLE' !
+        # if self.mark_finds:
+        #     for match in matches_dict:
+        #         p = c.vnode2position(match['v'])
+        #         if not p.isMarked():
+        #             markUndoType = 'Mark Finds'
+        #             bunch = u.beforeMark(p, markUndoType)
+        #             p.setMarked()
+        #             p.setDirty()
+        #             u.afterMark(p, markUndoType, bunch)
+
+        # Create the result dict.
+        result_string = self.make_result_from_matches(matches_dict)
+        # Create the summary node.
+        undoData = u.beforeInsertNode(c.p)
+        found_p = self.create_find_all_node(result_string)
+        u.afterInsertNode(found_p, undoType, undoData)
+        c.selectPosition(found_p)
+
+        if self.mark_finds:
             for match in matches_dict:
                 p = c.vnode2position(match['v'])
                 if not p.isMarked():
@@ -1622,16 +1643,10 @@ class LeoFind:
                     p.setDirty()
                     u.afterMark(p, markUndoType, bunch)
 
-        # Create the result dict.
-        result_string = self.make_result_from_matches(matches_dict)
-        # Create the summary node.
-        undoData = u.beforeInsertNode(c.p)
-        found_p = self.create_find_all_node(result_string)
-        u.afterInsertNode(found_p, undoType, undoData)
-        c.selectPosition(found_p)
         if self.mark_finds:
-            # Finish undo group if needed
+            # Finish undo group
             u.afterChangeGroup(found_p, undoType)
+
         c.setChanged()
         c.redraw()
         # Return a dict containing the actual results and statistics.
