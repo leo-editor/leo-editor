@@ -1148,8 +1148,17 @@ class LeoFind:
                 if count_b:
                     count += count_b
                     p.b = new_b
+            # Check if there was at least one change with either body or headline
             if count_h or count_b:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
+                # Also check to honor 'Mark Changes' option
+                if self.mark_changes and not p.isMarked():  # pragma: no cover
+                    markUndoType = 'Mark Changes'
+                    bunch = u.beforeMark(p, markUndoType)
+                    p.setMarked()
+                    p.setDirty()
+                    u.afterMark(p, markUndoType, bunch)
+
         # suboutline-only is a one-shot for batch commands.
         self.ftm.set_radio_button('entire-outline')
         self.root = None
@@ -1597,8 +1606,22 @@ class LeoFind:
                 total_nodes += 1
                 matches_dict.append({'body': body, 'head': head, 'v': v})
         if not matches_dict:
+            # Not even one match found!
             self.restore(saveData)
             return {}
+        # Check first if need to make a 'group' undo bead
+        if self.mark_finds:
+            # Start an undo-group instead of a single 'InsertNode' undo
+            u.beforeChangeGroup(c.p, undoType)
+            for match in matches_dict:
+                p = c.vnode2position(match.v)
+                if not p.isMarked():
+                    markUndoType = 'Mark Finds'
+                    bunch = u.beforeMark(p, markUndoType)
+                    p.setMarked()
+                    p.setDirty()
+                    u.afterMark(p, markUndoType, bunch)
+
         # Create the result dict.
         result_string = self.make_result_from_matches(matches_dict)
         # Create the summary node.
@@ -1606,6 +1629,9 @@ class LeoFind:
         found_p = self.create_find_all_node(result_string)
         u.afterInsertNode(found_p, undoType, undoData)
         c.selectPosition(found_p)
+        if self.mark_finds:
+            # Finish undo group if needed
+            u.afterChangeGroup(found_p, undoType)
         c.setChanged()
         c.redraw()
         # Return a dict containing the actual results and statistics.

@@ -1242,7 +1242,8 @@ class Commands:
         return None, None
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions(self, v: VNode) -> List[Position]:
-        """Given a VNode v, find all valid positions p such that p.v = v.
+        """
+        Given a VNode v, find all valid positions p such that p.v = v.
 
         Not really all, just all for each of v's distinct immediate parents.
         """
@@ -1271,7 +1272,8 @@ class Commands:
         return positions
     #@+node:ekr.20090107113956.1: *5* c.vnode2position
     def vnode2position(self, v: VNode) -> Position:
-        """Given a VNode v, construct a valid position p such that p.v = v.
+        """
+        Given a VNode v, construct a valid position p such that p.v = v.
         """
         c = self
         context = v.context  # v's commander.
