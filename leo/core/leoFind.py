@@ -1614,7 +1614,7 @@ class LeoFind:
             # Start an undo-group instead of a single 'InsertNode' undo
             u.beforeChangeGroup(c.p, undoType)
             for match in matches_dict:
-                p = c.vnode2position(match.v)
+                p = c.vnode2position(match['v'])
                 if not p.isMarked():
                     markUndoType = 'Mark Finds'
                     bunch = u.beforeMark(p, markUndoType)
