@@ -1614,17 +1614,6 @@ class LeoFind:
             # Start an undo-group instead of a single 'InsertNode' undo
             u.beforeChangeGroup(c.p, undoType)
 
-        # ! PLACING THIS HERE MAKES THE FIRST NODE UNDER THE ROOT NOT 'MARK-REDOABLE' !
-        # if self.mark_finds:
-        #     for match in matches_dict:
-        #         p = c.vnode2position(match['v'])
-        #         if not p.isMarked():
-        #             markUndoType = 'Mark Finds'
-        #             bunch = u.beforeMark(p, markUndoType)
-        #             p.setMarked()
-        #             p.setDirty()
-        #             u.afterMark(p, markUndoType, bunch)
-
         # Create the result dict.
         result_string = self.make_result_from_matches(matches_dict)
         # Create the summary node.
@@ -1642,9 +1631,7 @@ class LeoFind:
                     p.setMarked()
                     p.setDirty()
                     u.afterMark(p, markUndoType, bunch)
-
-        if self.mark_finds:
-            # Finish undo group
+            # Finish undo group only if mark_finds is true
             u.afterChangeGroup(found_p, undoType)
 
         c.setChanged()
