@@ -7480,13 +7480,14 @@ def openUrl(p: Position) -> None:
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:
     """Open the URL under the cursor.  Return it for unit testing."""
-    # This can be called outside Leo's command logic, so catch all exceptions.
+    # QTextEditWrapper.mouseReleaseEvent calls this outside Leo's command logic.
+    # Make sure to catch all exceptions!
     try:
         return openUrlHelper(event, url)
     except Exception:
         g.es_exception()
         return None
-#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper (changed)
 def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
@@ -7584,7 +7585,8 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     word = w.getSelectedText().strip()
     if not word:
         return None
-    p, pos, newpos = c.findCommands.find_def_strict(event)
+    ### p, pos, newpos = c.findCommands.find_def_strict(event)
+    p, pos, newpos = c.findCommands.find_def(event)
     if p:
         return None
     #@+<< look for filename or import>>

@@ -314,17 +314,20 @@ class TestFind(LeoUnitTest):
         # Test 1.
         for bool_val in (True, False):
             x.reverse_find_defs = bool_val
-            p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
+            ### p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
+            p, pos, newpos = x.do_find_def(settings, word='child5')
             assert p
             self.assertEqual(p.h, 'child 5')
             s = p.b[pos:newpos]
             self.assertEqual(s, 'def child5')
-            # Test 2: switch style.
-            p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
-            assert p
-            self.assertEqual(p.h, 'child 5')
-            # Test 3: not found after switching style.
-            p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
+            ###
+                # # Test 2: switch style.
+                # p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
+                # assert p
+                # self.assertEqual(p.h, 'child 5')
+            ### # Test 3: not found after switching style.
+            # Test 2: not found
+            p, pos, newpos = x.do_find_def(settings, word='xyzzy')
             assert p is None, repr(p)
     #@+node:ekr.20210110073117.64: *4* TestFind.test_find-next
     def test_find_next(self):
