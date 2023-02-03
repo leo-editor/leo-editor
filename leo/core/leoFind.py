@@ -544,13 +544,13 @@ class LeoFind:
         ### strict: bool = False,
     ) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
-        
+
         # Note: This method is *also* part of the ctrl-click logic:
         #
         # QTextEditWrapper.mouseReleaseEvent calls g.openUrlOnClick.
         # g.openUrlOnClick calls g.openUrlHelper.
         # g.openUrlHelper calls this method.
-        
+
         ftm, p = self.ftm, self.c.p
         # Check.
         word = self._compute_find_def_word(event)
@@ -572,7 +572,7 @@ class LeoFind:
             # Do the command!
             settings = self._compute_find_def_settings(find_pattern)
             g.trace(find_pattern, word)
-            p, pos, newpos = self.do_find_def(settings, word) ###, strict)
+            p, pos, newpos = self.do_find_def(settings, word)  ###, strict)
             if p:
                 return p, pos, newpos
         # #3124. Finally, try looking for an assignment.
