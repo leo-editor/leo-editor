@@ -4,6 +4,11 @@
 Stand-alone tracing and debugging functions.
 
 Leonista's are welcome to use this file in their own projects.
+
+Leo does not use this file.
+
+Unlike the corresponding functions in leoGlobals.py,
+all names in this file are pep8 compliant.
 """
 
 import os
