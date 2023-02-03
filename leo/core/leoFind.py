@@ -553,33 +553,44 @@ class LeoFind:
         if not word:
             return None, None, None
         # Settings...
+        self._save_before_find_def(p)  # Save previous settings.
+        assert self.find_def_data
         # #3124. Try all possibilities, regardless of case.
         alt_word = self._switch_style(word)
+        table: Tuple
         if alt_word:
             table = (
-                (f"^\s*class {word}\b", self.do_find_def),
-                (f"^\s*class {alt_word}\b", self.do_find_def),
-                (f"^\s*def {word}\b", self.do_find_def),
-                (f"^\s*def {alt_word}\b", self.do_find_def),
-                (f"^\s*{word} =", self.do_find_var),
-                (f"^\s*{alt_word} =", self.do_find_var),
+                (fr"^\s*class {word}\b", self.do_find_def),
+                # (fr"^\s*class {alt_word}\b", self.do_find_def),
+                (fr"^\s*def {word}\b", self.do_find_def),
+                (fr"^\s*def {alt_word}\b", self.do_find_def),
+                (fr"^\s*{word} =", self.do_find_var),
+                (fr"^\s*{alt_word} =", self.do_find_var),
             )
         else:
             table = (
-                (f"^\s*class {word}\b", self.do_find_def),
-                (f"^\s*def {word}\b", self.do_find_def),
-                (f"{word} =", self.do_find_var),
+                (fr"^\s*class {word}\b", self.do_find_def),
+                (fr"^\s*def {word}\b", self.do_find_def),
+                (fr"{word} =", self.do_find_var),
             )
         for find_pattern, method in table:
             ftm.set_find_text(find_pattern)
-            self._save_before_find_def(p)  # Save previous settings.
             self.init_vim_search(find_pattern)
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
             settings = self._compute_find_def_settings(find_pattern)
             result = method(settings, word)
             if result[0]:
+                # Keep the settings that found the match.
+                d = self.find_def_data
+                d.find_text = find_pattern
+                d.pattern_match = True
+                d.whole_word = False
+                ### g.printObj(self.find_def_data, tag='find_def_data')
+                ftm.set_widgets_from_dict(self.find_def_data)
                 return result
+        # Restore the previous find settings.
+        self._restore_after_find_def()
         return None, None, None
 
     def do_find_def(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
@@ -592,12 +603,12 @@ class LeoFind:
         table = (
             ('change_text', ''),
             ('find_text', find_pattern),
-            ('ignore_case', False),
+            ('ignore_case', True),  ### Was False
             ('pattern_match', True),  ### Was False
             ('reverse', False),
             ('search_body', True),
             ('search_headline', False),
-            ('whole_word', False),  ### Was False.
+            ('whole_word', False),  ### Was True.
         )
         for attr, val in table:
             # Guard against renamings & misspellings.
@@ -675,11 +686,12 @@ class LeoFind:
         finally:
             self.reverse = old_reverse
         if found:
+            # Keep the find settings used to find the match.
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
             c.bodyWantsFocusNow()
             return p, pos, newpos
-        self._restore_after_find_def()  # Avoid massive confusion!
+        # find_def now calls _restore_after_find_def
         i, j = save_sel
         c.redraw(old_p)
         w.setSelectionRange(i, j, insert=ins)
@@ -700,15 +712,14 @@ class LeoFind:
     #@+node:ekr.20150629095633.1: *5* find._save_before_find_def
     def _save_before_find_def(self, p: Position) -> None:
         """Save the find settings in effect before a find-def command."""
-        if not self.find_def_data:
-            self.find_def_data = g.Bunch(
-                ignore_case=self.ignore_case,
-                p=p.copy(),
-                pattern_match=self.pattern_match,
-                search_body=self.search_body,
-                search_headline=self.search_headline,
-                whole_word=self.whole_word,
-            )
+        self.find_def_data = g.Bunch(
+            ignore_case=self.ignore_case,
+            p=p.copy(),
+            pattern_match=self.pattern_match,
+            search_body=self.search_body,
+            search_headline=self.search_headline,
+            whole_word=self.whole_word,
+        )
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
@@ -876,7 +887,9 @@ class LeoFind:
         self.update_change_list(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
-        self.do_find_var(settings, word)
+        result = self.do_find_var(settings, word)
+        if not result[0]:
+            self._restore_after_find_def()  # Avoid massive confusion!
 
     def do_find_var(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""

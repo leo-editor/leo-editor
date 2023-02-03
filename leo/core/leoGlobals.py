@@ -5336,13 +5336,14 @@ def checkUnicode(s: str, encoding: str = None) -> str:
         return s
     if not isinstance(s, bytes):
         g.error(f"{tag}: unexpected argument: {s!r}")
+        g.trace('callers:', g.callers())
         return ''
     #
     # Report the unexpected conversion.
     callers = g.callers(1)
     if callers not in checkUnicode_dict:
-        g.trace(g.callers())
         g.error(f"\n{tag}: expected unicode. got: {s!r}\n")
+        g.trace(g.callers())
         checkUnicode_dict[callers] = True
     #
     # Convert to unicode, reporting all errors.

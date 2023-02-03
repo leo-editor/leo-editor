@@ -302,7 +302,7 @@ class TestFind(LeoUnitTest):
         settings.find_text = 'not-found-xyzzy'
         x.do_find_all(settings)
 
-    #@+node:ekr.20210110073117.65: *4* TestFind.test_find_def
+    #@+node:ekr.20210110073117.65: *4* TestFind.test_find-def
     def test_find_def(self):
         # settings, x = self.settings, self.x
         x = self.x
