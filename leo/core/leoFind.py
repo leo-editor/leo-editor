@@ -538,12 +538,8 @@ class LeoFind:
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
-    def find_def(
-        self,
-        event: Event = None,
-        ### strict: bool = False,
-    ) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
-        """Find the def or class under the cursor."""
+    def find_def(self, event: Event = None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
+        """Find the class, def or assignment to var of the word under the cursor."""
 
         # Note: This method is *also* part of the ctrl-click logic:
         #
@@ -557,43 +553,26 @@ class LeoFind:
         if not word:
             return None, None, None
         # Settings...
-        i = 1 if word[0] == '_' else 0
-        if i <= len(word):
-            return None, None, None
-        # #3124. Try both possibilities.
-        prefix1 = 'class' if word[i].isupper() else 'def'
-        prefix2 = 'def' if word[i].isupper() else 'class'
-        for prefix in (prefix1, prefix2):
-            find_pattern = prefix + ' ' + word
+        # #3124. Try all possibilities, regardless of case.
+        table = (
+            (f"class {word}", self.do_find_def),
+            (f"def {word}", self.do_find_def),
+            (f"{word} =", self.do_find_var),
+        )
+        for find_pattern, method in table:
             ftm.set_find_text(find_pattern)
             self._save_before_find_def(p)  # Save previous settings.
             self.init_vim_search(find_pattern)
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
             settings = self._compute_find_def_settings(find_pattern)
-            g.trace(find_pattern, word)
-            p, pos, newpos = self.do_find_def(settings, word)  ###, strict)
-            if p:
-                return p, pos, newpos
-        # #3124. Finally, try looking for an assignment.
-        find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)
-        self._save_before_find_def(p)  # Save previous settings.
-        self.init_vim_search(find_pattern)
-        self.update_change_list(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
-        g.trace(find_pattern, word)
-        return self.do_find_var(settings, word)
+            result = method(settings, word)
+            if result[0]:
+                return result
+        return None, None, None
 
-    ###
-    # def find_def_strict(self, event: Event = None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
-        # """Same as find_def, but don't call _switch_style."""
-        # return self.find_def(event=event, strict=True)
-
-    ### def do_find_def(self, settings: Settings, word: str, strict: bool) -> Tuple[Position, int, int]:
     def do_find_def(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""
-        ### return self._fd_helper(settings, word, def_flag=True, strict=strict)
         return self._fd_helper(settings, word)
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
     def _compute_find_def_settings(self, find_pattern: str) -> Settings:
@@ -638,28 +617,14 @@ class LeoFind:
                 return word[len(tag) :].strip()
         return word
     #@+node:ekr.20150629125733.1: *5* find._fd_helper
-    def _fd_helper(self,
-        settings: Settings,
-        word: str,
-        ### def_flag: bool,
-        ### strict: bool,
-    ) -> Tuple[Position, int, int]:
+    def _fd_helper(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
         """
         Find the definition of the class, def or var under the cursor.
 
         return p, pos, newpos for unit tests.
         """
-        ### c, find, ftm = self.c, self, self.ftm
         c = self.c
-        self.find_text = settings.find_text  ###
-        ###
-            # # Recompute find_text for unit tests.
-            # if def_flag:
-                # prefix = 'class' if word[0].isupper() else 'def'
-                # self.find_text = settings.find_text = prefix + ' ' + word
-            # else:
-                # prefix = ''
-                # self.find_text = settings.find_text = word + ' ='
+        self.find_text = settings.find_text
         # Just search body text.
         self.search_headline = False
         self.search_body = True
@@ -696,25 +661,6 @@ class LeoFind:
                 found = pos is not None
                 if found or not g.inAtNosearch(p):  # do *not* use c.p.
                     break
-            ###
-                # if not found and def_flag and not strict:
-                    # # Leo 5.7.3: Look for an alternative definition of function/methods.
-                    # word2 = self._switch_style(word)
-                    # if self.reverse_find_defs:
-                        # # #2161: start at the last position.
-                        # p = c.lastPosition()
-                    # else:
-                        # p = c.rootPosition()
-                    # if word2:
-                        # find_pattern = prefix + ' ' + word2
-                        # find.find_text = find_pattern
-                        # ftm.set_find_text(find_pattern)
-                        # # #1592.  Ignore hits under control of @nosearch
-                        # while True:
-                            # p, pos, newpos = self.find_next_match(p)
-                            # found = pos is not None
-                            # if not found or not g.inAtNosearch(p):
-                                # break
         finally:
             self.reverse = old_reverse
         if found:
@@ -923,7 +869,6 @@ class LeoFind:
 
     def do_find_var(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""
-        ### return self._fd_helper(settings, word, def_flag=False, strict=False)
         return self._fd_helper(settings, word)
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')

@@ -7585,7 +7585,6 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     word = w.getSelectedText().strip()
     if not word:
         return None
-    ### p, pos, newpos = c.findCommands.find_def_strict(event)
     p, pos, newpos = c.findCommands.find_def(event)
     if p:
         return None
