@@ -309,7 +309,7 @@ class TestFind(LeoUnitTest):
 
         # Test 1: Test methods called by x.find_def.
         x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
-      
+
         # Test 2:
         for reverse in (True, False):
             # Successful search.
