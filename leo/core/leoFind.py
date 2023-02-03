@@ -548,7 +548,6 @@ class LeoFind:
         # g.openUrlHelper calls this method.
 
         # re searches are more accurate, but not enough to be worth changing the user's settings.
-        use_regex = False  # This is not going to be a user option!
         ftm, p = self.ftm, self.c.p
         # Check.
         word = self._compute_find_def_word(event)
@@ -562,23 +561,7 @@ class LeoFind:
         #@+<< compute the search table >>
         #@+node:ekr.20230203092333.1: *5* << compute the search table >>
         table: Tuple
-
-        if use_regex and alt_word:
-            table = (
-                (fr"^\s*class {word}\b", self.do_find_def),
-                # (fr"^\s*class {alt_word}\b", self.do_find_def),
-                (fr"^\s*def {word}\b", self.do_find_def),
-                (fr"^\s*def {alt_word}\b", self.do_find_def),
-                (fr"^\s*{word} =", self.do_find_var),
-                (fr"^\s*{alt_word} =", self.do_find_var),
-            )
-        elif use_regex:
-            table = (
-                (fr"^\s*class {word}\b", self.do_find_def),
-                (fr"^\s*def {word}\b", self.do_find_def),
-                (fr"{word} =", self.do_find_var),
-            )
-        elif alt_word:
+        if alt_word:
             table = (
                 (f"class {word}", self.do_find_def),
                 # (fr"^\s*class {alt_word}\b", self.do_find_def),
@@ -599,7 +582,7 @@ class LeoFind:
             self.init_vim_search(find_pattern)
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
-            settings = self._compute_find_def_settings(find_pattern, use_regex)
+            settings = self._compute_find_def_settings(find_pattern)
             result = method(settings, word)
             if result[0]:
                 # Keep the settings that found the match.
@@ -613,18 +596,18 @@ class LeoFind:
         """A standalone helper for unit tests."""
         return self._fd_helper(settings, word)
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
-    def _compute_find_def_settings(self, find_pattern: str, use_regex: bool = False) -> Settings:
+    def _compute_find_def_settings(self, find_pattern: str) -> Settings:
 
         settings = self.default_settings()
         table = (
             ('change_text', ''),
             ('find_text', find_pattern),
             ('ignore_case', True),
-            ('pattern_match', use_regex),
+            ('pattern_match', False),
             ('reverse', False),
             ('search_body', True),
             ('search_headline', False),
-            ('whole_word', not use_regex),
+            ('whole_word', True),
         )
         for attr, val in table:
             # Guard against renamings & misspellings.
