@@ -603,13 +603,9 @@ class LeoFind:
             result = method(settings, word)
             if result[0]:
                 # Keep the settings that found the match.
-                d = self.find_def_data
-                d.find_text = find_pattern
-                d.pattern_match = use_regex
-                d.whole_word = not use_regex
-                ftm.set_widgets_from_dict(self.find_def_data)
+                ftm.set_widgets_from_dict(settings)
                 return result
-        # Restore the previous find settings.
+        # Restore the previous find settings!
         self._restore_after_find_def()
         return None, None, None
 
@@ -908,8 +904,12 @@ class LeoFind:
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
         result = self.do_find_var(settings, word)
-        if not result[0]:
-            self._restore_after_find_def()  # Avoid massive confusion!
+        if result[0]:
+            # Keep the settings that found the match.
+            ftm.set_widgets_from_dict(settings)
+        else:
+            # Restore the previous find settings!
+            self._restore_after_find_def()
 
     def do_find_var(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""
