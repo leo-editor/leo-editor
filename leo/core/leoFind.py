@@ -547,6 +547,8 @@ class LeoFind:
         # g.openUrlOnClick calls g.openUrlHelper.
         # g.openUrlHelper calls this method.
 
+        # re searches are more accurate, but not enough to be worth changing the user's settings.
+        use_regex = False  # This is not going to be a user option!
         ftm, p = self.ftm, self.c.p
         # Check.
         word = self._compute_find_def_word(event)
@@ -557,8 +559,11 @@ class LeoFind:
         assert self.find_def_data
         # #3124. Try all possibilities, regardless of case.
         alt_word = self._switch_style(word)
+        #@+<< compute the search table >>
+        #@+node:ekr.20230203092333.1: *5* << compute the search table >>
         table: Tuple
-        if alt_word:
+
+        if use_regex and alt_word:
             table = (
                 (fr"^\s*class {word}\b", self.do_find_def),
                 # (fr"^\s*class {alt_word}\b", self.do_find_def),
@@ -567,12 +572,28 @@ class LeoFind:
                 (fr"^\s*{word} =", self.do_find_var),
                 (fr"^\s*{alt_word} =", self.do_find_var),
             )
-        else:
+        elif use_regex:
             table = (
                 (fr"^\s*class {word}\b", self.do_find_def),
                 (fr"^\s*def {word}\b", self.do_find_def),
                 (fr"{word} =", self.do_find_var),
             )
+        elif alt_word:
+            table = (
+                (f"class {word}", self.do_find_def),
+                # (fr"^\s*class {alt_word}\b", self.do_find_def),
+                (f"def {word}", self.do_find_def),
+                (f"def {alt_word}", self.do_find_def),
+                (f"{word} =", self.do_find_var),
+                (f"{alt_word} =", self.do_find_var),
+            )
+        else:
+            table = (
+                (f"class {word}", self.do_find_def),
+                (f"def {word}", self.do_find_def),
+                (f"{word} =", self.do_find_var),
+            )
+        #@-<< compute the search table >>
         for find_pattern, method in table:
             ftm.set_find_text(find_pattern)
             self.init_vim_search(find_pattern)
@@ -584,9 +605,8 @@ class LeoFind:
                 # Keep the settings that found the match.
                 d = self.find_def_data
                 d.find_text = find_pattern
-                d.pattern_match = True
-                d.whole_word = False
-                ### g.printObj(self.find_def_data, tag='find_def_data')
+                d.pattern_match = use_regex
+                d.whole_word = not use_regex
                 ftm.set_widgets_from_dict(self.find_def_data)
                 return result
         # Restore the previous find settings.
