@@ -564,6 +564,7 @@ class LeoFind:
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
             settings = self._compute_find_def_settings(find_pattern)
+            g.trace(find_pattern, word)
             p, pos, newpos = self.do_find_def(settings, word, strict)
             if p:
                 return p, pos, newpos
@@ -574,6 +575,7 @@ class LeoFind:
         self.init_vim_search(find_pattern)
         self.update_change_list(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
+        g.trace(find_pattern, word)
         return self.do_find_var(settings, word)
 
     def find_def_strict(self, event: Event = None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
