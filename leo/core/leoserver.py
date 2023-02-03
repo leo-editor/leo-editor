@@ -1820,13 +1820,12 @@ class LeoServer:
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
-        if fc.in_headline:
-            ins = len(p.h)
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(ins, ins, insert=ins)
+        # if fc.in_headline:
+        #     ins = len(p.h)
+        #     gui_w = c.edit_widget(p)
+        #     gui_w.setSelectionRange(ins, ins, insert=ins)
         #
         try:
-            # Let cursor as-is
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
@@ -1834,7 +1833,8 @@ class LeoServer:
         #
         # get focus again after the operation
         focus = self._get_focus()
-        result = {"found": bool(p), "pos": pos,
+        selRange = self._get_sel_range()
+        result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.24: *5* server.find_previous
@@ -1855,16 +1855,14 @@ class LeoServer:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
-            # w = c.frame.body.wrapper
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
-        if fc.in_headline:
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(0, 0, insert=0)
+        # if fc.in_headline:
+        #     gui_w = c.edit_widget(p)
+        #     gui_w.setSelectionRange(0, 0, insert=0)
         #
         try:
-            # set widget cursor pos to 0 if in headline
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
@@ -1872,7 +1870,8 @@ class LeoServer:
         #
         # get focus again after the operation
         focus = self._get_focus()
-        result = {"found": bool(p), "pos": pos,
+        selRange = self._get_sel_range()
+        result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.25: *5* server.replace
@@ -1886,7 +1885,8 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
-        result = {"found": True, "focus": focus}
+        selRange = self._get_sel_range()
+        result = {"found": True, "focus": focus, "range": selRange}
         return self._make_response(result)
     #@+node:felix.20210621233316.26: *5* server.replace_then_find
     def replace_then_find(self, param: Param) -> Response:
@@ -1900,7 +1900,8 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
-        return self._make_response({"found": result, "focus": focus})
+        selRange = self._get_sel_range()
+        return self._make_response({"found": result, "focus": focus, "range": selRange})
     #@+node:felix.20210621233316.27: *5* server.replace_all
     def replace_all(self, param: Param) -> Response:
         """Run Leo's replace all command and return results."""
@@ -2221,7 +2222,10 @@ class LeoServer:
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
-            start, end = wrapper.getSelectionRange(True)
+            try:
+                start, end = wrapper.getSelectionRange(True)
+            except Exception as e:  # pragma: no cover
+                start, end = 0, 0
             scroll = wrapper.getYScrollPosition()
             states = {
                 'language': language.lower(),
@@ -4723,6 +4727,13 @@ class LeoServer:
         if p == self.c.p:
             d['selected'] = True
         return d
+    #@+node:felix.20230202225736.1: *4* server._get_sel_range
+    def _get_sel_range(self) -> Tuple[int, int]:
+        w = g.app.gui.get_focus()
+        try:
+            return w.sel[0], w.sel[1]
+        except Exception as e:
+            return 0, 0
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x: Any) -> bool:
         try:
