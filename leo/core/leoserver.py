@@ -4729,13 +4729,30 @@ class LeoServer:
         return d
     #@+node:felix.20230202225736.1: *4* server._get_sel_range
     def _get_sel_range(self) -> Tuple[int, int]:
+        """
+        Returns the selection range from either the body widget,
+        or the selected node headline widget.
+
+        Returns [0, 0] if any problem occurs getting leoBridge's current focused widget
+        """
         w = g.app.gui.get_focus()
         try:
-            return w.sel[0], w.sel[1]
+            if hasattr(w, "sel"):
+                return w.sel[0], w.sel[1]
+            else:
+                c = self.c
+                gui_w = c.edit_widget(c.p)
+                selRange = gui_w.getSelectionRange()
+                return selRange
         except Exception as e:
+            print("Error retrieving current focussed widget selection range.")
             return 0, 0
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x: Any) -> bool:
+        """
+        Makes sure that an object is serializable in JSON.
+        Returns true if it is. False otherwise.
+        """
         try:
             json.dumps(x, cls=SetEncoder)
             return True
