@@ -550,15 +550,31 @@ class LeoFind:
         if not word:
             return None, None, None
         # Settings...
-        prefix = 'class' if word[0].isupper() else 'def'
-        find_pattern = prefix + ' ' + word
+        i = 1 if word[0] == '_' else 0
+        if i <= len(word):
+            return None, None, None
+        # #3124. Try both possibilities.
+        prefix1 = 'class' if word[i].isupper() else 'def'
+        prefix2 = 'def' if word[i].isupper() else 'class'
+        for prefix in (prefix1, prefix2):
+            find_pattern = prefix + ' ' + word
+            ftm.set_find_text(find_pattern)
+            self._save_before_find_def(p)  # Save previous settings.
+            self.init_vim_search(find_pattern)
+            self.update_change_list(self.change_text)  # Optional. An edge case.
+            # Do the command!
+            settings = self._compute_find_def_settings(find_pattern)
+            p, pos, newpos = self.do_find_def(settings, word, strict)
+            if p:
+                return p, pos, newpos
+        # #3124. Finally, try looking for an assignment.
+        find_pattern = word + ' ='
         ftm.set_find_text(find_pattern)
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.update_change_list(self.change_text)  # Optional. An edge case.
-        # Do the command!
         settings = self._compute_find_def_settings(find_pattern)
-        return self.do_find_def(settings, word, strict)
+        return self.do_find_var(settings, word)
 
     def find_def_strict(self, event: Event = None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
         """Same as find_def, but don't call _switch_style."""
