@@ -304,26 +304,26 @@ class TestFind(LeoUnitTest):
 
     #@+node:ekr.20210110073117.65: *4* TestFind.test_find-def
     def test_find_def(self):
-        # settings, x = self.settings, self.x
         x = self.x
 
         # Test 1: Test methods called by x.find_def.
         x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
 
         # Test 2:
-        for reverse in (True, False):
-            # Successful search.
-            x.reverse_find_defs = reverse
-            settings = x._compute_find_def_settings('def child5')
-            p, pos, newpos = x.do_find_def(settings, word='child5')
-            self.assertTrue(p)
-            self.assertEqual(p.h, 'child 5')
-            s = p.b[pos:newpos]
-            self.assertEqual(s, 'def child5')
-            # Unsuccessful search.
-            settings = x._compute_find_def_settings('def xyzzy')
-            p, pos, newpos = x.do_find_def(settings, word='xyzzy')
-            assert p is None, repr(p)
+        for use_regex in (True, False):
+            for reverse in (True, False):
+                # Successful search.
+                x.reverse_find_defs = reverse
+                settings = x._compute_find_def_settings('def child5', use_regex)
+                p, pos, newpos = x.do_find_def(settings, word='child5')
+                self.assertTrue(p)
+                self.assertEqual(p.h, 'child 5')
+                s = p.b[pos:newpos]
+                self.assertEqual(s, 'def child5')
+                # Unsuccessful search.
+                settings = x._compute_find_def_settings('def xyzzy', use_regex)
+                p, pos, newpos = x.do_find_def(settings, word='xyzzy')
+                assert p is None, repr(p)
     #@+node:ekr.20210110073117.64: *4* TestFind.test_find-next
     def test_find_next(self):
         settings, x = self.settings, self.x
@@ -397,14 +397,14 @@ class TestFind(LeoUnitTest):
         self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210110073117.66: *4* TestFind.test_find-var
     def test_find_var(self):
-        # settings, x = self.settings, self.x
         x = self.x
-        settings = x._compute_find_def_settings('v5 =')
-        p, pos, newpos = x.do_find_var(settings, word='v5')
-        assert p
-        self.assertEqual(p.h, 'child 5')
-        s = p.b[pos:newpos]
-        self.assertEqual(s, 'v5 =')
+        for use_regex in (True, False):
+            settings = x._compute_find_def_settings('v5 =', use_regex)
+            p, pos, newpos = x.do_find_var(settings, word='v5')
+            assert p
+            self.assertEqual(p.h, 'child 5')
+            s = p.b[pos:newpos]
+            self.assertEqual(s, 'v5 =')
     #@+node:ekr.20210110073117.68: *4* TestFind.test_replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x

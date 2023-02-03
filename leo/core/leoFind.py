@@ -599,7 +599,7 @@ class LeoFind:
             self.init_vim_search(find_pattern)
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
-            settings = self._compute_find_def_settings(find_pattern)
+            settings = self._compute_find_def_settings(find_pattern, use_regex)
             result = method(settings, word)
             if result[0]:
                 # Keep the settings that found the match.
@@ -617,18 +617,18 @@ class LeoFind:
         """A standalone helper for unit tests."""
         return self._fd_helper(settings, word)
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
-    def _compute_find_def_settings(self, find_pattern: str) -> Settings:
+    def _compute_find_def_settings(self, find_pattern: str, use_regex: bool = False) -> Settings:
 
         settings = self.default_settings()
         table = (
             ('change_text', ''),
             ('find_text', find_pattern),
-            ('ignore_case', True),  ### Was False
-            ('pattern_match', True),  ### Was False
+            ('ignore_case', True),
+            ('pattern_match', use_regex),
             ('reverse', False),
             ('search_body', True),
             ('search_headline', False),
-            ('whole_word', False),  ### Was True.
+            ('whole_word', not use_regex),
         )
         for attr, val in table:
             # Guard against renamings & misspellings.
