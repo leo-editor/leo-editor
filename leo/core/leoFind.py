@@ -554,11 +554,22 @@ class LeoFind:
             return None, None, None
         # Settings...
         # #3124. Try all possibilities, regardless of case.
-        table = (
-            (f"class {word}", self.do_find_def),
-            (f"def {word}", self.do_find_def),
-            (f"{word} =", self.do_find_var),
-        )
+        alt_word = self._switch_style(word)
+        if alt_word:
+            table = (
+                (f"^\s*class {word}\b", self.do_find_def),
+                (f"^\s*class {alt_word}\b", self.do_find_def),
+                (f"^\s*def {word}\b", self.do_find_def),
+                (f"^\s*def {alt_word}\b", self.do_find_def),
+                (f"^\s*{word} =", self.do_find_var),
+                (f"^\s*{alt_word} =", self.do_find_var),
+            )
+        else:
+            table = (
+                (f"^\s*class {word}\b", self.do_find_def),
+                (f"^\s*def {word}\b", self.do_find_def),
+                (f"{word} =", self.do_find_var),
+            )
         for find_pattern, method in table:
             ftm.set_find_text(find_pattern)
             self._save_before_find_def(p)  # Save previous settings.
@@ -582,11 +593,11 @@ class LeoFind:
             ('change_text', ''),
             ('find_text', find_pattern),
             ('ignore_case', False),
-            ('pattern_match', False),
+            ('pattern_match', True),  ### Was False
             ('reverse', False),
             ('search_body', True),
             ('search_headline', False),
-            ('whole_word', True),
+            ('whole_word', False),  ### Was False.
         )
         for attr, val in table:
             # Guard against renamings & misspellings.
