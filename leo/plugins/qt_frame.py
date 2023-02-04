@@ -1297,13 +1297,13 @@ class FindTabManager:
 
     def set_find_text(self, s: str) -> None:
         w = self.find_findbox
-        s = g.checkUnicode(s)
+        s = g.checkUnicode(s or '')
         w.clear()
         w.insert(s)
 
     def set_change_text(self, s: str) -> None:
         w = self.find_replacebox
-        s = g.checkUnicode(s)
+        s = g.checkUnicode(s or '')
         w.clear()
         w.insert(s)
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
