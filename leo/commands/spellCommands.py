@@ -484,7 +484,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.handler.add()
         else:
             self.openSpellTab()
-    #@+node:ekr.20150514063305.486: *4* find
+    #@+node:ekr.20150514063305.486: *4* spell-find
     @cmd('spell-find')
     def find(self, event: Event = None) -> None:
         """

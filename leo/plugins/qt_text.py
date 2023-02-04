@@ -1527,7 +1527,7 @@ class QScintillaWrapper(QTextMixin):
 class QTextEditWrapper(QTextMixin):
     """A wrapper for a QTextEdit/QTextBrowser supporting the high-level interface."""
     #@+others
-    #@+node:ekr.20110605121601.18073: *3* qtew.ctor & helpers
+    #@+node:ekr.20110605121601.18073: *3* QTextEditWrapper.ctor & helpers
     def __init__(self, widget: Widget, name: str, c: Cmdr=None) -> None:
         """Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser."""
         super().__init__(c)
@@ -1543,7 +1543,7 @@ class QTextEditWrapper(QTextMixin):
             self.set_config()
             self.set_signals()
 
-    #@+node:ekr.20110605121601.18076: *4* qtew.set_config
+    #@+node:ekr.20110605121601.18076: *4* QTextEditWrapper.set_config
     def set_config(self) -> None:
         """Set configuration options for QTextEdit."""
         w = self.widget
@@ -1553,7 +1553,7 @@ class QTextEditWrapper(QTextMixin):
             w.setTabStopDistance(24)
         else:
             w.setTabStopWidth(24)
-    #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
+    #@+node:ekr.20140901062324.18566: *4* QTextEditWrapper.set_signals (should be distributed?)
     def set_signals(self) -> None:
         """Set up signals."""
         c, name = self.c, self.name
@@ -1567,7 +1567,7 @@ class QTextEditWrapper(QTextMixin):
         if name in ('body', 'log'):
             # Monkey patch the event handler.
             #@+others
-            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (monkey-patch) QTextEditWrapper
+            #@+node:ekr.20140901062324.18565: *5* QTextEditWrapper.mouseReleaseEvent (monkey-patch)
             def mouseReleaseEvent(event: Event, self: Any=self) -> None:
                 """
                 Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
@@ -1589,13 +1589,13 @@ class QTextEditWrapper(QTextMixin):
                     c.k.keyboardQuit(setFocus=False)
             #@-others
             self.widget.mouseReleaseEvent = mouseReleaseEvent
-    #@+node:ekr.20200312052821.1: *3* qtew.repr
+    #@+node:ekr.20200312052821.1: *3* QTextEditWrapper.repr
     def __repr__(self) -> str:
         # Add a leading space to align with StringTextWrapper.
         return f" <QTextEditWrapper: {id(self)} {self.name}>"
 
     __str__ = __repr__
-    #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
+    #@+node:ekr.20110605121601.18078: *3* QTextEditWrapper.High-level interface
     # These are all widget-dependent
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i: int, j: int=None) -> None:
