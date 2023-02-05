@@ -81,8 +81,8 @@ class RstCommands:
 
         # Default settings.
         self.default_underline_characters = '#=+*^~`-:><-'
-        self.user_filter_b = None
-        self.user_filter_h = None
+        self.user_filter_b: Callable = None
+        self.user_filter_h: Callable = None
 
         # Complete the init.
         self.reloadSettings()
@@ -683,11 +683,11 @@ class RstCommands:
                 self.user_filter_h = None
         return p.h
     #@+node:ekr.20210329111528.1: *4* rst.register_*_filter
-    def register_body_filter(self, f: Any) -> None:
+    def register_body_filter(self, f: Callable) -> None:
         """Register the user body filter."""
         self.user_filter_b = f
 
-    def register_headline_filter(self, f: Any) -> None:
+    def register_headline_filter(self, f: Callable) -> None:
         """Register the user headline filter."""
         self.user_filter_h = f
     #@+node:ekr.20210331084407.1: *3* rst: Predicates
