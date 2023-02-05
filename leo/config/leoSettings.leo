@@ -611,7 +611,7 @@
 <v t="ekr.20210327193854.1"><vh>rst3 output options</vh>
 <v t="ekr.20071213061504"><vh>@string rst3-default-path = None</vh></v>
 <v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~-:&gt;&lt;</vh></v>
 <v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
 <v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
 </v>
