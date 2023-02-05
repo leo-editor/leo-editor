@@ -80,7 +80,8 @@ class RstCommands:
         self.root: Position = None  # The @rst node being processed.
 
         # Default settings.
-        self.default_underline_characters = '#=+*^~`-:><-'
+        self.default_underline_characters = '#=+*^~-:><'
+        self.remove_leo_directives = False  # For compatibility with legacy operation.
         self.user_filter_b: Callable = None
         self.user_filter_h: Callable = None
 
@@ -107,6 +108,7 @@ class RstCommands:
         # Output options.
         self.default_path = getString('rst3-default-path') or ''
         self.generate_rst_header_comment = getBool('rst3-generate-rst-header-comment', default=True)
+        self.remove_leo_directives = getBool('rst3-remove-leo-directives', default=False)
         self.underline_characters = (
             getString('rst3-underline-characters')
             or self.default_underline_characters)
@@ -654,7 +656,7 @@ class RstCommands:
         """
         return self.write_rst_tree(p, fn=p.h)
     #@+node:ekr.20210329105456.1: *3* rst: Filters
-    #@+node:ekr.20210329105948.1: *4* rst.filter_b & self.filter_h
+    #@+node:ekr.20210329105948.1: *4* rst.filter_b
     def filter_b(self, c: Cmdr, p: Position) -> str:
         """
         Filter p.b with user_filter_b function.
@@ -662,13 +664,20 @@ class RstCommands:
         """
         if self.user_filter_b and not self.at_auto_write:
             try:
-                # pylint: disable=not-callable
                 return self.user_filter_b(c, p)
             except Exception:
                 g.es_exception()
                 self.user_filter_b = None
+                return p.b
+        if self.remove_leo_directives:
+            # Only remove a few directives, and only if they start the line.
+            return ''.join([
+                z for z in g.splitLines(p.b)
+                    if not z.startswith(('@language ', '@others', '@wrap'))
+            ])
         return p.b
 
+    #@+node:ekr.20230205101652.1: *4* rst.filter_h
     def filter_h(self, c: Cmdr, p: Position) -> str:
         """
         Filter p.h with user_filter_h function.
