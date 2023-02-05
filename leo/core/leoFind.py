@@ -138,7 +138,6 @@ class LeoFind:
         self.request_whole_word = False
         # Internal state...
         self.changeAllFlag = False
-        self.findAllUniqueFlag = False
         self.find_def_data: g.Bunch = None
         self.in_headline = False
         self.match_obj: re.Match = None
@@ -1757,66 +1756,6 @@ class LeoFind:
         if self.ignore_case:
             flags |= re.IGNORECASE
         return [m.start() for m in re.finditer(find_s, s, flags)]
-    #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
-    @cmd('find-all-unique-regex')
-    def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
-        """
-        Create a summary node containing all unique matches of the regex search
-        string. This command shows only the matched string itself.
-        """
-        self.ftm.clear_focus()
-        self.match_obj = None
-        self.changeAllFlag = False
-        self.findAllUniqueFlag = True
-        self.ftm.set_entry_focus()
-        self.start_state_machine(event,
-            prefix='Search Unique Regex: ',
-            handler=self.interactive_find_all_unique_regex1,
-            escape_handler=self.interactive_change_all_unique_regex1,
-        )
-
-    def interactive_find_all_unique_regex1(
-        self,
-        event: Event = None,
-    ) -> Dict[str, Any]:  # pragma: no cover (interactive)
-        k = self.k
-        # Settings...
-        find_pattern = k.arg
-        self.update_find_list(find_pattern)
-        self.ftm.set_find_text(find_pattern)
-        self.init_in_headline()
-        settings = self.ftm.get_settings()
-        # Gui...
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        return self.do_find_all(settings)
-
-    def interactive_change_all_unique_regex1(self, event: Event) -> None:  # pragma: no cover (interactive)
-        k = self.k
-        find_pattern = self._sString = k.arg
-        self.update_find_list(k.arg)
-        s = f"'Replace All Unique Regex': {find_pattern} With: "
-        k.setLabelBlue(s)
-        self.add_change_string_to_label()
-        k.getNextArg(self.interactive_change_all_unique_regex2)
-
-    def interactive_change_all_unique_regex2(self, event: Event) -> None:  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.c.frame.body.wrapper
-        find_pattern = self._sString
-        change_pattern = k.arg
-        self.update_change_list(change_pattern)
-        self.ftm.set_find_text(find_pattern)
-        self.ftm.set_change_text(change_pattern)
-        self.init_vim_search(find_pattern)
-        self.init_in_headline()
-        settings = self.ftm.get_settings()
-        # Gui...
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        c.widgetWantsFocusNow(w)
-        self.do_change_all(settings)
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
@@ -1886,7 +1825,6 @@ class LeoFind:
             # Set up the state machine.
             self.ftm.clear_focus()
             self.changeAllFlag = False
-            self.findAllUniqueFlag = False
             self.ftm.set_entry_focus()
             self.start_state_machine(event,
                 prefix='Search: ',

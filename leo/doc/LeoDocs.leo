@@ -2362,7 +2362,6 @@
 <v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
 <v t="ekr.20180216044139.1"><vh>Added demangle-recent-files</vh></v>
 <v t="ekr.20180212164854.1"><vh>Added edit-pane-csv &amp; edit-pane-test-open</vh></v>
-<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
 <v t="ekr.20180130092843.1"><vh>Added read/set/update-ref-file commands</vh></v>
 <v t="ekr.20180212071157.1"><vh>Added show-spell-info command</vh></v>
@@ -2513,8 +2512,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20050901101608.2"></v>
-<v t="ekr.20150603161559.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -24181,27 +24178,6 @@ root for line numbering purposes.
 **Setting**
 
 Requires @bool use-gutter=True</t>
-<t tx="ekr.20180124123920.1">The find-all-unique-regex pattern command creates a node that lists all matches of the given regex pattern.  Not the matching lines, just the matching text itself, discarding duplicates. In other words, only m.group(0) is shown, where m is the re match object.
-
-For example, suppose there are multiple nodes containing each of the following::
-
-    whatever # tag:important-script
-    whatever # tag:important-setting
-
-The find-all-unique-regex command with the pattern `tag:.*` will produce a
-node whose headline is::
-
-    Found Unique Regex:tag:.*
-
-and whose body is::
-
-    tag:important-script
-    tag:important-setting
-
-The command supports **tag patterns** of the form::
-
-    #tag:&lt;kind&gt;
-</t>
 <t tx="ekr.20180124124409.1">These commands always add the new node as the first/last node of the
 preceding node, regardless of the setting @bool insert_new_nodes_at_end.</t>
 <t tx="ekr.20180124124532.1">The code promotes replaces @others with the body text of the node's child
@@ -24459,7 +24435,6 @@ and regardless of whether tabs have been detached.</t>
     diff-and-open-leo-files
     edit-pane-csv
     edit-pane-test-open
-    find-all-unique-regex
     insert-as-first-child
     insert-as-last-child
     read-ref-file
