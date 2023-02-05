@@ -3317,7 +3317,6 @@ class LeoServer:
             # 'find-clone-all-flattened',
             # 'find-clone-tag',
             # 'find-all',
-            'find-all-unique-regex',
             'find-character',
             'find-character-extend-selection',
             # 'find-next',
