@@ -241,7 +241,6 @@ class TestFind(LeoUnitTest):
 
         def init():
             self.make_test_tree()  # Reinit the whole tree.
-            x.unique_matches = set()
             settings.change_text = ''
             settings.find_text = ''
             settings.ignore_case = False
