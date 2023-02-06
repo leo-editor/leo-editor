@@ -1798,7 +1798,7 @@ class LeoServer:
         backward = param.get("backward")
         regex = param.get("regex")
         word = param.get("word")
-        find_pattern = param.get("find_pattern")
+        find_pattern = param.get("findText")
         if backward:
             # Set flag for show_find_options.
             fc.reverse = True
