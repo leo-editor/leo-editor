@@ -535,21 +535,13 @@ if QtWidgets:
             pixmap = QtGui.QPixmap(file_name)
             try:
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
-                AspectRatioMode = QtCore.Qt if isQt5 else QtCore.Qt.AspectRatioMode
-                if 0:
-                    w = self.scroll_area.width()
-                    h = self.scroll_area.height()
-                    pixmap1 = pixmap.scaled(w, h, AspectRatioMode.KeepAspectRatio)
-                    ### Not yet.
-                    image = pixmap1.scaledToHeight(
-                        int(self.height() * self.scale),
-                        TransformationMode.SmoothTransformation,  # pylint: disable=no-member
-                    )
+                transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
+                if 1:  # Take the smaller immage.
+                    image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
+                    image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
+                    image = image1 if image1.height() <= image2.height() else image2
                 else:  # Legacy
-                    image = pixmap.scaledToHeight(
-                        int(self.height() * self.scale),
-                        TransformationMode.SmoothTransformation,  # pylint: disable=no-member
-                    )
+                    image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
             except Exception:
