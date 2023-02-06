@@ -69,7 +69,7 @@ version_tuple = (1, 0, 6)
 # 1.0.3 July 2022: Fixed original node selection upon opening a file.
 # 1.0.4 September 2022: Full type checking
 # 1.0.5 October 2022: Fixed node commands when used from client's context menu
-# 1.0.6 January 2023: Preventing errors with JSON serialization
+# 1.0.6 February 2023: Fixed JSON serialization and improved search Commands
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -1786,6 +1786,77 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
+    #@+node:felix.20230204161405.1: *5* server.interactive_search
+    def interactive_search(self, param: Param) -> Response:
+        """
+        Interactive Search to implement search-backward, re-search, word-search. etc.
+        """
+        tag = 'interactive_search'
+        c = self._check_c()
+        fc = c.findCommands
+        ftm = fc.ftm
+        backward = param.get("backward")
+        regex = param.get("regex")
+        word = param.get("word")
+        find_pattern = param.get("findText")
+        if backward:
+            # Set flag for show_find_options.
+            fc.reverse = True
+            # Set flag for do_find_next().
+            fc.request_reverse = True
+        if regex:
+            # Set flag for show_find_options.
+            fc.pattern_match = True
+            # Set flag for do_find_next().
+            fc.request_pattern_match = True
+        if word:
+            # Set flag for show_find_options.
+            fc.whole_word = True
+            # Set flag for do_find_next().
+            fc.request_whole_word = True
+
+        fc.show_find_options()
+        ftm.set_find_text(find_pattern)
+        fc.update_find_list(find_pattern)
+        fc.init_vim_search(find_pattern)
+        fc.init_in_headline()  # Required.
+        try:
+            settings = fc.ftm.get_settings()
+            p, pos, newpos = fc.do_find_next(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running interactive_search gave exception: {e}")
+        #
+        # get focus again after the operation
+        focus = self._get_focus()
+        selRange = self._get_sel_range()
+        result = {"found": bool(p), "pos": pos, "range": selRange,
+                    "newpos": newpos, "focus": focus}
+        return self._make_response(result)
+    #@+node:felix.20230204161448.1: *5* server.find_all_unique_regex
+    def find_all_unique_regex(self, param: Param) -> Response:
+        """Find Unique Regex / Replace All Unique Regex"""
+        tag = 'find_all_unique_regex'
+        c = self._check_c()
+        fc = c.findCommands
+        replace =  param.get("replace")
+        findText = param.get("findText")
+        replaceText = param.get("replaceText", "")
+        result = Any
+        try:
+            settings = fc.ftm.get_settings()
+            settings["findText"] = findText
+            settings["replaceText"] = replaceText
+            fc.findAllUniqueFlag = True
+            if replace:
+                result = fc.do_change_all(settings)
+            else:
+                result = fc.do_find_all(settings)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running find_all_unique_regex operation gave exception: {e}")
+        #
+        focus = self._get_focus()
+        return self._make_response({"found": result, "focus": focus})
+
     #@+node:felix.20210621233316.22: *5* server.find_all
     def find_all(self, param: Param) -> Response:
         """Run Leo's find all command and return results."""
@@ -1820,13 +1891,12 @@ class LeoServer:
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
-        if fc.in_headline:
-            ins = len(p.h)
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(ins, ins, insert=ins)
+        # if fc.in_headline:
+        #     ins = len(p.h)
+        #     gui_w = c.edit_widget(p)
+        #     gui_w.setSelectionRange(ins, ins, insert=ins)
         #
         try:
-            # Let cursor as-is
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
@@ -1834,7 +1904,8 @@ class LeoServer:
         #
         # get focus again after the operation
         focus = self._get_focus()
-        result = {"found": bool(p), "pos": pos,
+        selRange = self._get_sel_range()
+        result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.24: *5* server.find_previous
@@ -1855,16 +1926,14 @@ class LeoServer:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
-            # w = c.frame.body.wrapper
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
-        if fc.in_headline:
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(0, 0, insert=0)
+        # if fc.in_headline:
+        #     gui_w = c.edit_widget(p)
+        #     gui_w.setSelectionRange(0, 0, insert=0)
         #
         try:
-            # set widget cursor pos to 0 if in headline
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
@@ -1872,7 +1941,8 @@ class LeoServer:
         #
         # get focus again after the operation
         focus = self._get_focus()
-        result = {"found": bool(p), "pos": pos,
+        selRange = self._get_sel_range()
+        result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.25: *5* server.replace
@@ -1880,27 +1950,66 @@ class LeoServer:
         """Run Leo's replace command and return results."""
         tag = 'replace'
         c = self._check_c()
+        p = c.p
         fc = c.findCommands
+        fromOutline = param.get("fromOutline")
+        fromBody = not fromOutline
+        #
+        focus = self._get_focus()
+        inOutline = ("tree" in focus) or ("head" in focus)
+        inBody = not inOutline
+        #
+        if fromOutline and inBody:
+            fc.in_headline = True
+        elif fromBody and inOutline:
+            fc.in_headline = False
+            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()
+        #
         try:
-            fc.change()
+            settings = fc.ftm.get_settings()
+            fc.init_ivars_from_settings(settings)
+            fc.change_selection(p)
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
-        result = {"found": True, "focus": focus}
+        selRange = self._get_sel_range()
+        result = {"found": True, "focus": focus, "range": selRange}
+        # print("range: " + str(selRange[0]) + str(selRange[1]))
         return self._make_response(result)
     #@+node:felix.20210621233316.26: *5* server.replace_then_find
     def replace_then_find(self, param: Param) -> Response:
         """Run Leo's replace then find next command and return results."""
         tag = 'replace_then_find'
         c = self._check_c()
+        p = c.p
         fc = c.findCommands
+        fromOutline = param.get("fromOutline")
+        fromBody = not fromOutline
+        #
+        focus = self._get_focus()
+        inOutline = ("tree" in focus) or ("head" in focus)
+        inBody = not inOutline
+        #
+        if fromOutline and inBody:
+            fc.in_headline = True
+        elif fromBody and inOutline:
+            fc.in_headline = False
+            c.bodyWantsFocus()
+            c.bodyWantsFocusNow()
+        #
         try:
             settings = fc.ftm.get_settings()
-            result = fc.do_change_then_find(settings)
+            fc.init_ivars_from_settings(settings)
+            result = False
+            if fc.change_selection(p):
+                result = bool(fc.do_find_next(settings))
         except Exception as e:
             raise ServerError(f"{tag}: Running change operation gave exception: {e}")
         focus = self._get_focus()
-        return self._make_response({"found": result, "focus": focus})
+        selRange = self._get_sel_range()
+        # print("range: " + str(selRange[0]) + str(selRange[1]))
+        return self._make_response({"found": result, "focus": focus, "range": selRange})
     #@+node:felix.20210621233316.27: *5* server.replace_all
     def replace_all(self, param: Param) -> Response:
         """Run Leo's replace all command and return results."""
@@ -2221,7 +2330,10 @@ class LeoServer:
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
-            start, end = wrapper.getSelectionRange(True)
+            try:
+                start, end = wrapper.getSelectionRange(True)
+            except Exception as e:  # pragma: no cover
+                start, end = 0, 0
             scroll = wrapper.getYScrollPosition()
             states = {
                 'language': language.lower(),
@@ -2862,6 +2974,12 @@ class LeoServer:
                     print(
                         f"{tag}: node does not exist! "
                         f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
+        # Reset headline cursor
+        try:
+            gui_w = c.edit_widget(p)
+            gui_w.setSelectionRange(0, 0, insert=0)
+        except:
+            print("Could not reset headline cursor")
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
@@ -4722,8 +4840,32 @@ class LeoServer:
         if p == self.c.p:
             d['selected'] = True
         return d
+    #@+node:felix.20230202225736.1: *4* server._get_sel_range
+    def _get_sel_range(self) -> Tuple[int, int]:
+        """
+        Returns the selection range from either the body widget,
+        or the selected node headline widget.
+
+        Returns [0, 0] if any problem occurs getting leoBridge's current focused widget
+        """
+        w = g.app.gui.get_focus()
+        try:
+            if hasattr(w, "sel"):
+                return w.sel[0], w.sel[1]
+            else:
+                c = self.c
+                gui_w = c.edit_widget(c.p)
+                selRange = gui_w.getSelectionRange()
+                return selRange
+        except Exception as e:
+            print("Error retrieving current focussed widget selection range.")
+            return 0, 0
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x: Any) -> bool:
+        """
+        Makes sure that an object is serializable in JSON.
+        Returns true if it is. False otherwise.
+        """
         try:
             json.dumps(x, cls=SetEncoder)
             return True
