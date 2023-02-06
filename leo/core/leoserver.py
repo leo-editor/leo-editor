@@ -1838,7 +1838,7 @@ class LeoServer:
         tag = 'find_all_unique_regex'
         c = self._check_c()
         fc = c.findCommands
-        replace =  param.get("replace")
+        replace = param.get("replace")
         findText = param.get("findText")
         replaceText = param.get("replaceText", "")
         result = Any
@@ -2332,7 +2332,7 @@ class LeoServer:
             insert = wrapper.getInsertPoint()
             try:
                 start, end = wrapper.getSelectionRange(True)
-            except Exception as e:  # pragma: no cover
+            except Exception:  # pragma: no cover
                 start, end = 0, 0
             scroll = wrapper.getYScrollPosition()
             states = {
@@ -2978,7 +2978,7 @@ class LeoServer:
         try:
             gui_w = c.edit_widget(p)
             gui_w.setSelectionRange(0, 0, insert=0)
-        except:
+        except Exception:
             print("Could not reset headline cursor")
 
         return self._make_response()
@@ -4852,12 +4852,11 @@ class LeoServer:
         try:
             if hasattr(w, "sel"):
                 return w.sel[0], w.sel[1]
-            else:
-                c = self.c
-                gui_w = c.edit_widget(c.p)
-                selRange = gui_w.getSelectionRange()
-                return selRange
-        except Exception as e:
+            c = self.c
+            gui_w = c.edit_widget(c.p)
+            selRange = gui_w.getSelectionRange()
+            return selRange
+        except Exception:
             print("Error retrieving current focussed widget selection range.")
             return 0, 0
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
