@@ -909,6 +909,17 @@ class LeoServer:
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
+    #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
+    def _endEditLabel(self) -> None:
+        """Overridden : End editing of a headline and update p.h."""
+        try:
+            gui_w = self.c.edit_widget(self.c.p)
+            gui_w.setSelectionRange(0, 0, insert=0)
+        except:
+            print("Could not reset headline cursor")
+
+        # Important: this will redraw if necessary.
+        self.c.frame.tree.onHeadChanged(self.c.p)
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
     def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
@@ -1211,6 +1222,8 @@ class LeoServer:
             cc = QuickSearchController(c)
             # Patch up quick-search controller to the commander
             c.patched_quicksearch_controller = cc
+            # Patch up for 'selection range' in headlines left by the search commands.
+            c.frame.tree.endEditLabel = self._endEditLabel
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1795,6 +1808,22 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         ftm = fc.ftm
+
+        if hasattr(param, "fromOutline"):
+            fromOutline = param.get("fromOutline", False)
+            fromBody = not fromOutline
+            #
+            focus = self._get_focus()
+            inOutline = ("tree" in focus) or ("head" in focus)
+            inBody = not inOutline
+            #
+            if fromOutline and inBody:
+                fc.in_headline = True
+            elif fromBody and inOutline:
+                fc.in_headline = False
+                c.bodyWantsFocus()
+                c.bodyWantsFocusNow()
+
         backward = param.get("backward")
         regex = param.get("regex")
         word = param.get("word")
@@ -1819,7 +1848,7 @@ class LeoServer:
         ftm.set_find_text(find_pattern)
         fc.update_find_list(find_pattern)
         fc.init_vim_search(find_pattern)
-        fc.init_in_headline()  # Required.
+        # fc.init_in_headline()  # Handled by the 'fromOutline' param
         try:
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_next(settings)
@@ -1877,7 +1906,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1915,7 +1944,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1952,7 +1981,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1984,7 +2013,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -2974,13 +3003,6 @@ class LeoServer:
                     print(
                         f"{tag}: node does not exist! "
                         f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
-        # Reset headline cursor
-        try:
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(0, 0, insert=0)
-        except Exception:
-            print("Could not reset headline cursor")
-
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
     def set_headline(self, param: Param) -> Response:
@@ -3237,6 +3259,8 @@ class LeoServer:
         # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
+            'restart-leo',
+
             'demangle-recent-files',
             'clean-main-spell-dict',
             'clean-persistence',
@@ -3455,8 +3479,8 @@ class LeoServer:
             'replace-current-character',
             # 'replace-then-find',
 
-            're-search-backward',
-            're-search-forward',
+            # 're-search-backward',
+            # 're-search-forward',
 
             # 'search-backward',
             # 'search-forward',
@@ -3482,8 +3506,8 @@ class LeoServer:
             # 'toggle-find-word-option',
             'toggle-find-wrap-around-option',
 
-            'word-search-backward',
-            'word-search-forward',
+            # 'word-search-backward',
+            # 'word-search-forward',
 
             # Buttons...
             'delete-script-button-button',

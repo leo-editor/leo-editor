@@ -1983,6 +1983,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
     def word_search_backward(self, event: Event) -> None:  # pragma: no cover (interactive)
+        """Same as word-search, but in reverse."""
         # Set flags for show_find_options.
         self.reverse = True
         self.whole_world = True
