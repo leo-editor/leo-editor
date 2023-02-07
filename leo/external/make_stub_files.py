@@ -1122,14 +1122,6 @@ class LeoGlobals:
             return isinstance(s, str)
         else:
             return isinstance(s, types.UnicodeType)
-    #@+node:ekr.20160317054700.91: *3* g.pdb
-    def pdb(self):
-        try:
-            from leo.core import leoGlobals as leo_g
-            leo_g.pdb()
-        except ImportError:
-            import pdb
-            pdb.set_trace()
     #@+node:ekr.20160317054700.92: *3* g.shortFileName
     def shortFileName(self, fileName, n=None):
         # pylint: disable=invalid-unary-operand-type

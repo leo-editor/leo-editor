@@ -303,13 +303,6 @@ def getLastTracebackFileAndLineNumber():
     #
     # Should never happen.
     return '<string>', 0
-#@+node:ekr.20110310093050.14293: *5* pdb (codewise)
-def pdb(message=''):
-    """Fall into pdb."""
-    import pdb  # Required: we have just defined pdb as a function!
-    if message:
-        print(message)
-    pdb.set_trace()
 #@+node:ekr.20110310093050.14263: *5* pr (codewise)
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
