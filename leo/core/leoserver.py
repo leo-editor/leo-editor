@@ -909,6 +909,17 @@ class LeoServer:
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
+    #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
+    def _endEditLabel(self) -> None:
+        """Overridden : End editing of a headline and update p.h."""
+        try:
+            gui_w = self.c.edit_widget(self.c.p)
+            gui_w.setSelectionRange(0, 0, insert=0)
+        except:
+            print("Could not reset headline cursor")
+
+        # Important: this will redraw if necessary.
+        self.c.frame.tree.onHeadChanged(self.c.p)
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
     def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
@@ -1211,6 +1222,8 @@ class LeoServer:
             cc = QuickSearchController(c)
             # Patch up quick-search controller to the commander
             c.patched_quicksearch_controller = cc
+            # Patch up for 'selection range' in headlines left by the search commands.
+            c.frame.tree.endEditLabel = self._endEditLabel
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -2990,13 +3003,6 @@ class LeoServer:
                     print(
                         f"{tag}: node does not exist! "
                         f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
-        # Reset headline cursor
-        # try:
-        #     gui_w = c.edit_widget(p)
-        #     gui_w.setSelectionRange(0, 0, insert=0)
-        # except:
-        #     print("Could not reset headline cursor")
-
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
     def set_headline(self, param: Param) -> Response:
