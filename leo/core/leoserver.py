@@ -1795,6 +1795,22 @@ class LeoServer:
         c = self._check_c()
         fc = c.findCommands
         ftm = fc.ftm
+
+        if hasattr(param, "fromOutline"):
+            fromOutline = param.get("fromOutline", False)
+            fromBody = not fromOutline
+            #
+            focus = self._get_focus()
+            inOutline = ("tree" in focus) or ("head" in focus)
+            inBody = not inOutline
+            #
+            if fromOutline and inBody:
+                fc.in_headline = True
+            elif fromBody and inOutline:
+                fc.in_headline = False
+                c.bodyWantsFocus()
+                c.bodyWantsFocusNow()
+
         backward = param.get("backward")
         regex = param.get("regex")
         word = param.get("word")
@@ -1819,7 +1835,7 @@ class LeoServer:
         ftm.set_find_text(find_pattern)
         fc.update_find_list(find_pattern)
         fc.init_vim_search(find_pattern)
-        fc.init_in_headline()  # Required.
+        # fc.init_in_headline()  # Handled by the 'fromOutline' param
         try:
             settings = fc.ftm.get_settings()
             p, pos, newpos = fc.do_find_next(settings)
@@ -1832,31 +1848,6 @@ class LeoServer:
         result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
-    #@+node:felix.20230204161448.1: *5* server.find_all_unique_regex
-    def find_all_unique_regex(self, param: Param) -> Response:
-        """Find Unique Regex / Replace All Unique Regex"""
-        tag = 'find_all_unique_regex'
-        c = self._check_c()
-        fc = c.findCommands
-        replace =  param.get("replace")
-        findText = param.get("findText")
-        replaceText = param.get("replaceText", "")
-        result = Any
-        try:
-            settings = fc.ftm.get_settings()
-            settings["findText"] = findText
-            settings["replaceText"] = replaceText
-            fc.findAllUniqueFlag = True
-            if replace:
-                result = fc.do_change_all(settings)
-            else:
-                result = fc.do_find_all(settings)
-        except Exception as e:
-            raise ServerError(f"{tag}: Running find_all_unique_regex operation gave exception: {e}")
-        #
-        focus = self._get_focus()
-        return self._make_response({"found": result, "focus": focus})
-
     #@+node:felix.20210621233316.22: *5* server.find_all
     def find_all(self, param: Param) -> Response:
         """Run Leo's find all command and return results."""
@@ -1877,7 +1868,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1915,7 +1906,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1952,7 +1943,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -1984,7 +1975,7 @@ class LeoServer:
         c = self._check_c()
         p = c.p
         fc = c.findCommands
-        fromOutline = param.get("fromOutline")
+        fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
         #
         focus = self._get_focus()
@@ -2975,11 +2966,11 @@ class LeoServer:
                         f"{tag}: node does not exist! "
                         f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
         # Reset headline cursor
-        try:
-            gui_w = c.edit_widget(p)
-            gui_w.setSelectionRange(0, 0, insert=0)
-        except:
-            print("Could not reset headline cursor")
+        # try:
+        #     gui_w = c.edit_widget(p)
+        #     gui_w.setSelectionRange(0, 0, insert=0)
+        # except:
+        #     print("Could not reset headline cursor")
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
@@ -3237,6 +3228,8 @@ class LeoServer:
         # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
+            'restart-leo',
+
             'demangle-recent-files',
             'clean-main-spell-dict',
             'clean-persistence',
@@ -3455,8 +3448,8 @@ class LeoServer:
             'replace-current-character',
             # 'replace-then-find',
 
-            're-search-backward',
-            're-search-forward',
+            # 're-search-backward',
+            # 're-search-forward',
 
             # 'search-backward',
             # 'search-forward',
@@ -3482,8 +3475,8 @@ class LeoServer:
             # 'toggle-find-word-option',
             'toggle-find-wrap-around-option',
 
-            'word-search-backward',
-            'word-search-forward',
+            # 'word-search-backward',
+            # 'word-search-forward',
 
             # Buttons...
             'delete-script-button-button',
