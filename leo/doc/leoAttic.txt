@@ -10099,6 +10099,134 @@ def tupleToString(obj: Any, indent: str='', tag: str=None) -> str:
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20220917052540.1: ** Old commands
+#@+node:ekr.20150514063305.281: *3* ec.flushLines (doesn't work)
+@cmd('flush-lines')
+def flushLines(self, event: Event) -> None:
+    """
+    Delete each line that contains a match for regexp, operating on the
+    text after point.
+
+    In Transient Mark mode, if the region is active, the command operates
+    on the region instead.
+    """
+    k = self.c.k
+    k.setLabelBlue('Flush lines regexp: ')
+    k.get1Arg(event, handler=self.flushLines1)
+
+def flushLines1(self, event: Event) -> None:
+    k = self.c.k
+    k.clearState()
+    k.resetLabel()
+    self.linesHelper(event, k.arg, 'flush')
+#@+node:ekr.20150514063305.282: *3* ec.keepLines (doesn't work)
+@cmd('keep-lines')
+def keepLines(self, event: Event) -> None:
+    """
+    Delete each line that does not contain a match for regexp, operating on
+    the text after point.
+
+    In Transient Mark mode, if the region is active, the command operates
+    on the region instead.
+    """
+    k = self.c.k
+    k.setLabelBlue('Keep lines regexp: ')
+    k.get1Arg(event, handler=self.keepLines1)
+
+def keepLines1(self, event: Event) -> None:
+    k = self.c.k
+    k.clearState()
+    k.resetLabel()
+    self.linesHelper(event, k.arg, 'keep')
+#@+node:ekr.20150514063305.283: *3* ec.linesHelper
+def linesHelper(self, event: Event, pattern: str, which: str) -> None:
+    w = self.editWidget(event)
+    if not w:
+        return  # pragma: no cover (defensive)
+    self.beginCommand(w, undoType=which + '-lines')
+    if w.hasSelection():
+        i, end = w.getSelectionRange()
+    else:
+        i = w.getInsertPoint()
+        end = w.getLastIndex()
+    txt = w.get(i, end)
+    tlines = txt.splitlines(True)
+    keeplines = list(tlines) if which == 'flush' else []
+    try:
+        regex = re.compile(pattern)
+        for n, z in enumerate(tlines):
+            f = regex.findall(z)
+            if which == 'flush' and f:
+                keeplines[n] = None
+            elif f:
+                keeplines.append(z)
+    except Exception:
+        return
+    if which == 'flush':
+        keeplines = [x for x in keeplines if x is not None]
+    w.delete(i, end)
+    w.insert(i, ''.join(keeplines))
+    w.setInsertPoint(i)
+    self.endCommand(changed=True, setLabel=True)
+#@+node:ekr.20171226140643.1: *3* find.find-all-unique-regex
+@cmd('find-all-unique-regex')
+def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
+    """
+    Create a summary node containing all unique matches of the regex search
+    string. This command shows only the matched string itself.
+    """
+    self.ftm.clear_focus()
+    self.match_obj = None
+    self.changeAllFlag = False
+    self.findAllUniqueFlag = True
+    self.ftm.set_entry_focus()
+    self.start_state_machine(event,
+        prefix='Search Unique Regex: ',
+        handler=self.interactive_find_all_unique_regex1,
+        escape_handler=self.interactive_change_all_unique_regex1,
+    )
+
+def interactive_find_all_unique_regex1(
+    self,
+    event: Event = None,
+) -> Dict[str, Any]:  # pragma: no cover (interactive)
+    k = self.k
+    # Settings...
+    find_pattern = k.arg
+    self.update_find_list(find_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    return self.do_find_all(settings)
+
+def interactive_change_all_unique_regex1(self, event: Event) -> None:  # pragma: no cover (interactive)
+    k = self.k
+    find_pattern = self._sString = k.arg
+    self.update_find_list(k.arg)
+    s = f"'Replace All Unique Regex': {find_pattern} With: "
+    k.setLabelBlue(s)
+    self.add_change_string_to_label()
+    k.getNextArg(self.interactive_change_all_unique_regex2)
+
+def interactive_change_all_unique_regex2(self, event: Event) -> None:  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.update_change_list(change_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_change_all(settings)
 #@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
 @first # -*- coding: utf-8 -*-
 """Unit test commands"""
@@ -10443,74 +10571,6 @@ def test_vim(event: Event=None) -> None:
 def test_gui(event: Event=None) -> None:
     """Run all gui-related unit tests."""
     g.run_unit_tests('leo.unittests.test_gui')
-#@+node:ekr.20150514063305.281: *3* ec.flushLines (doesn't work)
-@cmd('flush-lines')
-def flushLines(self, event: Event) -> None:
-    """
-    Delete each line that contains a match for regexp, operating on the
-    text after point.
-
-    In Transient Mark mode, if the region is active, the command operates
-    on the region instead.
-    """
-    k = self.c.k
-    k.setLabelBlue('Flush lines regexp: ')
-    k.get1Arg(event, handler=self.flushLines1)
-
-def flushLines1(self, event: Event) -> None:
-    k = self.c.k
-    k.clearState()
-    k.resetLabel()
-    self.linesHelper(event, k.arg, 'flush')
-#@+node:ekr.20150514063305.282: *3* ec.keepLines (doesn't work)
-@cmd('keep-lines')
-def keepLines(self, event: Event) -> None:
-    """
-    Delete each line that does not contain a match for regexp, operating on
-    the text after point.
-
-    In Transient Mark mode, if the region is active, the command operates
-    on the region instead.
-    """
-    k = self.c.k
-    k.setLabelBlue('Keep lines regexp: ')
-    k.get1Arg(event, handler=self.keepLines1)
-
-def keepLines1(self, event: Event) -> None:
-    k = self.c.k
-    k.clearState()
-    k.resetLabel()
-    self.linesHelper(event, k.arg, 'keep')
-#@+node:ekr.20150514063305.283: *3* ec.linesHelper
-def linesHelper(self, event: Event, pattern: str, which: str) -> None:
-    w = self.editWidget(event)
-    if not w:
-        return  # pragma: no cover (defensive)
-    self.beginCommand(w, undoType=which + '-lines')
-    if w.hasSelection():
-        i, end = w.getSelectionRange()
-    else:
-        i = w.getInsertPoint()
-        end = w.getLastIndex()
-    txt = w.get(i, end)
-    tlines = txt.splitlines(True)
-    keeplines = list(tlines) if which == 'flush' else []
-    try:
-        regex = re.compile(pattern)
-        for n, z in enumerate(tlines):
-            f = regex.findall(z)
-            if which == 'flush' and f:
-                keeplines[n] = None
-            elif f:
-                keeplines.append(z)
-    except Exception:
-        return
-    if which == 'flush':
-        keeplines = [x for x in keeplines if x is not None]
-    w.delete(i, end)
-    w.insert(i, ''.join(keeplines))
-    w.setInsertPoint(i)
-    self.endCommand(changed=True, setLabel=True)
 #@+node:ekr.20110605121601.18310: *3* qtFrame.leoHelp
 @frame_cmd('open-offline-tutorial')
 def leoHelp(self, event: Event=None) -> None:
