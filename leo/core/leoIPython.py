@@ -153,11 +153,11 @@ class InternalIPKernel:
     #@+node:ekr.20160331083020.1: *3* ileo.pdb
     def pdb(self, message: str = '') -> None:
         """Fall into pdb."""
-        import pdb  # Required: we have just defined pdb as a function!
-        pdb = pdb.Pdb(stdout=sys.__stdout__)  # type:ignore # mypy is confused.
         if message:
             self.put_stdout(message)
-        pdb.set_trace()  # This works, but there are no IPython sources.
+        # pylint: disable=forgotten-debug-statement
+        # This works, but there are no IPython sources.
+        breakpoint()  # New in Python 3.7.
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
     def print_namespace(self, event: Event = None) -> None:
         print("\n***Variables in User namespace***")
