@@ -120,11 +120,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('killed log listener.')
         else:
             g.es_print('log listener not active.')
-    #@+node:ekr.20150514063305.109: ** debug.pdb
-    @cmd('pdb')
-    def pdb(self, event: Event = None) -> None:
-        """Fall into pdb."""
-        g.pdb()
     #@+node:ekr.20150514063305.110: ** debug.show-focus
     @cmd('show-focus')
     def printFocus(self, event: Event = None) -> None:

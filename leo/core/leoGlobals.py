@@ -2693,7 +2693,6 @@ def pause(s: str) -> None:
 #@+node:ekr.20041105091148: *4* g.pdb
 def pdb(message: str = '') -> None:
     """Fall into pdb."""
-    import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
         try:
             from leo.core.leoQt import QtCore
@@ -2703,7 +2702,7 @@ def pdb(message: str = '') -> None:
     if message:
         print(message)
     # pylint: disable=forgotten-debug-statement
-    pdb.set_trace()
+    breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """
