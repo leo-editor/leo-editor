@@ -64,12 +64,12 @@ Socket = Any
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
 version_tuple = (1, 0, 6)
 # Version History
-# 1.0.1 Initial commit
-# 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
+# 1.0.1 Initial commit.
+# 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
 # 1.0.3 July 2022: Fixed original node selection upon opening a file.
-# 1.0.4 September 2022: Full type checking
-# 1.0.5 October 2022: Fixed node commands when used from client's context menu
-# 1.0.6 February 2023: Fixed JSON serialization and improved search Commands
+# 1.0.4 September 2022: Full type checking.
+# 1.0.5 October 2022: Fixed node commands when used from client's context menu.
+# 1.0.6 February 2023: Fixed JSON serialization, improved search commands and syntax-coloring.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2342,20 +2342,27 @@ class LeoServer:
             line, col = g.convertPythonIndexToRowCol(s, i)
             return {"line": line, "col": col, "index": i}
 
-        # Get the language.
-        aList = g.get_directives_dict_list(p)
-        d = g.scanAtCommentAndAtLanguageDirectives(aList)
-        language = (
-            d and d.get('language')
-            or g.getLanguageFromAncestorAtFileNode(p)
-            or c.config.getLanguage('target-language')
-            or 'plain'
-        )
+        # Handle @killcolor and @nocolor-node when looking for language
+        if c.frame.body.colorizer.useSyntaxColoring(p):
+            # Get the language.
+            aList = g.get_directives_dict_list(p)
+            d = g.scanAtCommentAndAtLanguageDirectives(aList)
+            language = (
+                d and d.get('language')
+                or g.getLanguageFromAncestorAtFileNode(p)
+                or c.config.getLanguage('target-language')
+                or 'plain'
+            )
+        else:
+            # No coloring at all for this node.
+            language = 'plain'
+
         # Get the body wrap state
         wrap = g.scanAllAtWrapDirectives(c, p)
         tabWidth = g.scanAllAtTabWidthDirectives(c, p)
         if not isinstance(tabWidth, int):
             tabWidth = False
+
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
