@@ -2342,20 +2342,27 @@ class LeoServer:
             line, col = g.convertPythonIndexToRowCol(s, i)
             return {"line": line, "col": col, "index": i}
 
-        # Get the language.
-        aList = g.get_directives_dict_list(p)
-        d = g.scanAtCommentAndAtLanguageDirectives(aList)
-        language = (
-            d and d.get('language')
-            or g.getLanguageFromAncestorAtFileNode(p)
-            or c.config.getLanguage('target-language')
-            or 'plain'
-        )
+        # Handle @killcolor and @nocolor-node when looking for language
+        if c.frame.body.colorizer.useSyntaxColoring(p):
+            # Get the language.
+            aList = g.get_directives_dict_list(p)
+            d = g.scanAtCommentAndAtLanguageDirectives(aList)
+            language = (
+                d and d.get('language')
+                or g.getLanguageFromAncestorAtFileNode(p)
+                or c.config.getLanguage('target-language')
+                or 'plain'
+            )
+        else:
+            # No coloring at all for this node.
+            language = 'plain'
+
         # Get the body wrap state
         wrap = g.scanAllAtWrapDirectives(c, p)
         tabWidth = g.scanAllAtTabWidthDirectives(c, p)
         if not isinstance(tabWidth, int):
             tabWidth = False
+
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
