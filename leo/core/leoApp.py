@@ -2186,7 +2186,6 @@ class LoadManager:
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         t1 = time.process_time()
-        print('')  # Give some separation for the coming traces.
         if not lm.isValidPython():
             return
         lm.doPrePluginsInit(fileName, pymacs)  # sets lm.options and lm.files
