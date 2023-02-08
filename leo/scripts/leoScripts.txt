@@ -16266,7 +16266,7 @@ def htmlize(c,p):
         g.es(lang, p.h)
     except Exception:
         g.es('htmlize malfunction?', color='tomato')
-        g.es_exception(full= True)
+        g.es_exception()
 #@+node:ekr.20041229163210.7: *6* << colorize with silvercity >>
 if lang in [ # Leo may not have all of these yet
     'csharp', 'c', 'c++', 'cpp', # (C and C++)
