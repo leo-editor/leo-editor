@@ -5859,7 +5859,7 @@ def es_event_exception(eventName: str, full: bool = False) -> None:
     if not g.stdErrIsRedirected():  # 2/16/04
         traceback.print_exc()
 #@+node:ekr.20031218072017.3112: *3* g.es_exception
-def es_exception() -> None:
+def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     """Print the last exception."""
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
