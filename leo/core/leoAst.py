@@ -257,11 +257,6 @@ class LeoGlobals:  # pragma: no cover
             result.append(repr(obj))
         result.append('')
         return '\n'.join(result)
-    #@+node:ekr.20220327132500.1: *3* LeoGlobals.pdb
-    def pdb(self) -> None:
-        import pdb as _pdb
-        # pylint: disable=forgotten-debug-statement
-        _pdb.set_trace()
     #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
     def plural(self, obj: Any) -> str:
         """Return "s" or "" depending on n."""

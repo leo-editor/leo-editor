@@ -8,7 +8,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -143,7 +143,6 @@ class LeoFind:
         self.match_obj: re.Match = None
         self.reverse = False
         self.root: Position = None  # The start of the search, especially for suboutline-only.
-        self.unique_matches: Set = set()
         #
         # User settings.
         self.minibuffer_mode: bool = None

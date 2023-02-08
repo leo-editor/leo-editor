@@ -915,7 +915,7 @@ class LeoServer:
         try:
             gui_w = self.c.edit_widget(self.c.p)
             gui_w.setSelectionRange(0, 0, insert=0)
-        except:
+        except Exception:
             print("Could not reset headline cursor")
 
         # Important: this will redraw if necessary.
