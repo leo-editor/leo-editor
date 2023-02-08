@@ -391,7 +391,7 @@ def applyNodeAction(pScript, pClicked, c):
             exec(script, namespace)
         except Exception:
             g.es("exception in NodeAction plugin")
-            g.es_exception(full=False, c=c)
+            g.es_exception()
         finally:
             # Unredirect output
             if redirect:

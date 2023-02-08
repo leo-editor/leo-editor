@@ -5859,17 +5859,12 @@ def es_event_exception(eventName: str, full: bool = False) -> None:
     if not g.stdErrIsRedirected():  # 2/16/04
         traceback.print_exc()
 #@+node:ekr.20031218072017.3112: *3* g.es_exception
-def es_exception(full: bool = True, c: Cmdr = None, color: str = "red") -> Tuple[str, int]:
-    typ, val, tb = sys.exc_info()
+def es_exception() -> None:
+    """Print the last exception."""
     # val is the second argument to the raise statement.
-    if full:
-        lines = traceback.format_exception(typ, val, tb)
-    else:
-        lines = traceback.format_exception_only(typ, val)
-    for line in lines:
-        g.es_print_error(line, color=color)
-    fileName, n = g.getLastTracebackFileAndLineNumber()
-    return fileName, n
+    typ, val, tb = sys.exc_info()
+    for line in traceback.format_exception(typ, val, tb):
+        print(line)
 #@+node:ekr.20061015090538: *3* g.es_exception_type
 def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
     # exctype is a Exception class object; value is the error message.

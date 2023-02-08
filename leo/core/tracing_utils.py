@@ -14,6 +14,7 @@ all names in this file are pep8 compliant.
 import os
 import pprint
 import sys
+import traceback
 from typing import Any, List
 
 
@@ -75,6 +76,16 @@ def callers_list(n: int = 4) -> List[str]:
             break
         i += 1
     return list(reversed(result))
+#@+node:ekr.20230208054438.1: ** tracing_utils.es_exception
+def es_exception(full: bool = True) -> None:
+    typ, val, tb = sys.exc_info()
+    # val is the second argument to the raise statement.
+    if full:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    for line in lines:
+        print(line)
 #@+node:ekr.20230203163544.6: ** tracing_utils.get_ctor_name
 def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
     """Return <module-name>.<class-name> padded to the given width."""
@@ -108,6 +119,17 @@ def split_lines(s: str) -> List[str]:
     This function is not the same as s.splitlines(True).
     """
     return s.splitlines(True) if s else []
+#@+node:ekr.20230208053831.1: ** tracing_utils.to_encoded_string
+def to_encoded_string(s: Any, encoding: str = 'utf-8') -> bytes:
+    """Convert unicode string to an encoded string."""
+    if not isinstance(s, str):
+        return s
+    try:
+        s = s.encode(encoding, "strict")
+    except UnicodeError:
+        s = s.encode(encoding, "replace")
+        print(f"toEncodedString: Error converting {s!r} to {encoding}")
+    return s
 #@+node:ekr.20230203163544.11: ** tracing_utils.to_string
 def to_string(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """
@@ -122,6 +144,27 @@ def to_string(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> s
         lines = "".join([f"  {i:4}: {z!r}\n" for i, z in enumerate(split_lines(obj))])
         result = f"[\n{lines}]\n"
     return f"{tag.strip()}: {result}" if tag and tag.strip() else result
+#@+node:ekr.20230208053732.1: ** tracing_utils_to_unicode
+def to_unicode(s: Any, encoding: str = 'utf-8') -> str:
+    """Convert bytes to unicode if necessary."""
+    tag = 'g.toUnicode'
+    if isinstance(s, str):
+        return s
+    if not isinstance(s, bytes):
+        print(f"{tag}: bad s: {s!r}")
+        return ''
+    b: bytes = s
+    try:
+        s2 = b.decode(encoding, 'strict')
+    except(UnicodeDecodeError, UnicodeError):  # noqa
+        s2 = b.decode(encoding, 'replace')
+        print(f"{tag}: unicode error. encoding: {encoding!r}, s2:\n{s2!r}")
+        trace(callers())
+    except Exception:
+        es_exception()
+        print(f"{tag}: unexpected error! encoding: {encoding!r}, s2:\n{s2!r}")
+        trace(callers())
+    return s2
 #@+node:ekr.20230203163544.12: ** tracing_utils.trace
 def trace(*args: Any) -> None:
     """Print the name of the calling function followed by all the args."""
@@ -130,5 +173,12 @@ def trace(*args: Any) -> None:
         name = name[:-1]
     args_s = " ".join(str(z) for z in args)
     print(f"{name} {args_s}")
+#@+node:ekr.20230208054910.1: ** tracing_utils.truncate
+def truncate(s: str, n: int) -> str:
+    """Return s truncated to n characters."""
+    if len(s) <= n:
+        return s
+    s2 = s[: n - 3] + f"...({len(s)})"
+    return s2 + '\n' if s.endswith('\n') else s2
 #@-others
 #@-leo

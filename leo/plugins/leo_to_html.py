@@ -643,7 +643,7 @@ class Leo_to_HTML:
             f = open(filepath, 'wb')
         except Exception:
             g.error('can not open: %s' % (filepath))
-            g.es_exception(full=False, c=self.c)
+            # g.es_exception()
             return False
         try:
             try:
@@ -653,7 +653,7 @@ class Leo_to_HTML:
                 ok = True
             except Exception:
                 g.error('write failed: %s' % (filepath))
-                g.es_exception(full=False, c=self.c)
+                g.es_exception()
                 ok = False
         finally:
             f.close()

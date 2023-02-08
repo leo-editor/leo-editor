@@ -685,13 +685,13 @@ class FileCommands:
             if self.read_only:
                 g.error("read only")
             g.error("exception deleting backup file:", fileName)
-            g.es_exception(full=False)
+            g.es_exception()
     #@+node:ekr.20100119145629.6108: *4* fc.handleWriteLeoFileException
     def handleWriteLeoFileException(self, fileName: str, backupName: str, f: Any) -> None:
         """Report an exception. f is an open file, or None."""
         # c = self.c
         g.es("exception writing:", fileName)
-        g.es_exception(full=True)
+        g.es_exception()
         if f:
             f.close()
         # Delete fileName.
@@ -706,7 +706,7 @@ class FileCommands:
                 shutil.move(src, dst)
             except Exception:
                 g.error('exception renaming', src, 'to', dst)
-                g.es_exception(full=False)
+                g.es_exception()
         else:
             g.error('backup file does not exist!', repr(backupName))
     #@+node:ekr.20040324080359.1: *4* fc.isReadOnly

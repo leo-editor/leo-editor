@@ -1801,7 +1801,7 @@ class Commands:
             if g.unitTesting:
                 raise
             g.warning(f"Syntax error in: {h}")
-            g.es_exception(full=False, color="black")
+            g.es_exception()
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
@@ -2203,7 +2203,7 @@ class Commands:
                 if g.unitTesting:
                     raise
                 g.es_print("exception executing command")
-                g.es_exception(c=c)
+                g.es_exception()
             if c and c.exists:
                 if c.requestCloseWindow:
                     c.requestCloseWindow = False
@@ -2595,7 +2595,7 @@ class Commands:
                         aList.append(s2)
                     except Exception:
                         g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
-                        g.es_exception(full=True, c=c)
+                        g.es_exception()
                 # Prepare to search again after the last '}}'
                 previ = j + 2
             else:

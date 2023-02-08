@@ -142,7 +142,7 @@ def applyFileAction(p, filename, c):
             exec(script, namespace)
         except Exception:
             g.es("exception in FileAction plugin")
-            g.es_exception(full=False, c=c)
+            g.es_exception()
         finally:
             if redirect:
                 g.restoreStderr()

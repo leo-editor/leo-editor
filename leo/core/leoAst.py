@@ -157,6 +157,7 @@ import difflib
 import glob
 import io
 import os
+import pprint
 import re
 import sys
 import textwrap
@@ -190,24 +191,38 @@ class LeoGlobals:  # pragma: no cover
     total_time = 0.0  # For unit testing.
 
     #@+others
-    #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
-    def callerName(self, n: int) -> str:
-        """Get the function name from the call stack."""
+    #@+node:ekr.20191226175903.1: *3* LeoGlobals._caller_name
+    def _caller_name(self, n: int) -> str:
+        """Return the name of the caller n levels back in the call stack."""
         try:
-            f1 = sys._getframe(n)
-            code1 = f1.f_code
-            return code1.co_name
+            # Get the function name from the call stack.
+            frame = sys._getframe(n)  # The stack frame, n levels up.
+            code = frame.f_code  # The code object
+            locals_ = frame.f_locals  # The local namespace.
+            name = code.co_name
+            obj = locals_.get("self")
+            if obj and name == "__init__":
+                return f"{obj.__class__.__name__}.{name}"
+            return name
+        except ValueError:
+            # The stack is not deep enough OR
+            # sys._getframe does not exist on this platform.
+            return ""
         except Exception:
-            return ''
+            return ""  # "<no caller name>"
+    #@+node:ekr.20230208055034.1: *3* LeoGlobals.caller
+    def caller(self, i: int = 1) -> str:
+        """Return the caller name i levels up the call stack."""
+        return self.callers(i + 1).split(",")[0]
     #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
     def callers(self, n: int = 4) -> str:
         """
         Return a string containing a comma-separated list of the callers
-        of the function that called g.callerList.
+        of the function that called g.caller_list.
         """
         i, result = 2, []
         while True:
-            s = self.callerName(n=i)
+            s = self._caller_name(n=i)
             if s:
                 result.append(s)
             if not s or len(result) >= n:
@@ -215,12 +230,10 @@ class LeoGlobals:  # pragma: no cover
             i += 1
         return ','.join(reversed(result))
     #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self, full: bool = True) -> Tuple[str, int]:
+    def es_exception(self, full: bool = True) -> None:
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
-        fileName, n = self.getLastTracebackFileAndLineNumber()
-        return fileName, n
     #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
     def getLastTracebackFileAndLineNumber(self) -> Tuple[str, int]:
         typ, val, tb = sys.exc_info()
@@ -235,28 +248,6 @@ class LeoGlobals:  # pragma: no cover
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
-    #@+node:ekr.20200220065737.1: *3* LeoGlobals.objToString
-    def objToString(self, obj: Any, tag: str = None) -> str:
-        """Simplified version of g.printObj."""
-        result = []
-        if tag:
-            result.append(f"{tag}...")
-        if isinstance(obj, str):
-            obj = g.splitLines(obj)
-        if isinstance(obj, list):
-            result.append('[')
-            for z in obj:
-                result.append(f"  {z!r}")
-            result.append(']')
-        elif isinstance(obj, tuple):
-            result.append('(')
-            for z in obj:
-                result.append(f"  {z!r}")
-            result.append(')')
-        else:
-            result.append(repr(obj))
-        result.append('')
-        return '\n'.join(result)
     #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
     def plural(self, obj: Any) -> str:
         """Return "s" or "" depending on n."""
@@ -265,24 +256,37 @@ class LeoGlobals:  # pragma: no cover
         else:
             n = obj
         return '' if n == 1 else 's'
-    #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
-    def printObj(self, obj: Any, tag: str = None) -> None:
-        """Simplified version of g.printObj."""
-        print(self.objToString(obj, tag))
-    #@+node:ekr.20220327120618.1: *3* LeoGlobals.shortFileName
-    def shortFileName(self, fileName: str) -> str:
+    #@+node:ekr.20191226175441.1: *3* LeoGlobals.print_obj
+    def print_obj(self, obj: Any, tag: str = None) -> None:
+        """Print an object."""
+        print(self.to_string(obj, tag))
+    #@+node:ekr.20220327120618.1: *3* LeoGlobals.short_file_name
+    def short_file_name(self, fileName: str) -> str:
         """Return the base name of a path."""
         return os.path.basename(fileName) if fileName else ''
-    #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
-    def splitLines(self, s: str) -> List[str]:
+    #@+node:ekr.20191226190131.1: *3* LeoGlobals.split_lines
+    def split_lines(self, s: str) -> List[str]:
         """Split s into lines, preserving the number of lines and
         the endings of all lines, including the last line."""
-        # g.stat()
         if s:
             return s.splitlines(True)  # This is a Python string function!
         return []
-    #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
-    def toEncodedString(self, s: Any, encoding: str = 'utf-8') -> bytes:
+    #@+node:ekr.20200220065737.1: *3* LeoGlobals.to_string
+    def to_string(self, obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
+        """
+        Pretty print any Python object to a string.
+        """
+        if not isinstance(obj, str):
+            result = pprint.pformat(obj, indent=indent, width=width)
+        elif "\n" not in obj:
+            result = repr(obj)
+        else:
+            # Return the enumerated lines of the string.
+            lines = "".join([f"  {i:4}: {z!r}\n" for i, z in enumerate(self.split_lines(obj))])
+            result = f"[\n{lines}]\n"
+        return f"{tag.strip()}: {result}" if tag and tag.strip() else result
+    #@+node:ekr.20191226190844.1: *3* LeoGlobals.to_encoded_string
+    def to_encoded_string(self, s: Any, encoding: str = 'utf-8') -> bytes:
         """Convert unicode string to an encoded string."""
         if not isinstance(s, str):
             return s
@@ -290,12 +294,12 @@ class LeoGlobals:  # pragma: no cover
             s = s.encode(encoding, "strict")
         except UnicodeError:
             s = s.encode(encoding, "replace")
-            print(f"toEncodedString: Error converting {s!r} to {encoding}")
+            print(f"to_encoded_string: Error converting {s!r} to {encoding}")
         return s
-    #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s: Any, encoding: str = 'utf-8') -> str:
+    #@+node:ekr.20191226190006.1: *3* LeoGlobals.to_unicode
+    def to_unicode(self, s: Any, encoding: str = 'utf-8') -> str:
         """Convert bytes to unicode if necessary."""
-        tag = 'g.toUnicode'
+        tag = 'g.to_unicode'
         if isinstance(s, str):
             return s
         if not isinstance(s, bytes):
@@ -315,15 +319,12 @@ class LeoGlobals:  # pragma: no cover
         return s2
     #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
     def trace(self, *args: Any) -> None:
-        """Print a tracing message."""
-        # Compute the caller name.
-        try:
-            f1 = sys._getframe(1)
-            code1 = f1.f_code
-            name = code1.co_name
-        except Exception:
-            name = ''
-        print(f"{name}: {' '.join(str(z) for z in args)}")
+        """Print the name of the calling function followed by all the args."""
+        name = self._caller_name(2)
+        if name.endswith(".pyc"):
+            name = name[:-1]
+        args_s = " ".join(str(z) for z in args)
+        print(f"{name} {args_s}")
     #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
     def truncate(self, s: str, n: int) -> str:
         """Return s truncated to n characters."""
@@ -514,7 +515,7 @@ if 1:  # pragma: no cover
         if not e:
             # Python's encoding comments override everything else.
             e = get_encoding_directive(bb)
-        s = g.toUnicode(bb, encoding=e)
+        s = g.to_unicode(bb, encoding=e)
         s = regularize_nls(s)
         return e, s
     #@+node:ekr.20200106174158.1: *4* function: strip_BOM
@@ -635,7 +636,7 @@ if 1:  # pragma: no cover
             name = node.__class__.__name__
             if abs(i - j) > 3:
                 tag = f"get_node_token_list: {name} {i}..{j}"
-                g.printObj(global_tokens_list[i : j + 1], tag=tag)
+                g.print_obj(global_tokens_list[i : j + 1], tag=tag)
             else:
                 g.trace(f"{i!r:>3}..{j!r:3} {name} {global_tokens_list[i : j + 1]}")
         return global_tokens_list[i : j + 1]
@@ -876,9 +877,9 @@ if 1:  # pragma: no cover
             if not ok:
                 print('\nRound-trip check FAILS')
                 print('Contents...\n')
-                g.printObj(contents)
+                g.print_obj(contents)
                 print('\nResult...\n')
-                g.printObj(result)
+                g.print_obj(result)
             return ok
 
         try:
@@ -901,11 +902,11 @@ if 1:  # pragma: no cover
         def oops(message: str) -> None:
             print('')
             print(f"parse_ast: {message}")
-            g.printObj(s)
+            g.print_obj(s)
             print('')
 
         try:
-            s1 = g.toEncodedString(s)
+            s1 = g.to_encoded_string(s)
             tree = ast.parse(s1, filename='before', mode='exec')
             return tree
         except IndentationError:
@@ -920,12 +921,12 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191027074436.1: *4* function: dump_ast
     def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
         """Utility to dump an ast tree."""
-        g.printObj(AstDumper().dump_ast(ast), tag=tag)
+        g.print_obj(AstDumper().dump_ast(ast), tag=tag)
     #@+node:ekr.20191228095945.4: *4* function: dump_contents
     def dump_contents(contents: str, tag: str = 'Contents') -> None:
         print('')
         print(f"{tag}...\n")
-        for i, z in enumerate(g.splitLines(contents)):
+        for i, z in enumerate(g.split_lines(contents)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *4* function: dump_lines
@@ -964,14 +965,14 @@ if 1:  # pragma: no cover
     def show_diffs(s1: str, s2: str, filename: str = '') -> None:
         """Print diffs between strings s1 and s2."""
         lines = list(difflib.unified_diff(
-            g.splitLines(s1),
-            g.splitLines(s2),
+            g.split_lines(s1),
+            g.split_lines(s2),
             fromfile=f"Old {filename}",
             tofile=f"New {filename}",
         ))
         print('')
         tag = f"Diffs for {filename}" if filename else 'Diffs'
-        g.printObj(lines, tag=tag)
+        g.print_obj(lines, tag=tag)
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -1560,7 +1561,7 @@ class Fstringify:
                 result.append(tokens)
                 if trace:  # pragma: no cover
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
-                    g.printObj(tokens, tag=f"Tokens for item {i}")
+                    g.print_obj(tokens, tag=f"Tokens for item {i}")
             return result
         # Now we expect only one result.
         tokens = tokens_for_node(self.filename, node, self.tokens)
@@ -1606,7 +1607,7 @@ class Fstringify:
         # Print a leading blank line.
         print('')
         # Calculate the padding.
-        lines = g.splitLines(message)
+        lines = g.split_lines(message)
         pad = max(lines[0].find(':'), 30)
         # Print the first line.
         z = lines[0]
@@ -1788,7 +1789,7 @@ class Orange:
         if 0:  # This obscures more import error messages.
             show_diffs(contents, results, filename=filename)
         # Write the results
-        print(f"Beautified: {g.shortFileName(filename)}")
+        print(f"Beautified: {g.short_file_name(filename)}")
         write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
@@ -2755,7 +2756,7 @@ class Tokenizer:
 
         # Split the results into lines.
         result = ''.join([z.to_string() for z in self.results])
-        result_lines = g.splitLines(result)
+        result_lines = g.split_lines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
         assert ok, (
@@ -3619,7 +3620,7 @@ class TokenOrderGenerator:
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
         if trace:  # pragma: no cover
-            g.printObj(results, tag=f"{tag}: Results")
+            g.print_obj(results, tag=f"{tag}: Results")
         return results
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -3834,8 +3835,8 @@ class TokenOrderGenerator:
             return line * 1000 + col
 
         if 0:  # pragma: no cover
-            g.printObj([ast.dump(z) for z in args], tag='args')
-            g.printObj([ast.dump(z) for z in keywords], tag='keywords')
+            g.print_obj([ast.dump(z) for z in args], tag='args')
+            g.print_obj([ast.dump(z) for z in keywords], tag='keywords')
 
         if py_version >= (3, 9):
             places = [get_pos(z) for z in args + keywords]
