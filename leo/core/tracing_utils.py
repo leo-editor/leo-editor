@@ -77,14 +77,10 @@ def callers_list(n: int = 4) -> List[str]:
         i += 1
     return list(reversed(result))
 #@+node:ekr.20230208054438.1: ** tracing_utils.es_exception
-def es_exception(full: bool = True) -> None:
-    typ, val, tb = sys.exc_info()
+def es_exception() -> None:
     # val is the second argument to the raise statement.
-    if full:
-        lines = traceback.format_exception(typ, val, tb)
-    else:
-        lines = traceback.format_exception_only(typ, val)
-    for line in lines:
+    typ, val, tb = sys.exc_info()
+    for line in traceback.format_exception(typ, val, tb):
         print(line)
 #@+node:ekr.20230203163544.6: ** tracing_utils.get_ctor_name
 def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
