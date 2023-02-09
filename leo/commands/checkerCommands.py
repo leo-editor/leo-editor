@@ -606,11 +606,13 @@ class PylintCommand:
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
         data = []
-        is_at_file = root.isAnyAtFileNode()
-        if is_at_file:
+        is_at_file = False
+        roots = g.findRootsWithPredicate(c, root, predicate=predicate)
+        if roots:
             roots = g.findRootsWithPredicate(c, root, predicate=predicate)
             data: List[Tuple[str, Position]] = [(self.get_fn(p), p.copy()) for p in roots]
             data = [z for z in data if z[0] is not None]
+            is_at_file = True
         else:
             last_path = None
         if not data:
