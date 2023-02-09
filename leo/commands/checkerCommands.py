@@ -8,6 +8,7 @@ import os
 import re
 import shlex
 import sys
+import tempfile
 import time
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 #
@@ -598,30 +599,40 @@ class PylintCommand:
             sys.path.append(leo_path)
 
         # Ignore @nopylint trees.
-
         def predicate(p: Position) -> bool:
             for parent in p.self_and_parents():
                 if g.match_word(parent.h, 0, '@nopylint'):
                     return False
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
-        roots = g.findRootsWithPredicate(c, root, predicate=predicate)
-        data: List[Tuple[str, Position]] = [(self.get_fn(p), p.copy()) for p in roots]
-        data = [z for z in data if z[0] is not None]
-        if not data and last_path:
-            # Default to the last path.
-            fn = last_path
-            for p in c.all_positions():
-                if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
-                    data = [(fn, p.copy())]
-                    break
+        data = []
+        is_at_file = root.isAnyAtFileNode()
+        if is_at_file:
+            roots = g.findRootsWithPredicate(c, root, predicate=predicate)
+            data: List[Tuple[str, Position]] = [(self.get_fn(p), p.copy()) for p in roots]
+            data = [z for z in data if z[0] is not None]
+        else:
+            last_path = None
         if not data:
-            g.es('pylint: no files found', color='red')
-            return None
+            if last_path:
+                # Default to the last path.
+                fn = last_path
+                for p in c.all_positions():
+                    if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
+                        data = [(fn, p.copy())]
+                        break
+            else:
+                g.trace('pylint: not an external file, using temp file')
+                script = g.getScript(c, c.p, False, False)
+                fd, fn = tempfile.mkstemp(suffix='.py', prefix="")
+                with os.fdopen(fd, 'w') as f:
+                    f.write(script)
+                data = [(fn, c.p.copy())]
+
         for fn, p in data:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
-        return data[-1] if data else None
+        return data[-1] if data and is_at_file else None
     #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
     def get_rc_file(self) -> Optional[str]:
         """Return the path to the pylint configuration file."""
@@ -665,7 +676,7 @@ class PylintCommand:
     def run_pylint(self, fn: str, p: Position) -> None:
         """Run pylint on fn with the given pylint configuration file."""
         c, rc_fn = self.c, self.rc_fn
-        #
+
         # Invoke pylint directly.
         is_win = sys.platform.startswith('win')
         args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
