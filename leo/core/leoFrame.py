@@ -1280,11 +1280,15 @@ class LeoLog:
         (1, 2, g.python_pat),
     ]
 
-    def put_html_links(self, s: str) -> bool:
+    def put_html_links(self, s: str, link_root: Position = None) -> bool:
         """
         If *any* line in s contains a matches against known error patterns,
         then output *all* lines in s to the log, and return True.
-        Otherwise, return False
+        Otherwise, return False.
+        
+        If link_root is not None, then use it to compute the UNLs for navigation
+        links.  Otherwise, look for external files matching the file in the
+        error lines.
         """
         c = self.c
         trace = False and not g.unitTesting
@@ -1344,12 +1348,16 @@ class LeoLog:
             if trace:
                 print('No matches found!')
             return False  # The caller must handle s.
-        # Find all @<file> nodes.
-        at_file_nodes = [p for p in c.all_positions() if p.isAnyAtFileNode()]
-        if not at_file_nodes:
+        if link_root:
+            has_at_file_nodes = False
+            at_file_nodes = []
             if trace:
                 print('No @<file> nodes')
-            return False
+        else:
+            # Find all @<file> nodes.
+            has_at_file_nodes = True
+            at_file_nodes = [p for p in c.all_positions() if p.isAnyAtFileNode()]
+
         # Output each line using log.put, with or without a nodeLink.
         found_matches = 0
         for i, line in enumerate(lines):
@@ -1357,10 +1365,16 @@ class LeoLog:
             if m:
                 filename = m.group(filename_i)
                 line_number = m.group(line_number_i)
-                p = find_at_file_node(filename)  # Find a corresponding @<file> node.
+                if has_at_file_nodes:
+                    p = find_at_file_node(filename)  # Find a corresponding @<file> node.
+                else:
+                    p = link_root
                 if p:
                     unl = p.get_UNL()
                     found_matches += 1
+                    if not has_at_file_nodes:
+                        # filename will be the path of a temporary file
+                        line = 'Node: ' + line.replace(filename, p.h)
                     self.put(line, nodeLink=f"{unl}::-{line_number}")  # Use global line.
                 else:  # An unusual case.
                     if not g.unitTesting:
