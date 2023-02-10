@@ -1285,7 +1285,7 @@ class LeoLog:
         If *any* line in s contains a matches against known error patterns,
         then output *all* lines in s to the log, and return True.
         Otherwise, return False.
-        
+
         If link_root is not None, then use it to compute the UNLs for navigation
         links.  Otherwise, look for external files matching the file in the
         error lines.

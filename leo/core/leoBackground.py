@@ -176,7 +176,7 @@ class BackgroundProcessManager:
             # Wait for data to be fully written
             while self.lock.locked():
                 sleep(0.02)
-            # Protect acquiring the data from the process, 
+            # Protect acquiring the data from the process,
             # in case another is launched before we expect it.
             self.lock.acquire()
             result_lines = self.process_return_data
@@ -199,7 +199,7 @@ class BackgroundProcessManager:
 
         Create clickable links if s matches self.data.link_pattern.
         See p.get_UNL.
-        
+
         link_root is the root position of a subtree which was processed
         to produce this data.  It may or may not be the root of an
         external file.
