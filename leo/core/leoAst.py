@@ -259,7 +259,7 @@ class LeoGlobals:  # pragma: no cover
     #@+node:ekr.20191226175441.1: *3* LeoGlobals.print_obj
     def print_obj(self, obj: Any, tag: str = None) -> None:
         """Print an object."""
-        print(self.to_string(obj, tag))
+        print(self.to_string(obj), tag)
     #@+node:ekr.20220327120618.1: *3* LeoGlobals.short_file_name
     def short_file_name(self, fileName: str) -> str:
         """Return the base name of a path."""
@@ -507,6 +507,7 @@ if 1:  # pragma: no cover
             with open(filename, 'rb') as f:
                 bb = f.read()
         except Exception:
+            bb = ''
             print(f"{tag}: can not read {filename}")
         if not bb:
             return 'UTF-8', ''
