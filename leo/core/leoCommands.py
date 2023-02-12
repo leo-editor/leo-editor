@@ -1330,7 +1330,8 @@ class Commands:
             return  # don't update while loading.
         # Clear all dirty bits _before_ setting the caption.
         for v in c.all_unique_nodes():
-            v.clearDirty()
+            if v.statusBits & v.dirtyBit:  # Only clear if actually dirty
+                v.clearDirty()
         c.changed = False
         # Do nothing for null frames.
         assert c.gui
