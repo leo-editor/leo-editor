@@ -230,7 +230,7 @@ class LeoGlobals:  # pragma: no cover
             i += 1
         return ','.join(reversed(result))
     #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self, full: bool = True) -> None:
+    def es_exception(self) -> None:
         typ, val, tb = sys.exc_info()
         for line in traceback.format_exception(typ, val, tb):
             print(line)
@@ -257,7 +257,7 @@ class LeoGlobals:  # pragma: no cover
             n = obj
         return '' if n == 1 else 's'
     #@+node:ekr.20191226175441.1: *3* LeoGlobals.print_obj
-    def print_obj(self, obj: Any, tag: str = None) -> None:
+    def print_obj(self, obj: Any, *, tag: str = None) -> None:
         """Print an object."""
         print(self.to_string(obj, tag=tag))
     #@+node:ekr.20220327120618.1: *3* LeoGlobals.short_file_name
@@ -272,7 +272,7 @@ class LeoGlobals:  # pragma: no cover
             return s.splitlines(True)  # This is a Python string function!
         return []
     #@+node:ekr.20200220065737.1: *3* LeoGlobals.to_string
-    def to_string(self, obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
+    def to_string(self, obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
         """
         Pretty print any Python object to a string.
         """
@@ -286,7 +286,7 @@ class LeoGlobals:  # pragma: no cover
             result = f"[\n{lines}]\n"
         return f"{tag.strip()}: {result}" if tag and tag.strip() else result
     #@+node:ekr.20191226190844.1: *3* LeoGlobals.to_encoded_string
-    def to_encoded_string(self, s: Any, encoding: str = 'utf-8') -> bytes:
+    def to_encoded_string(self, s: Any, *, encoding: str = 'utf-8') -> bytes:
         """Convert unicode string to an encoded string."""
         if not isinstance(s, str):
             return s
@@ -297,7 +297,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"to_encoded_string: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.to_unicode
-    def to_unicode(self, s: Any, encoding: str = 'utf-8') -> str:
+    def to_unicode(self, s: Any, *, encoding: str = 'utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         tag = 'g.to_unicode'
         if isinstance(s, str):
