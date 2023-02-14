@@ -7553,6 +7553,7 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
                         break
 
                 if target:
+                    found_gnx = False
                     if c.p.gnx == target:
                         return target
                     for p in c.all_unique_positions():
