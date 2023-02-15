@@ -555,11 +555,12 @@ def expandAllHeadlines(self: Self, event: Event = None) -> None:
     Warning: this can take a long time for large outlines."""
     c = self
     c.endEditing()
+    p0 = c.p
     p = c.rootPosition()
     while p:
         c.expandSubtree(p)
         p.moveToNext()
-    c.redraw_after_expand(p=c.rootPosition())
+    c.redraw_after_expand(p0)  # Keep focus on original position
     c.expansionLevel = 0  # Reset expansion level.
 #@+node:ekr.20031218072017.2904: *3* c_oc.expandAllSubheads
 @g.commander_command('expand-all-subheads')
