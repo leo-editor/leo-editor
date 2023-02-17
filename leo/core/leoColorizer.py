@@ -155,7 +155,7 @@ class BaseColorizer:
         """
         Return the font for the given setting name.
         """
-        trace = 'zoom' in g.app.debug
+        trace = False  ### 'zoom' in g.app.debug
         c, get = self.c, self.c.config.get
         default_size = c.config.defaultBodyFontSize
         for name in (setting_name, setting_name.rstrip('_font')):
@@ -199,9 +199,12 @@ class BaseColorizer:
                 if font:
                     if trace:
                         g.trace(
+                            f"setting_name: {setting_name}\n"
                             f"key: {key:>35} family: {family or 'None'} "
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
+        if trace:  ###
+            g.trace('No font', setting_name)
         return None
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font: Font) -> None:
@@ -906,6 +909,7 @@ class JEditColorizer(BaseColorizer):
                 theDict[ch] = theList
     #@+node:ekr.20170514054524.1: *4* jedit.getFontFromParams
     def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int = 12) -> None:
+        g.trace("*******")
         return None
 
     # def setFontFromConfig(self):
@@ -918,6 +922,7 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
+        g.trace(f"name: {name}, language: {language}, rulesetName: {rulesetName}")  ###
         # if 'coloring' in g.app.debug and not g.unitTesting:
         #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
@@ -943,6 +948,7 @@ class JEditColorizer(BaseColorizer):
         coloring rule attributes for the mode.
         """
         language, rulesetName = self.nameToRulesetName(name)
+        g.trace(language, rulesetName)  ###
         if mode:
             # A hack to give modes/forth.py access to c.
             if hasattr(mode, 'pre_init_mode'):
@@ -991,6 +997,7 @@ class JEditColorizer(BaseColorizer):
             rulesetName=self.rulesetName,
             word_chars=self.word_chars,  # 2011/05/21
         )
+        ### g.printObj(self.modeBunch.keys(), tag=rulesetName)  ###
         # Do this after 'officially' initing the mode, to limit recursion.
         self.addImportedRules(mode, self.rulesDict, rulesetName)
         self.updateDelimsTables()
