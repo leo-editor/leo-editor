@@ -958,7 +958,6 @@ class LeoQtGui(leoGui.LeoGui):
                     font.setHintingPreference(font.PreferFullHinting)
                 except AttributeError:
                     pass
-            ### g.printObj(d, tag='qt_gui.getFontFromParams')  ###
             return font
         except Exception:
             g.es("exception setting font", g.callers(4))

@@ -118,10 +118,11 @@ class BaseColorizer:
                 if False and 'leokeyword' in key:  ###
                     print(f"{key} {gs.val}")
                 if gs and gs.kind == 'color':
-                    if key.endswith('color'):
-                        key = key[:-5]
-                    all_keys.append(key)
-                    self.default_colors_dict[key] = (key, gs.val)
+                    if gs.val and not gs.val.startswith('@'):  ### Hack:
+                        if key.endswith('color'):
+                            key = key[:-5]
+                        all_keys.append(key)
+                        self.default_colors_dict[key] = (key, gs.val)
         if 0:  ###
             for key in self.default_colors_dict:
                 if key.startswith(('rest', 'php', 'forth')):
@@ -181,7 +182,7 @@ class BaseColorizer:
         """
         Return the font for the given setting name.
         """
-        trace = False  ### 'zoom' in g.app.debug
+        trace = 'zoom' in g.app.debug
         c, get = self.c, self.c.config.get
         default_size = c.config.defaultBodyFontSize
         for name in (setting_name, setting_name.rstrip('_font')):
@@ -229,7 +230,7 @@ class BaseColorizer:
                             f"key: {key:>35} family: {family or 'None'} "
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
-        if trace:  ###
+        if trace:
             g.trace('No font', setting_name)
         return None
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
@@ -949,7 +950,6 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        ### g.trace(f"name: {name}, language: {language}, rulesetName: {rulesetName}")  ###
         # if 'coloring' in g.app.debug and not g.unitTesting:
         #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
@@ -1023,7 +1023,6 @@ class JEditColorizer(BaseColorizer):
             rulesetName=self.rulesetName,
             word_chars=self.word_chars,  # 2011/05/21
         )
-        ### g.printObj(self.modeBunch.keys(), tag=rulesetName)  ###
         # Do this after 'officially' initing the mode, to limit recursion.
         self.addImportedRules(mode, self.rulesDict, rulesetName)
         self.updateDelimsTables()
