@@ -2149,20 +2149,20 @@
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
-<v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
-<v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch-keyword3-color = blue</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch-literal1-color = blue</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch-literal2-color = blue</vh></v>
+<v t="ekr.20170819113555.2"><vh>@color patch.keyword1 = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch.keyword2 = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch.keyword3 = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch.literal1 = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch.literal2 = blue</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
+<v t="ekr.20060828110551.3"><vh>@color php.operator = DodgerBlue1</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php.keyword</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth-keyword4-color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth-keyword5-color = black</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth.keyword3 = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth.keyword4 = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth.keyword5 = black</vh></v>
 <v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
 <v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
 <v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
@@ -2170,10 +2170,10 @@
 <v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
 <v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
 <v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+<v t="ekr.20080703111151.17"><vh>@font forth.keyword2</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth.keyword3</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth.keyword4</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>

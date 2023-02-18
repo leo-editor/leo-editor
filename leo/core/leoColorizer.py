@@ -37,6 +37,7 @@ except Exception:
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoGlobals import GeneralSetting
     Color = Any
     Font = Any
     Mode = g.Bunch
@@ -92,8 +93,14 @@ class BaseColorizer:
         self.configure_colors()
         self.configure_variable_tags()
         if 'coloring' in g.app.debug:
-            g.printObj(self.configDict, tag='configDict')
-            g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
+            if 1:  # shorter.
+                keys = sorted(list(self.configDict.keys()))
+                for key in keys:
+                    if 'keyword' in key:
+                        print(f"{key:>20} {self.configDict[key]}")
+            if 0:
+                g.printObj(self.configDict, tag='configDict')
+                g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
     def configure_colors(self) -> None:
         """Configure all colors in the default colors dict."""
@@ -101,10 +108,29 @@ class BaseColorizer:
         # getColor puts the color name in standard form:
         # color = color.replace(' ', '').lower().strip()
         getColor = c.config.getColor
-        for key in sorted(self.default_colors_dict.keys()):
+
+        # Compute *all* color keys.
+        all_keys = list(self.default_colors_dict.keys())
+        assert not any(z.endswith('color') for z in all_keys)
+        if c.config.settingsDict:
+            gs: GeneralSetting
+            for key, gs in c.config.settingsDict.items():
+                if False and 'leokeyword' in key:  ###
+                    print(f"{key} {gs.val}")
+                if gs and gs.kind == 'color':
+                    if key.endswith('color'):
+                        key = key[:-5]
+                    all_keys.append(key)
+                    self.default_colors_dict[key] = (key, gs.val)
+        if 0:  ###
+            for key in self.default_colors_dict:
+                if key.startswith(('rest', 'php', 'forth')):
+                    print(f"{key} {self.default_colors_dict[key]}")
+
+        for key in sorted(all_keys):
             option_name, default_color = self.default_colors_dict[key]
             color = (
-                getColor(f"{self.language}_{option_name}") or
+                getColor(f"{self.language}.{option_name}") or
                 getColor(option_name) or
                 default_color
             )
@@ -632,6 +658,22 @@ class BaseColorizer:
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        def report(extra: str = None) -> None:
+            """A superb trace. Don't remove it."""
+            if len(repr(s[i:j])) <= 20:
+                s2 = repr(s[i:j])
+            else:
+                s2 = repr(s[i : i + 17 - 2] + '...')
+            kind_s = f"{self.language}.{tag}"
+            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
+            print(
+                f"setTag: {kind_s:32} {i:3} {j:3} {colorName:20} {s2:>22} "
+                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
+            )
+            if extra:
+                print(f"{' ':48} {extra}")
+
         self.n_setTag += 1
         if i == j:
             return
@@ -642,7 +684,9 @@ class BaseColorizer:
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots') :]
-        colorName = self.configDict.get(tag)  # This color name should already be valid.
+        # This color name should already be valid.
+        d = self.configDict
+        colorName = d.get(f"{self.language}.{tag}") or d.get(tag)
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.
@@ -657,7 +701,7 @@ class BaseColorizer:
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
-                g.trace('unknown color name', colorName, g.callers())
+                report(extra='*** unknown color name')
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
@@ -682,17 +726,7 @@ class BaseColorizer:
             format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
         if trace:
-            # A superb trace.
-            if len(repr(s[i:j])) <= 20:
-                s2 = repr(s[i:j])
-            else:
-                s2 = repr(s[i : i + 17 - 2] + '...')
-            kind_s = f"{self.language}.{tag}"
-            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
-            print(
-                f"setTag: {kind_s:32} {i:3} {j:3} {s2:>22} "
-                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
-            )
+            report()  # A superb trace.
         self.highlighter.setFormat(i, j - i, format)
     #@+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
@@ -907,13 +941,6 @@ class JEditColorizer(BaseColorizer):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20170514054524.1: *4* jedit.getFontFromParams
-    def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int = 12) -> None:
-        g.trace("*******")
-        return None
-
-    # def setFontFromConfig(self):
-        # pass
     #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name: str) -> bool:
         """Name may be a language name or a delegate name."""
@@ -922,7 +949,7 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        g.trace(f"name: {name}, language: {language}, rulesetName: {rulesetName}")  ###
+        ### g.trace(f"name: {name}, language: {language}, rulesetName: {rulesetName}")  ###
         # if 'coloring' in g.app.debug and not g.unitTesting:
         #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
@@ -948,7 +975,6 @@ class JEditColorizer(BaseColorizer):
         coloring rule attributes for the mode.
         """
         language, rulesetName = self.nameToRulesetName(name)
-        g.trace(language, rulesetName)  ###
         if mode:
             # A hack to give modes/forth.py access to c.
             if hasattr(mode, 'pre_init_mode'):
