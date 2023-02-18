@@ -142,15 +142,6 @@ def unit_test(raise_on_fail=True):
 #@+node:ekr.20160317054700.9: *3* dump_dict
 #@+node:ekr.20160317054700.10: *3* dump_list
 #@+node:ekr.20160317054700.11: *3* main
-#@+node:ekr.20160317054700.12: *3* pdb
-def pdb(self):
-    '''Invoke a debugger during unit testing.'''
-    try:
-        from leo.core import leoGlobals as leo_g
-        leo_g.pdb()
-    except ImportError:
-        import pdb
-        pdb.set_trace()
 #@+node:ekr.20160317054700.13: *3* truncate
 def truncate(s, n):
     '''Return s truncated to n characters.'''
@@ -1031,7 +1022,7 @@ class AstArgFormatter(AstFormatter):
     #@-others
 #@+node:ekr.20160317054700.86: ** class LeoGlobals
 class LeoGlobals:
-    '''A class supporting g.pdb and g.trace for compatibility with Leo.'''
+    '''A class supporting g.trace for compatibility with Leo.'''
     #@+others
     #@+node:ekr.20160317054700.87: *3* class NullObject (Python Cookbook)
     class NullObject:
