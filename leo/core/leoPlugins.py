@@ -449,7 +449,7 @@ class LeoPluginsController:
         # 1880: The legacy code implicitly assumed that os.path.dirname(fn) was empty!
         #       The new code explicitly ignores any directories in the path.
         fn = g.os_path_basename(moduleOrFileName)
-        return "leo.plugins." + fn[:-3]
+        return "leo.plugins." + g.os_path_splitext(fn)[0]
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
     def loadHandlers(self, tag: str, keys: List[str]) -> None:
