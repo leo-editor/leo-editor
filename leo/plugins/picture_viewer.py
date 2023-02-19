@@ -58,13 +58,14 @@ The following keyword arguments may be supplied to the run method:
 #@+<< imports (picture_viewer.py) >>
 #@+node:ekr.20211021202633.1: ** << imports (picture_viewer.py) >>
 import argparse
+import json
 import os
 import pathlib
 import shutil
 import sys
 import random
 import textwrap
-from typing import List
+from typing import Dict, List, Tuple
 # Leo imports
 from leo.core import leoGlobals as g
 try:
@@ -195,14 +196,13 @@ def main():
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
-
     ok = Slides().run(**args)
     if ok:
         if isQt5:
             sys.exit(gApp.exec_())
         else:
             sys.exit(gApp.exec())
-#@+node:ekr.20211021202356.1: ** class Slides
+#@+node:ekr.20211021202356.1: ** class Slides(QWidget)
 if QtWidgets:
 
     class Slides(QtWidgets.QWidget):  # type:ignore
@@ -212,7 +212,10 @@ if QtWidgets:
         slide_number = -1
         starting_directory: str = None
         timer = QtCore.QBasicTimer()
+        x_offset: int = 0
+        y_offset: int = 0
         verbose: bool = False
+        zoom_db: Dict[str, Tuple[float, float, float]] = None
 
         #@+others
         #@+node:ekr.20211024030844.1: *3* Slides.closeEvent
@@ -292,10 +295,11 @@ if QtWidgets:
 
             i = event.key()
             s = event.text()
-            mods = event.modifiers()
-            if mods and 'ShiftModifier' not in repr(mods):
+            # mods = event.modifiers()
+            if False:  ###mods and 'ShiftModifier' not in repr(mods):
                 print(f"picture_viewer.py: ignoring modified key: {s!r} {i}")
                 return
+            g.trace(f"key: {i!r}, s: {s!r}")
             if s == 'c':
                 self.copy()
             elif s == 'd':
@@ -314,10 +318,10 @@ if QtWidgets:
                 self.quit()
             elif s == 'r':
                 self.restart()
-            elif s in '=+':
-                self.zoom_in()
-            elif s in '-_':
-                self.zoom_out()
+            # elif s in '=+':
+                # self.zoom_in()
+            # elif s in '-_':
+                # self.zoom_out()
             elif i == 16777235:
                 self.move_up()
             elif i == 16777237:
@@ -331,16 +335,32 @@ if QtWidgets:
 
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
-            self.scroll_area.scrollContentsBy(0, -400 * self.scale)
+            self.scroll_area.scrollContentsBy(0, int(-400 * self.scale))
+            self.picture.update()
+            self.y_offset -= 400
+            # g.trace(self.y_offset)
+            self.save_data()
 
         def move_left(self):
-            self.scroll_area.scrollContentsBy(400 * self.scale, 0)
+            self.scroll_area.scrollContentsBy(int(400 * self.scale), 0)
+            self.picture.update()
+            self.x_offset += 400
+            g.trace(self.x_offset)
+            self.save_data()
 
         def move_right(self):
-            self.scroll_area.scrollContentsBy(-400 * self.scale, 0)
+            self.scroll_area.scrollContentsBy(int(-400 * self.scale), 0)
+            self.picture.update()
+            self.x_offset += 400
+            g.trace(self.x_offset)
+            self.save_data()
 
         def move_up(self):
-            self.scroll_area.scrollContentsBy(0, 400 * self.scale)
+            self.scroll_area.scrollContentsBy(0, int(400 * self.scale))
+            self.picture.update()
+            self.y_offset += 400
+            g.trace(self.y_offset)
+            self.save_data()
         #@+node:ekr.20211021200821.7: *3* Slides.move_to
         def move_to(self):
             """Issue a prompt and move the file if the user agrees."""
@@ -366,21 +386,48 @@ if QtWidgets:
             else:
                 print('No more slides')
                 self.quit()
+            file_name = self.files_list[self.slide_number]
             if self.reset_zoom:
-                self.scale = 1.0
+                if file_name in self.zoom_db:
+                    try:
+                        self.scale, self.x_offset, self.y_offset = self.zoom_db [file_name]
+                    except TypeError:
+                        g.trace('TypeError', file_name)
+                        self.scale = self.zoom_db [file_name]
+                        self.x_offset = self.y_offset = 0
+                else:
+                    self.scale = 1.0
+                    self.x_offset = self.y_offset = 0
             self.show_slide()
         #@+node:ekr.20211021200821.9: *3* Slides.prev_slide
         def prev_slide(self):
 
             if self.slide_number > 0:  # Don't wrap.
                 self.slide_number -= 1
+            file_name = self.files_list[self.slide_number]
             if self.reset_zoom:
-                self.scale = 1.0
+                if file_name in self.zoom_db:
+                    try:
+                        self.scale, x_offset, y_offset = self.zoom_db [file_name]
+                    except TypeError:
+                        self.scale = self.zoom_db [file_name]
+                        self.x_offset = self.y_offset = 0
+                else:
+                    self.scale = 1.0
+                    self.x_offset = self.y_offset = 0
             self.show_slide()
+        #@+node:ekr.20230218180340.1: *3* Slides.save_data
+        def save_data(self):
+            file_name = self.files_list[self.slide_number]
+            self.zoom_db [file_name] = (self.scale, self.x_offset, self.y_offset)
+            g.trace(self.scale, self.x_offset, self.y_offset, file_name, g.callers())
         #@+node:ekr.20211021200821.10: *3* Slides.quit
         def quit(self):
             global gApp
             self.timer.stop()
+            # Update the zoom_db.
+            with open(self.zoom_path, 'w') as f:
+                json.dump(self.zoom_db, f, indent=2)
             self.destroy()
             if gApp:  # Running externally.
                 gApp.exit()
@@ -436,6 +483,18 @@ if QtWidgets:
             self.sort_kind = sort_kind or 'random'
             self.starting_directory = starting_directory or os.getcwd()
             self.verbose = verbose
+            self.zoom_path = os.path.join(os.path.expanduser("~"), '.leo', 'zoom_db.json')
+            g.trace(self.zoom_path)
+            try:
+                if os.path.exists(self.zoom_path):
+                    with open(self.zoom_path, 'r') as f:
+                        self.zoom_db = json.load(f)
+                else:
+                    self.zoom_db = {}
+            except Exception:
+                g.es_exception()
+            # g.printObj(self.zoom_db, tag='zoom_db')
+
             # Careful: width and height are QWidget methods.
             self._height = height or 900
             self._width = width or 1500
@@ -487,6 +546,7 @@ if QtWidgets:
 
             # Create the scroll area.
             w.scroll_area = area = QtWidgets.QScrollArea()
+            w.scroll_area.keyPressEvent = w.keyPressEvent
             area.setWidget(self.picture)
             AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
             area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
@@ -544,6 +604,13 @@ if QtWidgets:
                     image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
+                # Update the zoom and the offsets.
+                self.save_data()
+                if self.x_offset or self.y_offset:
+                    x_scroll = self.x_offset * self.scale
+                    y_scroll = self.y_offset * self.scale
+                    self.scroll_area.scrollContentsBy(x_scroll, y_scroll)
+                # Update the x and y offsets.
             except Exception:
                 g.es_exception()
         #@+node:ekr.20211021200821.15: *3* Slides.sort
