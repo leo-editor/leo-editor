@@ -207,13 +207,13 @@ if QtWidgets:
 
     class Slides(QtWidgets.QWidget):  # type:ignore
 
+        dx: int = 0  # x-scroll value.
+        dy: int = 0  # y-scroll value.
         files_list: List[str]
         scale: float = 1.0
         slide_number = -1
         starting_directory: str = None
         timer = QtCore.QBasicTimer()
-        dx: int = 0
-        dy: int = 0
         verbose: bool = False
         wrap_flag: bool = True  ### To do.
         zoom_db: Dict[str, Tuple[float, float, float]] = None
