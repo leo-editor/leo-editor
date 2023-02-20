@@ -15,7 +15,7 @@ import os
 import pprint
 import sys
 import traceback
-from typing import Any, List
+from typing import Any, List, Sequence
 
 
 #@+others
@@ -77,7 +77,7 @@ def callers_list(n: int = 4) -> List[str]:
         i += 1
     return list(reversed(result))
 #@+node:ekr.20230208054438.1: ** tracing_utils.es_exception
-def es_exception() -> None:
+def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
     for line in traceback.format_exception(typ, val, tb):
