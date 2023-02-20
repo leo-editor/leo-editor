@@ -65,7 +65,7 @@ import shutil
 import sys
 import random
 import textwrap
-from typing import Dict, List, Tuple
+from typing import Dict, List
 # Leo imports
 from leo.core import leoGlobals as g
 try:
@@ -120,6 +120,8 @@ def get_args():
         help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
         help='Width of window')
+    add('--wrap', dest='wrap_flag', action='store_true',
+        help='Wrap around')
 
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
@@ -137,7 +139,8 @@ def get_args():
          'sort_kind': get_sort_kind(args.sort_kind),
          'starting_directory': get_path(args.starting_directory),
          'verbose': args.verbose,
-         'width': get_pixels('width', args.width)
+         'width': get_pixels('width', args.width),
+         'wrap_flag': args.wrap_flag,
     }
 #@+node:ekr.20211101064157.1: *3* get_delay
 def get_delay(delay):
@@ -207,16 +210,20 @@ if QtWidgets:
 
     class Slides(QtWidgets.QWidget):  # type:ignore
 
+        # Command-line arguments...
+        scale: float = 1.0
+        starting_directory: str = None
+        verbose: bool = False
+        wrap_flag: bool = True
+
+        # Internal...
         dx: int = 0  # x-scroll value.
         dy: int = 0  # y-scroll value.
+        debug: bool = True
         files_list: List[str]
-        scale: float = 1.0
         slide_number = -1
-        starting_directory: str = None
         timer = QtCore.QBasicTimer()
-        verbose: bool = False
-        wrap_flag: bool = True  ### To do.
-        zoom_db: Dict[str, Tuple[float, float, float]] = None
+        zoom_db: Dict[str, List] = None
 
         #@+others
         #@+node:ekr.20230219044810.1: *3* Slides: commands
@@ -392,7 +399,7 @@ if QtWidgets:
         def closeEvent(self, event):
             """Override QWidget.closeEvent."""
             self.quit()
-            
+
         def timerEvent(self, e=None):
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20230219053658.1: *4* Slides.scrollContentsBy
@@ -400,12 +407,12 @@ if QtWidgets:
             """Override QtWidgets.QScrollArea.scrollContentsBy."""
             try:
                 QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, dx, dy)
-                self.dx += int(dx * self.scale)
-                self.dy += int(dy * self.scale)
+                self.dx += dx
+                self.dy += dy
             except OverflowError:
-                g.trace('Overflow')
+                if self.verbose:
+                    g.trace('scroll overflow')
                 self.dx = self.dy = 0
-            # g.trace(dx, dy, self.dx, self.dy)
             self.save_data()
         #@+node:ekr.20211021200821.5: *4* Slides.keyPressEvent
         def keyPressEvent(self, event):
@@ -437,10 +444,18 @@ if QtWidgets:
             if f:
                 f()
             # print(f"picture_viewer.py: ignoring key: {s!r} {event.key()}")
-        #@+node:ekr.20230219054015.1: *3* Slides: rendering
+        #@+node:ekr.20230220041302.1: *3* Slides: json
+        #@+node:ekr.20230220041332.1: *4* Slides.dump_data
+        def dump_data(self):
+            if self.debug:
+                d = self.zoom_db
+                print(f"dump of {self.zoom_path}...")
+                for key in sorted(d.keys()):
+                    sfn = g.truncate(g.shortFileName(key), 20)
+                    print(f"{sfn:20} {d [key]}")
         #@+node:ekr.20230219054034.1: *4* Slides.load_data
         def load_data(self) -> None:
-            
+
             file_name = self.files_list[self.slide_number]
             if file_name in self.zoom_db:
                 try:
@@ -448,8 +463,8 @@ if QtWidgets:
                     self.dx = int(self.dx)
                     self.dy = int(self.dy)
                 except TypeError:
-                    # g.trace('TypeError', file_name)
-                    self.scale = self.zoom_db [file_name]
+                    g.trace('TypeError', file_name)
+                    self.scale = self.zoom_db [file_name]  # type:ignore
                     self.dx = self.dy = 0
             else:
                 self.scale = 1.0
@@ -458,6 +473,17 @@ if QtWidgets:
                 print(
                     f"load_data: {self.slide_number} scale: {self.scale:.8} x: "
                     f"{self.dx} y: {self.dy}")
+        #@+node:ekr.20230218180340.1: *4* Slides.save_data
+        def save_data(self):
+
+            if 0 <= self.slide_number < len(self.files_list):
+                if 0:  # Don't remove.
+                    print(
+                        f"save_data: {self.slide_number} scale: {self.scale:.8} "
+                        f"x: {self.dx} y: {self.dy}")
+                file_name = self.files_list[self.slide_number]
+                self.zoom_db [file_name] = [self.scale, int(self.dx), int(self.dy)]
+        #@+node:ekr.20230219054015.1: *3* Slides: rendering
         #@+node:ekr.20211021200821.14: *4* Slides.show_slide
         def show_slide(self):
             # Reset the timer.
@@ -474,9 +500,11 @@ if QtWidgets:
             # Set self.scale, self.dx and self.dy.
             if self.reset_zoom:
                 self.load_data()
-            # Display the picture.
-            pixmap = QtGui.QPixmap(file_name)
             try:
+                if 0:  # Clear the pixmap cache.
+                    QtGui.QPixmapCache.clear()
+                # Display the picture, scaled by self.scale.
+                pixmap = QtGui.QPixmap(file_name)
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
                 if 1:  # Take the smaller immage.
@@ -485,28 +513,15 @@ if QtWidgets:
                     image = image1 if image1.height() <= image2.height() else image2
                 else:  # Legacy
                     image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
+                # Scroll the pixmap.
+                if self.dx or self.dy:
+                    # Call the base method so we don't update self.dx and self.dy twice.
+                    QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, self.dx, self.dy)
+                # Insert the pixmap.
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
-                # Update the zoom and the offsets. 
-                    
-                if 0: ###self.dx or self.dy:
-                    # x_scroll = int(self.dx * self.scale)
-                    # y_scroll = int(self.dy * self.scale)
-                    # self.scroll_area.scrollContentsBy(x_scroll, y_scroll)
-                    self.scroll_area.scrollContentsBy(self.dx, self.dy)
-                # Update the x and y offsets.
             except Exception:
                 g.es_exception()
-        #@+node:ekr.20230218180340.1: *4* Slides.save_data
-        def save_data(self):
-
-            if 0 <= self.slide_number < len(self.files_list):
-                if 0:  # Don't remove.
-                    print(
-                        f"save_data: {self.slide_number} scale: {self.scale:.8} "
-                        f"x: {self.dx} y: {self.dy}")
-                file_name = self.files_list[self.slide_number]
-                self.zoom_db [file_name] = (self.scale, int(self.dx), int(self.dy))
         #@+node:ekr.20230219045333.1: *3* slides: shutdown
         #@+node:ekr.20230219045030.1: *3* Slides: startup & shutdown
         #@+node:ekr.20211021200821.2: *4* Slides.get_files
@@ -532,7 +547,7 @@ if QtWidgets:
 
             # Create the scroll area.
             w.scroll_area = area = QtWidgets.QScrollArea()
-            w.scroll_area.scrollContentsBy = self.scrollContentsBy  ###
+            w.scroll_area.scrollContentsBy = self.scrollContentsBy
             area.setWidget(self.picture)
             AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
             area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
@@ -550,6 +565,7 @@ if QtWidgets:
         def quit(self):
             global gApp
             self.timer.stop()
+            self.dump_data()
             # Update the zoom_db.
             with open(self.zoom_path, 'w') as f:
                 json.dump(self.zoom_db, f, indent=2)
@@ -573,6 +589,7 @@ if QtWidgets:
             starting_directory=None,  # Starting directory for file dialogs.
             verbose=False,  # True, print info messages.
             width=None,  # Window width (default 1500 pixels) when not in full screen mode.
+            wrap_flag=False,  # Wrap around.
         ):
             """
             Create the widgets and run the slideshow.
@@ -592,8 +609,10 @@ if QtWidgets:
             self.sort_kind = sort_kind or 'random'
             self.starting_directory = starting_directory or os.getcwd()
             self.verbose = verbose
+            self.wrap_flag = wrap_flag
             self.zoom_path = os.path.join(os.path.expanduser("~"), '.leo', 'zoom_db.json')
-            g.trace(self.zoom_path)
+            if self.verbose:
+                print(f"database: {self.zoom_path}")
             try:
                 if os.path.exists(self.zoom_path):
                     with open(self.zoom_path, 'r') as f:
@@ -602,7 +621,6 @@ if QtWidgets:
                     self.zoom_db = {}
             except Exception:
                 g.es_exception()
-            # g.printObj(self.zoom_db, tag='zoom_db')
 
             # Careful: width and height are QWidget methods.
             self._height = height or 900
