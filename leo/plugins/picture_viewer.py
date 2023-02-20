@@ -402,7 +402,7 @@ if QtWidgets:
         #@+node:ekr.20230220041302.1: *3* Slides: db
         #@+node:ekr.20230220063749.1: *4* Slides.init_db
         def init_db(self):
-            
+
             if not self.use_db:
                 self.db = {}
                 return
