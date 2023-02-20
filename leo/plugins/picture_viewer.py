@@ -116,6 +116,8 @@ def get_args():
         help='Sort kind: (date, name, none, random, or size)')
     add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
         help='Starting directory for file dialogs')
+    add('--use-db', dest='use_db', action='store_true',
+        help='Save slide data in ~/.leo/picture_viewer.json')
     add('--verbose', dest='verbose', action='store_true',
         help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
@@ -138,6 +140,7 @@ def get_args():
          'scale': get_scale(args.scale),
          'sort_kind': get_sort_kind(args.sort_kind),
          'starting_directory': get_path(args.starting_directory),
+         'use_db': args.use_db,
          'verbose': args.verbose,
          'width': get_pixels('width', args.width),
          'wrap_flag': args.wrap_flag,
@@ -213,17 +216,18 @@ if QtWidgets:
         # Command-line arguments...
         scale: float = 1.0
         starting_directory: str = None
+        use_db: bool = False
         verbose: bool = False
         wrap_flag: bool = True
 
         # Internal...
+        db: Dict[str, List] = None
+        debug: bool = False
         dx: int = 0  # x-scroll value.
         dy: int = 0  # y-scroll value.
-        debug: bool = True
         files_list: List[str]
         slide_number = -1
         timer = QtCore.QBasicTimer()
-        zoom_db: Dict[str, List] = None
 
         #@+others
         #@+node:ekr.20230219044810.1: *3* Slides: commands
@@ -395,6 +399,65 @@ if QtWidgets:
             self.scale = self.scale * (1.0 / 1.05)
             self.save_data()
             self.show_slide()
+        #@+node:ekr.20230220041302.1: *3* Slides: db
+        #@+node:ekr.20230220063749.1: *4* Slides.init_db
+        def init_db(self):
+            
+            if not self.use_db:
+                self.db = {}
+                return
+            self.db_path = os.path.join(os.path.expanduser("~"), '.leo', 'picture_viewer.json')
+            try:
+                if os.path.exists(self.db_path):
+                    if self.verbose:
+                        print(f"Loading {self.db_path}")
+                    with open(self.db_path, 'r') as f:
+                        self.db = json.load(f)
+                    if self.verbose:
+                        n = len(self.db.keys())
+                        sfn = g.shortFileName(self.db_path)
+                        print(f"{sfn} contains entries for {n} files")
+                else:
+                    self.db = {}
+            except Exception:
+                g.es_exception()
+        #@+node:ekr.20230220041332.1: *4* Slides.dump_data
+        def dump_data(self):
+            d = self.db
+            print(f"dump of {self.db_path}...")
+            for key in sorted(d.keys()):
+                sfn = g.truncate(g.shortFileName(key), 20)
+                print(f"{sfn:20} {d [key]}")
+        #@+node:ekr.20230219054034.1: *4* Slides.load_data
+        def load_data(self) -> None:
+
+            file_name = self.files_list[self.slide_number]
+            if file_name in self.db:
+                try:
+                    self.scale, self.dx, self.dy = self.db [file_name]
+                    self.dx = int(self.dx)
+                    self.dy = int(self.dy)
+                except TypeError:
+                    g.trace('TypeError', file_name)
+                    self.scale = self.db [file_name]  # type:ignore
+                    self.dx = self.dy = 0
+            else:
+                self.scale = 1.0
+                self.dx = self.dy = 0
+            if 0:  # Don't remove.
+                print(
+                    f"load_data: {self.slide_number} scale: {self.scale:.8} x: "
+                    f"{self.dx} y: {self.dy}")
+        #@+node:ekr.20230218180340.1: *4* Slides.save_data
+        def save_data(self):
+
+            if 0 <= self.slide_number < len(self.files_list):
+                if 0:  # Don't remove.
+                    print(
+                        f"save_data: {self.slide_number} scale: {self.scale:.8} "
+                        f"x: {self.dx} y: {self.dy}")
+                file_name = self.files_list[self.slide_number]
+                self.db [file_name] = [self.scale, int(self.dx), int(self.dy)]
         #@+node:ekr.20230219044202.1: *3* Slides: event handlers
         def closeEvent(self, event):
             """Override QWidget.closeEvent."""
@@ -444,45 +507,6 @@ if QtWidgets:
             if f:
                 f()
             # print(f"picture_viewer.py: ignoring key: {s!r} {event.key()}")
-        #@+node:ekr.20230220041302.1: *3* Slides: json
-        #@+node:ekr.20230220041332.1: *4* Slides.dump_data
-        def dump_data(self):
-            if self.debug:
-                d = self.zoom_db
-                print(f"dump of {self.zoom_path}...")
-                for key in sorted(d.keys()):
-                    sfn = g.truncate(g.shortFileName(key), 20)
-                    print(f"{sfn:20} {d [key]}")
-        #@+node:ekr.20230219054034.1: *4* Slides.load_data
-        def load_data(self) -> None:
-
-            file_name = self.files_list[self.slide_number]
-            if file_name in self.zoom_db:
-                try:
-                    self.scale, self.dx, self.dy = self.zoom_db [file_name]
-                    self.dx = int(self.dx)
-                    self.dy = int(self.dy)
-                except TypeError:
-                    g.trace('TypeError', file_name)
-                    self.scale = self.zoom_db [file_name]  # type:ignore
-                    self.dx = self.dy = 0
-            else:
-                self.scale = 1.0
-                self.dx = self.dy = 0
-            if 0:  # Don't remove.
-                print(
-                    f"load_data: {self.slide_number} scale: {self.scale:.8} x: "
-                    f"{self.dx} y: {self.dy}")
-        #@+node:ekr.20230218180340.1: *4* Slides.save_data
-        def save_data(self):
-
-            if 0 <= self.slide_number < len(self.files_list):
-                if 0:  # Don't remove.
-                    print(
-                        f"save_data: {self.slide_number} scale: {self.scale:.8} "
-                        f"x: {self.dx} y: {self.dy}")
-                file_name = self.files_list[self.slide_number]
-                self.zoom_db [file_name] = [self.scale, int(self.dx), int(self.dy)]
         #@+node:ekr.20230219054015.1: *3* Slides: rendering
         #@+node:ekr.20211021200821.14: *4* Slides.show_slide
         def show_slide(self):
@@ -493,9 +517,7 @@ if QtWidgets:
                 self.quit()
             # Get the file name.
             file_name = self.files_list[self.slide_number]
-            if self.verbose:
-                print(file_name)
-            # Change the title.
+            # Change the window's title.
             self.setWindowTitle(file_name)
             # Set self.scale, self.dx and self.dy.
             if self.reset_zoom:
@@ -522,7 +544,6 @@ if QtWidgets:
                 self.picture.adjustSize()
             except Exception:
                 g.es_exception()
-        #@+node:ekr.20230219045333.1: *3* slides: shutdown
         #@+node:ekr.20230219045030.1: *3* Slides: startup & shutdown
         #@+node:ekr.20211021200821.2: *4* Slides.get_files
         def get_files(self, path):
@@ -565,10 +586,14 @@ if QtWidgets:
         def quit(self):
             global gApp
             self.timer.stop()
-            self.dump_data()
-            # Update the zoom_db.
-            with open(self.zoom_path, 'w') as f:
-                json.dump(self.zoom_db, f, indent=2)
+            # Update the db.
+            if self.use_db:
+                if self.verbose:
+                    print(f"Writing {self.db_path}")
+                if self.debug:
+                    self.dump_data()
+                with open(self.db_path, 'w') as f:
+                    json.dump(self.db, f, indent=2)
             self.destroy()
             if gApp:  # Running externally.
                 gApp.exit()
@@ -587,6 +612,7 @@ if QtWidgets:
             reset_zoom=True,  # True: reset zoom factor when changing slides.
             sort_kind=None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
             starting_directory=None,  # Starting directory for file dialogs.
+            use_db=False,  # True: Save picture_viewer.json.
             verbose=False,  # True, print info messages.
             width=None,  # Window width (default 1500 pixels) when not in full screen mode.
             wrap_flag=False,  # Wrap around.
@@ -608,20 +634,11 @@ if QtWidgets:
             self.scale = scale or 1.0
             self.sort_kind = sort_kind or 'random'
             self.starting_directory = starting_directory or os.getcwd()
+            self.use_db = use_db
             self.verbose = verbose
             self.wrap_flag = wrap_flag
-            self.zoom_path = os.path.join(os.path.expanduser("~"), '.leo', 'zoom_db.json')
-            if self.verbose:
-                print(f"database: {self.zoom_path}")
-            try:
-                if os.path.exists(self.zoom_path):
-                    with open(self.zoom_path, 'r') as f:
-                        self.zoom_db = json.load(f)
-                else:
-                    self.zoom_db = {}
-            except Exception:
-                g.es_exception()
-
+            # Init the db.
+            self.init_db()
             # Careful: width and height are QWidget methods.
             self._height = height or 900
             self._width = width or 1500
@@ -662,22 +679,14 @@ if QtWidgets:
         def sort(self, sort_kind):
             """sort files_list based on sort_kind."""
             if sort_kind == 'date':
-                if self.verbose:
-                    print('Sorting by date...')
                 self.files_list.sort(key=os.path.getmtime)
             elif sort_kind == 'name':
-                if self.verbose:
-                    print('Sorting by name...')
                 self.files_list.sort()
             elif sort_kind in (None, 'none'):
                 pass
             elif sort_kind == 'random':
-                if self.verbose:
-                    print('Randomizing...')
                 random.shuffle(self.files_list)
             elif sort_kind == 'size':
-                if self.verbose:
-                    print('Sorting by size...')
                 self.files_list.sort(key=os.path.getsize)
             else:
                 g.trace(f"unknown sort kind: {sort_kind!r}")
