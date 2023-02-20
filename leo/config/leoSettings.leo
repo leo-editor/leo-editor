@@ -2083,9 +2083,6 @@
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20220524035531.1"><vh>@int rguide-col = 80</vh></v>
 </v>
-<v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
-</v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant-language = en-US</vh></v>
 <v t="ekr.20100904095239.8441"><vh>@string enchant-local-dictionary = None</vh></v>
@@ -3704,7 +3701,6 @@ changes your personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
-<t tx="ekr.20061029091403"></t>
 <t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
       as specified by the @string relative_path_base_directory setting.
       
@@ -4817,7 +4813,6 @@ Instead, enable the codewisecompleter.py plugin.</t>
 @wrap
 
 </t>
-<t tx="ekr.20110611092035.16481"></t>
 <t tx="ekr.20110611092035.16482"></t>
 <t tx="ekr.20110611092035.16483"></t>
 <t tx="ekr.20110611092035.16488"></t>
