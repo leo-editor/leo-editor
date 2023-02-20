@@ -438,8 +438,8 @@ if QtWidgets:
                 f()
             # print(f"picture_viewer.py: ignoring key: {s!r} {event.key()}")
         #@+node:ekr.20230219054015.1: *3* Slides: rendering
-        #@+node:ekr.20230219054034.1: *4* Slides.get_data
-        def get_data(self) -> None:
+        #@+node:ekr.20230219054034.1: *4* Slides.load_data
+        def load_data(self) -> None:
             
             file_name = self.files_list[self.slide_number]
             if file_name in self.zoom_db:
@@ -448,15 +448,15 @@ if QtWidgets:
                     self.dx = int(self.dx)
                     self.dy = int(self.dy)
                 except TypeError:
-                    g.trace('TypeError', file_name)
+                    # g.trace('TypeError', file_name)
                     self.scale = self.zoom_db [file_name]
                     self.dx = self.dy = 0
             else:
                 self.scale = 1.0
                 self.dx = self.dy = 0
-            if 1:  # Don't remove.
+            if 0:  # Don't remove.
                 print(
-                    f" get_data: {self.slide_number} scale: {self.scale:.8} x: "
+                    f"load_data: {self.slide_number} scale: {self.scale:.8} x: "
                     f"{self.dx} y: {self.dy}")
         #@+node:ekr.20211021200821.14: *4* Slides.show_slide
         def show_slide(self):
@@ -473,7 +473,7 @@ if QtWidgets:
             self.setWindowTitle(file_name)
             # Set self.scale, self.dx and self.dy.
             if self.reset_zoom:
-                self.get_data()
+                self.load_data()
             # Display the picture.
             pixmap = QtGui.QPixmap(file_name)
             try:
