@@ -2151,9 +2151,9 @@
 <v t="ekr.20170819113555.1"><vh>patch</vh>
 <v t="ekr.20170819113555.2"><vh>@color patch.keyword1 = green</vh></v>
 <v t="ekr.20170819113555.3"><vh>@color patch.keyword2 = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch.keyword3 = blue</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch.literal1 = blue</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch.literal2 = blue</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch.keyword3 = yellow</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch.literal1 = yellow</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch.literal2 = yellow</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php.operator = DodgerBlue1</vh></v>
@@ -10684,9 +10684,9 @@ if 0: # The base class
 <t tx="ekr.20170819113555.1"></t>
 <t tx="ekr.20170819113555.2"># +</t>
 <t tx="ekr.20170819113555.3"># -</t>
-<t tx="ekr.20170819113555.4"># +++</t>
-<t tx="ekr.20170819113555.5"># ---</t>
-<t tx="ekr.20170819170521.1"># @@</t>
+<t tx="ekr.20170819113555.4">#84c805</t>
+<t tx="ekr.20170819113555.5"></t>
+<t tx="ekr.20170819170521.1">#84c805</t>
 <t tx="ekr.20170823083657.1">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
