@@ -220,6 +220,8 @@ class LeoFind:
         c = self.c
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
         self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
+
+    reloadSettings = reload_settings  # Necessary alias.
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self,
         root: Position,
