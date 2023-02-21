@@ -186,7 +186,11 @@
 <v t="ekr.20150428102831.10"><vh>param_doc</vh></v>
 <v t="ekr.20150428102831.7"><vh>user_name</vh></v>
 </v>
-<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
+<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh>
+<v t="ekr.20230221053726.1"><vh>abbreviations: date</vh></v>
+<v t="ekr.20230221053634.1"><vh>abbreviations: html</vh></v>
+<v t="ekr.20230221053825.1"><vh>abbrevitaion: misspellings:</vh></v>
+</v>
 <v t="ekr.20161121044950.1"><vh>@outline-data tree-abbreviations</vh>
 <v t="ekr.20170530035032.1"><vh>importer;;</vh>
 <v t="ekr.20170530035032.2"><vh>@@file importers/{|{x=name}|}.py</vh>
@@ -4712,33 +4716,20 @@ For information about supported languages, see:
 http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 </t>
 <t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
-<t tx="ekr.20100904134301.11000"></t>
-<t tx="ekr.20100904134301.11002"># Comments lines (lines starting with '#') are ignored.
-# Non-comment lines should have the form::
-#
-#    name=definition
+<t tx="ekr.20100904134301.11000">@language python
+</t>
+<t tx="ekr.20100904134301.11002"># Blanks lines and comments (lines starting with '#') are ignored.
+# All other lines should have the form::
 
-# Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. 
+# name=definition
 
-# Typically you would define @data global-abbreviation nodes
-# in myLeoSettings.leo and @data abbreviation nodes in local files.
+# @data abbreviation overrides @data global-abbreviation, so:
+# - Use @data global-abbreviation nodes in myLeoSettings.leo.
+# - Use @data abbreviation nodes in local files.
 
-# type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
-html;;=&lt;html&gt;
-\:&lt;head&gt;
-\:&lt;title&gt;&lt;|title|&gt;&lt;/title&gt;
-\:&lt;style&gt;
-\:&lt;/style&gt;
-\:&lt;/head&gt;
-\:&lt;body&gt;
-\:&lt;|content|&gt;
-\:&lt;/body&gt;
-\:&lt;/html&gt;
+# Important: You can organize your abbreviations!
+#            All descendant nodes are part of this node.
 
-# this abbreviation will only work with @bool scripting-abbreviations = True
-# (or @bool scripting-at-script-nodes = True)
-date;;={|{x=time.asctime()}|}
 </t>
 <t tx="ekr.20100904134301.11004"># Comments lines (lines starting with '#') are ignored.
 # Non-comment lines should have the form::
@@ -11737,6 +11728,33 @@ For more details, see https://github.com/leo-editor/leo-editor/issues/3047
 </t>
 <t tx="ekr.20230205102733.1">False (legacy): Don't filter body text.
 True:           Remove unindented @language, @others and @wrap directives.
+</t>
+<t tx="ekr.20230221053634.1"># type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
+
+html;;=&lt;html&gt;
+\:&lt;head&gt;
+\:&lt;title&gt;&lt;|title|&gt;&lt;/title&gt;
+\:&lt;style&gt;
+\:&lt;/style&gt;
+\:&lt;/head&gt;
+\:&lt;body&gt;
+\:&lt;|content|&gt;
+\:&lt;/body&gt;
+\:&lt;/html&gt;
+
+</t>
+<t tx="ekr.20230221053726.1"># This abbreviation will only work with @bool scripting-abbreviations = True
+# (or @bool scripting-at-script-nodes = True)
+
+date;;={|{x=time.asctime()}|}
+
+</t>
+<t tx="ekr.20230221053825.1"># By convention, most abbreviations end with ;; so that you won't type them by accident.
+# However, you can fix misspellings as shown here.
+
+# teh=the
+# hellow=hello
+
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
