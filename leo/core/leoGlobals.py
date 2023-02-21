@@ -7028,9 +7028,10 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c: Cmdr, p: Position, script: str, script1: str) -> None:
     g.warning("exception executing script")
-    fileName, n = g.es_exception()
+    g.es_exception()
     # Careful: this test is no longer guaranteed.
     if p.v.context == c:
+        fileName, n = g.getLastTracebackFileAndLineNumber()
         try:
             c.goToScriptLineNumber(n, p)
             #@+<< dump the lines near the error >>
