@@ -749,7 +749,6 @@ class Commands:
         raiseFlag=False         True: reraise any exceptions.
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
-        ### c, script1 = self, script
         c = self
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
