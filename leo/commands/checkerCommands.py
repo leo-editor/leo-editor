@@ -45,12 +45,12 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+Event = Any
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
-#@+node:ekr.20230104132446.1: *3* check-nodes & helper
+#@+node:ekr.20230104132446.1: *3* check-nodes
 @g.command('check-nodes')
 def check_nodes(event: Event) -> None:
     """
@@ -94,78 +94,7 @@ def check_nodes(event: Event) -> None:
       Headlines that match these suppressions *exactly* are not considered dubious.
       Default: None.
     """
-    c = event and event.get('c')
-    if not c:
-        return
-    def_pattern = re.compile(r'^def\b')
-    suppressions: List[str]
-    ok_head_patterns: List[re.Pattern] = []
-    ok_head_prefixes: List[str]
-
-    #@+others  # Define helpers.
-    #@+node:ekr.20230104142059.1: *4* create_dubious_nodes
-    def create_dubious_nodes(c: Cmdr) -> Position:
-        u = c.undoer
-        # Create the top-level node.
-        undoData = u.beforeInsertNode(c.p)
-        dubious = c.lastTopLevel().insertAfter()
-        dubious.h = f"{count} dubious nodes{g.plural(count)}"
-        # Clone nodes as children of the top-level node.
-        for p in clones:
-            # Create the clone directly as a child of found.
-            p2 = p.copy()
-            n = dubious.numberOfChildren()
-            p2._linkCopiedAsNthChild(dubious, n)
-        # Sort the clones in place, without undo.
-        dubious.v.children.sort(key=lambda v: v.h.lower())
-        u.afterInsertNode(dubious, 'check-nodes', undoData)
-        return dubious
-    #@+node:ekr.20230104142418.1: *4* get_data
-    def get_data(c: Cmdr) -> None:
-        """
-        Get user data from @data nodes.
-        """
-        nonlocal ok_head_patterns, ok_head_prefixes, suppressions
-
-        ok_head_strings = c.config.getData('check-nodes-ok-patterns') or []
-        ok_head_prefixes = c.config.getData('check-nodes-ok-prefixes') or []
-        suppressions = c.config.getData('check-nodes-suppressions') or []
-        # Compile all regex patterns.
-        for s in ok_head_strings:
-            try:
-                ok_head_patterns.append(re.compile(fr"{s}"))
-            except Exception:
-                g.es_print('Bad pattern in @data check-nodes-ok-patterns')
-                g.es_print(repr(s))
-    #@+node:ekr.20230104141545.1: *4* is_dubious_node
-    def is_dubious_node(p: Position) -> bool:
-
-        too_many_defs = (
-            p.h not in suppressions
-            and not p.h.startswith('class') and '@others' not in p.b
-            and not any(z.match(p.h) for z in ok_head_patterns)
-            and sum(1 for s in g.splitLines(p.b) if def_pattern.match(s)) > 1
-        )
-        leading_blank_line = p.b.strip() and not p.b.splitlines()[0].strip()
-        empty_body = (
-            not p.b.strip()
-            and not p.hasChildren()
-            and not any(p.h.startswith(z) for z in ok_head_prefixes)
-        )
-        return too_many_defs or leading_blank_line or empty_body
-    #@-others
-
-    get_data(c)
-    clones = [z.copy() for z in c.all_unique_positions() if is_dubious_node(z)]
-    # Report.
-    count = len(clones)
-    g.es(f"{count} dubious nodes{g.plural(count)}")
-    if not count:
-        return
-    dubious = create_dubious_nodes(c)
-    c.setChanged()
-    c.selectPosition(dubious)
-    c.redraw()
+    CheckNodes().check(event)
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event: Event) -> None:
@@ -384,8 +313,92 @@ def pylint_command(event: Event) -> None:
             c.save()
         data = PylintCommand(c).run(last_path=last_pylint_path)
         if data:
-            path, p = data
+            path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
+#@+node:ekr.20230221105941.1: ** class CheckNodes
+class CheckNodes:
+
+    def_pattern = re.compile(r'^def\b')
+    ok_head_patterns: List[re.Pattern]
+    ok_head_prefixes: List[str]
+    suppressions: List[str]
+
+    #@+others
+    #@+node:ekr.20230221110024.1: *3* CheckNodes.check
+    def check(self, event: Event) -> None:
+
+        self.c = c = event and event.get('c')
+        if not c:
+            return
+        self.get_data()
+        self.clones = [z.copy() for z in c.all_unique_positions() if self.is_dubious_node(z)]
+        # Report.
+        self.count = count = len(self.clones)
+        g.es(f"{count} dubious nodes{g.plural(count)}")
+        if not count:
+            return
+        dubious = self.create_dubious_nodes()
+        c.setChanged()
+        c.selectPosition(dubious)
+        c.redraw()
+    #@+node:ekr.20230104142059.1: *3* CheckNodes.create_dubious_nodes
+    def create_dubious_nodes(self) -> Position:
+        c = self.c
+        u = c.undoer
+        # Create the top-level node.
+        undoData = u.beforeInsertNode(c.p)
+        dubious = c.lastTopLevel().insertAfter()
+        dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
+        # Clone nodes as children of the top-level node.
+        for p in self.clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = dubious.numberOfChildren()
+            p2._linkCopiedAsNthChild(dubious, n)
+        # Sort the clones in place, without undo.
+        dubious.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(dubious, 'check-nodes', undoData)
+        return dubious
+    #@+node:ekr.20230104142418.1: *3* CheckNodes.get_data
+    def get_data(self) -> None:
+        """
+        Get user data from @data nodes.
+        """
+        c = self.c
+        self.ok_head_strings = c.config.getData('check-nodes-ok-patterns') or []
+        self.ok_head_prefixes = c.config.getData('check-nodes-ok-prefixes') or []
+        self.suppressions = c.config.getData('check-nodes-suppressions') or []
+        # Compile all regex patterns.
+        for s in self.ok_head_strings:
+            try:
+                self.ok_head_patterns.append(re.compile(fr"{s}"))
+            except Exception:
+                g.es_print('Bad pattern in @data check-nodes-ok-patterns')
+                g.es_print(repr(s))
+
+    #@+node:ekr.20230104141545.1: *3* CheckNodes.is_dubious_node
+    def is_dubious_node(self, p: Position) -> bool:
+
+        lines = p.b.splitlines()
+        stripped_lines = p.b.strip().splitlines()
+        too_many_defs = (
+            p.h not in self.suppressions
+            and not p.h.startswith('class') and '@others' not in p.b
+            and not any(z.match(p.h) for z in self.ok_head_patterns)
+            and sum(1 for s in g.splitLines(p.b) if self.def_pattern.match(s)) > 1
+        )
+        leading_blank_line = p.b.strip() and not lines[0].strip()
+        empty_body = (
+            not p.b.strip()
+            and not p.hasChildren()
+            and not any(p.h.startswith(z) for z in self.ok_head_prefixes)
+        )
+        trailing_class_or_def = (
+            len(stripped_lines) > 1
+            and stripped_lines[-1].startswith(('class ', 'def '))
+        )
+        return any((too_many_defs, leading_blank_line, empty_body, trailing_class_or_def))
+    #@-others
 #@+node:ekr.20210302111917.1: ** class MypyCommand
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""

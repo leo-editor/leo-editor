@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_checkerCommands.py
 """Tests of leo.commands.leoCheckerCommands."""
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
@@ -24,6 +25,30 @@ class TestChecker(LeoUnitTest):
             message = message.replace('\\', '/')
             m = pattern.match(message)
             self.assertTrue(m, msg=message)
+    #@+node:ekr.20230221104054.1: *3* test_check_nodes
+    def test_check_nodes(self):
+        c = self.c
+        from leo.commands import checkerCommands
+        x = checkerCommands.CheckNodes()
+        x.c = c
+        x.ok_head_patterns = []
+        table = (
+            textwrap.dedent("""\
+                def spam():
+                    pass
+                def eggs():
+                    pass
+            """),  # Too many defs.
+            "   ",  # Empty body.
+            "\ntest\n",  # Leading blank line.
+            "\n\nclass MyClass\n",  # Trailing class line.
+            "\n\ndef spam():",  # Trailing def line.
+        )
+        p = c.rootPosition()
+        for s in table:
+            p.b = s
+            x.get_data()
+            assert x.is_dubious_node(p)
     #@-others
 #@-others
 
