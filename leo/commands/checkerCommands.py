@@ -385,7 +385,7 @@ class CheckNodes:
             p.h not in self.suppressions
             and not p.h.startswith('class') and '@others' not in p.b
             and not any(z.match(p.h) for z in self.ok_head_patterns)
-            and sum(1 for s in g.splitLines(p.b) if self.def_pattern.match(s)) > 1
+            and sum(1 for s in lines if self.def_pattern.match(s)) > 1
         )
         leading_blank_line = p.b.strip() and not lines[0].strip()
         empty_body = (
