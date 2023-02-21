@@ -7026,35 +7026,41 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
-def handleScriptException(c: Cmdr, p: Position, script: str, script1: str) -> None:
+def handleScriptException(
+    c: Cmdr,
+    p: Position,
+    script: str = None,  # No longer used.
+    script1: str = None,  # No longer used.
+) -> None:
     g.warning("exception executing script")
     g.es_exception()
     # Careful: this test is no longer guaranteed.
-    if p.v.context == c:
-        fileName, n = g.getLastTracebackFileAndLineNumber()
-        try:
-            c.goToScriptLineNumber(n, p)
-            #@+<< dump the lines near the error >>
-            #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
-            if g.os_path_exists(fileName):
-                with open(fileName) as f:
-                    lines = f.readlines()
-            else:
-                lines = g.splitLines(script)
-            s = '-' * 20
-            g.es_print('', s)
-            # Print surrounding lines.
-            i = max(0, n - 2)
-            j = min(n + 2, len(lines))
-            while i < j:
-                ch = '*' if i == n - 1 else ' '
-                s = f"{ch} line {i+1:d}: {lines[i]}"
-                g.es('', s, newline=False)
-                i += 1
-            #@-<< dump the lines near the error >>
-        except Exception:
-            g.es_print('Unexpected exception in g.handleScriptException')
-            g.es_exception()
+    if p.v.context != c:
+        return
+    fileName, n = g.getLastTracebackFileAndLineNumber()
+    try:
+        c.goToScriptLineNumber(n, p)
+        #@+<< dump the lines near the error >>
+        #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
+        if g.os_path_exists(fileName):
+            with open(fileName) as f:
+                lines = f.readlines()
+        else:
+            lines = g.splitLines(script)
+        s = '-' * 20
+        g.es_print('', s)
+        # Print surrounding lines.
+        i = max(0, n - 2)
+        j = min(n + 2, len(lines))
+        while i < j:
+            ch = '*' if i == n - 1 else ' '
+            s = f"{ch} line {i+1:d}: {lines[i]}"
+            g.es('', s, newline=False)
+            i += 1
+        #@-<< dump the lines near the error >>
+    except Exception:
+        g.es_print('Unexpected exception in g.handleScriptException')
+        g.es_exception()
 #@+node:ekr.20140209065845.16767: *3* g.insertCodingLine
 def insertCodingLine(encoding: str, script: str) -> str:
     """
