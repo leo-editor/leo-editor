@@ -1114,7 +1114,7 @@ class Commands:
         except KeyboardInterrupt:
             g.es('interrupted')
         except Exception:
-            g.handleScriptException(c, p, script, script)
+            g.handleScriptException(c, p)
         finally:
             del sys.path[:2]
     #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
@@ -1147,7 +1147,7 @@ class Commands:
         raiseFlag=False         True: reraise any exceptions.
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
-        c, script1 = self, script
+        c = self
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -1183,7 +1183,7 @@ class Commands:
                 except Exception:
                     if raiseFlag:
                         raise
-                    g.handleScriptException(c, script_p, script, script1)
+                    g.handleScriptException(c, script_p)
                 finally:
                     del sys.path[0]
                     del sys.path[0]

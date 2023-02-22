@@ -2,6 +2,7 @@
 #@+node:ekr.20210902164946.1: * @file ../unittests/core/test_leoGlobals.py
 """Tests for leo.core.leoGlobals"""
 
+import io
 import os
 import stat
 import sys
@@ -264,6 +265,29 @@ class TestGlobals(LeoUnitTest):
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
+    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
+    def test_g_handleScriptException(self):
+
+        c = self.c
+        table = (
+            'test_leoGlobals.py", line',
+            'in test_g_handleScriptException',
+            'print(1/0)',
+            'ZeroDivisionError: division by zero'
+        )
+        with self.assertRaises(ZeroDivisionError):
+            try:
+                print(1/0)
+            except ZeroDivisionError:
+                old_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                g.handleScriptException(c, c.p)
+                report = sys.stdout.getvalue()
+                for s in table:
+                    assert s in report, repr(s)
+                sys.stdout = old_stdout
+                # print(report)
+                raise
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')

@@ -143,7 +143,7 @@ class TestFind(LeoUnitTest):
         settings.find_text = 'def'
         settings.change_text = '_DEF_'
         settings.ignore_case = False
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
         # Ensure that the @file node is marked dirty.
@@ -161,7 +161,7 @@ class TestFind(LeoUnitTest):
         settings.change_text = '_CHILD_'
         settings.ignore_case = False
         settings.in_headline = True
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
         x.do_change_all(settings)
@@ -175,7 +175,7 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all(settings)
         # Word find.
         settings.find_text = 'def'
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         x.do_clone_find_all(settings)
         # Suboutline only.
@@ -190,7 +190,7 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all_flattened(settings)
         # word find.
         settings.find_text = 'def'
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         x.do_clone_find_all_flattened(settings)
         # Suboutline only.
