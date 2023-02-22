@@ -665,7 +665,7 @@ Var PythonExecutable
 !define license         "LICENSE"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
-!define site            "http://leoeditor.com/"
+!define site            "https://leo-editor.github.io/leo-editor/"
 !define target_file     "LeoAssoc.exe"
 !define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 
@@ -1119,7 +1119,7 @@ SectionEnd
 !define license         "LICENSE"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
-!define site            "http://leoeditor.com/"
+!define site            "https://leo-editor.github.io/leo-editor/"
 !define target_file     "LeoSetup-${version}.exe"
 !define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 </t>
