@@ -8034,7 +8034,7 @@ Promote
 
 Reference .leo file
 
-`leoeditor/leo/core contains a **reference .leo file**: **LeoPyRef.leo**.
+`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
 This file should change only when adding new external files to Leo.
 Developers should use a local copy of LeoPyRef.leo (conventionally called
 **leoPy.leo**) for their own work.
@@ -24709,7 +24709,7 @@ The body of the separation node contains the **.leo reference**, a path to the r
 
 Developers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.
 </t>
-<t tx="ekr.20180130105010.1">`leoeditor/leo/core contains a **reference .leo file**: **LeoPyRef.leo**.
+<t tx="ekr.20180130105010.1">`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
 
 This file should change only when adding new external files to Leo.
 
