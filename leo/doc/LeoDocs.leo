@@ -2512,13 +2512,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230222173508.1"><vh>--- remove obsolete link to sourceforge</vh>
-<v t="ekr.20180212070758.1"></v>
-</v>
-<v t="ekr.20230222173615.1"><vh>--- Revise discussions of reference file(s)</vh>
-<v t="ekr.20230122011228.5"></v>
-<v t="ekr.20180130105010.1"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8041,12 +8034,10 @@ Promote
 
 Reference .leo file
 
-Leo's `git repository`_ and Leo distributions contain two reference
-files: LeoPyRef.leo and leoGuiPluginsRef.leo. These reference files
-should contain nothing but @file nodes and should change only when new
-external files get added to the project. Developers should use *local
-copies* of reference files for their own work. For example, instead of
-using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+`leoeditor/leo/core contains a **reference .leo file**: **LeoPyRef.leo**.
+This file should change only when adding new external files to Leo.
+Developers should use a local copy of LeoPyRef.leo (conventionally called
+**leoPy.leo**) for their own work.
 
 
 .. index::
@@ -24718,9 +24709,12 @@ The body of the separation node contains the **.leo reference**, a path to the r
 
 Developers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.
 </t>
-<t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
+<t tx="ekr.20180130105010.1">`leoeditor/leo/core contains a **reference .leo file**: **LeoPyRef.leo**.
 
-Leo's `git repository`_ and Leo distributions contain two reference files: LeoPyRef.leo  and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
+This file should change only when adding new external files to Leo.
+
+Developers should use a local copy of LeoPyRef.leo (conventionally called
+**leoPy.leo**) for their own work.</t>
 <t tx="ekr.20180201041411.1"></t>
 <t tx="ekr.20180201101506.1">https://github.com/leo-editor/leo-editor/issues/658
 
@@ -32519,12 +32513,6 @@ Leo's beautify command differs from `Black`_ as follows:
   That is, beautify simulates Black's --skip-string-normalization command-line option.
 - beautify doesn't insert extra blank lines at the end of nodes.
   Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
-<t tx="ekr.20230222173508.1"># Found 1 marked node</t>
-<t tx="ekr.20230222173615.1">@nosearch
-
-# Word, Ignore Case, Head, Body
-
-# found 2 nodes</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
