@@ -4345,6 +4345,7 @@ def splitLines(s: str) -> List[str]:
     Split s into lines, preserving the number of lines and
     the endings of all lines, including the last line.
     """
+    # The guard protects only against s == None.
     return s.splitlines(True) if s else []  # This is a Python string function!
 
 splitlines = splitLines
