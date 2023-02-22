@@ -7,6 +7,7 @@ import json
 import os
 import re
 import subprocess
+from shutil import which
 import sys
 import tabnanny
 import tempfile
@@ -657,6 +658,403 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language,
             directory=directory, regex=regex, root=p)
+    #@+node:tom.20230221151635.1: *3* @cmd c.execute-external-file
+    #@@language python
+    @cmd('execute-external-file')
+    def execute_external_file(self, event: Event = None) -> None:
+        """
+        #@+<< docstring >>
+        #@+node:tom.20230221151635.2: *4* << docstring >>
+        Run external files.
+
+        If there is an @language directive in the top node of the file,
+        the external processor will be chosen based on it if known.
+        Otherwise, the processor will be chosen using the file's extension
+        if known.  Otherwise, on Linux a shebang line will be used if the
+        external file has one. The candidate processor will be verified
+        to be reachable by the shell.
+
+        On Windows, "@language batch" and "@language shell" both will cause
+        cmd.exe to be invoked as the file processor. On Linux, "@language
+        shell" will cause the system's shell to be invoked. By default, this
+        will be bash. If bash is not present, then the environmental variable
+        $SHELL will be invoked.
+
+        The processing programs and language file extensions can be
+        specified in an @data settings node with the name
+        "run-external-processor-map".
+
+        The data in the @data node body must have a PROCESSORS, an
+        EXTENSIONS section, and optionally a TERMINAL section,
+        looking like this example:
+
+            # A comment line
+            # Map file extensions to language names
+            EXTENSIONS
+            .lua: lua    # Trailing comments allowed
+            .rb: ruby
+
+            # Map language names to processor names or paths
+            PROCESSORS
+            .lua: lua
+            .ruby: C:\Ruby27-x64\bin\ruby.exe
+
+            # Optionally specify a Linux terminal here (e.g., konsole)
+            TERMINAL
+            # konsole
+
+        Blank lines and lines starting with a "#" are ignored.  If a
+        full path to the processor is included, that path will be used.
+        Otherwise, the processor must be findable by the shell: this
+        normally means it must be on the PATH.
+
+        Any output will be displayed in a newly-opened launching console.
+
+        #@-<< docstring >>
+        """
+        c = self
+        MAP_SETTING_NODE = 'run-external-processor-map'
+        #@+others
+        #@+node:tom.20230221151635.3: *4* SETTINGS_HELP
+        SETTINGS_HELP = '''The data in the @data node body must have a
+        PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
+        section, looking like this example:
+
+            # A comment line
+            # Map file extensions to language names
+            EXTENSIONS
+            .lua: lua   # Trailing comments are allowed
+            .rb: ruby
+
+            # Map language names to processor names or paths
+            PROCESSORS
+            lua: lua
+            ruby: C:\Ruby27-x64\bin\ruby.exe
+
+            # Optionally specify a Linux terminal (e.g., konsole) on the
+            # line after the "TERMINAL" line.
+            TERMINAL
+
+        Blank lines and lines starting with a "#" are ignored.
+        '''
+        #@+node:tom.20230221151635.4: *4* extension map
+        LANGUAGE_EXTENSION_MAP = {
+        '.cmd': 'batch',
+        '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
+        '.jl': 'julia',
+        '.lua': 'lua',
+        '.ps1': 'powershell',
+        '.py': 'python',
+        '.pyw': 'python',
+        'rb': 'ruby',
+        }
+        #@+node:tom.20230221151635.5: *4* processor map
+        PROCESSORS = {
+        'batch': 'cmd.exe',
+        'julia': 'julia',
+        'lua': 'lua',
+        'powershell': 'powershell',
+        'ruby': 'ruby',
+        }
+        #@+node:tom.20230221151635.6: *4* get_external_maps
+        def get_external_maps():
+            """Return processor, extension maps for @data node.
+            
+            The data in the @data node body must have a PROCESSORS and an
+            EXTENSIONS section, looking like this example:
+                
+                # A comment line
+                # Map file extensions to language names
+                EXTENSIONS
+                .lua: lua  # Trailing comments are allowed
+                .rb: ruby
+
+                # Map language names to processor names or paths
+                PROCESSORS
+                .lua: lua
+                .ruby: C:\Ruby27-x64\bin\ruby.exe
+
+                # Specify a particular Linux terminal to use
+                # e.g, /usr/bin/konsole
+                TERMINAL
+
+            Blank lines and lines starting with a "#" are ignored.  Trailing
+            in-line comments are allowed, delineated by "#".
+            
+            RETURNS
+            a tuple (processor_map, extension_map)
+            """
+
+            data = c.config.getData(MAP_SETTING_NODE, None)
+            if not data:
+                return None, None, ''
+
+            processor_map = {}
+            extension_map = {}
+            active_map = None
+            block = None
+            terminal = ''
+            TERM = 'TERMINAL'
+            for line in data:
+                if not line or line.startswith('#'): continue
+                line = line.split('#', 1)[0]  # Allow in-line trailing comments
+                if 'PROCESSORS' in line:
+                    active_map = processor_map
+                elif 'EXTENSIONS' in line:
+                    active_map = extension_map
+                elif TERM in line:
+                    active_map = None
+                    block = TERM
+                elif active_map:
+                    # Line format: a: b
+                    keyval = line.split(':', 1)
+                    key = keyval[0].strip()
+                    val = keyval[1].strip()
+                    active_map[key] = val
+                elif block == TERM:
+                    terminal = line
+            return processor_map, extension_map, terminal
+        #@+node:tom.20230221151635.7: *4* getExeKind
+        def getExeKind(root, ext):
+            """Return the executable kind of the external file.
+
+            If there is a language directive in effect, return it,
+            otherwise use the file exension.
+
+            Returns a language.
+            """
+            language = g.getLanguageFromAncestorAtFileNode(c.p) or ''
+            # words = root.h.split(None, 1)  # Splits only on first run of spaces
+            # path = words[1] if len(words) > 1 else ""
+            # if not path:
+                # return None, None, None
+
+            # _, ext = os.path.splitext(path)
+            if not language:
+                language = LANGUAGE_EXTENSION_MAP.get(ext, None)
+
+            return language
+
+        #@+node:tom.20230221151635.8: *4* getProcessor
+        def getProcessor(language, path, extension):
+            """Return the name or path of a program able to run our external program."""
+            processor = ''
+            if language == 'python':
+                processor =  sys.executable
+            else:
+                if g.isWindows and language == 'shell':
+                    return 'cmd.exe'
+                processor = PROCESSORS.get(language, '')
+                if not processor:
+                    if g.isWindows:
+                        ftype = get_win_assoc(extension)
+                        processor = get_win_processor(ftype)
+            # Check to make sure we can run this processor
+            if processor:
+                proc = which(processor)
+                if not proc:
+                    processor = ''
+            return processor
+        #@+node:tom.20230221151635.9: *4* Get Windows File Associations
+        def get_win_assoc(extension):
+            """Return Windows association for given file extension, or ''.
+            
+            The extension must include the dot.
+            """
+            cmd = f'assoc {extension}'
+            proc = subprocess.run(cmd, shell = True, capture_output = True)
+            filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
+            filetype = filetype.split('=')[1] if filetype else ''
+            return filetype
+
+        def get_win_processor(filetype):
+            """Get Windows' idea of the program to use for running this file type.
+            
+            Example return from ftype:
+                Lua.Script="C:\Program Files (x86)\Lua\5.1\lua.exe" "%1" %*
+            
+            ARGUMENT
+            filetype -- a file type returned by the assoc command.
+            
+            RETURNS
+            the processor or ''
+            """
+            if not filetype:
+                return ''
+            cmd = f'ftype {filetype}'
+            proc = subprocess.run(cmd, shell = True, capture_output = True)
+            ftype_str = proc.stdout.decode('utf-8') or 'none'
+            if not ftype_str:
+                return ''
+            prog_str = ftype_str.split('=')[1]
+            return prog_str.split('"')[1]
+        #@+node:tom.20230221151635.10: *4* getShell
+        def getShell():
+            # Prefer bash unless it is not present - we know its options' names
+            shell = 'bash'
+            has_bash = which(shell)
+            if not has_bash:
+               # Need bare shell name, not whole path
+               shell = os.environ['SHELL'].split('/')[-1]
+            return shell
+        #@+node:tom.20230221151635.11: *4* getTerminal
+        #@+others
+        #@+node:tom.20230221151635.12: *5* getTerminalFromDirectory
+        def getTerminalFromDirectory(dir):
+            BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm', 'koi8rxterm')
+            TERM_STRINGS = ('*-terminal', '*term')
+            for ts in TERM_STRINGS:
+                cmd = f'find {dir} -type f -name {ts}'
+                proc = subprocess.run(cmd, shell = True, capture_output = True)
+                terminals = proc.stdout.decode('utf-8')
+                for t in terminals.splitlines():
+                    bare_term = t.split('/')[-1]
+                    if bare_term not in BAD_NAMES:
+                        return t
+        #@+node:tom.20230221151635.13: *5* getCommonTerminal
+        def getCommonTerminal(names):
+            """Return a terminal name given candidate names.
+            
+            ARGUMENT
+            names -- a string containing one name, or a sequence of strings.
+            
+            RETURNS
+            a path of an existing terminal, if found, else an empty string
+            """
+            term = ''
+            if isinstance(names, str):
+                names = (names,)
+            term = ''
+            for name in names:
+                term = which(name)
+                if term:
+                    break
+            return term
+        #@-others
+
+        def getTerminal():
+            return (getTerminalFromDirectory('/usr/bin')
+                    or getTerminalFromDirectory('/bin')
+                    or getCommonTerminal(('konsole', 'xterm'))
+                    )
+        #@+node:tom.20230221151635.14: *4* getTermExecuteCmd
+        def getTermExecuteCmd(terminal):
+            """Given a terminal's name, find the command line arg to launch a program.
+
+            First, try "--help".  If that fails, see try "--help-all".  If neither
+            has an argument or switch for "Execute", give up and assume the arg is "-x".
+            """
+            HELP_CMDS = ('-h', '--help', '--help-all')
+            EXECUTESTR = 'execute'
+
+            #@+others
+            #@+node:tom.20230221151635.15: *5* get_help_message
+            def get_help_message(terminal, help_cmd):
+                cmd = f'{terminal} {help_cmd}'
+                proc = subprocess.run(cmd, shell = True, capture_output = True)
+                msg = proc.stdout.decode('utf-8')
+                if not msg:
+                    # g.es('error:', proc.stderr.decode('utf-8'))
+                    return ''
+                return msg
+            #@+node:tom.20230221151635.16: *5* find_ex_arg
+            def find_ex_arg(help_msg):
+                for line in help_msg.splitlines():
+                    if '--command' in line:
+                        return '--command'
+                    elif '-e' in line:
+                        return '-e'
+                    elif EXECUTESTR in line.lower():
+                        fields = line.lstrip().split()
+                        # There may be more than one arg; if so, use the first one
+                        arg = fields[0]
+                        # May have trailing comma; remove it
+                        arg = arg.split(',')
+                        return arg[0]
+                return ''
+            #@-others
+
+            for cmd in HELP_CMDS:
+                msg = get_help_message(terminal, cmd)
+                arg = find_ex_arg(msg)
+                if arg:
+                    if arg.startswith('--'):
+                        arg += '='
+                    else:
+                        arg += ' '
+                    break
+            else:
+                arg = '-e ' if 'xterm' in terminal else '-x '
+            return arg
+        #@+node:tom.20230221151635.17: *4* checkShebang
+        def checkShebang(path):
+            """Return True if file begins with a shebang line, else False."""
+            path = g.os_path_expanduser(path)
+            with open(path, encoding = 'utf-8') as f:
+                first_line = f.readline()
+            return first_line.startswith('#!')
+        #@+node:tom.20230221151635.18: *4* runFile
+        def runfile(fullpath, processor):
+            direc = os.path.expanduser(os.path.dirname(fullpath))
+            if g.isWindows:
+                fullpath = fullpath.replace('/', '\\')
+                if processor:
+                    if processor == 'cmd.exe':
+                        cmd = ['start', processor, '/k', fullpath]
+                        subprocess.Popen(cmd, shell=True)
+                    else:
+                        cmd = ['start', 'cmd.exe', '/k', processor, fullpath]
+                        subprocess.Popen(cmd, shell = True)
+                else:
+                    g.es('Unknown processor', fullpath, color = 'red')
+            elif g.isMac:
+                g.es('Cannot launch external files on a Mac yet', color= 'red')
+            else:  # Presumably Linux
+                fullpath = fullpath.replace('\\', '/')
+                term = terminal or getTerminal()
+
+                if not term:
+                    g.es('Cannot find a terminal to launch the external file', color = 'red')
+                    g.es(f'   You can specify a terminal in an "@data {MAP_SETTING_NODE}" setting node')
+                    g.es('  ', SETTINGS_HELP)
+                    return
+
+                shell_name = getShell()
+                execute_arg = getTermExecuteCmd(term)
+                if (not processor) and checkShebang(fullpath):
+                        cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
+                elif processor:
+                    cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
+                else:
+                    g.es(f'No processor for {ext}', color = 'red')
+                    return
+
+                subprocess.Popen(cmd, shell=True, start_new_session=True)
+        #@-others
+
+        language, path = None, None
+        root, path = c.gotoCommands.find_root(c.p)
+        if root and path:
+            processor_map, extension_map, terminal = get_external_maps()
+            if extension_map:
+                LANGUAGE_EXTENSION_MAP = LANGUAGE_EXTENSION_MAP | extension_map
+            if processor_map:
+                PROCESSORS = PROCESSORS | processor_map
+            _, ext = os.path.splitext(path)
+
+            # Check terminal from MAP_SETTING_NODE setting
+            if terminal:
+                terminal = which(terminal)
+                if not terminal:
+                    g.es('Cannot find terminal specified in setting - trying an alternative')
+
+            path = g.fullPath(c, root)
+            path = g.os_path_finalize(path)
+            language = getExeKind(root, ext)
+            processor = getProcessor(language, path, ext)
+            runfile(path, processor)
+        else:
+            g.es('Cannot find an @- file', color = 'red')
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event: Event = None) -> None:

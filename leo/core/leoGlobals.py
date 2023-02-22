@@ -7035,6 +7035,7 @@ def handleScriptException(
 ) -> None:
     g.warning("exception executing script")
     g.es_exception()
+
     # Careful: this test is no longer guaranteed.
     if p.v.context != c:
         return
