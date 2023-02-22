@@ -759,10 +759,10 @@ class Commands:
         #@+node:tom.20230221151635.6: *4* get_external_maps
         def get_external_maps():
             """Return processor, extension maps for @data node.
-            
+
             The data in the @data node body must have a PROCESSORS and an
             EXTENSIONS section, looking like this example:
-                
+
                 # A comment line
                 # Map file extensions to language names
                 EXTENSIONS
@@ -780,7 +780,7 @@ class Commands:
 
             Blank lines and lines starting with a "#" are ignored.  Trailing
             in-line comments are allowed, delineated by "#".
-            
+
             RETURNS
             a tuple (processor_map, extension_map)
             """
@@ -840,7 +840,7 @@ class Commands:
             """Return the name or path of a program able to run our external program."""
             processor = ''
             if language == 'python':
-                processor =  sys.executable
+                processor = sys.executable
             else:
                 if g.isWindows and language == 'shell':
                     return 'cmd.exe'
@@ -858,31 +858,31 @@ class Commands:
         #@+node:tom.20230221151635.9: *4* Get Windows File Associations
         def get_win_assoc(extension):
             """Return Windows association for given file extension, or ''.
-            
+
             The extension must include the dot.
             """
             cmd = f'assoc {extension}'
-            proc = subprocess.run(cmd, shell = True, capture_output = True)
+            proc = subprocess.run(cmd, shell=True, capture_output=True)
             filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
             return filetype
 
         def get_win_processor(filetype):
             """Get Windows' idea of the program to use for running this file type.
-            
+
             Example return from ftype:
                 Lua.Script="C:\Program Files (x86)\Lua\5.1\lua.exe" "%1" %*
-            
+
             ARGUMENT
             filetype -- a file type returned by the assoc command.
-            
+
             RETURNS
             the processor or ''
             """
             if not filetype:
                 return ''
             cmd = f'ftype {filetype}'
-            proc = subprocess.run(cmd, shell = True, capture_output = True)
+            proc = subprocess.run(cmd, shell=True, capture_output=True)
             ftype_str = proc.stdout.decode('utf-8') or 'none'
             if not ftype_str:
                 return ''
@@ -894,8 +894,8 @@ class Commands:
             shell = 'bash'
             has_bash = which(shell)
             if not has_bash:
-               # Need bare shell name, not whole path
-               shell = os.environ['SHELL'].split('/')[-1]
+                # Need bare shell name, not whole path
+                shell = os.environ['SHELL'].split('/')[-1]
             return shell
         #@+node:tom.20230221151635.11: *4* getTerminal
         #@+others
@@ -905,7 +905,7 @@ class Commands:
             TERM_STRINGS = ('*-terminal', '*term')
             for ts in TERM_STRINGS:
                 cmd = f'find {dir} -type f -name {ts}'
-                proc = subprocess.run(cmd, shell = True, capture_output = True)
+                proc = subprocess.run(cmd, shell=True, capture_output=True)
                 terminals = proc.stdout.decode('utf-8')
                 for t in terminals.splitlines():
                     bare_term = t.split('/')[-1]
@@ -914,10 +914,10 @@ class Commands:
         #@+node:tom.20230221151635.13: *5* getCommonTerminal
         def getCommonTerminal(names):
             """Return a terminal name given candidate names.
-            
+
             ARGUMENT
             names -- a string containing one name, or a sequence of strings.
-            
+
             RETURNS
             a path of an existing terminal, if found, else an empty string
             """
@@ -951,7 +951,7 @@ class Commands:
             #@+node:tom.20230221151635.15: *5* get_help_message
             def get_help_message(terminal, help_cmd):
                 cmd = f'{terminal} {help_cmd}'
-                proc = subprocess.run(cmd, shell = True, capture_output = True)
+                proc = subprocess.run(cmd, shell=True, capture_output=True)
                 msg = proc.stdout.decode('utf-8')
                 if not msg:
                     # g.es('error:', proc.stderr.decode('utf-8'))
@@ -990,7 +990,7 @@ class Commands:
         def checkShebang(path):
             """Return True if file begins with a shebang line, else False."""
             path = g.os_path_expanduser(path)
-            with open(path, encoding = 'utf-8') as f:
+            with open(path, encoding='utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
         #@+node:tom.20230221151635.18: *4* runFile
@@ -1004,17 +1004,17 @@ class Commands:
                         subprocess.Popen(cmd, shell=True)
                     else:
                         cmd = ['start', 'cmd.exe', '/k', processor, fullpath]
-                        subprocess.Popen(cmd, shell = True)
+                        subprocess.Popen(cmd, shell=True)
                 else:
-                    g.es('Unknown processor', fullpath, color = 'red')
+                    g.es('Unknown processor', fullpath, color='red')
             elif g.isMac:
-                g.es('Cannot launch external files on a Mac yet', color= 'red')
+                g.es('Cannot launch external files on a Mac yet', color='red')
             else:  # Presumably Linux
                 fullpath = fullpath.replace('\\', '/')
                 term = terminal or getTerminal()
 
                 if not term:
-                    g.es('Cannot find a terminal to launch the external file', color = 'red')
+                    g.es('Cannot find a terminal to launch the external file', color='red')
                     g.es(f'   You can specify a terminal in an "@data {MAP_SETTING_NODE}" setting node')
                     g.es('  ', SETTINGS_HELP)
                     return
@@ -1022,11 +1022,11 @@ class Commands:
                 shell_name = getShell()
                 execute_arg = getTermExecuteCmd(term)
                 if (not processor) and checkShebang(fullpath):
-                        cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
+                    cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
                 elif processor:
                     cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
                 else:
-                    g.es(f'No processor for {ext}', color = 'red')
+                    g.es(f'No processor for {ext}', color='red')
                     return
 
                 subprocess.Popen(cmd, shell=True, start_new_session=True)
@@ -1054,7 +1054,7 @@ class Commands:
             processor = getProcessor(language, path, ext)
             runfile(path, processor)
         else:
-            g.es('Cannot find an @- file', color = 'red')
+            g.es('Cannot find an @- file', color='red')
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event: Event = None) -> None:
