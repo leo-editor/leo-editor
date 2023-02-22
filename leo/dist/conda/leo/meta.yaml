@@ -46,7 +46,7 @@ app:
     icon: LeoApp.ico
 
 about:
-  home: "https://leoeditor.com"
+  home: "https://leo-editor.github.io/leo-editor"
   license: MIT
   license_family: MIT
   license_file: LICENSE
