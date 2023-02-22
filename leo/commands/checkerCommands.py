@@ -365,11 +365,11 @@ class CheckNodes:
         Get user data from @data nodes.
         """
         c = self.c
-        self.ok_head_strings = c.config.getData('check-nodes-ok-patterns') or []
         self.ok_head_prefixes = c.config.getData('check-nodes-ok-prefixes') or []
         self.suppressions = c.config.getData('check-nodes-suppressions') or []
         # Compile all regex patterns.
-        for s in self.ok_head_strings:
+        self.ok_head_patterns = []
+        for s in c.config.getData('check-nodes-ok-patterns') or []:
             try:
                 self.ok_head_patterns.append(re.compile(fr"{s}"))
             except Exception:
