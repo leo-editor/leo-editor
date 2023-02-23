@@ -517,6 +517,10 @@ if QtWidgets:
             file_name = self.files_list[self.slide_number]
             # Change the window's title.
             self.setWindowTitle(file_name)
+            # Undo previous offsets.
+            if self.dx or self.dy:
+                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, -self.dx, -self.dy)
+                self.dx = self.dy = 0
             # Set self.scale, self.dx and self.dy.
             if self.reset_zoom:
                 self.load_data()
