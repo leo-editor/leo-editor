@@ -662,7 +662,7 @@ class Commands:
     #@@language python
     @cmd('execute-external-file')
     def execute_external_file(self, event: Event = None) -> None:
-        """
+        r"""
         #@+<< docstring >>
         #@+node:tom.20230221151635.2: *4* << docstring >>
         Run external files.
@@ -716,7 +716,7 @@ class Commands:
         MAP_SETTING_NODE = 'run-external-processor-map'
         #@+others
         #@+node:tom.20230221151635.3: *4* SETTINGS_HELP
-        SETTINGS_HELP = '''The data in the @data node body must have a
+        SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
         section, looking like this example:
 
@@ -757,8 +757,8 @@ class Commands:
         'ruby': 'ruby',
         }
         #@+node:tom.20230221151635.6: *4* get_external_maps
-        def get_external_maps():
-            """Return processor, extension maps for @data node.
+        def get_external_maps() -> Tuple[Dict, Dict, str] :
+            r"""Return processor, extension maps for @data node.
             
             The data in the @data node body must have a PROCESSORS and an
             EXTENSIONS section, looking like this example:
@@ -782,21 +782,22 @@ class Commands:
             in-line comments are allowed, delineated by "#".
             
             RETURNS
-            a tuple (processor_map, extension_map)
+            a tuple (processor_map, extension_map, terminal)
             """
 
-            data = c.config.getData(MAP_SETTING_NODE, None)
+            data:str = c.config.getData(MAP_SETTING_NODE, None)
             if not data:
                 return None, None, ''
 
-            processor_map = {}
-            extension_map = {}
+            processor_map:Dict[str, str] = {}
+            extension_map:Dict[str, str] = {}
             active_map = None
-            block = None
-            terminal = ''
+            block:str = None
+            terminal:str = ''
             TERM = 'TERMINAL'
             for line in data:
-                if not line or line.startswith('#'): continue
+                if not line or line.startswith('#'):
+                    continue
                 line = line.split('#', 1)[0]  # Allow in-line trailing comments
                 if 'PROCESSORS' in line:
                     active_map = processor_map
@@ -815,7 +816,7 @@ class Commands:
                     terminal = line
             return processor_map, extension_map, terminal
         #@+node:tom.20230221151635.7: *4* getExeKind
-        def getExeKind(root, ext):
+        def getExeKind(pos: Position, ext: str) -> str:
             """Return the executable kind of the external file.
 
             If there is a language directive in effect, return it,
@@ -836,7 +837,7 @@ class Commands:
             return language
 
         #@+node:tom.20230221151635.8: *4* getProcessor
-        def getProcessor(language, path, extension):
+        def getProcessor(language: str, path:str, extension:str) -> str:
             """Return the name or path of a program able to run our external program."""
             processor = ''
             if language == 'python':
@@ -856,19 +857,20 @@ class Commands:
                     processor = ''
             return processor
         #@+node:tom.20230221151635.9: *4* Get Windows File Associations
-        def get_win_assoc(extension):
+        def get_win_assoc(extension:str) -> str:
             """Return Windows association for given file extension, or ''.
             
             The extension must include the dot.
             """
             cmd = f'assoc {extension}'
+            # pylint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell = True, capture_output = True)
             filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
             return filetype
 
-        def get_win_processor(filetype):
-            """Get Windows' idea of the program to use for running this file type.
+        def get_win_processor(filetype:str) -> str:
+            r"""Get Windows' idea of the program to use for running this file type.
             
             Example return from ftype:
                 Lua.Script="C:\Program Files (x86)\Lua\5.1\lua.exe" "%1" %*
@@ -882,6 +884,7 @@ class Commands:
             if not filetype:
                 return ''
             cmd = f'ftype {filetype}'
+            # pylint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell = True, capture_output = True)
             ftype_str = proc.stdout.decode('utf-8') or 'none'
             if not ftype_str:
@@ -889,20 +892,21 @@ class Commands:
             prog_str = ftype_str.split('=')[1]
             return prog_str.split('"')[1]
         #@+node:tom.20230221151635.10: *4* getShell
-        def getShell():
+        def getShell() -> str:
             # Prefer bash unless it is not present - we know its options' names
             shell = 'bash'
             has_bash = which(shell)
             if not has_bash:
-               # Need bare shell name, not whole path
-               shell = os.environ['SHELL'].split('/')[-1]
+                # Need bare shell name, not whole path
+                shell = os.environ['SHELL'].split('/')[-1]
             return shell
         #@+node:tom.20230221151635.11: *4* getTerminal
         #@+others
         #@+node:tom.20230221151635.12: *5* getTerminalFromDirectory
-        def getTerminalFromDirectory(dir):
+        def getTerminalFromDirectory(dir:str) -> str:
             BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm', 'koi8rxterm')
             TERM_STRINGS = ('*-terminal', '*term')
+            # pylint: disable=subprocess-run-check
             for ts in TERM_STRINGS:
                 cmd = f'find {dir} -type f -name {ts}'
                 proc = subprocess.run(cmd, shell = True, capture_output = True)
@@ -911,13 +915,14 @@ class Commands:
                     bare_term = t.split('/')[-1]
                     if bare_term not in BAD_NAMES:
                         return t
+            return None
         #@+node:tom.20230221151635.13: *5* getCommonTerminal
-        def getCommonTerminal(names):
+        def getCommonTerminal(names:Union[str, List, Tuple]) -> str:
             """Return a terminal name given candidate names.
-            
+
             ARGUMENT
             names -- a string containing one name, or a sequence of strings.
-            
+
             RETURNS
             a path of an existing terminal, if found, else an empty string
             """
@@ -932,13 +937,13 @@ class Commands:
             return term
         #@-others
 
-        def getTerminal():
+        def getTerminal() -> str:
             return (getTerminalFromDirectory('/usr/bin')
                     or getTerminalFromDirectory('/bin')
                     or getCommonTerminal(('konsole', 'xterm'))
                     )
         #@+node:tom.20230221151635.14: *4* getTermExecuteCmd
-        def getTermExecuteCmd(terminal):
+        def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
             First, try "--help".  If that fails, see try "--help-all".  If neither
@@ -949,8 +954,9 @@ class Commands:
 
             #@+others
             #@+node:tom.20230221151635.15: *5* get_help_message
-            def get_help_message(terminal, help_cmd):
+            def get_help_message(terminal:str, help_cmd:str) -> str:
                 cmd = f'{terminal} {help_cmd}'
+                # pylint: disable=subprocess-run-check
                 proc = subprocess.run(cmd, shell = True, capture_output = True)
                 msg = proc.stdout.decode('utf-8')
                 if not msg:
@@ -958,19 +964,19 @@ class Commands:
                     return ''
                 return msg
             #@+node:tom.20230221151635.16: *5* find_ex_arg
-            def find_ex_arg(help_msg):
+            def find_ex_arg(help_msg:str) -> str:
                 for line in help_msg.splitlines():
                     if '--command' in line:
                         return '--command'
-                    elif '-e' in line:
+                    if '-e' in line:
                         return '-e'
-                    elif EXECUTESTR in line.lower():
+                    if EXECUTESTR in line.lower():
                         fields = line.lstrip().split()
                         # There may be more than one arg; if so, use the first one
                         arg = fields[0]
                         # May have trailing comma; remove it
-                        arg = arg.split(',')
-                        return arg[0]
+                        args = arg.split(',')
+                        return args[0]
                 return ''
             #@-others
 
@@ -987,15 +993,15 @@ class Commands:
                 arg = '-e ' if 'xterm' in terminal else '-x '
             return arg
         #@+node:tom.20230221151635.17: *4* checkShebang
-        def checkShebang(path):
+        def checkShebang(path:str) -> bool:
             """Return True if file begins with a shebang line, else False."""
             path = g.os_path_expanduser(path)
             with open(path, encoding = 'utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
         #@+node:tom.20230221151635.18: *4* runFile
-        def runfile(fullpath, processor):
-            direc = os.path.expanduser(os.path.dirname(fullpath))
+        def runfile(fullpath: str, processor:str, terminal: str) -> None:
+            direc:str = os.path.expanduser(os.path.dirname(fullpath))
             if g.isWindows:
                 fullpath = fullpath.replace('/', '\\')
                 if processor:
@@ -1022,14 +1028,14 @@ class Commands:
                 shell_name = getShell()
                 execute_arg = getTermExecuteCmd(term)
                 if (not processor) and checkShebang(fullpath):
-                        cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
+                    cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
                 elif processor:
-                    cmd = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
+                    cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
                 else:
-                    g.es(f'No processor for {ext}', color = 'red')
+                    g.es(f'No processor for {fullpath}', color = 'red')
                     return
 
-                subprocess.Popen(cmd, shell=True, start_new_session=True)
+                subprocess.Popen(cmd_, shell=True, start_new_session=True)
         #@-others
 
         language, path = None, None
@@ -1052,7 +1058,7 @@ class Commands:
             path = g.os_path_finalize(path)
             language = getExeKind(root, ext)
             processor = getProcessor(language, path, ext)
-            runfile(path, processor)
+            runfile(path, processor, terminal)
         else:
             g.es('Cannot find an @- file', color = 'red')
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
