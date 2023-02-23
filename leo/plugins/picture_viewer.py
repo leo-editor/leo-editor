@@ -321,8 +321,7 @@ if QtWidgets:
             elif self.wrap_flag:
                 self.slide_number = 0  # Wrap.
             else:
-                print('No more slides')
-                self.quit()
+                return  # Don't quit in this direction.
             # Show the next slide.
             self.show_slide()
         #@+node:ekr.20211021200821.9: *4* Slides.prev_slide
