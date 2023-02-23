@@ -241,13 +241,13 @@ if QtWidgets:
             file_name = self.files_list[self.slide_number]
             # Change the window's title.
             self.setWindowTitle(file_name)
-            # Undo previous offsets.
-            if False: ###self.dx or self.dy:
-                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, -self.dx, -self.dy)
-                self.dx = self.dy = 0
             # Set self.scale, self.dx and self.dy.
+            print('')  # For trace in load_data.
             if self.reset_zoom:
                 self.load_data()
+            else:
+                self.dx = self.dy = 0
+                self.scale = 1.0
             try:
                 if 0:  # Clear the pixmap cache.
                     QtGui.QPixmapCache.clear()
@@ -261,52 +261,36 @@ if QtWidgets:
                     image = image1 if image1.height() <= image2.height() else image2
                 else:  # Legacy
                     image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                # Scroll.
-                self.do_scroll(self.dx, self.dy)
                 # Insert the pixmap.
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
                 # Scroll the pixmap.
+                self.do_scroll()
             except Exception:
                 g.es_exception()
-        #@+node:ekr.20230223054727.1: *3* Slides.scroll
-        def do_scroll(self, dx, dy):
+        #@+node:ekr.20230223054727.1: *3* Slides.do_scroll
+        scroll_lockout = False
+
+        def do_scroll(self):
             """Call  QScrollBar::setValue()."""
             w = self
+            dx, dy = self.dx, self.dy
             area = w.scroll_area
             hbar, vbar = area.horizontalScrollBar(), area.verticalScrollBar()
-            hval, vval = hbar.value(), vbar.value()
             
-            print('')
-            g.trace(dx, dy)
+            if 0:
+                hval, vval = hbar.value(), vbar.value()
+                g.trace(f"dx: {dx} dy: {dy} hval: {hval} vval: {vval}")
             
             assert hbar.isEnabled()
             assert vbar.isEnabled()
             
-            # hbar.setEnabled(True)
-            # vbar.setEnabled(True)
-            
-            
-            
-            # g.trace(hbar.isEnabled())
-            assert self.dx == dx and self.dy == dy
-            self.dx = self.dy = 0  ###
-            g.trace('1 hval:', hval, 'vval:', vval)
-
-            # Undo previous scroll!
-            hbar.setValue(dx - hval)
-            vbar.setValue(dy - vval)
-            print('hbar.update()')
-            hbar.update()  # scrollContentsBy updates self.dx, self.dy
-            print('vbar.update()')
-            vbar.update()
-            print('w.update()')
-            w.update()
-           
-            hval, vval = hbar.value(), vbar.value()
-            g.trace('2 hval:', hval, 'vval:', vval)
-            # A hack: restore.
-            self.dx, self.dy = dx, dy
+            try:
+                self.scroll_lockout = True
+                hbar.setValue(dx)
+                vbar.setValue(dy)
+            finally:
+                self.scroll_lockout = False
         #@+node:ekr.20230219044810.1: *3* Slides: commands
         #@+node:ekr.20230116092517.1: *4* Slides.copy
         def copy(self):
@@ -518,17 +502,17 @@ if QtWidgets:
             else:
                 self.scale = 1.0
                 self.dx = self.dy = 0
-            if 0:  # Don't remove.
+            if 1:  # Don't remove.
                 print(
-                    f"load_data: {self.slide_number} scale: {self.scale:.8} x: "
+                    f"load_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} x: "
                     f"{self.dx} y: {self.dy}")
         #@+node:ekr.20230218180340.1: *4* Slides.save_data
         def save_data(self):
 
             if 0 <= self.slide_number < len(self.files_list):
-                if 0:  # Don't remove.
+                if 1 and g.caller() != 'scrollContentsBy':  # Don't remove.
                     print(
-                        f"save_data: {self.slide_number} scale: {self.scale:.8} "
+                        f"save_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} "
                         f"x: {self.dx} y: {self.dy}")
                 file_name = self.files_list[self.slide_number]
                 self.db [file_name] = [self.scale, int(self.dx), int(self.dy)]
@@ -548,10 +532,14 @@ if QtWidgets:
             """
             Override QtWidgets.QScrollArea.scrollContentsBy.
             
-            Calling this function in order to scroll programmatically is an error,
+            Calling this function in order to scroll programmatically is an error.
             """
+            if self.scroll_lockout:
+                # g.trace('LOCKOUT', dx, dy)
+                return
             try:
-                g.trace(self.dx, '+', dx, ',', self.dy, '+', dy)
+                # Prefer the trace in save_data.
+                # g.trace(self.dx, '+', dx, ',', self.dy, '+', dy)
                 QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, dx, dy)
                 self.dx += dx
                 self.dy += dy
