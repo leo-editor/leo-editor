@@ -230,6 +230,83 @@ if QtWidgets:
         timer = QtCore.QBasicTimer()
 
         #@+others
+        #@+node:ekr.20211021200821.14: *3* Slides.show_slide
+        def show_slide(self):
+            # Reset the timer.
+            self.timer.stop()
+            self.timer.start(int(self.delay * 1000.0), self)
+            if not self.files_list:
+                self.quit()
+            # Get the file name.
+            file_name = self.files_list[self.slide_number]
+            # Change the window's title.
+            self.setWindowTitle(file_name)
+            # Undo previous offsets.
+            if False: ###self.dx or self.dy:
+                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, -self.dx, -self.dy)
+                self.dx = self.dy = 0
+            # Set self.scale, self.dx and self.dy.
+            if self.reset_zoom:
+                self.load_data()
+            try:
+                if 0:  # Clear the pixmap cache.
+                    QtGui.QPixmapCache.clear()
+                # Display the picture, scaled by self.scale.
+                pixmap = QtGui.QPixmap(file_name)
+                TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+                transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
+                if 1:  # Take the smaller immage.
+                    image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
+                    image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
+                    image = image1 if image1.height() <= image2.height() else image2
+                else:  # Legacy
+                    image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
+                # Scroll.
+                self.scroll(self.dx, self.dy)
+                # Insert the pixmap.
+                self.picture.setPixmap(image)
+                self.picture.adjustSize()
+                # Scroll the pixmap.
+            except Exception:
+                g.es_exception()
+        #@+node:ekr.20230223054727.1: *3* Slides.scroll
+        def scroll(self, dx, dy):
+            """Call  QScrollBar::setValue()."""
+            w = self
+            area = w.scroll_area
+            hbar, vbar = area.horizontalScrollBar(), area.verticalScrollBar()
+            hval, vval = hbar.value(), vbar.value()
+            
+            print('')
+            g.trace(dx, dy)
+            
+            assert hbar.isEnabled()
+            assert vbar.isEnabled()
+            
+            # hbar.setEnabled(True)
+            # vbar.setEnabled(True)
+            
+            
+            
+            # g.trace(hbar.isEnabled())
+            assert self.dx == dx and self.dy == dy
+            self.dx = self.dy = 0  ###
+            g.trace('1 hval:', hval, 'vval:', vval)
+
+            # Undo previous scroll!
+            hbar.setValue(dx - hval)
+            vbar.setValue(dy - vval)
+            print('hbar.update()')
+            hbar.update()  # scrollContentsBy updates self.dx, self.dy
+            print('vbar.update()')
+            vbar.update()
+            print('w.update()')
+            w.update()
+           
+            hval, vval = hbar.value(), vbar.value()
+            g.trace('2 hval:', hval, 'vval:', vval)
+            # A hack: restore.
+            self.dx, self.dy = dx, dy
         #@+node:ekr.20230219044810.1: *3* Slides: commands
         #@+node:ekr.20230116092517.1: *4* Slides.copy
         def copy(self):
@@ -459,21 +536,29 @@ if QtWidgets:
         def closeEvent(self, event):
             """Override QWidget.closeEvent."""
             self.quit()
+            
+        # def moveEvent(self, event=None):
+            # g.trace(event.oldPos())
+            # super().moveEvent(event)
 
         def timerEvent(self, e=None):
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20230219053658.1: *4* Slides.scrollContentsBy
         def scrollContentsBy(self, dx: int, dy: int):
-            """Override QtWidgets.QScrollArea.scrollContentsBy."""
+            """
+            Override QtWidgets.QScrollArea.scrollContentsBy.
+            
+            Calling this function in order to scroll programmatically is an error,
+            """
             try:
+                g.trace(self.dx, '+', dx, ',', self.dy, '+', dy)
                 QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, dx, dy)
                 self.dx += dx
                 self.dy += dy
+                self.save_data()
             except OverflowError:
                 if self.verbose:
                     g.trace('scroll overflow')
-                self.dx = self.dy = 0
-            self.save_data()
         #@+node:ekr.20211021200821.5: *4* Slides.keyPressEvent
         def keyPressEvent(self, event):
 
@@ -504,47 +589,6 @@ if QtWidgets:
             if f:
                 f()
             # print(f"picture_viewer.py: ignoring key: {s!r} {event.key()}")
-        #@+node:ekr.20230219054015.1: *3* Slides: rendering
-        #@+node:ekr.20211021200821.14: *4* Slides.show_slide
-        def show_slide(self):
-            # Reset the timer.
-            self.timer.stop()
-            self.timer.start(int(self.delay * 1000.0), self)
-            if not self.files_list:
-                self.quit()
-            # Get the file name.
-            file_name = self.files_list[self.slide_number]
-            # Change the window's title.
-            self.setWindowTitle(file_name)
-            # Undo previous offsets.
-            if self.dx or self.dy:
-                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, -self.dx, -self.dy)
-                self.dx = self.dy = 0
-            # Set self.scale, self.dx and self.dy.
-            if self.reset_zoom:
-                self.load_data()
-            try:
-                if 0:  # Clear the pixmap cache.
-                    QtGui.QPixmapCache.clear()
-                # Display the picture, scaled by self.scale.
-                pixmap = QtGui.QPixmap(file_name)
-                TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
-                transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
-                if 1:  # Take the smaller immage.
-                    image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                    image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
-                    image = image1 if image1.height() <= image2.height() else image2
-                else:  # Legacy
-                    image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                # Scroll the pixmap.
-                if self.dx or self.dy:
-                    # Call the base method so we don't update self.dx and self.dy twice.
-                    QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, self.dx, self.dy)
-                # Insert the pixmap.
-                self.picture.setPixmap(image)
-                self.picture.adjustSize()
-            except Exception:
-                g.es_exception()
         #@+node:ekr.20230219045030.1: *3* Slides: startup & shutdown
         #@+node:ekr.20211021200821.2: *4* Slides.get_files
         def get_files(self, path):
