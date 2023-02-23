@@ -262,7 +262,7 @@ if QtWidgets:
                 else:  # Legacy
                     image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
                 # Scroll.
-                self.scroll(self.dx, self.dy)
+                self.do_scroll(self.dx, self.dy)
                 # Insert the pixmap.
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
@@ -270,7 +270,7 @@ if QtWidgets:
             except Exception:
                 g.es_exception()
         #@+node:ekr.20230223054727.1: *3* Slides.scroll
-        def scroll(self, dx, dy):
+        def do_scroll(self, dx, dy):
             """Call  QScrollBar::setValue()."""
             w = self
             area = w.scroll_area
