@@ -11106,7 +11106,8 @@ def setNode (p,data):
     if body and body.strip():
         p.setTnodeText(body.strip())
 #@+node:ekr.20130810093044.16971: *3* script: Display function call hierarchy in Leo
-'''
+@language python
+"""
 From Brian Theado
 
 The other day I stumbled across Ville's code in scripts.leo which displays the
@@ -11120,9 +11121,11 @@ Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
 the "call tree" node. The execution tree of the 'scroll-outline-up-line'
 minibuffer command will be displayed to stdout and also as a tree of leo
 headlines.
-'''
+"""
 
 import trace
+
+@others
 
 # http://docs.python.org/library/trace.html documents trace module.
 tracer = trace.Trace(countcallers=1)
@@ -11139,8 +11142,6 @@ top.h = 'trace session'
 displayCalltree(top, tracer.results().callers.keys())
 c.redraw()
 
-@language python
-@others
 #@+node:ekr.20130810093044.16972: *4* displayCalltree
 def displayCalltree(p, callinfo):
    '''
@@ -11195,7 +11196,6 @@ def displayCalltree(p, callinfo):
        path = path[0:-1]
        p = p.parent()
        levels = levels[0:-1]
-#@+node:ekr.20130810093044.16973: *4* trace session
 #@+node:ekr.20040311090054: *3* script: Dump fileIndex
 for p in c.all_positions():
     print p.v.fileIndex
