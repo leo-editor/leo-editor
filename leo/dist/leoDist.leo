@@ -1424,7 +1424,8 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Create release branch. Change version in this checklist to match.
+First: Create release branch, 6.7.2.
+Change version in this checklist to match.
 
 *Never* merge devel into 6.7.2!
 
