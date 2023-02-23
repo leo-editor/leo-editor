@@ -329,17 +329,15 @@ if QtWidgets:
         def prev_slide(self):
             # Save the previous data.
             self.save_data()
-            # Find the previous slide or quit.
+            # Find the previous slide or do nothing.
             if not self.files_list:
-                print('No more slides')
                 self.quit()
             elif self.slide_number > 0:  # No need to wrap.
                 self.slide_number -= 1
             elif self.wrap_flag:  # Wrap.
                 self.slide_number = len(self.files_list) - 1
             else:
-                print('No more slides')
-                self.quit()
+                return  # Don't quit in this direction.
             # Show the previous slide.
             self.show_slide()
         #@+node:ekr.20211029020533.1: *4* Slides.restart
