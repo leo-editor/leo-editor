@@ -217,6 +217,7 @@ if QtWidgets:
         scale: float = 1.0
         starting_directory: str = None
         use_db: bool = False
+        trace: bool = False
         verbose: bool = False
         wrap_flag: bool = True
 
@@ -242,7 +243,8 @@ if QtWidgets:
             # Change the window's title.
             self.setWindowTitle(file_name)
             # Set self.scale, self.dx and self.dy.
-            print('')  # For trace in load_data.
+            if self.trace:
+                print('')  # For trace in load_data.
             if self.reset_zoom:
                 self.load_data()
             else:
@@ -254,7 +256,7 @@ if QtWidgets:
                     QtGui.QPixmapCache.clear()
                 if 0:  # Doesn't work.
                     self.scroll_area.setupViewport(self.view_port)
-                if 1:  # Doesn't work.
+                if 1:  # Doesn't work?
                     # Reset the viewport.
                     self.reset_scroll()
 
@@ -262,7 +264,7 @@ if QtWidgets:
                 pixmap = QtGui.QPixmap(file_name)
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
-                if 1:  # Take the smaller immage.
+                if 1:  # Take the smaller image.
                     image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
                     image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
                     image = image1 if image1.height() <= image2.height() else image2
@@ -486,7 +488,7 @@ if QtWidgets:
             else:
                 self.scale = 1.0
                 self.dx = self.dy = 0
-            if 1:  # Don't remove.
+            if self.trace:  # Don't remove.
                 print(
                     f"load_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} x: "
                     f"{self.dx} y: {self.dy}")
@@ -495,7 +497,7 @@ if QtWidgets:
 
             if 0 <= self.slide_number < len(self.files_list):
                 # Don't remove this trace.
-                if 1 and g.caller() != 'scrollContentsBy':
+                if self.trace and g.caller() != 'scrollContentsBy':
 
                     print(
                         f"save_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} "
@@ -584,8 +586,12 @@ if QtWidgets:
 
             try:
                 w.scroll_lockout = True
-                hbar.setValue(dx)
-                vbar.setValue(dy)
+                if 1:  # The scale won't make much difference.
+                    hbar.setValue(dx)
+                    vbar.setValue(dy) # tbpassin: use -dy
+                else:
+                    hbar.setValue(int(self.scale * dx))
+                    vbar.setValue(int(self.scale * dy)) # tbpassin: use -dy
             finally:
                 w.scroll_lockout = False
         #@+node:ekr.20230224054937.1: *4* Slides.reset_scroll
