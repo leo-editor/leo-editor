@@ -334,7 +334,7 @@ class CheckNodes:
         self.clones = [z.copy() for z in c.all_unique_positions() if self.is_dubious_node(z)]
         # Report.
         self.count = count = len(self.clones)
-        g.es(f"{count} dubious nodes{g.plural(count)}")
+        g.es(f"{count} dubious node{g.plural(count)}")
         if not count:
             return
         dubious = self.create_dubious_nodes()
