@@ -1554,7 +1554,7 @@ class LeoFind:
             {
                 'body': body,  # List of indices into v.b
                 'head': head,  # List of indices into v.h
-                'v': v,        # The vnode containing the mateches.
+                'v': v,        # The vnode containing the matches.
             }
         """
         self.init_ivars_from_settings(settings)
