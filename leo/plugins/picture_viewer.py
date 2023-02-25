@@ -255,26 +255,20 @@ if QtWidgets:
                 if 1:  # Clear the pixmap cache.
                     QtGui.QPixmapCache.clear()
                 if 0:  # Doesn't work.
-                    self.scroll_area.setupViewport(self.view_port)
-                if 1:  # Doesn't work?
-                    # Reset the viewport.
                     self.reset_scroll()
-
-                # Display the picture, scaled by self.scale.
+                # Create the pixmap.
                 pixmap = QtGui.QPixmap(file_name)
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
-                if 1:  # Take the smaller image.
-                    image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                    image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
-                    image = image1 if image1.height() <= image2.height() else image2
-                else:  # Legacy
+                if pixmap.height() <= pixmap.width():
                     image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                # Insert the pixmap.
-                self.picture.setPixmap(image)
-                self.picture.adjustSize()
+                else:
+                    image = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
                 # Scroll the pixmap.
                 self.do_scroll()
+                # Insert the pixmap in the picture.
+                self.picture.setPixmap(image)
+                self.picture.adjustSize()
             except Exception:
                 g.es_exception()
         #@+node:ekr.20230219044810.1: *3* Slides: commands
@@ -515,28 +509,6 @@ if QtWidgets:
 
         def timerEvent(self, e=None):
             self.next_slide()  # show_slide resets the timer.
-        #@+node:ekr.20230219053658.1: *4* Slides.scrollContentsBy
-        def scrollContentsBy(self, dx: int, dy: int):
-            """
-            Override QtWidgets.QScrollArea.scrollContentsBy.
-
-            Calling this function in order to scroll programmatically is an error.
-            """
-            # We don't need this trace: If the slide scrolls we have come here.
-            # g.trace(self.scroll_lockout, dx, dy)
-            if self.scroll_lockout:
-                # g.trace('LOCKOUT', dx, dy)
-                return
-            try:
-                # Prefer the trace in save_data.
-                # g.trace(self.dx, '+', dx, ',', self.dy, '+', dy)
-                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, dx, dy)
-                self.dx += dx
-                self.dy += dy
-                self.save_data()
-            except OverflowError:
-                if True: # self.verbose:
-                    g.trace('scroll overflow', dx, dy)
         #@+node:ekr.20211021200821.5: *4* Slides.keyPressEvent
         def keyPressEvent(self, event):
 
@@ -579,31 +551,45 @@ if QtWidgets:
             hbar, vbar = area.horizontalScrollBar(), area.verticalScrollBar()
             assert hbar.isEnabled()
             assert vbar.isEnabled()
-
-            if 0:  # Not a great trace.
-                hval, vval = hbar.value(), vbar.value()
-                g.trace(f"dx: {dx} dy: {dy} hval: {hval} vval: {vval}")
-
             try:
-                w.scroll_lockout = True
+                w.scroll_lockout = True  # Lock out scrollContentsBy.
                 if 1:  # The scale won't make much difference.
                     hbar.setValue(dx)
-                    vbar.setValue(dy) # tbpassin: use -dy
+                    vbar.setValue(-dy) # tbpassin: use -dy
                 else:
                     hbar.setValue(int(self.scale * dx))
-                    vbar.setValue(int(self.scale * dy)) # tbpassin: use -dy
+                    vbar.setValue(-int(self.scale * dy)) # tbpassin: use -dy
             finally:
                 w.scroll_lockout = False
-        #@+node:ekr.20230224054937.1: *4* Slides.reset_scroll
+        #@+node:ekr.20230224054937.1: *4* Slides.reset_scroll (not used)
         def reset_scroll(self):
             """Reset the scrollbars."""
             w = self
             try:
-                w.scroll_lockout = True
+                w.scroll_lockout = True  # Lock out scrollContentsBy.
                 w.scroll_area.horizontalScrollBar().setValue(0)
                 w.scroll_area.verticalScrollBar().setValue(0)
             finally:
                 w.scroll_lockout = False
+        #@+node:ekr.20230219053658.1: *4* Slides.scrollContentsBy
+        def scrollContentsBy(self, dx: int, dy: int):
+            """
+            Override QtWidgets.QScrollArea.scrollContentsBy.
+
+            Called *after* the scrolling has already happened!
+
+            Calling this function in order to scroll programmatically is an error.
+            """
+            if self.scroll_lockout:
+                return
+            try:
+                # Prefer the trace in save_data.
+                QtWidgets.QScrollArea.scrollContentsBy(self.scroll_area, dx, dy)
+                self.dx += dx
+                self.dy += dy
+                self.save_data()
+            except OverflowError:
+                g.trace('scroll overflow', dx, dy)
         #@+node:ekr.20230219045030.1: *3* Slides: startup & shutdown
         #@+node:ekr.20211021200821.2: *4* Slides.get_files
         def get_files(self, path):
