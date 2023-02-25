@@ -282,7 +282,7 @@ class TestFind(LeoUnitTest):
         # Test 2.
         init()
         settings.suboutline_only = True
-        count = x.do_find_all(settings)
+        x.do_find_all(settings)
         # Test 3.
         init()
         settings.search_headline = False
@@ -290,7 +290,6 @@ class TestFind(LeoUnitTest):
         x.do_find_all(settings)
         # Test 4.
         init()
-        x.findAllUniqueFlag = True
         settings.pattern_match = True
         settings.find_text = r'^(def)'
         settings.change_text = '*\1*'
@@ -312,14 +311,14 @@ class TestFind(LeoUnitTest):
             # Successful search.
             x.reverse_find_defs = reverse
             settings = x._compute_find_def_settings('def child5')
-            p, pos, newpos = x.do_find_def(settings, word='child5')
+            p, pos, newpos = x.do_find_def(settings)
             self.assertTrue(p)
             self.assertEqual(p.h, 'child 5')
             s = p.b[pos:newpos]
             self.assertEqual(s, 'def child5')
             # Unsuccessful search.
             settings = x._compute_find_def_settings('def xyzzy')
-            p, pos, newpos = x.do_find_def(settings, word='xyzzy')
+            p, pos, newpos = x.do_find_def(settings)
             assert p is None, repr(p)
     #@+node:ekr.20210110073117.64: *4* TestFind.test_find-next
     def test_find_next(self):
@@ -396,7 +395,7 @@ class TestFind(LeoUnitTest):
     def test_find_var(self):
         x = self.x
         settings = x._compute_find_def_settings('v5 =')
-        p, pos, newpos = x.do_find_var(settings, word='v5')
+        p, pos, newpos = x.do_find_var(settings)
         assert p
         self.assertEqual(p.h, 'child 5')
         s = p.b[pos:newpos]
@@ -675,9 +674,9 @@ class TestFind(LeoUnitTest):
             ('ABbabc',  'b',    [1, 2, 4]),
 
             (True, True),
-            ('ax aba ab abc'    'ab', [7]),
-            ('ax aba\nab abc'   'ab', [7]),
-            ('ax aba ab\babc'   'ab', [7]),
+            ('ax aba ab abc',   'ab', [7]),
+            ('ax aba\nab abc',  'ab', [7]),
+            ('ax aba ab\babc',  'ab', [7]),
         )
         for aTuple in table:
             if len(aTuple) == 2:

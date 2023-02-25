@@ -583,7 +583,7 @@ class LeoFind:
             self.update_change_list(self.change_text)  # Optional. An edge case.
             # Do the command!
             settings = self._compute_find_def_settings(find_pattern)
-            result = method(settings, word)
+            result = method(settings)
             if result[0]:
                 # Keep the settings that found the match.
                 ftm.set_widgets_from_dict(settings)
@@ -592,9 +592,9 @@ class LeoFind:
         self._restore_after_find_def()
         return None, None, None
 
-    def do_find_def(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
+    def do_find_def(self, settings: Settings) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""
-        return self._fd_helper(settings, word)
+        return self._fd_helper(settings)
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
     def _compute_find_def_settings(self, find_pattern: str) -> Settings:
 
@@ -638,7 +638,7 @@ class LeoFind:
                 return word[len(tag) :].strip()
         return word
     #@+node:ekr.20150629125733.1: *5* find._fd_helper
-    def _fd_helper(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
+    def _fd_helper(self, settings: Settings) -> Tuple[Position, int, int]:
         """
         Find the definition of the class, def or var under the cursor.
 
@@ -886,7 +886,7 @@ class LeoFind:
         self.update_change_list(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
-        result = self.do_find_var(settings, word)
+        result = self.do_find_var(settings)
         if result[0]:
             # Keep the settings that found the match.
             ftm.set_widgets_from_dict(settings)
@@ -894,9 +894,9 @@ class LeoFind:
             # Restore the previous find settings!
             self._restore_after_find_def()
 
-    def do_find_var(self, settings: Settings, word: str) -> Tuple[Position, int, int]:
+    def do_find_var(self, settings: Settings) -> Tuple[Position, int, int]:
         """A standalone helper for unit tests."""
-        return self._fd_helper(settings, word)
+        return self._fd_helper(settings)
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
     def focus_to_find(self, event: Event = None) -> None:  # pragma: no cover (cmd)
