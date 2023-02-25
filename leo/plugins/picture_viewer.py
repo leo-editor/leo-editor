@@ -260,10 +260,10 @@ if QtWidgets:
                 pixmap = QtGui.QPixmap(file_name)
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
-                if pixmap.height() <= pixmap.width():
-                    image = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
-                else:
-                    image = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
+                # Scale appropriately. Do *not* change this!
+                image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
+                image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
+                image = image1 if image1.height() <= image2.height() else image2
                 # Scroll the pixmap.
                 self.do_scroll()
                 # Insert the pixmap in the picture.
