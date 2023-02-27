@@ -242,14 +242,14 @@ def spam():
 <t tx="ekr.20180318145515.1">@language rest
 @wrap
 </t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
+<t tx="ekr.20180318145515.704" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
 @wrap
 @tabwidth -2
 
 Same as tbp_light_solarized except swapped the solarized
 colors base0 - base3 and base00 - base03.  Also change log panel
 background color.</t>
-<t tx="ekr.20180318145515.710" lineYOffset="4b002e"></t>
+<t tx="ekr.20180318145515.710"></t>
 <t tx="ekr.20180318145515.711"></t>
 <t tx="ekr.20180318145515.712"></t>
 <t tx="ekr.20180318145515.713">Original solarized base0: #839496</t>
@@ -447,7 +447,7 @@ Terry: #dc322f</t>
 Terry: #268bd2</t>
 <t tx="ekr.20180318145515.750"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180318145515.751"></t>
-<t tx="ekr.20180318145515.752" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20180318145515.752">These settings must exist because they are *not* used in the css.</t>
 <t tx="ekr.20180318145515.753">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
 There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
@@ -630,9 +630,9 @@ The following settings specify the indicators.  You can use an absolute path, or
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
 <t tx="ekr.20180318145515.810"></t>
-<t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="ekr.20180318145515.811">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme, used to find icon files:
+<t tx="ekr.20180318145515.812">Name of the theme, used to find icon files:
 
 leo_dark_0
 ekr_dark</t>
@@ -694,37 +694,23 @@ something to see)</t>
 <t tx="tom.20220329091500.1">/*
 @language css
 
-  a-tbp_dark_solarized.leo: @data qt-gui-plugin-style-sheet
-  at-theme TBP Dark Solarized.
+  minimal-ui-tbp_dark_solarized.leo: @data qt-gui-plugin-style-sheet
+  at-theme TBP Dark Solarized UI.
   at-tabwidth -2 causes a crash in parse-template!
 
 */
 </t>
 <t tx="tom.20220329091500.10">QScrollBar::horizontal {
-   height: 12px;
+   height: 15px;
 }
 QScrollBar::vertical {
-   width: 12px;
+   width: 15px;
 }
-QScrollBar::up-arrow:vertical {
-  color: white;
-  background:@dark-base1;
+QScrollBar::add-page, QScrollBar::sub-page {
+   background: @dark-base02;
 }
 
-QScrollBar::add-page, QScrollBar::sub-page {
-   background: @dark-base03;
-}
-QScrollBar::handle {
-  background: @dark-base1;
-}
-QScrollBar::handle:hover {
-    background: @dark-base00;
-}
-QScrollBar::add-line, QScrollBar::sub-line {
-   /*background: @dark-base00;*/
-   color:white;
-   background: red;
-}</t>
+</t>
 <t tx="tom.20220329091500.11">/* The status area */
 
 QLineEdit#status1 {
@@ -807,7 +793,14 @@ QTreeView QLineEdit {
   color: @text-foreground;
   background: @dark-base03;
 }</t>
-<t tx="tom.20220329091500.3">/* A Qt bug? More general css should precede more specific. */
+<t tx="tom.20220329091500.3">/* More general css should precede more specific. */
+
+QWidget {
+  /* Not for text widgets */
+  background:  @dark-base03;
+  color: @dark-base1;
+  border-color: @dark-base1;
+}
 
 QDockWidget {
  border: 5px solid red;
@@ -823,18 +816,9 @@ QLabel {
 QLineEdit {
   border: none;
   padding: 3px;
-}
-QWidget {
-  /* Not for text widgets */
-  background:  @dark-base03;
-  color: @dark-base1;
-  border-color: @dark-base1;
-}
-</t>
+}</t>
 <t tx="tom.20220329091500.4">/* The body pane */
-QTextEdit {
-/*  background: @dark-base03;
-  color: @text-foreground;*/
+LeoQTextBrowser {
   font-family: @font-family-body;
   font-size: @font-size-body;
   font-weight: normal; /* normal,bold,100,..,900 */
@@ -889,7 +873,7 @@ QPushButton:hover {
 }</t>
 <t tx="tom.20220329091500.8">/* Warning: do not change the order of these items! */
 QMenu {
-  color: @text-foreground-bright
+  color: @text-foreground-bright;
 }
 QMenuBar {
   margin-left: 5px;
