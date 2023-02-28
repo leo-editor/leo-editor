@@ -5,7 +5,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 2
+    :depth: 1
     :local:
 
 .. Links used in this document.
@@ -82,8 +82,8 @@ What's new in Leo 6.7.0
   - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
   - Retire Tk indices, except in unit tests.
 
-What's new in Leo 6.6.x
-+++++++++++++++++++++++
+What's new in Leo 6.6 and earlier
++++++++++++++++++++++++++++++++++
 
 What's new in Leo 6.6.4
 ***********************
@@ -136,7 +136,7 @@ What's new in Leo 6.6
 - Many bug fixes.
 
 What's new in Leo 6.5
-+++++++++++++++++++++
+*********************
 
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
@@ -146,7 +146,7 @@ What's new in Leo 6.5
 - Many code-level cleanups.
 
 What's new in Leo 6.4
-+++++++++++++++++++++
+*********************
 
 - Support for leoInteg: "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
@@ -159,7 +159,7 @@ What's new in Leo 6.4
 - Add execute-general-script command and c.general_script_helper.
 
 What's new in Leo 6.3
-+++++++++++++++++++++
+*********************
 
 Major features:
 - leoAst.py unifies the ast and token worlds.
@@ -176,7 +176,7 @@ Features:
 Fixed all known bugs.
 
 What's new in Leo 6.2
-+++++++++++++++++++++
+*********************
 
 Commands:
 
@@ -202,7 +202,7 @@ Bugs:
 - Fixed all known bugs, including some notable, long-standing bugs.
 
 What's new in Leo 6.1
-+++++++++++++++++++++
+*********************
 
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 
@@ -222,7 +222,7 @@ New command-line arguments::
   --window-spot
 
 What's new in Leo 6.0
-+++++++++++++++++++++
+*********************
 
 Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
 
