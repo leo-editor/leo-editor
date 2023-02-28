@@ -1424,13 +1424,18 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Create release branch, 6.7.2.
+First:
+- Create release branch: `6.7.2`.
+- Create release devel branch: `6.7.2-devel`.
+
+Do all release work in `6.7.2-devel` or `gh-pages`.
+
 Change version in this checklist to match.
 
 *Never* merge devel into 6.7.2!
 
-- It's OK to merge bug fix branches into both devel and 6.7.2
-- It's OK to merge the 6.7.2 branch into devel after the release.
+- It's OK to merge bug fix branches into `devel` and `6.7.2-devel`
+- It's OK to merge `6.7.2` into `devel` after the release.
 
 @language rest
 </t>
