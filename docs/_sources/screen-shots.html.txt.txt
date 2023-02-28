@@ -7,7 +7,7 @@ Leo screen shots
 Here are some example screen shots.  The images are reduced in size.
 Click on the screen shots to see an enlarged image.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 

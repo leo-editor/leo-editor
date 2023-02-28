@@ -9,7 +9,7 @@ Be aware of the distinction between **Leo-specific** scripts and **general** scr
 Leo-specific scripts access data in the Leo outline in which they are contained;
 general scripts do not.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

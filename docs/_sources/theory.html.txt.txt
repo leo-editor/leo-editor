@@ -21,7 +21,7 @@ It's actually very easy! Try it. You'll see.
 
 Reading this chapter should take about 20 minutes.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

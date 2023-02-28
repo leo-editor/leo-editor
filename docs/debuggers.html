@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Debugging with Leo &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -51,7 +54,8 @@
 Be aware of the distinction between <strong>Leo-specific</strong> scripts and <strong>general</strong> scripts.
 Leo-specific scripts access data in the Leo outline in which they are contained;
 general scripts do not.</p>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#using-g-trace-and-g-pdb" id="id1">Using g.trace and g.pdb</a></p></li>
 <li><p><a class="reference internal" href="#settings-for-winpdb" id="id2">Settings for winpdb</a></p></li>
@@ -62,15 +66,15 @@ general scripts do not.</p>
 </ul>
 </li>
 </ul>
-</nav>
+</div>
 <section id="using-g-trace-and-g-pdb">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Using g.trace and g.pdb</a><a class="headerlink" href="#using-g-trace-and-g-pdb" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Using g.trace and g.pdb</a><a class="headerlink" href="#using-g-trace-and-g-pdb" title="Permalink to this heading">¶</a></h2>
 <p>Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must <a class="reference external" href="installing.html#running-leo-from-a-console-window">run Leo in a console</a> to use g.trace.</p>
 <p>Inserting and deleting g.trace statements is fast, provided that your <a class="reference external" href="FAQ.html#how-can-i-use-leo-to-develop-leo-itself">work flow</a> makes it easy to restart the program under test. As a result, using g.trace statements is similar to setting tracepoints in a debugger, with the advantage that (disabled) tracepoints remain in the source code for future use. You will find many examples of using g.trace throughout Leo’s source code.</p>
 <p>My second choice is using g.pdb to set breakpoints for the <a class="reference external" href="https://docs.python.org/3/library/pdb.html">pdb</a> debugger. Pdb uses the console for all interaction, so you must <a class="reference external" href="installing.html#running-leo-from-a-console-window">run Leo in a console</a>. See the <a class="reference external" href="FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo">FAQ</a> for a discussion of both g.trace and g.pdb.</p>
 </section>
 <section id="settings-for-winpdb">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Settings for winpdb</a><a class="headerlink" href="#settings-for-winpdb" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Settings for winpdb</a><a class="headerlink" href="#settings-for-winpdb" title="Permalink to this heading">¶</a></h2>
 <p>The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@string</span> <span class="n">debugger_kind</span> <span class="o">=</span> <span class="n">winpdb</span>
 </pre></div>
@@ -92,15 +96,15 @@ general scripts do not.</p>
 <p>&#64;string debugger_path = None</p>
 </section>
 <section id="debugging-scripts-with-winpdb">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Debugging scripts with winpdb</a><a class="headerlink" href="#debugging-scripts-with-winpdb" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Debugging scripts with winpdb</a><a class="headerlink" href="#debugging-scripts-with-winpdb" title="Permalink to this heading">¶</a></h2>
 <p>The following three section discuss three ways of debugging scripts with <a class="reference external" href="http://www.digitalpeers.com/pythondebugger/">winpdb</a>. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.</p>
 <p><a class="reference external" href="http://www.digitalpeers.com/pythondebugger/">winpdb</a> and its documentation have been improved recently. For more details, see the <a class="reference external" href="http://www.digitalpeers.com/pythondebugger/embedded.htm">embedded winpdb</a> docs. The discussion of embedded debugging may have been written specifically with Leo in mind.</p>
 <section id="the-debug-command">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">The debug command</a><a class="headerlink" href="#the-debug-command" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">The debug command</a><a class="headerlink" href="#the-debug-command" title="Permalink to this heading">¶</a></h3>
 <p>This way of debugging can only be used for general scripts, not leo-specific scripts. The debug command writes the script to scriptFile.py and invokes winpdb. winpdb opens and is already ‘attached’ to the script to be debugged. You can single-step as you like. Leo continues to run, but killing the debugger will also kill Leo.</p>
 </section>
 <section id="the-execute-script-command-with-explicit-debugger-breaks">
-<h3><a class="toc-backref" href="#id5" role="doc-backlink">The execute-script command with explicit debugger breaks</a><a class="headerlink" href="#the-execute-script-command-with-explicit-debugger-breaks" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">The execute-script command with explicit debugger breaks</a><a class="headerlink" href="#the-execute-script-command-with-explicit-debugger-breaks" title="Permalink to this heading">¶</a></h3>
 <p>This way of debugging scripts allows winpdb to debug scripts that use c, g and p. A bit more work is needed because winpdb does not start automatically. Here are step-by step instructions:</p>
 <ol class="arabic">
 <li><p>Insert the following two lines of code at the start of the script to be debugged:</p>
@@ -181,8 +185,8 @@ In our example, the password is ‘go’.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on February 28, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

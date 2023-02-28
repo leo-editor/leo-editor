@@ -4,7 +4,6 @@
 .. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
 .. _`Nightly snapshot`:         download.html#snapshots       
 .. _`Python wheel`:             https://pythonwheels.com/
-.. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
 .. .. _`Standalone leo.exe`:       download.html#standalone
 
@@ -19,8 +18,6 @@ There are two ways to download Leo:
 - Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
 
 - If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
-
-.. - All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.
 
 Snapshots
 +++++++++

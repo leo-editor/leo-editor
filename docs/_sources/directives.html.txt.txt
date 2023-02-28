@@ -8,7 +8,7 @@ Directives Reference
 
    <br />
 
-.. contents::
+.. contents:: Contents
     :depth: 4
     :local:
 
@@ -217,7 +217,6 @@ The @clean <filename> creates an external file without sentinel lines.
 accessing external files for most people.
 
 When writing an @clean tree, Leo expands section references, @all and
-@others directives, but Leo writes no sentinels to the external file.
 
 When reading an @clean tree, Leo propagates changes from the external file
 to the @clean tree using the `Mulder/Ream update algorithm`_.

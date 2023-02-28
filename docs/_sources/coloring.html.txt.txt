@@ -6,7 +6,7 @@ Controlling Syntax Coloring
 
 This chapter discusses the settings to control Leo's syntax colorer. This chapter also discusses how to extend Leo's colorizer by creating xml language descriptions files and corresponding Python files. **Important**: this material is for those who want to support Leo's colorizing code. To use Leo's colorizers you only need to know about syntax-coloring settings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

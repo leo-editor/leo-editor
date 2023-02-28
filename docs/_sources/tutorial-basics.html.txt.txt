@@ -16,7 +16,7 @@ Leo in 10 Minutes
     
 This chapter introduces Leo's most important features and terminology.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

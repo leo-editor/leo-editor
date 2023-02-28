@@ -8,7 +8,7 @@ This chapter discusses the most important milestones in history of Leo and summa
 
 One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 
