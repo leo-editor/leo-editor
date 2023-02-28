@@ -5,7 +5,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 1
+    :depth: 0
     :local:
 
 .. Links used in this document.
