@@ -2511,6 +2511,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230228011717.1"><vh>*** Review all PRs ***</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31079,11 +31080,16 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 **The highlights of Leo 6.7.2**
 
 - Move Leo's website to https://leo-editor.github.io/leo-editor/
+- Support gnxs formatted as UUIDs.
 - Support the --black-sentinels command-line option.
+- The `check-nodes` command helps keep `@clean` files in sync.
 - Leo's beautify command is now PEP8 compliant.
 - A new script packages Leo as a MacOS .app bundle:
   https://github.com/leo-editor/leo-editor/issues/2966
-- The usual minor bug fixes.
+- Support `@bool run-flake8-on-write`.
+  Use `@first # flake8: noqa` to suppress these checks for an entire file.
+- Support `@string rst3-action`.
+- 78 issues and 100 pull requests.
 
 **Links**
 
@@ -31197,10 +31203,12 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
     return broken_links
 </t>
 <t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
+- The `check-nodes` command helps keep `@clean` files in sync.
 - Improve rst3 command: add `@string rst3-action` setting.
 - Leo's beautify command is now PEP8 compliant.
 - Support the --black-sentinels command-line option.
-- Many minor bug fixes.</t>
+- Support `@bool run-flake8-on-write`.
+- Support gnxs formatted as UUIDs.</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111164618.1">def get_paths():
@@ -32511,6 +32519,7 @@ Leo's beautify command differs from `Black`_ as follows:
   That is, beautify simulates Black's --skip-string-normalization command-line option.
 - beautify doesn't insert extra blank lines at the end of nodes.
   Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
+<t tx="ekr.20230228011717.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
