@@ -1,5 +1,7 @@
+# flake8: noqa
 #@+leo-ver=5-thin
 #@+node:ekr.20090428133936.2: * @file html/conf.py
+#@@first
 #@@language python
 # leo/doc/html/conf.py
 
@@ -46,7 +48,7 @@ master_doc = 'leo_toc'  # don't use any suffix.
 project = 'Leo'
 copyright = '1997-2023, Edward K. Ream'
 
-# The version info for thid project.
+# The version info for this project.
 version = '6.7.2'
 release = '6.7.2'
 

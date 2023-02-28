@@ -1436,7 +1436,7 @@ Change version in this checklist to match.
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
-- Update the version numbers in index.html, index.html and conf.py:
+- Update the version numbers in index.html and conf.py:
   Search for 6.7.
 - Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
