@@ -34,6 +34,10 @@
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
+<v t="ekr.20230228100301.1"><vh>Find panel defaults</vh>
+<v t="ekr.20230228100301.2"><vh>@bool ignore-case = True</vh></v>
+<v t="ekr.20230228100301.3"><vh>@bool whole-word = False</vh></v>
+</v>
 <v t="ekr.20050407144342"><vh>http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -32566,6 +32570,10 @@ Leo's beautify command differs from `Black`_ as follows:
   That is, beautify simulates Black's --skip-string-normalization command-line option.
 - beautify doesn't insert extra blank lines at the end of nodes.
   Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
+<t tx="ekr.20230228100301.1"></t>
+<t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+</t>
+<t tx="ekr.20230228100301.3"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
