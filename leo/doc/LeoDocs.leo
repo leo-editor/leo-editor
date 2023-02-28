@@ -31630,6 +31630,9 @@ call make html</t>
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
+echo make clean
+call make clean
+echo.
 echo make html
 call make html</t>
 <t tx="ekr.20230121135204.1">The workbook file
