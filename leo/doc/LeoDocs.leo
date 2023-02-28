@@ -53,7 +53,6 @@
 <v t="ekr.20131017051340.16847"><vh>Buttons</vh>
 <v t="ekr.20230111163935.1"><vh>@button backup</vh></v>
 <v t="ekr.20230110152344.1"><vh>@button find-bad-links</vh>
-<v t="ekr.20230110153045.1"><vh>_validate_url</vh></v>
 <v t="ekr.20230111171223.1"><vh>find_docs_links</vh></v>
 <v t="ekr.20230110153304.1"><vh>find_outline_links</vh></v>
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
@@ -31139,16 +31138,15 @@ else:
     links = find_web_links(url)
 # Report the found links.
 links = list(set(links))
-g.printObj(links, tag=f"{len(links)} links")
 # Report all broken links.
 n = len(links)
+# g.printObj(links, tag=f"{len(links)} links")
 g.es_print(f"Testing {n} link{g.plural(n)}")
 broken_links = find_broken_links(links)
 n1, n2 = len(links), len(broken_links)
 g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
 </t>
 <t tx="ekr.20230110152349.1"></t>
-<t tx="ekr.20230110153045.1"></t>
 <t tx="ekr.20230110153129.1">def find_web_links(url):
     """Return a list of all links with the root domain."""
     # Make request to URL.        
