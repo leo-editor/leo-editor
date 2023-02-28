@@ -64,6 +64,7 @@
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
 <v t="ekr.20230111164618.1"><vh>get_paths</vh></v>
+<v t="ekr.20230228105847.1"><vh>run</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
 <v t="ekr.20230110152349.1"><vh>@ignore disabled buttons</vh>
@@ -2515,6 +2516,8 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20101025080245.5791"></v>
+<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8883,7 +8886,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 1
+    :depth: 0
     :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
@@ -15738,35 +15741,30 @@ Downloading, Installing &amp; Running Leo
 For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
 <t tx="ekr.20131016083406.16724">@language python
 """
-- Generate intermediate files for all headlines in the table.
-- Run `make clean ; make html` from the leo/doc/html directory.
+Run this script from the `gh-pages` branch.
+
+1. Generate intermediate files for all headlines in the table.
+2. Run `make clean` and `make html` from the leo/doc/html directory.
+
+After running this script, copy files from leo/doc/html/_build/html to leo-editor/docs
 """
-# After doing this: copy files from leo/doc/html/_build/html to leo-editor/docs
+
+@language python
+
 g.cls()
 import os
-
 trace = False
-@others  # define helpers
-if c.isChanged():
-    c.save()
 headlines = [
     "Leo's Documentation"
 ]
-old_p = c.p
-try:
-    docs_path, html_path = get_paths()
-    if html_path:
-        os.chdir(html_path)
-        if write_intermediate_files():
-            # Don't do make-clean by default.
-            # g.execute_shell_commands('make clean',trace=trace)
-            g.execute_shell_commands([
-                'make html',
-                'echo.',
-                'echo copy files from html/_build/html to /docs',
-            ],trace=trace)
-finally:
-    c.selectPosition(old_p)</t>
+
+@others  # define helpers
+
+if c.isChanged():
+    c.save()
+run()
+
+</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
     bookmarks.py:       Manages URL's used as bookmarks.
@@ -31626,17 +31624,12 @@ echo off
 cd C:\Repos\leo-editor\leo\doc\html
 echo make clean
 call make clean
-echo .
-echo make html
-call make html</t>
+</t>
 <t tx="ekr.20230121110345.1"></t>
 <t tx="ekr.20230121110533.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
-echo make clean
-call make clean
-echo.
 echo make html
 call make html</t>
 <t tx="ekr.20230121135204.1">The workbook file
@@ -32574,6 +32567,26 @@ Leo's beautify command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
 <t tx="ekr.20230228100301.3"></t>
+<t tx="ekr.20230228105847.1">def run():
+    
+    if g.gitBranchName() != 'gh-pages':
+        g.es_print('Run `make-sphinx` from `gh-pages` branch')
+        return
+    
+    old_p = c.p
+    try:
+        docs_path, html_path = get_paths()
+        if html_path:
+            os.chdir(html_path)
+            if write_intermediate_files():
+                g.execute_shell_commands([
+                    'make clean',
+                    'make html',
+                    'echo.',
+                    'echo copy files from html/_build/html to /docs',
+                ],trace=trace)
+    finally:
+        c.selectPosition(old_p)</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
