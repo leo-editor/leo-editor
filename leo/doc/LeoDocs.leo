@@ -31079,17 +31079,26 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.2**
 
-- Move Leo's website to https://leo-editor.github.io/leo-editor/
-- Support gnxs formatted as UUIDs.
-- Support the --black-sentinels command-line option.
-- The `check-nodes` command helps keep `@clean` files in sync.
-- Leo's beautify command is now PEP8 compliant.
-- A new script packages Leo as a MacOS .app bundle:
-  https://github.com/leo-editor/leo-editor/issues/2966
-- Support `@bool run-flake8-on-write`.
-  Use `@first # flake8: noqa` to suppress these checks for an entire file.
-- Support `@string rst3-action`.
-- 78 issues and 100 pull requests.
+- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+Commands:
+
+- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- PR #3056: Leo's beautify command is now PEP8 compliant.
+- PR #3140: Run pylint on node.
+- PR #3166: Add the `execute-external-file` command.
+
+Settings and features:
+
+- PR #2979: Add `@bool run-flake8-on-write` setting.
+- PR #2983: Add `--black-sentinels` command-line option.
+- PR #3038: Add `@string rst3-action` setting.
+- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
+
+Other changes:
+
+- 80 issues and 100 pull requests.
 
 **Links**
 
@@ -31202,13 +31211,44 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         g.es_print(f"Bad link: {link}")
     return broken_links
 </t>
-<t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
-- The `check-nodes` command helps keep `@clean` files in sync.
-- Improve rst3 command: add `@string rst3-action` setting.
-- Leo's beautify command is now PEP8 compliant.
-- Support the --black-sentinels command-line option.
-- Support `@bool run-flake8-on-write`.
-- Support gnxs formatted as UUIDs.</t>
+<t tx="ekr.20230111160833.1">.. _`PR #3019`: https://github.com/leo-editor/leo-editor/pull/3019
+
+Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+- `PR #3019`_: Host Leo's website using GitHub pages.
+
+Commands:
+
+.. _`PR #3031: https://github.com/leo-editor/leo-editor/pull/3031
+.. _`PR #3056`: https://github.com/leo-editor/leo-editor/pull/3056
+.. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
+.. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
+
+- `PR #3031`_: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- `PR #3056`_: Leo's beautify command is now PEP8 compliant.
+- `PR #3140`_: Run pylint on node.
+- `PR #3166`_: Add the `execute-external-file` command.
+
+Settings and features:
+
+.. _`PR #2979`: https://github.com/leo-editor/leo-editor/pull/2979
+.. _`PR #2983`: https://github.com/leo-editor/leo-editor/pull/2983
+.. _`PR #3038`: https://github.com/leo-editor/leo-editor/pull/3038
+.. _`PR #3053`: https://github.com/leo-editor/leo-editor/pull/3053
+.. _`PR #3132`: https://github.com/leo-editor/leo-editor/pull/3132
+
+- `PR #2979`_: Add `@bool run-flake8-on-write` setting.
+- `PR #2983`_: Add `--black-sentinels` command-line option.
+- `PR #3038`_: Add `@string rst3-action` setting.
+- `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+
+All noteworthy pull requests:
+https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
+
+All noteworthy issues:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
+</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111164618.1">def get_paths():
