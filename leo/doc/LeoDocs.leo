@@ -1654,19 +1654,19 @@
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
-<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6.x</vh>
+<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6 and earlier</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
 <v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
 <v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
-</v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
+</v>
 <v t="ekr.20221108064344.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
@@ -8883,7 +8883,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 2
+    :depth: 1
     :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
