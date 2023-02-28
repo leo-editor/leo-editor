@@ -31223,7 +31223,7 @@ Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor
 
 Commands:
 
-.. _`PR #3031: https://github.com/leo-editor/leo-editor/pull/3031
+.. _`PR #3031`: https://github.com/leo-editor/leo-editor/pull/3031
 .. _`PR #3056`: https://github.com/leo-editor/leo-editor/pull/3056
 .. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
 .. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
