@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/basics/slide-024.html
+
+Copy works on entire trees
+==========================
+
+Expanding the node shows that the copy operation
+copied the node and all its descendants.
+
+.. image:: _images/slide-024.png
+

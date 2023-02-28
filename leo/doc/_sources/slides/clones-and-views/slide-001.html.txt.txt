@@ -13,7 +13,5 @@ Here, we have cloned node A by selecting A and doing Ctrl=` (clone-node)
 Clones are marked with a small red clone arrow* in the icon box. Deleting
 the penultimate clone removes the red arrow from the node.
 
-.. |clones-and-views1| image:: _images/slide-001.png
-
-|clones-and-views1|
+.. image:: _images/slide-001.png
 

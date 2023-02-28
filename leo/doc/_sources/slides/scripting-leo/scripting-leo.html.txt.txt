@@ -7,5 +7,15 @@ Scripting Leo
 .. toctree::
     :maxdepth: 1
     
-..    To do <slide-001>
+    Introduction to scripting       <slide-001>
+    c, g and p                      <slide-002>
+    Official ivars                  <slide-003>
+    Hello world                     <slide-004>
+    p.h and p.b                     <slide-005>
+    Iterators                       <slide-006>
+    Using iterators                 <slide-007>
+    Building scripts from outlines  <slide-008>
+    g.openWithFileName              <slide-009>
+    Debugging scripts               <slide-010>
+    Further reading                 <slide-011>
 

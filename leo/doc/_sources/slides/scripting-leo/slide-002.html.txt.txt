@@ -1,0 +1,18 @@
+.. rst3: filename: html/slides/scripting-leo/slide-002.html
+
+c, g and p
+==========
+
+Leo scripts execute in an environment containing three predefined objects: c, g and p.
+
+**g** is Leo’s leoGlobals module. This module contains dozens of utility functions and classes.
+
+**c** is the commander of the outline containing the script. Commanders
+define all of Leo’s commands, as well as other data.
+
+**p** is the position of the presently selected node. Positions objects
+represent positions in the traversal of Leo outlines.
+
+This slideshow shows how to use c, g and p in Leo scripts. For full details
+about scripting in Leo, see the Scripting Chapter in Leo’s Users Guide.
+

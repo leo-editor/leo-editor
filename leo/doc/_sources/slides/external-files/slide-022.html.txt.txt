@@ -1,0 +1,10 @@
+.. rst3: filename: html/slides/external-files/slide-022.html
+
+Using @edit nodes
+=================
+
+When Leo reads and @edit node, Leo reads the entire contents of the external file into the body text of the @edit node. Any changes to the external file will appear in the @edit node the next time Leo loads the external file. Rather than creating new files with @edit, it is more common to use @edit to connect Leo with files that already exist on your file system.
+
+.. image number is misleading.
+.. image:: _images/slide-023.png
+

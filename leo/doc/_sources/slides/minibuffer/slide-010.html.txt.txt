@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/minibuffer/slide-010.html
+
+Doing the find
+==============
+
+Type a replacement string.
+
+Type <return> to start the find-next command.
+
+.. image:: _images/slide-010.png
+

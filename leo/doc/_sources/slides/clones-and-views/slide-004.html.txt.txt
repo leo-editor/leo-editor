@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/clones-and-views/slide-004.html
+
+A new node
+==========
+
+Here we have created a node C following the first clone of B.
+
+.. image:: _images/slide-004.png
+

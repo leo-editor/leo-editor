@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/basics/slide-020.html
+
+Right-Arrow: expand a node
+==========================
+
+
+To expand the "to do" node,
+I merely hit the Right-Arrow key.
+
+We can now see the entire to-do list.
+
+.. image:: _images/slide-020.png
+

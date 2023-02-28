@@ -1,0 +1,17 @@
+.. rst3: filename: html/slides/minibuffer/slide-003.html
+
+Example
+=======
+
+Suppose you want to print out the list of Leo’s commands.
+
+You need only remember that commands start with “print”. Just type::
+
+    <alt-x>pri<tab>
+
+You will see “print-” in the minibuffer.
+
+The Completion tab in the log pane shows all the commands that start with “print-”.
+
+.. image:: _images/slide-003.png
+

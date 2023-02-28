@@ -12,3 +12,5 @@ results in the same changes being made to all other clones.
 In fact, all clones of a node are actually the exactly the same node, so
 any change to one clone inevitably affects all other clones.
 
+.. no image for this slide.
+

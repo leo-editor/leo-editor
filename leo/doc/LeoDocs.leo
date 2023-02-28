@@ -2511,7 +2511,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230228011717.1"><vh>*** Review all PRs ***</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15738,6 +15737,7 @@ For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `
 - Generate intermediate files for all headlines in the table.
 - Run `make clean ; make html` from the leo/doc/html directory.
 """
+# After doing this: copy files from leo/doc/html/_build/html to leo-editor/docs
 g.cls()
 import os
 
@@ -15756,7 +15756,11 @@ try:
         if write_intermediate_files():
             # Don't do make-clean by default.
             # g.execute_shell_commands('make clean',trace=trace)
-            g.execute_shell_commands('make html',trace=trace)
+            g.execute_shell_commands([
+                'make html',
+                'echo.',
+                'echo copy files from html/_build/html to /docs',
+            ],trace=trace)
 finally:
     c.selectPosition(old_p)</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
@@ -32559,7 +32563,6 @@ Leo's beautify command differs from `Black`_ as follows:
   That is, beautify simulates Black's --skip-string-normalization command-line option.
 - beautify doesn't insert extra blank lines at the end of nodes.
   Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
-<t tx="ekr.20230228011717.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

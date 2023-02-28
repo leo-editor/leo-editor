@@ -1,0 +1,21 @@
+.. rst3: filename: html/slides/external-files/slide-001.html
+
+About external files
+====================
+
+Trees whose root headline starts with @file, @auto or @edit create external
+files on your file system. Here are some example headlines::
+
+    @file myClass.py
+    @auto ../graphics/circles.cpp
+    @edit ~/.leo/.leoID.txt
+
+As you can see, these nodes specify file names, which can be an absolute
+path or a path relative to the directory containing the Leo outline.
+
+Collectively, nodes that create external files are known as @<file> nodes.
+Leo defines several other kinds of @<file> nodes, but this slideshow will
+not discuss them.
+
+.. This slides contains no image.
+
