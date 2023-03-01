@@ -1465,11 +1465,9 @@ About merges:
 - Copy release notes to LeoReleaseNotes.leo
 
 </t>
-<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-  - Run rst3 command in LeoDocs.leo.
-  - In leo/doc/html run:
-    make clean
-    make html
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
+- git merge 6.7.2
+- Run the `make-sphinx` from LeoDocs.leo
 - Copy files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
 </t>
