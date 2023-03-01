@@ -135,7 +135,8 @@
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
-<v t="ekr.20180405171433.2"><vh>Files</vh></v>
+<v t="ekr.20180405171433.2"><vh>LeoDocs.leo</vh></v>
+<v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
@@ -1435,8 +1436,7 @@ About merges:
 
 @language rest
 </t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
-- Make sure copyright dates are correct.
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
 - Update the version numbers in index.html and conf.py:
   Search for 6.7.
 - Update the release notes. *Make sure to update links*.
@@ -1446,16 +1446,6 @@ About merges:
 - Copy release notes to leoDist.leo.
 - Copy release notes to LeoReleaseNotes.leo
 
-LeoDist.leo:
-- Make sure copyright dates are correct.
-- Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
-  See Pep 440: https://www.python.org/dev/peps/pep-0440/
-- Update readme.md.
-- Check 'PKG-INFO.TXT'
-- Check readme.md spelling.
-- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
   - Run rst3 command in LeoDocs.leo.
@@ -1598,6 +1588,17 @@ python -m leo.core.runLeo
 **uninstall after testing**
 
 python -m pip uninstall leo</t>
+<t tx="ekr.20230301070404.1">LeoDist.leo:
+- Make sure copyright dates are correct.
+- Update version numbers. Search for ##version
+  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
+- Update readme.md.
+- Check 'PKG-INFO.TXT'
+- Check readme.md spelling.
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leo-dist.leo.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
