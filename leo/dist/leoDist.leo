@@ -135,7 +135,10 @@
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
-<v t="ekr.20180405171433.2"><vh>Files</vh></v>
+<v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
+<v t="ekr.20230301070807.1"><vh>LeoPyRef.leo</vh></v>
+<v t="ekr.20180405171433.2"><vh>LeoDocs.leo</vh></v>
+<v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
@@ -153,7 +156,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2022 by Edward K. Ream.
+Copyright (c) 1997-2023 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -197,7 +200,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.1
+Version: 6.7.2
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -216,35 +219,51 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leo-editor.github.io/leo-editor 6.7.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leo-editor.github.io/leo-editor/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.1**
+**The highlights of Leo 6.7.2**
 
-- Several enhancements to leoserver.py.
-- Add support for ocaml syntax coloring.
-- Improve markdown importer.
-- @bool plain-key-outline-search is False by default, disabling a confusing feature.
-- Several minor code cleanups.
-- Remove four unused commands.
+- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+Commands:
+
+- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- PR #3056: Leo's beautify command is now PEP8 compliant.
+- PR #3140: Run pylint on node.
+- PR #3166: Add the `execute-external-file` command.
+
+Settings and features:
+
+- PR #2979: Add `@bool run-flake8-on-write` setting.
+- PR #2983: Add `--black-sentinels` command-line option.
+- PR #3038: Add `@string rst3-action` setting.
+- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
+
+Other changes:
+
+- 80+ issues and 100+ pull requests.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
-- [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
-- [Documentation](http://leo-editor.github.io/leo-editor/leo_toc.html)
-- [Tutorials](http://leo-editor.github.io/leo-editor/tutorial.html)
-- [Video tutorials](http://leo-editor.github.io/leo-editor/screencasts.html)
+- [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
+- [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](http://leo-editor.github.io/leo-editor/load-leo.html)
-- [More links](http://leo-editor.github.io/leo-editor/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -1424,18 +1443,18 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Create release branch, 6.7.2.
-Change version in this checklist to match.
+Create the **release branch**: `6.7.2`.
+- Change version in this checklist to match.
+- Do all release work in `6.7.2` or `gh-pages`.
 
-*Never* merge devel into 6.7.2!
-
-- It's OK to merge bug fix branches into both devel and 6.7.2
-- It's OK to merge the 6.7.2 branch into devel after the release.
+About merges:
+- Merge bug fix branches into `devel` and `6.7.2`
+- Merge `6.7.2` into `devel` any time.
+- Do *not* merge devel into 6.7.2.
 
 @language rest
 </t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
-- Make sure copyright dates are correct.
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
 - Update the version numbers in index.html and conf.py:
   Search for 6.7.
 - Update the release notes. *Make sure to update links*.
@@ -1445,22 +1464,10 @@ Change version in this checklist to match.
 - Copy release notes to leoDist.leo.
 - Copy release notes to LeoReleaseNotes.leo
 
-LeoDist.leo:
-- Make sure copyright dates are correct.
-- Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
-  See Pep 440: https://www.python.org/dev/peps/pep-0440/
-- Update readme.md.
-- Check 'PKG-INFO.TXT'
-- Check readme.md spelling.
-- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
 </t>
-<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-  - Run rst3 command in LeoDocs.leo.
-  - In leo/doc/html run:
-    make clean
-    make html
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
+- git merge 6.7.2
+- Run the `make-sphinx` from LeoDocs.leo
 - Copy files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
 </t>
@@ -1470,14 +1477,6 @@ LeoDist.leo:
 
 - Run the full-tests script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
-
-LeoSettings.leo:
-- Run all "check" buttons in leoSettings.leo.
-
-LeoPyRef.leo:
-Do *not* use the write-LeoPyRef button in LeoPy.leo. It is buggy.
-- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
-- Open LeoPyRef.leo. Verify the diff after saving.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
@@ -1597,6 +1596,25 @@ python -m leo.core.runLeo
 **uninstall after testing**
 
 python -m pip uninstall leo</t>
+<t tx="ekr.20230301070404.1">LeoDist.leo:
+- Make sure copyright dates are correct.
+- Update version numbers. Search for ##version
+  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
+- Update readme.md.
+- Update version in 'PKG-INFO.TXT'
+- Check readme.md spelling.
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leo-dist.leo.
+</t>
+<t tx="ekr.20230301070738.1">- Run all "check" buttons in leoSettings.leo.
+
+</t>
+<t tx="ekr.20230301070807.1">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
+
+- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
+- Open LeoPyRef.leo. Verify the diff after saving.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 

@@ -2516,8 +2516,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31104,7 +31102,7 @@ Settings and features:
 
 Other changes:
 
-- 80 issues and 100 pull requests.
+- 80+ issues and 100+ pull requests.
 
 **Links**
 
@@ -31248,6 +31246,12 @@ Settings and features:
 - `PR #3038`_: Add `@string rst3-action` setting.
 - `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
 - `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+
+Bugs
+
+.. _`PR #2962`: https://github.com/leo-editor/leo-editor/pull/2962
+
+- `PR #2962`_: Leo's git-diff command can clear top-level cloned node.
 
 All noteworthy pull requests:
 https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
