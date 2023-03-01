@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
-#@@first
 """Leo's qt frame classes."""
 #@+<< qt_frame imports >>
 #@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
+from __future__ import annotations
 from collections import defaultdict
 import os
 import platform
@@ -39,14 +38,10 @@ from leo.plugins.nested_splitter import NestedSplitter
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
 #@+node:ekr.20210228142208.1: ** << qt_frame decorators >>
@@ -1194,7 +1189,7 @@ class FindTabManager:
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
             w.toggle()
-    #@+node:ekr.20210923060904.1: *3* ftm.init_widgets_from_dict (new)
+    #@+node:ekr.20210923060904.1: *3* ftm.set_widgets_from_dict
     def set_widgets_from_dict(self, d: g.Bunch) -> None:
         """Set all settings from d."""
         # Similar to ftm.init_widgets, which has already been called.
@@ -1241,7 +1236,7 @@ class FindTabManager:
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
-            w.setChecked(val)
+            w.setChecked(True)
     #@+node:ekr.20210312120503.1: *3* ftm.set_body_and_headline_checkbox
     def set_body_and_headline_checkbox(self) -> None:
         """Return the search-body and search-headline checkboxes to their defaults."""
@@ -1302,13 +1297,13 @@ class FindTabManager:
 
     def set_find_text(self, s: str) -> None:
         w = self.find_findbox
-        s = g.checkUnicode(s)
+        s = g.checkUnicode(s or '')
         w.clear()
         w.insert(s)
 
     def set_change_text(self, s: str) -> None:
         w = self.find_replacebox
-        s = g.checkUnicode(s)
+        s = g.checkUnicode(s or '')
         w.clear()
         w.insert(s)
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
@@ -2046,8 +2041,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+others
     #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
     #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, title: str, gui: Any) -> None:
-
+    def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         super().__init__(c, gui)
         assert self.c == c
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
@@ -3478,7 +3472,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             elif scheme in ('http',):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         if changed:
             c.setChanged()
             c.redraw()
@@ -3492,9 +3486,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             # fn = str(url.path()) # Fails.
         e = sys.getfilesystemencoding()
         fn = g.toUnicode(url.path(), encoding=e)
-        if sys.platform.lower().startswith('win'):
-            if fn.startswith('/'):
-                fn = fn[1:]
+        if sys.platform.lower().startswith('win') and fn.startswith('/'):
+            fn = fn[1:]
         if os.path.isdir(fn):
             # Just insert an @path directory.
             self.doPathUrlHelper(fn, p)
@@ -3570,14 +3563,15 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             self.createAtEditNode(fn, p)
         self.warnIfNodeExists(p)
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20110605121601.18373: *9* LeoQTreeWidget.createAtAutoTree (QTreeWidget)
+    #@+node:ekr.20110605121601.18373: *9* LeoQTreeWidget.createAtAutoTree
     def createAtAutoTree(self, fn: str, p: Position) -> None:
         """
         Make p an @auto node and create the tree using s, the file's contents.
         """
         c = self.c
         at = c.atFileCommands
-        p.h = f"@auto {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@auto {fn2}"
         at.readOneAtAutoNode(p)
         # No error recovery should be needed here.
         p.clearDirty()  # Don't automatically rewrite this node.
@@ -3588,14 +3582,16 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         # Use the full @edit logic, so dragging will be
         # exactly the same as reading.
         at.readOneAtEditNode(fn, p)
-        p.h = f"@edit {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@edit {fn2}"
         p.clearDirty()  # Don't automatically rewrite this node.
     #@+node:ekr.20110605121601.18375: *9* LeoQTreeWidget.createAtFileTree
     def createAtFileTree(self, fn: str, p: Position, s: str) -> None:
         """Make p an @file node and create the tree using s, the file's contents."""
         c = self.c
         at = c.atFileCommands
-        p.h = f"@file {fn}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"@file {fn2}"
         # Read the file into p.
         ok = at.read(root=p.copy(), fromString=s)
         if not ok:
@@ -3606,7 +3602,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
     def createLeoFileTree(self, fn: str, p: Position) -> None:
         """Copy all nodes from fn, a .leo file, to the children of p."""
         c = self.c
-        p.h = f"From {g.shortFileName(fn)}"
+        fn2 = fn.replace('\\', '/')
+        p.h = f"From {g.shortFileName(fn2)}"
         c.selectPosition(p)
         # Create a dummy first child of p.
         dummy_p = p.insertAsNthChild(0)
@@ -3632,7 +3629,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         if prefix and len(prefix) > 3:  # Don't just strip off c:\.
             p.h = abs_fn[len(prefix) :].strip()
         else:
-            p.h = f"@url file://{fn}"
+            fn2 = fn.replace('\\', '/')
+            p.h = f"@url file://{fn2}"
     #@+node:ekr.20110605121601.18377: *9* LeoQTreeWidget.isAutoFile (LeoQTreeWidget)
     def isAutoFile(self, fn: str) -> bool:
         """Return true if fn (a file name) can be parsed with an @auto parser."""
@@ -4169,7 +4167,7 @@ class QtIconBarClass:
                 act.setSeparator(True)
             elif rc.position.b.strip():
 
-                def cb(checked: str, p: str=rc.position, button: str=button) -> None:
+                def cb(checked: str, p: Position=rc.position, button: str=button) -> None:
                     controller.executeScriptFromButton(
                         b=button,
                         buttonText=p.h[8:].strip(),

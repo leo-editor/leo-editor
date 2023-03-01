@@ -135,7 +135,10 @@
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
-<v t="ekr.20180405171433.2"><vh>Files</vh></v>
+<v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
+<v t="ekr.20230301070807.1"><vh>LeoPyRef.leo</vh></v>
+<v t="ekr.20180405171433.2"><vh>LeoDocs.leo</vh></v>
+<v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
@@ -153,7 +156,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2022 by Edward K. Ream.
+Copyright (c) 1997-2023 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -197,10 +200,10 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.1
-Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
-Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
-Home-page: http://leoeditor.com/
+Version: 6.7.2
+Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
+Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
+Home-page: http://leo-editor.github.io/leo-editor/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
@@ -216,35 +219,51 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.7.1 is now available on
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.1**
+**The highlights of Leo 6.7.2**
 
-- Several enhancements to leoserver.py.
-- Add support for ocaml syntax coloring.
-- Improve markdown importer.
-- @bool plain-key-outline-search is False by default, disabling a confusing feature.
-- Several minor code cleanups.
-- Remove four unused commands.
+- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+Commands:
+
+- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- PR #3056: Leo's beautify command is now PEP8 compliant.
+- PR #3140: Run pylint on node.
+- PR #3166: Add the `execute-external-file` command.
+
+Settings and features:
+
+- PR #2979: Add `@bool run-flake8-on-write` setting.
+- PR #2983: Add `--black-sentinels` command-line option.
+- PR #3038: Add `@string rst3-action` setting.
+- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
+
+Other changes:
+
+- 80+ issues and 100+ pull requests.
 
 **Links**
 
-- [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
-- [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
+- [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -622,7 +641,7 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 </t>
 <t tx="ekr.20150425135153.2">class Leo &lt; Formula
 
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
   head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
@@ -665,7 +684,7 @@ Var PythonExecutable
 !define license         "LICENSE"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
-!define site            "http://leoeditor.com/"
+!define site            "https://leo-editor.github.io/leo-editor/"
 !define target_file     "LeoAssoc.exe"
 !define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 
@@ -1119,7 +1138,7 @@ SectionEnd
 !define license         "LICENSE"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
-!define site            "http://leoeditor.com/"
+!define site            "https://leo-editor.github.io/leo-editor/"
 !define target_file     "LeoSetup-${version}.exe"
 !define uninst_key      "Software\Microsoft\Windows\CurrentVersion\Uninstall\leo"
 </t>
@@ -1203,7 +1222,7 @@ Here is the updated leo.rb file that passes brew audit --strict Leo:
 @language ruby
 
 class Leo &lt; Formula
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "https://downloads.sourceforge.net/projects/leo/files/Leo/5.1-final/Leo-5.1-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
 
@@ -1261,7 +1280,7 @@ git push
 @language ruby
 
 class Leo &lt; Formula
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "http://sourceforge.net/projects/leo/files/Leo/5.0-final/Leo-5.0-final.zip"
   sha256 "2d742f9825959ba5c7624d1179b9f3065e14e055c90272fbce199f91770de826"
   head "https://github.com/leo-editor/leo-editor", :using =&gt; :git
@@ -1362,7 +1381,7 @@ I would rename the pull request "leo 5.1 (new formula)". :-)
 
 class LeoEditor &lt; Formula
   desc "The Leo IDE/Outliner/PIM"
-  homepage "http://leoeditor.com/"
+  homepage "http://leo-editor.github.io/leo-editor/"
   url "https://github.com/leo-editor/leo-editor/archive/5.4.1.tar.gz"
   sha256 "2cf0f598aa46e8ced6dd7da0229157e7b523704d0a03604a4da14b715c0a232f"
 
@@ -1424,18 +1443,19 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Create release branch. Change version in this checklist to match.
+Create the **release branch**: `6.7.2`.
+- Change version in this checklist to match.
+- Do all release work in `6.7.2` or `gh-pages`.
 
-*Never* merge devel into 6.7.0!
-
-- It's OK to merge bug fix branches into both devel and 6.7.0
-- It's OK to merge the 6.7.0 branch into devel after the release.
+About merges:
+- Merge bug fix branches into `devel` and `6.7.2`
+- Merge `6.7.2` into `devel` any time.
+- Do *not* merge devel into 6.7.2.
 
 @language rest
 </t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
-- Make sure copyright dates are correct.
-- Update the version numbers in index.html, index.html and conf.py:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
+- Update the version numbers in index.html and conf.py:
   Search for 6.7.
 - Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
@@ -1444,25 +1464,15 @@ First: Create release branch. Change version in this checklist to match.
 - Copy release notes to leoDist.leo.
 - Copy release notes to LeoReleaseNotes.leo
 
-LeoDist.leo:
-- Make sure copyright dates are correct.
-- Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.0, not 7.6.0-final.
-  See Pep 440: https://www.python.org/dev/peps/pep-0440/
-- Update readme.md.
-- Check 'PKG-INFO.TXT'
-- Check readme.md spelling.
-- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
 </t>
-<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-  - Run rst3 command in LeoDocs.leo.
-  - In leo/doc/html run:
-    make clean
-    make html
-- Copy files from leo/doc/html/_build/html to web (FileZilla)
-  Do **not** copy searchindex.js.
-- Copy leo/doc/html/index.html to web (FileZilla)
+<t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
+- git merge 6.7.2
+- Run the `make-sphinx` from LeoDocs.leo
+- Copy files from leo/doc/html/_build/html to leo-editor/docs
+- Commit the changes and push.
+- Check the GitHub Pages actions page:
+  https://github.com/leo-editor/leo-editor/actions
+- Check Leo's website.
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
@@ -1470,18 +1480,11 @@ LeoDist.leo:
 
 - Run the full-tests script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
-
-LeoSettings.leo:
-- Run all "check" buttons in leoSettings.leo.
-
-LeoPyRef.leo:
-- Run write-LeoPyRef button in LeoPy.leo.
-- Open LeoPyRef.leo. Verify the diff after saving.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.7.0 -m "Added v6.7.0 tag"
+git tag -a v6.7.2 -m "Added v6.7.2 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1490,17 +1493,17 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.7.0
+git merge 6.7.2
 update version in leoVersion.py.
-git tag -a v6.7.0-devel -m "Added v6.7.0-devel tag"
+git tag -a v6.7.2-devel -m "Added v6.7.2-devel tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.0 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.2 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.0</t>
+- git merge 6.7.2</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1509,10 +1512,6 @@ There is a "Draft New Release" button at the top-right of the page.
 <t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
 Public announcements, after creating a package.
-
-- Update version number on Wikipedia:
-  Copy Wikipedia link by hand.
-  https://en.wikipedia.org/wiki/Leo_(text_editor)
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
@@ -1566,7 +1565,9 @@ prune leo/unittests/htmlcov
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
-</t>
+
+# Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
+prune leo/docs</t>
 <t tx="ekr.20210815103531.1">**build**
 
 - git checkout master
@@ -1583,12 +1584,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.7.0-2-py3-none-any.whl
-    leo-6.7.0-2.tar.gz
+    leo-6.7.2-2-py3-none-any.whl
+    leo-6.7.2-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.0
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.2
 
 **test**
 
@@ -1598,6 +1599,25 @@ python -m leo.core.runLeo
 **uninstall after testing**
 
 python -m pip uninstall leo</t>
+<t tx="ekr.20230301070404.1">LeoDist.leo:
+- Make sure copyright dates are correct.
+- Update version numbers. Search for ##version
+  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
+- Update readme.md.
+- Update version in 'PKG-INFO.TXT'
+- Check readme.md spelling.
+- Make sure no distributed .leo file contains xml-stylesheet elements.
+  Run @button check .leo files in leo-dist.leo.
+</t>
+<t tx="ekr.20230301070738.1">- Run all "check" buttons in leoSettings.leo.
+
+</t>
+<t tx="ekr.20230301070807.1">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
+
+- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
+- Open LeoPyRef.leo. Verify the diff after saving.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1685,7 +1705,7 @@ So links to files in the project root or other folders will be broken. (Backgrou
     ./leo-editor/docs/*    --&gt; left out
     ./leo-editor/leo/*/*/* --&gt; PYTHONHOME/Lib/site-packages/leo
 
-Docs: of little concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
+Docs: of little concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leo-editor.github.io/leo-editor
 
 Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor</t>
 <t tx="maphew.20180128213245.1">TestPyPI: https://packaging.python.org/guides/using-testpypi/
@@ -1763,8 +1783,126 @@ build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 
-# Leo 6.4: Leo only supports Python 3, so universal should be zero.
+# Leo only supports Python 3, so universal should be zero.
 universal=0
+
+[flake8]
+
+exclude =
+    .git,
+    __pycache__,
+    leo/build,
+    leo/dist,
+    leo/doc,
+    leo/extensions,
+    leo/external,
+    leo/modes,
+    leo/plugins,
+    leo/scripts,
+    leo/test,
+    leo/unittests,
+
+extend-ignore =
+
+    # Don't check B020. It conflicts with Leo idioms like `for p in p.children():
+    # Found for loop that reassigns the iterable it is iterating with each iterable value.
+    B020
+    
+    # Don't complain on every save. Let reindent handle this later.
+    # blank line contains whitespace
+    W293
+
+    # Harmless...
+    
+    # expected an indented block (comment)
+    E115
+
+    # unexpected indentation (comment)
+    E116
+    
+    # over-indented (comment)
+    E117
+    
+    # continuation line over-indented for visual indent
+    E127
+    
+    # continuation line missing indentation or outdented.
+    E122
+    
+    # closing bracket does not match visual indentation.
+    E124
+    
+    # continuation line with same indent as next logical line
+    E125
+    
+    # continuation line under-indented for visual indent.
+    E128
+    
+    # visually indented line with same indent as next logical line
+    E129
+    
+    # continuation line unaligned for hanging indent.
+    E131
+
+    # whitespace before '['
+    E211
+    
+    # multiple spaces before operator
+    E221
+    
+    # multiple spaces after operator
+    E222
+    
+    # missing whitespace around operator
+    E225
+    
+    # missing whitespace after ','
+    E231
+    
+    # unexpected spaces around keyword / parameter equals
+    E251
+    
+    # at least two spaces before inline comment
+    E261
+    
+    # missing whitespace around parameter equals.
+    E252
+    
+    # inline comment should start with '# '
+    E262
+    
+    # block comment should start with '# '.
+    E265
+    
+    # too many leading '#' for block comment
+    E266
+    
+    # multiple spaces before keyword
+    E272
+    
+    # missing whitespace after keyword.
+    E275
+
+    # expected 1 blank line, found 0.
+    E301
+    
+    # expected 2 blank lines, found 1.
+    E302
+    
+    # whitespace before ':'
+    E203
+    
+    # too many blank lines (2)
+    E303
+    
+    # expected 2 blank lines after class or function definition, found 0.
+    E305
+    
+    # expected 1 blank line before a nested definition, found 0.
+    E306
+
+    # Line too long.
+    E501
 </t>
 <t tx="maphew.20200424174643.1">@language md
 

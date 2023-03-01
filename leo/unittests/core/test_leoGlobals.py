@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210902164946.1: * @file ../unittests/core/test_leoGlobals.py
-#@@first
 """Tests for leo.core.leoGlobals"""
 
+import io
 import os
 import stat
 import sys
@@ -166,14 +165,14 @@ class TestGlobals(LeoUnitTest):
     def test_g_get_directives_dict(self):
         c = self.c
         p = c.p
+        # Note: @comment must follow @language.
         p.b = textwrap.dedent("""\
-            @language python
-            @comment a b c
-                # @comment must follow @language.
-            @tabwidth -8
-            @pagewidth 72
-            @encoding utf-8
-    """)
+            ATlanguage python
+            ATcomment a b c
+            ATtabwidth -8
+            ATpagewidth 72
+            ATencoding utf-8
+    """).replace('AT', '@')
         d = g.get_directives_dict(p)
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), '-8')
@@ -266,6 +265,29 @@ class TestGlobals(LeoUnitTest):
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
+    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
+    def test_g_handleScriptException(self):
+
+        c = self.c
+        table = (
+            'test_leoGlobals.py", line',
+            'in test_g_handleScriptException',
+            'print(1/0)',
+            'ZeroDivisionError: division by zero'
+        )
+        with self.assertRaises(ZeroDivisionError):
+            try:
+                print(1/0)
+            except ZeroDivisionError:
+                old_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                g.handleScriptException(c, c.p)
+                report = sys.stdout.getvalue()
+                for s in table:
+                    assert s in report, repr(s)
+                sys.stdout = old_stdout
+                # print(report)
+                raise
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
@@ -302,6 +324,70 @@ class TestGlobals(LeoUnitTest):
             expected, i, word, line = data
             got = g.match_word(line + '\n', i, word)
             self.assertEqual(expected, got)
+    #@+node:ekr.20230131234527.1: *3* TestGlobals.test_g_objToString
+    def test_g_objToString(self):
+
+        #@+<< define s >>
+        #@+node:ekr.20230131234637.1: *4* << define s >>
+        s = """g.cls()
+
+        def f1():
+            g.trace(g.callers(1))
+            g.trace(g.callers_list(1))
+            f2()
+
+        def f2():
+            print('')
+            g.trace(g.callers(2))
+            g.trace(g.callers_list(2))
+            f3()
+
+        def f3():
+            print('')
+            g.trace(g.callers(2))
+            g.trace(g.callers_list(2))
+            t = TestClass()
+            assert t
+
+        def f4():
+            print('')
+            g.trace(g.callers())
+            g.trace(g.callers_list())
+
+        class TestClass:
+            def __init__(self):
+                print('')
+                g.trace('(TestClass)')
+                f4()
+
+        f1()
+        """
+        #@-<< define s >>
+        #@+<< define class TestClass >>
+        #@+node:ekr.20230131234648.1: *4* << define class TestClass >>
+        class TestClass:
+
+            def test_function(self):
+                pass
+        #@-<< define class TestClass >>
+        table = (
+            (s, 'String1'),
+            ('This is a test', "String2"),
+            ({'a': 1, 'b': 2}, 'Dict'),
+            (['one', 'two', 'three'], 'List'),
+            (('x', 'y'), 'Tuple'),
+            (g.printObj, 'Function'),
+            (TestClass, "Class"),
+            (TestClass(), "Instance"),
+            (TestClass.test_function, 'unbound method'),
+            (TestClass().test_function,'bound method')
+        )
+        for data, tag in table:
+            result = g.objToString(data, tag=tag)
+            self.assertTrue(tag in result, msg=data)
+            self.assertTrue(isinstance(result, str))
+            result2 = g.objToString(data)
+            self.assertTrue(isinstance(result2, str))
     #@+node:ekr.20210905203541.26: *3* TestGlobals.test_g_os_path_finalize_join_with_thumb_drive
     def test_g_os_path_finalize_join_with_thumb_drive(self):
         path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20140804103545.29975: * @file ../plugins/writers/ctext.py
-#@@first
 #@@language python
 #@@tabwidth -4
 from leo.core import leoGlobals as g  # Required.
@@ -12,7 +10,7 @@ import leo.plugins.writers.basewriter as basewriter
 class CTextWriter(basewriter.BaseWriter):
     #@+others
     #@+node:tbrown.20140804103545.29978: *3* put_node
-    def put_node(self, p: Position, level: int=0) -> None:
+    def put_node(self, p: Position, level: int = 0) -> None:
         self.put(p.b.strip() + '\n\n')
         for child in p.children():
             txt = self.cchar * 3 + self.cchar * level + ' ' + child.h.strip() + ' '

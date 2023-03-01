@@ -59,12 +59,8 @@ def jinja_render(template, fname, d):
 #@+node:ekr.20120525090541.10865: *3* jinja_act_on_node
 def jinja_act_on_node(c, p, event):
     h = p.h
-
-    #print "try act"
     if not h.startswith('@jinja '):
         raise leoPlugins.TryNext
-
-    #print "act"
     tail = h[7:].strip()
     pth = c.getNodePath(p)
     fullpath = g.os_path_finalize_join(pth, tail)
@@ -88,7 +84,6 @@ class JinjaCl:
 
         To be used from @cl nodes
         """
-        #print "jinja called on",body
         tmpl = Template(body)
         out = tmpl.render(self.c.vs)
         return out

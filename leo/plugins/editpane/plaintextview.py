@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.1: * @file ../plugins/editpane/plaintextview.py
-#@@first
 #@+<< plaintextview imports >>
 #@+node:tbrown.20171028115502.1: ** << plaintextview imports >>
 from leo.core import leoGlobals as g

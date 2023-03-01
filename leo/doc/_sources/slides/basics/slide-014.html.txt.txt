@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/basics/slide-014.html
+
+Add a to-do node
+================
+
+Let's add a new node with Ctrl-I.
+
+.. image:: _images/slide-014.png
+

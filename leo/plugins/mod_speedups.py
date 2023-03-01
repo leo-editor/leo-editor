@@ -21,12 +21,9 @@ def init():
 g.os_path_basename = os.path.basename
 g.os_path_split = os.path.split
 g.os_path_splitext = os.path.splitext
-#g.os_path_expanduser = os.path.expanduser
 g.os_path_abspath = os.path.abspath
-#g.os_path_join = os.path.join
 g.os_path_normpath = os.path.normpath
 g.os_path_exists = os.path.exists
-#g.os_path_finalize = os.path.abspath
 
 
 
@@ -49,7 +46,6 @@ def os_path_finalize_cached(path, **keys):
 def os_path_finalize_join_cached(*args, **keys):
     res = _finalized_join_cache.get(args)
     if res:
-        #print "cache hit", args
         return res
 
     res = os_path_finalize_join_orig(*args, **keys)
@@ -59,7 +55,6 @@ def os_path_finalize_join_cached(*args, **keys):
 def os_path_expanduser_cached(path, encoding=None):
     res = _expanduser_cache.get(path)
     if res:
-        #print "cache hit", path
         return res
     res = os.path.expanduser(path)
     _expanduser_cache[path] = res
@@ -72,7 +67,6 @@ def os_path_join_speedup(*args, **kw):
 g.os_path_finalize = os_path_finalize_cached
 g.os_path_finalize_join = os_path_finalize_join_cached
 g.os_path_expanduser = os_path_expanduser_cached
-#g.os_path_join = os_path_join_speedup
 
 #@-others
 #@@language python

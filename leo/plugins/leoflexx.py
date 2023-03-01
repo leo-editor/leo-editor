@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
-#@@first
 
 # Disable mypy checking.
 # type:ignore
@@ -563,7 +561,7 @@ class LeoBrowserApp(flx.PyComponent):
             (self.gnx_to_vnode[d['gnx']], d['childIndex'])
                 for d in ap['stack']
         ]
-        return leoNodes.position(v, childIndex, stack)
+        return leoNodes.Position(v, childIndex, stack)
     #@+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
         """Dump the top-level nodes."""
@@ -1389,6 +1387,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # self.root = get_root()
         # self.tag = '(py.menu.wrap)'
 
+    #@verbatim
     # @others
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
 # Leo's core doesn't define a NullMinibuffer class.

@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
-#@@first
 """Leo's beautification classes."""
-#@+<< leoBeautify imports >>
-#@+node:ekr.20220822114944.1: ** << leoBeautify imports >>
+#@+<< leoBeautify imports & annotations >>
+#@+node:ekr.20220822114944.1: ** << leoBeautify imports & annotations >>
+from __future__ import annotations
 import sys
 import os
 import time
@@ -17,19 +16,13 @@ except Exception:
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst
-#@-<< leoBeautify imports >>
-#@+<< leoBeautify annotations >>
-#@+node:ekr.20220822114959.1: ** << leoBeautify annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-#@-<< leoBeautify annotations >>
+    from leo.core.leoNodes import Position
+#@-<< leoBeautify imports & annotations >>
+
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)
 #@+node:ekr.20150528131012.1: *3* Beautify:commands
@@ -327,12 +320,12 @@ class CPrettyPrinter:
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         if not changed:
             g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
-    def indent(self, p: Position, toList: bool=False, giveWarnings: bool=True) -> Union[str, List[str]]:
+    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, List[str]]:
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return [] if toList else ''  # #2271
@@ -350,7 +343,7 @@ class CPrettyPrinter:
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
-    def add_statement_braces(self, s: str, giveWarnings: bool=False) -> List[str]:
+    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> List[str]:
         p = self.p
 
         def oops(message: str, i: int, j: int) -> None:

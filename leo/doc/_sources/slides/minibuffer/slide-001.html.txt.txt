@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/minibuffer/slide-001.html
+
+Introduction
+============
+
+Leo’s minibuffer appears at the bottom of Leo’s main window.
+
+You use the minibuffer to execute commands by name.
+
+Type <Alt-x> to put the cursor in the minibuffer.
+
+.. image:: _images/slide-001.png
+

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20090119215428.2: * @file ../plugins/todo.py
-#@@first
 #@+<< todo docstring >>
 #@+node:tbrown.20090119215428.3: ** << todo docstring >>
 """ Provides to-do list and simple task management.
@@ -62,8 +60,9 @@ todo_calendar_cols
 #@-<< todo docstring >>
 # TNB: derived from cleo.py.
 
-#@+<< todo imports >>
-#@+node:tbrown.20090119215428.4: ** << todo imports >>
+#@+<< todo imports & annotations >>
+#@+node:tbrown.20090119215428.4: ** << todo imports & annotations >>
+from __future__ import annotations
 import os
 import re
 import datetime
@@ -72,29 +71,18 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
-#
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< todo imports >>
-#@+<< todo annotations >>
-#@+node:ekr.20220828132631.1: ** << todo annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    # from QtGui import QIcon
-else:
-    Cmdr = Any
-    Event = Any
-    # QIcon = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Icon = Any # QtGui.QIcon
-Menu = Any
-Priority = Union[int, str]
-#@-<< todo annotations >>
+    Icon = Any # QtGui.QIcon
+    Menu = Any
+    Priority = Union[int, str]
+
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< todo imports & annotations >>
 
 # Aliases: these should be in leoQt5.py or leoQt6.py.
 Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
@@ -373,7 +361,6 @@ class todoController:
         self.donePriority = 100
         self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
         self.recentIcons: List[Icon] = []
-        #X self.smiley = None
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()

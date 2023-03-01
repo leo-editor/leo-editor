@@ -245,7 +245,7 @@ def doNodeAction(pClicked, c):
 
     hClicked = pClicked.h.strip()
 
-    #Display messages based on 'messageLevel'.  Valid values:
+    # Display messages based on 'messageLevel'.  Valid values:
     #    0 = log no messages
     #    1 = log that the plugin was triggered and each matched patterns
     #    2 = log 1 & 'event passed'
@@ -257,27 +257,27 @@ def doNodeAction(pClicked, c):
     if messageLevel >= 1:
         g.es("nodeActions: triggered")
 
-    #Save @file type nodes before running script if enabled
+    # Save @file type nodes before running script if enabled
     saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
     if messageLevel >= 4:
         g.blue("nA: Global nodeActions_save_atFile_nodes=", saveAtFile)
-    #Find the "nodeActions" node
+    # Find the "nodeActions" node
     pNA = g.findNodeAnywhere(c, "nodeActions")
     if not pNA:
         pNA = g.findNodeAnywhere(c, "NodeActions")
 
     if pNA:
-        #Found "nodeActions" node
+        # Found "nodeActions" node
         foundPattern = False
         passEventExternal = False  #No pass to next plugin after pattern matched
-        #Check entire subtree under the "nodeActions" node for pattern
+        # Check entire subtree under the "nodeActions" node for pattern
         for pScript in pNA.subtree():
 
-            #Nodes with subnodes are not tested for a match
+            # Nodes with subnodes are not tested for a match
             if pScript.hasChildren():
                 continue
 
-            #Don't trigger on double click of a nodeActions' pattern node
+            # Don't trigger on double click of a nodeActions' pattern node
             if pClicked == pScript:
                 continue
 
@@ -285,38 +285,38 @@ def doNodeAction(pClicked, c):
             if messageLevel >= 4:
                 g.blue("nA: Checking pattern '" + pattern)
 
-            #if directives exist, parse them and set directive flags for later use
+            # if directives exist, parse them and set directive flags for later use
             directiveExists = re.search(r" \[[V>X],?[V>X]?,?[V>X]?]$", pattern)
             if directiveExists:
                 directives = directiveExists.group(0)
             else:
                 directives = "[]"
-            #What directives exist?
+            # What directives exist?
             useRegEx = re.search("X", directives) is not None
             passEventInternal = re.search("V", directives) is not None
             if not passEventExternal:  #don't disable once enabled.
                 passEventExternal = re.search(">", directives) is not None
-            #Remove the directives from the end of the pattern (if they exist)
+            # Remove the directives from the end of the pattern (if they exist)
             pattern = re.sub(r" \[.*]$", "", pattern, 1)
             if messageLevel >= 4:
                 g.blue("nA:    Pattern='" + pattern + "' " + "(after directives removed)")
 
-            #Keep copy of pattern without directives for message log
+            # Keep copy of pattern without directives for message log
             patternOriginal = pattern
 
-            #if pattern begins with "@files" and clicked node is an @file type
-            #node then replace "@files" in pattern with clicked node's @file type
+            # if pattern begins with "@files" and clicked node is an @file type
+            # node then replace "@files" in pattern with clicked node's @file type
             patternBeginsWithAtFiles = re.search("^@files ", pattern)
             clickedAtFileTypeNode = False  #assume @file type node not clicked
             if patternBeginsWithAtFiles:
                 if pClicked.isAnyAtFileNode():
                     clickedAtFileTypeNode = True  #Tell "write @file type nodes" code
-                    #Replace "@files" in pattern with clicked node's @file type
+                    # Replace "@files" in pattern with clicked node's @file type
                     pattern = re.sub("^@files", hClicked.split(' ')[0], pattern)
                     if messageLevel >= 4:
                         g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
-            #Check for pattern match to clicked node's header
+            # Check for pattern match to clicked node's header
             match: Any
             if useRegEx:
                 match = re.search(pattern, hClicked)
@@ -328,10 +328,10 @@ def doNodeAction(pClicked, c):
                 if messageLevel >= 4:
                     g.blue("nA:    Directives: X=", useRegEx, "V=", passEventInternal,
                           ">=", passEventExternal,)
-                #if @file type node, save node to disk (if configured)
+                # if @file type node, save node to disk (if configured)
                 if clickedAtFileTypeNode:
                     if saveAtFile:
-                        #Problem - No way found to just save clicked node, saving all
+                        # Problem - No way found to just save clicked node, saving all
                         c.fileCommands.writeAtFileNodes()
                         c.redraw()
                         if messageLevel >= 3:
@@ -349,17 +349,17 @@ def doNodeAction(pClicked, c):
 
         # Finished checking headline against patterns
         if not foundPattern:
-            #no match to any pattern, always pass event to next plugin
+            # no match to any pattern, always pass event to next plugin
             if messageLevel >= 1:
                 g.blue("nA: No patterns matched to " "" + hClicked + '"')
             return False  #TL - Inform onIconDoubleClick that no action was taken
         if passEventExternal:
-            #last matched pattern has directive to pass event to next plugin
+            # last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
             return False  #TL - Inform onIconDoubleClick to pass double-click event
         #
-        #last matched pattern did not have directive to pass event to plugin
+        # last matched pattern did not have directive to pass event to plugin
         if messageLevel >= 2:
             g.blue("nA: Event not passed to next plugin")
         return True  #TL - Inform onIconDoubleClick to not pass double-click
@@ -378,7 +378,7 @@ def applyNodeAction(pScript, pClicked, c):
         file_directory = c.frame.openDirectory
         os.chdir(file_directory)
         script += '\n'
-        #Redirect output
+        # Redirect output
         if redirect:
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
@@ -391,9 +391,9 @@ def applyNodeAction(pScript, pClicked, c):
             exec(script, namespace)
         except Exception:
             g.es("exception in NodeAction plugin")
-            g.es_exception(full=False, c=c)
+            g.es_exception()
         finally:
-            #Unredirect output
+            # Unredirect output
             if redirect:
                 g.restoreStderr()
                 g.restoreStdout()

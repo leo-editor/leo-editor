@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
-#@@first
 """This file contains the gui wrapper for Qt: g.app.gui."""
 # pylint: disable=import-error
 #@+<< qt_gui imports  >>
 #@+node:ekr.20140918102920.17891: ** << qt_gui imports >>
+from __future__ import annotations
 import datetime
 import functools
 import re
@@ -16,7 +15,8 @@ from typing import TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore
+from leo.core.leoQt import QtGui, QtWidgets, QtSvg
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 # This import causes pylint to fail on this file and on leoBridge.py.
 # The failure is in astroid: raw_building.py.
@@ -29,6 +29,7 @@ from leo.plugins import qt_text
 from leo.plugins import qt_commands
 assert qt_commands
 from leo.core.leoTips import UserTip
+from time import sleep
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
@@ -37,12 +38,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -597,10 +593,15 @@ class LeoQtGui(leoGui.LeoGui):
             val = dialog.exec() if isQt6 else dialog.exec_()
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
-        return {
-            # Buglet: This assumes both yes-all and no-all buttons are active.
-            0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-all', 4: 'no-all',
-        }.get(val, 'cancel')
+        return_d = {0: 'yes', 1: 'no'}
+        if yes_all and no_all:
+            return_d [2] = 'yes-all'
+            return_d [3] = 'no-all'
+        elif yes_all:
+            return_d [2] = 'yes-all'
+        elif no_all:
+            return_d [2] = 'no-all'
+        return return_d.get(val, 'cancel')
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
         """Create and run an Qt open directory dialog ."""
@@ -980,7 +981,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18515: *4* qt_gui.attachLeoIcon
     def attachLeoIcon(self, window: Any) -> None:
         """Attach a Leo icon to the window."""
-        #icon = self.getIconImage('leoApp.ico')
         if self.appIcon:
             window.setWindowIcon(self.appIcon)
     #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
@@ -1356,23 +1356,51 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self) -> Widget:
-        """Put up a splash screen with the Leo logo."""
+        """Put up a splash screen with Leo's logo."""
+        QApplication = QtWidgets.QApplication
+        QPixmap = QtGui.QPixmap
+        QSvgRenderer = QtSvg.QSvgRenderer
+        QPainter = QtGui.QPainter
+        QImage = QtGui.QImage
+        QScreen = QtGui.QScreen
+        Format_RGB32 = 4  # a Qt enumeration value
+
         splash = None
-        if sys.platform.startswith('win'):
-            table = ('SplashScreen.jpg', 'SplashScreen.png', 'SplashScreen.ico')
-        else:
-            table = ('SplashScreen.xpm',)
-        for name in table:
-            fn = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', name)
-            if g.os_path_exists(fn):
-                pm = QtGui.QPixmap(fn)
-                if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm, WindowType.WindowStaysOnTopHint)
+        for fn in (
+            'SplashScreen.svg',  # Leo's licensed .svg logo.
+            'Leosplash.GIF',  # Leo's public domain bitmaped image.
+        ):
+            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', fn)
+            if g.os_path_exists(path):
+                if fn.endswith('svg'):
+                    # Convert SVG to un-pixelated pixmap
+                    renderer = QSvgRenderer(path)
+                    size = renderer.defaultSize()
+                    svg_height, svg_width = size.height(), size.width()
+
+                    # Scale to fraction of screen height
+                    geom = QScreen.availableGeometry(QApplication.primaryScreen())
+                    screen_height = geom.height()
+                    target_height_px = screen_height // 4
+                    scaleby = target_height_px / svg_height
+                    target_width_px = int(svg_width * scaleby)
+
+                    image = QImage(target_width_px, target_height_px,
+                                   QImage.Format(Format_RGB32))
+                    image.fill(0xffffffff)  # MUST fill background
+                    painter = QPainter(image)
+                    renderer.render(painter);
+                    painter.end();
+
+                    pixmap = QPixmap.fromImage(image)
+                else:
+                    pixmap = QtGui.QPixmap(path)
+                if not pixmap.isNull():
+                    splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
                     splash.show()
-                    # This sleep is required to do the repaint.
-                    QtCore.QThread.msleep(10)
+                    sleep(.2)
                     splash.repaint()
-                    break
+                    break  # Done.
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self) -> None:
@@ -1403,7 +1431,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w: Wrapper) -> str:
         # First try the widget's getName method.
-        if not 'w':
+        if not w:
             name = '<no widget>'
         elif hasattr(w, 'getName'):
             name = w.getName()

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
-#@@first
 """Leo's Qt event handling code."""
 #@+<< about internal bindings >>
 #@+node:ekr.20110605121601.18538: ** << about internal bindings >>

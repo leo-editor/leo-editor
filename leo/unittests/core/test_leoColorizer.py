@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210905151702.1: * @file ../unittests/core/test_leoColorizer.py
-#@@first
 """Tests of leoColorizer.py"""
 
 import textwrap
@@ -81,6 +79,7 @@ class TestColorizer(LeoUnitTest):
             # Unambiguous child.
             (False, '', '@killcolor\n'),
             (True, '', '@color\n'),
+            #@verbatim
             # @nocolor-node rules node.
             (False, '', '@nocolor-node\n'),
             (False, '', '@color\n@nocolor-node\n'),

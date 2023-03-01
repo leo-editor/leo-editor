@@ -1,0 +1,62 @@
+.. rst3: filename: html/preface.html
+
+.. |---| unicode:: U+02015 .. for quotes
+   :trim:
+   
+.. |br| raw:: html
+
+   <br />
+
+   
+######################
+A Brief Summary of Leo
+######################
+
+.. Use full links here so links are active in LeoDocs.leo
+
+.. _`Emacs`: https://www.gnu.org/software/emacs/
+.. _`Leo's tutorial`: tutorial.html
+.. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
+.. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
+.. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
+.. _`Leonine`: leonine-world.html
+.. _`Clones`: tutorial-pim.html
+.. _`Python API`: tutorial-scripting.html
+.. _`outline-oriented directives`: tutorial-programming.html
+.. _`Next`: testimonials.html
+
+    "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
+
+Leo is a fundamentally different way of using and organizing data, programs and scripts. Leo has been under active development for 20+ years with an active `group of developers and users`_.
+
+**Leo is:**
+
+- A fully-featured IDE, with many features inspired by `Emacs`_.
+- An outliner. Everything in Leo is an outline.
+- A data manager, data manager and personal information manager.
+- A powerful scripting environment.
+- A tool for organizing and studying computer code.
+- Extensible via a simple plugin architecture.
+- A tool that plays well with  IPython, Vim and Emacs.
+- Written in 100% pure Python
+
+**Leo's unique features**
+
+Leo *completely integrates* Python scripting and outlines. Simulating the following features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+
+- All commands and scripts have easy access to outline structure via a simple `Python API`_. |br|
+  For example, p.b is the body text of the selected outline node. |br|
+  Scripts have full access to all of Leo's sources.
+- `Clones`_ create multiple views of an outline.  |br|
+  Leo's underlying data is a `Directed Acyclic Graphs`_.  |br|
+  As a result, Leo organizes data in completely new ways.
+- Scripts and programs can be composed from outlines using `outline-oriented directives`_.
+- Importers convert flat text into outlines.
+- @test and @suite scripts create unit tests automatically.
+- @button scripts apply scripts to outline data.
+
+These features combine to create a `Leonine`_ way of programming and
+organizing. You won't learn all about Leo in a day or two. `Leo's
+tutorial`_ explains the basic features. You can learn more advanced
+features later. Please `ask for help`_ immediately if you get stuck.
+

@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using ZODB with Leo &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Topics" href="intermediatetopics.html" />
+    <link rel="prev" title="ILeo: Leo’s IPython Bridge" href="IPythonBridge.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="intermediatetopics.html" title="Advanced Topics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="IPythonBridge.html" title="ILeo: Leo’s IPython Bridge"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="leoandotherprograms.html" accesskey="U">Leo and Other Programs</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-zodb-with-leo">
+<h1>Using ZODB with Leo<a class="headerlink" href="#using-zodb-with-leo" title="Permalink to this headline">¶</a></h1>
+<p>This chapter discusses how to write Leo scripts that store and retrieve data using <a class="reference external" href="http://www.zope.org/Wikis/ZODB/guide/zodb.html">ZODB</a>.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#configuring-leo-to-use-zodb" id="id1">Configuring Leo to use zodb</a></li>
+<li><a class="reference internal" href="#initing-zodb" id="id2">Initing zodb</a></li>
+<li><a class="reference internal" href="#writing-data-to-zodb" id="id3">Writing data to zodb</a></li>
+<li><a class="reference internal" href="#defining-zodb-keys" id="id4">Defining zodb keys</a></li>
+<li><a class="reference internal" href="#reading-data-from-zodb" id="id5">Reading data from zodb</a></li>
+<li><a class="reference internal" href="#about-connections" id="id6">About connections</a></li>
+<li><a class="reference internal" href="#convenience-routines" id="id7">Convenience routines</a><ul>
+<li><a class="reference internal" href="#g-init-zodb-pathtozodbstorage-verbose-true" id="id8">g.init_zodb (pathToZodbStorage,verbose=True)</a></li>
+<li><a class="reference internal" href="#v-detach" id="id9">v.detach()</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="configuring-leo-to-use-zodb">
+<h2><a class="toc-backref" href="#id1">Configuring Leo to use zodb</a><a class="headerlink" href="#configuring-leo-to-use-zodb" title="Permalink to this headline">¶</a></h2>
+<p>To enable zodb scripting within Leo, you must set use_zodb = True in the root node of leoNodes.py. You must also install ZODB itself.  See <a class="reference external" href="http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000">Installing ZODB</a> for details.</p>
+<p>When ZODB is installed and use_zodb is True, Leo&#8217;s vnode class becomes a subclass of ZODB.Persistence.Persistent. This is all that is needed to save/retrieve vnodes or tnodes to/from the ZODB.</p>
+<p><strong>Important notes</strong>:</p>
+<ul class="simple">
+<li>Scripts <strong>should not</strong> store or retrieve positions using the ZODB! Doing so makes sense neither from Leo&#8217;s point of view nor from ZODB&#8217;s point of view.</li>
+<li>The examples below show how to store or retrieve Leo data by accessing the so-called root of a ZODB connection. However, these are only examples. Scripts are free to do with Leo&#8217;s vnodes <em>anything</em> that can be done with ZODB.Persistence.Persistent objects.</li>
+</ul>
+</div>
+<div class="section" id="initing-zodb">
+<h2><a class="toc-backref" href="#id2">Initing zodb</a><a class="headerlink" href="#initing-zodb" title="Permalink to this headline">¶</a></h2>
+<p>Scripts should call g.init_zodb to open a ZODB.Storage file. g.init_zodb returns an instance of ZODB.DB.  For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">init_zodb</span> <span class="p">(</span><span class="n">zodbStorageFileName</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.</p>
+</div>
+<div class="section" id="writing-data-to-zodb">
+<h2><a class="toc-backref" href="#id3">Writing data to zodb</a><a class="headerlink" href="#writing-data-to-zodb" title="Permalink to this headline">¶</a></h2>
+<p>The following script writes v, a tree of vnodes, to zodb:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">init_zodb</span> <span class="p">(</span><span class="n">zodbStorageFileName</span><span class="p">)</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">root</span><span class="p">()</span>
+    <span class="n">root</span><span class="p">[</span><span class="n">aKey</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span> <span class="c1"># See next section for how to define aKey.</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">get_transaction</span><span class="p">()</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Notes:</p>
+<ul>
+<li><p class="first">v must be a vnode.
+Scripts should <em>not</em> attempt to store Leo positions in the zodb.
+v can be the root of an entire outline or a subtree.
+For example, either of the following would be reasonable:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">root</span><span class="p">[</span><span class="n">aKey</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">()</span><span class="o">.</span><span class="n">v</span>
+<span class="n">root</span><span class="p">[</span><span class="n">aKey</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">v</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">To write a single vnode without writing any of its children you can use v.detach.
+For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">root</span><span class="p">[</span><span class="n">aKey</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Important</strong>: It is simplest if only one zodb connection is open at any one time,
+so scripts would typically close the zodb connection immediately after processing the data.
+The correct way to do this is in a finally statement, as shown above.</p>
+</li>
+<li><p class="first">The script above does not define aKey.
+The following section discusses how to define reasonable zodb keys.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="defining-zodb-keys">
+<h2><a class="toc-backref" href="#id4">Defining zodb keys</a><a class="headerlink" href="#defining-zodb-keys" title="Permalink to this headline">¶</a></h2>
+<p>The keys used to store and retrieve data in connection.root() can be any string that uniquely identifies the data. The following are only suggestions; you are free to use any string you like.</p>
+<ol class="arabic">
+<li><p class="first">When saving a file, you would probably use a key that is similar to a real file path.
+For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aKey</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">fileName</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">When saving a single vnode or tree of vnodes, say v,
+a good choice would be to use v&#8217;s gnx, namely:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">aKey</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that v.detach() does not automatically copy v.fileIndex to the detached node,
+so when writing a detached node you would typically do the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">v2</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+<span class="n">v2</span><span class="o">.</span><span class="n">fileIndex</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span>
+<span class="n">aKey</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nodeIndices</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="n">v2</span><span class="o">.</span><span class="n">fileIndex</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="reading-data-from-zodb">
+<h2><a class="toc-backref" href="#id5">Reading data from zodb</a><a class="headerlink" href="#reading-data-from-zodb" title="Permalink to this headline">¶</a></h2>
+<p>The following script reads a tree of vnodes from zodb and sets p as the root position of the tree:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">root</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aKey</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">leoNodes</span><span class="o">.</span><span class="n">position</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">get_transaction</span><span class="p">()</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="about-connections">
+<h2><a class="toc-backref" href="#id6">About connections</a><a class="headerlink" href="#about-connections" title="Permalink to this headline">¶</a></h2>
+<p>The scripts shown above close the zodb connection after processing the data. This is by far the simplest strategy. I recommend it for typical scripts.</p>
+<p><strong>Important</strong>: you must <strong>leave the connection open</strong> if your script modifies persistent data in any way. (Actually, this statement is not really true, but you must define zodb transaction managers if you intend to use multiple connections simultaneously. This complication is beyond the scope of this documentation.) For example, it would be possible to create a new Leo outline from the data just read, but the script must leave the connection open. I do not recommend this tactic, but for the adventurous here is some sample code:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">root</span><span class="p">()</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">v</span><span class="p">:</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+    <span class="n">c2</span><span class="o">.</span><span class="n">openDirectory</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">openDirectory</span> <span class="c1"># A hack.</span>
+    <span class="n">c2</span><span class="o">.</span><span class="n">mFileName</span> <span class="o">=</span> <span class="n">fileName</span> <span class="c1"># Another hack.</span>
+    <span class="n">c2</span><span class="o">.</span><span class="n">beginUpdate</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">c2</span><span class="o">.</span><span class="n">setRootVnode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">c2Root</span> <span class="o">=</span> <span class="n">c2</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">()</span>
+        <span class="n">c2</span><span class="o">.</span><span class="n">atFileCommands</span><span class="o">.</span><span class="n">readAll</span><span class="p">(</span><span class="n">c2Root</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s1">&#39;zodb read: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileName</span><span class="p">))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">c2</span><span class="o">.</span><span class="n">endUpdate</span><span class="p">()</span>
+    <span class="c1"># Do *not* close the connection while the new Leo window is open!</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s1">&#39;zodb read: not found: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fileName</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will work <strong>provided</strong> that no other zodb connection is ever opened while this connection is opened. Unless special zodb precautions are taken (like defining zodb transaction managers) calling get_transaction().commit() will affect <strong>all</strong> open connections. You have been warned.</p>
+</div>
+<div class="section" id="convenience-routines">
+<h2><a class="toc-backref" href="#id7">Convenience routines</a><a class="headerlink" href="#convenience-routines" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="g-init-zodb-pathtozodbstorage-verbose-true">
+<h3><a class="toc-backref" href="#id8">g.init_zodb (pathToZodbStorage,verbose=True)</a><a class="headerlink" href="#g-init-zodb-pathtozodbstorage-verbose-true" title="Permalink to this headline">¶</a></h3>
+<p>This function inits the zodb. pathToZodbStorage is the full path to the zodb storage file. You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.</p>
+</div>
+<div class="section" id="v-detach">
+<h3><a class="toc-backref" href="#id9">v.detach()</a><a class="headerlink" href="#v-detach" title="Permalink to this headline">¶</a></h3>
+<p>This vnode method returns v2, a copy of v that is completely detached from the outline. v2.fileIndex is unrelated to v.fileIndex initially, but it may be convenient to copy this field:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">v2</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+<span class="n">v2</span><span class="o">.</span><span class="n">fileIndex</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">fileIndex</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="IPythonBridge.html"
+                        title="previous chapter">ILeo: Leo&#8217;s IPython Bridge</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intermediatetopics.html"
+                        title="next chapter">Advanced Topics</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="intermediatetopics.html" title="Advanced Topics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="IPythonBridge.html" title="ILeo: Leo’s IPython Bridge"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="leoandotherprograms.html" >Leo and Other Programs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

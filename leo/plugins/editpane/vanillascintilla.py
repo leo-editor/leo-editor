@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.3: * @file ../plugins/editpane/vanillascintilla.py
-#@@first
 """
 vanillascintilla.py - a LeoEditPane editor that uses QScintilla
 but does not try to add Leo key handling
@@ -56,14 +54,10 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         Qsci.QsciScintilla.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
-        #X self.update_position(self.lep.get_position())
     #@+node:tbrown.20171028115501.6: *3* focusOutEvent
     def focusOutEvent(self, event):
         Qsci.QsciScintilla.focusOutEvent(self, event)
         DBG("focusout()")
-        #X text = self.lep.get_position()
-        #X text = self.text()
-        #X self.lep.c.redraw()
     #@+node:tbrown.20171028115501.7: *3* new_text
     def new_text(self, text):
         """new_text - update for new text

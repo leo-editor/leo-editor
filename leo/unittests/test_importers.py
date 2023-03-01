@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210904064440.2: * @file ../unittests/test_importers.py
-#@@first
 """Tests of leo/plugins/importers"""
 import glob
 import importlib
@@ -27,6 +25,7 @@ class BaseTestImporter(LeoUnitTest):
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
+        g.app.write_black_sentinels = False
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
@@ -81,8 +80,8 @@ class BaseTestImporter(LeoUnitTest):
             result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
         if s_lines != result_lines:
             g.trace('FAIL', p.h)
-            g.printObj(s_lines, tag=f"expected: {p.h}")
-            g.printObj(result_lines, tag=f"results: {p.h}")
+            g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
+            g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
@@ -107,29 +106,6 @@ class BaseTestImporter(LeoUnitTest):
     def dedent(self, s):
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
-    #@+node:ekr.20220806170537.1: *3* BaseTestImporter.dump_string
-    def dump_string(self, s, tag=None):
-        if tag:
-            print(tag)
-        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* BaseTestImporter.dump_headlines
-    def dump_headlines(self, root, tag=None):  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
-        print('')
-        if tag:
-            print(tag)
-        for p in root.self_and_subtree():
-            print('level:', p.level(), p.h)
-    #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
-    def dump_tree(self, root, tag=None):  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
-        print('')
-        if tag:
-            print(tag)
-        for p in root.self_and_subtree():
-            print('')
-            print('level:', p.level(), p.h)
-            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
         """
@@ -945,443 +921,12 @@ class TestHtml(BaseTestImporter):
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
 
     #@+others
-    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
-    def test_lowercase_tags(self):
-
-        s = """
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class="bodystring">
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '@others\n'
-                    '</html>\n'
-                    '\n'
-            ),
-            (2, '<head>',
-                    '<head>\n'
-                    '    <title>Bodystring</title>\n'
-                    '</head>\n'
-            ),
-            (2, '<body class="bodystring">',
-                    '<body class="bodystring">\n'
-                    "<div id='bodydisplay'></div>\n"
-                    '</body>\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line (poor)
-    def test_multiple_tags_on_a_line(self):
-
-        # pylint: disable=line-too-long
-
-        # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
-        # NOT: tr, td, tbody, etc.
-        s = """
-            <html>
-            <body>
-                <table id="0">
-                    <tr valign="top">
-                    <td width="619">
-                    <table id="2"> <tr valign="top"> <td width="377">
-                        <table id="3">
-                        <tr>
-                        <td width="368">
-                        <table id="4">
-                            <tbody id="5">
-                            <tr valign="top">
-                            <td width="550">
-                            <table id="6">
-                                <tbody id="6">
-                                <tr>
-                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            </td>
-                            </tr><tr>
-                            <td width="100%" colspan="2">
-                            <br />
-                            </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </td>
-                        </tr>
-                    </table>
-                    <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-                    <!-- View Second part --> </td> </tr></table>
-                <DIV class="webonly">
-                    <script src="/scripts/footer.js"></script>
-                </DIV>
-                </td>
-                </tr>
-                <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-                <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-                <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
-            </body>
-            </html>
-        """
-        p = self.run_test(s)
-        # The importer doesn't do a good job.
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '@others\n'
-            ),
-            (2, '<body>',
-                    '<body>\n'
-                    '    @others\n'
-                    '</html>\n'
-                    '\n'
-            ),
-            (3, '<table id="0">',
-                    '<table id="0">\n'
-                    '    <tr valign="top">\n'
-                    '    <td width="619">\n'
-                    '    @others\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>\n'
-                    '<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>\n'
-                    '<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>\n'
-                    '</body>\n'
-            ),
-            (4, '<table id="2">',
-                    '<table id="2"> <tr valign="top"> <td width="377">\n'
-                    '@others\n'
-                    '<!-- View First part --> </td> <td width="242"> <!-- View Second part -->\n'
-                    '<!-- View Second part --> </td> </tr></table>\n'
-            ),
-            (5, '<table id="3">',
-                    '<table id="3">\n'
-                    '<tr>\n'
-                    '<td width="368">\n'
-                    '@others\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '</table>\n'
-            ),
-            (6, '<table id="4">',
-                    '<table id="4">\n'
-                    '<tbody id="5">\n'
-                    '<tr valign="top">\n'
-                    '<td width="550">\n'
-                    '@others\n'
-                    '</td>\n'
-                    '</tr><tr>\n'
-                    '<td width="100%" colspan="2">\n'
-                    '<br />\n'
-                    '</td>\n'
-                    '</tr>\n'
-                    '</tbody>\n'
-                    '</table>\n'
-            ),
-            (7, '<table id="6">',
-                    '<table id="6">\n'
-                    '    <tbody id="6">\n'
-                    '    <tr>\n'
-                    '    <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>\n'
-                    '    </tr>\n'
-                    '    </tbody>\n'
-                    '</table>\n'
-            ),
-            (4, '<DIV class="webonly">',
-                    '<DIV class="webonly">\n'
-                    '<script src="/scripts/footer.js"></script>\n'
-                    '</DIV>\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
-    def test_multple_node_completed_on_a_line(self):
-
-        s = """
-            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
-            <html><head>headline</head><body>body</body></html>
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
-                    '<html><head>headline</head><body>body</body></html>\n'
-                    '\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
-    def test_multple_node_starts_on_a_line(self):
-
-        s = '''
-            <html>
-            <head>headline</head>
-            <body>body</body>
-            </html>
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '<head>headline</head>\n'
-                    '<body>body</body>\n'
-                    '</html>\n'
-                    '\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
-    def test_underindented_comment(self):
-
-        s = r'''
-            <td width="550">
-            <table cellspacing="0" cellpadding="0" width="600" border="0">
-                <td class="blutopgrabot" height="28"></td>
-
-                <!-- The indentation of this element causes the problem. -->
-                <table>
-
-            <!--
-            <div align="center">
-            <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
-            </div>
-            -->
-
-            </table>
-            </table>
-
-            <p>Paragraph</p>
-            </td>
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '<td width="550">\n'
-                    '@others\n'
-                    '<p>Paragraph</p>\n'
-                    '</td>\n'
-                    '\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
-                    '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
-                    '    <td class="blutopgrabot" height="28"></td>\n'
-                    '\n'
-                    '    <!-- The indentation of this element causes the problem. -->\n'
-                    '    @others\n'
-                    '</table>\n'
-                    '\n'
-            ),
-            (2, '<table>',
-                    '<table>\n'
-                    '\n'
-                    '<!--\n'
-                    '<div align="center">\n'
-                    '<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>\n'
-                    '</div>\n'
-                    '-->\n'
-                    '\n'
-                    '</table>\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
-    def test_uppercase_tags(self):
-
-        s = """
-            <HTML>
-            <HEAD>
-                <title>Bodystring</title>
-            </HEAD>
-            <BODY class='bodystring'>
-            <DIV id='bodydisplay'></DIV>
-            </BODY>
-            </HTML>
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language html\n'
-                '@tabwidth -4\n'
-            ),
-            (1, '<HTML>',
-                    '<HTML>\n'
-                    '@others\n'
-                    '</HTML>\n'
-                    '\n'
-            ),
-            (2, '<HEAD>',
-                    '<HEAD>\n'
-                    '    <title>Bodystring</title>\n'
-                    '</HEAD>\n'
-            ),
-            (2, "<BODY class='bodystring'>",
-                    "<BODY class='bodystring'>\n"
-                    "<DIV id='bodydisplay'></DIV>\n"
-                    '</BODY>\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
-    def test_improperly_nested_tags(self):
-
-        s = """
-            <body>
-
-            <!-- OOPS: the div and p elements not properly nested.-->
-            <!-- OOPS: this table got generated twice. -->
-
-            <p id="P1">
-            <div id="D666">Paragraph</p> <!-- P1 -->
-            <p id="P2">
-
-            <TABLE id="T666"></TABLE></p> <!-- P2 -->
-            </div>
-            </p> <!-- orphan -->
-
-            </body>
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<body>',
-                    '<body>\n'
-                    '\n'
-                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                    '<!-- OOPS: this table got generated twice. -->\n'
-                    '\n'
-                    '<p id="P1">\n'
-                    '@others\n'
-                    '</p> <!-- orphan -->\n'
-                    '\n'
-                    '</body>\n'
-                    '\n'
-            ),
-            (2, '<div id="D666">',
-                    '<div id="D666">Paragraph</p> <!-- P1 -->\n'
-                    '<p id="P2">\n'
-                    '\n'
-                    '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-                    '</div>\n'
-            ),
-        ))
-
-    #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
-    def test_improperly_terminated_tags(self):
-
-        s = '''
-            <html>
-
-            <head>
-                <!-- oops: link elements terminated two different ways -->
-                <link id="L1">
-                <link id="L2">
-                <link id="L3" />
-                <link id='L4' />
-
-                <title>TITLE</title>
-
-            <!-- oops: missing tags. -->
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '\n'
-                    '@others\n'
-            ),
-            (2, '<head>',
-                    '<head>\n'
-                    '    <!-- oops: link elements terminated two different ways -->\n'
-                    '    <link id="L1">\n'
-                    '    <link id="L2">\n'
-                    '    <link id="L3" />\n'
-                    "    <link id='L4' />\n"
-                    '\n'
-                    '    <title>TITLE</title>\n'
-                    '\n'
-                    '<!-- oops: missing tags. -->\n'
-                    '\n'
-            ),
-        ))
-
-    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
-    def test_improperly_terminated_tags2(self):
-
-        s = '''
-            <html>
-            <head>
-                <!-- oops: link elements terminated two different ways -->
-                <link id="L1">
-                <link id="L2">
-                <link id="L3" />
-                <link id='L4' />
-
-                <title>TITLE</title>
-
-            </head>
-            </html>
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language html\n'
-                '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                '<html>\n'
-                '@others\n'
-                '</html>\n'
-                '\n'
-            ),
-            (2, '<head>',
-                '<head>\n'
-                '    <!-- oops: link elements terminated two different ways -->\n'
-                '    <link id="L1">\n'
-                '    <link id="L2">\n'
-                '    <link id="L3" />\n'
-                "    <link id='L4' />\n"
-                '\n'
-                '    <title>TITLE</title>\n'
-                '\n'
-                '</head>\n'
-            ),
-        ))
-
     #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
+        #@+<< define s >>
+        #@+node:ekr.20230126081859.1: *4* << define s >>
         s = '''
             <!DOCTYPE html>
             <html>
@@ -1517,10 +1062,14 @@ class TestHtml(BaseTestImporter):
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
             <body onload="brython({debug:1, cache:'none'})">
-            </body></html>
+            </body>
+            </html>
         '''
+        #@-<< define s >>
         p = self.run_test(s)
         self.check_outline(p, (
+            #@+<< define comparison tuples >>
+            #@+node:ekr.20230126082712.1: *4* << define comparison tuples >>
             (0, '',  # check_outline ignores the first headline.
                     '<!DOCTYPE html>\n'
                     '@others\n'
@@ -1666,8 +1215,635 @@ class TestHtml(BaseTestImporter):
             ),
             (2, '<body onload="brython({debug:1, cache:\'none\'})">',
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
-                    '</body></html>\n'
+                    '</body>\n'
+                    '</html>\n'
                     '\n'
+            ),
+            #@-<< define comparison tuples >>
+        ))
+    #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
+    def test_improperly_nested_tags(self):
+
+        s = """
+            <body>
+
+            <!-- OOPS: the div and p elements not properly nested.-->
+            <!-- OOPS: this table got generated twice. -->
+
+            <p id="P1">
+            <div id="D666">Paragraph</p> <!-- P1 -->
+            <p id="P2">
+
+            <TABLE id="T666"></TABLE></p> <!-- P2 -->
+            </div>
+            </p> <!-- orphan -->
+
+            </body>
+        """
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<body>',
+                    '<body>\n'
+                    '\n'
+                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                    '<!-- OOPS: this table got generated twice. -->\n'
+                    '\n'
+                    '<p id="P1">\n'
+                    '@others\n'
+                    '</p> <!-- orphan -->\n'
+                    '\n'
+                    '</body>\n'
+                    '\n'
+            ),
+            (2, '<div id="D666">',
+                    '<div id="D666">Paragraph</p> <!-- P1 -->\n'
+                    '<p id="P2">\n'
+                    '\n'
+                    '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
+                    '</div>\n'
+            ),
+        ))
+
+    #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
+    def test_improperly_terminated_tags(self):
+
+        s = '''
+            <html>
+
+            <head>
+                <!-- oops: link elements terminated two different ways -->
+                <link id="L1">
+                <link id="L2">
+                <link id="L3" />
+                <link id='L4' />
+
+                <title>TITLE</title>
+
+            <!-- oops: missing tags. -->
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '\n'
+                    '@others\n'
+            ),
+            (2, '<head>',
+                    '<head>\n'
+                    '    <!-- oops: link elements terminated two different ways -->\n'
+                    '    <link id="L1">\n'
+                    '    <link id="L2">\n'
+                    '    <link id="L3" />\n'
+                    "    <link id='L4' />\n"
+                    '\n'
+                    '    <title>TITLE</title>\n'
+                    '\n'
+                    '<!-- oops: missing tags. -->\n'
+                    '\n'
+            ),
+        ))
+
+    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
+    def test_improperly_terminated_tags2(self):
+
+        s = '''
+            <html>
+            <head>
+                <!-- oops: link elements terminated two different ways -->
+                <link id="L1">
+                <link id="L2">
+                <link id="L3" />
+                <link id='L4' />
+
+                <title>TITLE</title>
+
+            </head>
+            </html>
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language html\n'
+                '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                '<html>\n'
+                '@others\n'
+                '</html>\n'
+                '\n'
+            ),
+            (2, '<head>',
+                '<head>\n'
+                '    <!-- oops: link elements terminated two different ways -->\n'
+                '    <link id="L1">\n'
+                '    <link id="L2">\n'
+                '    <link id="L3" />\n'
+                "    <link id='L4' />\n"
+                '\n'
+                '    <title>TITLE</title>\n'
+                '\n'
+                '</head>\n'
+            ),
+        ))
+
+    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
+    def test_lowercase_tags(self):
+
+        s = """
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class="bodystring">
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
+        """
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '@others\n'
+                    '</html>\n'
+                    '\n'
+            ),
+            (2, '<head>',
+                    '<head>\n'
+                    '    <title>Bodystring</title>\n'
+                    '</head>\n'
+            ),
+            (2, '<body class="bodystring">',
+                    '<body class="bodystring">\n'
+                    "<div id='bodydisplay'></div>\n"
+                    '</body>\n'
+            ),
+        ))
+    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
+    def test_multiple_tags_on_a_line(self):
+
+        # pylint: disable=line-too-long
+        #@+<< define s >>
+        #@+node:ekr.20230126042723.1: *4* << define s >>
+        # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
+        # NOT: tr, td, tbody, etc.
+        s = """
+            <html>
+            <body>
+                <table id="0">
+                    <tr valign="top">
+                    <td width="619">
+
+
+                        <table id="3">
+                        <tr>
+                        <td width="368">
+                        <table id="4">
+                            <tbody id="5">
+                            <tr valign="top">
+                            <td width="550">
+                            <table id="6">
+                                <tbody id="6">
+                                <tr>
+                                <td class="blutopgrabot"><a href="href1">Listing Standards</a> |
+                                    <a href="href2">Fees</a> |
+                                    <strong>Non-compliant Issuers</strong> |
+                                    <a href="href3">Form 25 Filings</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </td>
+                            </tr><tr>
+                            <td width="100%" colspan="2">
+                            <br />
+                            </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </td>
+                        </tr>
+                    </table>
+                    <!-- View First part -->
+                    </td>
+                    <td width="242">
+                    <!-- View Second part -->
+                    </td>
+                    </tr></table>
+                <DIV class="webonly">
+                    <script src="/scripts/footer.js"></script>
+                </DIV>
+                </td>
+                </tr>
+                <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+                <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+                <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+            </body>
+            </html>
+        """
+        #@-<< define s >>
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
+        expected_s = (s
+            .replace('Form 25 Filings</a></td>\n', 'Form 25 Filings</a>\n</td>\n')
+            .replace('</tr><tr>\n', '</tr>\n<tr>\n')
+            .replace('</tr></table>\n', '</tr>\n</table>\n')
+            .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
+            .replace('<noscript><img', '<noscript>\n<img')
+        )
+
+        # This dump now looks good!
+        # self.dump_tree(p)
+
+        self.check_round_trip(p, expected_s)
+    #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
+    def test_multple_node_completed_on_a_line(self):
+
+        s = """
+            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
+            <html><head>headline</head><body>body</body></html>
+        """
+
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
+        expected_s = textwrap.dedent("""\
+            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
+            <html>
+            <head>headline</head>
+            <body>body</body>
+            </html>
+        """)
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # xml.preprocess_lines should insert various newlines.
+        self.check_round_trip(p, expected_s)
+
+        # This dump now looks good!
+        # self.dump_tree(p)
+
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '<head>headline</head>\n'
+                    '<body>body</body>\n'
+                    '</html>\n'
+                    '\n'
+            ),
+        ))
+
+    #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
+    def test_multple_node_starts_on_a_line(self):
+
+        s = '''
+            <html>
+            <head>headline</head>
+            <body>body</body>
+            </html>
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '<head>headline</head>\n'
+                    '<body>body</body>\n'
+                    '</html>\n'
+                    '\n'
+            ),
+        ))
+    #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
+    def test_slideshow_slide(self):
+
+        # s is the contents of slides/basics/slide-002.html
+        #@+<< define s >>
+        #@+node:ekr.20230126031120.1: *4* << define s >>
+        s = '''\
+        <!DOCTYPE html>
+
+        <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+            <title>The workbook file &#8212; Leo 6.7.2 documentation</title>
+            <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+            <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+            <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+
+            <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+            <script src="../../_static/doctools.js"></script>
+            <script src="../../_static/sphinx_highlight.js"></script>
+
+            <script src="../../_static/sidebar.js"></script>
+
+            <link rel="index" title="Index" href="../../genindex.html" />
+            <link rel="search" title="Search" href="../../search.html" />
+            <link rel="next" title="Editing headlines" href="slide-003.html" />
+            <link rel="prev" title="Leoâ€™s Basics" href="basics.html" />
+          <!--
+            EKR: Xml_Importer.preprocess_lines should insert put </head> and <body> on separate lines.
+            As with this comment, there is a risk that preprocessing might affect comments...
+          -->
+          </head><body>
+            <div class="related" role="navigation" aria-label="related navigation">
+              <h3>Navigation</h3>
+              <ul>
+                <li class="right" style="margin-right: 10px">
+                  <a href="../../genindex.html" title="General Index"
+                     accesskey="I">index</a></li>
+                <li class="right" >
+                  <a href="slide-003.html" title="Editing headlines"
+                     accesskey="N">next</a> |</li>
+                <li class="right" >
+                  <a href="basics.html" title="Leoâ€™s Basics"
+                     accesskey="P">previous</a> |</li>
+                <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+                  <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
+                  <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
+                  <li class="nav-item nav-item-3"><a href="basics.html" accesskey="U">Leoâ€™s Basics</a> &#187;</li>
+                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
+              </ul>
+            </div>
+
+            <div class="document">
+              <div class="documentwrapper">
+                <div class="bodywrapper">
+                  <div class="body" role="main">
+
+          <section id="the-workbook-file">
+        <h1>The workbook file<a class="headerlink" href="#the-workbook-file" title="Permalink to this heading">Â¶</a></h1>
+        <p>Leo opens the <strong>workbook file</strong> when you start
+        Leo without a filename.</p>
+        <p>The body has focusâ€“it is colored a pale pink, and
+        contains a blinking cursor.</p>
+        <p><strong>Note</strong>: on some monitors the colors will be almost
+        invisible.  You can choose such colors to suit your
+        taste.</p>
+        <img alt="../../_images/slide-002.png" src="../../_images/slide-002.png" />
+        </section>
+
+
+                    <div class="clearer"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+                <div class="sphinxsidebarwrapper">
+                    <p class="logo"><a href="../../leo_toc.html">
+                      <img class="logo" src="../../_static/LeoLogo.svg" alt="Logo"/>
+                    </a></p>
+          <div>
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="basics.html"
+                                  title="previous chapter">Leoâ€™s Basics</a></p>
+          </div>
+          <div>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="slide-003.html"
+                                  title="next chapter">Editing headlines</a></p>
+          </div>
+        <div id="searchbox" style="display: none" role="search">
+          <h3 id="searchlabel">Quick search</h3>
+            <div class="searchformwrapper">
+            <form class="search" action="../../search.html" method="get">
+              <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+              <input type="submit" value="Go" />
+            </form>
+            </div>
+        </div>
+        <script>document.getElementById('searchbox').style.display = "block"</script>
+                </div>
+        <div id="sidebarbutton" title="Collapse sidebar">
+        <span>Â«</span>
+        </div>
+
+              </div>
+              <div class="clearer"></div>
+            </div>
+            <div class="related" role="navigation" aria-label="related navigation">
+              <h3>Navigation</h3>
+              <ul>
+                <li class="right" style="margin-right: 10px">
+                  <a href="../../genindex.html" title="General Index"
+                     >index</a></li>
+                <li class="right" >
+                  <a href="slide-003.html" title="Editing headlines"
+                     >next</a> |</li>
+                <li class="right" >
+                  <a href="basics.html" title="Leoâ€™s Basics">previous</a> |</li>
+                <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+                  <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
+                  <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
+                  <li class="nav-item nav-item-3"><a href="basics.html" >Leoâ€™s Basics</a> &#187;</li>
+                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
+              </ul>
+            </div>
+            <div class="footer" role="contentinfo">
+                &#169; Copyright 1997-2023, Edward K. Ream.
+              Last updated on January 24, 2023.
+              Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+            </div>
+          </body>
+        </html>
+        '''
+        #@-<< define s >>
+
+        # Don't run the standard round-trip test.
+        p = self.run_test(s, check_flag=False)
+
+        # xml.preprocess_lines inserts several newlines.
+        # Modify the expected result accordingly.
+        expected_s = (s
+            .replace('</head><body>', '</head>\n<body>')
+            .replace('><meta', '>\n<meta')
+            .replace('index</a></li>', 'index</a>\n</li>')
+            # .replace('"><a', '">\n<a')  # This replacement would affect too many lines.
+            .replace('m-0"><a', 'm-0">\n<a')
+            .replace('m-1"><a', 'm-1">\n<a')
+            .replace('item-2"><a', 'item-2">\n<a')
+            .replace('m-3"><a', 'm-3">\n<a')
+            .replace('nav-item-this"><a', 'nav-item-this">\n<a')
+            .replace('<p class="logo"><a', '<p class="logo">\n<a')
+            .replace('</a></li>', '</a>\n</li>')
+            .replace('<p><strong>', '<p>\n<strong>')
+            .replace('</a></p>', '</a>\n</p>')
+        )
+        self.check_round_trip(p, expected_s)
+
+        # This dump now looks good!
+        # self.dump_tree()
+    #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
+    def test_structure(self):
+
+        s = '''
+            <html>
+            <head>
+                <meta charset="utf-8" />
+            </head>
+            <body>
+                <div class="a">
+                    <div class="a-1">
+                        some text
+                    </div>
+                </div>
+            </body>
+            </html>
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '@others\n'
+                    '</html>\n'
+                    '\n'
+            ),
+            (2, '<head>',
+                    '<head>\n'
+                    '    <meta charset="utf-8" />\n'
+                    '</head>\n'
+            ),
+            (2, '<body>',
+                     '<body>\n'
+                     '    @others\n'
+                     '</body>\n'
+            ),
+            (3, '<div class="a">',
+                     '<div class="a">\n'
+                     '    @others\n'
+                     '</div>\n'
+            ),
+            (4, '<div class="a-1">',
+
+                     '<div class="a-1">\n'
+                     '    some text\n'
+                     '</div>\n'
+            ),
+        ))
+    #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
+    def test_underindented_comment(self):
+
+        s = r'''
+            <td width="550">
+            <table cellspacing="0" cellpadding="0" width="600" border="0">
+                <td class="blutopgrabot" height="28"></td>
+
+                <!-- The indentation of this element causes the problem. -->
+                <table>
+
+            <!--
+            <div align="center">
+            <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+            </div>
+            -->
+
+            </table>
+            </table>
+
+            <p>Paragraph</p>
+            </td>
+        '''
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '<td width="550">\n'
+                    '@others\n'
+                    '<p>Paragraph</p>\n'
+                    '</td>\n'
+                    '\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
+                    '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
+                    '    <td class="blutopgrabot" height="28"></td>\n'
+                    '\n'
+                    '    <!-- The indentation of this element causes the problem. -->\n'
+                    '    @others\n'
+                    '</table>\n'
+                    '\n'
+            ),
+            (2, '<table>',
+                    '<table>\n'
+                    '\n'
+                    '<!--\n'
+                    '<div align="center">\n'
+                    '<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>\n'
+                    '</div>\n'
+                    '-->\n'
+                    '\n'
+                    '</table>\n'
+            ),
+        ))
+    #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
+    def test_uppercase_tags(self):
+
+        s = """
+            <HTML>
+            <HEAD>
+                <title>Bodystring</title>
+            </HEAD>
+            <BODY class='bodystring'>
+            <DIV id='bodydisplay'></DIV>
+            </BODY>
+            </HTML>
+        """
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language html\n'
+                '@tabwidth -4\n'
+            ),
+            (1, '<HTML>',
+                    '<HTML>\n'
+                    '@others\n'
+                    '</HTML>\n'
+                    '\n'
+            ),
+            (2, '<HEAD>',
+                    '<HEAD>\n'
+                    '    <title>Bodystring</title>\n'
+                    '</HEAD>\n'
+            ),
+            (2, "<BODY class='bodystring'>",
+                    "<BODY class='bodystring'>\n"
+                    "<DIV id='bodydisplay'></DIV>\n"
+                    '</BODY>\n'
             ),
         ))
     #@-others

@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/scripting-leo/slide-011.html
+
+Further reading
+===============
+
+This concludes our brief introduction to scripting in Leo.
+
+For full details about scripting in Leo, see the Scripting Chapter in Leo’s Users Guide.
+

@@ -1,30 +1,20 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
-#@@first
 """Classes relating to Leo's plugin architecture."""
-#@+<< leoPlugins imports >>
-#@+node:ekr.20220901071118.1: ** << leoPlugins imports >>
+#@+<< leoPlugins imports & annotations >>
+#@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
+from __future__ import annotations
 import sys
 from typing import Any, Callable, Dict, Iterator, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoPlugins imports >>
-#@+<< leoPlugins annotations >>
-#@+node:ekr.20220901071130.1: ** << leoPlugins annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
+    # mypy doesn't seem to handle this.
+    Tag_List = Any  # Union[str, Sequence[str]]
+#@-<< leoPlugins imports & annotations >>
 
-# mypy doesn't seem to handle this.
-Tag_List = Any  # Union[str, Sequence[str]]
-#@-<< leoPlugins annotations >>
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
 optional_modules = [
@@ -63,7 +53,7 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: List[Any]=None) -> None:
+    def __init__(self, commands: List[Any] = None) -> None:
         if commands is None:
             self.chain = []
         else:
@@ -75,8 +65,7 @@ class CommandChainDispatcher:
         This will call all funcs in chain with the same args as were given to this
         function, and return the result of first func that didn't raise
         TryNext """
-        for prio, cmd in self.chain:
-            #print "prio",prio,"cmd",cmd #dbg
+        for _prio, cmd in self.chain:
             try:
                 ret = cmd(*args, **kw)
                 return ret
@@ -90,7 +79,7 @@ class CommandChainDispatcher:
     def __str__(self) -> str:
         return str(self.chain)
 
-    def add(self, func: Callable, priority: int=0) -> None:
+    def add(self, func: Callable, priority: int = 0) -> None:
         """ Add a func to the cmd chain with given priority """
         self.chain.append((priority, func),)
         self.chain.sort(key=lambda z: z[0])
@@ -228,9 +217,9 @@ class BaseLeoPlugin:
         self,
         commandName: Any,
         handler: Callable,
-        shortcut: str='',
-        pane: str='all',
-        verbose: bool=True,
+        shortcut: str = '',
+        pane: str = 'all',
+        verbose: bool = True,
     ) -> None:
         """Associate a command name with handler code,
         optionally defining a keystroke shortcut
@@ -242,7 +231,7 @@ class BaseLeoPlugin:
         self.c.k.registerCommand(commandName, handler,
             pane=pane, shortcut=shortcut, verbose=verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
-    def setMenuItem(self, menu: Wrapper, commandName: str=None, handler: Callable=None) -> None:
+    def setMenuItem(self, menu: Wrapper, commandName: str = None, handler: Callable = None) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
         """
@@ -258,7 +247,7 @@ class BaseLeoPlugin:
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
     #@+node:ekr.20100908125007.6015: *3* setButton
-    def setButton(self, buttonText: str=None, commandName: str=None, color: str=None) -> None:
+    def setButton(self, buttonText: str = None, commandName: str = None, color: str = None) -> None:
         """Associate an existing command with a 'button'
         """
         if buttonText is None:
@@ -453,14 +442,14 @@ class LeoPluginsController:
 
         We *must* allow .py suffixes, for compatibility with @enabled-plugins nodes.
         """
-        if not moduleOrFileName.endswith('.py'):
+        if not moduleOrFileName.endswith(('py', 'pyw')):
             # A module name. Return it unchanged.
             return moduleOrFileName
         #
         # 1880: The legacy code implicitly assumed that os.path.dirname(fn) was empty!
         #       The new code explicitly ignores any directories in the path.
         fn = g.os_path_basename(moduleOrFileName)
-        return "leo.plugins." + fn[:-3]
+        return "leo.plugins." + g.os_path_splitext(fn)[0]
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
     def loadHandlers(self, tag: str, keys: List[str]) -> None:
@@ -486,7 +475,7 @@ class LeoPluginsController:
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
-    def loadOnePlugin(self, moduleOrFileName: Any, tag: str='open0', verbose: bool=False) -> Any:
+    def loadOnePlugin(self, moduleOrFileName: Any, tag: str = 'open0', verbose: bool = False) -> Any:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.
@@ -613,7 +602,7 @@ class LeoPluginsController:
         self.signonModule = result  # for self.plugin_signon.
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
-    def plugin_signon(self, module_name: str, verbose: bool=False) -> None:
+    def plugin_signon(self, module_name: str, verbose: bool = False) -> None:
         """Print the plugin signon."""
         # This is called from as the result of the imports
         # in self.loadOnePlugin
@@ -623,7 +612,7 @@ class LeoPluginsController:
             g.pr(m.__name__, m.__version__)
         self.signonModule = None  # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* plugins.unloadOnePlugin
-    def unloadOnePlugin(self, moduleOrFileName: str, verbose: bool=False) -> None:
+    def unloadOnePlugin(self, moduleOrFileName: str, verbose: bool = False) -> None:
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             if verbose:

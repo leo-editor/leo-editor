@@ -1,0 +1,91 @@
+.. rst3: filename: html\debuggers.html
+
+##################
+Debugging with Leo
+##################
+
+This chapter discusses debugging Python scripts with Leo.
+Be aware of the distinction between **Leo-specific** scripts and **general** scripts.
+Leo-specific scripts access data in the Leo outline in which they are contained;
+general scripts do not.
+
+.. contents::
+    :depth: 3
+    :local:
+
+Using g.trace and g.pdb
++++++++++++++++++++++++
+
+.. _`FAQ`:                  FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
+.. _`pdb`:                  https://docs.python.org/3/library/pdb.html
+.. _`run Leo in a console`: installing.html#running-leo-from-a-console-window
+.. _`work flow`:            FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must `run Leo in a console`_ to use g.trace.
+
+Inserting and deleting g.trace statements is fast, provided that your `work flow`_ makes it easy to restart the program under test. As a result, using g.trace statements is similar to setting tracepoints in a debugger, with the advantage that (disabled) tracepoints remain in the source code for future use. You will find many examples of using g.trace throughout Leo's source code.
+
+My second choice is using g.pdb to set breakpoints for the `pdb`_ debugger. Pdb uses the console for all interaction, so you must `run Leo in a console`_. See the `FAQ`_ for a discussion of both g.trace and g.pdb.
+
+Settings for winpdb
++++++++++++++++++++
+
+The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter::
+
+    @string debugger_kind = winpdb
+
+This setting controls what debugger the 'Debug Script' script button uses. Eventually this setting will control what debugger the debug command uses:: At present the only valid value is 'winpdb'
+
+    @bool write_script_file = True
+
+True: The execute script command writes the script to be executed to a file, then executes the script using Python's execFile function. The script_file_path setting specifies the path to this file. False (legacy): The execute script command uses Python's exec command to execute the script.
+
+@string script_file_path = ../test/scriptFile.py
+
+The path to the file to be written by the execute-script command. Notes:
+
+- This setting has effect only if the write_script_file setting is True.
+- Use / as the path delimiter, regardless of platform.
+- The default path is ../test/scriptFile.py if no path is given.
+- The path starts at g.app.loadDir, so for example ../test/scriptFile.py is equivalent to leo/test/scriptFile.py.
+- The filename should end in .py.
+
+@string debugger_path = None
+
+Debugging scripts with winpdb
++++++++++++++++++++++++++++++
+
+.. _`embedded winpdb`: http://www.digitalpeers.com/pythondebugger/embedded.htm
+.. _`winpdb`: http://www.digitalpeers.com/pythondebugger/
+
+The following three section discuss three ways of debugging scripts with `winpdb`_. The first two sections tell how to debug general scripts; the last section tells how to debug Leo-specific scripts.
+
+winpdb_ and its documentation have been improved recently. For more details, see the `embedded winpdb`_ docs. The discussion of embedded debugging may have been written specifically with Leo in mind.
+
+The debug command
+*****************
+
+This way of debugging can only be used for general scripts, not leo-specific scripts. The debug command writes the script to scriptFile.py and invokes winpdb. winpdb opens and is already 'attached' to the script to be debugged. You can single-step as you like. Leo continues to run, but killing the debugger will also kill Leo.
+
+The execute-script command with explicit debugger breaks
+********************************************************
+
+This way of debugging scripts allows winpdb to debug scripts that use c, g and p. A bit more work is needed because winpdb does not start automatically. Here are step-by step instructions:
+
+1. Insert the following two lines of code at the start of the script to be debugged::
+
+    import rpdb2
+    rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
+
+2. Execute Leo's execute-script command (*not* the debug command). Leo will appear to hang: start_embedded_debugger is waiting for *another* copy of winpdb to 'attach' to the script's process. The default timeout is 5 minutes, after which an exception gets thrown.
+
+3. Start winpdb explicitly by executing something like the following in a console::
+
+    python /Python26/Scripts/_winpdb.py -t
+
+   The -t option tells winpdb that no encoding of password is necessary.
+   The password is specified in the call to rpdb2.start_embedded_debugger in your script.
+   In our example, the password is 'go'.
+
+4. Use winpdb's File:Attach command to attach winpdb to Leo. Specify the password as 'go' and you will see the scriptFile.py containing your entire script. You can now execute or single-step through the script. To repeat, c, g and p are defined, so you can debug any script this way.
+

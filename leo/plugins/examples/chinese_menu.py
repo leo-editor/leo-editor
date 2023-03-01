@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20040828105233: * @file ../plugins/examples/chinese_menu.py
-#@@first
 
 """
 Translate a few menu items into Simplified Chinese

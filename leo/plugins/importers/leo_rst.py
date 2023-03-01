@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18151: * @file ../plugins/importers/leo_rst.py
-#@@first
 """
 The @auto importer for restructured text.
 
@@ -103,7 +101,7 @@ class Rst_Importer(Importer):
             and self.is_underline(line1) and not self.is_underline(line0)
         )
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
-    def is_underline(self, line: str, extra: str=None) -> bool:
+    def is_underline(self, line: str, extra: str = None) -> bool:
         """True if the line consists of nothing but the same underlining characters."""
         if line.isspace():
             return False

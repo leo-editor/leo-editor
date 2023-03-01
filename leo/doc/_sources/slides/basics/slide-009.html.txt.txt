@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/basics/slide-009.html
+
+<Return> ends headline editing
+===============================
+
+The focus is now in the body pane.
+
+.. image:: _images/slide-009.png
+

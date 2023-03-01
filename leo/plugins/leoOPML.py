@@ -493,7 +493,7 @@ class PutToOPML:
                 self.putOPMLNode(p2)
                 closed = True
         if closed:
-            self.put('\n%s</outline>' % indent)
+            self.put(f"\n{indent}</outline>")
         else:
             self.put(' />')
     #@+node:ekr.20060919172012.7: *4* attributeEscape

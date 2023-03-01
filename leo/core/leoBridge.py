@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20070227091955.1: * @file leoBridge.py
-#@@first
 #@@first
 """A module to allow full access to Leo commanders from outside Leo."""
 #@@language python
@@ -47,37 +45,30 @@
 #   Host programs can use these commanders as described in Leo's scripting
 #   chapter.
 #@-<< about the leoBridge module >>
-#@+<< leoBridge imports >>
-#@+node:ekr.20220901084154.1: ** << leoBridge imports >>
+#@+<< leoBridge imports & annotations >>
+#@+node:ekr.20220901084154.1: ** << leoBridge imports & annotations >>
 # This module must import *no* Leo modules at the outer level!
+from __future__ import annotations
 import os
 import sys
 import traceback
 from typing import Any, Optional, TYPE_CHECKING
-#@-<< leoBridge imports >>
-#@+<< leoBridge annotatations >>
-#@+node:ekr.20220901084238.1: ** << leoBridge annotatations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< leoBridge annotatations >>
+#@-<< leoBridge imports & annotations >>
 
 gBridgeController = None  # The singleton bridge controller.
 #@+others
 #@+node:ekr.20070227092442: ** function: controller
 def controller(
-    gui: str='nullGui',
-    loadPlugins: bool=True,
-    readSettings: bool=True,
-    silent: bool=False,
-    tracePlugins: bool=False,
-    useCaches: bool=True,
-    verbose: bool=False,
+    gui: str = 'nullGui',
+    loadPlugins: bool = True,
+    readSettings: bool = True,
+    silent: bool = False,
+    tracePlugins: bool = False,
+    useCaches: bool = True,
+    verbose: bool = False,
 ) -> Any:
     """Create an singleton instance of a bridge controller."""
     global gBridgeController
@@ -105,7 +96,7 @@ class BridgeController:
         tracePlugins: bool,
         useCaches: bool,
         verbose: bool,
-        vs_code_flag: bool=False,  # #2098.
+        vs_code_flag: bool = False,  # #2098.
     ) -> None:
         """Ctor for the BridgeController class."""
         self.g: Any = None  # leo.core.leoGlobals.  Hard to annotate.
@@ -235,7 +226,7 @@ class BridgeController:
             log.enabled = True  # Allow prints from NullLog.
             log.logInited = True  # Bug fix: 2012/10/17.
         else:
-            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"
+            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"  # noqa
     #@+node:ekr.20070227093629.4: *4* bridge.isValidPython
     def isValidPython(self) -> bool:
         if sys.platform == 'cli':

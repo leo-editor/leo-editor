@@ -1,22 +1,17 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
-#@@first
 """Gui-independent menu handling for Leo."""
-#@+<< leoMenu imports >>
-#@+node:ekr.20220414095908.1: ** << leoMenu imports >>
+#@+<< leoMenu imports & annotations >>
+#@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoMenu imports >>
-#@+<< leoMenu annotations >>
-#@+node:ekr.20220824085300.1: ** << leoMenu annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
-else:
-    Event = Any
-Widget = Any
-Wrapper = Any
-#@-<< leoMenu annotations >>
+    Widget = Any
+    Wrapper = Any
+#@-<< leoMenu imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu:
@@ -182,7 +177,7 @@ class LeoMenu:
             # a list of dicts.
             self.createOpenWithMenuFromTable(aList)
     #@+node:ekr.20070927082205: *6* LeoMenu.createMenuFromConfigList
-    def createMenuFromConfigList(self, parentName: str, aList: List, level: int=0) -> None:
+    def createMenuFromConfigList(self, parentName: str, aList: List, level: int = 0) -> None:
         """Build menu based on nested list
 
         List entries are either:
@@ -231,7 +226,7 @@ class LeoMenu:
         if table:
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
-    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str=None, table: List=None) -> bool:
+    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str = None, table: List = None) -> bool:
         """
         Handle a special menu if name is the name of a special menu.
         return True if this method handles the menu.
@@ -343,7 +338,7 @@ class LeoMenu:
         # The command must be a callable.
         if not callable(command):
 
-            def dummy_menu_callback(event: Event=None) -> None:
+            def dummy_menu_callback(event: Event = None) -> None:
                 pass
 
             g.trace(f"bad command: {command!r}", color='red')
@@ -443,7 +438,7 @@ class LeoMenu:
             g.es_exception()
         g.app.menuWarningsGiven = True
     #@+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
-    def createNewMenu(self, menuName: str, parentName: str="top", before: str=None) -> Any:
+    def createNewMenu(self, menuName: str, parentName: str = "top", before: str = None) -> Any:
         try:
             parent = self.getMenu(parentName)  # parent may be None.
             menu = self.getMenu(menuName)
@@ -551,10 +546,10 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: Dict[str, str]=None) -> Callable:
+    def defineOpenWithMenuCallback(self, d: Dict[str, str] = None) -> Callable:
         # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event: Event=None, self: Any=self, d: Dict[str, str]=d) -> Any:
+        def openWithMenuCallback(event: Event = None, self: Any = self, d: Dict[str, str] = d) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 
@@ -585,7 +580,7 @@ class LeoMenu:
             g.es("exception deleting", menuName, "menu")
             g.es_exception()
     #@+node:ekr.20031218072017.3806: *4* LeoMenu.deleteMenuItem
-    def deleteMenuItem(self, itemName: str, menuName: str="top") -> None:
+    def deleteMenuItem(self, itemName: str, menuName: str = "top") -> None:
         """Delete itemName from the menu whose name is menuName."""
         try:
             menu = self.getMenu(menuName)
@@ -633,7 +628,7 @@ class LeoMenu:
         self.oops()
 
     def add_command(self, menu: Widget,
-        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0,
+        accelerator: str = '', command: Callable = None, commandName: str = None, label: str = None, underline: int = 0,
     ) -> None:
         self.oops()
 
@@ -652,13 +647,13 @@ class LeoMenu:
     def destroy(self, menu: Any) -> None:
         self.oops()
 
-    def insert(self, menuName: str, position: int, label: str, command: Callable, underline: int=None) -> None:
+    def insert(self, menuName: str, position: int, label: str, command: Callable, underline: int = None) -> None:
         self.oops()
 
     def insert_cascade(self, parent: Widget, index: int, label: str, menu: Any, underline: int) -> Widget:
         self.oops()
 
-    def new_menu(self, parent: Widget, tearoff: int=0, label: str='') -> Any:
+    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> Any:
         # 2010: added label arg for pylint.
         self.oops()
     #@+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
@@ -687,7 +682,7 @@ class LeoMenu:
         self.oops()
         return ''
 
-    def setMenuLabel(self, menu: str, name: str, label: str, underline: int=-1) -> None:
+    def setMenuLabel(self, menu: str, name: str, label: str, underline: int = -1) -> None:
         self.oops()
     #@-others
 #@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)

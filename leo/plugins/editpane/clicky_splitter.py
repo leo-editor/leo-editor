@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171029210211.1: * @file ../plugins/editpane/clicky_splitter.py
-#@@first
 #@@language python
 """
 clicky_splitter.py - a QSplitter which allows flipping / rotating of

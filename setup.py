@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:maphew.20180224170853.1: * @file ../../setup.py
-#@@first
 """
 setup.py for leo.
 
@@ -128,7 +126,7 @@ def test_is_valid_version():
 production = True
 testing = False
 # Dashes are not allowed.
-version = '6.7.1'  ##version Should match version in leoVersion.py
+version = '6.7.2'  ##version Should match version in leoVersion.py
 entry_points = define_entry_points()
 long_description = get_readme_contents()
 assert is_valid_version(version), version
@@ -141,13 +139,13 @@ if production:
         version=version,
         author='Edward K. Ream',
         author_email='edreamleo@gmail.com',
-        url='http://leoeditor.com',
+        url='http://leo-editor.github.io/leo-editor',
         license='MIT License',
         description='An IDE, PIM and Outliner',  # becomes 'Summary' in pkg-info
         long_description=long_description,
         long_description_content_type="text/markdown",  # PEP566
         platforms=['Linux', 'Windows', 'MacOS'],
-        download_url='http://leoeditor.com/download.html',
+        download_url='http://leo-editor.github.io/leo-editor/download.html',
         classifiers=classifiers,
         packages=setuptools.find_packages(),
         include_package_data=True,  # also include MANIFEST files in wheels

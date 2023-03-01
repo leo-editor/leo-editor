@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/minibuffer/slide-009.html
+
+Replace string
+==============
+
+You can invoke the find by typing <return>.
+
+You can also specify a replacement strings.
+
+Type <tab>. The minibuffer prompts for the replacement string.
+
+.. image:: _images/slide-009.png
+

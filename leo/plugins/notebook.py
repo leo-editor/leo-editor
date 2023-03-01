@@ -69,8 +69,6 @@ class NbController:
         self.c = c
         self.gnxcache = {}
         self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])
-        #self.add_all_nodes()
-        #self.add_subtree(p)
         try:
             # pylint: disable=import-error, no-name-in-module
             from PyQt5.QtQuick import QQuickView
@@ -98,7 +96,6 @@ class NbController:
         # Display the user interface and allow the user to interact with it.
         view.hide()
         view.setGeometry(100, 100, 800, 600)
-        #view.show()
         c.dummy = view
     #@+node:ville.20120604212857.4239: *3* add_all_nodes
     def add_all_nodes(self):

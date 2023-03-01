@@ -2,7 +2,6 @@
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
-# pylint: disable=line-too-long,multiple-statements
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -12,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.86
+About Viewrendered3 V3.91
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +56,29 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
+#@@language plain is equivalent to @language text.
+
+For both plain and text, an @language directive at the top of a node is removed.
+
+For both plain and text, the command *vr3-open-markup-in-editor* can display
+the entire subtree's text when that option is active.
 
 Previous Recent Changes
 ========================
+An external Ruby asciidoctor processor is found more reliably.  The complete
+path to the processor can be specified in the *vr3-prefer-external* setting
+(sometimes Ruby can be installed into a location not on the PATH).
+
+Asciidoctor enhancements
+
+    - New setting to suppress the default footer (``@bool vr3-asciidoctor-nofooter = True``).
+    - Set default directory for asciidoctor icons (``@string vr3-asciidoctor-icons=''``).
+    - Set default image directory (``@string vr3-asciidoctor-imagesdir=''``).
+
+The Dart programming language is now supported.
+
+New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
+
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
 has to be the second item in the headline after the string "@jupyter".  If
 a URL is not found in the headline, the first line of the body is tried.
@@ -80,7 +98,8 @@ Added new command *vr3-render-html-from-clip*.
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
 the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.
-Add a line similar to the following to the *[executables]* section::
+
+Added a line similar to the following to the *[executables]* section::
 
     lua = C:\Program Files (x86)\Lua\5.1\lua.exe
 #@+node:TomP.20200309205046.1: *3* Compatibility
@@ -161,31 +180,40 @@ Settings are put into nodes with the headlines ``@setting ...``.
 They must be placed into an ``@settings`` tree, preferably
 in the myLeoSettings file.
 
-All settings are of type @string unless shown as ``@bool``
+All settings are of type @string unless shown as ``@bool``.
 
 .. csv-table:: VR3 Settings
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
    "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
-   "vr3-ext-editor", "", "Path to external editor", "Specify
-   desired external editor to receive generated markup"
+   "vr3-ext-editor", "''", "Path to external editor", "Specify desired external editor to receive generated markup"
    "vr3-math-output", "False", "bool (True, False)", "RsT MathJax math rendering"
    "vr3-md-math-output", "False", "bool (True, False)", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "Optional URL for RsT Stylesheet"
    "vr3-rst-use-dark-theme", "''", "True, False", "Whether to force the use of the default dark stylesheet"
    "vr3-md-stylesheet", "''", "url string", "Optional URL for MD stylesheet"
+   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
+
+
+.. csv-table:: Asciidoctor External Processor Settings
+   :header: "Setting", "Default", "Values", "Purpose"
+   :widths: 18, 5, 5, 30
+
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
-   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
+   "@bool vr3-asciidoctor-nofooter", "False", "True, False", "Whether to suppress footer (``sciidoctor`` only)"
+   "@string vr3-asciidoctor-icons", "''", "'', font, image", "Whether to use icons (``asciidoctor`` only)"
+   "@string vr3-asciidoctor-imagesdir", "''", "'', absolutePath, relativePath, URL", "Whether to use imagesdir (``asciidoctor`` only)"
+   "@bool vr3-asciidoctor-diagram", "False", "False, True", "Whether to use the ``asciidoctor-diagram`` extension to render plantuml diagrams"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
-   qweb-view-font-size, -, small integer, Change Initial Font size
+   qweb-view-font-size, \-, small integer, Change Initial Font size
 
 **Examples**::
 
@@ -195,10 +223,6 @@ All settings are of type @string unless shown as ``@bool``
     @int qweb-view-font-size = 16
 
 **Note** The font size setting, *qweb-view-font-size*, will probably not be needed.  Useful values will generally be from 8 - 20.
-
-
-
-
 
 Hot Key
 =======
@@ -612,6 +636,31 @@ There is more information at https://docs.asciidoctor.org/asciidoctor/latest/ins
 VR3 will attempt to find the program when it starts up.  The program should
 be on your PATH.
 
+If the ``asciidoctor-diagram`` gem is installed, the asciidoctor processor will be able to render nodes that contain a plantuml diagram.  To install the gem, run the following command in a terminal or console::
+
+    gem install asciidoctor-diagram
+
+To declare a plantuml diagram, use this header::
+
+    [plantuml, target=diagram-classes, format=png, !pragma layout smetana]
+
+If the ``asciidoctor-diagram`` extension is not present, VR3 will only render the text in the node as ordinary asciidoc, not as a diagram.  No error message will be given.
+
+A diagram must follow this example::
+
+    [plantuml, target=diagram-classes, format=png, !pragma layout smetana]
+    ....
+    class BlockProcessor
+    class DiagramBlock
+    class DitaaBlock
+    class PlantUmlBlock
+
+    BlockProcessor <|-- DiagramBlock
+    DiagramBlock <|-- DitaaBlock
+    DiagramBlock <|-- PlantUmlBlock
+    ....
+
+
 asciidoc
 --------
 *asciidoc* comes as a zip file, and is normally unzipped in some convenient
@@ -665,7 +714,7 @@ other differences.
 Colorized Languages
 ===================
 
-Currently the languages that can be colorized are python, javascript,
+Currently the languages that can be colorized are python, dart, javascript,
 java, julia, css, xml, and sql.
 
 #@+node:TomP.20210225000326.1: *3* Code Execution
@@ -1000,6 +1049,7 @@ VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
 ASCIIDOC = 'asciidoc'
 CODE = 'code'
 CSS = 'css'
+DART = 'dart'
 ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
@@ -1008,11 +1058,13 @@ JULIA = 'julia'
 LUA = 'lua'
 MATH = 'math'
 MD = 'md'
+PLAIN = 'plain'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+DART = 'dart'
 
 ASCIIDOC_CONF_FILENAME = 'html5.conf'
 MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
@@ -1090,7 +1142,7 @@ RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
+LANGUAGES = (PYTHON, DART, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
@@ -1120,6 +1172,7 @@ asciidoc_ok = False
 asciidoc3_ok = False
 asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
 asciidoc_processors = []
+asciidoc_has_diagram = False
 #@-<< Misc Globals >>
 #@-<< declarations >>
 
@@ -1200,6 +1253,15 @@ def find_dir(name, path):
         if name in dirs:
             return os.path.join(root, name)
     return None
+#@+node:tom.20221231143118.1: ** get_gems()
+def check_gems(gem:str, encoding:str = 'utf-8') -> bool:
+    """Check if a particular ruby gem is installed."""
+    cmd = f'gem list {gem}'
+    # pylint: disable = subprocess-run-check
+    proc = subprocess.run(cmd, shell = True, capture_output = True)
+    installed = gem in proc.stdout.decode(encoding)
+    return installed
+
 #@+node:tom.20211125003406.1: ** configure_asciidoc
 def configure_asciidoc():
     r"""
@@ -1230,15 +1292,23 @@ def configure_asciidoc():
         asciidoc3_ok      # imported asciidoc3
         asciidoc_ok       # imported asciidoc
         asciidoctor       # path to asciidoctor program
+
+    This function also tries to detect the presence of the Ruby gem
+    "asciidoctor-diagram", which the external asciidoctor processor uses to
+    render Plantuml diagrams.  (If asciidoctor is used and a node contains a
+    plantuml diagram, the diagram will be rendered).
     #@-<< asciidoc docstring >>
     """
     # pylint: disable = import-outside-toplevel
     global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
     global asciidoc_ok, asciidoc3_ok, asciidoc_processors
     global asciidoc_dirs
+    global asciidoc_has_diagram
 
     asciidoc_ok = False
     asciidoc3_ok = False
+    asciidoc_has_diagram = check_gems('asciidoctor-diagram')
+
     #@+<< get asciidoc >>
     #@+node:tom.20211125003406.3: *3* << get asciidoc >>
     try:
@@ -1299,8 +1369,6 @@ def configure_asciidoc():
 configure_asciidoc()
 #@+node:TomP.20200508125029.1: ** Find External Executables
 pandoc_exec = find_exe('pandoc') or None
-asciidoctor = find_exe('asciidoctor') or None
-
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
 # Get paths for executables from the VR3_CONFIG_FILE file
@@ -1329,7 +1397,7 @@ def decorate_window(w):
 #@+node:TomP.20191215195433.9: *3* vr3.init
 def init():
     """Return True if the plugin has loaded successfully."""
-    #global got_docutils
+    # global got_docutils
     if g.app.gui.guiName() != 'qt':
         return False  # #1248.
     # if g.app.gui.guiName()
@@ -1512,7 +1580,7 @@ def hide_rendering_pane(event):
     if vr3 == controllers.get(h):
         del controllers[h]
     else:
-        g.trace('Can not happen: no controller for %s' % (c))
+        g.trace(f'Can not happen: no controller for {c}')
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -1530,11 +1598,9 @@ def pause_play_movie(event):
     """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
-
     vp = vr3.vp
     if not vp:
         return
-    #g.es('===', vp.state())
     _state = vp.state()
     f = vp.pause if _state == 1 else vp.play
     f()
@@ -1615,7 +1681,7 @@ def export_rst_html(event):
     try:
         _html = vr3.rst_html
     except NameError as e:
-        g.es('=== %s: %s' % (type(e), e))
+        g.es(f'=== {type(e)}: {e}')
         return
     if not _html:
         return
@@ -1825,7 +1891,7 @@ def vr3_plot_2d(event):
         # will be used. "stylename" has priority
         # over "stylefile".
         stylename = ggplot
-        #stylefile = styles.mpl
+        # stylefile = styles.mpl
 
     The section may be placed anywhere in the node.
 
@@ -1943,8 +2009,6 @@ class ViewRenderedProvider3:
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
-
-    # pylint: disable=too-many-public-methods
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
@@ -1953,7 +2017,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.c = c
         # Create the widget.
         QtWidgets.QWidget.__init__(self)  # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
-        #super().__init__(parent)
+        # super().__init__(parent)
 
         self.create_pane(parent)
         # Set the ivars.
@@ -1969,6 +2033,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.gv = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
+        self.last_text = ''
         self.locked = False
 
         self.pyplot_active = False
@@ -2007,6 +2072,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
 
+
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
@@ -2020,11 +2086,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
+            'plain': pc.update_text,
             'pyplot': pc.update_pyplot,
             'rst': pc.update_rst,
             'svg': pc.update_svg,
             'text': pc.update_text,
-            #'url': pc.update_url,
+            # 'url': pc.update_url,
         }
 
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
@@ -2107,8 +2174,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         NAMES CREATED
         'vr3-toolbar-label' -- the toolbar label.
         """
-        # pylint: disable=unnecessary-lambda
-
         # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
@@ -2290,7 +2355,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
+        if self.prefer_external:
+            self.asciidoctor = find_exe(self.prefer_external) or None
+
         self.asciidoc_show_proc_fail_msgs = True
+        self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
+        self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
+        self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
+        self.asciidoctor_diagram = asciidoc_has_diagram and \
+                                       c.config.getBool('vr3-asciidoctor-diagram', default=False)
 
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
 
@@ -2488,8 +2561,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
-        # pylint: disable = too-many-branches, too-many-locals
-        # pylint: disable = too-many-statements
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -2835,13 +2906,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 except UnboundLocalError as e:
                     g.trace('=======', tag, e)
                     return
-            if kind in (ASCIIDOC, MD, RST, REST, TEXT) and _tree and self.show_whole_tree:
+            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
-                g.trace('no handler for kind: %s' % kind)
+                g.trace(f'no handler for kind: {kind}')
                 f = pc.update_rst
-            if kind in (ASCIIDOC, MD, RST, REST, TEXT):
+            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
                 f(_tree, keywords)
             else:
                 f(s, keywords)
@@ -2918,15 +2989,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _must_update = False
         elif pc.gnx != p.v.gnx:
             _must_update = True
-        elif len(p.b) != pc.length:
+        elif len(p.b) != pc.length or pc.last_text != p.b:
             if pc.get_kind(p) in ('html', 'pyplot'):
-                pc.length = len(p.b)
                 _must_update = False  # Only update explicitly.
-            _must_update = True
-        # This trace would be called at idle time.
-            # g.trace('no change')
+            else:
+                _must_update = True
+            pc.length = len(p.b)
+            pc.last_text = p.b
         else:
             _must_update = False
+            # This trace would be called at idle time.
+            # g.trace('no change')
 
         if _must_update and self.w:
             # Hide the old widget so it won't keep us from seeing the new one.
@@ -2942,10 +3015,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
         assert pc.w
-
-        #if s:
         pc.show()
-
         self.rst_html = ''
 
         ascdoc = self.process_asciidoc_nodes(node_list)
@@ -3066,7 +3136,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
         global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
         h = ''
-        if self.prefer_external == 'asciidoctor' and asciidoctor:
+        if self.asciidoctor:
             h = self.convert_to_asciidoc_external(s)
             self.rst_html = h
             return h
@@ -3177,21 +3247,40 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def run_asciidoctor_external(self, s):
         """
         Process s with an asciidoctor3 external processor.
-        Return the contents of the html file.
-        The caller handles all exceptions.
+        Return the contents of the html file. The caller handles most exceptions.
         """
-
-        home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
-        o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
+        c = self.c
+        # Find path relative to this file.  Needed as the base of relative
+        # URLs, e.g., image or included files.
+        path = c.getNodePath(c.p)
+        i_path = g.os_path_finalize_join(path, 'vr3_adoc.adoc')
+        o_path = g.os_path_finalize_join(path, 'vr3_adoc.html')
 
         # Write the input file.
         with open(i_path, 'w', encoding='utf-8') as f:
             f.write(s)
 
+        # Set up special command-line asciidoctor attributes
+        attrs = []
+        if self.math_output:
+            attrs.append('stem')
+        if self.asciidoctor_suppress_footer:
+            attrs.append('nofooter')
+        if self.asciidoctor_icons:  # not ""
+            attrs.append(f'icons={self.asciidoctor_icons}')
+        if self.asciidoctor_imagesdir:
+            attrs.append(f'imagesdir={self.asciidoctor_imagesdir}')
+        att_str = ''
+        for att in attrs:
+            att_str += f'-a {att} '
+
         # Call the external program to write the output file.
-        attr = '-a stem' if self.math_output else ''
-        command = (f'asciidoctor -b html5 {attr} {i_path}')
+        command = (f'{self.asciidoctor} -b html5 {att_str} {i_path}')
+
+        # If find asciidoctor-diagram converter config, then use it.
+        if self.asciidoctor_diagram:
+            command += ' -r asciidoctor-diagram'
+
         g.execute_shell_commands(command)
         # Read the output file and return it.
         try:
@@ -3274,7 +3363,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if not ok:
             w = pc.ensure_text_widget()
-            w.setPlainText('@image: file not found: %s' % (path))
+            w.setPlainText(f'@image: file not found: {path}')
             return
 
         if not is_url:
@@ -3343,7 +3432,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 with urlopen(url) as u:
                     s = u.read().decode()
             except Exception:
-                return 'url not found: %s' % url
+                return f'url not found: {url}'
         try:
             nb = nbformat.reads(s, as_version=4)
             e = HTMLExporter()
@@ -3377,7 +3466,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
         template = textwrap.dedent(template).strip()
@@ -3393,8 +3481,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
-
-        # pylint: disable = R0914  #Too many local variables (26/20) (too-many-locals)
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
@@ -3438,7 +3524,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the HTML returned by markdown.
         """
 
-        # pylint: disable=R0914 #Too many local variables
         #@+others
         #@+node:TomP.20200208211132.1: *6* setup
         pc = self
@@ -3520,7 +3605,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
-                _html = 'MD error:\n%s\n\n%s' % (msg, s)
+                _html = f'MD error:\n{msg}\n\n{s}'
 
         _html = self.md_header + '\n<body>\n' + _html + '\n</body>\n</html>'
         return _html
@@ -3530,15 +3615,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_movie(self, s, keywords):
         """Update a movie in the vr3 pane."""
-        # pylint: disable=maybe-no-member
-            # 'PyQt4.phonon' has no 'VideoPlayer' member
-            # 'PyQt4.phonon' has no 'VideoCategory' member
-            # 'PyQt4.phonon' has no 'MediaSource' member
         pc = self
         ok, path = pc.get_fn(s, '@movie')
         if not ok:
             w = pc.ensure_text_widget()
-            w.setPlainText('Not found: %s' % (path))
+            w.setPlainText(f'Not found: {path}')
             return
         if not phonon and not QtMultimedia:
             if not self.movie_warning:
@@ -3553,15 +3634,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
-        # if QtMultimedia:
-            # url = QtCore.QUrl.fromLocalFile(path)
-            # content = QtMultimedia.QMediaContent(url)
-            # pc.vp = vp = QtMultimedia.QMediaPlayer()
-            # vp.setMedia(content)
-            # # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
-            # vp.play()
-        # else:
-            # pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
         vw = vp.videoWidget()
         vw.setObjectName('video-renderer')
         # Embed the widgets
@@ -3635,19 +3707,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
         i_path = g.os_path_finalize_join(home, 'vr3_input.pandoc')
         o_path = g.os_path_finalize_join(home, 'vr3_output.html')
         # Write the input file.
-        with open(i_path, 'w') as f:
+        with open(i_path, 'w', encoding = ENCODING) as f:
             f.write(s)
         # Call pandoc to write the output file.
         # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
         g.execute_shell_commands(command)
         # Read the output file and return it.
-        with open(o_path, 'r') as f:
+        with open(o_path, 'r', encoding = ENCODING) as f:
             return f.read()
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
         g.es('@pyplot nodes not implemented', color='gray')
+
         if 0:  # Keep old code here for possible resurrection
             c = self.c
             if not self.pyplot_imported:
@@ -3754,9 +3827,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by docutils.
         """
 
-        # pylint: disable=R0914 # Too many local variables
-        # pylint: disable=R0912 # too-many-branches
-
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
         #@@language python
@@ -3836,7 +3906,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             args['report_level'] = RST_NO_WARNINGS
 
         # Suppress RsT warnings
-        #args['report_level'] = 5
+        # args['report_level'] = 5
 
         if self.math_output:
             if self.mathjax_url:
@@ -3892,7 +3962,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         cmd.append(progfile)
 
         # We are not checking the return code here, so:
-        # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
+        # pylint: disable=subprocess-run-check
         result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
@@ -3916,11 +3986,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
            RETURNS
            a string having the code parts formatted as rst code blocks.
         """
-
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-statements
-
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
@@ -3963,8 +4028,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _quotes_type = None
         _in_skipblock = False
 
-        #c = self.c
-        #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        # c = self.c
+        # environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
             #@+<< omit at-others >>
@@ -4283,8 +4348,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 w.show()
     #@+node:TomP.20191215195433.78: *4* vr3.update_url
     def update_url(self, s, keywords):
-        #VrC.update_url(self, s, keywords)
-
         pc = self
         c, p = self.c, self.c.p
         colorizer = c.frame.body.colorizer
@@ -4401,8 +4464,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.83: *5* vr3.get_url
     def get_url(self, s, tag):
-        #VrC.get_url(self, s, tag)
-
         p = self.c.p
         url = s or p.h[len(tag) :]
         url = url.strip()
@@ -4467,8 +4528,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w = self.w
         lines = []
         for node in node_list:
-            lines.append(node.b)
+            body = node.b
+            if body.startswith('@language'):
+                i = body.find('\n')
+                if i > -1:
+                    body = body[i + 1:]
+            lines.append(body)
         s = '\n'.join(lines)
+        self.last_markup = s
+
         s = html.escape(s, quote=True)
         s = f'{TEXT_HTML_HEADER}<pre>{s}</pre></html>'
         h = s.encode('utf-8')
@@ -4511,8 +4579,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
-        #VrC.deactivate(self)
-
         pc = self
         # Never disable the idle-time hook: other plugins may need it.
         g.unregisterHandler('select2', pc.update)
@@ -4533,7 +4599,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
     def lock(self):
         """Lock the vr3 pane to the current node ."""
-        #g.note('rendering pane locked')
         action = self.action_lock_to_tree
         action.setChecked(True)
         self.lock_to_tree = True
@@ -4541,7 +4606,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def unlock(self):
         """Unlock the vr3 pane."""
-        #g.note('rendering pane unlocked')
         action = self.action_lock_to_tree
         action.setChecked(False)
         self.lock_to_tree = False
@@ -4656,7 +4720,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Generate rST underlining for s."""
         ch = '#'
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-        return '%s\n%s\n\n' % (s, ch * n)
+        return f'{s}\n{ch * n}\n\n'
     #@+node:TomP.20200329230503.4: *5* vr3.store_layout
     def store_layout(self, which):
 
@@ -4777,7 +4841,7 @@ class Chunk:
     """Holds a block of text, with various metadata about it."""
 
     def __init__(self, tag='', structure=RST, language=''):
-        self.text_lines = ['']  # The text as a sequence of lines, free of directives
+        self.text_lines = []  # The text as a sequence of lines, free of directives
         self.tag = tag  # A descriptive value for the kind of chunk, such as CODE, TEXT.
         self.structure = structure  # The type of structure (rst, md, etc.).
         self.language = language  # The programming language, if any, for this chunk.
@@ -4800,7 +4864,7 @@ class Chunk:
         _formatted = ['']
         if self.tag == CODE:
             if self.structure in (RST, REST):
-                _formatted = ['.. code:: %s\n' % (self.language)]
+                _formatted = [f'.. code:: {self.language}\n']
                 for line in self.text_lines:
                     if not line.strip():
                         _formatted.append('')

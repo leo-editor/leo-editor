@@ -303,13 +303,6 @@ def getLastTracebackFileAndLineNumber():
     #
     # Should never happen.
     return '<string>', 0
-#@+node:ekr.20110310093050.14293: *5* pdb (codewise)
-def pdb(message=''):
-    """Fall into pdb."""
-    import pdb  # Required: we have just defined pdb as a function!
-    if message:
-        print(message)
-    pdb.set_trace()
 #@+node:ekr.20110310093050.14263: *5* pr (codewise)
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -382,7 +375,6 @@ def trace(*args, **keys):
         else:
             result.append(arg)
     s = ''.join(result)
-    # 'print s,' is not valid syntax in Python 3.x.
     pr(s, newline=newline)
 #@+node:ekr.20110310093050.14264: *5* translateArgs (codewise)
 def translateArgs(args, d):
@@ -483,7 +475,6 @@ def main():
         print(usage)
         return
     cmd = sys.argv[1]
-    # print "cmd",cmd
     args = sys.argv[2:]
     if cmd == 'tags':
         cmd_tags(args)
@@ -550,7 +541,6 @@ class CodeWise:
         for idd, name in c:
             self.filecache[name] = idd
         c.close()
-        #print self.classcache
     #@+node:ekr.20110310091639.14260: *3* reset_caches
     def reset_caches(self):
         self.classcache = {}
@@ -618,7 +608,6 @@ class CodeWise:
             if idd in self.fileids_scanned:
                 return idd
             # we are rescanning a file with old entries - nuke old entries
-            #print "rescan", fname
             c = self.cursor()
             c.execute("delete from function where file = (?)", (idd,))
             #self.dbconn.commit()
@@ -657,7 +646,6 @@ class CodeWise:
             # now our class is like qt.QApplication. We do the dirty trick and
             # remove all but actual class name
             shortclass = klass.rsplit('.', 1)[-1]
-            #print func, klass, desc
             self.feed_function(func.strip(), shortclass.strip(), '', desc.strip())
         self.dbconn.commit()
     #@+node:ekr.20110310091639.14268: *3* feed_ctags
@@ -669,27 +657,21 @@ class CodeWise:
             m = fields[0]
             fil = fields[1]
             pat = fields[2]
-            # typ = fields[3]
             klass = None
             try:
                 ext = fields[4]
                 if ext and ext.startswith('class:'):
                     klass = ext.split(':', 1)[1].strip()
                     idd = self.class_id(klass)
-                    #print "klass",klass, idd
             except IndexError:
                 ext = None
-                # class id 0 = function
                 idd = 0
             c = self.cursor()
-            #print fields
             fid = self.file_id(fil)
             c.execute(
                 'insert into function(class, name, searchpattern, file) values (?, ?, ?, ?)',
                       [idd, m, pat, fid])
         self.dbconn.commit()
-        #c.commit()
-        #print fields
     #@+node:ekr.20110310091639.14269: *3* add_source
     def add_source(self, type, src):
         c = self.cursor()

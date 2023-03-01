@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210901170451.1: * @file ../unittests/core/test_leoApp.py
-#@@first
 """Tests of leoApp.py"""
 import os
 import zipfile

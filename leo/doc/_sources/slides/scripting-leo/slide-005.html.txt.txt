@@ -1,0 +1,15 @@
+.. rst3: filename: html/slides/scripting-leo/slide-005.html
+
+p.h and p.b
+===========
+
+For any position p, p.h is the headline text of p.v, and p.b is the body text of p.v.
+
+p.h and p.b are Python properties, which means you can set the headline and body text by assigning to them::
+
+    p.h = p.h + ' more'
+
+After changing a headline, Leo scripts should redraw the outline::
+
+    c.redraw()
+

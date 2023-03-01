@@ -55,29 +55,21 @@ __plugin_priority__
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
 # To do: add Revert button to each dialog.
 # **Important**: this plugin is gui-independent.
-#@+<< plugins_menu imports >>
-#@+node:ekr.20050101090207.10: ** << plugins_menu imports >>
+#@+<< plugins_menu imports & annotations >>
+#@+node:ekr.20050101090207.10: ** << plugins_menu imports & annotations >>
+from __future__ import annotations
 import configparser as ConfigParser
 import os
 from typing import Any, Dict, List, Sequence, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< plugins_menu imports >>
-#@+<< plugins_menu annotations >>
-#@+node:ekr.20220828091544.1: ** << plugins_menu annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Item = Any
-Group = Any
-Menu = Any
-#@-<< plugins_menu annotations >>
+    Item = Any
+    Group = Any
+    Menu = Any
+#@-<< plugins_menu imports & annotations >>
 
 __plugin_name__ = "Plugins Menu"
 __plugin_priority__ = -100
@@ -325,7 +317,6 @@ class PlugIn:
         for section in config.sections():
             options = {}
             for option in config.options(section):
-                #g.pr('config', section, option )
                 options[option] = config.get(section, option)
             data[section] = options
         # Save the original config data. This will not be changed.

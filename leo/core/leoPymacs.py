@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20061024060248.1: * @file leoPymacs.py
-#@@first
 #@+<< leoPymacs docstring>>
 #@+node:ekr.20061024060248.2: ** << leoPymacs docstring >>
 """A module to allow the Pymacs bridge to access Leo data.

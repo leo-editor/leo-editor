@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210407011013.1: * @file leoQt6.py
-#@@first
 """
 Import wrapper for pyQt6.
 

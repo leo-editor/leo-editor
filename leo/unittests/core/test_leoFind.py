@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
-#@@first
 """Tests for leo.core.leoFind"""
 
 import re
@@ -28,6 +26,14 @@ class TestFind(LeoUnitTest):
     def make_test_tree(self):
         """Make a test tree for other tests"""
         c = self.c
+
+        # 2023/01/24: Remove any previous tree.
+        root = c.rootPosition()
+        while root.hasChildren():
+            root.firstChild().doDelete()
+        while root.hasNext():
+            root.next().doDelete()
+
         root = c.rootPosition()
         root.h = '@file test.py'
         root.b = "def root():\n    pass\n"
@@ -36,13 +42,21 @@ class TestFind(LeoUnitTest):
         def make_child(n, p):
             p2 = p.insertAsLastChild()
             p2.h = f"child {n}"
-            p2.b = f"def child{n}():\n    v{n} = 2\n"
+            p2.b = (
+                f"def child{n}():\n"
+                f"    v{n} = 2\n"
+                f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
+                f"    # node {n} line 2: blabla second blabla bla second ble blu"
+            )
             return p2
 
         def make_top(n, sib):
             p = sib.insertAfter()
             p.h = f"Node {n}"
-            p.b = f"def top{n}():\n    v{n} = 3\n"
+            p.b = (
+                f"def top{n}():\n:"
+                f"    v{n} = 3\n"
+            )
             return p
 
         for n in range(0, 4, 3):
@@ -57,7 +71,7 @@ class TestFind(LeoUnitTest):
         # Always start with the root selected.
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
-    #@+node:ekr.20210110073117.67: *4* TestFind.change-all
+    #@+node:ekr.20210110073117.67: *4* TestFind.test_change-all
     def test_change_all(self):
         c, settings, x = self.c, self.settings, self.x
         root = c.rootPosition()
@@ -122,14 +136,14 @@ class TestFind(LeoUnitTest):
         root.h = '@file xyzzy'
         settings.find_text = settings.change_text = 'child1'
         x.do_change_all(settings)
-    #@+node:ekr.20210220091434.1: *4* TestFind.change-all (@file node)
+    #@+node:ekr.20210220091434.1: *4* TestFind.test_change-all (@file node)
     def test_change_all_with_at_file_node(self):
         c, settings, x = self.c, self.settings, self.x
         root = c.rootPosition().next()  # Must have children.
         settings.find_text = 'def'
         settings.change_text = '_DEF_'
         settings.ignore_case = False
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
         # Ensure that the @file node is marked dirty.
@@ -140,18 +154,18 @@ class TestFind(LeoUnitTest):
         x.do_change_all(settings)
         assert root.v.isDirty(), root.h
 
-    #@+node:ekr.20210220091434.2: *4* TestFind.change-all (headline)
+    #@+node:ekr.20210220091434.2: *4* TestFind.test_change-all (headline)
     def test_change_all_headline(self):
         settings, x = self.settings, self.x
         settings.find_text = 'child'
         settings.change_text = '_CHILD_'
         settings.ignore_case = False
         settings.in_headline = True
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
         x.do_change_all(settings)
-    #@+node:ekr.20210110073117.60: *4* TestFind.clone-find-all
+    #@+node:ekr.20210110073117.60: *4* TestFind.test_clone-find-all
     def test_clone_find_all(self):
         settings, x = self.settings, self.x
         # Regex find.
@@ -161,13 +175,13 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all(settings)
         # Word find.
         settings.find_text = 'def'
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         x.do_clone_find_all(settings)
         # Suboutline only.
         settings.suboutline_only = True
         x.do_clone_find_all(settings)
-    #@+node:ekr.20210110073117.61: *4* TestFind.clone-find-all-flattened
+    #@+node:ekr.20210110073117.61: *4* TestFind.test_clone-find-all-flattened
     def test_clone_find_all_flattened(self):
         settings, x = self.settings, self.x
         # regex find.
@@ -176,13 +190,13 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all_flattened(settings)
         # word find.
         settings.find_text = 'def'
-        settings.match_word = True
+        settings.whole_word = True
         settings.pattern_match = False
         x.do_clone_find_all_flattened(settings)
         # Suboutline only.
         settings.suboutline_only = True
         x.do_clone_find_all_flattened(settings)
-    #@+node:ekr.20210617072622.1: *4* TestFind.clone-find-marked
+    #@+node:ekr.20210617072622.1: *4* TestFind.test_clone-find-marked
     def test_clone_find_marked(self):
         c, x = self.c, self.x
         root = c.rootPosition()
@@ -190,7 +204,7 @@ class TestFind(LeoUnitTest):
         x.cloneFindAllMarked()
         x.cloneFindAllFlattenedMarked()
         root.setMarked()
-    #@+node:ekr.20210615084049.1: *4* TestFind.clone-find-parents
+    #@+node:ekr.20210615084049.1: *4* TestFind.test_clone-find-parents
     def test_clone_find_parents(self):
 
         c, x = self.c, self.x
@@ -200,7 +214,7 @@ class TestFind(LeoUnitTest):
         c.selectPosition(p)
         x.cloneFindParents()
 
-    #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
+    #@+node:ekr.20210110073117.62: *4* TestFind.test_clone-find-tag
     def test_clone_find_tag(self):
         c, x = self.c, self.x
 
@@ -221,26 +235,50 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_tag('test')
         c.theTagController = None
         x.do_clone_find_tag('test')
-    #@+node:ekr.20210110073117.63: *4* TestFind.find-all
+    #@+node:ekr.20210110073117.63: *4* TestFind.test_find-all
     def test_find_all(self):
         settings, x = self.settings, self.x
 
         def init():
             self.make_test_tree()  # Reinit the whole tree.
-            x.findAllUniqueFlag = False
-            x.unique_matches = set()
-            settings.change_text = '_DEF_'
-            settings.find_text = 'def'
+            settings.change_text = ''
+            settings.find_text = ''
             settings.ignore_case = False
             settings.node_only = False
             settings.pattern_match = False
             settings.suboutline_only = False
             settings.whole_word = True
 
+        # Debugging.
+        if 0:
+            init()
+            g.cls()
+            g.trace('test_find_all')
+            for i, p in enumerate(self.c.all_positions()):
+                g.printObj(g.splitLines(p.b), tag=f"node {i}: {p.h}")
+
         # Test 1.
-        init()
-        settings.pattern_match = True
-        x.do_find_all(settings)
+        for aTuple in (
+            ('settings', (True, False, False)),
+            ('def', 7),
+            ('bla', 40),
+        ):
+            if aTuple[0] == 'settings':
+                case, regex, word = aTuple[1]
+            else:
+                find_text, expected_count = aTuple
+                init()
+                settings.find_text = find_text
+                settings.ignore_case = case
+                settings.pattern_match = regex
+                settings.whole_word = word
+                self.assertTrue(self.c, self.c.rootPosition())
+                result_dict = x.do_find_all(settings)
+                count = result_dict['total_matches']
+                self.assertEqual(count, expected_count, msg=find_text)
+
+        ### return
+
         # Test 2.
         init()
         settings.suboutline_only = True
@@ -252,7 +290,6 @@ class TestFind(LeoUnitTest):
         x.do_find_all(settings)
         # Test 4.
         init()
-        x.findAllUniqueFlag = True
         settings.pattern_match = True
         settings.find_text = r'^(def)'
         settings.change_text = '*\1*'
@@ -262,31 +299,28 @@ class TestFind(LeoUnitTest):
         settings.find_text = 'not-found-xyzzy'
         x.do_find_all(settings)
 
-    #@+node:ekr.20210110073117.65: *4* TestFind.find-def
+    #@+node:ekr.20210110073117.65: *4* TestFind.test_find-def
     def test_find_def(self):
-        settings, x = self.settings, self.x
-        # Test methods called by x.find_def.
-        # It would be wrong to call these methods from x.do_find_def.
+        x = self.x
+
+        # Test 1: Test methods called by x.find_def.
         x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
-        x._compute_find_def_settings('my-find-pattern')
-        #
-        # Now the main tests...
-        # Test 1.
-        for bool_val in (True, False):
-            x.reverse_find_defs = bool_val
-            p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
-            assert p
+
+        # Test 2:
+        for reverse in (True, False):
+            # Successful search.
+            x.reverse_find_defs = reverse
+            settings = x._compute_find_def_settings('def child5')
+            p, pos, newpos = x.do_find_def(settings)
+            self.assertTrue(p)
             self.assertEqual(p.h, 'child 5')
             s = p.b[pos:newpos]
             self.assertEqual(s, 'def child5')
-            # Test 2: switch style.
-            p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
-            assert p
-            self.assertEqual(p.h, 'child 5')
-            # Test 3: not found after switching style.
-            p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
+            # Unsuccessful search.
+            settings = x._compute_find_def_settings('def xyzzy')
+            p, pos, newpos = x.do_find_def(settings)
             assert p is None, repr(p)
-    #@+node:ekr.20210110073117.64: *4* TestFind.find-next
+    #@+node:ekr.20210110073117.64: *4* TestFind.test_find-next
     def test_find_next(self):
         settings, x = self.settings, self.x
         settings.find_text = 'def top1'
@@ -295,7 +329,7 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, 'Node 1')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
-    #@+node:ekr.20220525100840.1: *4* TestFind.find-next (file-only)
+    #@+node:ekr.20220525100840.1: *4* TestFind.test_find-next (file-only)
     def test_find_next_file_only(self):
         settings, x = self.settings, self.x
         settings.file_only = True  # init_ivars_from_settings will set the ivar.
@@ -305,7 +339,7 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, '@file test.py')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
-    #@+node:ekr.20210220072631.1: *4* TestFind.find-next (suboutline-only)
+    #@+node:ekr.20210220072631.1: *4* TestFind.test_find-next (suboutline-only)
     def test_find_next_suboutline_only(self):
         settings, x = self.settings, self.x
         settings.find_text = 'def root()'
@@ -315,7 +349,7 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, '@file test.py')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
-    #@+node:ekr.20210924032146.1: *4* TestFind.change-then-find (headline)
+    #@+node:ekr.20210924032146.1: *4* TestFind.test_change-then-find (headline)
     def test_change_then_find_in_headline(self):
         # Test #2220:
         # https://github.com/leo-editor/leo-editor/issues/2220
@@ -341,7 +375,7 @@ class TestFind(LeoUnitTest):
         p = c.p
         self.assertEqual(p, test_p)
         self.assertEqual(p.h, 'XX1 Test2 Test3')
-    #@+node:ekr.20210216094444.1: *4* TestFind.find-prev
+    #@+node:ekr.20210216094444.1: *4* TestFind.test_find-prev
     def test_find_prev(self):
         c, settings, x = self.c, self.settings, self.x
         settings.find_text = 'def top1'
@@ -357,15 +391,16 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, 'child 2')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
-    #@+node:ekr.20210110073117.66: *4* TestFind.find-var
+    #@+node:ekr.20210110073117.66: *4* TestFind.test_find-var
     def test_find_var(self):
-        settings, x = self.settings, self.x
-        p, pos, newpos = x.do_find_var(settings, word='v5')
+        x = self.x
+        settings = x._compute_find_def_settings('v5 =')
+        p, pos, newpos = x.do_find_var(settings)
         assert p
         self.assertEqual(p.h, 'child 5')
         s = p.b[pos:newpos]
         self.assertEqual(s, 'v5 =')
-    #@+node:ekr.20210110073117.68: *4* TestFind.replace-then-find
+    #@+node:ekr.20210110073117.68: *4* TestFind.test_replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
         settings.find_text = 'def top1'
@@ -410,7 +445,7 @@ class TestFind(LeoUnitTest):
         assert w
         s = p.h[pos:newpos]
         self.assertEqual(s, settings.find_text)
-    #@+node:ekr.20210110073117.69: *4* TestFind.tag-children
+    #@+node:ekr.20210110073117.69: *4* TestFind.test_tag-children
     def test_tag_children(self):
 
         c, x = self.c, self.x
@@ -484,7 +519,7 @@ class TestFind(LeoUnitTest):
             settings=settings)
         assert n > 0
 
-    #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
+    #@+node:ekr.20210110073117.58: *4* TestFind.test_test_tree
     def test_tree(self):
         c = self.c
         table = (
@@ -621,6 +656,51 @@ class TestFind(LeoUnitTest):
         partial_settings.wrapping = True
         x.init_ivars_from_settings(partial_settings)
         x.compute_result_status(find_all_flag=False)
+    #@+node:ekr.20230124162455.1: *4* TestFind.test_find_all_plain
+    #@@nobeautify
+    def test_find_all_plain(self):
+        c = self.c
+        fc = c.findCommands
+        table = (
+            (False, False),
+            # s         find    expected
+            ('aA',      'a',    [0]),
+            ('aAa',     'A',    [1]),
+            ('AAbabc',  'b',    [2, 4]),
+
+            (True, False),
+            ('axA',     'a',    [0, 2]),
+            ('aAa',     'A',    [0, 1, 2]),
+            ('ABbabc',  'b',    [1, 2, 4]),
+
+            (True, True),
+            ('ax aba ab abc',   'ab', [7]),
+            ('ax aba\nab abc',  'ab', [7]),
+            ('ax aba ab\babc',  'ab', [7]),
+        )
+        for aTuple in table:
+            if len(aTuple) == 2:
+                fc.ignore_case, fc.whole_word = aTuple
+            else:
+                s, find, expected = aTuple
+                aList = fc.find_all_plain(find, s)
+                self.assertEqual(aList, expected, msg=s)
+    #@+node:ekr.20230124162609.1: *4* TestFind.test_find_all_regex
+    #@@nobeautify
+    def test_find_all_regex(self):
+        c = self.c
+        fc = c.findCommands
+        regex_table = (
+            # s                  find        expected
+            ('a ba aa a ab a',   r'\b\w+\b', [0, 2, 5, 8, 10, 13]),
+            ('a AA aa aab ab a', r'\baa\b',  [5]),
+            # Multi-line
+            ('aaa AA\naa aab',   r'\baa\b',  [7]),
+        )
+        for s, find, expected in regex_table:
+            fc.ignore_case = False
+            aList = fc.find_all_regex(find, s)
+            self.assertEqual(aList, expected, msg=s)
     #@+node:ekr.20210829203927.12: *4* TestFind.test_inner_search_backward
     def test_inner_search_backward(self):
         c = self.c

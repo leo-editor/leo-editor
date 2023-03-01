@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
-#@@first
 """All colorizing code for Leo."""
 
 # Indicated code are copyright (c) Jupyter Development Team.
@@ -9,6 +7,7 @@
 
 #@+<< leoColorizer imports >>
 #@+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
+from __future__ import annotations
 import re
 import string
 import time
@@ -37,18 +36,12 @@ except Exception:
 #@+node:ekr.20220901164936.1: ** << leoColorizer annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Color = Any
-Font = Any
-Mode = g.Bunch
-RuleSet = Any
-Widget = Any
+    Color = Any
+    Font = Any
+    Mode = g.Bunch
+    RuleSet = Any
+    Widget = Any
 #@-<< leoColorizer annotations >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
@@ -64,7 +57,7 @@ class BaseColorizer:
     #@+others
     #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
-    def __init__(self, c: Cmdr, widget: Widget=None) -> None:
+    def __init__(self, c: Cmdr, widget: Widget = None) -> None:
         """ctor for BaseColorizer class."""
         # Copy args...
         self.c = c
@@ -394,7 +387,7 @@ class BaseColorizer:
             'literal3'  :('literal3_color', '#00aa00'),
             'literal4'  :('literal4_color', '#00aa00'),
             'markup'    :('markup_color',   'red'),
-            'null'      :('null_color',     None), #'black'),
+            'null'      :('null_color',     None),  # 'black'
             'operator'  :('operator_color', 'black'),
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
@@ -466,7 +459,7 @@ class BaseColorizer:
             'comment2'      :'comment2_font',
             'comment3'      :'comment3_font',
             'comment4'      :'comment4_font',
-            #'default'       :'default_font',
+            # 'default'     :'default_font',
             'function'      :'function_font',
             'keyword1'      :'keyword1_font',
             'keyword2'      :'keyword2_font',
@@ -732,6 +725,7 @@ class BaseColorizer:
         # Now look at the parents.
         for p in p.parents():
             d = self.findColorDirectives(p)
+            #@verbatim
             # @killcolor anywhere disables coloring.
             if 'killcolor' in d:
                 return False
@@ -911,7 +905,7 @@ class JEditColorizer(BaseColorizer):
                     theList.append(rule)
                 theDict[ch] = theList
     #@+node:ekr.20170514054524.1: *4* jedit.getFontFromParams
-    def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int=12) -> None:
+    def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int = 12) -> None:
         return None
 
     # def setFontFromConfig(self):
@@ -1133,7 +1127,7 @@ class JEditColorizer(BaseColorizer):
         for leadins_list, pattern in zip(leadins, patterns):
             for ch in leadins_list:
 
-                def wiki_rule(self: Any, s: str, i: int, pattern: re.Pattern=pattern) -> int:
+                def wiki_rule(self: Any, s: str, i: int, pattern: re.Pattern = pattern) -> int:
                     """Bind pattern and leadin for jedit.match_wiki_pattern."""
                     return self.match_wiki_pattern(s, i, pattern)
 
@@ -1271,7 +1265,7 @@ class JEditColorizer(BaseColorizer):
     # - kind                  The color tag to be applied to colored text.
     #@+node:ekr.20110605121601.18637: *4* jedit.colorRangeWithTag
     def colorRangeWithTag(self,
-        s: str, i: int, j: int, tag: str, delegate: str='', exclude_match: bool=False,
+        s: str, i: int, j: int, tag: str, delegate: str = '', exclude_match: bool = False,
     ) -> None:
         """
         Actually colorize the selected range.
@@ -1673,7 +1667,7 @@ class JEditColorizer(BaseColorizer):
         return self.match_compiled_regexp(s, i, kind='url', regexp=g.unl_regex)
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self,
-        s: str, i: int, kind: str, regexp: Any, delegate: str='',
+        s: str, i: int, kind: str, regexp: Any, delegate: str = '',
     ) -> int:
         """Succeed if the compiled regular expression regexp matches at s[i:]."""
         n = self.match_compiled_regexp_helper(s, i, regexp)
@@ -1703,13 +1697,13 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str=None,
-        seq: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
-        exclude_match: bool=False,
+        kind: str = None,
+        seq: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
+        exclude_match: bool = False,
     ) -> int:
         """Succeed if seq matches s[i:]"""
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -1734,13 +1728,13 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        regexp: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
-        exclude_match: bool=False,
+        kind: str = '',
+        regexp: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
+        exclude_match: bool = False,
     ) -> int:
         """Succeed if the regular expression regex matches s[i:]."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -1813,7 +1807,7 @@ class JEditColorizer(BaseColorizer):
         return -len(word)  # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
     def match_line(self,
-        s: str, i: int, kind: str=None, delegate: str='', exclude_match: bool=False,
+        s: str, i: int, kind: str = None, delegate: str = '', exclude_match: bool = False,
     ) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
@@ -1839,12 +1833,12 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        pattern: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        exclude_match: bool=False,
+        kind: str = '',
+        pattern: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        exclude_match: bool = False,
     ) -> int:
         """Succeed if s[i:] matches pattern."""
         if not self.allow_mark_prev:
@@ -1898,12 +1892,12 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        pattern: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        exclude_match: bool=False,
+        kind: str = '',
+        pattern: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        exclude_match: bool = False,
     ) -> int:
         """
         Return the length of a matched SEQ or 0 if no match.
@@ -1942,12 +1936,12 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        seq: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
+        kind: str = '',
+        seq: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
     ) -> int:
         """Succeed if s[:] mathces seq."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -1972,12 +1966,12 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        regexp: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
+        kind: str = '',
+        regexp: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
     ) -> int:
         """Succeed if the regular expression regexp matches at s[i:]."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -1998,17 +1992,17 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        begin: str='',
-        end: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
-        exclude_match: bool=False,
-        no_escape: bool=False,
-        no_line_break: bool=False,
-        no_word_break: bool=False,
+        kind: str = '',
+        begin: str = '',
+        end: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
+        exclude_match: bool = False,
+        no_escape: bool = False,
+        no_line_break: bool = False,
+        no_word_break: bool = False,
     ) -> int:
         """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
         dots = False  # A flag that we are using dots as a continuation.
@@ -2161,17 +2155,17 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str='',
-        begin: str='',
-        end: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        delegate: str='',
-        exclude_match: bool=False,
-        no_escape: bool=False,
-        no_line_break: bool=False,
-        no_word_break: bool=False,
+        kind: str = '',
+        begin: str = '',
+        end: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        delegate: str = '',
+        exclude_match: bool = False,
+        no_escape: bool = False,
+        no_line_break: bool = False,
+        no_word_break: bool = False,
     ) -> int:
         """
         Succeed if s[i:] starts with 'begin' (a regular expression) and
@@ -2259,14 +2253,14 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind1: str='',
-        word: str='',
-        kind2: str='',
-        pattern: str='',
-        at_line_start: bool=False,
-        at_whitespace_end: bool=False,
-        at_word_start: bool=False,
-        exclude_match: bool=False,
+        kind1: str = '',
+        word: str = '',
+        kind2: str = '',
+        pattern: str = '',
+        at_line_start: bool = False,
+        at_whitespace_end: bool = False,
+        at_word_start: bool = False,
+        exclude_match: bool = False,
     ) -> int:
         """Succeed if s[i:] matches pattern."""
         if not self.allow_mark_prev:
@@ -2598,7 +2592,7 @@ if Qsci:
     class NullScintillaLexer(Qsci.QsciLexerCustom):  # type:ignore
         """A do-nothing colorizer for Scintilla."""
 
-        def __init__(self, c: Cmdr, parent: Position=None) -> None:
+        def __init__(self, c: Cmdr, parent: Position = None) -> None:
             super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
@@ -2965,7 +2959,8 @@ class QScintillaColorizer(BaseColorizer):
                 if len(z) == 2:
                     color, style = z
                     table.append((color.strip(), style.strip()),)
-                else: g.trace(f"entry: {z}")
+                else:
+                    g.trace(f"entry: {z}")
         if not table:
             black = '#000000'
             firebrick3 = '#CD2626'
@@ -3044,7 +3039,7 @@ if pygments:
 
     from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
-    def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str]=('root',)) -> Generator:
+    def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
         """
         Split ``text`` into (tokentype, text) pairs.
 
@@ -3073,7 +3068,7 @@ if pygments:
                 if m:
                     if action is not None:
                         # pylint: disable=unidiomatic-typecheck
-                            # EKR: Why not use isinstance?
+                        # EKR: Why not use isinstance?
                         if type(action) is _TokenType:
                             yield pos, action, m.group()
                         else:
@@ -3096,7 +3091,7 @@ if pygments:
                         elif new_state == '#push':
                             statestack.append(statestack[-1])
                         else:
-                            assert False, f"wrong state def: {new_state!r}"
+                            assert False, f"wrong state def: {new_state!r}"  # noqa
                         statetokens = tokendefs[statestack[-1]]
                     break
             else:

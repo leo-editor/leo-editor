@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Official ivars &#8212; Leo 6.7.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    
+    <script src="../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Hello world" href="slide-004.html" />
+    <link rel="prev" title="c, g and p" href="slide-002.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="slide-004.html" title="Hello world"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="slide-002.html" title="c, g and p"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="scripting-leo.html" accesskey="U">Scripting Leo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Official ivars</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="official-ivars">
+<h1>Official ivars<a class="headerlink" href="#official-ivars" title="Permalink to this heading">¶</a></h1>
+<p>The c, g and p objects give Leo scripts access to all parts of Leo and Leo outlines. There are many official ivars (instance variables) that scripts may use. Here are a few:</p>
+<p><strong>c.frame</strong> is an object representing the actual parts of Leo screen.</p>
+<p>For any frame, frame.c is the frame’s commander, so c.frame.c is always c.</p>
+<p><strong>g.app</strong> is the object representing the entire Leo application.</p>
+<p>The ivars of g.app represent Leo’s global variables.</p>
+<p><strong>p.v</strong> is the <strong>vnode</strong> at position p.</p>
+<p>A vnode represents an outline node. Vnodes hold most of the data in Leo outlines. For any vnode v, v.h is the node’s headline, and v.b is the node’s body text.</p>
+<p><strong>p.h</strong> and <strong>p.b</strong> are synonyms for p.v.h and p.v.b.</p>
+<p>Because of clones, a <em>vnode may appear in several positions in a traversal</em>.</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../leo_toc.html">
+              <img class="logo" src="../../_static/LeoLogo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="slide-002.html"
+                          title="previous chapter">c, g and p</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="slide-004.html"
+                          title="next chapter">Hello world</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+<div id="sidebarbutton" title="Collapse sidebar">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="slide-004.html" title="Hello world"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="slide-002.html" title="c, g and p"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="scripting-leo.html" >Scripting Leo</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Official ivars</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2023, Edward K. Ream.
+      Last updated on January 24, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+    </div>
+  </body>
+</html>

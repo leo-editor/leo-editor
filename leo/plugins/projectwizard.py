@@ -97,9 +97,6 @@ def project_wizard(event):
     auto_walk(c, pth, tgt)
     g.es('Import ok. Do read-at-auto-nodes to parse')
     c.redraw()
-
-
-#project_wizard()
 #@+node:ville.20090910010217.5230: ** context menu import
 def rclick_path_importfile(c, p, menu):
     if not p.h.startswith('@path'):

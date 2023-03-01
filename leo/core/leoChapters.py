@@ -1,30 +1,22 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
-#@@first
 """Classes that manage chapters in Leo's core."""
-#@+<< leoChapters imports >>
-#@+node:ekr.20220824080606.1: ** << leoChapters imports >>
+#@+<< leoChapters imports & annotations >>
+#@+node:ekr.20220824080606.1: ** << leoChapters imports & annotations >>
+from __future__ import annotations
 import re
 import string
 from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoChapters imports >>
-#@+<< leoChapters annotations >>
-#@+node:ekr.20220821201049.1: ** << leoChapters annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    LeoQtTreeTab = Any
-    Position = Any
-    Wrapper = Any
-#@-<< leoChapters annotations >>
+#@-<< leoChapters imports & annotations >>
+
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
 def cmd(name: Any) -> Callable:
@@ -75,7 +67,7 @@ class ChapterController:
         cc.selectChapterByName('main')
         c.redraw()
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
-    def makeCommand(self, chapterName: str, binding: str=None) -> None:
+    def makeCommand(self, chapterName: str, binding: str = None) -> None:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
@@ -85,7 +77,7 @@ class ChapterController:
         if commandName in c.commandsDict:
             return
 
-        def select_chapter_callback(event: Event, cc: ChapterController=cc, name: str=chapterName) -> None:
+        def select_chapter_callback(event: Event, cc: ChapterController = cc, name: str = chapterName) -> None:
             """
             Select specific chapter.
             """
@@ -115,7 +107,7 @@ class ChapterController:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event: Event=None) -> None:
+    def selectChapter(self, event: Event = None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -131,7 +123,7 @@ class ChapterController:
             cc.selectChapterByName(k.arg)
     #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event: Event=None) -> None:
+    def backChapter(self, event: Event = None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -141,7 +133,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event: Event=None) -> None:
+    def nextChapter(self, event: Event = None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -169,7 +161,7 @@ class ChapterController:
         finally:
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
-    def selectChapterByNameHelper(self, chapter: Any, collapse: bool=True) -> None:
+    def selectChapterByNameHelper(self, chapter: Any, collapse: bool = True) -> None:
         """Select the chapter."""
         cc, c = self, self.c
         if not cc.selectedChapter and chapter.name == 'main':
@@ -201,12 +193,12 @@ class ChapterController:
     def error(self, s: str) -> None:
         g.error(f"Error: {s}")
 
-    def note(self, s: str, killUnitTest: bool=False) -> None:
+    def note(self, s: str, killUnitTest: bool = False) -> None:
         if g.unitTesting:
             if 0:  # To trace cause of failed unit test.
                 g.trace('=====', s, g.callers())
             if killUnitTest:
-                assert False, s
+                assert False, s  # noqa
         else:
             g.note(f"Note: {s}")
 
@@ -267,6 +259,7 @@ class ChapterController:
         if not self.re_chapter:
             self.re_chapter = re.compile(
                 r'^@chapter\s+([^@]+)\s*(@key\s*=\s*(.+)\s*)?')
+                #@verbatim
                 # @chapter (all up to @) (@key=(binding))?
                 # name=group(1), binding=group(3)
         m = self.re_chapter.search(p.h)
@@ -294,7 +287,7 @@ class ChapterController:
         s = s.replace('--', '-')
         return s[:128]
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition (calls c.redraw_later)
-    def selectChapterForPosition(self, p: Position, chapter: "Chapter"=None) -> None:
+    def selectChapterForPosition(self, p: Position, chapter: "Chapter" = None) -> None:
         """
         Select a chapter containing position p.
         New in Leo 4.11: prefer the given chapter if possible.
@@ -384,7 +377,7 @@ class Chapter:
             return None
         return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
-    def select(self, w: Wrapper=None) -> None:
+    def select(self, w: Wrapper = None) -> None:
         """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
@@ -398,7 +391,7 @@ class Chapter:
         finally:
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
-    def chapterSelectHelper(self, w: Wrapper=None) -> None:
+    def chapterSelectHelper(self, w: Wrapper = None) -> None:
 
         c, cc, u = self.c, self.cc, self.c.undoer
         cc.selectedChapter = self
@@ -437,7 +430,7 @@ class Chapter:
         c.setCurrentPosition(p)
         g.doHook('hoist-changed', c=c)
     #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
-    def findPositionInChapter(self, p1: Position, strict: bool=False) -> Optional[Position]:
+    def findPositionInChapter(self, p1: Position, strict: bool = False) -> Optional[Position]:
         """Return a valid position p such that p.v == v."""
         c, name = self.c, self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.

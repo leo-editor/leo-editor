@@ -68,16 +68,13 @@ def select1_hook(tag, keywords):
     if prev is None:
         return
     if prev.isDirty():
-        #g.es('prev is dirty', color='green')
         if hasattr(prev, 'prev_body'):
             if prev.b != prev.prev_body:
                 prev.u['str_mtime'] = now
                 prev.prev_body = prev.b
-                #g.es('previous content changed this session')
         else:
             prev.u['str_mtime'] = now
             prev.prev_body = prev.b
-            #g.es('first change this session')
 
 #@-others
 #@-leo

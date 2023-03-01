@@ -1,27 +1,18 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
-#@@first
 """Save and show tips to the user."""
-#@+<< leoTips imports >>
-#@+node:ekr.20220901094023.1: ** << leoTips imports >>
+#@+<< leoTips imports & annotations >>
+#@+node:ekr.20220901094023.1: ** << leoTips imports & annotations >>
+from __future__ import annotations
 import random
 import textwrap
 from typing import Any, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoTips imports >>
-assert g
-#@+<< leoTips annotatsions >>
-#@+node:ekr.20220901094043.1: ** << leoTips annotatsions >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< leoTips annotatsions >>
+#@-<< leoTips imports & annotations >>
+assert g
 
 # Define constant strings for use in f-strings.
 at_s = "@"
@@ -63,7 +54,7 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int=0, tags: List[str]=None, text: str='', title: str='') -> None:
+    def __init__(self, n: int = 0, tags: List[str] = None, text: str = '', title: str = '') -> None:
         self.n = n  # Not used.
         self.tags: List[str] = tags or []  # Not used.
         self.title = title.strip()
@@ -486,7 +477,6 @@ Within scripts, use section references only when code must
 be placed exactly. Here is a common pattern for @file nodes
 for python files:
 
-    @first # -*- coding: utf-8 -*-
     {g.angleBrackets('imports')}
     {'@others'}
 

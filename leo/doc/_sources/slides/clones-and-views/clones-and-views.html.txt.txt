@@ -1,0 +1,22 @@
+.. rst3: filename: html/slides/clones-and-views/clones-and-views.html
+
+################
+Clones and views
+################
+
+.. toctree::
+    :maxdepth: 1
+
+    About clones                <slide-001>
+    Clones are the same node    <slide-002>
+    Changing cloned headlines   <slide-003>
+    A new node                  <slide-004>
+    Adding a child node         <slide-005>
+    Creating a second child     <slide-006>
+    Tracking changed nodes      <slide-007>
+    Tracking changed files      <slide-008>
+    The ultimate filing cabinet <slide-009>
+    Views are sets of nodes     <slide-010>
+    Views focus attention       <slide-011>
+    Views concentrate data      <slide-012>
+

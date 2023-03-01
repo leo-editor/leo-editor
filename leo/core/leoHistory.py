@@ -1,19 +1,16 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
-#@@first
+#@+<< leoHistory imports & annotations >>
+#@+node:ekr.20221213120137.1: ** << leoHistory imports & annotations >>
+from __future__ import annotations
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
-#@+<< leoHistory annotations >>
-#@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-else:
-    Chapter = Any
-    Cmdr = Any
-    Position = Any
-#@-<< leoHistory annotations >>
+#@-<< leoHistory imports & annotations >>
+
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
@@ -73,7 +70,7 @@ class NodeHistory:
         # Fix bug #180: Always call self.update here.
         self.update(p, change=False)
     #@+node:ville.20090724234020.14676: *3* NodeHistory.update
-    def update(self, p: Position, change: bool=True) -> None:
+    def update(self, p: Position, change: bool = True) -> None:
         """
         Update the beadList while p is being selected.
         Called *only* from c.frame.tree.selectHelper.

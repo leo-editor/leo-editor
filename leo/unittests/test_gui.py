@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210910084607.1: * @file ../unittests/test_gui.py
-#@@first
 """Tests of gui base classes"""
 #@+<< test_gui imports >>
 #@+node:ekr.20220911102700.1: ** << test_gui imports >>
@@ -143,7 +141,7 @@ class TestQtGui(LeoUnitTest):
             for z in dir(g.app.gui):
                 if not z.startswith('__'):
                     obj = getattr(g.app.gui, z, None)
-                    print(f"{z:>30} {g.objToString(obj, concise=True)}")
+                    print(f"{z:>30} {g.objToString(obj)}")
         if 0:
             print('')
             g.trace(g.app.gui)

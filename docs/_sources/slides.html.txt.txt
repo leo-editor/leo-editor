@@ -1,0 +1,19 @@
+.. rst3: filename: html/slides.html
+
+.. This file must be located in the leo/doc/html.
+
+######
+Slides
+######
+
+This is the front page for various slide shows about Leo.
+
+.. toctree::
+    :maxdepth: 1
+
+    slides/clones-and-views/clones-and-views
+    slides/external-files/external-files
+    slides/basics/basics
+    slides/scripting-leo/scripting-leo
+    slides/minibuffer/minibuffer
+

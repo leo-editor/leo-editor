@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Topics &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Controlling Syntax Coloring" href="coloring.html" />
+    <link rel="prev" title="Using ZODB with Leo" href="zodb.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="zodb.html" title="Using ZODB with Leo"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="advanced-topics">
+<h1>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="coloring.html">Controlling Syntax Coloring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coloring.html#syntax-coloring-settings">Syntax coloring settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coloring.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coloring.html#the-colorizer-s-inner-loop">The colorizer&#8217;s inner loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coloring.html#format-of-colorizer-control-files">Format of colorizer control files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coloring.html#rule-methods">Rule methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writingPlugins.html">Writing Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#id1">Writing Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#important-security-warnings">Important security warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#documenting-plugins">Documenting plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#c-ivars-properties">c ivars &amp; properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#handling-events">Handling events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writingPlugins.html#support-for-unit-testing">Support for unit testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unitTesting.html">Unit testing with Leo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#using-test-nodes">Using &#64;test nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#using-suite-nodes">Using &#64;suite nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#using-mark-for-unit-tests">Using &#64;mark-for-unit-tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#test-driven-development-in-leo">Test driven development in Leo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#how-the-unit-test-commands-work">How the unit test commands work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#button-timer">&#64;button timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitTesting.html#button-profile">&#64;button profile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="debuggers.html">Debugging with Leo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="debuggers.html#using-g-trace-and-g-pdb">Using g.trace and g.pdb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debuggers.html#settings-for-winpdb">Settings for winpdb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debuggers.html#debugging-scripts-with-winpdb">Debugging scripts with winpdb</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="console-gui.html">Leo&#8217;s Console Gui</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#system-requirements">System requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#starting-leo-with-the-console-gui">Starting Leo with the console gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#exiting-leo-saving-files">Exiting Leo &amp; saving files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#navigation-and-editing">Navigation and editing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#leo-key-bindings">Leo key bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#limitations">Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#broadcasting-and-listening">Broadcasting and listening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="console-gui.html#developing-the-cursesgui2-plugin">Developing the cursesGui2 plugin</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scripting-miscellany.html">A Miscellany of Leo Scripting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Exploring Leo&#8217;s Code Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vim-theory.html">Vim Mode: Theory of Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="leonine-world.html">The Leonine World</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="zodb.html"
+                        title="previous chapter">Using ZODB with Leo</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="coloring.html"
+                        title="next chapter">Controlling Syntax Coloring</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="zodb.html" title="Using ZODB with Leo"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

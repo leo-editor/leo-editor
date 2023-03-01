@@ -1,0 +1,750 @@
+.. rst3: filename: html\scripting-miscellany.html
+
+#############################
+A Miscellany of Leo Scripting
+#############################
+
+This chapter covers miscellaneous topics related to Leo scripts.
+
+You might call this a FAQ for scripts...
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+
+\@button example
+++++++++++++++++
+
+The .leo files in Leo's distribution contain many @button nodes (many disabled), that do repetitive chores. Here is one, @button promote-child-bodies, from LeoDocs.leo::
+
+    '''Copy the body text of all children to the parent's body text.'''
+
+    # Great for creating what's new nodes.
+    result = [p.b]
+    b = c.undoer.beforeChangeNodeContents(p)
+    for child in p.children():
+        if child.b:
+            result.append('\n- %s\n\n%s\n' % (child.h,child.b))
+        else:
+            result.append('\n- %s\n\n' % (child.h))
+    p.b = ''.join(result)
+    c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
+
+This creates a fully undoable promote-child-bodies command.
+
+Comparing two similar outlines
+++++++++++++++++++++++++++++++
+
+efc.compareTrees does most of the work of comparing two similar outlines.
+For example, here is "@button compare vr-controller" in leoPyRef.leo::
+
+    p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
+    p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
+    assert p1 and p2
+    tag = 'compare vr1 & vr2'
+    c.editFileCommands.compareTrees(p1, p2, tag)
+
+This script will compare the trees whose roots are p1 and p2 and show the results like "Recovered nodes".  That is, the script creates a node called "compare vr1 & vr2".  This top-level node contains one child node for every node that is different.  Each child node contains a diff of the node.  The grand children are one or two clones of the changed or inserted node.
+
+Converting Body Text To Title Case
+++++++++++++++++++++++++++++++++++
+
+Title case means that all words start with capital letters.  The
+following script converts the selected body text to title case.  If
+nothing has been selected, the entire current node is converted. The
+conversion is undoable::
+
+    """Undoably convert selection or body to title case."""
+    w = c.frame.body.wrapper
+    p = c.p
+    s = p.b
+    u = c.undoer
+
+    start, end = w.getSelectionRange()
+    use_entire = start == end  # no selection, convert entire body
+
+    undoType = 'title-case-body-selection'
+    undoData = u.beforeChangeNodeContents(p)
+
+    if use_entire:
+        p.b = s.title()
+    else:
+        sel = s[start:end]
+        head, tail = s[:start], s[end:]
+        p.b = head + sel.title() + tail
+
+    c.setChanged()
+    p.setDirty()
+    u.afterChangeNodeContents(p, undoType, undoData)
+    c.redraw()
+
+[Contributed by T. B. Passin]
+
+Creating minimal outlines
++++++++++++++++++++++++++
+
+The following script will create a minimal Leo outline::
+
+    if 1:
+        # Create a visible frame.
+        c2 = g.app.newCommander(fileName=None)
+    else:
+        # Create an invisible frame.
+        c2 = g.app.newCommander(fileName=None,gui=g.app.nullGui)
+
+    c2.frame.createFirstTreeNode()
+    c2.redraw()
+    
+    # Test that the script works.
+    for p in c2.all_positions():
+        g.es(p.h)
+
+Creating Qt Windows from Leo scripts
+++++++++++++++++++++++++++++++++++++
+
+The following puts up a test window when run as a Leo script::
+
+    from PyQt5 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+    c.my_test = w # <-- Keep a reference to the window!
+    
+**Important**: Something like the last line is essential. Without it, the window would immediately disappear after being created.  The assignment::
+
+    c.my_test = w
+    
+creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
+
+Cutting and pasting text
+++++++++++++++++++++++++
+
+The following shows how to cut and paste text to the clipboard::
+
+    g.app.gui.replaceClipboardWith('hi')
+    print(g.app.gui.getTextFromClipboard())
+
+g.app.gui.run* methods run dialogs
+++++++++++++++++++++++++++++++++++
+
+Scripts can invoke various dialogs using the following methods of the g.app.gui object.
+
+Here is a partial list. Use typing completion to get the full list::
+
+    g.app.gui.runAskOkCancelNumberDialog(c,title,message)
+    g.app.gui.runAskOkCancelStringDialog(c,title,message)
+    g.app.gui.runAskOkDialog(c,title,message=None,text='Ok')
+    g.app.gui.runAskYesNoCancelDialog(c,title,message=None,
+        yesMessage='Yes',noMessage='No',defaultButton='Yes')
+    g.app.gui.runAskYesNoDialog(c,title,message=None)
+
+The values returned are in ('ok','yes','no','cancel'), as indicated by the method names. Some dialogs also return strings or numbers, again as indicated by their names.
+
+Scripts can run File Open and Save dialogs with these methods::
+
+    g.app.gui.runOpenFileDialog(title,filetypes,defaultextension,multiple=False)
+    g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
+
+For details about how to use these file dialogs, look for examples in Leo's own source code. The runOpenFileDialog returns a list of file names.
+
+Getting commander preferences
++++++++++++++++++++++++++++++
+
+Each commander sets ivars corresponding to settings.
+
+Scripts can get the following ivars of the Commands class::
+
+    ivars = (
+        'output_doc_flag',
+        'page_width',
+        'page_width',
+        'tab_width',
+        'target_language',
+        'use_header_flag',
+    )
+    print("Prefs ivars...\n",color="purple")
+    for ivar in ivars:
+        print(getattr(c,ivar))
+
+If your script sets c.tab_width it should call f.setTabWidth to redraw the screen::
+
+    c.tab_width = -4    # Change this and see what happens.
+    c.frame.setTabWidth(c.tab_width)
+
+Getting configuration settings
+++++++++++++++++++++++++++++++
+
+Settings may be different for each commander.
+
+The c.config class has the following getters.
+
+- c.config.getBool(settingName,default=None)
+- c.config.getColor(settingName)
+- c.config.getDirectory(settingName)
+- c.config.getFloat(settingName)
+- c.config.getInt(settingName)
+- c.config.getLanguage(settingName)
+- c.config.getRatio(settingName)
+- c.config.getShortcut(settingName)
+- c.config.getString(settingName)
+
+These methods return None if no setting exists.
+
+The getBool 'default' argument to getBool specifies the value to be returned if the setting does not exist.
+
+Getting interactive input in scripts and commands
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+k.get1Arg handles the next character the user types when accumulating a user argument from the minibuffer.  k.get1Arg handles details such as tab completion, backspacing, Ctrl-G etc.
+
+Commands should use k.get1Arg to get the first minibuffer argument and k.getNextArg to get all other arguments.
+
+k.get1Arg is a state machine. It has to be because it's almost always waiting for the user to type the next character. The handle keyword arg specifies the next state in the machine.
+
+The following examples will work in any class having a 'c' ivar bound to a commander.
+   
+Example 1: get one argument from the user::
+   
+    @cmd('my-command')
+    def myCommand(self, event):
+        """State 0"""
+        k = self.c.k
+        k.setLabelBlue('prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+           
+    def myCommand1(self, event):
+        """State 1"""
+        k = self.c.k
+        # ----> k.arg contains the argument.
+        # Finish the command.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+       
+Example 2: get two arguments from the user::
+   
+    @cmd('my-command')
+    def myCommand(self, event):
+        """State 0"""
+        k = self.c.k
+        k.setLabelBlue('first prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+           
+    def myCommand1(self, event):
+        """State 1"""
+        k = self.c.k
+        self.arg1 = k.arg
+        k.setLabelBlue('second prompt: ')
+        k.getNextArg(handler=self.myCommand2)
+       
+    def myCommand2(self, event):
+        """State 2"""
+        k = self.c.k
+        # -----> k.arg contains second argument.
+        # Finish the command, using self.arg1 and k.arg.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+
+**Summary**
+
+- The handler keyword argument to k.get1Arg and k.getNextArg specifies the next state in the state machine.
+
+- k.get1Arg contains many optional keyword arguments. See its docstring for details.
+
+Inserting and deleting icons
+++++++++++++++++++++++++++++
+
+You can add an icon to the presently selected node with c.editCommands.insertIconFromFile(path). path is an absolute path or a path relative to the leo/Icons folder. A relative path is recommended if you plan to use the icons on machines with different directory structures.
+
+For example::
+
+    path = 'rt_arrow_disabled.gif' 
+    c.editCommands.insertIconFromFile(path) 
+
+Scripts can delete icons from the presently selected node using the following methods::
+
+    c.editCommands.deleteFirstIcon() 
+    c.editCommands.deleteLastIcon() 
+    c.editCommands.deleteNodeIcons()
+
+Invoking commands from scripts
+++++++++++++++++++++++++++++++
+
+You can invoke minibuffer commands by name.  For example::
+
+    c.executeMinibufferCommand('open-outline')
+
+c.keyHandler.funcReturn contains the value returned from the command. In many cases, as above, this value is simply 'break'.
+
+Making operations undoable
+++++++++++++++++++++++++++
+
+Plugins and scripts should call u.beforeX and u.afterX methods to describe the operation that is being performed. **Note**: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The u.afterX methods then create a bead containing both the 'before' and 'after' snapshots.
+
+u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
+
+Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.
+
+See the section << How Leo implements unlimited undo >> in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
+
+Modifying plugins with @script scripts
+++++++++++++++++++++++++++++++++++++++
+
+The mod_scripting plugin runs @scripts before plugin initiation is complete. Thus, such scripts can not directly modify plugins. Instead, a script can create an event handler for the after-create-leo-frame that will modify the plugin.
+
+For example, the following modifies the cleo.py plugin after Leo has completed loading it::
+
+    def prikey(self, v):
+        try:
+            pa = int(self.getat(v, 'priority'))
+        except ValueError:
+            pa = -1
+
+        if pa == 24:
+            pa = -1
+        if pa == 10:
+            pa = -2
+
+        return pa
+
+    import types
+    from leo.core import leoPlugins
+
+    def on_create(tag, keywords):
+        c.cleo.prikey = types.MethodType(prikey, c.cleo, c.cleo.__class__)
+
+    leoPlugins.registerHandler("after-create-leo-frame",on_create)
+
+Attempting to modify c.cleo.prikey immediately in the @script gives an AttributeError as c has no .cleo when the @script is executed. Deferring it by using registerHandler() avoids the problem.
+
+Modifying the body pane directly
+++++++++++++++++++++++++++++++++
+
+**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
+
+    def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+Let::
+
+    w = c.frame.body.wrapper # Leo's body pane.
+
+Scripts can get or change the context of the body as follows::
+
+    w.appendText(s)                     # Append s to end of body text.
+    w.delete(i,j=None)                  # Delete characters from i to j.
+    w.deleteTextSelection()             # Delete the selected text, if any.
+    s = w.get(i,j=None)                 # Return the text from i to j.
+    s = w.getAllText                    # Return the entire body text.
+    i = w.getInsertPoint()              # Return the location of the cursor.
+    s = w.getSelectedText()             # Return the selected text, if any.
+    i,j = w.getSelectionRange (sort=True) # Return the range of selected text.
+    w.setAllText(s)                     # Set the entire body text to s.
+    w.setSelectionRange(i,j,insert=None) # Select the text.
+
+**Notes**:
+
+- These are only the most commonly-used methods. For more information, consult Leo's source code.
+
+- i and j are zero-based indices into the the text. When j is not specified, it defaults to i. When the sort parameter is in effect, getSelectionRange ensures i <= j.
+
+- color is a Tk color name, even when using the Gt gui.
+
+Recovering vnodes
++++++++++++++++++
+
+Positions become invalid whenever the outline changes. 
+
+This script finds a position p2 having the same vnode as an invalid position p::
+
+    if not c.positionExists(p):
+        for p2 in c.all_positions():
+            if p2.v == p.v: # found
+                c.selectPosition(p2)
+        else:
+            print('position no longer exists')
+
+Recursive import script
++++++++++++++++++++++++
+
+The following script imports files from a given directory and all subdirectories::
+
+    c.recursiveImport(
+        dir_ = 'path to file or directory',
+        kind = '@clean',        # or '@file' or '@auto'
+        one_file = False,       # True: import only one file.
+        safe_at_file = False,   # True: generate @@clean nodes.
+        theTypes = None,        # Same as ['.py']
+    )
+
+Retaining pointers to Qt windows
+++++++++++++++++++++++++++++++++
+
+@pagewidth 75
+
+The following script won't work as intended:
+
+    from PyQt5 import QtGui
+    w = QtGui.QWidget()
+    w.resize(250, 150)
+    w.move(300, 300)
+    w.setWindowTitle('Simple test')
+    w.show()
+    
+When the script exits the sole reference to the window, w, ceases to exist, so the window is destroyed (garbage collected). To keep the window open, add the following code as the last line to keep the reference alive::
+
+    g.app.scriptsDict['my-script_w'] = w
+
+Note that this reference will persist until the next time you run the execute-script. If you want something even more permanent, you can do something like::
+
+    g.app.my_script_w = w
+
+Running code at idle time
++++++++++++++++++++++++++
+
+Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
+the callback to be called at idle time forever. This should suffice for most purposes::
+
+    def print_hi():
+        print('hi')
+
+    g.app.idleTimeManager.add_callback(print_hi)
+
+For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
+
+    def handler(it):
+        """IdleTime handler.  it is an IdleTime instance."""
+        delta_t = it.time-it.starting_time
+        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+
+    # Execute handler every 500 msec. at idle time.
+    it = g.IdleTime(handler,delay=500)
+    if it: it.start()
+
+The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
+
+    handler 1 ekr.leo 0.5100
+    handler 2 ekr.leo 1.0300
+    handler 3 ekr.leo 1.5400
+    handler 4 ekr.leo 2.0500
+    handler 5 ekr.leo 2.5610
+    handler done
+
+Timer instances are completely independent::
+
+    def handler1(it):
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 5:
+            g.trace('done')
+            it.stop()
+    
+    def handler2(it):
+        delta_t = it.time-it.starting_time
+        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
+        if it.count >= 10:
+            g.trace('done')
+            it.stop()
+    
+    it1 = g.IdleTime(handler1,delay=500)
+    it2 = g.IdleTime(handler2,delay=1000)
+    if it1 and it2:
+        it1.start()
+        it2.start()
+
+Here is the output::
+
+    handler1  1 ekr.leo 0.5200
+    handler2  1 ekr.leo 1.0100
+    handler1  2 ekr.leo 1.0300
+    handler1  3 ekr.leo 1.5400
+    handler2  2 ekr.leo 2.0300
+    handler1  4 ekr.leo 2.0600
+    handler1  5 ekr.leo 2.5600
+    handler1 done
+    handler2  3 ekr.leo 3.0400
+    handler2  4 ekr.leo 4.0600
+    handler2  5 ekr.leo 5.0700
+    handler2  6 ekr.leo 6.0800
+    handler2  7 ekr.leo 7.1000
+    handler2  8 ekr.leo 8.1100
+    handler2  9 ekr.leo 9.1300
+    handler2 10 ekr.leo 10.1400
+    handler2 done
+    
+**Recycling timers**
+
+The g.app.idle_timers list retrains references to all timers so they *won't* be recycled after being stopped.  This allows timers to be restarted safely.
+
+There is seldom a need to recycle a timer, but if you must, you can call its destroySelf method. This removes the reference to the timer in g.app.idle_timers. **Warning**: Accessing a timer after calling its destroySelf method can lead to a hard crash.
+
+Running code in separate processes
+++++++++++++++++++++++++++++++++++
+
+It is dead easy for scripts, including @button scripts, plugins, etc., to drive any external processes, including compilers and interpreters, from within Leo.
+
+- The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
+
+- The second section discusses the BackgroundProcessManager class.  Leo's pylint command uses this class to run pylint commands sequentially *without blocking Leo*. Running processes sequentially prevents unwanted interleaving of output.
+
+- The last two sections discuss using g.execute_shell_commands and g.execute_shell_commands_with_options.
+
+Using subprocess.popen
+**********************
+
+The first section discusses three *easy* ways to run code in a separate process by calling subprocess.popen either directly or via Leo helper functions.
+
+Call subprocess.popen directly
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
+
+    os.chdir(base_dir)
+    subprocess.Popen('npm run dev', shell=True)
+
+The following hangs Leo until the command completes::
+
+    os.chdir(base_dir)
+    proc = subprocess.Popen(command, shell=True)
+    proc.communicate()
+
+**Note**: 'cd directory' does not seem to work when run using subprocess.popen on Windows 10.
+
+Call g.execute_shell_commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with '&'. Here it is::
+
+    def execute_shell_commands(commands, trace=False):
+        if g.isString(commands): commands = [commands]
+        for command in commands:
+            wait = not command.startswith('&')
+            if command.startswith('&'): command = command[1:].strip()
+            if trace: print('\n>%s%s\n' % ('' if wait else '&', command))
+            proc = subprocess.Popen(command, shell=True)
+            if wait: proc.communicate()
+
+For example::
+
+    os.chdir(base_dir)
+    g.execute_shell_commands(['&npm run dev',])
+
+Call g.execute_shell_commands_with_options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo's settings. Its signature is:
+
+def execute_shell_commands_with_options(
+    base_dir = None,
+    c = None,
+    command_setting = None,
+    commands = None,
+    path_setting = None,
+    warning = None,
+):
+    '''
+    A helper for prototype commands or any other code that
+    runs programs in a separate process.
+   
+    base_dir:           Base directory to use if no path_setting is given.
+    commands:           A list of commands, for g.execute_shell_commands.
+    commands_setting:   Name of @data setting for commands.
+    path_setting:       Name of @string setting for the base directory.
+    warning:            A warning to be printed before executing the commands.
+    '''
+
+For example, put this in myLeoSettings.leo::
+
+    @data my-npm-commands
+    yarn dev
+    
+    @string my-npm-base = /npmtest
+    
+And then run::
+
+    g.execute_shell_commands_with_options(
+        c = c,
+        command_setting = 'my-npm-commands',
+        path_setting= 'my-npm-base',
+    )
+
+Using g.app.backgroundProcessManager
+************************************
+
+g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
+
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
+
+    bpm = g.app.backgroundProcessManager
+    bpm.start_process(c, command='ls', kind='ls', shell=True)
+
+BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
+
+You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs in the main process.
+
+**Running multiple processes simultaneously**
+
+Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
+
+To run processes that *don't* produce output, just call subprocess.Popen::
+
+    import subprocess
+    subprocess.Popen('ls', shell=True)
+
+You can run as many of these process as you like, without involving the BPM in any way
+
+Using g.execute_shell_commands
+******************************
+
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&' are executed without waiting. Commands that do not start with '&' finish before running later commands. Examples::
+
+    # Run the qml app in a separate process:
+    g.execute_shell_commands('qmlscene /test/qml_test.qml')
+
+    # List the contents of a directory:
+    g.execute_shell_commands([
+        'cd ~/test',
+        'ls -a',
+    ])
+
+    # Run a python test in a separate process.
+    g.execute_shell_commands('python /test/qt_test.py')
+
+g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
+
+Running Leo in batch mode
++++++++++++++++++++++++++
+
+On startup, Leo looks for two arguments of the form::
+
+    --script scriptFile
+
+If found, Leo enters batch mode. In batch mode Leo does not show any windows. Leo assumes the scriptFile contains a Python script and executes the contents of that file using Leo's Execute Script command. By default, Leo sends all output to the console window. Scripts in the scriptFile may disable or enable this output by calling app.log.disable or app.log.enable
+
+Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands. Those commands require interaction with the user. For example, the following batch script reads a Leo file and prints all the headlines in that file::
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test','test.leo')
+    assert g.os_path_exists(path),path
+
+    g.app.log.disable() # disable reading messages while opening the file
+    c2 = g.openWithFileName(path)
+    g.app.log.enable() # re-enable the log.
+
+    for p in c2.all_positions():
+        g.es(g.toEncodedString(p.h,"utf-8"))
+
+Using @pyplot and matplotlib
+++++++++++++++++++++++++++++
+
+Overview
+********
+
+Leo's @pyplot nodes support
+`matplotlib <https://matplotlib.org/users/index.html>`_.
+\@pyplot nodes start with @pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this::
+
+    fig2 = plt.figure()
+    x = np.arange(-9, 10)
+    y = np.arange(-9, 10).reshape(-1, 1)
+    base = np.hypot(x, y)
+    images = []
+    for add in np.arange(15):
+        images.append((
+            plt.pcolor(x, y, base+add, norm=plt.Normalize(0, 30)),
+        ))
+    animation = animation.ArtistAnimation(fig2, images,
+        interval=50, repeat_delay=3000, blit=True)
+    g.app.permanentScriptDict['animations'] = animation
+        # Keep a python reference to the animation, so it will complete.
+
+**Notes**
+
+1. If the viewrendered (VR) pane is open, Leo will display the animation in the VR pane whenever the user selects the @pyplot node.  This has been tested only with the viewrendered.py, not the viewrendered2.py plugin.
+
+2. In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports::
+
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.animation as animation
+
+and then predefines the animation, matplotlib, np, numpy and plt vars in the @pyplot script. numpy is also predefined as an alias for np.
+
+Displaying images externally
+****************************
+
+To display images and animations in an external window, *don't* put the script in an @pyplot node. Instead, put the script in a regular node, with the following modifications:
+
+1. Add the required imports::
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+
+2. Place the following at the end of the script::
+
+    plt.ion()
+        # sets interactive mode. Prevents this message:
+        # QCoreApplication::exec: The event loop is already running
+    plt.show()
+    
+**Bugs**
+
+1. Once you use the VR pane to display an image, you can't (at present) display an image externally.
+
+2. The VR plugin will refuse to close the VR pane if it ever displays an @pyplot image or animation. This prevents Leo from hard crashing in the pyplot code. As a workaround, you can  resize the VR pane so it is effectively hidden.
+
+Working with directives and paths
++++++++++++++++++++++++++++++++++
+
+Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example::
+
+    d = c.scanAllDirectives(p) g.es(g.dictToString(d))
+
+In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file::
+
+    path = d.get('path')
+    name = p.anyAtFileNodeName()
+    if name:
+       name = g.os_path_finalize_join(path,name)
+       g.es(name)
+
+Writing g.es output to other tabs
++++++++++++++++++++++++++++++++++
+
+g.es can send it's output to tabs other than the log tab::
+
+    c.frame.log.selectTab('Test')
+        # Create Test or make it visible.
+    
+    g.es('Test',color='blue',tabName='Test')
+        # Write to the test tab.
+        
+.. Fix Leo Issue #1101: https://github.com/leo-editor/leo-editor/issues/1101
+
+Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane::
+
+    from leo.core.leoQt import QtWidgets
+    log = c.frame.log
+    w = log.createTab('My Tab', createText=False, widget=QtWidgets.QFrame())
+    log.selectTab('My Tab')
+
+Writing clickable links to the Log tab
+++++++++++++++++++++++++++++++++++++++
+
+g.es_clickable_link(c, p, line_number, message) writes a clickable
+message to the Log pane.
+
+Clicking it selects the given line number of p.b.
+

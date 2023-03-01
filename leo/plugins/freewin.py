@@ -244,6 +244,7 @@ Leo themes.
 #@+node:tom.20210527153415.1: ** << imports >>
 #@+<< typing imports >>
 #@+node:tom.20220919102037.1: *3* << typing imports >>
+from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Any, Tuple
 #@-<< typing imports >>
 
@@ -254,7 +255,7 @@ from leo.core import leoColorizer
 from leo.plugins import qt_text
 
 # pylint: disable=ungrouped-imports
-#pylint: disable = c-extension-no-member
+# pylint: disable=c-extension-no-member
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
@@ -346,10 +347,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoQt import QtWidgets
     from leo.core.leoQt import QtGui
     from leo.plugins.qt_text import LeoQTextBrowser
-else:
-    Cmdr = Any
-    LeoKeyEvent = Any
-    LeoQTextBrowser = Any
 #@-<< annotations >>
 #@+<< declarations >>
 #@+node:tom.20210527153422.1: ** << declarations >>
@@ -629,7 +626,6 @@ def gotoHostGnx(c: Cmdr, target:str) -> bool:
     return False
 #@+node:tom.20210628002321.1: ** copy2clip
 def copy2clip(text: str) -> None:
-    #cb = QApplication.clipboard()
     clipboard.setText(text)
 #@+node:tom.20220329145952.1: ** change_css_prop
 def change_css_prop(css: str, prop: str, newval:str) -> str:
@@ -718,9 +714,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         home = g.app.loadManager.computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
-        #dict_ = g.app.loadManager.globalSettingsDict
 
-        #is_dark = dict_.get_setting('color-theme-is-dark')
         is_dark = is_body_dark(self.c)
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
@@ -985,7 +979,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.stacked_widget.setCurrentIndex(self.render_kind)
 
         if self.render_kind == BROWSER:
-            #text = self.editor.document().toRawText()
             text = self.editor.document().toPlainText()
             if text[0] == '<':
                 html = text

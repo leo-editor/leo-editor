@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
-#@@first
 """The @auto importer for the java language."""
 import re
 from typing import Optional

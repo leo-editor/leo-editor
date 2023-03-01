@@ -1,23 +1,17 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040146.1: * @file ../commands/rectangleCommands.py
-#@@first
 """Leo's rectangle commands."""
-#@+<< rectangleCommands imports >>
-#@+node:ekr.20150514050446.1: ** << rectangleCommands imports >>
-from typing import Any, Callable, List, Tuple, TYPE_CHECKING
+#@+<< rectangleCommands imports & annotations >>
+#@+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
+from __future__ import annotations
+from typing import Callable, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< rectangleCommands imports >>
-#@+<< rectangleCommands annotations >>
-#@+node:ekr.20220828062821.1: ** << rectangleCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-else:
-    Cmdr = Any
-    Event = Any
-#@-<< rectangleCommands annotations >>
+#@-<< rectangleCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the RectangleCommandsClass class."""
@@ -44,7 +38,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             'y': ('yank-rectangle', self.yankRectangle),
         }
     #@+node:ekr.20150514063305.451: *3* check
-    def check(self, event: Event, warning: str='No rectangle selected') -> bool:
+    def check(self, event: Event, warning: str = 'No rectangle selected') -> bool:
         """
         Return True if there is a selection.
         Otherwise, return False and issue a warning.

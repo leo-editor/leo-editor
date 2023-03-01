@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/minibuffer/slide-006.html
+
+Shortcuts
+=========
+
+- <tag> shows all valid completions.
+- <BackSpace> removes previously-typed characters, showing more completions.
+- <Ctrl-G> exits the minibuffer without executing any command.
+
+.. This slides contains no image.
+

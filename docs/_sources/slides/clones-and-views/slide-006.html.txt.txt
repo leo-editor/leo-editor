@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/clones-and-views/slide-006.html
+
+Creating a second child
+=========================
+
+Here, I have created a new node D with Ctrl-I (insert-node).
+
+The node appears as a child of both cloned nodes.
+
+In general, any change to one clone produces the corresponding change in all other clones.
+
+.. image:: _images/slide-006.png
+

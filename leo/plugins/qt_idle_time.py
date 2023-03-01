@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
-#@@first
 """Leo's Qt idle-time code."""
 import time
 from leo.core import leoGlobals as g

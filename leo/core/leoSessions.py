@@ -1,25 +1,17 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120420054855.14241: * @file leoSessions.py
-#@@first
 """Support for sessions in Leo."""
-#@+<< leoSessions imports >>
-#@+node:ekr.20120420054855.14344: ** << leoSessions imports >>
+#@+<< leoSessions imports  & annotations >>
+#@+node:ekr.20120420054855.14344: ** << leoSessions imports & annotations >>
+from __future__ import annotations
 import json
-from typing import Any, List, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoSessions imports >>
-#@+<< leoSessions annotations >>
-#@+node:ekr.20220901085624.1: ** << leoSessions annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< leoSessions annotations >>
+#@-<< leoSessions imports  & annotations >>
 #@+<< leoSessions exception classes>>
 #@+node:ekr.20120420054855.14357: ** << leoSessions exception classes >>
 class LeoSessionException(Exception):
@@ -68,7 +60,7 @@ class SessionManager:
                 return g.os_path_finalize_join(path, 'leo.session')
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
-    def load_session(self, c: Cmdr=None, unls: List[str]=None) -> None:
+    def load_session(self, c: Cmdr = None, unls: List[str] = None) -> None:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
             return

@@ -25,9 +25,7 @@ def git_dump_f(event):
 
     def dump_nodes():
         for p in c.all_unique_positions():
-            #name, date, num = p.v.fileIndex
             fname = contfile(c, p)
-            #gnx = '%s%s%s' % (name, date, num)
             gnx = p.gnx
             hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
             fname = gnx
@@ -51,7 +49,6 @@ def git_dump_f(event):
     dump_nodes()
     lis = "\n".join(hl)
     html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
-    #titlename = c.frame.getTitle() + '.html'
     pth, bname = os.path.split(c.mFileName)
     if pth and bname:
         dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()

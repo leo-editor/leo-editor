@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907131341.18707: * @file ../plugins/qt_tree.py
-#@@first
 """Leo's Qt tree class."""
 #@+<< qt_tree imports >>
 #@+node:ekr.20140907131341.18709: ** << qt_tree imports >>
+from __future__ import annotations
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple
@@ -25,18 +24,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    LeoQtFrame = Any
-    LeoQTreeWidget = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Editor = Any
-Icon = Any
-Item = Any
-Widget = Any
+    Editor = Any
+    Icon = Any
+    Item = Any
+    Widget = Any
 #@-<< qt_tree annotations >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
@@ -54,8 +45,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount = 0  # Count for debugging.
         self.revertHeadline = None  # Previous headline text for abortEditLabel.
         self.busy = False
-        # Debugging...
-        self.traceCallersFlag = False  # Enable traceCallers method.
         # Associating items with position and vnodes...
         self.items: List[Item] = []
         self.item2positionDict: Dict[str, Position] = {}  # Keys are gnxs.
@@ -153,11 +142,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # A QTreeWidgetItem.
             return f"item {id(item)}: {self.getItemText(item)}"
         return '<no item>'
-
-    def traceCallers(self) -> str:
-        if self.traceCallersFlag:
-            return g.callers(5, excludeCaller=True)
-        return ''
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self) -> None:

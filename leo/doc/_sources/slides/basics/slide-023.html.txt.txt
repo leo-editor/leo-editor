@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/basics/slide-023.html
+
+Shift-Ctrl-V
+===============
+
+Shift-Ctrl-V pastes the outline.
+
+.. image:: _images/slide-023.png
+

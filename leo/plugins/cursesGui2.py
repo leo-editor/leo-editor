@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file ../plugins/cursesGui2.py
-#@@first
 #@+<< cursesGui2 docstring >>
 #@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
 """
@@ -27,6 +25,7 @@ http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
+from __future__ import annotations
 import copy
 import logging
 import logging.handlers
@@ -56,20 +55,14 @@ from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
-from leo.core import leoNodes
+from leo.core.leoNodes import Position
 #@-<< cursesGui2 imports >>
 #@+<< cursesGui2 annotations >>
 #@+node:ekr.20220911020102.1: ** << cursesGui2 annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
-    from leo.core.leoNodes import VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
-Event = Any  # Not usually a LeoKeyEvent.
-Wrapper = Any  # Everything, including widgets, is a wrapper!
+    Event = Any  # Not usually a LeoKeyEvent.
+    Wrapper = Any  # Everything, including widgets, is a wrapper!
 #@-<< cursesGui2 annotations >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
@@ -344,7 +337,7 @@ class LeoTreeData(npyscreen.TreeData):
     def __len__(self) -> int:
         if native:
             p = self.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             content = p.h
         else:
             content = self.content
@@ -353,7 +346,7 @@ class LeoTreeData(npyscreen.TreeData):
     def __repr__(self) -> str:
         if native:
             p = self.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             return '<LeoTreeData: %s, %s>' % (id(p), p.h)
         return '<LeoTreeData: %r>' % self.content
     __str__ = __repr__
@@ -458,7 +451,7 @@ class LeoTreeData(npyscreen.TreeData):
                 self.content = content
             else:
                 p = content
-                assert p and isinstance(p, leoNodes.Position), repr(p)
+                assert p and isinstance(p, Position), repr(p)
                 self.content = content.copy()
         else:
             self.content = content
@@ -529,7 +522,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         if native:
             p = val and val.content
             if p is not None:
-                assert p and isinstance(p, leoNodes.Position), repr(p)
+                assert p and isinstance(p, Position), repr(p)
             return '<LeoTreeLine: %s>' % (p.h if p else 'None')
         return '<LeoTreeLine: %s>' % (val.content if val else 'None')
 
@@ -544,7 +537,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             if self.value:
                 assert isinstance(self.value, LeoTreeData)
                 p = self.value.content
-                assert p and isinstance(p, leoNodes.Position), repr(p)
+                assert p and isinstance(p, Position), repr(p)
                 return p.h or ' '
             return ''
         s = self.value.content if self.value else None
@@ -568,7 +561,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             if val is None:
                 return  # startup
             p = val.content
-            assert isinstance(p, leoNodes.Position), repr(p)
+            assert isinstance(p, Position), repr(p)
             self.left_margin += 2 * p.level()
             if p.hasChildren():
                 put('-' if p.isExpanded() else '+')
@@ -593,7 +586,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         # vl is a LeoTreeData.
         if native:
             p = vl.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             return p.h or ' '
         return vl.content if vl else ''
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
@@ -658,7 +651,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         n = self.cursor_position
         if native:
             p = self.value.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             s = p.h
             if 0 <= n <= len(s):
                 c = p.v.context
@@ -1824,11 +1817,11 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
     #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
     def focus_to_body(self, c: Cmdr) -> None:
-        """Put focus in minibuffer text widget."""
+        """Put focus in the body pane."""
         self.set_focus(c, c.frame.body)
     #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
     def focus_to_head(self, c: Cmdr, p: Position) -> None:
-        """Put focus in minibuffer text widget."""
+        """Put focus in the headline."""
         self.set_focus(c, c.frame.tree)
     #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c: Cmdr) -> None:
@@ -2403,7 +2396,7 @@ class CoreLog(leoFrame.LeoLog):
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
-        #return [w.tabText(i) for i in range(w.count())]
+        # return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20170419143731.15: *4* CLog.put
     # Signature is different.
     def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False) -> None:  # type:ignore
@@ -3270,7 +3263,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.dump_values()
         if native:
             p = node.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             if p.hasParent() or p.hasNext() or p.hasBack():
                 p.doDelete()
                 self.values.clear_cache()
@@ -3306,7 +3299,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.dump_values()
         # This is widget.display:
         # (when not self.hidden)
-        #self.update()
+        # self.update()
         # LeoMLTree.update or MultiLine.update
         # self.parent.refresh()
         # LeoForm.refresh
@@ -3447,7 +3440,7 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             data = self.values[n]  # data is a LeoTreeData
             p = data.content
-            assert p and isinstance(p, leoNodes.Position)
+            assert p and isinstance(p, Position)
             if p.hasChildren() and p.isExpanded():
                 p2 = p.insertAsFirstChild()
             else:
@@ -3502,7 +3495,7 @@ class LeoMLTree(npyscreen.MLTree):
         node = self.values[self.cursor_line]
         if native:
             p = node.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             p.contract()
             self.values.clear_cache()
         else:
@@ -3571,7 +3564,7 @@ class LeoMLTree(npyscreen.MLTree):
         node = self.values[self.cursor_line]
         if native:
             p = node.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             p.expand()  # Don't use p.v.expand()
             self.values.clear_cache()
         else:
@@ -3603,7 +3596,7 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             c = self.leo_c
             p = node.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             if p.hasChildren() and p.isExpanded():
                 self.h_collapse_tree(ch)
                 self.values.clear_cache()
@@ -3645,7 +3638,7 @@ class LeoMLTree(npyscreen.MLTree):
             return
         if native:
             p = node.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             if p.hasChildren():
                 if p.isExpanded():
                     self.h_cursor_line_down(ch)
@@ -3865,7 +3858,7 @@ class LeoMLTree(npyscreen.MLTree):
         line.value = val
         if native:
             p = val.content
-            assert p and isinstance(p, leoNodes.Position), repr(p)
+            assert p and isinstance(p, Position), repr(p)
             line._tree_expanded = p.isExpanded()
             line._tree_has_children = p.hasChildren()
             line._tree_last_line = not p.hasNext()

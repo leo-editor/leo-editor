@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20130302121602.10208: * @file leoDebugger.py
-#@@first
 
 # Disable all mypy errors.
 # type:ignore
@@ -130,7 +128,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 print(s.rstrip())
             else:
                 # Use the output area.
-                xdb = getattr(g.app, 'xdb')
+                xdb = getattr(g.app, 'xdb', None)
                 if xdb:
                     xdb.write(s)
                 else:

@@ -41,30 +41,24 @@ And call this in your plugin *once*::
 """
 #@-<< contextmenu docstring >>
 # Original version by Ville M. Vainio.
-#@+<< contextmenu imports >>
-#@+node:ekr.20220828123814.1: ** << contextmenu imports >>
+#@+<< contextmenu imports & annotations >>
+#@+node:ekr.20220828123814.1: ** << contextmenu imports & annotations >>
+from __future__ import annotations
 import os
 from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
 
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< contextmenu imports >>
-#@+<< contextmenu annotations >>
-#@+node:ekr.20220828123840.1: ** << contextmenu annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event # pylint: disable=reimported
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-#@-<< contextmenu annotations >>
+
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< contextmenu imports & annotations >>
 
 # Globals
 inited = False
@@ -348,8 +342,6 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
         return
 
     path = g.scanAllAtPathDirectives(c, p)
-    #editor = g.guessExternalEditor(c)
-
     absp = g.os_path_finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":

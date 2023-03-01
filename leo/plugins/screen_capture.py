@@ -94,6 +94,7 @@ class Recorder:
             # not capture the pointer in the image, which is quite
             # typical for screen captures - this code draws a pointer
             # in the right place, and may be need to be enabled by a
+            #@verbatim
             # @setting in future, if pointer capture does not occur in
             # all environments - pointer is captured in
             # Leo Log Window
@@ -116,11 +117,7 @@ class Recorder:
             # save .bmp in video mode because .png is too slow
 
         pm.save(filename)
-
         self.frame += 1
-
-        # print '  ', time.time() - self.last_time
-        # self.last_time = time.time()
     #@+node:tbrown.20130419143128.29672: *3* make_pointer
     def make_pointer(self):
         """Return a pixmap for a pointer."""

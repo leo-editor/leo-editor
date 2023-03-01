@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/basics/slide-005.html
+
+The icon box
+============
+
+Typing the <return> key ends editing of the headline
+and puts focus back in the body pane.
+
+The **icon box** to the left of the headline now has a dark outline,
+indicating that the node is **dirty**, that is, the node's headline or body
+text has changed.
+
+.. image:: _images/slide-005.png
+

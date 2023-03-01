@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
-#@@first
 """Handling background processes"""
-#@+<< leoBackground imports >>
-#@+node:ekr.20220410202718.1: ** << leoBackground imports >>
+#@+<< leoBackground imports & annotations >>
+#@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>
+from __future__ import annotations
 import re
 import subprocess
 import _thread as thread
@@ -12,21 +11,14 @@ from time import sleep
 from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
-#@-<< leoBackground imports >>
-#@+<< leoBackground annotations >>
-#@+node:ekr.20220827054935.1: ** << leoBackground annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    Pattern = Union[Any, str]
+#@-<< leoBackground imports & annotations >>
 
-Pattern = Union[Any, str]
-#@-<< leoBackground annotations >>
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status
 @g.command('bpm-status')
@@ -41,8 +33,8 @@ class ProcessData:
         c: Cmdr,
         kind: str,
         fn: str,
-        link_pattern: Optional[Pattern]=None,
-        link_root: Optional[Position]=None,
+        link_pattern: Optional[Pattern] = None,
+        link_root: Optional[Position] = None,
     ) -> None:
         """Ctor for the ProcessData class."""
         self.c = c
@@ -120,6 +112,7 @@ class BackgroundProcessManager:
         self.pid: str = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: List[str] = None
+        self.link_root: Position = None
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         if QtCore:
@@ -154,7 +147,7 @@ class BackgroundProcessManager:
         self.timer.stop()
         self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
-    def kill(self, kind: str=None) -> None:
+    def kill(self, kind: str = None) -> None:
         """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
@@ -183,27 +176,33 @@ class BackgroundProcessManager:
             # Wait for data to be fully written
             while self.lock.locked():
                 sleep(0.02)
-            # Protect acquiring the data from the process, in case another is launched
-            # before we expect it.
+            # Protect acquiring the data from the process,
+            # in case another is launched before we expect it.
             self.lock.acquire()
             result_lines = self.process_return_data
+            link_root = self.link_root
             self.process_return_data = []
+            self.link_root = None
             self.lock.release()
             # Put the lines!
             for s in result_lines:
-                self.put_log(s)
+                self.put_log(s, link_root)
             self.end()  # End this process.
             self.start_next()  # Start the next process.
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     unknown_path_names: List[str] = []
 
-    def put_log(self, s: str) -> None:
+    def put_log(self, s: str, link_root: Position = None) -> None:
         """
         Put a string to the originating log.
         This is not what g.es_print does!
 
         Create clickable links if s matches self.data.link_pattern.
         See p.get_UNL.
+
+        link_root is the root position of a subtree which was processed
+        to produce this data.  It may or may not be the root of an
+        external file.
 
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
@@ -226,7 +225,7 @@ class BackgroundProcessManager:
         print(s)
         # Let log.put_html_links do all the work!
         log = c.frame.log
-        if not log.put_html_links(s):
+        if not log.put_html_links(s, link_root):
             log.put(s)
     #@+node:ekr.20220415161133.1: *3* bpm.show_status
     def show_status(self) -> None:
@@ -254,9 +253,9 @@ class BackgroundProcessManager:
 
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
     def start_process(self, c: Cmdr, command: str, kind: str,
-        fn: str=None,
-        link_pattern: Pattern=None,  # None, string, or re.pattern.
-        link_root: Position=None,
+        fn: str = None,
+        link_pattern: Pattern = None,  # None, string, or re.pattern.
+        link_root: Position = None,
     ) -> None:
         """
         Start or queue a process described by command and fn.
@@ -271,6 +270,8 @@ class BackgroundProcessManager:
         #       to create error messages that contain shell injection attacks!
         def open_process(data: Any) -> Any:
             g.es_print(f'{data.kind}: {g.shortFileName(data.fn)}')
+            self.process_return_data = []
+            self.link_root = data.link_root
             proc = subprocess.Popen(
                 command,
                 shell=False,
@@ -286,13 +287,12 @@ class BackgroundProcessManager:
             thread.start_new_thread(self.thrd_pipe_proc, ())
 
         # Don't set self.data unless we start the process!
-        self.process_return_data = []
         data = ProcessData(c, kind, fn, link_pattern, link_root)
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-            def callback(data: Any=data, kind: str=kind) -> None:
-                """This is called when a process ends."""
+            def callback(data: Any = data, kind: str = kind) -> None:
+                """This is called when a previous process ends."""
                 self.pid = open_process(data)
                 start_timer()
 

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.5: * @file ../plugins/editpane/leotextedit.py
-#@@first
 #@+<<leotextedit imports >>
 #@+node:tbrown.20171028115508.1: ** <<leotextedit imports >>
 from leo.core import leoGlobals as g
@@ -40,7 +38,6 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
-        #X self.update_position(self.lep.get_position())
     #@+node:tbrown.20171028115508.6: *3* focusOutEvent
     def focusOutEvent(self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)

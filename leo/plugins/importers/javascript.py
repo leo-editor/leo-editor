@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
-#@@first
 """The @auto importer for JavaScript."""
 import re
 from typing import Any, Dict, Generator
@@ -92,7 +90,7 @@ class Tok:
 
     num = 0
 
-    def __init__(self, name: str, regex: str, next: str=None) -> None:
+    def __init__(self, name: str, regex: str, next: str = None) -> None:
         self.id = Tok.num
         Tok.num += 1
         self.name = name
@@ -141,7 +139,7 @@ class Lexer:
         self.state = state
     #@-others
 #@+node:ekr.20200131110322.6: *3* function: literals
-def literals(choices: str, prefix: str="", suffix: str="") -> str:
+def literals(choices: str, prefix: str = "", suffix: str = "") -> str:
     """
     Create a regex from a space-separated list of literal `choices`.
 

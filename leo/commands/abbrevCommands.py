@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035236.1: * @file ../commands/abbrevCommands.py
-#@@first
 """Leo's abbreviations commands."""
-#@+<< abbrevCommands imports >>
-#@+node:ekr.20150514045700.1: ** << abbrevCommands imports >>
+#@+<< abbrevCommands imports & abbreviations >>
+#@+node:ekr.20150514045700.1: ** << abbrevCommands imports & abbreviations >>
+from __future__ import annotations
 import functools
 import re
 import string
@@ -12,21 +11,14 @@ from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< abbrevCommands imports >>
-#@+<< abbrevCommands annotations >>
-#@+node:ekr.20220826065314.1: ** << abbrevCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Position = Any
-    Event = Any
-    Wrapper = Any
-Stroke = Any
-#@-<< abbrevCommands annotations >>
+    Stroke = Any
+#@-<< abbrevCommands imports & abbreviations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the abbrevCommands class."""
@@ -171,6 +163,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
+        #@verbatim
         # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
         if c.config:
             key = 'abbreviations-subst-env'
@@ -312,7 +305,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         j: int,
         val: str,
         word: str,
-        expand_search: bool=False,
+        expand_search: bool = False,
     ) -> None:
         """Make a text expansion at location i,j of widget w."""
         c = self.c
@@ -516,7 +509,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             word, val = None, None
         return i, tag, word, val
     #@+node:ekr.20150514043850.16: *4* abbrev.next_place
-    def next_place(self, s: str, offset: int=0) -> Tuple[str, int, int]:
+    def next_place(self, s: str, offset: int = 0) -> Tuple[str, int, int]:
         """
         Given string s containing a placeholder like <| block |>,
         return (s2,start,end) where s2 is s without the <| and |>,
@@ -623,7 +616,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
     #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
-    def dynamicCompletion(self, event: Event=None) -> None:
+    def dynamicCompletion(self, event: Event = None) -> None:
         """
         dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
@@ -657,7 +650,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
-    def dynamicExpansion(self, event: Event=None) -> None:
+    def dynamicExpansion(self, event: Event = None) -> None:
         """
         dabbrev-expands (M-/ in Emacs).
 
@@ -686,9 +679,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(self,
         event: Event,
-        prefix: str=None,
-        aList: List[str]=None,
-        w: Wrapper=None,
+        prefix: str = None,
+        aList: List[str] = None,
+        w: Wrapper = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
@@ -741,7 +734,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return items
     #@+node:ekr.20150514043850.24: *3* abbrev.static abbrevs
     #@+node:ekr.20150514043850.25: *4* abbrev.addAbbrevHelper
-    def addAbbrevHelper(self, s: str, tag: str='') -> None:
+    def addAbbrevHelper(self, s: str, tag: str = '') -> None:
         """Enter the abbreviation 's' into the self.abbrevs dict."""
         if not s.strip():
             return
@@ -768,7 +761,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.abbrevs = {}
     #@+node:ekr.20150514043850.29: *4* abbrev.listAbbrevs
     @cmd('abbrev-list')
-    def listAbbrevs(self, event: Event=None) -> None:
+    def listAbbrevs(self, event: Event = None) -> None:
         """List all abbreviations."""
         d = self.abbrevs
         if d:
@@ -785,7 +778,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print('No present abbreviations')
     #@+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
-    def toggleAbbrevMode(self, event: Event=None) -> None:
+    def toggleAbbrevMode(self, event: Event = None) -> None:
         """Toggle abbreviation mode."""
         k = self.c.k
         k.abbrevOn = not k.abbrevOn

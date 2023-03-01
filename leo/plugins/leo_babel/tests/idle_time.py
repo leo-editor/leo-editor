@@ -50,9 +50,9 @@ class IdleTime:
         self._tag = tag
         self._active = False
         IdleTime.list_inactive.append(self)
-        #traceStk = [lix.strip() for lix in traceback.format_stack()]
-        #leoG.trace('Trace: {0}'.format(traceStk[-2]))
-        #leoG.trace('IdleTime() {0}'.format(id(self)))
+        # traceStk = [lix.strip() for lix in traceback.format_stack()]
+        # leoG.trace('Trace: {0}'.format(traceStk[-2]))
+        # leoG.trace('IdleTime() {0}'.format(id(self)))
     #@+node:bob.20180206124140.1: *3* IdleTime.start()
     def start(self):
         """ Start an Idle Time Instance
@@ -64,7 +64,7 @@ class IdleTime:
             None
         """
 
-        #leoG.trace(id(self))
+        # leoG.trace(id(self))
         IdleTime.list_inactive.remove(self)
         self._nexttime = time.process_time()
         IdleTime.list_active.insert(0, self)
@@ -80,7 +80,7 @@ class IdleTime:
             None
         """
 
-        #leoG.trace(id(self))
+        # leoG.trace(id(self))
         if self._active:
             IdleTime.list_active.remove(self)
             IdleTime.list_inactive.append(self)
@@ -98,8 +98,8 @@ class IdleTime:
             None
         """
 
-        #traceStk = [lix.strip() for lix in traceback.format_stack()]
-        #leoG.trace('Trace: {0}'.format(traceStk[-2]))
+        # traceStk = [lix.strip() for lix in traceback.format_stack()]
+        # leoG.trace('Trace: {0}'.format(traceStk[-2]))
         itoLast = 0
         while True:
             if not cls.list_active:
@@ -108,7 +108,7 @@ class IdleTime:
             os.sched_yield()
             timeCur = time.process_time()
             idleTimeObj = cls.list_active.pop(0)
-            #leoG.trace('Popped {0} leaving {1}'.format(id(idleTimeObj), [id(ent) for ent in cls.list_active]))
+            # leoG.trace('Popped {0} leaving {1}'.format(id(idleTimeObj), [id(ent) for ent in cls.list_active]))
             if timeCur >= idleTimeObj._nexttime:
                 nexttime = timeCur + idleTimeObj._delay
                 idleTimeObj._nexttime = nexttime

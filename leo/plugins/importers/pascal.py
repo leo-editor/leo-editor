@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18147: * @file ../plugins/importers/pascal.py
-#@@first
 """The @auto importer for the pascal language."""
 import re
 from leo.core.leoCommands import Commands as Cmdr

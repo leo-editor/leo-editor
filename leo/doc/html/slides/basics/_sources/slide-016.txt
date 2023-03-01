@@ -1,0 +1,12 @@
+==========================
+Leo Basics Step By Step:16
+==========================
+
+
+I decide that fixing the car should have first priority.
+
+I type Ctrl-U to move the "fix car" node up.
+It becomes the first child of the "to do" node.
+
+.. image:: slide-016.png
+

@@ -16,25 +16,21 @@ the left side of toolbar.
 
 """
 #@-<< nav_qt docstring >>
-#@+<< nav_qt imports >>
-#@+node:ville.20090518182905.5422: ** << nav_qt imports >>
+#@+<< nav_qt imports & annotations >>
+#@+node:ville.20090518182905.5422: ** << nav_qt imports & annotations >>
+from __future__ import annotations
 from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QAction, StandardPixmap
-#
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< nav_qt imports >>
-#@+<< nav_qt annotations >>
-#@+node:ekr.20220828130258.1: ** << nav_qt annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-else:
-    Cmdr = Any
-    Event = Any
-Action = Any
-#@-<< nav_qt annotations >>
+    Action = Any
+
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< nav_qt imports & annotations >>
+
 controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 #@+others
 #@+node:ville.20090518182905.5423: ** init

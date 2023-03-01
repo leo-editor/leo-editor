@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115541.1: * @file signal_manager.py
-#@@first
 #@+<< signal_manager docstring >>
 #@+node:ekr.20220901092728.1: ** << signal_manager docstring >>
 """
@@ -15,20 +13,11 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 #@-<< signal_manager docstring >>
 #@+<< signal_manager imports >>
 #@+node:ekr.20220901092745.1: ** << signal_manager imports >>
+from __future__ import annotations
 from collections import defaultdict
-from typing import Any, Callable, Dict, List, TYPE_CHECKING
+from typing import Any, Callable, Dict, List
 #@-<< signal_manager imports >>
-#@+<< signal_manager annotations >>
-#@+node:ekr.20220901092755.1: ** << signal_manager annotations >>
-if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< signal_manager annotations >>
+
 #@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
@@ -126,8 +115,8 @@ def main() -> None:
         def some_emission(self) -> None:
             self.emit('the_emission', 12, [1, 2, 3])
 
-    def hear_emit(n: int, l: Any) -> None:
-        print(f"Got {n} {l}")
+    def hear_emit(n: int, obj: Any) -> None:
+        print(f"Got {n} {obj}")
 
     emitter = Emitter()
     emitter.connect('the_emission', hear_emit)
@@ -146,7 +135,7 @@ def main() -> None:
         def do_work(self) -> None:
             emit(self.relay, 'work_done', 4.2, animal='otters', _sig_lock=self)
 
-        def check_work(self, num: Any, animal: str='eels') -> None:
+        def check_work(self, num: Any, animal: str = 'eels') -> None:
             if is_locked(self):
                 return
             print(f"{self.name} heard about {num} {animal}")

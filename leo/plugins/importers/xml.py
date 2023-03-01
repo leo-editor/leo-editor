@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
-#@@first
 """The @auto importer for the xml language."""
 import re
 from typing import List, Optional, Tuple
+from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
@@ -13,7 +12,7 @@ from leo.plugins.importers.linescanner import Importer
 class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
-    def __init__(self, c: Cmdr, tags_setting: str='import_xml_tags') -> None:
+    def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""
         # Init the base class.
         super().__init__(c, language='xml')
@@ -46,9 +45,9 @@ class Xml_Importer(Importer):
     #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
-        Return None if lines[i] does not start a class, function or method.
+        Return None if lines[i] does not start a tag.
 
-        Otherwise, return the index of the first line of the body.
+        Otherwise, return the index of the first line tag.
         """
         lines, states = self.lines, self.line_states
         prev_state = states[i - 1] if i > 0 else self.state_class()
@@ -58,6 +57,43 @@ class Xml_Importer(Importer):
         if this_state.level > prev_state.level:
             return i + 1
         return None
+    #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
+    # Match two adjacent elements. Don't match comments.
+    adjacent_tags_pat = re.compile(r'(.*?)(<[^!].*?>)\s*(<[^!].*?>)')
+
+    # Match the tag name of the element.
+    tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
+
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        """
+        Xml_Importer.preprocess_lines.
+
+        Ensure that closing tags are followed by a newline.
+        """
+
+        def repl(m: re.Match) -> str:
+            """
+                Split lines, adding leading whitespace to the second line.
+                *Don't* separate tags if the tags open and close the same element.
+            """
+            m2 = self.tag_name_pat.match(m.group(2))
+            m3 = self.tag_name_pat.match(m.group(3))
+            tag_name2 = m2 and m2.group(1) or ''
+            tag_name3 = m3 and m3.group(1) or ''
+            same_element = (
+                tag_name2 == tag_name3
+                and not m.group(2).startswith('</')
+                and m.group(3).startswith('</')
+            )
+            lws = g.get_leading_ws(m.group(1))
+            sep = '' if same_element else '\n' + lws
+            return m.group(1) + m.group(2).rstrip() + sep + m.group(3)
+
+        result_lines = []
+        for i, line in enumerate(lines):
+            s = re.sub(self.adjacent_tags_pat, repl, line)
+            result_lines.extend(g.splitLines(s))
+        return result_lines
     #@+node:ekr.20220815111538.1: *3* xml_i.update_level
     ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 

@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
-#@@first
 """Leo's spell-checking commands."""
-#@+<< spellCommands imports >>
-#@+node:ekr.20150514050530.1: ** << spellCommands imports >>
+#@+<< spellCommands imports & annotations >>
+#@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
+from __future__ import annotations
 import re
 from typing import Any, Callable, Dict, List, Optional, Set, TYPE_CHECKING
 # Third-party annotations
@@ -16,19 +15,12 @@ except Exception:  # May throw WinError(!)
     enchant = None
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
-#@-<< spellCommands imports >>
-#@+<< spellCommands annotations >>
-#@+node:ekr.20220828060855.1: ** << spellCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-#@-<< spellCommands annotations >>
+    from leo.core.leoNodes import Position
+#@-<< spellCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the SpellCommandsClass class."""
@@ -139,7 +131,7 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: List[str]=None) -> None:
+    def __init__(self, words: List[str] = None) -> None:
         self.added_words: Set[str] = set()
         self.ignored_words: Set[str] = set()
         self.words: Set[str] = set() if words is None else set(words)
@@ -267,7 +259,7 @@ class DefaultWrapper(BaseSpellWrapper):
             g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
     #@+node:ekr.20180207110718.1: *3* default.save_dict
-    def save_dict(self, kind: str, fn: str, trace: bool=False) -> None:
+    def save_dict(self, kind: str, fn: str, trace: bool = False) -> None:
         """
         Save the dictionary whose name is given, alphabetizing the file.
         Write added words to the file if kind is 'user'.
@@ -287,11 +279,11 @@ class DefaultWrapper(BaseSpellWrapper):
         f.write(g.toEncodedString(s))
         f.close()
     #@+node:ekr.20180211104628.1: *3* default.save_main/user_dict
-    def save_main_dict(self, trace: bool=False) -> None:
+    def save_main_dict(self, trace: bool = False) -> None:
 
         self.save_dict('main', self.main_fn, trace=trace)
 
-    def save_user_dict(self, trace: bool=False) -> None:
+    def save_user_dict(self, trace: bool = False) -> None:
 
         self.save_dict('user', self.user_fn, trace=trace)
     #@+node:ekr.20180209141933.1: *3* default.show_info
@@ -330,11 +322,17 @@ class EnchantWrapper(BaseSpellWrapper):
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
     def create_dict_from_file(self, fn: str, language: Any) -> Dict[str, str]:
 
-        return enchant.DictWithPWL(language, fn)
+        try:
+            return enchant.DictWithPWL(language, fn)
+        except Exception:
+            return {}
     #@+node:ekr.20180207074613.1: *3* enchant.default_dict
     def default_dict(self, language: Any) -> Dict[str, str]:
 
-        return enchant.Dict(language)
+        try:
+            return enchant.Dict(language)
+        except Exception:
+            return {}
     #@+node:ekr.20180207072846.1: *3* enchant.init_language
     def init_language(self) -> None:
         """Init self.language."""
@@ -369,14 +367,19 @@ class EnchantWrapper(BaseSpellWrapper):
                 self.clean_dict(fn)
                 d = enchant.DictWithPWL(language, fn)
             except Exception:
-                # This is off-putting, and not necessary.
-                # g.es('Error reading dictionary file', fn)
-                # g.es_exception()
-                d = enchant.Dict(language)
+                try:
+                    d = enchant.Dict(language)
+                except Exception:
+                    d = {}
         else:
-            # A fallback.  Unlikely to happen.
-            d = enchant.Dict(language)
+            # A fallback. Unlikely to happen.
+            try:
+                d = enchant.Dict(language)
+            except Exception:
+                d = {}
+        # Commen exit, for traces.
         return d
+
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word: str) -> None:
 
@@ -444,7 +447,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         self.page_width = c.config.getInt("page-width")  # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab(self, event: Event=None) -> None:
+    def openSpellTab(self, event: Event = None) -> None:
         """Open the Spell Checker tab in the log pane."""
         if g.unitTesting:
             return
@@ -468,7 +471,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.485: *3* commands...(SpellCommandsClass)
     #@+node:ekr.20171205043931.1: *4* add
     @cmd('spell-add')
-    def add(self, event: Event=None) -> None:
+    def add(self, event: Event = None) -> None:
         """
         Simulate pressing the 'add' button in the Spell tab.
 
@@ -481,9 +484,9 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.handler.add()
         else:
             self.openSpellTab()
-    #@+node:ekr.20150514063305.486: *4* find
+    #@+node:ekr.20150514063305.486: *4* spell-find
     @cmd('spell-find')
-    def find(self, event: Event=None) -> None:
+    def find(self, event: Event = None) -> None:
         """
         Simulate pressing the 'Find' button in the Spell tab.
 
@@ -498,7 +501,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
-    def change(self, event: Event=None) -> None:
+    def change(self, event: Event = None) -> None:
         """Simulate pressing the 'Change' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -507,26 +510,24 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
-    def changeThenFind(self, event: Event=None) -> None:
+    def changeThenFind(self, event: Event = None) -> None:
         """Simulate pressing the 'Change, Find' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
-            # A workaround for a pylint warning:
-            # self.handler.changeThenFind()
-            f = getattr(self.handler, 'changeThenFind')
+            f = self.handler.changeThenFind
             f()
         else:
             self.openSpellTab()
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
-    def hide(self, event: Event=None) -> None:
+    def hide(self, event: Event = None) -> None:
         """Hide the Spell tab."""
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
-    def ignore(self, event: Event=None) -> None:
+    def ignore(self, event: Event = None) -> None:
         """Simulate pressing the 'Ignore' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -535,7 +536,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.491: *4* focusToSpell
     @cmd('focus-to-spell-tab')
-    def focusToSpell(self, event: Event=None) -> None:
+    def focusToSpell(self, event: Event = None) -> None:
         """Put focus in the spell tab."""
         self.openSpellTab()  # Makes Spell tab visible.
         # This is not a great idea. There is no indication of focus.
@@ -703,7 +704,7 @@ class SpellTabHandler:
             self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
     #@+node:ekr.20150514063305.503: *4* add (spellTab)
-    def add(self, event: Event=None) -> None:
+    def add(self, event: Event = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -711,7 +712,7 @@ class SpellTabHandler:
                 self.spellController.add(w)
                 self.tab.onFindButton()
     #@+node:ekr.20150514063305.504: *4* change (spellTab)
-    def change(self, event: Event=None) -> bool:
+    def change(self, event: Event = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
@@ -743,7 +744,7 @@ class SpellTabHandler:
         c.bodyWantsFocus()
         return False
     #@+node:ekr.20150514063305.505: *4* find & helper
-    def find(self, event: Event=None) -> None:
+    def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
         if not self.loaded:
             return
@@ -814,10 +815,10 @@ class SpellTabHandler:
         else:
             c.selectPosition(p)
     #@+node:ekr.20150514063305.508: *4* hide
-    def hide(self, event: Event=None) -> None:
+    def hide(self, event: Event = None) -> None:
         self.c.frame.log.selectTab('Log')
     #@+node:ekr.20150514063305.509: *4* ignore
-    def ignore(self, event: Event=None) -> None:
+    def ignore(self, event: Event = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord
@@ -827,7 +828,7 @@ class SpellTabHandler:
     #@-others
 #@+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
-def show_spell_info(event: Event=None) -> None:
+def show_spell_info(event: Event = None) -> None:
     c = event.get('c')
     if c:
         c.spellCommands.handler.spellController.show_info()

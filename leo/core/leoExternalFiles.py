@@ -1,27 +1,21 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
-#@@first
-#@+<< leoExternalFiles imports >>
-#@+node:ekr.20220821202943.1: ** << leoExternalFiles imports >>
+#@+<< leoExternalFiles imports & annotations >>
+#@+node:ekr.20220821202943.1: ** << leoExternalFiles imports & annotations >>
+from __future__ import annotations
 import getpass
 import os
 import subprocess
 import tempfile
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoExternalFiles imports >>
-#@+<< leoExternalFiles annotations >>
-#@+node:ekr.20220821203011.1: ** << leoExternalFiles annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
-Widget = Any
-#@-<< leoExternalFiles annotations >>
+    from leo.core.leoNodes import Position
+    Widget = Any
+#@-<< leoExternalFiles imports & annotations >>
+
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:
@@ -68,7 +62,7 @@ class ExternalFilesController:
     """
     #@+others
     #@+node:ekr.20150404083533.1: *3* efc.ctor
-    def __init__(self, c: Cmdr=None) -> None:
+    def __init__(self, c: Cmdr = None) -> None:
         """Ctor for ExternalFiles class."""
         self.checksum_d: Dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
@@ -159,11 +153,13 @@ class ExternalFilesController:
                 self.idle_check_open_with_file(c, ef)
         elif self.unchecked_commanders:
             # Check the next commander for which
+            #@verbatim
             # @bool check_for_changed_external_file is True.
             c = self.unchecked_commanders.pop()
             self.idle_check_commander(c)
         else:
             # Add all commanders for which
+            #@verbatim
             # @bool check_for_changed_external_file is True.
             self.unchecked_commanders = [
                 z for z in g.app.commanders() if self.is_enabled(z)
@@ -398,7 +394,7 @@ class ExternalFilesController:
         self.files.append(ExternalFile(c, ext, p, path, time))
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
-    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool=False) -> str:
+    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool = False) -> str:
         """
         Open a file fn in an external editor.
 
@@ -457,7 +453,7 @@ class ExternalFilesController:
                     except OSError:
                         g.es_print('c_arg', repr(c_arg))
                         g.es_exception()
-            elif hasattr(kind, '__call__'):
+            elif callable(kind):
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
@@ -498,7 +494,7 @@ class ExternalFilesController:
     #@+node:ekr.20150405110219.1: *3* efc.utilities
     # pylint: disable=no-value-for-parameter
     #@+node:ekr.20150405200212.1: *4* efc.ask
-    def ask(self, c: Cmdr, path: str, p: Position=None) -> str:
+    def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
         """
         Ask user whether to overwrite an @<file> tree.
 
@@ -614,7 +610,7 @@ class ExternalFilesController:
         """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
-    def set_time(self, path: str, new_time: float=None) -> None:
+    def set_time(self, path: str, new_time: float = None) -> None:
         """
         Implements c.setTimeStamp.
 

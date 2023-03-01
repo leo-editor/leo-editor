@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.1: * @file ../plugins/editpane/webkitview.py
-#@@first
 #@+<< webkitview imports >>
 #@+node:tbrown.20171028115457.1: ** << webkitview imports >>
 import os

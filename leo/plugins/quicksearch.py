@@ -78,6 +78,7 @@ This plugin defines the following commands that can be bound to keys:
 # Original by Ville M. Vainio <vivainio@gmail.com>.
 #@+<< quicksearch imports >>
 #@+node:ville.20090314215508.7: ** << quicksearch imports >>
+from __future__ import annotations
 import fnmatch
 import itertools
 import re
@@ -99,17 +100,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-
-Match = re.Match
-Match_Iter = Iterator[re.Match[str]]
-Match_List = List[Tuple[Position, Match_Iter]]
-RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-Widget = Any
+    Match = re.Match
+    Match_Iter = Iterator[re.Match[str]]
+    Match_List = List[Tuple[Position, Match_Iter]]
+    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    Widget = Any
 #@-<< quicksearch annotations >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
@@ -398,7 +393,6 @@ class QuickSearchController:
 
         self.throttler = threadutil.NowOrLater(throttledDump)
         self.worker.set_worker(searcher)
-        #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
         # we want both single-clicks and activations (press enter)
@@ -629,17 +623,14 @@ class QuickSearchController:
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat:str) -> Tuple[Match_List, Match_List]:
-        #self.clear()
 
         if self.frozen:
             return None
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
-            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
-            # bpat = pat[2:]
             flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         hNodes: Iterable

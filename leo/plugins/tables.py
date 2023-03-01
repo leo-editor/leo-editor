@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170217164004.1: * @file ../plugins/tables.py
-#@@first
 """
 A plugin that inserts tables, inspired by org mode tables:
 

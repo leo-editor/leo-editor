@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Leo as a Personal Information Manager &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Creating Documents from Outlines" href="tutorial-rst3.html" />
+    <link rel="prev" title="Leo in 10 Minutes" href="tutorial-basics.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tutorial-rst3.html" title="Creating Documents from Outlines"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial-basics.html" title="Leo in 10 Minutes"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial.html" accesskey="U">Leo&#8217;s Tutorials</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-leo-as-a-personal-information-manager">
+<h1>Using Leo as a Personal Information Manager<a class="headerlink" href="#using-leo-as-a-personal-information-manager" title="Permalink to this headline">¶</a></h1>
+<p>This chapter tells how you can use Leo as a Personal Information Manager. It introduces <a class="reference internal" href="#clones">clones</a>: one of Leo&#8217;s most unusual and powerful features for organizing data.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#clones" id="id1">Clones</a></li>
+<li><a class="reference internal" href="#clones-accelerate-work-flow-by-creating-views" id="id2">Clones accelerate work flow by creating views</a></li>
+<li><a class="reference internal" href="#using-abbreviations-and-templates" id="id3">Using abbreviations and templates</a></li>
+<li><a class="reference internal" href="#using-urls" id="id4">Using URLs</a></li>
+<li><a class="reference internal" href="#using-chapters" id="id5">Using Chapters</a></li>
+<li><a class="reference internal" href="#summary" id="id6">Summary</a></li>
+</ul>
+</div>
+<div class="section" id="clones">
+<h2><a class="toc-backref" href="#id1">Clones</a><a class="headerlink" href="#clones" title="Permalink to this headline">¶</a></h2>
+<p id="index-0">A <strong>clone</strong> is a node that appears in more than one place in a Leo outline. Clones are marked with a small red arrow in its icon box. All clones of a node are actually <em>the same node</em>:</p>
+<ul class="simple">
+<li>Any change to one clone affects all clones.</li>
+<li>Inserting, moving or deleting any child of a clone will change all other clones on the screen.</li>
+</ul>
+<p>Clones allow data to be stored in multiple places within an outline.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Ctrl-`</span> <span class="pre">(clone-node)</span></code></dt>
+<dd>Clones node A. The shortcut is a grave accent, <em>not</em> a single quote.  This is often on the same keyboard key as the tilde <code class="docutils literal"><span class="pre">~</span></code> character.</dd>
+</dl>
+<p>Please take a few moments to experiment with clones:</p>
+<ul class="simple">
+<li>Create a node whose headline is A.</li>
+<li>Clone node A with the <code class="docutils literal"><span class="pre">clone-node</span></code> command.</li>
+<li>Type some text into the body of A.</li>
+<li>All clones of A now have the same body.</li>
+<li>Insert a node, say B, as a child of any of the A nodes.</li>
+<li>Notice that <em>all</em> the A nodes now have a B child.</li>
+<li>See what happens if you clone B.</li>
+<li>See what happens if you insert, delete or move nodes that are children of A.</li>
+<li>When you delete a node&#8217;s penultimate clone, the node becomes a regular node again.</li>
+</ul>
+</div>
+<div class="section" id="clones-accelerate-work-flow-by-creating-views">
+<h2><a class="toc-backref" href="#id2">Clones accelerate work flow by creating views</a><a class="headerlink" href="#clones-accelerate-work-flow-by-creating-views" title="Permalink to this headline">¶</a></h2>
+<p>Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:</p>
+<ul class="simple">
+<li>The original nodes never move, but they change whenever their clones do.</li>
+<li>There is nothing to &#8220;put back in place&#8221; when you are done. Just delete the clones.</li>
+</ul>
+<p>Used this way, <strong>clones create views</strong>: when you gather cloned nodes together for a project, you are, in effect, creating a project-oriented view of the outline. This view <strong>focuses your attention</strong> on only those nodes that are relevant to the task at hand.</p>
+</div>
+<div class="section" id="using-abbreviations-and-templates">
+<h2><a class="toc-backref" href="#id3">Using abbreviations and templates</a><a class="headerlink" href="#using-abbreviations-and-templates" title="Permalink to this headline">¶</a></h2>
+<p id="index-1">Leo optionally expands abbreviations as you type. Abbreviations typically end with something like <code class="docutils literal"><span class="pre">;;</span></code> so they won&#8217;t trigger by accident.</p>
+<p>To use abbreviations, you must enable them in myLeoSettings.leo:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@bool</span> <span class="n">enable</span><span class="o">-</span><span class="n">abbreviations</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>You define abbreviations in <code class="docutils literal"><span class="pre">&#64;data</span> <span class="pre">abbreviations</span></code> nodes or <code class="docutils literal"><span class="pre">&#64;data</span> <span class="pre">global-abbreviations</span></code> nodes. None come predefined, but <code class="docutils literal"><span class="pre">leo/config/exampleSettings.leo</span></code> contains example abbreviations in the node <code class="docutils literal"><span class="pre">&#64;data</span> <span class="pre">abbreviations</span> <span class="pre">examples</span></code></p>
+<p>Abbreviations can simply be shortcuts:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ncn</span><span class="p">;;</span><span class="o">=</span><span class="nd">@nocolor</span>
+</pre></div>
+</div>
+<p>Abbreviations can span multiple lines. Continued lines start with <code class="docutils literal"><span class="pre">\:</span></code>, like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">form</span><span class="p">;;</span><span class="o">=&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;main_submit&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;get&quot;</span> <span class="n">accept</span><span class="o">-</span><span class="n">charset</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="o">&gt;</span>
+\<span class="p">:</span><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Continue &amp;rarr;&quot;</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+\<span class="p">:</span><span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>\<span class="n">n</span>
+</pre></div>
+</div>
+<p>Abbreviations can define templates in which <code class="docutils literal"><span class="pre">&lt;|a-field-name|&gt;</span></code> denotes a field to be filled in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">input</span><span class="p">;;</span><span class="o">=&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/submit/hidden/button&quot;</span>
+\<span class="p">:</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;|name|&gt;&quot;</span>
+\<span class="p">:</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;&lt;|id|&gt;&quot;</span><span class="o">&gt;</span>\<span class="n">n</span>
+</pre></div>
+</div>
+<p>Typing <code class="docutils literal"><span class="pre">,,</span></code> after inserting a template selects the next field.</p>
+<p>Abbreviations can execute <strong>abbreviation scripts</strong>, delimited by <code class="docutils literal"><span class="pre">{|{</span></code> and <code class="docutils literal"><span class="pre">}|}</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">date</span><span class="p">;;</span><span class="o">=</span><span class="p">{</span><span class="o">|</span><span class="p">{</span><span class="kn">import</span> <span class="nn">time</span> <span class="p">;</span> <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()}</span><span class="o">|</span><span class="p">}</span>
+<span class="n">ts</span><span class="p">;;</span><span class="o">=</span><span class="p">{</span><span class="o">|</span><span class="p">{</span><span class="kn">import</span> <span class="nn">time</span> <span class="p">;</span> <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)}</span><span class="o">|</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>To use abbreviations scripts, enable them in myLeoSettings.leo as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@bool</span> <span class="n">scripting</span><span class="o">-</span><span class="n">abbreviations</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>With abbreviation scripts enabled, typing <code class="docutils literal"><span class="pre">ts;;</span></code> gives:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">20131009171117</span>
+</pre></div>
+</div>
+<p>It&#8217;s even possible to define a context in which abbreviation scripts execute. See leoSettings.leo for full details.</p>
+</div>
+<div class="section" id="using-urls">
+<h2><a class="toc-backref" href="#id4">Using URLs</a><a class="headerlink" href="#using-urls" title="Permalink to this headline">¶</a></h2>
+<p id="index-2">Leo highlights URLs whenever syntax is coloring is enabled.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">Ctrl-Left-Click</span> <span class="pre">(open-url-under-cursor)</span></code></dt>
+<dd>Opens the URL under the cursor.</dd>
+<dt><code class="docutils literal"><span class="pre">open-url</span></code></dt>
+<dd>Opens a URL appearing either in the headline or the first line of body text. If a headline starts with <code class="docutils literal"><span class="pre">&#64;url</span></code>, the rest of the headline is take to be a url.</dd>
+</dl>
+<p><strong>Note</strong>:</p>
+<ul class="simple">
+<li>Leo opens URLs that look like file names using os.startfile.</li>
+<li>Leo opens all other URLs with your default web browser.</li>
+<li>Any scheme (http, mailto, ftp, file, etc.) supported by your browser is valid.</li>
+<li>URL&#8217;s should contain no spaces: use <code class="docutils literal"><span class="pre">%20</span></code> instead of spaces.</li>
+</ul>
+<p><a class="reference external" href="appendices.html#valid-url-s">See the Appendix</a> for a complete description of valid URLs.</p>
+</div>
+<div class="section" id="using-chapters">
+<h2><a class="toc-backref" href="#id5">Using Chapters</a><a class="headerlink" href="#using-chapters" title="Permalink to this headline">¶</a></h2>
+<p id="index-3">&#64;chapter trees denote a <strong>chapter</strong>. You can <strong>activate</strong> a chapter from the icon area, or with chapter-select commands. Activating a chapter makes only those nodes in the chapter visible. The <code class="docutils literal"><span class="pre">main</span></code> chapter represents the entire outline. Activating the <code class="docutils literal"><span class="pre">main</span></code> chapter shows all outline nodes.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">chapter-select-main</span></code></dt>
+<dd>Selects the main chapter.</dd>
+<dt><code class="docutils literal"><span class="pre">chapter-select-&lt;chapter-name&gt;</span></code></dt>
+<dd>Selects a chapter by name.</dd>
+</dl>
+</div>
+<div class="section" id="summary">
+<h2><a class="toc-backref" href="#id6">Summary</a><a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Clones are nodes appearing multiple places in the outline.</p>
+<ul class="simple">
+<li>Changes to one clone affect all other clones.</li>
+<li>All clones of a node are <em>exactly the same node</em>.</li>
+</ul>
+<p>Views allow multiple views of data to exist in a single outline.</p>
+<ul class="simple">
+<li>A view is simply a collection of nodes.</li>
+<li>Because of clones, a node may appear in many views at once.</li>
+<li>View focus attention on tasks and reduce searching for nodes.</li>
+</ul>
+<p>Leo expands abbreviations as you type.</p>
+<ul class="simple">
+<li>Abbreviations range from simple shortcuts to multi-line templates containing fields.</li>
+<li>Type <code class="docutils literal"><span class="pre">,,</span></code> to move to the next field.</li>
+<li>Abbreviations can also insert the result of executing code.</li>
+</ul>
+<p>Ctrl-left-clicking any URL opens the URL.</p>
+<p>&#64;chapter trees denote chapters. Activating a chapter shows only the nodes in that chapter.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial-basics.html"
+                        title="previous chapter">Leo in 10 Minutes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial-rst3.html"
+                        title="next chapter">Creating Documents from Outlines</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tutorial-rst3.html" title="Creating Documents from Outlines"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial-basics.html" title="Leo in 10 Minutes"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial.html" >Leo&#8217;s Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# flake8: noqa
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 #@@first

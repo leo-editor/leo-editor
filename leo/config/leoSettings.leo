@@ -186,7 +186,11 @@
 <v t="ekr.20150428102831.10"><vh>param_doc</vh></v>
 <v t="ekr.20150428102831.7"><vh>user_name</vh></v>
 </v>
-<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
+<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh>
+<v t="ekr.20230221053726.1"><vh>abbreviations: date</vh></v>
+<v t="ekr.20230221053634.1"><vh>abbreviations: html</vh></v>
+<v t="ekr.20230221053825.1"><vh>abbrevitaion: misspellings:</vh></v>
+</v>
 <v t="ekr.20161121044950.1"><vh>@outline-data tree-abbreviations</vh>
 <v t="ekr.20170530035032.1"><vh>importer;;</vh>
 <v t="ekr.20170530035032.2"><vh>@@file importers/{|{x=name}|}.py</vh>
@@ -567,6 +571,11 @@
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
+<v t="ekr.20230104150532.1"><vh>check-node settings</vh>
+<v t="ekr.20230104150600.1"><vh>@data check-nodes-ok-patterns</vh></v>
+<v t="ekr.20230104150550.1"><vh>@data check-nodes-ok-prefixes</vh></v>
+<v t="ekr.20230104151508.1"><vh>@data check-nodes-suppressions</vh></v>
+</v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
@@ -595,6 +604,7 @@
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command settings</vh>
+<v t="ekr.20230112123841.1"><vh>@string rst3-action=None</vh></v>
 <v t="ekr.20210327193736.1"><vh>rst3 reporting options</vh>
 <v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
 </v>
@@ -605,7 +615,8 @@
 <v t="ekr.20210327193854.1"><vh>rst3 output options</vh>
 <v t="ekr.20071213061504"><vh>@string rst3-default-path = None</vh></v>
 <v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~-:&gt;&lt;</vh></v>
+<v t="ekr.20230205102733.1"><vh>@bool rst3-remove-leo-directives = True</vh></v>
 <v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
 <v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
 </v>
@@ -644,17 +655,19 @@
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
+<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
-<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
+<v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
 <v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
@@ -663,7 +676,6 @@
 <v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
-<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
 <v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
@@ -1455,7 +1467,6 @@
 </v>
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
-<v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
@@ -1532,6 +1543,7 @@
 <v t="ekr.20131213135427.22346"><vh>@item &amp;open-online-home</vh></v>
 <v t="ekr.20131213135427.22347"><vh>@item &amp;open-online-toc</vh></v>
 <v t="ekr.20131213135427.22348"><vh>@item &amp;open-users-guide</vh></v>
+<v t="ekr.20230104130512.1"><vh>@item &amp;open-online-scripting-miscellany</vh></v>
 <v t="ekr.20131213135427.22349"><vh>@item &amp;open-online-tutorials</vh></v>
 <v t="ekr.20131213135427.22350"><vh>@item &amp;open-online-videos</vh></v>
 </v>
@@ -2073,9 +2085,6 @@
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20220524035531.1"><vh>@int rguide-col = 80</vh></v>
-</v>
-<v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant-language = en-US</vh></v>
@@ -3693,7 +3702,6 @@ changes your personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
-<t tx="ekr.20061029091403"></t>
 <t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
       as specified by the @string relative_path_base_directory setting.
       
@@ -4623,19 +4631,6 @@ This allows you to increase the font size.
     #00AA00, UnclosedString
 </t>
 <t tx="ekr.20081023060109.14"></t>
-<t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
-
-If a line starts with \\-N, Leo will write the line with N fewer spaces
-than expected.
-
-An **underindented line** is a line of body text that is indented less then
-the starting line of the class, method or function in which it appears. Leo
-outlines can not represent such lines exactly: every line in an external
-file will have at least the indentation of any unindented line of the
-corresponding node in the outline. Leo will issue a warning (not an error)
-for underindented Python comment lines. Such lines can not change the
-meaning of Python programs.
-</t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
 <t tx="ekr.20090203131919.1">'''Check that all commands mentioned in the @menus tree actually exist.'''
@@ -4705,33 +4700,20 @@ For information about supported languages, see:
 http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 </t>
 <t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
-<t tx="ekr.20100904134301.11000"></t>
-<t tx="ekr.20100904134301.11002"># Comments lines (lines starting with '#') are ignored.
-# Non-comment lines should have the form::
-#
-#    name=definition
+<t tx="ekr.20100904134301.11000">@language python
+</t>
+<t tx="ekr.20100904134301.11002"># Blanks lines and comments (lines starting with '#') are ignored.
+# All other lines should have the form::
 
-# Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. 
+# name=definition
 
-# Typically you would define @data global-abbreviation nodes
-# in myLeoSettings.leo and @data abbreviation nodes in local files.
+# @data abbreviation overrides @data global-abbreviation, so:
+# - Use @data global-abbreviation nodes in myLeoSettings.leo.
+# - Use @data abbreviation nodes in local files.
 
-# type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
-html;;=&lt;html&gt;
-\:&lt;head&gt;
-\:&lt;title&gt;&lt;|title|&gt;&lt;/title&gt;
-\:&lt;style&gt;
-\:&lt;/style&gt;
-\:&lt;/head&gt;
-\:&lt;body&gt;
-\:&lt;|content|&gt;
-\:&lt;/body&gt;
-\:&lt;/html&gt;
+# Important: You can organize your abbreviations!
+#            All descendant nodes are part of this node.
 
-# this abbreviation will only work with @bool scripting-abbreviations = True
-# (or @bool scripting-at-script-nodes = True)
-date;;={|{x=time.asctime()}|}
 </t>
 <t tx="ekr.20100904134301.11004"># Comments lines (lines starting with '#') are ignored.
 # Non-comment lines should have the form::
@@ -4743,6 +4725,42 @@ date;;={|{x=time.asctime()}|}
 
 # Typically you would define @data global-abbreviation nodes
 # in myLeoSettings.leo and @data abbreviation nodes in local files.
+
+# Abbreviations of Greek letters:
+
+#  alph;;=α
+#  beta;;=β
+#  delt;;=δ
+#  gam;;=γ
+#  mu;;=μ
+#  pi;;=π
+#  sig;;=σ
+#  Delt;;=Δ
+#  Sig;;=Σ
+#  pm;;=±
+
+#  Abbreviations for currency symbols.
+
+#  cent;;=¢
+#  euro;;=€
+#  pound;;=£
+#  yen;;=¥
+
+# Abbreviations for other symbols.
+
+#  .;;=…
+#  3fourths;;=¾
+#  because;;=∵
+#  bullet;;=•
+#  cross;;=✖
+#  degree;;=°
+#  divide;;=÷
+#  ergo;;=∴
+#  exists;;=∃
+#  half;;=½
+#  infinity;;=∞
+#  quarter;;=¼
+#  tick;;=✔
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
@@ -4770,7 +4788,6 @@ Instead, enable the codewisecompleter.py plugin.</t>
 @wrap
 
 </t>
-<t tx="ekr.20110611092035.16481"></t>
 <t tx="ekr.20110611092035.16482"></t>
 <t tx="ekr.20110611092035.16483"></t>
 <t tx="ekr.20110611092035.16488"></t>
@@ -5706,7 +5723,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22126"></t>
 <t tx="ekr.20131213135427.22127"></t>
 <t tx="ekr.20131213135427.22128">Open External &amp;Debugger</t>
-<t tx="ekr.20131213135427.22129">Open &amp;Pdb Debugger</t>
 <t tx="ekr.20131213135427.22130"></t>
 <t tx="ekr.20131213135427.22131"></t>
 <t tx="ekr.20131213135427.22132"></t>
@@ -10322,7 +10338,7 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
+<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
@@ -11098,13 +11114,13 @@ See https://jedi.readthedocs.io/en/latest/index.html
         'margin', 'padding', 'relief',
         'solarized', 'split-bar', 'text-foreground', 'tree-image',
     ):
-        if setting.find(munge(pattern)) &gt; -1:
+        if munge(pattern) in setting:
             return False
     #
     # These plugins use settings in non-standard ways.
     if setting.startswith((
         'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'zodb'),
+        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
     ):
         return False
     #
@@ -11314,7 +11330,11 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
     
     This method requires exact matches between settings: it does no munging.
     """
+    unusual_keys = (
+        '@color',  # per-key @color settings have changed.
+    )
     unusual_settings = (
+        # 'forth',  # Experimental.
         'color-theme',  # Uses td.get_string_setting.
         'theme-name',  # Uses td.get_string_setting.
     )
@@ -11322,7 +11342,11 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
         settings = settings_d.get(key, [])
         user_settings = user_settings_d.get(key, [])
         for user_setting in user_settings:
-            if user_setting not in settings and user_setting not in unusual_settings:
+            if (
+                user_setting not in settings
+                and user_setting not in unusual_settings
+                and key not in unusual_keys
+            ):
                 print(f"Unknown setting in myLeoSettings.leo: {key} {user_setting}")
 </t>
 <t tx="ekr.20200226173056.1"></t>
@@ -11650,6 +11674,78 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # xml_edit.py
 # xsltWithNodes.py
 # zenity_file_dialogs.py
+</t>
+<t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
+<t tx="ekr.20230104130512.1"></t>
+<t tx="ekr.20230104150532.1"></t>
+<t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
+# These defaults ignore top-level @&lt;file&gt; nodes and marker nodes.
+@
+**
+==
+--</t>
+<t tx="ekr.20230104150600.1"># Headlines matching the following regex strings are never considered dubious.
+# These strings are treated as raw strings.
+.*test_
+.*Test
+</t>
+<t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
+# Headlines must match exactly.
+
+</t>
+<t tx="ekr.20230112123841.1">This setting tells what the rst3 should do when writing changed files.
+The valid actions are:
+
+'none':  take no extra action.
+'clone': clone all dirty `@rst` trees.
+'mark':  mark all dirty `@rst` trees.
+</t>
+<t tx="ekr.20230113102630.1">Specify the format of gnxs:
+
+none: Generate legacy gnxs: &lt;self.userId&gt;.&lt;timestamp&gt;.&lt;unique number withing timestamp&gt;
+
+uuid: Generate uuids: See https://docs.python.org/3/library/uuid.html
+
+ksuid: Generate ksuids: See https://github.com/saresend/KSUID
+    pip install ksuid
+    
+Compatibility notes:
+    
+- All forms of gnx strings (legacy, UUIDs and KSUIDs) may safely coexist in the same document.
+- All versions of Leo from 4.1 onward can read all forms of gnxs.
+- The "sort by creation date" of the todo plugin will not work with UUIDs or KSUIDs.
+
+For more details, see https://github.com/leo-editor/leo-editor/issues/3047
+</t>
+<t tx="ekr.20230205102733.1">False (legacy): Don't filter body text.
+True:           Remove unindented @language, @others and @wrap directives.
+</t>
+<t tx="ekr.20230221053634.1"># type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
+
+html;;=&lt;html&gt;
+\:&lt;head&gt;
+\:&lt;title&gt;&lt;|title|&gt;&lt;/title&gt;
+\:&lt;style&gt;
+\:&lt;/style&gt;
+\:&lt;/head&gt;
+\:&lt;body&gt;
+\:&lt;|content|&gt;
+\:&lt;/body&gt;
+\:&lt;/html&gt;
+
+</t>
+<t tx="ekr.20230221053726.1"># This abbreviation will only work with @bool scripting-abbreviations = True
+# (or @bool scripting-at-script-nodes = True)
+
+date;;={|{x=time.asctime()}|}
+
+</t>
+<t tx="ekr.20230221053825.1"># By convention, most abbreviations end with ;; so that you won't type them by accident.
+# However, you can fix misspellings as shown here.
+
+# teh=the
+# hellow=hello
+
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 

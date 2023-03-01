@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18150: * @file ../plugins/importers/otl.py
-#@@first
 """The @auto importer for vim-outline files."""
 import re
 from typing import Dict, List

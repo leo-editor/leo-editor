@@ -123,7 +123,7 @@ class DT(BaseLeoPlugin):
             g.error("%s failures in %s tests" % (failures, tests))
         #@-<<report summary of results>>
 
-        #clean up temp file
+        # clean up temp file
         os.remove(tempfilename)
     #@-others
 

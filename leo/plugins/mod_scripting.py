@@ -220,8 +220,9 @@ This plugin is based on ideas from e's dynabutton plugin, possibly the
 most brilliant idea in Leo's history.
 """
 #@-<< mod_scripting docstring >>
-#@+<< mod_scripting imports >>
-#@+node:ekr.20060328125248.2: ** << mod_scripting imports >>
+#@+<< mod_scripting imports & annotations >>
+#@+node:ekr.20060328125248.2: ** << mod_scripting imports & annotations >>
+from __future__ import annotations
 from collections import namedtuple
 import pprint
 import re
@@ -231,21 +232,15 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, T
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
-#@-<< mod_scripting imports >>
-#@+<< mod_scripting annotations >>
-#@+node:ekr.20220828080640.1: ** << mod_scripting annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
-#@-<< mod_scripting annotations >>
+    Widget = Any
+#@-<< mod_scripting imports & annotations >>
+
 #@+others
 #@+node:ekr.20210228135810.1: ** cmd decorator
 def eval_cmd(name: str) -> Callable:

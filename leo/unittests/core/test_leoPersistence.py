@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210908171733.1: * @file ../unittests/core/test_leoPersistence.py
-#@@first
 """Tests for leo.core.leoPersistence"""
 
 from leo.core import leoGlobals as g

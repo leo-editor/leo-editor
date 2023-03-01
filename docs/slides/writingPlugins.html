@@ -1,0 +1,898 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Writing Plugins &#8212; Leo 5.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Unit testing with Leo" href="unitTesting.html" />
+    <link rel="prev" title="Controlling Syntax Coloring" href="coloring.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="unitTesting.html" title="Unit testing with Leo"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="writing-plugins">
+<h1>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h1>
+<p>Plugins modify how Leo works. With plugins you can give Leo new commands,
+modify how existing commands work, or change any other aspect of Leo&#8217;s look
+and feel.</p>
+<p>leoPlugins.leo contains all of Leo&#8217;s official plugins. Studying this file is
+a good way to learn how to write plugins.</p>
+<p>Writing plugins is like writing any other Leo script.  See
+<a class="reference external" href="tutorial-scripting.html">Scripting Leo with Python</a>. In particular:</p>
+<ol class="arabic simple">
+<li>Plugins can use any of Leo&#8217;s source code simply by importing any module
+defined in leoPy.leo.</li>
+<li>Plugins can register event handlers just like any other Leo script. For full
+details, see the section called <a class="reference internal" href="#handling-events">Handling Events</a> later in this chapter.</li>
+</ol>
+<p>The rest of this chapters discusses topics related specifically to plugins.</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#id1" id="id2">Writing Plugins</a></li>
+<li><a class="reference internal" href="#important-security-warnings" id="id3">Important security warnings</a></li>
+<li><a class="reference internal" href="#documenting-plugins" id="id4">Documenting plugins</a></li>
+<li><a class="reference internal" href="#c-ivars-properties" id="id5">c ivars &amp; properties</a></li>
+<li><a class="reference internal" href="#handling-events" id="id6">Handling events</a><ul>
+<li><a class="reference internal" href="#summary-of-event-handlers" id="id7">Summary of event handlers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#support-for-unit-testing" id="id8">Support for unit testing</a></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id2">Writing Plugins</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>A plugin is a Python file in Leo&#8217;s plugins folder.</p>
+<p>Every plugin should have a top-level init function that returns True if the plugin has been initialized properly. The init function typically:</p>
+<ol class="arabic simple">
+<li>Registers an onCreate event handler, called when Leo creates a new window.</li>
+<li>Calls g.plugin_signon(__name__)</li>
+</ol>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="k">if</span> <span class="o">&lt;&lt;</span> <span class="nb">all</span> <span class="n">imports</span> <span class="n">successful</span> <span class="o">&gt;&gt;</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s1">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Plugins do <em>not</em> have automatic access to c, g and p.</p>
+<p>Plugins define g by importing it:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="k">as</span> <span class="nn">g</span>
+</pre></div>
+</div>
+<p>Plugins gain access to c using event handlers:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">controllers</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s1">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">controllers</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="nb">hash</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hash</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">controllers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">controllers</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span> <span class="o">=</span> <span class="n">PluginController</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">eventHander</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keys</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">controllers</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">hash</span><span class="p">())</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Some plugins inject ivars into the Commands class rather than using a global controllers dict:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">my_plugin_controller</span> <span class="o">=</span> <span class="n">ControllerClass</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">eventHander</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="n">keys</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">my_plugin_controller</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once c is determined, the presently selected position is simply c.p.</p>
+</div>
+<div class="section" id="important-security-warnings">
+<h2><a class="toc-backref" href="#id3">Important security warnings</a><a class="headerlink" href="#important-security-warnings" title="Permalink to this headline">¶</a></h2>
+<p>Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Scripts</span> <span class="ow">and</span> <span class="n">plugins</span> <span class="n">must</span> <span class="n">never</span> <span class="n">blindly</span> <span class="n">execute</span> <span class="n">code</span> <span class="kn">from</span> <span class="nn">untrusted</span> <span class="n">sources</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">leo</span> <span class="n">files</span> <span class="n">obtained</span> <span class="kn">from</span> <span class="nn">other</span> <span class="n">people</span> <span class="n">may</span> <span class="n">potentially</span> <span class="n">contain</span> <span class="n">hostile</span> <span class="n">code</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Stephen Schaefer summarizes the danger this way:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>I foresee a future in which the majority of leo projects come from
+marginally trusted sources...a world of leo documents sent hither
+and yon - resumes, project proposals, textbooks, magazines,
+contracts - and as a race of Pandora&#39;s, we cannot resist wanting
+to see &quot;What&#39;s in the box?&quot; And are we going to fire up a text
+editor to make a detailed examination of the ASCII XML? Never!
+We&#39;re going to double click on the cute leo file icon, and leo
+will fire up in all its raging glory. Just like Word (and its
+macros) or Excel (and its macros).
+</pre></div>
+</div>
+<p>In other words:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>When we share &quot;our&quot; .leo files we can NOT assume that we know what
+is in our &quot;own&quot; documents!
+</pre></div>
+</div>
+<p>Not all environments are untrustworthy. Code in a commercial cvs repository is probably trustworthy: employees might be terminated for posting malicious code. Still, the potential for abuse exists anywhere.</p>
+<p>In Python it is very easy to write a script that will blindly execute other scripts:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Warning: extremely dangerous code</span>
+
+<span class="c1"># Execute the body text of all nodes that start with `@script`.</span>
+<span class="k">def</span> <span class="nf">onLoadFile</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">match_word</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;@script&quot;</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span> <span class="c1"># SECURITY BREACH: s may be malicious!</span>
+                    <span class="n">exec</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">es_exception</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Executing this kind of code is typically an intolerable security risk. <strong>Important</strong>: rexec provides <em>no protection whatever</em>. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>badNode = c.p
+for p in c.all_positions():
+    &lt;&lt; change `rexec` to `exec` in p&#39;s body &gt;&gt;
+&lt;&lt; delete badNode &gt;&gt;
+&lt;&lt; clear the undo stack &gt;&gt;
+</pre></div>
+</div>
+<p>This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent <em>outside</em> this script when the user saves the .leo file.</p>
+</div>
+<div class="section" id="documenting-plugins">
+<h2><a class="toc-backref" href="#id4">Documenting plugins</a><a class="headerlink" href="#documenting-plugins" title="Permalink to this headline">¶</a></h2>
+<p>Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.</p>
+<ul>
+<li><p class="first">Document the plugin thoroughly in the plugin&#8217;s docstring. This allows the documentation to be accessed from the Plugins menu.</p>
+</li>
+<li><p class="first">Document any new commands with a proper docstring. This allows the minibuffer command <cite>help-for-command</cite> to provide help for the command.</p>
+</li>
+<li><p class="first">In <cite>leo/doc/sphinx-docs/sphinxDocs.leo</cite>, to the node <cite>&#64;file leo.plugins.rst</cite>, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here <cite>ipython</cite>). This allows the API docs to be automatically updated:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>:mod:`ipython` Module
+---------------------
+
+.. automodule:: leo.plugins.ipython
+    :members:
+    :undoc-members:
+    :show-inheritance:
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="c-ivars-properties">
+<h2><a class="toc-backref" href="#id5">c ivars &amp; properties</a><a class="headerlink" href="#c-ivars-properties" title="Permalink to this headline">¶</a></h2>
+<p>For any commander c:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="59%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Property</strong></td>
+<td><strong>Value</strong></td>
+</tr>
+<tr class="row-even"><td>c.p</td>
+<td>the presently selected position</td>
+</tr>
+<tr class="row-odd"><td><strong>Ivar</strong></td>
+<td><strong>Value</strong></td>
+</tr>
+<tr class="row-even"><td>c.frame</td>
+<td>the leoFrame representing the main window.</td>
+</tr>
+<tr class="row-odd"><td>c.frame.body</td>
+<td>the leoBody representing the body pane.</td>
+</tr>
+<tr class="row-even"><td>c.frame.body.wrapper</td>
+<td>a leoQTextEditWidget.</td>
+</tr>
+<tr class="row-odd"><td>c.frame.body.wrapper.widget</td>
+<td>a LeoQTextBrowser (a QTextBrowser)</td>
+</tr>
+<tr class="row-even"><td>c.frame.tree</td>
+<td>a leoQtTree, representing the tree pane</td>
+</tr>
+<tr class="row-odd"><td>c.frame.tree.treeWidget</td>
+<td>a LeoQTreeWidget (a QTreeWidget)</td>
+</tr>
+<tr class="row-even"><td>c.user_dict</td>
+<td>a Python dictionary for use by scripts and
+plugins. Does not persist when Leo exists.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="handling-events">
+<h2><a class="toc-backref" href="#id6">Handling events</a><a class="headerlink" href="#handling-events" title="Permalink to this headline">¶</a></h2>
+<p>Plugins and other scripts can register event handlers (also known as hooks):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+<span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
+<span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s2">&quot;start2&quot;</span><span class="p">,</span><span class="s2">&quot;open2&quot;</span><span class="p">,</span><span class="s2">&quot;command2&quot;</span><span class="p">),</span> <span class="n">create_open_with_menu</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As shown above, a plugin may register one or more event handlers with a single call to leoPlugins.registerHandler. Once a hook is registered, Leo will call the registered function&#8217; at the named <strong>hook time</strong>. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>causes Leo to call on_idle at &#8220;idle&#8221; time.</p>
+<p>Event handlers must have the following signature:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myHook</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+    <span class="n">whatever</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>tag is the name of the hook (a string).</li>
+<li>keywords is a Python dictionary containing additional information. The following section describes the contents of the keywords dictionary in detail.</li>
+</ul>
+<p><strong>Important</strong>: hooks should get the proper commander this way:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="summary-of-event-handlers">
+<h3><a class="toc-backref" href="#id7">Summary of event handlers</a><a class="headerlink" href="#summary-of-event-handlers" title="Permalink to this headline">¶</a></h3>
+<p>The following table tells about each event handler: its name, when it is called,
+and the additional arguments passed to the hook in the keywords dictionary.
+For some kind of hooks, Leo will skip its own normal processing if the hook
+returns anything <em>other</em> than None. The table indicates such hooks with &#8216;yes&#8217; in
+the &#8216;Stop?&#8217; column.</p>
+<p><strong>Important</strong>: Ever since Leo 4.2, the v, old_v and new_v keys in
+the keyword dictionary contain <em>positions</em>, not vnodes. These keys are
+deprecated. The new_c key is also deprecated. Plugins should use the c key instead.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="7%" />
+<col width="30%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Event name (tag argument)</th>
+<th class="head">Stop?</th>
+<th class="head">When called</th>
+<th class="head">Keys in keywords dict</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&#8216;after-auto&#8217;</td>
+<td>&#160;</td>
+<td>after each &#64;auto file loaded</td>
+<td>c,p (note 13)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;after-create-leo-frame&#8217;</td>
+<td>&#160;</td>
+<td>after creating any frame</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;after-redraw-outline&#8217;</td>
+<td>&#160;</td>
+<td>end of tree.redraw</td>
+<td>c (note 6)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;before-create-leo-frame&#8217;</td>
+<td>&#160;</td>
+<td>before frame.finishCreate</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodyclick1&#8217;</td>
+<td>yes</td>
+<td>before normal click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodyclick2&#8217;</td>
+<td>&#160;</td>
+<td>after normal click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodydclick1&#8217;</td>
+<td>yes</td>
+<td>before double click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodydclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  double click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodykey1&#8217;</td>
+<td>yes</td>
+<td>before body keystrokes</td>
+<td>c,p,v,ch,oldSel,undoType</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodykey2&#8217;</td>
+<td>&#160;</td>
+<td>after  body keystrokes</td>
+<td>c,p,v,ch,oldSel,undoType</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodyrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodyrclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  right click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;boxclick1&#8217;</td>
+<td>yes</td>
+<td>before click in +- box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;boxclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  click in +- box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;clear-all-marks&#8217;</td>
+<td>&#160;</td>
+<td>after clear-all-marks command</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;clear-mark&#8217;</td>
+<td>&#160;</td>
+<td>when mark is set</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-even"><td>&#8216;close-frame&#8217;</td>
+<td>&#160;</td>
+<td>in app.closeLeoWindow</td>
+<td>c</td>
+</tr>
+<tr class="row-odd"><td>&#8216;color-optional-markup&#8217;</td>
+<td>yes *</td>
+<td>(note 7)</td>
+<td>colorer,p,v,s,i,j,colortag (note 7)</td>
+</tr>
+<tr class="row-even"><td>&#8216;command1&#8217;</td>
+<td>yes</td>
+<td>before each command</td>
+<td>c,p,v,label (note 2)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;command2&#8217;</td>
+<td>&#160;</td>
+<td>after  each command</td>
+<td>c,p,v,label (note 2)</td>
+</tr>
+<tr class="row-even"><td>&#8216;create-optional-menus&#8217;</td>
+<td>&#160;</td>
+<td>(note 8)</td>
+<td>c (note 8)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;create-popup-menu-items&#8217;</td>
+<td>&#160;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event (new)</td>
+</tr>
+<tr class="row-even"><td>&#8216;draw-outline-box&#8217;</td>
+<td>yes</td>
+<td>when drawing +- box</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-odd"><td>&#8216;draw-outline-icon&#8217;</td>
+<td>yes</td>
+<td>when drawing icon</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-even"><td>&#8216;draw-outline-node&#8217;</td>
+<td>yes</td>
+<td>when drawing node</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-odd"><td>&#8216;draw-outline-text-box&#8217;</td>
+<td>yes</td>
+<td>when drawing headline</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-even"><td>&#8216;drag1&#8217;</td>
+<td>yes</td>
+<td>before start of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;drag2&#8217;</td>
+<td>&#160;</td>
+<td>after  start of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;dragging1&#8217;</td>
+<td>yes</td>
+<td>before continuing to drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;dragging2&#8217;</td>
+<td>&#160;</td>
+<td>after  continuing to drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;enable-popup-menu-items&#8217;</td>
+<td>&#160;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;end1&#8217;</td>
+<td>&#160;</td>
+<td>start of app.quit()</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>&#8216;enddrag1&#8217;</td>
+<td>yes</td>
+<td>before end of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;enddrag2&#8217;</td>
+<td>&#160;</td>
+<td>after  end of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headclick1&#8217;</td>
+<td>yes</td>
+<td>before normal click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  normal click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headrclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  right click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headkey1&#8217;</td>
+<td>yes</td>
+<td>before headline keystrokes</td>
+<td>c,p,v,ch (note 12)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headkey2&#8217;</td>
+<td>&#160;</td>
+<td>after  headline keystrokes</td>
+<td>c,p,v,ch (note 12)</td>
+</tr>
+<tr class="row-even"><td>&#8216;hoist-changed&#8217;</td>
+<td>&#160;</td>
+<td>whenever the hoist stack changes</td>
+<td>c</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hypercclick1&#8217;</td>
+<td>yes</td>
+<td>before control click in hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hypercclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  control click in hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hyperenter1&#8217;</td>
+<td>yes</td>
+<td>before entering hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hyperenter2&#8217;</td>
+<td>&#160;</td>
+<td>after  entering hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hyperleave1&#8217;</td>
+<td>yes</td>
+<td>before leaving  hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hyperleave2&#8217;</td>
+<td>&#160;</td>
+<td>after  leaving  hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;iconclick1&#8217;</td>
+<td>yes</td>
+<td>before single click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-even"><td>&#8216;iconclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  single click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;iconrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-even"><td>&#8216;iconrclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  right click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;icondclick1&#8217;</td>
+<td>yes</td>
+<td>before double click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-even"><td>&#8216;icondclick2&#8217;</td>
+<td>&#160;</td>
+<td>after  double click in icon box</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;idle&#8217;</td>
+<td>&#160;</td>
+<td>periodically (at idle time)</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;init-color-markup&#8217;</td>
+<td>&#160;</td>
+<td>(note 7)</td>
+<td>colorer,p,v (note 7)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;menu1&#8217;</td>
+<td>yes</td>
+<td>before creating menus</td>
+<td>c,p,v (note 3)</td>
+</tr>
+<tr class="row-even"><td>&#8216;menu2&#8217;</td>
+<td>yes</td>
+<td>during creating menus</td>
+<td>c,p,v (note 3)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;menu-update&#8217;</td>
+<td>yes</td>
+<td>before updating menus</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-even"><td>&#8216;new&#8217;</td>
+<td>&#160;</td>
+<td>start of New command</td>
+<td>c,old_c,new_c (note 9)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;open1&#8217;</td>
+<td>yes</td>
+<td>before opening any file</td>
+<td>c,old_c,new_c,fileName (note 4)</td>
+</tr>
+<tr class="row-even"><td>&#8216;open2&#8217;</td>
+<td>&#160;</td>
+<td>after  opening any file</td>
+<td>c,old_c,new_c,fileName (note 4)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;openwith1&#8217;</td>
+<td>yes</td>
+<td>before Open With command</td>
+<td>c,p,v,d (note 14)</td>
+</tr>
+<tr class="row-even"><td>&#8216;openwith2&#8217;</td>
+<td>&#160;</td>
+<td>after  Open With command</td>
+<td>c,p,v,(note 14)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;recentfiles1&#8217;</td>
+<td>yes</td>
+<td>before Recent Files command</td>
+<td>c,p,v,fileName,closeFlag</td>
+</tr>
+<tr class="row-even"><td>&#8216;recentfiles2&#8217;</td>
+<td>&#160;</td>
+<td>after  Recent Files command</td>
+<td>c,p,v,fileName,closeFlag</td>
+</tr>
+<tr class="row-odd"><td>&#8216;redraw-entire-outline&#8217;</td>
+<td>yes</td>
+<td>start of tree.redraw</td>
+<td>c (note 6)</td>
+</tr>
+<tr class="row-even"><td>&#8216;save1&#8217;</td>
+<td>yes</td>
+<td>before any Save command</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-odd"><td>&#8216;save2&#8217;</td>
+<td>&#160;</td>
+<td>after  any Save command</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-even"><td>&#8216;scan-directives&#8217;</td>
+<td>&#160;</td>
+<td>in scanDirectives</td>
+<td>c,p,v,s,old_dict,dict,pluginsList (note 10)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;select1&#8217;</td>
+<td>yes</td>
+<td>before selecting a position</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;select2&#8217;</td>
+<td>&#160;</td>
+<td>after  selecting a position</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;select3&#8217;</td>
+<td>&#160;</td>
+<td>after  selecting a position</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;set-mark&#8217;</td>
+<td>&#160;</td>
+<td>when a mark is set</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;show-popup-menu&#8217;</td>
+<td>&#160;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;start1&#8217;</td>
+<td>&#160;</td>
+<td>after app.finishCreate()</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>&#8216;start2&#8217;</td>
+<td>&#160;</td>
+<td>after opening first Leo window</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-even"><td>&#8216;unselect1&#8217;</td>
+<td>yes</td>
+<td>before unselecting a vnode</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;unselect2&#8217;</td>
+<td>&#160;</td>
+<td>after  unselecting a vnode</td>
+<td>c,new_p,old_p,old_v,old_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;&#64;url1&#8217;</td>
+<td>yes</td>
+<td>before double-click &#64;url node</td>
+<td>c,p,v,url (note 5)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;&#64;url2&#8217;</td>
+<td>&#160;</td>
+<td>after  double-click &#64;url node</td>
+<td>c,p,v(note 5)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes</strong>:</p>
+<ol class="arabic">
+<li><p class="first">&#8216;activate&#8217; and &#8216;deactivate&#8217; hooks have been removed because they do not work as expected.</p>
+</li>
+<li><p class="first">&#8216;commands&#8217; hooks: The label entry in the keywords dict contains the
+&#8216;canonicalized&#8217; form of the command, that is, the lowercase name of the command
+with all non-alphabetic characters removed.
+Commands hooks now set the label for undo and redo commands &#8216;undo&#8217; and &#8216;redo&#8217;
+rather than &#8216;cantundo&#8217; and &#8216;cantredo&#8217;.</p>
+</li>
+<li><p class="first">&#8216;menu1&#8217; hook: Setting g.app.realMenuNameDict in this hook is an easy way of
+translating menu names to other languages. <strong>Note</strong>: the &#8216;new&#8217; names created this
+way affect only the actual spelling of the menu items, they do <em>not</em> affect how
+you specify shortcuts settings, nor do they affect the &#8216;official&#8217;
+command names passed in g.app.commandName. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span><span class="p">()</span><span class="o">.</span><span class="n">realMenuNameDict</span><span class="p">[</span><span class="s1">&#39;Open...&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ouvre&#39;</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">&#8216;open1&#8217; and &#8216;open2&#8217; hooks: These are called with a keywords dict containing the following entries:</p>
+<ul class="simple">
+<li>c:          The commander of the newly opened window.</li>
+<li>old_c:      The commander of the previously open window.</li>
+<li>new_c:      (deprecated: use &#8216;c&#8217; instead) The commander of the newly opened window.</li>
+<li>fileName:   The name of the file being opened.</li>
+</ul>
+<p>You can use old_c.p and c.p to get the current position in the old and new windows.
+Leo calls the &#8216;open1&#8217; and &#8216;open2&#8217; hooks only if the file is not already open. Leo
+will also call the &#8216;open1&#8217; and &#8216;open2&#8217; hooks if: a) a file is opened using the
+Recent Files menu and b) the file is not already open.</p>
+</li>
+<li><p class="first"><a class="reference external" href="mailto:'&#37;&#52;&#48;url1">'<span>&#64;</span>url1</a>&#8216; and <a class="reference external" href="mailto:'&#37;&#52;&#48;url2">'<span>&#64;</span>url2</a>&#8216; hooks are only executed if the &#8216;icondclick1&#8217; hook returns None.</p>
+</li>
+<li><p class="first">These hooks are useful for testing.</p>
+</li>
+<li><p class="first">These hooks allow plugins to parse and handle markup within doc parts,
+comments and Python &#8216;&#8217;&#8217; strings. Note that these hooks are <em>not</em> called in
+Python &#8216;&#8217;&#8217; strings. See the color_markup plugin for a complete example of how to
+use these hooks.</p>
+</li>
+<li><p class="first">Leo calls the &#8216;create-optional-menus&#8217; hook when creating menus. This hook need
+only create new menus in the correct order, without worrying about the placement
+of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
+examples of how to use this hook.</p>
+</li>
+<li><p class="first">The New command calls &#8216;new&#8217;.
+The &#8216;new_c&#8217; key is deprecated.  Use the &#8216;c&#8217; key instead.</p>
+</li>
+<li><p class="first">g.scanDirectives calls &#8216;scan-directives&#8217; hook.
+g.scanDirectives returns a dictionary, say d.
+d.get(&#8216;pluginsList&#8217;) is an a list of tuples (d,v,s,k) where:</p>
+<ul class="simple">
+<li>d is the spelling of the &#64;directive, without the leading &#64;.</li>
+<li>v is the vnode containing the directive, _not_ the original vnode.</li>
+<li>s[k:] is a string containing whatever follows the &#64;directive.
+k has already been moved past any whitespace that follows the &#64;directive.</li>
+</ul>
+<p>See the add_directives plugins directive for a complete example of how to use
+the &#8216;scan-directives&#8217; hook.</p>
+</li>
+<li><p class="first">g.app.closeLeoWindow calls the &#8216;close-frame&#8217; hook just before
+removing the window from g.app.windowList. The hook code may remove the window
+from app.windowList to prevent g.app.closeLeoWindow from destroying the window.</p>
+</li>
+<li><p class="first">Leo calls the &#8216;headkey1&#8217; and &#8216;headkey2&#8217; when the headline <em>might</em> have changed.</p>
+</li>
+<li><p class="first">p is the new node (position) containing <a class="reference external" href="mailto:'&#37;&#52;&#48;auto">'<span>&#64;</span>auto</a> filename.ext&#8217;</p>
+</li>
+<li><p class="first">The d argument to the open-with event handlers is a python
+dictionary whose keys are all the tags specified by the user in the body of the
+&#64;openwith node.</p>
+</li>
+</ol>
+<p>The following events can <em>only</em> be called be called by minibuffer commands:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="15%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Event name (tag argument)</th>
+<th class="head">Stop?</th>
+<th class="head">Keys in keywords dict</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&#8216;iconclick1&#8217;</td>
+<td>yes</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;iconrclick1&#8217;</td>
+<td>yes</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-even"><td>&#8216;iconrclick2&#8217;</td>
+<td>&#160;</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;icondclick1&#8217;</td>
+<td>yes</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+<tr class="row-even"><td>&#8216;icondclick2&#8217;</td>
+<td>&#160;</td>
+<td>c,p,v,event (note 15)</td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic" start="15">
+<li><p class="first">The only way to trigger these event is with the following minibuffer commands:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>        <span class="n">click</span><span class="o">-</span><span class="n">icon</span><span class="o">-</span><span class="n">box</span>
+        <span class="n">ctrl</span><span class="o">-</span><span class="n">click</span><span class="o">-</span><span class="n">icon</span>
+        <span class="n">double</span><span class="o">-</span><span class="n">click</span><span class="o">-</span><span class="n">headline</span>
+<span class="n">Ctrl</span><span class="o">+</span><span class="n">F3</span> <span class="n">double</span><span class="o">-</span><span class="n">click</span><span class="o">-</span><span class="n">icon</span><span class="o">-</span><span class="n">box</span>
+        <span class="n">right</span><span class="o">-</span><span class="n">click</span><span class="o">-</span><span class="n">headline</span>
+        <span class="n">right</span><span class="o">-</span><span class="n">click</span><span class="o">-</span><span class="n">icon</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="support-for-unit-testing">
+<h2><a class="toc-backref" href="#id8">Support for unit testing</a><a class="headerlink" href="#support-for-unit-testing" title="Permalink to this headline">¶</a></h2>
+<p>If a plugin has a function at the outer (module) level called unitTest, Leo&#8217;s unit tests will call that function.</p>
+<p>So it would be good if writers of plugins would create such a unitTest function. To indicate a failure the unitTest can just throw an exception. Leo&#8217;s plugins test suite takes care of the rest.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="coloring.html"
+                        title="previous chapter">Controlling Syntax Coloring</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="unitTesting.html"
+                        title="next chapter">Unit testing with Leo</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="unitTesting.html" title="Unit testing with Leo"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 5.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 1997-2018, Edward K. Ream.
+      Last updated on Jan 30, 2018.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.
+    </div>
+  </body>
+</html>

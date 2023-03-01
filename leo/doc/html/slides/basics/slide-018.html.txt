@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/basics/slide-018.html
+
+Changing focus
+==============
+
+With the focus in the tree pane, the Up-Arrow key selects the previous node.
+
+There are several ways to put focus in the tree:
+
+- Alt-T (focus to the tree pane) followed by Up-Arrow.
+- Alt-Up-Arrow.
+
+.. image:: _images/slide-018.png
+

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
-#@@first
 """The @auto importer for the C language and other related languages."""
 import re
 from typing import Optional

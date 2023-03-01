@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18140: * @file ../plugins/importers/csharp.py
-#@@first
 """The @auto importer for the csharp language."""
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position

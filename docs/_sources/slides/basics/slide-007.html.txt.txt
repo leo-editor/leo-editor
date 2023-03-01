@@ -1,0 +1,12 @@
+.. rst3: filename: html/slides/basics/slide-007.html
+
+Saving the outline
+==================
+
+Ctrl-S saves the outline.
+
+Afterwards, all icon boxes once have gray borders,
+indicating that no nodes are now dirty.
+
+.. image:: _images/slide-007.png
+

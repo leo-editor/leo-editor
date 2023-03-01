@@ -1,29 +1,22 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
-#@@first
 """Leo's file-conversion commands."""
-#@+<< convertCommands imports >>
-#@+node:ekr.20220824202922.1: ** << convertCommands imports >>
+#@+<< convertCommands imports & annotations >>
+#@+node:ekr.20220824202922.1: ** << convertCommands imports & annotations >>
+from __future__ import annotations
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< convertCommands imports >>
-#@+<< convertCommands annotations >>
-#@+node:ekr.20220824202941.1: ** << convertCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-Match = re.Match
-#@-<< convertCommands annotations >>
+    Match = re.Match
+#@-<< convertCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the ConvertCommandsClass class."""
@@ -71,7 +64,7 @@ class To_Python:  # pragma: no cover
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
-        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType)
         # Warn if no changes were made at all
         if not changed:
             g.es("Command did not find content to convert")
@@ -177,7 +170,8 @@ class To_Python:  # pragma: no cover
             elif self.match(lines, i, '\n'):
                 i += 1
                 i = self.removeExcessWsFromLine(lines, i)
-            else: i += 1
+            else:
+                i += 1
     #@+node:ekr.20150514063305.141: *5* removeExessWsFromLine
     def removeExcessWsFromLine(self, lines: List[str], i: int) -> int:
         assert(i == 0 or lines[i - 1] == '\n')
@@ -193,7 +187,8 @@ class To_Python:  # pragma: no cover
                 assert j > i
                 lines[i:j] = [' ']
                 i += 1  # make sure we don't go past a newline!
-            else: i += 1
+            else:
+                i += 1
         return i
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
     def removeMatchingBrackets(self, lines: List[str], i: int) -> int:
@@ -410,7 +405,7 @@ class To_Python:  # pragma: no cover
         elif self.match(lines, i, "/*"):
             j = self.skip_c_block_comment(lines, i)
         else:
-            assert False
+            assert False  # noqa
         return j
     #@+node:ekr.20150514063305.158: *5* skip_to_matching_bracket
     def skip_to_matching_bracket(self, lines: List[str], i: int) -> int:
@@ -422,7 +417,7 @@ class To_Python:  # pragma: no cover
         elif ch == '[':
             delim = ']'
         else:
-            assert False
+            assert False  # noqa
         i += 1
         while i < len(lines):
             ch = lines[i]
@@ -433,7 +428,8 @@ class To_Python:  # pragma: no cover
             elif ch == '(' or ch == '[' or ch == '{':
                 i = self.skip_to_matching_bracket(lines, i)
                 i += 1  # skip the closing bracket.
-            else: i += 1
+            else:
+                i += 1
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
     def skip_ws(self, lines: List[str], i: int) -> int:
@@ -441,7 +437,8 @@ class To_Python:  # pragma: no cover
             c = lines[i]
             if c == ' ' or c == '\t':
                 i += 1
-            else: break
+            else:
+                break
         return i
 
     def skip_ws_and_nl(self, lines: List[str], i: int) -> int:
@@ -449,7 +446,8 @@ class To_Python:  # pragma: no cover
             c = lines[i]
             if c == ' ' or c == '\t' or c == '\n':
                 i += 1
-            else: break
+            else:
+                break
         return i
     #@-others
 #@-<< class To_Python >>
@@ -460,7 +458,7 @@ def convert_at_test_nodes(
     c: Cmdr,
     converter: Any,
     root: Position,
-    copy_tree: bool=False,
+    copy_tree: bool = False,
 ) -> None:  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
@@ -568,7 +566,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if not p.isAnyAtFileNode():
                 g.es_print(f"{tag}: not an @file node: {p.h}")
                 return
-            if not p.h.endswith('.py'):
+            if not p.h.endswith(('py', 'pyw')):
                 g.es_print(f"{tag}: not a python file: {p.h}")
                 return
             # Init.
@@ -895,7 +893,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             elif self.match_word(lines, i, "for"):
                 i += 3
             else:
-                assert False
+                assert False  # noqa
             # Make sure one space follows the keyword.
             k = i
             i = self.skip_ws(lines, i)
@@ -989,7 +987,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if kk > k:
                 headString = ''.join(head[k:kk])
                 # C keywords that might be followed by '{'
-                # print "headString:", headString
                 if headString in [
                     "class", "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(lines, i)
@@ -1040,7 +1037,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             i = j
                     else:
                         result.extend(prevWord)
-                else: i += 1
+                else:
+                    i += 1
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
@@ -1068,12 +1066,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         result.append(',')
                     lastWord = []
                     i += 1
-                else: i += 1
+                else:
+                    i += 1
             if result[-1] == ',':
                 del result[-1]
             result.append(')')
             result.append(':')
-            # print "new args:", ''.join(result)
             return result
         #@+node:ekr.20150514063305.171: *7* massageFunctionBody & helpers
         def massageFunctionBody(self, body: List[str]) -> List[str]:
@@ -1149,17 +1147,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif body[i].isalpha():
                     j = self.skip_past_word(body, i)
                     word = ''.join(body[i:j])
-                    # print "looking up:", word
                     if word in ivars:
                         # replace word by self.word
-                        # print "replacing", word, " by self.", word
                         word = "self." + word
                         word = list(word)  # type:ignore
                         body[i:j] = word
                         delta = len(word) - (j - i)
                         i = j + delta
-                    else: i = j
-                else: i += 1
+                    else:
+                        i = j
+                else:
+                    i += 1
             return body
         #@+node:ekr.20150514063305.174: *8* removeCasts
         def removeCasts(self, body: List[str]) -> List[str]:
@@ -1181,10 +1179,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             i = self.skip_ws(body, i)
                             if self.match(body, i, ')'):
                                 i += 1
-                                # print "removing cast:", ''.join(body[start:i])
                                 del body[start:i]
                                 i = start
-                else: i += 1
+                else:
+                    i += 1
             return body
         #@+node:ekr.20150514063305.175: *8* removeTypeNames
         def removeTypeNames(self, body: List[str]) -> List[str]:
@@ -1206,12 +1204,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.skip_ws(body, j)
                         while self.match(body, j, '*'):
                             j += 1
-                        # print "Deleting type name:", ''.join(body[i:j])
                         j = self.skip_ws(body, j)
                         del body[i:j]
                     else:
                         i = j
-                else: i += 1
+                else:
+                    i += 1
             return body
         #@-others
     #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
@@ -1315,7 +1313,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
-                if not fn.endswith('.py'):
+                if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
                 abs_fn = g.fullPath(c, p)
@@ -1409,7 +1407,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
-                if not fn.endswith('.py'):
+                if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
                 abs_fn = g.fullPath(c, p)
@@ -1510,7 +1508,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str=None) -> None:
+        def __init__(self, c: Cmdr, alias: str = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2181,7 +2179,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def pre_pass(self, s: str) -> str:
 
             # Remove the python encoding lines.
-            s = s.replace('@first # -*- coding: utf-8 -*-\n', '')
+            s = s.replace('', '')
 
             # Replace 'self' by 'this' *everywhere*.
             s = re.sub(r'\bself\b', 'this', s)
@@ -2358,7 +2356,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 5
                 elif self.match_word(lines, i, "for"):
                     i += 3
-                else: assert False, 'not a keyword'
+                else:
+                    assert False, 'not a keyword'  # noqa
                 # Make sure one space follows the keyword.
                 k = i
                 i = self.skip_ws(lines, i)
@@ -2480,7 +2479,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if kk > k:
                     headString = ''.join(head[k:kk])
                     # C keywords that might be followed by '{'
-                    # print "headString:", headString
                     if headString in ["do", "for", "if", "struct", "switch", "while"]:
                         return 1 + self.skip_to_matching_bracket(lines, i)
                 args = lines[open_paren : close + 1]
@@ -2522,7 +2520,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             result.append(',')
                         lastWord = []
                         i += 1
-                    else: i += 1
+                    else:
+                        i += 1
                 if result[-1] == ',':
                     del result[-1]
                 result.append(')')
@@ -2560,7 +2559,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                                 i = j
                         else:
                             result.extend(prevWord)
-                    else: i += 1
+                    else:
+                        i += 1
                 finalResult = list("def ")
                 finalResult.extend(result)
                 return finalResult

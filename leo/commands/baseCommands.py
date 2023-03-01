@@ -1,22 +1,19 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035943.1: * @file ../commands/baseCommands.py
-#@@first
 """The base class for all of Leo's user commands."""
+#@+<< baseCommands imports & abbreviations >>
+#@+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>
+from __future__ import annotations
 from typing import Any, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@+<< baseCommands annotations >>
-#@+node:ekr.20220828071357.1: ** << baseCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Wrapper = Any
-Widget = Any
-#@-<< baseCommands annotations >>
+    Widget = Any
+#@-<< baseCommands imports & abbreviations >>
+
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:
@@ -33,7 +30,7 @@ class BaseEditCommandsClass:
         self.c = c
     #@+node:ekr.20150514043714.3: *3* BaseEdit.begin/endCommand (handles undo)
     #@+node:ekr.20150514043714.4: *4* BaseEdit.beginCommand
-    def beginCommand(self, w: Wrapper, undoType: str='Typing') -> Wrapper:
+    def beginCommand(self, w: Wrapper, undoType: str = 'Typing') -> Wrapper:
         """Do the common processing at the start of each command."""
         c, p, u = self.c, self.c.p, self.c.undoer
         name = c.widget_name(w)
@@ -51,7 +48,7 @@ class BaseEditCommandsClass:
             self.undoData = None  # pragma: no cover
         return w
     #@+node:ekr.20150514043714.6: *4* BaseEdit.endCommand
-    def endCommand(self, label: str=None, changed: bool=True, setLabel: bool=True) -> None:
+    def endCommand(self, label: str = None, changed: bool = True, setLabel: bool = True) -> None:
         """
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
@@ -78,7 +75,7 @@ class BaseEditCommandsClass:
             else:
                 k.resetLabel()
     #@+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
-    def editWidget(self, event: Event, forceFocus: bool=True) -> Widget:
+    def editWidget(self, event: Event, forceFocus: bool = True) -> Widget:
         """Return the edit widget for the event. Also sets self.w"""
         c = self.c
         w = event and event.widget
@@ -103,7 +100,7 @@ class BaseEditCommandsClass:
             "must be overridden in subclass")
     #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
-    def _chckSel(self, event: Event, warning: str='no selection') -> bool:
+    def _chckSel(self, event: Event, warning: str = 'no selection') -> bool:
         """Return True if there is a selection in the edit widget."""
         w = self.editWidget(event)
         val = bool(w and w.hasSelection())
@@ -121,7 +118,7 @@ class BaseEditCommandsClass:
         r3, r4 = g.convertPythonIndexToRowCol(s, j)
         return r1 + 1, r2, r3 + 1, r4
     #@+node:ekr.20150514043714.14: *4* BaseEdit.keyboardQuit
-    def keyboardQuit(self, event: Event=None) -> None:  # pragma: no cover
+    def keyboardQuit(self, event: Event = None) -> None:  # pragma: no cover
         """Clear the state and the minibuffer label."""
         self.c.k.keyboardQuit()
     #@-others

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18079: * @file ../plugins/writers/org.py
-#@@first
 """The @auto write code for Emacs org-mode (.org) files."""
 from typing import Callable
 from leo.core import leoGlobals as g  # Required.

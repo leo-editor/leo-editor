@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
-#@@first
 """The @auto importer for the markdown language."""
 import re
 from typing import Dict, List, Tuple

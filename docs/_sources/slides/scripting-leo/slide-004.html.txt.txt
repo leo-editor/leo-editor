@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/scripting-leo/slide-004.html
+
+Hello world
+===========
+
+g.es is a function that prints its arguments to Leo’s log pane.
+
+Here is the hello world program as a Leo script::
+
+    g.es('Hello world!')
+
+Leo scripts may also use Python’s print command provided that Leo is running in a console.
+

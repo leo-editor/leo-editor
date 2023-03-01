@@ -188,11 +188,9 @@ def importCiscoConfig(c):
                     subchild = child.insertAsNthChild(0)
                     subchild.h = value[0]
                     subchild.b = '\n'.join(value)
-            # child.sortChildren()
         else:
             # this should never happen
             g.es("Unknown key: %s" % key)
-    # p.sortChildren()
     current.expand()
     c.redraw()
     #@-<< complete outline >>

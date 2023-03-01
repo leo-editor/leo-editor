@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/external-files/slide-005.html
+
+Using @file trees
+=================
+
+The next few slides will show how to create external files with @file trees.
+
+First, create an @file node giving the path to the external file. This path
+can be a full, absolute path, or a relative path. Relative paths start at
+Leo’s load directory, the directory containing the .leo file for the
+present outline. No path prefix is usually required.
+
+.. image:: _images/slide-005.png
+

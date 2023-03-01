@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
-#@@first
 """Support for the edit-pane-test-open command and window."""
 #@+<<editpane imports>>
 #@+node:tbrown.20171028115438.1: ** << editpane imports >>
@@ -196,7 +194,6 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         """
         p = self.c.vnode2position(v)
         DBG("after body key")
-        #X if self.update:
         self.update_position(p)
     #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):

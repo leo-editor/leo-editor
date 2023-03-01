@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
-#@@first
 #@+<< leoIpython docstring >>
 #@+node:ekr.20180326102140.1: ** << leoIpython docstring >>
 """
@@ -24,6 +22,7 @@ Leo commanders.
 #@-<< leoIpython docstring >>
 #@+<< leoIPython imports >>
 #@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
+from __future__ import annotations
 import sys
 from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -42,7 +41,7 @@ except ImportError:
 try:
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
-    IPKernelApp = None
+    IPKernelApp = None  # type:ignore
     import_fail('IPKernelApp')
 
 g.app.ipython_inited = IPKernelApp is not None
@@ -52,11 +51,6 @@ g.app.ipython_inited = IPKernelApp is not None
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
 #@-<< leoIPython annotations >>
 #@+others
 #@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
@@ -93,7 +87,7 @@ class InternalIPKernel:
     """
     #@+others
     #@+node:ekr.20130930062914.15994: *3* ileo.__init__
-    def __init__(self, backend: str='qt') -> None:
+    def __init__(self, backend: str = 'qt') -> None:
         """Ctor for InternalIPKernal class."""
         # Part 1: create the ivars.
         self.consoles: List[Any] = []  # List of Qt consoles.
@@ -110,7 +104,7 @@ class InternalIPKernel:
             self.namespace['kernelApp'] = kernelApp
             self.namespace['app_counter'] = 0
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
-    def cleanup_consoles(self, event: Event=None) -> None:
+    def cleanup_consoles(self, event: Event = None) -> None:
         """Kill all ipython consoles.  Called from app.finishQuit."""
         trace = 'ipython' in g.app.debug
         for console in self.consoles:
@@ -121,10 +115,10 @@ class InternalIPKernel:
             # console.terminate()
             console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
-    def count(self, event: Event=None) -> None:
+    def count(self, event: Event = None) -> None:
         self.namespace['app_counter'] += 1
     #@+node:ekr.20130930062914.15996: *3* ileo.new_qt_console
-    def new_qt_console(self, event: Event=None) -> Any:
+    def new_qt_console(self, event: Event = None) -> Any:
         """
         Start a new qtconsole connected to our kernel.
 
@@ -157,22 +151,22 @@ class InternalIPKernel:
             self.put_warning(e)
         return console
     #@+node:ekr.20160331083020.1: *3* ileo.pdb
-    def pdb(self, message: str='') -> None:
+    def pdb(self, message: str = '') -> None:
         """Fall into pdb."""
-        import pdb  # Required: we have just defined pdb as a function!
-        pdb = pdb.Pdb(stdout=sys.__stdout__)  # type:ignore # mypy is confused.
         if message:
             self.put_stdout(message)
-        pdb.set_trace()  # This works, but there are no IPython sources.
+        # pylint: disable=forgotten-debug-statement
+        # This works, but there are no IPython sources.
+        breakpoint()  # New in Python 3.7.
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
-    def print_namespace(self, event: Event=None) -> None:
+    def print_namespace(self, event: Event = None) -> None:
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.items():
             if k not in self._init_keys and not k.startswith('_'):
                 print(f"{k} -> {v!r}")
         sys.stdout.flush()
     #@+node:ekr.20160308090432.1: *3* ileo.put_log
-    def put_log(self, s: str, raw: bool=False) -> None:
+    def put_log(self, s: str, raw: bool = False) -> None:
         """Put a message to the IPython kernel log."""
         if not raw:
             s = f"[leoIpython.py] {s}"
@@ -186,7 +180,7 @@ class InternalIPKernel:
         sys.__stdout__.write(s.rstrip() + '\n')
         sys.__stdout__.flush()
     #@+node:ekr.20160308101536.1: *3* ileo.put_warning
-    def put_warning(self, s: Any, raw: bool=False) -> None:
+    def put_warning(self, s: Any, raw: bool = False) -> None:
         """
         Put an warning message to the IPython kernel log.
         This will be seen, regardless of Leo's --debug option.
@@ -219,7 +213,7 @@ class InternalIPKernel:
             args.append('--log-level=20')  # Higher is *quieter*
             # args.append('--debug')
             # Produces a verbose IPython log.
-            #'--log-level=10'
+            # '--log-level=10'
             # '--pdb', # User-level debugging
         try:
             # self.pdb()

@@ -1,0 +1,1885 @@
+.. rst3: filename: html/what-is-new.html
+
+##################
+What's New in Leo
+##################
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
+.. Links used in this document.
+.. _`leoBridge`:            leoBridge.html
+.. _`debugging with Leo`:   debuggers.html
+.. _`Using @shadow`:        atShadow.html
+.. _`Python's gettext`:     http://docs.python.org/lib/module-gettext.html
+.. _Emacs:                  http://www.xemacs.org/
+.. _pymacs:                 http://pymacs.progiciels-bpi.ca/index.html
+.. _`Leo and Emacs`:        emacs.html
+
+What's new in Leo 6.7.2
++++++++++++++++++++++++
+
+.. _`PR #3019`: https://github.com/leo-editor/leo-editor/pull/3019
+
+Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+- `PR #3019`_: Host Leo's website using GitHub pages.
+
+Commands:
+
+.. _`PR #3031: https://github.com/leo-editor/leo-editor/pull/3031
+.. _`PR #3056`: https://github.com/leo-editor/leo-editor/pull/3056
+.. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
+.. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
+
+- `PR #3031`_: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- `PR #3056`_: Leo's beautify command is now PEP8 compliant.
+- `PR #3140`_: Run pylint on node.
+- `PR #3166`_: Add the `execute-external-file` command.
+
+Settings and features:
+
+.. _`PR #2979`: https://github.com/leo-editor/leo-editor/pull/2979
+.. _`PR #2983`: https://github.com/leo-editor/leo-editor/pull/2983
+.. _`PR #3038`: https://github.com/leo-editor/leo-editor/pull/3038
+.. _`PR #3053`: https://github.com/leo-editor/leo-editor/pull/3053
+.. _`PR #3132`: https://github.com/leo-editor/leo-editor/pull/3132
+
+- `PR #2979`_: Add `@bool run-flake8-on-write` setting.
+- `PR #2983`_: Add `--black-sentinels` command-line option.
+- `PR #3038`_: Add `@string rst3-action` setting.
+- `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+
+All noteworthy pull requests:
+https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
+
+All noteworthy issues:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
+
+What's new in Leo 6.7.1
++++++++++++++++++++++++
+
+- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
+- @bool plain-key-outline-search = False by default.
+- Several minor code cleanups.
+- Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.
+
+What's new in Leo 6.7.0
++++++++++++++++++++++++
+
+- Leo now requires Python 3.9 or later.
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Importers no longer generate underindented escape strings.
+- Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
+
+What's new in Leo 6.6.x
++++++++++++++++++++++++
+
+What's new in Leo 6.6.4
+***********************
+
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.
+
+What's new in Leo 6.6.3
+***********************
+
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.
+
+What's new in Leo 6.6.2
+***********************
+
+- Add "File Only" option in Leo's Find Pane.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
+- Add mypy annotations for Leo's most important files.
+
+What's new in Leo 6.6.1
+***********************
+
+- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @<file> node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.
+
+What's new in Leo 6.6
+*********************
+
+- Replaced @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Many improvements to python-to-typescript command.
+- Improved python importer.
+- Added plugins/picture_viewer.py, a stand-alone app that displays images.
+- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Improved leoserver.py to support leointeg.
+- Many bug fixes.
+
+What's new in Leo 6.5
++++++++++++++++++++++
+
+- Add python-to-typescript and view-recent-commands.
+- Add c.findCommands.interactive_search_helper.
+- Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
+- Many code-level cleanups.
+
+What's new in Leo 6.4
++++++++++++++++++++++
+
+- Support for leoInteg: "Leo in vs-code".
+  - Add leoserver.py, stand-alone server for Leo.
+  - Support .leojs, a json outline format.
+- Support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+
+What's new in Leo 6.3
++++++++++++++++++++++
+
+Major features:
+- leoAst.py unifies the ast and token worlds.
+- Retired support for Qt docks.
+- Refactored Leo's key handling code.
+
+Features:
+- Merged leoPlugins.leo into LeoPluginsRef.leo
+- Added cython and rust importers
+- Improved C++, Javascript, Python, TypeScript importers.
+- Added 7 new commands.
+- Added support for @language json.
+
+Fixed all known bugs.
+
+What's new in Leo 6.2
++++++++++++++++++++++
+
+Commands:
+
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+
+Code:
+
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  See https://github.com/leo-editor/leo-editor/issues/1440
+- Rewrote c.deletePositionsInList. New code by Виталије Милошевић, (Vitalije Milosevic).
+ 
+Features and settings:
+
+- Added importers for the rust language and todo.txt files.
+- Added the viewrendered3 plugin.
+- Leo's legacy layout is now the default.
+- Removed unused settings from leoSettings.leo.
+- Added an importer for rust.
+
+Bugs:
+
+- Fixed all known bugs, including some notable, long-standing bugs.
+
+What's new in Leo 6.1
++++++++++++++++++++++
+
+The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
+
+Added support for black: https://pypi.org/project/black/.
+
+Added support for asciidoc, asciidoctor, pandoc and sphinx.
+
+Added support for @language pandoc.
+
+Added @nopyflakes directive.
+
+The history_tracer plugin animates git commits.
+
+New command-line arguments::
+
+  --global-docks
+  --window-spot
+
+What's new in Leo 6.0
++++++++++++++++++++++
+
+Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
+
+New and improved commands and features:
+
+- Huge speed up of replace-all
+- Added find-long-lines. Uses @bool max-find-long-lines-length = 110
+- Added find-missing-docstrings. Honors @nopylint.
+- Added import-free-mind-files
+- Added print-window-state. This command is for Leo's developers.
+- The pylint command generates clickable log messages and honor @nopylint.
+- Support colorizing of Lua long brackets
+  
+New command-line arguments:
+
+--init-docks
+--no-dock
+--trace=aList https://github.com/leo-editor/leo-editor/issues/1145
+
+New settings:
+
+For the find-long-lines command:
+@bool max-find-long-lines-length = 110
+    
+For docks:
+
+@bool dockable-log-tabs = False
+@string central-dock-widget = outline
+
+What's new in Leo 5.x
++++++++++++++++++++++
+
+What's new in Leo 5.9
+*********************
+
+- LeoWapp: Leo in a browser.
+- Integrated debugger.
+- Support for pygments syntax coloring.
+- Automatic sessions
+  (Removed --session-save and --session-restore command-line arguments.)
+- Nested @clean nodes, useful for LaTex files.
+- A major refactoring of the code that writes external files.
+- Better error recovery.
+- Support for continuous integration with TravisCI.
+- More than 50 minor bug fixes.
+
+What's new in Leo 5.8
+*********************
+
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
+- The usual minor bug fixes.
+
+What's new in Leo 5.7.3
+***********************
+
+- Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Allow local overrides of all abbreviations.
+- Improved TypeScript importer.
+
+What's new in Leo 5.7.2
+***********************
+
+- Much improved support for Jupyter (.ipynb) files.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
+
+What's new in Leo 5.7.1
+***********************
+
+- Improved support for themes
+    - Added the open-theme-file command.
+    - Added --theme=<name> command-line option.
+    - Added @string theme-name setting.
+    - Leo warns if stylesheets contain undefined @-constants.
+- Replaced 5 vs-* commands by corresponding eval* commands.
+- Support @file x.md using html sentinels.
+- Allow @path in @<file> nodes.
+- Added add_path keyword argument to c.recursiveImportScript.
+  This setting adds @path directives to the root node of imported files.
+
+Features
+^^^^^^^^
+
+#850: Optionally convert Meta to Alt on MacOs
+https://github.com/leo-editor/leo-editor/issues/850
+This feature is disabled by default. To enable, set @bool replace-meta-with-alt = True.
+
+Settings
+^^^^^^^^
+
+- @bool replace-meta-with-alt.
+
+What's new in Leo 5.7
+*********************
+
+Highlights
+^^^^^^^^^^
+
+.. _`LeoVue`: https://github.com/kaleguy/leovue#leo-vue
+
+- Added Debian package for Leo.
+- pip install leo (After 5.7 final).
+- A web based Leo viewer, `LeoVue`_, written by Joe Orr.
+- Outline-oriented diffs for .leo files.
+- New reload-settings command.
+- Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
+- Improved the console_gui plugin.
+- Added live links from urls in the log pane.
+- Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.
+- Added a TreePad importer.
+
+Code
+^^^^
+
+- Unit tests can run in more environments.
+- The @g.commander_command decorator injects ivars into the Commands class.
+- Added CompareLeoOutlines class in leoCompare.py
+- Added verbose option to g.callers().
+- Revised redraw code.
+- Added backup-repo script in leoPy.leo.
+- Added c.backup_helper.
+- Added @button get-issues to LeoDocs.leo.
+
+Commands
+^^^^^^^^
+
+- New commands::
+
+    check-conventions
+    clean-main-spell-dict
+    clean-user-spell-dict
+    count-children
+    demangle-recent-files
+    diff-leo-files
+    diff-and-open-leo-files
+    edit-pane-csv
+    edit-pane-test-open
+    insert-as-first-child
+    insert-as-last-child
+    read-ref-file
+    set-ref-file
+    update-ref-file
+
+- The cff commands now sort their results.
+
+Enhancements
+^^^^^^^^^^^^
+
+.. _`5.7 enhancements page`: https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
+
+- Completed 26 enhancement issues.  See the `5.7 enhancements page`_.
+- Improved the javascript importer.
+
+Plugins
+^^^^^^^
+
+- New plugins::
+
+    patch_python_colorizer.py.
+    leo_cloud.py.
+    line_numbering.py
+
+- Improved the console_gui plugin.
+
+Settings & command-line arguments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+reinstated --trace-shutdown
+
+What's new in Leo 5.6
+*********************
+
+Highlights
+^^^^^^^^^^
+
+- A new console gui for Leo.
+- Added git-diff command
+- Added listen-to-log and kill-log-listen commands.
+- Added "yes/no to all" buttons for externally changed file dialog
+- Leo switches between git branches more smoothly.
+
+#488: Created a console gui for Leo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A new chapter in Leo's documentation: https://leo-editor.github.io/leo-editor//console-gui.html
+
+https://github.com/leo-editor/leo-editor/issues/488
+
+#501: git-diff command
+~~~~~~~~~~~~~~~~~~~~~~
+
+https://github.com/leo-editor/leo-editor/issues/501
+
+The new git-diff command shows the diffs between any uncommitted work and git's HEAD in an outline. This is, by far, the best outline-oriented diff in Leo's history. The command works for all kinds of external files.
+
+**Outline organization**
+
+This command creates a single tree as the last top-level node of the outline::
+
+  - git diff  # The single organizer node for the command
+    - file A  # The organizer node for file A.
+              # Body contains the text diff of the entire file.
+      - Added # An organizer node for all added nodes, created only if necessary.
+        - node 1 # A copy of the first added node.
+        - node 2 # A copy of the second added node.
+            ...
+      - Deleted  # An organizer node for all deleted nodes, created only if necessary.
+        - node 1 # A copy of the first deleted node.
+            ...
+      - Changed  # An organizer node for all changed nodes, created only if necessary.
+        - node 1 # An organizer node for the changed node.
+                 #  Body contains the text diff of that node.
+          - old: node1 # A copy of the old node.
+          - new: node1 # A copy of the new node.
+
+This command does not use git diff in any way. For example, moving a node affects only the overall diff in the organizer node for the file. Moved nodes do not otherwise appear in the diff.
+
+**Text diffs**
+
+Organizer nodes for files and changed nodes contain text diffs. Diffs look like this::
+
+    @language patch
+    
+    --- HEAD
+    +++ uncommitted
+    @@ -553,8 +553,8 @@
+                 c1 = self.make_outline(fn, s1, self.rev1)
+                 c2 = self.make_outline(fn, s2, self.rev2)
+                 assert c1 and c2
+    -            for p in c1.all_positions():
+    -                print('%25s %s' % (p.gnx, p.h))
+    +            # for p in c1.all_positions():
+    +                # print('%25s %s' % (p.gnx, p.h))
+                 self.make_diff_outlines(fn, c1, c2)
+                 # try:
+                     # c.disable_redraw()
+    @@ -578,6 +578,7 @@
+    ...
+    @language python
+
+**Settings**
+
+leoSettings.leo contains new colorizer settings for @language patch.
+
+**Theory of operation**
+
+For each diffed file, this command uses a variant of the atFile read logic to create the corresponding outline in a hidden commander.  Separate hidden commanders contain the "before" and "after" versions of the file. These outlines preserve gnx's, so it is easy to create dicts of inserted, deleted and changed nodes.  The command uses difflib (not git diff) to create all diffs, after the external file has been split into nodes.
+
+#505: Leo switches between git branches properly
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+https://github.com/leo-editor/leo-editor/issues/505
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots. It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+
+Added "yes/no to all" buttons for externally changed file dialog
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Rev 9c94fec36d adds Yes / no to all on external file changes.
+
+If you answer yes to all or no to all Leo remembers that
+answer for 3 seconds. As a result, another set of external
+changes will show the pop up again.
+
+Code
+^^^^
+
+- Removed confusing "atAuto" switch from AtFile class.
+- Rewrote Leo's at-file read code.
+- Rewrote Leo's redraw code, adding c.redraw_later.
+- Unit tests now work on all all platforms without failing.
+
+Commands
+^^^^^^^^
+
+Added the following commands:
+
+- edit-recent-files and write-edited-recent-files
+- goto-any-clone
+- help-for-settings
+- listen-to-log and kill-log-listen
+- push-cursor and pop_cursor
+- show-color-names and show-color-wheel
+- start-of-line and finish-line
+- toggle-auto-edit
+- vr-zoom
+- vs-eval-block (valuescript plugin)
+
+Improved the following commands:
+
+- clone-find*
+- indent-region and unindent-region
+- move-lines-up and move-lines-down
+- paste-retaining-clones now works across different .leo files
+- replace-all is much faster.
+
+Other features
+^^^^^^^^^^^^^^
+
+- Added tcl importer.
+- Added lua importer.
+- Improved xml and html importers.
+- Improved Windows menu.
+- Improved caching of files.
+- Improved operation of command history.
+- Optionally show timestamps when writing files.
+- The viewrendered.py plugin renders LaTex (Python 2.x only)
+
+Settings & command-line arguments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added --trace-focus command-line argument.
+- Added @bool color_trailing_whitespace = True
+- Added @bool log_show_save_time = False
+- Added @bool report_unchanged_files = True
+- Added @bool run_pyflakes_on_unchanged_files = True
+- Added @color trailing_whitespace_color = red
+- Added @string log_timestamp_format = %H:%M:%S
+- Ctrl-Shift-< and Ctrl-Shift-> are now bound to indent/unindent-region.
+  These can be used when no text is selected.
+- Restored default: @bool check_for_changed_external_files = True
+
+What's new in Leo 5.5
+*********************
+
+Highlights
+^^^^^^^^^^
+
+- Optionally run pyflakes when saving files.
+- Fixed huge performance bug in syntax coloring. The horrible big text hack is no longer needed.
+- Leo no longer hangs waiting for the pylint command to finish.
+
+Created new @button scripts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- at-button make-importer
+  Make a new @@file importers/x.py file.
+- at-button make-md-heads
+  Create markdown headers throughout the nearest .md outline.
+- at-button make-md-toc
+  Make a markdown table of contents from an @auto-md node.
+- at-button make-table
+  Create a table of expected headlines in a unit test.
+
+Code
+^^^^
+
+- Added four new generators: c.all_roots, c.all_unique_roots, p.nearest_roots and p.nearest.
+- Created singleton BackgroundProcessManager
+- Integrated idle-hook processing into the IdleTimeManager
+
+Features
+^^^^^^^^
+
+- You can open all important .leo files from the File menu.
+- <Alt-X>99 is the same as <Alt-G>99.
+- Script abbreviations are allowed in headlines.
+- The markdown importer now regularizes sections.
+
+Settings
+^^^^^^^^
+
+- @bool autojustify-on-at-start
+- @bool color-doc-parts-as-rest
+- @bool run-pyflakes-on-write
+- @bool tree-declutter = True
+- @data tree-declutter-patterns
+
+Command-line options
+^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    --load-type=LOAD_TYPE
+    --fail-fast             # sets failfast option in unit tests.
+
+What's new in Leo 5.4
+*********************
+
+Highlights
+^^^^^^^^^^
+
+New Commands
+
+- The clone-find commands are a new way to use Leo.
+- The clone-find and tag-all-children commands unify clones and tags.
+- The pyflakes and flake8 make it possible to check files from within Leo.
+
+Importers
+
+- Added importers for freemind, mindjet, json and coffeescript files.
+- Rewrote the javascript importer.
+  It can optionally generate section references.
+- Imported files can optionally contain section references.
+
+Plugins
+
+- Improved the mod_http plugin.
+- The viewrendered plugin supports @pyplot nodes.
+
+All known bugs have been fixed.
+
+Commands
+^^^^^^^^
+
+Added these commands:
+
+- The **extremely important** clone-find commands:
+
+    - clone-find-all (cfa)
+    - clone-find-all-flattened (cfaf)
+    - clone-find-all-flattened-marked (cffm)
+    - clone-find-all-marked (cfam)
+    - clone-find-parents
+    - clone-find-tag (cft)
+
+- copy-marked
+- diff-marked-nodes
+- flake8
+- import-MORE-files
+- import-tabbed-files
+  https://groups.google.com/forum/#!topic/leo-editor/qx0okNbjWUk
+- pyflakes
+- tag-children
+
+The pylint and pyflakes commands now write to Leo's log window, as well as the console.
+
+Improved the clone-marked/copy-marked/move-marked commands.
+
+Removed all static abbrev commands.
+Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
+
+Other features
+^^^^^^^^^^^^^^
+
+- Added installer for file associations.
+- Added ``File:Import`` submenu.
+- Leo now colorizes basestring, @staticmethod & @classmethod.
+- Added dialog when creating myLeoSettings.leo automatically.
+- Added support for auto-justified body text.
+- Added @button import-tab-files to scripts.leo:
+  https://groups.google.com/forum/#!topic/leo-editor/YcT7SOSYEQk
+- @chapter trees need no longer be children of @chapters nodes.
+- Fixed bug in NSIS installer.
+  The old code failed to find Python installations in the 64-bit Windows registry.
+
+Settings
+^^^^^^^^
+
+Added the following settings:
+
+- @bool check_for_changed_external_files
+- @bool open_with_save_on_update
+- @bool plain-key-outline-search
+- @bool run-pyflakes-on-write
+- @bool show-iconbar
+- @int autojustify
+- @int qweb_view_font_size
+
+What's new in Leo 5.3
+*********************
+
+Highlights
+^^^^^^^^^^
+
+Leo 5.3-final released May 2, 2016.
+
+- Leo now supports Jupyter Notebook (.ipynb) files.
+- @chapter is now allowed anywhere. No need for @chapters.
+- Faster spell checking.
+- The rst3 command supports @rst-table.
+- The show-invisibles command now uses native Qt characters.
+
+Commands
+^^^^^^^^
+
+- Added clean-at-clean-files and clean-at-clean-tree commands.
+- Added python-to-coffeescript command.
+- Better defaults for open/save file dialogs.
+- Improved clone-find commands.
+- Improved kill & yank commands.
+
+Plugins
+^^^^^^^
+
+- The livecode plugin is enabled by default, provided that the [meta]
+  (https://pypi.python.org/pypi/meta) package is available.
+
+- The viewrendered3 plugin is intended to replace the VR1 and VR2 plugins.
+
+What's new in Leo 5.2
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 5.2-final release March 18, 2016
+
+    Easy install with PyInstaller packaging
+    c.cloneFindByPredicate
+    clone-find-marked commands:
+        cfam (clone-find-all-marked)
+        cffm (clone-find-all-flattened-marked)
+    decorators create all Leo commands
+    find-def and find-var
+    help-for-keystroke
+    Optional line numbers in the left gutter
+    show-invisibles uses Qt characters
+    --ipyhon command-line option works with latest IPython versions
+    Themes
+    Wildcard file names on Leo's command line
+
+Commands & directives
+^^^^^^^^^^^^^^^^^^^^^
+
+::
+    
+    cfa, cff, cfam, cfam
+    clear-log
+    clone-to-at-spot
+    Ctrl-x & Ctrl-C cut/copy the entire line if no text is selected
+    find-all now writes to the body of a new top-level node
+    find-def and find-var
+    flatten-outline-to-node
+    goto-next-clone falls back to find-next-clone
+    help-for-keystroke
+    kill commands cut selected text
+    show-invisibles uses Qt characters
+    vim-open-file
+    @beautify and @nobeautify
+
+Features
+^^^^^^^^
+
+::
+
+    Abbreviations now support auto-close quotes
+    https://groups.google.com/d/msg/leo-editor/yJLz-p3I4mY/Pqa1phYN_10J
+    Ctrl-G resets status line
+    declutter node: substituting icons for @clean, @file, etc.
+    Find commands now show status
+    New menu: Settings: Edit Settings
+    https://groups.google.com/d/msg/leo-editor/pM8aVJ1D6ao/Z8lq43t7FAAJ
+    New menu: File:Print
+    Optional line numbers in the left gutter
+    Themes
+    Wildcard file names on Leo's command line
+
+Plugins & scripts
+^^^^^^^^^^^^^^^^^
+
+::
+
+    leoOPML.py plugin
+
+    mod_http.py plugin can control Leo remotely
+    (https://groups.google.com/d/msg/leo-editor/wWWUgfDhPi4/VmRRRa_xDAAJ)
+    
+    make_stub_files.py script creates stub (.pyi) files
+    https://github.com/edreamleo/make-stub-files
+
+    python_to_coffescript.py script converts .py files to .coffee files
+    https://github.com/edreamleo/python-to-coffeescript
+
+Settings
+^^^^^^^^
+
+::
+
+    @bool find-ignore-duplicates
+    @bool preload-find-pattern
+    @bool syntax-error-popup
+    @bool use_find_dialog
+    @bool use_gutter = True
+    @color find-found-bg = blue
+    @color find-found-fg = white
+    @color find-not-found-bg = red
+    @color find-not-found-fg = white
+    @color gutter-bg = @LightSteelBlue1
+    @color gutter-fg = black
+	@data abbreviations-subst-env now allows Leo directives
+    @data history-list
+	@data qt-gui-user-style-sheet
+    (https://github.com/leo-editor/leo-editor/issues/183)
+	@ifenv
+    @ifplatform & @ifhostname (improved)
+    @int gutter-w-adjust = 12
+    @int gutter-y-adjust = 10
+    @language coffeescript
+    @string gutter-font-family = @font-family
+    @string gutter-font-size = @small-font-size
+    @string gutter-font-style = @font-style
+    @string gutter-font-weight = @font-weight
+
+What's new in Leo 5.1
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 5.1 b2 released April 10, 2015.
+    @clean outlines create external files without sentinels.
+    Leo regularly checks the integrity of the outline.
+    Up/Down arrows in the minibuffer cycle though command history.
+    load-leo.html displays .leo files in the browser.
+    Leo now honors @language inside @doc parts.
+    @data nodes can now be composed from a tree of nodes.
+        This feature appeared in Leo 5.0, but was not documented.
+    Added @int qt-cursor-width setting.
+    Added g.IdleTime & LeoQtGui.IdleTime.
+
+Commands & settings
+^^^^^^^^^^^^^^^^^^^
+
+::
+
+    @bool make-node-conflicts-node
+    goto-global-line prefers to find a node *outside* any @<file> tree.
+    Added unformat-paragraph.
+
+Features
+^^^^^^^^
+
+::
+
+    Added nodes-dark icons & stylesheet.
+    (https://groups.google.com/d/msg/leo-editor/BrruEaWaX4Y/A0g4HQFvNtAJ)
+    Added --diff command-line option.
+    @auto persistence enabled if and only if an @persistence node exists.
+    @auto style parse on first @clean 'Refresh From Disk'
+    (https://github.com/leo-editor/leo-editor/issues/148)
+    Added LeoReleaseNotes.leo.
+    Improved messages when find commands fail.
+    Improved <?xml-stylesheet>.
+    Added g.getLanguageAtPosition. Should have been done long ago.
+
+Why @clean is so important
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+@clean is a long-sought breakthrough. For the first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
+
+The Mulder/Ream update algorithm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Leo updates @clean trees using a simplified version of the Mulder update algorithm previously used to update @shadow trees. This algorithm  is easy to understand, provably correct and completely documented. It may be of interest to the developers of other outliners.
+
+https://leo-editor.github.io/leo-editor/appendices.html#the-mulder-ream-update-algorithm
+
+What's new in Leo 5.0
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 5.0 final released November 24, 2014
+
+    Better compatibility with vim, Emacs, pylint and PyQt:
+
+        Optional native emulation of vim commands
+        Full support for Emacs org-mode outlines
+        Better support for pylint
+        Support for both PyQt4 and PyQt5
+    
+    Better handling of nodes containing large text:
+
+        Idle time syntax coloring eliminates delay
+        Optional delayed loading of large text
+
+    Power features:
+
+        File name completion
+        Cloned nodes expand and contract independently
+        @data nodes can be composed from descendant nodes
+        Leo's main style sheet can be customized with @color and @font settings
+        @persistence nodes save data in @auto trees
+        Leo now uses pluggable architecture for @auto nodes
+        <Alt-X><tab> shows all commands
+        Leo's beautify commands now uses PythonTidy by default
+
+    New plugins for tagging, display and node evaluation
+    
+    Leo's default workbook files contains Leo's quickstart guide
+
+Commands
+^^^^^^^^
+
+::
+
+    Idle-time commands:
+    
+        disable-idle-time-events
+        disable-idle-time-tracing
+        enable-idle-time-events
+        enable-idle-time-tracing
+        toggle-idle-time-events
+        toggle-idle-time-tracing
+        
+    Spell as you type commands:
+    
+        spell-as-you-type-toggle
+        spell-as-you-type-next
+        spell-as-you-type-undo
+        
+    Other commands:
+
+        clone-find-parents
+        clone-to-last-node
+        flatten-outline-to-node
+        focus-to-find
+        focus-to-spell
+        help-for-drag-and-drop
+        insert-file-name
+        pylint
+        style-reload
+
+Features
+^^^^^^^^
+
+::
+
+    --no-persist and --trace-plugins command-line options
+    Optional warning buttons when selecting large text
+    Added support for delegate languages
+    Added support for the dart language
+    Added leo/external/leoftsindex.py
+
+A plugable architecture for @auto nodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The leo/plugins/importers folders now contains importer plugins.
+
+The leo/plugins/writers folders now contain writer plugins.
+
+Both importer and writer plugins can defined new kinds of @auto nodes.
+
+Importers and writers can register either @auto-names or file extensions. For example, @auto x.xyzzy will use both the importer and the writer for the .xyzzy extension, that is, importers/test.py and writers/test.py. So, for *unique* extensions, there is no need to use a separate @auto name, you can just use @auto.
+
+Plugins
+^^^^^^^
+
+::
+
+    Most plugins now work with PyQt5
+    Rewrote at_produce.py
+    Added livecode.py
+    Added nodetags.py
+    Added viewrendered2.py
+    Added wikiview.py
+
+Settings
+^^^^^^^^
+
+::
+
+    Added settings that control PythonTidy-based beautify command:
+
+        @bool use_python_tidy = True
+        @bool tidy_add_blank_lines_around_comments = True
+        @bool tidy_double_quoted_strings = False
+        @bool tidy_keep_blank_lines = True
+        @bool tidy_left_adjust_docstrings = False
+        @int  tidy_lines_before_split_lit = 2
+        @int  tidy_seps_before_split_line = 8
+        
+    Other settings:
+    
+        Added @bool auto-scroll-find-tab
+        Added support for html handlebar syntax coloring
+        Leo's main style sheet is fully parameterized
+        Leo stylesheets now support all color names in leoColor.py
+
+What's new in Leo 4.x
++++++++++++++++++++++
+
+What's new in Leo 4.11
+**********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.11 final released November 6, 2013
+    Leo's tutorials have been rewritten and simplified
+    Greatly improved abbreviations, including templates
+    Clones are now valid anywhere in @file nodes
+    Leo now warns if a .leo file is open elsewhere
+    Leo's IPython bridge now works with IPython 1.x
+    Added support for @testsetup and @testclass
+    Added support for sessions
+    Added colorizing themes
+    A colored border highlights the pane with focus
+    Added support for the clojure, markdown and TypeScript languages
+    Added importers for .ipynb, .otl and vimoutliner files
+
+Commands
+^^^^^^^^
+
+::
+
+    go-anywhere (quicksearch plugin)
+    help-for-abbreviations
+    help-for-dynamic-abbreviations
+    help-for-find-commands
+    help-for-regular-expressions
+    insert-node-before
+    leoscreen-jump-to-error
+    normalize-whitespace
+    parse-body
+    print-buttons
+    vr-expand & vr-contract. All viewrendered commands now start with vr
+    zoom-in/out commands
+
+Features
+^^^^^^^^
+
+::
+
+    --no-plugins command-line option
+    @wrap now suppresses horizontal scrolling
+    Added importers for .otl, .ipnyb, TypeScript and vimoutliner
+    Added sublime Text 2, a dark colorizing theme
+    Added support for @testsetup and @testclass
+    Added syntax coloring for clojure language
+    Added yes-to-all button when prompting for dangerous writes
+    Allow periods before section names in headlines
+    Border color changes depending on input state
+    Clones are now valid anywhere in @file nodes
+    Fully supported `:`: convention in @mode nodes
+    Help commands now use <pre> formatting if docutils is not available
+    Leo issues a warning if the same .leo file is open in another Leo instance
+    Show all commands after <alt-x><tab>
+    Major additions to abbreviations, including templates
+
+Plugins
+^^^^^^^
+
+::
+
+    leomylyn.py
+    markup_inline.py
+    printing.py
+    richtext.py
+    rss.py
+    screen_capture.py
+    screencast.py
+    timestamp.py
+
+Scripts in scripts.leo
+^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    By Terry Brown:
+    
+        Add @script node
+        Cross-outline node editing
+        Export full contents
+        Full tree view (See the discussion in the child)
+        Indexing files for full text search
+        Persistent state with json as a leo abbreviation
+        Tool for diffing Leo files
+        
+    By Edward K. Ream:
+    
+        Cleanup imported nodes
+        Create global data structures from in modes/*.py files
+        Get all comments from modes (slow)
+        Import org mode
+        jinja2 templating
+        Recursive import script
+        
+    By Brian Theado:
+    
+        Display function call hierarchy in Leo
+
+Settings
+^^^^^^^^
+
+::
+
+    Added @color minibuffer-foreground-color
+    Added @color log_warning_color
+    Added @bool enable-tree-dragging
+
+What's new in Leo 4.10
+**********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.10 final released March 29, 2012
+    Detached windows
+    Major improvements to Leo's abbreviations
+
+Commands
+^^^^^^^^
+
+::
+
+    beautify-c
+    c-to-python
+    clone-find-all-flattened
+    clone-marked-nodes
+    delete-marked-nodes
+    move-marked-nodes
+    run-marked-unit-tests-externally
+    run-marked-unit-tests-locally
+    select-to-matching-bracket
+    split-defs
+
+Classes
+^^^^^^^
+
+::
+
+    EditCommandsManager
+    KeyStroke & ShortcutInfo
+    LoadManager
+    TestManager
+
+Features
+^^^^^^^^
+
+::
+
+    Tab completion now shows all @command & @button nodes
+    Leo can highlight the pane containing the focus
+    The bigdash plugin searches across multiple files
+    The new quick edit/save mode makes Leo work like SciTe
+
+What's new in Leo 4.9
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.9 final released June 21, 2011
+    The Qt gui completely replaces Tk gui
+    Nodes may contain multiple @language directives
+    Unified extract and import commands
+    Greatly improved the autocompleter
+    The rendering pane displays movies, html, svg images, etc.
+
+Commands
+^^^^^^^^
+
+::
+
+    Commands now have common prefixes:
+    
+        abbrev-     abbreviation commands
+        apropos-    help
+        buffer-     buffer command
+        ddabrev-    dynamic abbreviations
+        directory-  director commands
+        file-       file commands
+        find-       find commands
+        gc-         garbage collection
+        isearch-    incremental search
+        print-      print information
+        rectangle-  rectangle commands
+        register    register commands
+        run-        run unit tests
+        toggle-     toggle settings
+        yank-       yank
+
+    The import-file commands replaces all the following commands:
+
+        import-at-file                    
+        import-cweb-files         
+        import-derived-file       
+        import-flattened-outline      
+        import-noweb-files
+
+    Commands related to uA's:
+    
+        clear-all-uas
+        clear-node-uas
+        print-all-uas
+        print-node-uas
+        set-ua
+        
+    Other commands:
+    
+        insert-hard-tab
+        insert-soft-tab
+        replace-current-character command
+        save-all
+        toggle-abbrev-mode
+        toggle-case-region
+
+Features
+^^^^^^^^
+
+::
+
+    Added --no-splash, --script and --silent command-line options
+    Leo highlights URL's everywhere
+    Ctrl-clicking a URL's opens them in the browser
+    Leo uses an @file node's extension if there is no @language directive
+    Plain up/down arrow keys in headline-editing mode select a new node
+    Added namespace directive to .leo files
+    Added cython colorizing
+
+What's new in Leo 4.8
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.8 final released November 26, 2010
+    New-style sentinels
+    Drag and drop
+    Improved abbreviations
+    Spell checking based on PyEnchant
+    Leo creates "Resurrected Nodes"
+
+Commands
+^^^^^^^^
+
+::
+
+    code-to-rst
+    cascade-windows
+    minimize-all-windows
+    head-to-prev-node
+    tail-to-next-node
+    extract-python-method
+
+Features
+^^^^^^^^
+
+::
+
+    Leo can open multiple files from the command line
+    Added an .ini importer
+    Added support for .nsi files
+    New screenshots plugin
+
+What's new in Leo 4.7
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.7 final released February 23, 2010
+    The one-node world
+    Leo now works with Python 3 & requires Python 2.6+
+    'Recovered Nodes' nodes guard against clone conflicts
+
+Command-line options
+^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    --debug
+    --version
+
+Commands
+^^^^^^^^
+
+::
+
+    clear-all-caches
+    clear-cache
+
+What's new in Leo 4.6
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.6 final released July 15, 2009
+    Cached external files
+    Automatic syntax checking of .py files
+    The Qt gui is now the default
+    @auto-rst
+    Added p.b, p.h and p.gnx; v.b, v.h and v.gnx properties
+    Tab and Shift-Tab indent & unindent text
+
+Commands
+^^^^^^^^
+
+::
+
+    back-to-home
+    open-quickstart-leo
+    pdb
+
+Features
+^^^^^^^^
+
+::
+
+    New --config, --file and --gui command-line options
+    The open command creates @edit nodes when opening non-.leo files
+    Leo opens a workbook if no file is given
+    Predefined 'self' in @test/@suite nodes
+    Escapes for underindented lines
+    Improved Leo's unit testing framework
+    New warnings for dangerous writes to @auto and @file nodes
+    @nocolor-node directive
+    qtGui and tkGui plugins
+
+What's new in Leo 4.5
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.5 final released September 2, 2008
+    @shadow
+    Improved Leo's key-binding code
+    Improved support for vim bindings
+    Allow v.uA's in @file and @shadow nodes
+    Sax-based parser for .leo files
+    Unified nodes
+    Reorganized Leo's drawing and focus code:
+    Removed calls to c.beginUpdate and c.endUpdate
+
+What's new in Leo 4.4.8
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.8 final released April 6, 2008
+    Host Leo's sources on bzr
+    Began using Google groups
+    Translate arguments to g.es and g.es_print with gettext
+    Completed ILeo: a bridge between IPython and Leo
+    Common @commands nodes in settings files
+
+What's new in Leo 4.4.7
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.7 final released February 18, 2008
+    The IPython bridge (ipython plugin)
+
+What's new in Leo 4.4.6
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.6 final released January 26, 2008
+    Added @data nodes
+    Added @auto importers for javascript and xml files
+    Added find-next-clone and toggle-sparse-move commands
+
+What's new in Leo 4.4.5
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.5 final released December 11, 2007
+    Leo now recognizes directives in headlines
+
+Commands
+^^^^^^^^
+
+::
+
+    delete-all-icons
+    delete-first-icon
+    delete-last-icon
+    delete-node-icons
+    insert-icon
+    reverse-sort-lines
+    reverse-sort-lines-ignoring-case
+    sort-lines-ignoring-case
+    toggle-collapse_nodes_during_finds
+
+Features
+^^^^^^^^
+
+::
+
+    Created unitTest.leo
+    The rst3 plugin now supports @rst-preformat nodes
+
+What's new in Leo 4.4.4
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.4 Final released November 2, 2007
+    The Great Graph Aha.  See the History of Leo
+    @auto
+    @menus trees
+    @buttons trees
+    A faster colorizer plugin
+
+Commands
+^^^^^^^^
+
+::
+
+    check-derived-file
+    check-leo-file
+    compare-leo-outlines
+    insert-child
+    read-at-auto-nodes
+    read-file-into-node
+    write-at-auto-nodes
+    write-dirty-at-auto-nodes
+    write-file-from-node
+
+Features
+^^^^^^^^
+
+::
+
+    @buttons trees
+    @menus trees
+    Added 'clear-all-marks' hook
+    Added graphed.py plugin
+
+What's new in Leo 4.4.3
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.3 final released June 26, 2006
+    The **big reorg** removed all gui-dependent code from Leo's core
+    Added chapters
+    Added zipped .leo files
+    Added leoBridge module
+    Better support for the winpdb debugger
+    Added @enabled-plugins and @openwith nodes
+    Added __wx_gui.py
+
+What's new in Leo 4.4.2
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.2.1 final released October 29, 2006
+    The 'big reorg': vnode and tnode classes are independent of Leo's core
+    Support for ZODB in the vnode and tnode classes
+    The find command closes nodes behind it
+
+Commands
+^^^^^^^^
+
+::
+
+    extend-to-line
+    extend-to-paragraph
+    extend-to-sentence
+    forward-end-word
+    forward-end-word-extend-selection
+
+Features
+^^^^^^^^
+
+::
+
+    Leo can be called from Emacs: See the `Leo and Emacs` chapter
+    Added support for middle-button paste
+    Writing .leo files is about twice as fast as before
+    Integrated sax with read logic
+    Much faster navigation through the outline using Alt-arrow keys
+    When focus is in the outline pane, you can move to headlines by
+    typing the first letter of headlines
+    The find command now closes nodes
+    Leo is easier to use without using a mouse
+
+Plugins
+^^^^^^^
+
+::
+
+    Improved mod_scripting.py:
+    
+        Creates a command for every button
+        The Script Button button creates the press-script-button-button command
+
+    New plugins:
+    
+        leo_to_html.py
+        leo_to_rtf.py
+        paste_as_headlines.py
+        slideshow.py
+        word_count.py
+
+Settings
+^^^^^^^^
+
+::
+
+    @bool collapse_nodes_during_finds
+    @bool insert_new_nodes_at_end
+    @bool sparse_move_outline_left
+
+What's new in Leo 4.4.1
+***********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    Leo 4.4.1 final released August 30, 2006
+    Multiple editors in Leo's body pane
+    A new colorizer plugin controlled by jEdit language description files
+    Search commands now support regex replace patterns
+    Support for external debuggers: https://leo-editor.github.io/leo-editor/debuggers.html
+
+Commands
+^^^^^^^^
+
+::
+
+    add-editor
+    delete-editor
+    cycle-editor-focus
+    cycle-focus
+    debug
+    find-character
+    find-word
+    help-for-command
+    hide-invisibles 
+    isearch-with-present-options
+    open-users-guide
+    python-help
+    run-unit-test
+    scroll-outline-left
+    scroll-outline-right
+    toggle-autocompleter
+    toggle-calltips
+    toggle-invisibles
+
+Features
+^^^^^^^^
+
+::
+
+    Leo matching brackets
+    \1, \2, etc. replacements are valid in regex searches
+    \n and \t are valid in plain searches
+    The shortcut for the replace-string command changes
+    from the find command to the replace command
+
+Plugins
+^^^^^^^
+
+::
+
+   Added slideshow.py
+   mod_scripting.py creates a press-x-button commands
+
+Settings
+^^^^^^^^
+
+::
+
+    @abbrev settings
+    @font settings
+    Commands can be executed on entry to a mode
+    Bindings that are active only in command, enter and insert key states
+
+    New Settings:
+    
+        @bool autoindent_in_nocolor_mode
+        @bool flash_matching_brackets
+        @bool idle_redraw
+        @bool trace_bind_key_exceptions
+        @bool warn_about_redefined_shortcuts
+        @color flash_brackets_background_color
+        @color flash_brackets_foreground_color
+        @int flash-brackets-delay
+        @int flash_brackets_count
+        @string close_flash_brackets
+        @string open_flash_brackets
+        @string editor_orientation
+
+What's new in Leo 4.4
+*********************
+
+Highlights
+^^^^^^^^^^
+
+::
+
+    4.4 final released May 11, 2006
+    An Emacs-like mini-buffer
+    Many new commands
+    You can use Leo without using a mouse
+    Flexible key bindings and input modes
+    A tabbed log pane
+    Autocompletion and calltips
+
+Commands
+^^^^^^^^
+
+::
+
+    activate-cmds-menu
+    activate-edit-menu
+    activate-file-menu
+    activate-help-menu
+    activate-outline-menu
+    activate-plugins-menu
+    activate-window-menu
+    add-space-to-lines
+    add-tab-to-lines
+    clean-lines
+    clear-selected-text
+    click-click-box
+    click-headline
+    click-icon-box
+    clone-find-all
+    contract-and-go-right
+    contract-body-pane
+    contract-log-pane
+    contract-outline-pane
+    contract-pane
+    double-click-headline
+    double-click-icon-box
+    dump-all-objects
+    dump-new-objects
+    expand-body-pane
+    expand-log-pane
+    expand-outline-pane
+    expand-pane
+    find-again
+    find-all
+    find-tab-find command
+    find-tab-find-previous
+    free-text-widgets
+    fully-expand-body-pane
+    fully-expand-log-pane
+    fully-expand-outline-pane
+    fully-expand-pane
+    goto-first-sibling
+    goto-global-line
+    goto-last-sibling
+    help
+    help-for-command
+    hide-body-pane
+    hide-find-tab
+    hide-log-pane
+    hide-minibuffer
+    hide-outline-pane
+    hide-pane,
+    open-find-tab
+    open-find-tab
+    open-outline-by-name (uses filename completion)
+    open-spell-tab
+    print-bindings
+    print-commands    re-search-backward
+    re-search-forward
+    remove-space-from-lines
+    remove-tab-from-lines
+    replace-string
+    run-unit-test
+    scroll-down
+    scroll-down-extend-selection
+    scroll-outline-down-line
+    scroll-outline-down-page 
+    scroll-outline-up-line
+    scroll-outline-up-page
+    scroll-up
+    scroll-up-extend-selection
+    search-backward
+    search-forward
+    search-with-present-options
+    set-find-everywhere
+    set-find-node-only
+    set-find-suboutline-only
+    show-colors
+    show-fonts
+    show-minibuffer
+    show-search-options
+    simulate-begin-drag
+    simulate-end-drag
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option,
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-reverse-option
+    toggle-find-word-option and
+    toggle-find-wrap-around-option
+    toggle-mini-buffer
+    verbose-dump-objects
+    word-search-backward
+    word-search-forward
+
+Features
+^^^^^^^^
+
+::
+
+    Added script to update new copies of leoSetttings.leo from previous copies
+    Made all edit command undoable
+    Added colorizing support for Lua language
+    Autocompletion and calltips
+    Leo remembers the previous open directory
+    User input modes
+    Installed many standard bindings to leoSettings.leo
+    Added support for @mode nodes
+    Added modes/\*.xml to distribution
+    Allow multiple key bindings to the same command
+    Moved all scripts into scripts.leo
+    Bound <Return> to end-edit-headline
+    Created scripts.leo and unitTest.leo
+    The tabbed log
+    The Find tab replaces the old Find panel
+
+Plugins
+^^^^^^^
+
+::
+
+    Changed path to stylesheet in the rst3 plugin
+    Fixed crasher in Word (and other) plugins
+    Fixed problem with labels plugin
+    
+    Added the following commands for the groupoperations plugin:
+    
+        group-operations-clear-marked
+        group-operations-mark-for-copy
+        group-operations-mark-for-move
+        group-operations-mark-for-clone
+        group-operations-mark-target
+        group-operations-operate-on-marked
+        group-operations-transfer
+    
+    The scripting plugin now supports shortcuts in @button nodes:
+    
+        @button name @key=shortcut
+    
+    The scripting plugin now supports @command nodes:
+    
+        @command name @key=shortcut
+
+Settings
+^^^^^^^^
+
+::
+
+    New settings features:
+    
+        Per-pane bindings: command-name ! pane = shortcut
+        Spelling settings replace the settings in spellpyx.ini
+            @shortcuts nodes
+        
+    New settings:
+
+        @bool allow_idle_time_hook
+        @bool autocomplete-brackets
+        @bool gc_before_redraw
+        @bool minibufferSearchesShowFindTab
+        @bool show_only_find_tab_options
+        @bool show_tree_stats
+        @bool trace_autocompleter
+        @bool trace_bindings
+        @bool trace_doCommand
+        @bool trace_f.set_focus
+        @bool trace_focus
+        @bool trace_g.app.gui.set_focus
+        @bool trace_gc
+        @bool trace_gc_calls
+        @bool trace_gc_verbose
+        @bool trace_key_event
+        @bool trace_masterClickHandler
+        @bool trace_masterCommand
+        @bool trace_masterFocusHandler
+        @bool trace_masterKeyHandler
+        @bool trace_minibuffer
+        @bool trace_modes
+        @bool trace_redraw_now
+        @bool trace_select
+        @bool trace_status_line
+        @bool trace_tree
+        @bool trace_tree_alloc
+        @bool trace_tree_edit
+        @bool useCmdMenu
+        @bool useMinibuffer
+        @bool use_syntax_coloring
+        @color body_text_selection_background_color
+        @color body_text_selection_foreground_color
+        @color log_pane_Find_tab_background_color
+        @color log_pane_Spell_tab_background_color, etc.
+        @int max_undo_stack_size,
+        @string trace_bindings_filter
+        @string trace_bindings_pane_filter
+

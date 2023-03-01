@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/basics/slide-003.html
+
+Editing headlines
+=================
+
+Ctrl-H edits the presently selected headline.
+
+You can type Ctrl-H at any time, regardless of
+where the focus is.
+
+The body pane is now blue, indicating that it no longer has focus.
+
+.. image:: _images/slide-003.png
+

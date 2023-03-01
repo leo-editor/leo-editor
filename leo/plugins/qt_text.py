@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
-#@@first
 """Text classes for the Qt version of Leo"""
-#@+<< qt_text imports >>
-#@+node:ekr.20220416085845.1: ** << qt_text imports >>
+#@+<< qt_text imports & annotations>>
+#@+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
+from __future__ import annotations
 import time
 assert time
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -15,21 +14,13 @@ from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
-#@-<< qt_text imports >>
-#@+<< qt_text annotations >>
-#@+node:ekr.20220416085945.1: ** << qt_text annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper  # pylint: disable=import-self
-else:
-    Cmdr = Any
-    Event = Any
-    Wrapper = Any
-Widget = Any
-
-MousePressEvent = Any
-#@-<< qt_text annotations >>
+    MousePressEvent = Any
+    Widget = Any
+#@-<< qt_text imports & annotations>>
+# pylint: disable = c-extension-no-member
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor
@@ -400,11 +391,8 @@ class QLineEditWrapper(QTextMixin):
     def see(self, i: int) -> None:
         """QHeadlineWrapper."""
 
-        pass
-
     def seeInsertPoint(self) -> None:
         """QHeadlineWrapper."""
-        pass
     #@+node:ekr.20110605121601.18125: *4* qlew.setAllText
     def setAllText(self, s: str) -> None:
         """Set all text of a Qt headline widget."""
@@ -493,7 +481,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
     #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
-
 
     class LeoQTextBrowser(QtWidgets.QTextBrowser):  # type:ignore
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
@@ -876,7 +863,7 @@ if QtWidgets:
                 bg = f'#{bg_hex:x}'
 
                 if (params['last_fg'] != fg or params['last_bg'] != bg):
-                    #bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    # bg_color = QColor(bg) if bg else self.assign_bg(fg)
                     hl_color = self.calc_hl(palette)
                     params['last_hl_color'] = hl_color
                     params['last_fg'] = fg
@@ -973,6 +960,7 @@ if QtWidgets:
                             This is as close as possible to vim's look.
             New in Leo 6.6.2: Draw right margin guideline.
             """
+            # pylint: disable = too-many-locals
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
             #
             # First, call the base class paintEvent.
@@ -984,8 +972,9 @@ if QtWidgets:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
 
-            if w == c.frame.body.widget and \
-                    c.config.getBool('show-rmargin-guide'):
+            if (w == getattr(c.frame.body, 'widget', None)
+                and c.config.getBool('show-rmargin-guide')
+                ):
                 #@+<< paint margin guides >>
                 #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
                 # based on https://stackoverflow.com/questions/30371613
@@ -1132,7 +1121,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         """
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        #width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
+        # width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if isQt6:
             width = self.fm.boundingRect(str(max(1000, self.highest_line))).width() + self.w_adjust
         else:
@@ -1538,7 +1527,7 @@ class QScintillaWrapper(QTextMixin):
 class QTextEditWrapper(QTextMixin):
     """A wrapper for a QTextEdit/QTextBrowser supporting the high-level interface."""
     #@+others
-    #@+node:ekr.20110605121601.18073: *3* qtew.ctor & helpers
+    #@+node:ekr.20110605121601.18073: *3* QTextEditWrapper.ctor & helpers
     def __init__(self, widget: Widget, name: str, c: Cmdr=None) -> None:
         """Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser."""
         super().__init__(c)
@@ -1554,7 +1543,7 @@ class QTextEditWrapper(QTextMixin):
             self.set_config()
             self.set_signals()
 
-    #@+node:ekr.20110605121601.18076: *4* qtew.set_config
+    #@+node:ekr.20110605121601.18076: *4* QTextEditWrapper.set_config
     def set_config(self) -> None:
         """Set configuration options for QTextEdit."""
         w = self.widget
@@ -1564,7 +1553,7 @@ class QTextEditWrapper(QTextMixin):
             w.setTabStopDistance(24)
         else:
             w.setTabStopWidth(24)
-    #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)
+    #@+node:ekr.20140901062324.18566: *4* QTextEditWrapper.set_signals (should be distributed?)
     def set_signals(self) -> None:
         """Set up signals."""
         c, name = self.c, self.name
@@ -1578,7 +1567,7 @@ class QTextEditWrapper(QTextMixin):
         if name in ('body', 'log'):
             # Monkey patch the event handler.
             #@+others
-            #@+node:ekr.20140901062324.18565: *5* mouseReleaseEvent (monkey-patch) QTextEditWrapper
+            #@+node:ekr.20140901062324.18565: *5* QTextEditWrapper.mouseReleaseEvent (monkey-patch)
             def mouseReleaseEvent(event: Event, self: Any=self) -> None:
                 """
                 Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
@@ -1600,13 +1589,13 @@ class QTextEditWrapper(QTextMixin):
                     c.k.keyboardQuit(setFocus=False)
             #@-others
             self.widget.mouseReleaseEvent = mouseReleaseEvent
-    #@+node:ekr.20200312052821.1: *3* qtew.repr
+    #@+node:ekr.20200312052821.1: *3* QTextEditWrapper.repr
     def __repr__(self) -> str:
         # Add a leading space to align with StringTextWrapper.
         return f" <QTextEditWrapper: {id(self)} {self.name}>"
 
     __str__ = __repr__
-    #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
+    #@+node:ekr.20110605121601.18078: *3* QTextEditWrapper.High-level interface
     # These are all widget-dependent
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i: int, j: int=None) -> None:
@@ -1974,13 +1963,13 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast)
-    def toPythonIndexRowCol(self, i: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
 
         te = self.widget
         doc = te.document()
-        bl = doc.findBlock(i)
+        bl = doc.findBlock(index)
         row = bl.blockNumber()
-        col = i - bl.position()
+        col = index - bl.position()
         return row, col
     #@-others
 #@-others

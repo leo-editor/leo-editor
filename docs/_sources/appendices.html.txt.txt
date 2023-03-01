@@ -1,0 +1,1122 @@
+.. rst3: filename: html/appendices.html
+
+##########
+Appendices
+##########
+
+.. |br| raw:: html
+
+   <br />
+   
+.. contents::
+    :depth: 3
+    :local:
+
+Format of .leo files
+++++++++++++++++++++
+
+.. _`Writing plugins`:   writingPlugins.html
+
+Here are the XML elements that may appear in Leo files:
+
+<?xml>
+    Leo files start with the following line::
+
+        <?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet>
+    An xml-stylesheet line is option.  For example::
+
+        <?xml-stylesheet ekr_stylesheet?>
+
+<leo_file>
+    The <leo_file> element opens an element that contains the entire file.
+    </leo_file> ends the file.
+
+<leo_header> 
+    The <leo_header> element specifies version information and other information
+    that affects how Leo parses the file.  For example::
+
+        <leo_header file_format="2" tnodes="0" max_tnode_index="5725" clone_windows="0"/>
+
+    The file_format attribute gives the 'major' format number.
+    It is '2' for all 4.x versions of Leo.
+    The tnodes and clone_windows attributes are no longer used.
+    The max_tnode_index	attribute is the largest tnode index.
+
+<globals>
+    The globals element specifies information relating to the entire file.
+    For example::
+
+        <globals body_outline_ratio="0.50">
+            <global_window_position top="27" left="27" height="472" width="571"/>
+            <global_log_window_position top="183" left="446" height="397" width="534"/>
+        </globals>
+
+    -   The body_outline_ratio attribute specifies the ratio of the height of the body pane to
+        the total height of the Leo window.
+        It initializes the position of the splitter separating the outline pane from the body pane.
+
+    -   The global_window_position and global_log_window_position elements
+        specify the position of the Leo window and Log window in global coordinates:
+
+<preferences>
+    This element is vestigial.
+    Leo ignores the <preferences> element when reading.
+    Leo writes an empty <preferences> element.
+
+<find_panel_settings>
+    This element is vestigial.
+    Leo ignores the <find_panel_settings> element when reading.
+    Leo writes an empty <find_panel_settings> element.
+
+<clone_windows>
+    This element is vestigial.
+    Leo ignores the <clone_windows> element when reading.
+    Leo no longer writes <clone_windows> elements.
+
+<vnodes>
+    A single <vnodes> element contains nested <v> elements.
+    <v> elements correspond to vnodes.
+    The nesting of <v> elements indicates outline structure in the obvious way.
+
+<v>
+    The <v> element represents a single vnode and has the following form::
+
+        <v...><vh>sss</vh> (zero or more nested v elements) </v>
+
+    The <vh> element specifies the headline text.
+    sss is the headline text encoded with the usual XML escapes.
+    As shown above, a <v> element may contain nested <v> elements.
+    This nesting indicates outline structure in the obvious way.
+    Zero or more of the following attributes may appear in <v> elements::
+
+        t=name.timestamp.n
+        a="xxx"
+
+    The t="Tnnn" attribute specifies the <t> element associated with a <v> element.
+    The a="xxx" attribute specifies vnode attributes.
+    The xxx denotes one or more upper-case letters whose meanings are as follows::
+
+        C	The vnode is a clone. (Not used in 4.x)
+        E	The vnode is expanded so its children are visible.
+        M	The vnode is marked.
+        T	The vnode is the top visible node.
+        V	The vnode is the current vnode.
+
+    For example, a="EM"  specifies that the vnode is expanded and is marked.
+
+    **New in 4.0**:
+
+    -   <v> elements corresponding to @file nodes now contain tnodeList attributes.
+        The tnodeList attribute allows Leo to recreate the order in which nodes should 
+        appear in the outline.
+        The tnodeList attribute is a list of gnx's: global node indices.
+        See Format of external files (4.x) for the format of gnx's.
+
+    -   Plugins and scripts may add attributes to <v> and <t> elements.
+        See `Writing plugins`_ for details.
+
+<tnodes>
+    A single <tnodes> element contains a non-nested list of <t> elements.
+
+<t>
+    The <t> element represents the body text of the corresponding <v> element.
+    It has this form::
+
+        <t tx="<gnx>">sss</t>
+
+    The tx attribute is required.
+    The t attribute of <v> elements refer to this tx attribute.
+    sss is the body text encoded with the usual XML escapes.
+
+    **New in 4.0**: Plugins and scripts may add attributes to <v> and <t>
+    elements. See `Writing plugins`_ for details.
+
+Format of external files
+++++++++++++++++++++++++
+
+.. _`sentinel lines`: glossary.html#sentinel-lines
+
+This section describe the format of external files. Leo's `sentinel lines`_ are comments, and this section describes those comments.
+
+.. index:: gnx
+
+External files created by @file use gnx's in @+node sentinels. Such gnx's permanently and uniquely identify nodes. Gnx's have the form::
+
+    id.yyyymmddhhmmss
+    id.yyyymmddhhmmss.n
+
+The second form is used if two gnx's would otherwise be identical.
+
+- id is a string unique to a developer, e.g., a git id.
+
+- yyyymmddhhmmss is the node's creation date.
+
+- n is an integer.
+
+Closing sentinels are required for section references and the @all and @others directives, collectively known as **embedding constructs.** Proof: These constructs do not terminate the node in which they appear. Without a closing sentinel there would be no way to know where the construct ended and the following lines of the enclosing node began.
+
+New sentinels do not include @nonl or @nl. As a result, body text always ends with at least one newline.
+
+Here are the sentinels used by Leo, in alphabetical order. Unless otherwise noted, the documentation applies to all versions of Leo. In the following discussion, gnx denotes a gnx as described above.
+
+\@<<
+    A sentinel of the form @<<section_name>> represents a section reference.
+
+    If the reference does not end the line, the sentinel line ending
+    the expansion is followed by the remainder of the reference line.
+    This allows the Read code to recreate the reference line exactly.
+
+\@@
+    The @@ sentinel represents any line starting with @ in body text
+    except @*whitespace*, @doc and @others.
+    Examples::
+
+      @@nocolor
+      @@pagewidth 80
+      @@tabwidth 4
+      @@code
+
+\@afterref
+    Marks non-whitespace text appearing after a section references.
+    As of Leo 6.6, Leo no longer *writes* afterref sentinels.
+    However, Leo will always *read* such sentinels correctly.
+
+\@+all
+    Marks the start of text generated by the @all directive.
+
+\@-all
+    Marks the end of text generated by the @all directive.
+
+\@at and @doc
+
+    The @+doc @+at sentinels indicate the start of a doc parts.
+
+..  Officially retired in Leo 5.7.4.
+..  We use the following **trailing whitespace convention** to
+..  determine where putDocPart has inserted line breaks::
+..      A line in a doc part is followed by an inserted newline
+..      if and only if the newline if preceded by whitespace.
+..  To make this convention work, Leo's write code deletes the trailing
+..  whitespace of all lines that are followed by a "real" newline.
+
+\@+body **(Leo 3.x only)**
+    Marks the start of body text.
+
+\@-body **(Leo 3.x only)**
+    Marks the end of body text.
+
+\@delims
+    The @delims directive inserts @@delims sentinels into the
+    external file. The new delimiter strings continue in effect until
+    the next @@delims sentinel *in the external file* or until the
+    end of the external file. Adding, deleting or changing @@delim
+    *sentinels* will destroy Leo's ability to read the external file.
+    Mistakes in using the @delims *directives* have no effect on Leo,
+    though such mistakes will thoroughly mess up a external file as
+    far as compilers, HTML renderers, etc. are concerned.
+    
+\@section-delims  (Leo 6.6+)
+    The @section-delims directive inserts @@section-delims sentinels
+    into the external file. The directive must appear in the root
+    @<file> node.
+
+\@+leo
+    Marks the start of any external file. This sentinel has the form::
+
+        <opening_delim>@leo<closing_delim>
+
+    The read code uses single-line comments if <closing_delim> is empty.
+    The write code generates single-line comments if possible.
+
+    The @+leo sentinel contains other information. For example::
+
+        <opening_delim>@leo-ver=4-thin<closing_delim>
+
+\@-leo
+    Marks the end of the Leo file.
+    Nothing but whitespace should follow this directive.
+
+..  \@+middle **(Created in Leo 4.0, removed in Leo 5.3)**
+..  \@-middle **(Created in Leo 4.0, removed in Leo 5.3)**
+..  Marks the start/end of intermediate nodes between the node that
+..  references a section and the node that defines the section.
+..  These sentinels were a **mistake** that created bugs.  See:
+..  https://github.com/leo-editor/leo-editor/issues/132
+..  \@nl **(Leo 3.x only)**
+..  Insert a newline in the outline.
+
+\@+node
+    Mark the start and end of a node::
+
+        @+node:gnx:<headline>
+        
+\@nonl **(Leo 3.x only)**
+    Suppresses a newline in the outline.
+
+\@others
+    The @+others sentinel indicates the start of the expansion of an @+others          
+    directive, which continues until the matching @-others sentinel.
+
+\@verbatim
+    @verbatim indicates that the next line of the external file is not a sentinel.
+    This escape convention allows body text to contain lines that would otherwise
+    be considered sentinel lines.
+
+..  \@@verbatimAfterRef 
+..  @verbatimAfterRef is generated when a comment following a section reference would
+..  otherwise be treated as a sentinel. In Python code, an example would be::
+..  << ref >> #+others
+
+The Leonine way to refactor code
+++++++++++++++++++++++++++++++++
+
+This paper explains how to use cff (clone-find-flattened) while
+refactoring code. I could not have completed the refactoring of Leo's
+atFile write code without using continuous, extensive use of cff.
+
+There are two key ideas:
+
+1. The clones produced by cff are short-term or medium-term data,
+   easily created and easily dispensed with.
+
+Such clones are valuable, but not precious. They will eventually be discarded.
+
+2. Unlike tags (or any other kind of non-Leonine data), the clones
+   produced by cff can be reorganized.
+
+This is the priceless, unique advantage of clones.  You don't understand clones if you don't get this.
+
+Example
+
+1. While refactoring, it is essential to see all actual uses of a
+   symbol (method, or ivar, whatever).
+
+The starting point is to use cff to find all potential uses of the
+symbol. If multiple files or classes use the symbol, you can use the
+suboutline-only option to limit the matches created by cff.
+
+2. After finding all potential uses of the symbol, you can reorganize
+   the resulting clones as follows:
+
+- Delete nodes that are completely irrelevant.
+- Squirrel away likely-irrelevant nodes in a new organizer node.
+- Highlight the defining node, say by making it the preceding sibling of the cff node.
+- Leave all actual uses of the symbol where they are.
+
+3. You have now focused your attention on the nodes that will likely
+   change.
+
+You can now rerun the search only on those cloned nodes to see all
+instances of the symbol that might be changed. This is a crucial
+double check on proposed changes.
+
+Summary
+
+I highly recommend that all Leonine programmers use the approach just
+described when refactoring code.
+
+Neither tags, nor filters, nor refactoring packages can emulate the
+Leonine way of refactoring.
+
+Theory of operation: c.deletePositionsInList
+++++++++++++++++++++++++++++++++++++++++++++
+
+The positions passed to p.deletePositionsInList only *specify* the desired
+changes; the only way to *make* those changes is to operate on vnodes!
+
+Consider this outline, containing no clones::
+
+    + ROOT
+      - A
+      - B
+
+The fundamental problem is this. If we delete node A, the index of
+node B in ROOT.children will change. This problem has (almost) nothing
+to do with clones or positions.
+
+**Proof that c.deletePositionsInList is correct**
+
+Clearly, deleting a positions ultimately means changing vnodes,
+specifically, v.parents and v.children for v in some set of vnodes. We must
+show that the particular set of changed vnodes in the new code is the
+correct set of vnodes, and that the changes made to that set are correct.
+This is far from obvious at first glance.
+
+**The new code**
+
+Here is Vitalije's version of c.deletePositionsInList, without the docstring::
+
+    def deletePositionsInList(self, aList):
+        c = self
+
+        # Ensure all positions are valid.
+        aList = [p for p in aList if c.positionExists(p)]
+        if not aList:
+            return
+
+        def p2link(p):
+            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            return p._childIndex, parent_v
+
+        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+    
+        # The main loop.
+        for i, v in links_to_be_cut:
+            child_v = v.children.pop(i)
+            child_v.parents.remove(v)
+
+To begin the proof, note that the main loop has the expected "form". That
+is, when we delete a node, we will:
+
+1. Delete child_v = v.children[i] for some v and i.
+
+2. Delete child_v from its parents array.
+
+v.parents is an unordered array, so child_v.parents.remove(v) is all that
+is needed. This line might crash if one of the positions is invalid. It
+will also crash if v is not present in child_v.parents. I'll discuss this
+later.
+
+To complete the proof, we must show that the main loop deletes all and only
+those vnodes implied by the positions in aList. We can tentatively assume
+that the main loop will work properly if that data in links_to_be_cut is
+correct, but there are some subtleties lurking here which I'll discuss later.
+
+The following code creates links_to_be_cut::
+
+    def p2link(p):
+        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+        return p._childIndex, parent_v
+
+    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+
+This is elegant (compressed) code. Let's examine it carefully...
+
+p2link produces tuples (childIndex, parent_v). These become bound to i, v
+in the main loop::
+
+    # The main loop.
+    for i, v in links_to_be_cut:
+        child_v = v.children.pop(i)
+        child_v.parents.remove(v)
+
+To make this work, parent_v must be the vnode whose i'th child should be
+deleted::
+
+    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+
+- p.stack entries have the form (v, childIndex), so p.stack[-1] is the
+  position p's immediate parent vnode, if p has a parent. Otherwise,
+  c.hiddenRootNode is the proper parent vnode.
+
+- p._childIndex is also the correct value for i.
+
+We have just proved the following:
+    
+    *Deleting position p means executing the main loop for (i, v) returned by p2link(p).*
+
+**Sorting and filtering**
+
+The following line filters and sorts the results produced by p2link::
+
+    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0]
+
+Let's break this into parts, from "inside" to "outside"
+
+- map(p2link, aList) applies p2link to every position in aList.
+  The result is a list of tuples (i, v). It may contain duplicates.
+
+- set(map(p2link, aList) removes those duplicates.
+  Let **theSet** be set(map(p2link, aList).
+
+- Finally, sorted(theSet, key=lambda x:-x[0]) creates a generator
+  equivalent to a sorted list.
+
+The generator will deliver the tuples (i, v) in descending order of i, when
+several tuples (i, v) have the same vnode. The generator does not order
+tuples on v, and there is no need to do so.
+
+It's easy to understand the intent of this sort order. The main loop
+contains this line::
+
+    child_v = v.children.pop(i)
+
+The sort order means that pop(i) happens before pop(j) if i > j. This
+ensures that the precomputed values of i won't change in the main loop.
+
+**Completing the proof**
+
+The algorithm appears sound. The tuples (i, v) computed from p2link(p)
+correctly describe the work to be done. Filtering ensures that the work is
+done once. Sorting ensures that child indices i will not change during the
+main loop.
+
+The (i, v) tuples are sorted on i, but not v. aList can contain positions
+in any order, so we know only that for any particular vnode v the main loop
+will handle tuples (i1, v), (i2, v), ... in the correct order.
+
+There are two final questions to consider:
+
+First, does the order in which the main loop handles vnodes matter?
+
+No. The vnode data are independent. The main loop works regardless of
+whether a vnode has already been unlinked.
+
+Second, could the following lines ever fail?
+::
+
+    child_v = v.children.pop(i)
+    child_v.parents.remove(v)
+
+No. Sorting and filtering ensure that (i, v) are unique. v is guaranteed to
+be in child_v.parents because v.children[i] must exist.
+
+This concludes the proof.
+
+**Discussion**
+
+The algorithm is sound because the tuples (i, v) contain no duplicates. For
+any particular v, the main loop will process the set of tuples (i, v) in
+descending order of i. This resolves the question of whether deleting
+already deleted positions is valid.
+
+leoAst.py
++++++++++
+
+The classes in `leoAst.py <https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py>`_
+unify python's token-based and ast-based worlds by creating two-way links
+between tokens in the token list and ast nodes in the parse tree.
+    
+leoAst.py is part of `Leo <https://leo-editor.github.io/leo-editor/>`_, and can be used
+completely independently of Leo.
+
+You must use Leo to see the intended outline structure of the code. Without
+Leo, you will see special **sentinel comments** that create Leo's outline
+structure. These comments have the form::
+
+    #@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>
+    
+If you have any trouble installing or using this code, please help for help
+on `Leo's forum <https://groups.google.com/forum/#!forum/leo-editor>`_
+
+Running leoAst.py
+*****************
+
+Running leoAst.py from the command line
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+leoAst.py is designed to be run from the command line::
+
+    usage:
+        leoAst.py --help
+        leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
+        leoAst.py --py-cov [ARGS]
+        leoAst.py --pytest [ARGS]
+        leoAst.py --unittest [ARGS]
+        
+    examples:
+        --py-cov "-f TestOrange"
+        --pytest "-f TestOrange"
+        --unittest TestOrange
+    
+    positional arguments:
+      PATHS              directory or list of files
+    
+    optional arguments:
+      -h, --help         show this help message and exit
+      --fstringify       leonine fstringify
+      --fstringify-diff  show fstringify diff
+      --orange           leonine Black
+      --orange-diff      show orange diff
+      --py-cov           run pytest --cov on leoAst.py
+      --pytest           run pytest on leoAst.py
+      --unittest         run unittest on leoAst.py
+
+Running the code python programmatically
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To access the code, do one of the following::
+
+    import leoAst
+    import leo.core.leoAst as leoAst
+    
+You can then run the fstringify commands as follows::
+
+    changed = leoAst.Fstringify().fstringify_file(filename)
+    changed = leoAst.Fstringify().fstringify_diff_files(filename)
+
+Running unit tests and coverage tests programmatically
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following runs all unit tests for leoAst.py::
+
+    python -m leo.core.leoAst
+    
+The following runs coverage tests::
+
+    pytest -x --cov-report html --cov-report term-missing --cov=leo.core.leoAst leo/core/leoAst.py
+
+TokenOrder classes: Theory of operation
+***************************************
+
+This is the Theory of Operation for the TokenOrderGenerator (TOG) class and
+related classes.
+
+Token-order classes
+^^^^^^^^^^^^^^^^^^^
+
+The **TokenOrderGenerator** (TOG) class injects two-way links between all
+tokens and the corresponding ast nodes. The TOG class also injects
+parent/child links into all ast nodes.
+
+The TOG class defines generators that visit ast nodes in **token order**,
+the traversal order that corresponds to the order of the tokens produced by
+python's tokenizer module. The only way to ensure this correspondence is to
+use separate visitors for all ast nodes. All visitors are straightforward
+generators.
+
+TOG visitors `yield from` tog.gen* generators to visit subtrees. All such
+generators eventually call TOG.sync_token, which checks that that tokens
+are, in fact, visited in the correct order. TOG.sync_token is an
+ever-present unit test.
+
+The **TokenOrderTraversal** (TOT) class uses the parent/child links created
+by the TOG class. TOT.traverse contains a single for-loop that calls all
+nodes of the parse tree in token order. This loop is extremely fast. Using
+the TOT class, client code can easily modify the token list or parse tree
+as desired.
+
+Other classes
+^^^^^^^^^^^^^
+
+The **Token** class represents one token, created by tokenize.tokenize.
+
+The **Fstringify** class is an re-implementation of the external fstringify
+project using the TOG class.
+
+The **Orange** class is a re-implementation of the black project. |br|
+The name "Orange" is a play on words: "Orange is the new black".
+
+The **AstDumper** class provides an extensive set of tools for examining
+token lists, parse trees, and the links between them.
+
+The **BaseTest** class provides common infrastructure for all other test classes.
+*Important*: BaseTest.make_data is, all by itself, a very strong unit test.
+
+Significant vs insignificant tokens
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The distinction between **significant** and **insignificant** tokens is
+crucial. Visitors call TOG.gen_token, TOG.gen_op, etc. *only* for
+significant tokens. The **is_significant** and **is_significant_token**
+functions define which tokens are significant.
+
+Visitors can't know, just by looking at the parse tree, whether the input
+contains *insignificant* tokens. For example, the source tokens might
+contain non-essential parentheses, or optional trailing commas, or whether
+two statements are separated by a semicolon.
+
+Helping TOG visitors
+^^^^^^^^^^^^^^^^^^^^
+
+The TOG.do_If visitor calls **TOG.find_next_significant_token** to
+determine whether TOG.do_If should generate an "if" or an "elif" token.
+This help is essential, because the following two source files generate
+identical parse trees!::
+
+  if 1:            if 1:
+      pass             pass
+  else:            elif 2:
+      if 2:            pass
+          pass
+
+Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call
+**TOG.get_concatenated_string_tokens** to handle one ore more concatenated
+string tokens.
+
+Finally, TOG.do_slice calls TOG.find_next_significant_token to determine
+whether a slice without a step contains an optional colon.
+
+TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are
+crucial inventions. TOG class would not be possible without them.
+
+Syncing tokens
+^^^^^^^^^^^^^^
+
+**TOG.px** is an index into the token list. It is either -1, or it points
+at the previous significant token. *Note*: TOG.find_next_significant_token
+and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
+
+TOG.sync_token(self, kind, val) associates tokens with ast nodes as
+follows:
+
+1. If (kind, val) denote an *insignificant* token, TOG.sync_token does
+   nothing.
+   
+2. Otherwise, (kind, val) denotes a *significant* token. TOG.sync_token
+   associates that token, *plus* all previous *insignificant* tokens with
+   self.node, the ast node presently being visited.
+   
+In addition, if (kind, val) denotes a *significant* token, TOG.sync_token
+checks that the next *significant* token in the token list has the expected
+kind and value. This is done as follows:
+
+- TOG.sync_token advances TOG.px to point at the next significant token,
+  call it T.
+- TOG.raises AssignLinksError if (T.kind, T.value) != (kind, val)
+
+To summarize token syncing:
+
+- The TOG.px index tracks the last-seen *significant* token.
+- TOG.px advances monotonically through the token list.
+- TOG.find_next_significant_token and TOG.get_concatenated_string_tokens
+  scan forward through the token list using a private copy of TOG.px. These
+  methods never change TOG.px itself.
+- This token-syncing machinery is the *simplest* thing that could possibly
+  work. It is also the *fastest* thing that could possibly work.
+
+Figures of merit
+^^^^^^^^^^^^^^^^
+
+**Simplicity**:
+
+- The distinction between significant and insignificant tokens makes
+  token-order traversals possible. This distinction drastically simplifies
+  TOG visitors. They never have to generate insignificant tokens!
+   
+- TOG.find_next_significant_token and TOG.get_concatenated_string_tokens()
+  use TOG.px to look ahead in the token list.
+   
+- It took a long time to realize that the parse tree needs help from the
+  token list, not the other way around!
+
+**Speed**: The TOG creates links between tokens and ast nodes in roughly the time
+taken by python's tokenize.tokenize and ast.parse library methods. The TOT
+class traverses trees annotated with parent/child links even more quickly.
+
+TOG class avoids both ast.fix_missing_locations and ast.get_source_segment,
+which are too slow to be useful.
+
+**Memory**: The TOG class makes no significant demand on python's resources:
+
+- Generators add nothing to python's call stack.
+- The *only* variable-length data created by the TOG is TOG.node_stack.
+  This stack resides in python's heap, so its length is unimportant. In the
+  worst case, it might contain a few thousand entries.
+- The TOT uses no variable-length data whatever.
+
+Notable functions & methods
+***************************
+
+Initing data structures
+^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    def make_tokens(contents):
+        """
+        Return a list (not a generator) of Token objects corresponding to the
+        list of 5-tuples generated by tokenize.tokenize.
+        """
+        
+    def nearest_common_ancestor(node1, node2):
+        """
+        Return the nearest common ancestor nodes for the given nodes.
+        
+        The nodes must have parent links.
+        """
+    
+    def parse_ast(s):
+        """
+        Parse string s, catching & reporting all exceptions.
+        Return the ast node, or None.
+        """
+        
+    def tokens_for_node(node, tokens):
+        """Return the list of all tokens descending from node."""
+
+Reading & writing files
+^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    def read_file_with_encoding(filename):
+        """
+        Read the file, returning (e, s).
+    
+        s is the string, converted to unicode, or None if there was an error.
+        
+        e is the encoding of s, computed in the following order:
+    
+        - The BOM encoding if the file starts with a BOM mark.
+        - The encoding given in the # -*- coding: utf-8 -*- line.
+        - The encoding given by the 'encoding' keyword arg. - 'utf-8'.
+        """
+        
+    def write_file(filename, s, encoding='utf-8'):
+        """Write the string s to the file whose name is given."""
+
+Reports
+^^^^^^^
+
+The dump_* functions pretty-print tokens and parse trees in various
+formats::
+
+    def show_diffs(s1, s2, filename=''):
+        """Print diffs between strings s1 and s2."""
+    
+    def tokens_to_string(tokens):
+        """Return the string represented by the list of tokens."""
+
+Updating tokens and parse trees
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    def add_token_to_token_list(token, node):
+        """Insert token in the proper location of node.token_list."""
+        
+    def replace_node(new_node, old_node):
+        """Replace new_node by old_node in the parse tree."""
+        
+    def replace_token(token, kind, value):
+        """Replace kind and value of the given token."""
+
+TokenOrderGenerator.init_from_file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This method creates the tokens list and the parse tree and adds all links
+between tokens and parse tree nodes::
+
+    def init_from_file(self, filename):
+        """
+        Create the tokens and ast tree for the given file.
+        
+        Return (contents, encoding, tokens, tree).
+        """
+        self.level = 0
+        self.filename = filename
+        encoding, contents = read_file_with_encoding(filename)
+        if contents is None:
+            return None, None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        self.tree = tree = parse_ast(contents)
+        self.create_links(tokens, tree)
+        self.reassign_tokens(tokens, tree)
+        return contents, encoding, tokens, tree
+
+Maintaining leoAst.py
+*********************
+
+.. _`Leo issue #1440`: https://github.com/leo-editor/leo-editor/issues/1440
+
+New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:
+
+- Add a visitor for the new node.
+- Add one or more unit tests that fully cover the new visitor.
+
+The test_visitors_exist unit test checks that visitors exist for all ast nodes defined by to a particular version of python.
+
+See `Leo issue #1440`_ for notes relating to the code.
+
+Unicode reference
++++++++++++++++++
+
+Leo uses unicode internally for all strings.
+
+1. Leo converts headline and body text to unicode when reading .leo files and external files. Both .leo files and external files may specify their encoding.  The default is utf-8. If the encoding used in a external file is not "utf-8" it is represented in the @+leo sentinel line. For example::
+
+        #@+leo-encoding=iso-8859-1.
+
+    The utf-8 encoding is a "lossless" encoding (it can represent all
+    unicode code points), so converting to and from utf-8 plain
+    strings will never cause a problem. When reading or writing a
+    character not in a "lossy" encoding, Leo converts such characters
+    to '?' and issues a warning.
+
+2. When writing .leo files and external files Leo uses the same encoding used to read the file, again with utf-8 used as a default.
+
+3. leoSettings.leo contains the following Unicode settings, with the defaults as shown::
+
+        default_derived_file_encoding = UTF-8 
+        new_leo_file_encoding = UTF-8 
+
+    These control the default encodings used when writing external
+    files and .leo files. Changing the new_leo_file_encoding setting
+    is not recommended. See the comments in leoSettings.leo. You may
+    set default_derived_file_encoding to anything that makes sense for
+    you.
+
+4. The @encoding directive specifies the encoding used in a external file. You can't mix encodings in a single external file.
+
+Valid URL's
++++++++++++
+
+Leo checks that the URL is valid before attempting to open it. A valid URL is:
+
+-   3 or more lowercase alphas
+-   followed by one :
+-   followed by one or more of:
+-   ``$%&'()*+,-./0-9:=?@A-Z_a-z{}~``
+-   followed by one of: ``$%&'()*+/0-9:=?@A-Z_a-z}~`` 
+
+That is, a comma, hyphen and open curly brace may not be the last character.
+
+URL's in Leo should contain no spaces: use %20 to indicate spaces.
+
+You may use any type of URL that your browser supports: http, mailto, ftp, file, etc.
+
+The Mulder/Ream update algorithm
+++++++++++++++++++++++++++++++++
+
+This appendix documents the Mulder/Ream update algorithm in detail, with an informal proof of its correctness.
+
+Prior to Leo 5.1, Leo used Bernhard Mulder's original algorithm to read @shadow files. Starting with Leo 5.1, Leo uses this algorithm to read both @clean and @shadow files. Conceptually, both algorithms work as described in the next section.
+
+In February 2015 EKR realized that the @shadow algorithm could be used to update @clean (@nosent) files. Simplifying the algorithm instantly became a top priority. The new code emerged several days later, made possible by the x.sentinels array. It is an important milestone in Leo's history.
+
+What the algorithm does
+***********************
+
+For simplicity, this discussion will assume that we are updating an
+external file, x, created with @clean x. The update algorithm works
+exactly the same way with @shadow trees.
+
+The algorithm works with *any* kind of text file. The algorithm uses only
+difflib. It knows nothing about the text or its meaning. No parsing is ever
+done.
+
+Suppose file x has been changed outside of Leo. When Leo reads x it does
+the following:
+
+1. Recreates the *old* version of x *without* sentinels by writing the
+   @clean x *outline* into a string, as if it were writing the @clean x
+   outline again.
+   
+2. Recreates all the lines of x *with* sentinels by writing the @clean x
+   *outline* into a string, as if it was writing an @file node! Let's call
+   these lines the **old sentinels** lines.
+   
+3. Uses difflib.SequenceMatcher to create a set of diffs between the
+   old and new versions of x *without* sentinels.
+   
+   **Terminology**: the diffs tell how to change file a into file b. The
+   actual code uses this terminology: **a** is set of lines in the old
+   version of x, **b** is the set of lines in the new version of x.
+   
+4. Creates a set of lines, the **new sentinels lines** using the old
+   sentinels lines, the a and b lines and the diffs.
+   
+   This is the magic. Bernhard Mulder's genius was conceiving that a
+   three-way merge of lines could produce the new outline, *with*
+   sentinels. The code is in x.propagate_changed_lines and its helpers.
+   
+5. Replaces the @clean tree with the new tree created by reading the new
+   sentinels lines with the @file read logic.
+
+**Important**: The update algorithm never changes sentinels. It never
+inserts or deletes nodes. The user is responsible for creating nodes to
+hold new lines, or for deleting nodes that become empty as the result of
+deleting lines.
+
+Guesses don't matter
+********************
+
+There are several boundary cases that the update algorithm can not resolve.
+For example, if a line is inserted between nodes, the algorithm can not
+determine whether the line should be inserted at the end of one node or the
+start of the next node. Let us call such lines **ambiguous lines**.
+
+The algorithm *guesses* that ambiguous lines belongs at the end of a node
+rather than at the start of the next node. This is usually what is
+wanted--we usually insert lines at the end of a node.
+
+Happily, **guesses don't matter**, for the following reasons:
+
+1. The external file that results from writing the @clean x tree will be
+   the same as the updated external file *no matter where* ambiguous lines
+   are placed. In other words, the update algorithm is **sound**.
+
+2. Leo reports nodes that were changed when reading any external file. The
+   user can review changes to @clean and @file trees in the same way.
+
+3. The user can permanently correct any mistaken guess. Guesses only happen
+   for *newly inserted or changed* lines. Moving an ambiguous line to the
+   following node will not change the external file. As a result, the
+   next time Leo reads the file the line will be placed in the correct node!
+
+This proves that @shadow and @clean are easy and safe to use. The
+remaining sections of this document discuss code-level details.
+
+Background of the code
+**********************
+
+The algorithm depends on three simple, guaranteed, properties of
+SequenceMatcher.opcodes. See
+https://docs.python.org/2/library/difflib.html#sequencematcher-examples
+
+**Fact 1**: The opcodes tell how to turn x.a (a list of lines) into x.b
+(another list of lines).
+
+The code uses the a and b terminology. It's concise and easy to remember.
+
+**Fact 2**: The opcode indices ai, aj, bi, bj *never* change because
+neither x.a nor x.b changes.
+
+Plain lines of the result can be built up by copying lines from x.b to x.results::
+
+    'replace'   x.results.extend(x.b[b1:b2])
+    'delete'    do nothing  (b1 == b2)
+    'insert'    x.results.extend(x.b[b1:b2])
+    'equal'     x.results.extend(x.b[b1:b2])
+
+**Fact 3**: The opcodes *cover* both x.a and x.b, in order, without any gaps.
+
+This is an explicit requirement of sm.get_opcode:
+
+- The first tuple has ai==aj==bi==bj==0.
+
+- Remaining tuples have ai == (aj from the preceding tuple) and bi == (bj
+  from the previous tuple).
+  
+Keep in mind this crucial picture:
+
+- The slices x.a[ai:aj] cover the x.a array, in order without gaps.
+- The slices x.b[bi:bj] cover the x.b array, in order without gaps.
+
+Aha: the x.sentinels array
+**************************
+
+Mulder's original algorithm was hard to understand or to change. The
+culprit was the x.mapping array, which mapped indices into arrays of lines
+*with* sentinels to indices into arrays of lines *without* sentinels.
+
+The new algorithm replaces the x.mapping array with the x.sentinels array.
+As a result, diff indices never need to be adjusted and handling diff
+opcodes is easy.
+
+For any index i, x.sentinels[i] is the (possibly empty) list of sentinel
+lines that precede line a[i]. Computing x.sentinels from old_private_lines
+is easy. Crucially, x.a and x.sentinels are *parallel arrays*. That is,
+len(x.a) == len(x.sentinels), so indices into x.a are *also* indices into
+x.sentinels.
+
+Strategy & proof of correctness
+*******************************
+
+Given the x.sentinels array, the strategy for creating the results is
+simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:
+
+- Writes sentinels from x.sentinels[i], for i in range(ai,aj).
+
+- Writes plain lines from b[i], for i in range(bi,bj).
+
+This "just works" because the indices cover both a and b.
+
+- The algorithm writes sentinels exactly once (in order) because each
+  sentinel appears in x.sentinels[i] for some i in range(len(x.a)).
+
+- The algorithm writes plain lines exactly once (in order) because
+  each plain line appears in x.b[i] for some i in range(len(x.b)).
+
+This completes an informal proof of the correctness of the algorithm.
+
+The leading and trailing sentinels lines are easy special cases. This
+code, appearing before the main loop, ensures that leading lines are
+written first, and only once::
+
+    x.put_sentinels(0)
+    x.sentinels[0] = []
+
+Similarly, this line, at the end of the main loop, writes trailing
+sentinels::
+
+    x.results.extend(x.trailing_sentinels)
+
+Summary
+*******
+
+The algorithm creates an updated set of lines *with* sentinels using the
+@clean outline and the updated external file. These new lines then replace
+the original @clean with a new @clean tree. The algorithm uses only
+difflib. It will work with *any* kind of text file. No knowledge of any
+language is needed.
+
+The algorithm depends on simple, guaranteed, properties of indices in
+SequenceMatcher opcodes.
+
+The algorithm steps through x.sentinels and x.b, extending x.results
+as it goes.
+
+The algorithm gets all needed data directly from opcode indices into
+x.sentinels and x.b. Using opcode indices requires neither reader
+classes nor auxiliary indices.
+
+The algorithm is simple enough to be understood at first reading. I'll
+remember its details for the rest of my life.
+
+Why I like Python
++++++++++++++++++
+
+I wrote this soon after discovering Python in 2001. The conclusions are still valid today.
+    
+I've known for a while that Python was interesting; I attended a Python conference last year and added Python support to Leo. But last week I got that Python is something truly remarkable. I wanted to convert Leo from wxWindows to wxPython, so I began work on c2py, a Python script that would help convert from C++ syntax to Python. While doing so, I had an Aha experience. Python is more than an incremental improvement over Smalltalk or C++ or objective-C; it is "something completely different". The rest of this post tries to explain this difference.
+
+Clarity
+*******
+
+What struck me first as I converted C++ code to Python is how much less blah, blah, blah there is in Python. No braces, no stupid semicolons and most importantly, *no declarations*. No more pointless distinctions between const, char \*, char const \*, char \* and wxString. No more wondering whether a variable should be signed, unsigned, short or long.
+
+Declarations add clutter, declarations are never obviously right and declarations don't prevent memory allocation tragedies. Declarations also hinder prototyping. In C++, if I change the type of something I must change all related declarations; this can be a huge and dangerous task. With Python, I can change the type of an object without changing the code at all! It's no accident that Leo's new log pane was created first in Python.
+
+Functions returning tuples are a "minor" feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.
+
+.. _`pylint`: https://pylint.pycqa.org/en/latest/
+
+Python can't check declarations because there aren't any. However, there is a really nifty tool called `pylint`_ that does many of the checks typically done by compilers.
+
+Power
+*****
+
+Python is much more powerful than C++, not because Python has more features, but because Python needs *less* features. Some examples:
+
+- Python does everything that the C++ Standard Template Library (STL) does, without any of the blah, blah, blah needed by STL. No fuss, no muss, no code bloat.
+
+- Python's slicing mechanism is very powerful and applies to any sequence (string, list or tuple). Python's string library does more with far less functions because slices replace many functions typically found in other string libraries.
+
+- Writing dict = {} creates a dictionary (hash table). Hash tables can contain anything, including lists and other hash tables.
+
+- Python's special functions,  __init__, __del__, __repr__, __cmp__, etc. are an elegant way to handle any special need that might arise.
+
+Safety
+******
+
+Before using Python I never fully realized how difficult and dangerous memory allocation is in C++. Try doing::
+
+        aList[i:j] = list(aString)
+
+in C.  You will write about 20 lines of C code. Any error in this code will create a memory allocation crash or leak.
+
+Python is fundamentally safe. C++ is fundamentally unsafe. When I am using Python I am free from worry and anxiety. When I am using C++ I must be constantly "on guard." A momentary lapse can create a hard-to-find pointer bug. With Python, almost nothing serious can ever go wrong, so I can work late at night, or after a beer. The Python debugger is always available. If an exception occurs, the debugger/interpreter tells me just what went wrong. I don't have to plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can keep right on going even after a crash!
+
+Speed
+*****
+
+Python has almost all the speed of C. Other interpretive environments such as icon and Smalltalk have clarity, power and safety similar to Python. What makes Python unique is its seamless way of making C code look like Python code. Python executes at essentially the speed of C code because most Python modules are written in C. The overhead in calling such modules is negligible. Moreover, if code is too slow, one can always create a C module to do the job.
+
+In fact, Python encourages optimization by moving to higher levels of expression. For example, Leo's Open command reads an XML file. If this command is too slow I can use Python's XML parser module. This will speed up Leo while at the same time raising the level of the code.
+
+Conclusions
+***********
+
+Little of Python is completely new. What stands out is the superb engineering judgment evident in Python's design. Python is extremely powerful, yet small, simple and elegant. Python allows me to express my intentions clearly and at the highest possible level.
+
+The only hope of making Leo all it can be is to use the best possible tools. I believe Python will allow me to add, at long last, the new features that Leo should have.
+
+Edward K. Ream, October 25, 2001.  P.S., September, 2005:
+
+Four years of experience have only added to my admiration for Python. Leo could
+not possibly be what it is today without Python.
+

@@ -1,33 +1,25 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20171124073126.1: * @file ../commands/commanderHelpCommands.py
-#@@first
 """Help commands that used to be defined in leoCommands.py"""
-#@+<< commanderHelpCommands imports >>
-#@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports >>
+#@+<< commanderHelpCommands imports & annotations >>
+#@+node:ekr.20220826122759.1: ** << commanderHelpCommands imports & annotations >>
+from __future__ import annotations
 import os
 import sys
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< commanderHelpCommands imports >>
-#@+<< commanderHelpCommands annotations >>
-#@+node:ekr.20220826122824.1: ** << commanderHelpCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-Self = Cmdr  # For @g.commander_command
-#@-<< commanderHelpCommands annotations >>
+    Self = Cmdr  # For @g.commander_command
+#@-<< commanderHelpCommands imports & annotations >>
+
 #@+others
 #@+node:ekr.20031218072017.2939: ** c_help.about (version number & date)
 @g.commander_command('about-leo')
-def about(self: Self, event: Event=None) -> None:
+def about(self: Self, event: Event = None) -> None:
     """Bring up an About Leo Dialog."""
     c = self
     import datetime
@@ -43,7 +35,7 @@ def about(self: Self, event: Event=None) -> None:
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
 #@+node:vitalije.20170713174950.1: ** c_help.editOneSetting
 @g.commander_command('edit-setting')
-def editOneSetting(self: Self, event: Event=None) -> None:
+def editOneSetting(self: Self, event: Event = None) -> None:
     """Opens correct dialog for selected setting type"""
     c, p = self, self.c.p
     func = None
@@ -62,7 +54,7 @@ def editOneSetting(self: Self, event: Event=None) -> None:
         func(event)
 #@+node:vitalije.20170708172746.1: ** c_help.editShortcut
 @g.commander_command('edit-shortcut')
-def editShortcut(self: Self, event: Event=None) -> None:
+def editShortcut(self: Self, event: Event = None) -> None:
     k = self.k
     if k.isEditShortcutSensible():
         # k.setState('input-shortcut', 'input-shortcut')
@@ -75,7 +67,7 @@ def editShortcut(self: Self, event: Event=None) -> None:
 #@+node:ekr.20031218072017.2940: *3* c_help.leoDocumentation
 @g.commander_command('open-leo-docs-leo')
 @g.commander_command('leo-docs-leo')
-def leoDocumentation(self: Self, event: Event=None) -> None:
+def leoDocumentation(self: Self, event: Event = None) -> None:
     """Open LeoDocs.leo in a new Leo window."""
     c = self
     name = "LeoDocs.leo"
@@ -89,7 +81,7 @@ def leoDocumentation(self: Self, event: Event=None) -> None:
 #@+node:ekr.20090628075121.5994: *3* c_help.leoQuickStart
 @g.commander_command('open-quickstart-leo')
 @g.commander_command('leo-quickstart-leo')
-def leoQuickStart(self: Self, event: Event=None) -> None:
+def leoQuickStart(self: Self, event: Event = None) -> None:
     """Open quickstart.leo in a new Leo window."""
     c = self
     name = "quickstart.leo"
@@ -104,7 +96,7 @@ def leoQuickStart(self: Self, event: Event=None) -> None:
 @g.commander_command('open-cheat-sheet-leo')
 @g.commander_command('leo-cheat-sheet')
 @g.commander_command('cheat-sheet')
-def openCheatSheet(self: Self, event: Event=None) -> None:
+def openCheatSheet(self: Self, event: Event = None) -> None:
     """Open leo/doc/cheatSheet.leo"""
     c = self
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
@@ -120,7 +112,7 @@ def openCheatSheet(self: Self, event: Event=None) -> None:
 #@+node:lkj.20190714022527.1: *3* c_help.openDesktopIntegration
 @g.commander_command('open-desktop-integration-leo')
 @g.commander_command('desktop-integration-leo')
-def openDesktopIntegration(self: Self, event: Event=None) -> None:
+def openDesktopIntegration(self: Self, event: Event = None) -> None:
     """Open Desktop-integration.leo."""
     c = self
     fileName = g.os_path_finalize_join(
@@ -134,7 +126,7 @@ def openDesktopIntegration(self: Self, event: Event=None) -> None:
 #@+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
 @g.commander_command('leo-dist-leo')
-def openLeoDist(self: Self, event: Event=None) -> None:
+def openLeoDist(self: Self, event: Event = None) -> None:
     """Open leoDist.leo in a new Leo window."""
     c = self
     name = "leoDist.leo"
@@ -147,7 +139,7 @@ def openLeoDist(self: Self, event: Event=None) -> None:
 #@+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
-def openLeoPy(self: Self, event: Event=None) -> None:
+def openLeoPy(self: Self, event: Event = None) -> None:
     """Open leoPy.leo or LeoPyRef.leo in a new Leo window."""
     c = self
     names = ('leoPy.leo', 'LeoPyRef.leo',)  # Used in error message.
@@ -162,7 +154,7 @@ def openLeoPy(self: Self, event: Event=None) -> None:
 #@+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
 @g.commander_command('leo-py-ref-leo')
-def openLeoPyRef(self: Self, event: Event=None) -> None:
+def openLeoPyRef(self: Self, event: Event = None) -> None:
     """Open leoPyRef.leo in a new Leo window."""
     c = self
     path = g.os_path_finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
@@ -175,7 +167,7 @@ def openLeoPyRef(self: Self, event: Event=None) -> None:
 #@+node:ekr.20061018094539: *3* c_help.openLeoScripts
 @g.commander_command('open-scripts-leo')
 @g.commander_command('leo-scripts-leo')
-def openLeoScripts(self: Self, event: Event=None) -> None:
+def openLeoScripts(self: Self, event: Event = None) -> None:
     """Open scripts.leo."""
     c = self
     fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
@@ -189,7 +181,7 @@ def openLeoScripts(self: Self, event: Event=None) -> None:
 @g.commander_command('open-leo-settings')
 @g.commander_command('open-leo-settings-leo')  # #1343.
 @g.commander_command('leo-settings')
-def openLeoSettings(self: Self, event: Event=None) -> Optional[Cmdr]:
+def openLeoSettings(self: Self, event: Event = None) -> Optional[Cmdr]:
     """Open leoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     path = lm.computeLeoSettingsPath()
@@ -201,7 +193,7 @@ def openLeoSettings(self: Self, event: Event=None) -> Optional[Cmdr]:
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('open-my-leo-settings-leo')  # #1343.
 @g.commander_command('my-leo-settings')
-def openMyLeoSettings(self: Self, event: Event=None) -> Cmdr:
+def openMyLeoSettings(self: Self, event: Event = None) -> Cmdr:
     """Open myLeoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     path = lm.computeMyLeoSettingsPath()
@@ -269,7 +261,7 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
 #@+node:ekr.20171124093507.1: ** c_help.Open Leo web pages
 #@+node:ekr.20031218072017.2941: *3* c_help.leoHome
 @g.commander_command('open-online-home')
-def leoHome(self: Self, event: Event=None) -> None:
+def leoHome(self: Self, event: Event = None) -> None:
     """Open Leo's Home page in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/"
@@ -279,7 +271,7 @@ def leoHome(self: Self, event: Event=None) -> None:
         g.es("not found:", url)
 #@+node:ekr.20131213072223.19441: *3* c_help.openLeoTOC
 @g.commander_command('open-online-toc')
-def openLeoTOC(self: Self, event: Event=None) -> None:
+def openLeoTOC(self: Self, event: Event = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/leo_toc.html"
@@ -287,9 +279,19 @@ def openLeoTOC(self: Self, event: Event=None) -> None:
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
+#@+node:ekr.20230104130712.1: *3* c_help.openLeoScriptingMiscellany
+@g.commander_command('open-online-scripting-miscellany')
+def openLeoScriptingMiscellany(self: Self, event: Event = None) -> None:
+    """Open Leo's scripting miscellany page in a web browser."""
+    import webbrowser
+    url = "http://leoeditor.com/scripting-miscellany.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
 #@+node:ekr.20131213072223.19435: *3* c_help.openLeoTutorials
 @g.commander_command('open-online-tutorials')
-def openLeoTutorials(self: Self, event: Event=None) -> None:
+def openLeoTutorials(self: Self, event: Event = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/tutorial.html"
@@ -299,7 +301,7 @@ def openLeoTutorials(self: Self, event: Event=None) -> None:
         g.es("not found:", url)
 #@+node:ekr.20060613082924: *3* c_help.openLeoUsersGuide
 @g.commander_command('open-users-guide')
-def openLeoUsersGuide(self: Self, event: Event=None) -> None:
+def openLeoUsersGuide(self: Self, event: Event = None) -> None:
     """Open Leo's users guide in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/usersguide.html"
@@ -309,7 +311,7 @@ def openLeoUsersGuide(self: Self, event: Event=None) -> None:
         g.es("not found:", url)
 #@+node:ekr.20131213072223.19437: *3* c_help.openLeoVideos
 @g.commander_command('open-online-videos')
-def openLeoVideos(self: Self, event: Event=None) -> None:
+def openLeoVideos(self: Self, event: Event = None) -> None:
     """Open Leo's videos page in a web browser."""
     import webbrowser
     url = "http://leoeditor.com/screencasts.html"
@@ -319,7 +321,7 @@ def openLeoVideos(self: Self, event: Event=None) -> None:
         g.es("not found:", url)
 #@+node:ekr.20031218072017.2932: ** c_help.openPythonWindow
 @g.commander_command('open-python-window')
-def openPythonWindow(self: Self, event: Event=None) -> None:
+def openPythonWindow(self: Self, event: Event = None) -> None:
     """Open Python's Idle debugger in a separate process."""
     m = g.import_module('idlelib')
     if not m:
@@ -334,7 +336,7 @@ def openPythonWindow(self: Self, event: Event=None) -> None:
         os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
 #@+node:ekr.20131213072223.19532: ** c_help.selectAtSettingsNode
 @g.commander_command('open-local-settings')
-def selectAtSettingsNode(self: Self, event: Event=None) -> None:
+def selectAtSettingsNode(self: Self, event: Event = None) -> None:
     """Select the @settings node, if there is one."""
     c = self
     p = c.config.settingsRoot()

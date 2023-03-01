@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20080708094444.1: * @file leoShadow.py
-#@@first
 #@+<< leoShadow docstring >>
 #@+node:ekr.20080708094444.78: ** << leoShadow docstring >>
 """
@@ -27,31 +25,27 @@ Settings:
   This is useful for name-based tools like py.test.
 """
 #@-<< leoShadow docstring >>
-#@+<< leoShadow imports >>
-#@+node:ekr.20080708094444.52: ** << leoShadow imports >>
+#@+<< leoShadow imports & annotations >>
+#@+node:ekr.20080708094444.52: ** << leoShadow imports & annotations >>
+from __future__ import annotations
 import difflib
 import os
 import pprint
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoShadow imports >>
-#@+<< leoShadow annotations >>
-#@+node:ekr.20220821091505.1: ** << leoShadow annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Position = Any
-    VNode = Any
-#@-<< leoShadow annotations >>
+    from leo.core.leoNodes import Position
+#@-<< leoShadow imports & annotations >>
+
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
 class ShadowController:
     """A class to manage @shadow files"""
     #@+others
     #@+node:ekr.20080708094444.79: *3*  x.ctor & x.reloadSettings
-    def __init__(self, c: Cmdr, trace: bool=False, trace_writers: bool=False) -> None:
+    def __init__(self, c: Cmdr, trace: bool = False, trace_writers: bool = False) -> None:
         """Ctor for ShadowController class."""
         self.c = c
         # Opcode dispatch dict.
@@ -214,7 +208,7 @@ class ShadowController:
         new_public_lines: List[str],
         old_private_lines: List[str],
         marker: "Marker",
-        p: Position=None,
+        p: Position = None,
     ) -> List[str]:
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
@@ -443,7 +437,7 @@ class ShadowController:
                 # x.message("created public %s from private %s " % (fn, shadow_fn))
     #@+node:ekr.20080708094444.89: *3* x.Utils...
     #@+node:ekr.20080708094444.85: *4* x.error & message & verbatim_error
-    def error(self, s: str, silent: bool=False) -> None:
+    def error(self, s: str, silent: bool = False) -> None:
         x = self
         if not silent:
             g.error(s)
@@ -566,7 +560,7 @@ class ShadowController:
                 return self.delim1, ''
             return self.delim2, self.delim3
         #@+node:ekr.20090529061522.6259: *4* isSentinel
-        def isSentinel(self, s: str, suffix: str='') -> bool:
+        def isSentinel(self, s: str, suffix: str = '') -> bool:
             """Return True is line s contains a valid sentinel comment."""
             s = s.strip()
             if self.delim1 and s.startswith(self.delim1):

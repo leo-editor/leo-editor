@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
-#@@first
 """The new, tokenize based, @auto importer for Python."""
 import re
 import tokenize
@@ -34,7 +32,7 @@ class Python_Importer(Importer):
     Also, the base class of other importers.
     """
 
-    def __init__(self, c: Cmdr, language: str='python') -> None:
+    def __init__(self, c: Cmdr, language: str = 'python') -> None:
         """Py_Importer.ctor."""
         super().__init__(c, language=language, strict=True)
         self.string_list = ['"""', "'''", '"', "'"]  # longest first.

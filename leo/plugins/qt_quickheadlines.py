@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140907123524.18777: * @file ../plugins/qt_quickheadlines.py
-#@@first
 """qt_quickheadlines plugin."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets

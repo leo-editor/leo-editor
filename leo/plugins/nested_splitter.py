@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
-#@@first
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
@@ -903,25 +901,18 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         the widget and an Action button"""
         sizes = self.sizes()
         old = self.widget(index + side - 1)
-        #X old_name = old and old.objectName() or '<no name>'
-        #X splitter_name = self.objectName() or '<no name>'
         if w is None:
             w = NestedSplitterChoice(self)
         if isinstance(old, NestedSplitter):
             old.addWidget(w)
             old.equalize_sizes()
-            #X index = old.indexOf(w)
-            #X return old,index # For viewrendered plugin.
         else:
             orientation = self.other_orientation[self.orientation()]
             new = NestedSplitter(self, orientation=orientation, root=self.root)
-            #X if name: new.setObjectName(name)
             self.insertWidget(index + side - 1, new)
             new.addWidget(old)
             new.addWidget(w)
             new.equalize_sizes()
-            #X index = new.indexOf(w)
-            #X return new,index # For viewrendered plugin.
         self.setSizes(sizes)
     #@+node:ekr.20110605121601.17986: *3* ns.swap
     def swap(self, index):

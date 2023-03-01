@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2810: * @file leoCommands.py
-#@@first
 #@+<< leoCommands imports >>
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
+from __future__ import annotations
 import json
 import os
 import re
 import subprocess
+from shutil import which
 import sys
 import tabnanny
 import tempfile
@@ -56,50 +56,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.rstCommands import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
+    from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Event = Any
-    Position = Any
-    PreviousSettings = Any
-    VNode = Any
-    # Subcommanders...
-    AtFile = Any
-    ChapterController = Any
-    FileCommands = Any
-    InternalIPKernel = Any
-    LeoFind = Any
-    LeoImportCommands = Any
-    KeyHandlerClass = Any
-    NodeHistory = Any
-    PersistenceDataController = Any
-    PrintingController = Any
-    ShadowController = Any
-    Undoer = Any
-    VimCommands = Any
-    # Command handlers...
-    AbbrevCommands = Any
-    BufferCommandsClass = Any
-    ControlCommandsClass = Any
-    ConvertCommandsClass = Any
-    DebugCommandsClass = Any
-    EditCommandsClass = Any
-    EditFileCommandsClass = Any
-    GoToCommands = Any
-    HelpCommandsClass = Any
-    KeyHandlerCommandsClass = Any
-    KillBufferCommandsClass = Any
-    RectangleCommandsClass = Any
-    RstCommands = Any
-    SpellCommandsClass = Any
-    # Special cases...
-    StyleSheetManager = Any
-    Wrapper = Any
-
-RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-
-# These gui classes are hard to specify...
-Widget = Any
+    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    Widget = Any
 #@-<< leoCommands annotations >>
 
 def cmd(name: str) -> Callable:
@@ -129,10 +90,10 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: Any=None,  # A Union.
-        parentFrame: Wrapper=None,
-        previousSettings: "PreviousSettings"=None,
-        relativeFileName: str=None,
+        gui: LeoGui = None,
+        parentFrame: Wrapper = None,
+        previousSettings: "PreviousSettings" = None,
+        relativeFileName: str = None,
     ) -> None:
         t1 = time.process_time()
         c = self
@@ -141,7 +102,7 @@ class Commands:
         self._topPosition: Optional[Position] = None
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
-        self.gui: Any = gui or g.app.gui  # A Union.
+        self.gui: LeoGui = gui or g.app.gui
         self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
@@ -294,7 +255,7 @@ class Commands:
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
-    def initObjects(self, gui: Any) -> None:
+    def initObjects(self, gui: LeoGui) -> None:
 
         c = self
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
@@ -646,7 +607,7 @@ class Commands:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: Event=None) -> None:
+    def execute_general_script_command(self, event: Event = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -697,9 +658,412 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language,
             directory=directory, regex=regex, root=p)
+    #@+node:tom.20230221151635.1: *3* @cmd c.execute-external-file
+    #@@language python
+    @cmd('execute-external-file')
+    def execute_external_file(self, event: Event = None) -> None:
+        r"""
+        #@+<< docstring >>
+        #@+node:tom.20230221151635.2: *4* << docstring >>
+        Run external files.
+
+        If there is an @language directive in the top node of the file,
+        the external processor will be chosen based on it if known.
+        Otherwise, the processor will be chosen using the file's extension
+        if known.  Otherwise, on Linux a shebang line will be used if the
+        external file has one. The candidate processor will be verified
+        to be reachable by the shell.
+
+        On Windows, "@language batch" and "@language shell" both will cause
+        cmd.exe to be invoked as the file processor. On Linux, "@language
+        shell" will cause the system's shell to be invoked. By default, this
+        will be bash. If bash is not present, then the environmental variable
+        $SHELL will be invoked.
+
+        The processing programs and language file extensions can be
+        specified in an @data settings node with the name
+        "run-external-processor-map".
+
+        The data in the @data node body must have a PROCESSORS, an
+        EXTENSIONS section, and optionally a TERMINAL section,
+        looking like this example:
+
+            # A comment line
+            # Map file extensions to language names
+            EXTENSIONS
+            .lua: lua    # Trailing comments allowed
+            .rb: ruby
+
+            # Map language names to processor names or paths
+            PROCESSORS
+            .lua: lua
+            .ruby: C:\Ruby27-x64\bin\ruby.exe
+
+            # Optionally specify a Linux terminal here (e.g., konsole)
+            TERMINAL
+            # konsole
+
+        Blank lines and lines starting with a "#" are ignored.  If a
+        full path to the processor is included, that path will be used.
+        Otherwise, the processor must be findable by the shell: this
+        normally means it must be on the PATH.
+
+        Any output will be displayed in a newly-opened launching console.
+
+        #@-<< docstring >>
+        """
+        c = self
+        MAP_SETTING_NODE = 'run-external-processor-map'
+        #@+others
+        #@+node:tom.20230221151635.3: *4* SETTINGS_HELP
+        SETTINGS_HELP = r'''The data in the @data node body must have a
+        PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
+        section, looking like this example:
+
+            # A comment line
+            # Map file extensions to language names
+            EXTENSIONS
+            .lua: lua   # Trailing comments are allowed
+            .rb: ruby
+
+            # Map language names to processor names or paths
+            PROCESSORS
+            lua: lua
+            ruby: C:\Ruby27-x64\bin\ruby.exe
+
+            # Optionally specify a Linux terminal (e.g., konsole) on the
+            # line after the "TERMINAL" line.
+            TERMINAL
+
+        Blank lines and lines starting with a "#" are ignored.
+        '''
+        #@+node:tom.20230221151635.4: *4* extension map
+        LANGUAGE_EXTENSION_MAP = {
+        '.cmd': 'batch',
+        '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
+        '.jl': 'julia',
+        '.lua': 'lua',
+        '.ps1': 'powershell',
+        '.py': 'python',
+        '.pyw': 'python',
+        'rb': 'ruby',
+        }
+        #@+node:tom.20230221151635.5: *4* processor map
+        PROCESSORS = {
+        'batch': 'cmd.exe',
+        'julia': 'julia',
+        'lua': 'lua',
+        'powershell': 'powershell',
+        'ruby': 'ruby',
+        }
+        #@+node:tom.20230221151635.6: *4* get_external_maps
+        def get_external_maps() -> Tuple[Dict, Dict, str]:
+            r"""Return processor, extension maps for @data node.
+
+            The data in the @data node body must have a PROCESSORS and an
+            EXTENSIONS section, looking like this example:
+
+                # A comment line
+                # Map file extensions to language names
+                EXTENSIONS
+                .lua: lua  # Trailing comments are allowed
+                .rb: ruby
+
+                # Map language names to processor names or paths
+                PROCESSORS
+                .lua: lua
+                .ruby: C:\Ruby27-x64\bin\ruby.exe
+
+                # Specify a particular Linux terminal to use
+                # e.g, /usr/bin/konsole
+                TERMINAL
+
+            Blank lines and lines starting with a "#" are ignored.  Trailing
+            in-line comments are allowed, delineated by "#".
+
+            RETURNS
+            a tuple (processor_map, extension_map, terminal)
+            """
+
+            data: str = c.config.getData(MAP_SETTING_NODE, None)
+            if not data:
+                return None, None, ''
+
+            processor_map: Dict[str, str] = {}
+            extension_map: Dict[str, str] = {}
+            active_map = None
+            block: str = None
+            terminal: str = ''
+            TERM = 'TERMINAL'
+            for line in data:
+                if not line or line.startswith('#'):
+                    continue
+                line = line.split('#', 1)[0]  # Allow in-line trailing comments
+                if 'PROCESSORS' in line:
+                    active_map = processor_map
+                elif 'EXTENSIONS' in line:
+                    active_map = extension_map
+                elif TERM in line:
+                    active_map = None
+                    block = TERM
+                elif active_map:
+                    # Line format: a: b
+                    keyval = line.split(':', 1)
+                    key = keyval[0].strip()
+                    val = keyval[1].strip()
+                    active_map[key] = val
+                elif block == TERM:
+                    terminal = line
+            return processor_map, extension_map, terminal
+        #@+node:tom.20230221151635.7: *4* getExeKind
+        def getExeKind(pos: Position, ext: str) -> str:
+            """Return the executable kind of the external file.
+
+            If there is a language directive in effect, return it,
+            otherwise use the file exension.
+
+            Returns a language.
+            """
+            language = g.getLanguageFromAncestorAtFileNode(c.p) or ''
+            # words = root.h.split(None, 1)  # Splits only on first run of spaces
+            # path = words[1] if len(words) > 1 else ""
+            # if not path:
+                # return None, None, None
+
+            # _, ext = os.path.splitext(path)
+            if not language:
+                language = LANGUAGE_EXTENSION_MAP.get(ext, None)
+
+            return language
+
+        #@+node:tom.20230221151635.8: *4* getProcessor
+        def getProcessor(language: str, path: str, extension: str) -> str:
+            """Return the name or path of a program able to run our external program."""
+            processor = ''
+            if language == 'python':
+                processor = sys.executable
+            else:
+                if g.isWindows and language == 'shell':
+                    return 'cmd.exe'
+                processor = PROCESSORS.get(language, '')
+                if not processor:
+                    if g.isWindows:
+                        ftype = get_win_assoc(extension)
+                        processor = get_win_processor(ftype)
+            # Check to make sure we can run this processor
+            if processor:
+                proc = which(processor)
+                if not proc:
+                    processor = ''
+            return processor
+        #@+node:tom.20230221151635.9: *4* Get Windows File Associations
+        def get_win_assoc(extension: str) -> str:
+            """Return Windows association for given file extension, or ''.
+
+            The extension must include the dot.
+            """
+            cmd = f'assoc {extension}'
+            # pylint: disable=subprocess-run-check
+            proc = subprocess.run(cmd, shell=True, capture_output=True)
+            filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
+            filetype = filetype.split('=')[1] if filetype else ''
+            return filetype
+
+        def get_win_processor(filetype: str) -> str:
+            r"""Get Windows' idea of the program to use for running this file type.
+
+            Example return from ftype:
+                Lua.Script="C:\Program Files (x86)\Lua\5.1\lua.exe" "%1" %*
+
+            ARGUMENT
+            filetype -- a file type returned by the assoc command.
+
+            RETURNS
+            the processor or ''
+            """
+            if not filetype:
+                return ''
+            cmd = f'ftype {filetype}'
+            # pylint: disable=subprocess-run-check
+            proc = subprocess.run(cmd, shell=True, capture_output=True)
+            ftype_str = proc.stdout.decode('utf-8') or 'none'
+            if not ftype_str:
+                return ''
+            prog_str = ftype_str.split('=')[1]
+            return prog_str.split('"')[1]
+        #@+node:tom.20230221151635.10: *4* getShell
+        def getShell() -> str:
+            # Prefer bash unless it is not present - we know its options' names
+            shell = 'bash'
+            has_bash = which(shell)
+            if not has_bash:
+                # Need bare shell name, not whole path
+                shell = os.environ['SHELL'].split('/')[-1]
+            return shell
+        #@+node:tom.20230221151635.11: *4* getTerminal
+        #@+others
+        #@+node:tom.20230221151635.12: *5* getTerminalFromDirectory
+        def getTerminalFromDirectory(dir: str) -> str:
+            BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm', 'koi8rxterm')
+            TERM_STRINGS = ('*-terminal', '*term')
+            # pylint: disable=subprocess-run-check
+            for ts in TERM_STRINGS:
+                cmd = f'find {dir} -type f -name {ts}'
+                proc = subprocess.run(cmd, shell=True, capture_output=True)
+                terminals = proc.stdout.decode('utf-8')
+                for t in terminals.splitlines():
+                    bare_term = t.split('/')[-1]
+                    if bare_term not in BAD_NAMES:
+                        return t
+            return None
+        #@+node:tom.20230221151635.13: *5* getCommonTerminal
+        def getCommonTerminal(names: Union[str, List, Tuple]) -> str:
+            """Return a terminal name given candidate names.
+
+            ARGUMENT
+            names -- a string containing one name, or a sequence of strings.
+
+            RETURNS
+            a path of an existing terminal, if found, else an empty string
+            """
+            term = ''
+            if isinstance(names, str):
+                names = (names,)
+            term = ''
+            for name in names:
+                term = which(name)
+                if term:
+                    break
+            return term
+        #@-others
+
+        def getTerminal() -> str:
+            return (getTerminalFromDirectory('/usr/bin')
+                    or getTerminalFromDirectory('/bin')
+                    or getCommonTerminal(('konsole', 'xterm'))
+                    )
+        #@+node:tom.20230221151635.14: *4* getTermExecuteCmd
+        def getTermExecuteCmd(terminal: str) -> str:
+            """Given a terminal's name, find the command line arg to launch a program.
+
+            First, try "--help".  If that fails, see try "--help-all".  If neither
+            has an argument or switch for "Execute", give up and assume the arg is "-x".
+            """
+            HELP_CMDS = ('-h', '--help', '--help-all')
+            EXECUTESTR = 'execute'
+
+            #@+others
+            #@+node:tom.20230221151635.15: *5* get_help_message
+            def get_help_message(terminal: str, help_cmd: str) -> str:
+                cmd = f'{terminal} {help_cmd}'
+                # pylint: disable=subprocess-run-check
+                proc = subprocess.run(cmd, shell=True, capture_output=True)
+                msg = proc.stdout.decode('utf-8')
+                if not msg:
+                    # g.es('error:', proc.stderr.decode('utf-8'))
+                    return ''
+                return msg
+            #@+node:tom.20230221151635.16: *5* find_ex_arg
+            def find_ex_arg(help_msg: str) -> str:
+                for line in help_msg.splitlines():
+                    if '--command' in line:
+                        return '--command'
+                    if '-e' in line:
+                        return '-e'
+                    if EXECUTESTR in line.lower():
+                        fields = line.lstrip().split()
+                        # There may be more than one arg; if so, use the first one
+                        arg = fields[0]
+                        # May have trailing comma; remove it
+                        args = arg.split(',')
+                        return args[0]
+                return ''
+            #@-others
+
+            for cmd in HELP_CMDS:
+                msg = get_help_message(terminal, cmd)
+                arg = find_ex_arg(msg)
+                if arg:
+                    if arg.startswith('--'):
+                        arg += '='
+                    else:
+                        arg += ' '
+                    break
+            else:
+                arg = '-e ' if 'xterm' in terminal else '-x '
+            return arg
+        #@+node:tom.20230221151635.17: *4* checkShebang
+        def checkShebang(path: str) -> bool:
+            """Return True if file begins with a shebang line, else False."""
+            path = g.os_path_expanduser(path)
+            with open(path, encoding='utf-8') as f:
+                first_line = f.readline()
+            return first_line.startswith('#!')
+        #@+node:tom.20230221151635.18: *4* runFile
+        def runfile(fullpath: str, processor: str, terminal: str) -> None:
+            direc: str = os.path.expanduser(os.path.dirname(fullpath))
+            if g.isWindows:
+                fullpath = fullpath.replace('/', '\\')
+                if processor:
+                    if processor == 'cmd.exe':
+                        cmd = ['start', processor, '/k', fullpath]
+                        subprocess.Popen(cmd, shell=True)
+                    else:
+                        cmd = ['start', 'cmd.exe', '/k', processor, fullpath]
+                        subprocess.Popen(cmd, shell=True)
+                else:
+                    g.es('Unknown processor', fullpath, color='red')
+            elif g.isMac:
+                g.es('Cannot launch external files on a Mac yet', color='red')
+            else:  # Presumably Linux
+                fullpath = fullpath.replace('\\', '/')
+                term = terminal or getTerminal()
+
+                if not term:
+                    g.es('Cannot find a terminal to launch the external file', color='red')
+                    g.es(f'   You can specify a terminal in an "@data {MAP_SETTING_NODE}" setting node')
+                    g.es('  ', SETTINGS_HELP)
+                    return
+
+                shell_name = getShell()
+                execute_arg = getTermExecuteCmd(term)
+                if (not processor) and checkShebang(fullpath):
+                    cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
+                elif processor:
+                    cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
+                else:
+                    g.es(f'No processor for {fullpath}', color='red')
+                    return
+
+                subprocess.Popen(cmd_, shell=True, start_new_session=True)
+        #@-others
+
+        language, path = None, None
+        root, path = c.gotoCommands.find_root(c.p)
+        if root and path:
+            processor_map, extension_map, terminal = get_external_maps()
+            if extension_map:
+                LANGUAGE_EXTENSION_MAP = LANGUAGE_EXTENSION_MAP | extension_map
+            if processor_map:
+                PROCESSORS = PROCESSORS | processor_map
+            _, ext = os.path.splitext(path)
+
+            # Check terminal from MAP_SETTING_NODE setting
+            if terminal:
+                terminal = which(terminal)
+                if not terminal:
+                    g.es('Cannot find terminal specified in setting - trying an alternative')
+
+            path = g.fullPath(c, root)
+            path = g.os_path_finalize(path)
+            language = getExeKind(root, ext)
+            processor = getProcessor(language, path, ext)
+            runfile(path, processor, terminal)
+        else:
+            g.es('Cannot find an @- file', color='red')
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: Event=None) -> None:
+    def execute_pytest(self, event: Event = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -756,24 +1120,24 @@ class Commands:
         except KeyboardInterrupt:
             g.es('interrupted')
         except Exception:
-            g.handleScriptException(c, p, script, script)
+            g.handleScriptException(c, p)
         finally:
             del sys.path[:2]
     #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
         self,
-        event: Event=None,
-        args: Any=None,
-        p: Position=None,
-        script: str=None,
-        useSelectedText: bool=True,
-        define_g: bool=True,
-        define_name: str='__main__',
-        silent: bool=False,
-        namespace: Dict=None,
-        raiseFlag: bool=False,
-        runPyflakes: bool=True,
+        event: Event = None,
+        args: Any = None,
+        p: Position = None,
+        script: str = None,
+        useSelectedText: bool = True,
+        define_g: bool = True,
+        define_name: str = '__main__',
+        silent: bool = False,
+        namespace: Dict = None,
+        raiseFlag: bool = False,
+        runPyflakes: bool = True,
     ) -> None:
         """
         Execute a *Leo* script, written in python.
@@ -789,7 +1153,7 @@ class Commands:
         raiseFlag=False         True: reraise any exceptions.
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
-        c, script1 = self, script
+        c = self
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -825,7 +1189,7 @@ class Commands:
                 except Exception:
                     if raiseFlag:
                         raise
-                    g.handleScriptException(c, script_p, script, script1)
+                    g.handleScriptException(c, script_p)
                 finally:
                     del sys.path[0]
                     del sys.path[0]
@@ -836,7 +1200,13 @@ class Commands:
             g.app.log = oldLog
             self.unredirectScriptOutput()
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
-    def executeScriptHelper(self, args: Any, define_g: Any, define_name: Any, namespace: Any, script: Any) -> None:
+    def executeScriptHelper(self,
+        args: Any,
+        define_g: Any,
+        define_name: Any,
+        namespace: Any,
+        script: Any,
+    ) -> None:
         c = self
         if c.p:
             p = c.p.copy()  # *Always* use c.p and pass c.p to script.
@@ -888,7 +1258,7 @@ class Commands:
             g.restoreStdout()
     #@+node:ekr.20080514131122.12: *3* @cmd recolor
     @cmd('recolor')
-    def recolorCommand(self, event: Event=None) -> None:
+    def recolorCommand(self, event: Event = None) -> None:
         """Force a full recolor."""
         c = self
         wrapper = c.frame.body.wrapper
@@ -918,7 +1288,7 @@ class Commands:
     all_vnodes_iter = all_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self, copy: bool=True) -> Generator:
+    def all_positions(self, copy: bool = True) -> Generator:
         """A generator return all positions of the outline, in outline order."""
         c = self
         p = c.rootPosition()
@@ -931,7 +1301,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: List[Tuple]=None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: List[Tuple] = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -970,7 +1340,7 @@ class Commands:
                     yield from c.all_positions_for_v(v2, stack)
                 stack.pop(0)
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -992,7 +1362,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy: bool=True) -> Generator:
+    def all_unique_positions(self, copy: bool = True) -> Generator:
         """
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -1012,7 +1382,7 @@ class Commands:
 
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
+    def all_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1036,7 +1406,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool=True) -> Generator:
+    def safe_all_positions(self, copy: bool = True) -> Generator:
         """
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -1050,13 +1420,14 @@ class Commands:
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
         """
-        Return a copy of the presently selected position or a new null
-        position. So c.p.copy() is never necessary.
+        Return a copy of the presently selected position or None.
+        So c.p.copy() is never necessary.
         """
         c = self
-        if hasattr(c, '_currentPosition') and getattr(c, '_currentPosition'):
+        if getattr(c, '_currentPosition', None):
             # *Always* return a copy.
             return c._currentPosition.copy()
+        # Returns a new copy of the root position or None
         return c.rootPosition()
 
     # For compatibility with old scripts...
@@ -1072,9 +1443,7 @@ class Commands:
         g.es_print('dump-expanded...')
         for p in c.all_positions():
             if p.v.expandedPositions:
-                indent = ' ' * p.level()
-                print(f"{indent}{p.h}")
-                g.printObj(p.v.expandedPositions, indent=indent)
+                g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p: Position) -> Widget:
         c = self
@@ -1103,7 +1472,8 @@ class Commands:
             back = p.visBack(c)
             if back and back.isVisible(c):
                 p = back
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self) -> Tuple[str, List[str], str, Optional[Tuple], Optional[Tuple]]:
@@ -1197,10 +1567,11 @@ class Commands:
             next = p.visNext(c)
             if next and next.isVisible(c):
                 p = next
-            else: break
+            else:
+                break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Position=None, trace: bool=False) -> bool:
+    def positionExists(self, p: Position, root: Position = None, trace: bool = False) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -1231,13 +1602,8 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Optional[Position]:
-        """Return the root position.
-
-        Root position is the first position in the document. Other
-        top level positions are siblings of this node.
-        """
+        """Return a new *copy* of the root position or None."""
         c = self
-        # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
@@ -1280,7 +1646,8 @@ class Commands:
         return None, None
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions(self, v: VNode) -> List[Position]:
-        """Given a VNode v, find all valid positions p such that p.v = v.
+        """
+        Given a VNode v, find all valid positions p such that p.v = v.
 
         Not really all, just all for each of v's distinct immediate parents.
         """
@@ -1309,7 +1676,8 @@ class Commands:
         return positions
     #@+node:ekr.20090107113956.1: *5* c.vnode2position
     def vnode2position(self, v: VNode) -> Position:
-        """Given a VNode v, construct a valid position p such that p.v = v.
+        """
+        Given a VNode v, construct a valid position p such that p.v = v.
         """
         c = self
         context = v.context  # v's commander.
@@ -1366,7 +1734,8 @@ class Commands:
             return  # don't update while loading.
         # Clear all dirty bits _before_ setting the caption.
         for v in c.all_unique_nodes():
-            v.clearDirty()
+            if v.statusBits & v.dirtyBit:  # Only clear if actually dirty
+                v.clearDirty()
         c.changed = False
         # Do nothing for null frames.
         assert c.gui
@@ -1488,7 +1857,7 @@ class Commands:
         p.setDirty()  # Defensive programming.
         g.doHook("set-mark", c=c, p=p)
     #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
-    def setRootPosition(self, unused_p: Position=None) -> None:
+    def setRootPosition(self, unused_p: Position = None) -> None:
         """Set c._rootPosition."""
         # 2011/03/03: No longer used.
     #@+node:ekr.20060906131836: *5* c.setRootVnode (A do-nothing)
@@ -1616,7 +1985,7 @@ class Commands:
             else:
                 print('<no p>')
             if g.unitTesting:
-                assert False, g.callers()
+                assert False, g.callers()  # noqa
 
         if p.hasParent():
             n = p.childIndex()
@@ -1728,7 +2097,7 @@ class Commands:
                 return False
         return True
     #@+node:ekr.20031218072017.2072: *4* c.checkOutline
-    def checkOutline(self, event: Event=None, check_links: bool=False) -> int:
+    def checkOutline(self, event: Event = None, check_links: bool = False) -> int:
         """
         Check for errors in the outline.
         Return the count of serious structure errors.
@@ -1743,7 +2112,7 @@ class Commands:
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: Event=None) -> bool:
+    def validateOutline(self, event: Event = None) -> bool:
         c = self
         if not g.app.validate_outline:
             return True
@@ -1756,7 +2125,7 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event: Event=None, ignoreAtIgnore: bool=True) -> str:
+    def checkAllPythonCode(self, event: Event = None, ignoreAtIgnore: bool = True) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
         count = 0
@@ -1790,9 +2159,9 @@ class Commands:
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: Event=None,
-        ignoreAtIgnore: bool=True,
-        checkOnSave: bool=False,
+        event: Event = None,
+        ignoreAtIgnore: bool = True,
+        checkOnSave: bool = False,
     ) -> str:
         """Check the selected tree for syntax and tab errors."""
         c = self
@@ -1837,7 +2206,7 @@ class Commands:
             if g.unitTesting:
                 raise
             g.warning(f"Syntax error in: {h}")
-            g.es_exception(full=False, color="black")
+            g.es_exception()
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
@@ -1879,7 +2248,7 @@ class Commands:
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
-    def getTime(self, body: bool=True) -> str:
+    def getTime(self, body: bool = True) -> str:
         c = self
         default_format = "%m/%d/%Y %H:%M:%S"  # E.g., 1/30/2003 8:31:55
         # Try to get the format string from settings.
@@ -2239,7 +2608,7 @@ class Commands:
                 if g.unitTesting:
                     raise
                 g.es_print("exception executing command")
-                g.es_exception(c=c)
+                g.es_exception()
             if c and c.exists:
                 if c.requestCloseWindow:
                     c.requestCloseWindow = False
@@ -2546,10 +2915,10 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: Event, function: Callable=function) -> None:
+        def minibufferCallback(event: Event, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
-                cm = getattr(self, 'theContextMenuController')
+                cm = self.theContextMenuController
                 keywords = cm.mb_keywords
             else:
                 cm = keywords = None
@@ -2631,7 +3000,7 @@ class Commands:
                         aList.append(s2)
                     except Exception:
                         g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
-                        g.es_exception(full=True, c=c)
+                        g.es_exception()
                 # Prepare to search again after the last '}}'
                 previ = j + 2
             else:
@@ -2701,10 +3070,10 @@ class Commands:
         return p
     #@+node:ekr.20150422080541.1: *4* c.backup
     def backup(self,
-        fileName: str=None,
-        prefix: str=None,
-        silent: bool=False,
-        useTimeStamp: bool=True,
+        fileName: str = None,
+        prefix: str = None,
+        silent: bool = False,
+        useTimeStamp: bool = True,
     ) -> Optional[str]:
         """
         Back up given fileName or c.fileName().
@@ -2733,10 +3102,10 @@ class Commands:
     #@+node:ekr.20180210092235.1: *4* c.backup_helper
     def backup_helper(
         self,
-        base_dir: str=None,
-        env_key: str='LEO_BACKUP',
-        sub_dir: str=None,
-        use_git_prefix: bool=True,
+        base_dir: str = None,
+        env_key: str = 'LEO_BACKUP',
+        sub_dir: str = None,
+        use_git_prefix: bool = True,
     ) -> None:
         """
         A helper for scripts that back up a .leo file.
@@ -2828,7 +3197,7 @@ class Commands:
             g.es_exception()
             return False
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: Event=None) -> None:
+    def markAllAtFileNodesDirty(self, event: Event = None) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -2841,7 +3210,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: Event=None) -> None:
+    def markAtFileNodesDirty(self, event: Event = None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -2857,7 +3226,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event=None, d: Dict[str, Any]=None) -> None:
+    def openWith(self, event: Event = None, d: Dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -2894,7 +3263,7 @@ class Commands:
         c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
-    def diff_file(self, fn: str, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -2903,7 +3272,7 @@ class Commands:
         x = efc.GitDiffController(c=self)
         x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
-    def diff_two_revs(self, directory: str=None, rev1: str='', rev2: str='') -> None:
+    def diff_two_revs(self, directory: str = None, rev1: str = '', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -2920,7 +3289,7 @@ class Commands:
         efc.GitDiffController(c=self).diff_two_branches(
             branch1=branch1, branch2=branch2, fn=fn)
     #@+node:ekr.20180510105125.1: *4* c.git_diff
-    def git_diff(self, rev1: str='HEAD', rev2: str='') -> None:
+    def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
 
         from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).git_diff(rev1, rev2)
@@ -2943,14 +3312,14 @@ class Commands:
     def notValidInBatchMode(self, commandName: Any) -> None:
         g.es('the', commandName, "command is not valid in batch mode")
     #@+node:ekr.20110530082209.18250: *5* c.putHelpFor
-    def putHelpFor(self, s: str, short_title: str='') -> None:
+    def putHelpFor(self, s: str, short_title: str = '') -> None:
         """Helper for various help commands."""
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
     warnings_dict: Dict[str, bool] = {}
 
-    def raise_error_dialogs(self, kind: str='read') -> None:
+    def raise_error_dialogs(self, kind: str = 'read') -> None:
         """Warn about read/write failures."""
         c = self
         use_dialogs = False
@@ -3104,7 +3473,7 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2: "Commands"=None) -> None:
+    def bringToFront(self, c2: "Commands" = None) -> None:
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -3163,7 +3532,7 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, p: Position=None) -> None:
+    def recolor(self, p: Position = None) -> None:
         # Support QScintillaColorizer.colorize.
         c = self
         colorizer = c.frame.body.colorizer
@@ -3188,7 +3557,7 @@ class Commands:
         if c:
             c.redraw()
 
-    def redraw(self, p: Position=None) -> None:
+    def redraw(self, p: Position = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
@@ -3220,7 +3589,7 @@ class Commands:
     force_redraw = redraw
     redraw_now = redraw
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
-    def redraw_after_contract(self, p: Position=None) -> None:
+    def redraw_after_contract(self, p: Position = None) -> None:
         c = self
         if c.enableRedrawFlag:
             if p:
@@ -3362,13 +3731,14 @@ class Commands:
                         ch2 = h[n] if n < len(h) else ''
                         if ch2.isspace():
                             prefix = prefix + ch2
-                        else: break
+                        else:
+                            break
                     if len(prefix) < len(h) and h.startswith(prefix + ch.lower()):
                         return prefix + ch
         return ''
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: Event=None) -> None:
+    def contractAllHeadlines(self, event: Event = None) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
@@ -3534,11 +3904,11 @@ class Commands:
     #@+node:ekr.20031218072017.2955: *4* c.Menus
     #@+node:ekr.20080610085158.2: *5* c.add_command
     def add_command(self, menu: Widget,
-        accelerator: str='',  # Not used.
-        command: Callable=None,
-        commandName: str=None,  # Not used.
-        label: str=None,  # Not used.
-        underline: int=0,
+        accelerator: str = '',  # Not used.
+        command: Callable = None,
+        commandName: str = None,  # Not used.
+        label: str = None,  # Not used.
+        underline: int = 0,
     ) -> None:
         c = self
         if command:
@@ -3546,7 +3916,7 @@ class Commands:
             # one of two callbacks defined in createMenuEntries or
             # recentFilesCallback, defined in createRecentFilesMenuItems.
 
-            def add_commandCallback(c: Commands=c, command: Callable=command) -> Any:
+            def add_commandCallback(c: Commands = c, command: Callable = command) -> Any:
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists:
@@ -3554,7 +3924,12 @@ class Commands:
                 return val
 
             menu.add_command(menu,
-                accelerator=accelerator, command=command, commandName=commandName, label=label, underline=underline)
+                accelerator=accelerator,
+                command=command,
+                commandName=commandName,
+                label=label,
+                underline=underline,
+            )
         else:
             g.trace('can not happen: no "command" arg')
     #@+node:ekr.20171123203044.1: *5* c.Menu Enablers
@@ -3716,7 +4091,7 @@ class Commands:
             return current != limit.firstChild()
         return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
-    def canPasteOutline(self, s: str=None) -> bool:
+    def canPasteOutline(self, s: str = None) -> bool:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
@@ -3830,9 +4205,9 @@ class Commands:
     #@+node:ekr.20031218072017.2991: *5* c.redrawAndEdit
     def redrawAndEdit(self,
         p: Position,
-        selectAll: bool=False,
-        selection: Tuple=None,
-        keepMinibuffer: bool=False,
+        selectAll: bool = False,
+        selection: Tuple = None,
+        keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
         c, k = self, self.k
@@ -3897,26 +4272,6 @@ class Commands:
     # Compatibility, but confusing.
 
     selectVnode = selectPosition
-    #@+node:ekr.20080503055349.1: *5* c.setPositionAfterSort
-    def setPositionAfterSort(self, sortChildren: bool) -> Position:
-        """
-        Return the position to be selected after a sort.
-        """
-        c = self
-        p = c.p
-        p_v = p.v
-        parent = p.parent()
-        parent_v = p._parentVnode()
-        if sortChildren:
-            return parent or c.rootPosition()
-        if parent:
-            p = parent.firstChild()
-        else:
-            p = leoNodes.Position(parent_v.children[0])
-        while p and p.v != p_v:
-            p.moveToNext()
-        p = p or parent
-        return p
     #@+node:ekr.20070226113916: *5* c.treeSelectHelper
     def treeSelectHelper(self, p: Position) -> None:
         c = self
@@ -3932,14 +4287,14 @@ class Commands:
         self,
         dir_: str,
         kind: str,
-        add_context: Union[bool, None]=None,  # Override setting only if True/False
-        add_file_context: Union[bool, None]=None,  # Override setting only if True/False
-        add_path: bool=True,
-        recursive: bool=True,
-        safe_at_file: bool=True,
-        theTypes: List[str]=None,  # force_at_others=False, # tag:no-longer-used
-        ignore_pattern: re.Pattern=None,
-        verbose: bool=True,  # legacy value.
+        add_context: Union[bool, None] = None,  # Override setting only if True/False
+        add_file_context: Union[bool, None] = None,  # Override setting only if True/False
+        add_path: bool = True,
+        recursive: bool = True,
+        safe_at_file: bool = True,
+        theTypes: List[str] = None,  # force_at_others=False, # tag:no-longer-used
+        ignore_pattern: re.Pattern = None,
+        verbose: bool = True,  # legacy value.
     ) -> None:
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -3985,14 +4340,18 @@ class Commands:
             g.es_print(f"Does not exist: {dir_}")
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
+    #@@nobeautify
+
     def cloneFindByPredicate(
         self,
-        generator: Any,  # The generator used to traverse the tree.
-        predicate: Callable,  # A function of one argument p, returning True  # if p should be included in the results.
-        failMsg: str=None,  # Failure message. Default is no message.
-        flatten: bool=False,  # True: Put all matches at the top level.
-        iconPath: str=None,  # Full path to icon to attach to all matches.
-        undoType: str=None,  # The undo name, shown in the Edit:Undo menu.  # The default is 'clone-find-predicate'
+        generator: Any,         # The generator used to traverse the tree.
+        predicate: Callable,    # A function of one argument p, returning True
+                                # if p should be included in the results.
+        failMsg: str = None,    # Failure message. Default is no message.
+        flatten: bool = False,  # True: Put all matches at the top level.
+        iconPath: str = None,   # Full path to icon to attach to all matches.
+        undoType: str = None,   # The undo name, shown in the Edit:Undo menu.
+                                # The default is 'clone-find-predicate'
     ) -> Position:
         """
         Traverse the tree given using the generator, cloning all positions for
@@ -4066,7 +4425,7 @@ class Commands:
         return root
     #@+node:peckj.20131023115434.10114: *4* c.createNodeHierarchy
     def createNodeHierarchy(self,
-        heads: List[str], parent: Position=None, forcecreate: bool=False,
+        heads: List[str], parent: Position = None, forcecreate: bool = False,
     ) -> Position:
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' under 'parent'
@@ -4169,7 +4528,7 @@ class Commands:
                 c.setCurrentPosition(c.rootPosition())
 
         def redo() -> None:
-            for pgnx, i, chgnx in u.getBead(u.bead + 1).data:
+            for pgnx, i, _chgnx in u.getBead(u.bead + 1).data:
                 v = gnx2v[pgnx]
                 ch = v.children.pop(i)
                 ch.parents.remove(v)
@@ -4183,7 +4542,7 @@ class Commands:
             redoHelper=redo,
         ))
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: List=None) -> None:
+    def doBatchOperations(self, aList: List = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20201129023817.1: * @file leoTest2.py
-#@@first
 """
 Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
@@ -11,30 +9,24 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-#@+<< leoTest2 imports >>
-#@+node:ekr.20220901083840.1: ** << leoTest2 imports >>
+#@+<< leoTest2 imports & annotations >>
+#@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
+from __future__ import annotations
 import time
 import unittest
 import warnings
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
-#@-<< leoTest2 imports >>
-#@+<< leoTest2 annotations >>
-#@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-#@-<< leoTest2 annotations >>
+#@-<< leoTest2 imports & annotations >>
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app
-def create_app(gui_name: str='null') -> Cmdr:
+def create_app(gui_name: str = 'null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
 
@@ -120,6 +112,9 @@ class LeoUnitTest(unittest.TestCase):
         # Set g.unitTesting *early*, for guards.
         g.unitTesting = True
 
+        # Default.
+        g.app.write_black_sentinels = False
+
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
@@ -178,6 +173,35 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
+    #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
+    def dump_string(self, s: str, tag: str = None) -> None:
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
+    def dump_headlines(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's headlines, or all headlines if root is None.
+        """
+        print('')
+        if tag:
+            print(tag)
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
+            print('level:', p.level(), p.h)
+    #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
+    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's tree, or the entire tree if root is None.
+        """
+        print('')
+        if tag:
+            print(tag)
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
+            print('')
+            print('level:', p.level(), p.h)
+            g.printObj(g.splitLines(p.v.b))
     #@-others
 #@-others
 #@-leo

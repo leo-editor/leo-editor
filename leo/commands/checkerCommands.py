@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161021090740.1: * @file ../commands/checkerCommands.py
-#@@first
 """Commands that invoke external checkers"""
 #@+<< checkerCommands imports >>
 #@+node:ekr.20161021092038.1: ** << checkerCommands imports >>
+from __future__ import annotations
 import os
+import re
 import shlex
 import sys
+import tempfile
 import time
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 #
@@ -44,20 +45,63 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
+    from leo.core.leoNodes import Position
+Event = Any
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20230104132446.1: *3* check-nodes
+@g.command('check-nodes')
+def check_nodes(event: Event) -> None:
+    """
+    Find **dubious* nodes, that is, nodes that:
+
+    - contain multiple defs.
+    - start with leading blank lines.
+    - are non-organizer nodes containing no body text.
+
+    Especially useful when using @clean nodes in a collaborative
+    environment. Leo's @clean update algorithm will update @clean nodes
+    when others have added, deleted or moved code, but the update algorithm
+    won't assign changed code to the optimal nodes. This script highligts
+    nodes that needed attention.
+
+    Settings: You can customize the behavior of this command with @data nodes:
+
+    - @data check-nodes-ok-patterns
+
+      The body of the @data node contains a list of regexes (strings), one per line.
+      This command compiles each regex as if it were a raw string.
+      Headlines matching any of these compiled regexes are not considered dubious.
+      The defaults ignore unit tests::
+        .*test_
+        .*Test
+
+    - @data check-nodes-ok-prefixes
+
+      The body ot the @data node contains a list of strings, one per line.
+      Headlines starting with any of these strings are not considered dubious.
+      The defaults ignore top-level @<file> nodes and marker nodes::
+
+        @
+        **
+        ==
+        --
+
+    - @data check-nodes-suppressions
+
+      The body ot the @data node contains a list of strings, one per line.
+      Headlines that match these suppressions *exactly* are not considered dubious.
+      Default: None.
+    """
+    CheckNodes().check(event)
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event: Event) -> None:
-    """Report long lines in the log, with clickable links."""
+    """
+    Report long lines in c.p's tree.
+    Generate clickable links in the log.
+    """
     c = event and event.get('c')
     if not c:
         return
@@ -80,7 +124,7 @@ def find_long_lines(event: Event) -> None:
     log = c.frame.log
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
-    for p in c.all_unique_positions():
+    for p in c.p.self_and_subtree():
         if in_nopylint(p):
             continue
         root = get_root(p)
@@ -148,7 +192,7 @@ def find_missing_docstrings(event: Event) -> None:
         for parent in p.self_and_parents():
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
-        return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+        return p.isAnyAtFileNode() and p.h.strip().endswith(('py', 'pyw'))
     #@-others
     log = c.frame.log
     count, files, found, t1 = 0, 0, [], time.process_time()
@@ -269,8 +313,92 @@ def pylint_command(event: Event) -> None:
             c.save()
         data = PylintCommand(c).run(last_path=last_pylint_path)
         if data:
-            path, p = data
+            path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
+#@+node:ekr.20230221105941.1: ** class CheckNodes
+class CheckNodes:
+
+    def_pattern = re.compile(r'^def\b')
+    ok_head_patterns: List[re.Pattern]
+    ok_head_prefixes: List[str]
+    suppressions: List[str]
+
+    #@+others
+    #@+node:ekr.20230221110024.1: *3* CheckNodes.check
+    def check(self, event: Event) -> None:
+
+        self.c = c = event and event.get('c')
+        if not c:
+            return
+        self.get_data()
+        self.clones = [z.copy() for z in c.all_unique_positions() if self.is_dubious_node(z)]
+        # Report.
+        self.count = count = len(self.clones)
+        g.es(f"{count} dubious node{g.plural(count)}")
+        if not count:
+            return
+        dubious = self.create_dubious_nodes()
+        c.setChanged()
+        c.selectPosition(dubious)
+        c.redraw()
+    #@+node:ekr.20230104142059.1: *3* CheckNodes.create_dubious_nodes
+    def create_dubious_nodes(self) -> Position:
+        c = self.c
+        u = c.undoer
+        # Create the top-level node.
+        undoData = u.beforeInsertNode(c.p)
+        dubious = c.lastTopLevel().insertAfter()
+        dubious.h = f"{self.count} dubious nodes{g.plural(self.count)}"
+        # Clone nodes as children of the top-level node.
+        for p in self.clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = dubious.numberOfChildren()
+            p2._linkCopiedAsNthChild(dubious, n)
+        # Sort the clones in place, without undo.
+        dubious.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(dubious, 'check-nodes', undoData)
+        return dubious
+    #@+node:ekr.20230104142418.1: *3* CheckNodes.get_data
+    def get_data(self) -> None:
+        """
+        Get user data from @data nodes.
+        """
+        c = self.c
+        self.ok_head_prefixes = c.config.getData('check-nodes-ok-prefixes') or []
+        self.suppressions = c.config.getData('check-nodes-suppressions') or []
+        # Compile all regex patterns.
+        self.ok_head_patterns = []
+        for s in c.config.getData('check-nodes-ok-patterns') or []:
+            try:
+                self.ok_head_patterns.append(re.compile(fr"{s}"))
+            except Exception:
+                g.es_print('Bad pattern in @data check-nodes-ok-patterns')
+                g.es_print(repr(s))
+
+    #@+node:ekr.20230104141545.1: *3* CheckNodes.is_dubious_node
+    def is_dubious_node(self, p: Position) -> bool:
+
+        lines = p.b.splitlines()
+        stripped_lines = p.b.strip().splitlines()
+        too_many_defs = (
+            p.h not in self.suppressions
+            and not p.h.startswith('class') and '@others' not in p.b
+            and not any(z.match(p.h) for z in self.ok_head_patterns)
+            and sum(1 for s in lines if self.def_pattern.match(s)) > 1
+        )
+        leading_blank_line = p.b.strip() and not lines[0].strip()
+        empty_body = (
+            not p.b.strip()
+            and not p.hasChildren()
+            and not any(p.h.startswith(z) for z in self.ok_head_prefixes)
+        )
+        trailing_class_or_def = (
+            len(stripped_lines) > 1
+            and stripped_lines[-1].startswith(('class ', 'def '))
+        )
+        return any((too_many_defs, leading_blank_line, empty_body, trailing_class_or_def))
+    #@-others
 #@+node:ekr.20210302111917.1: ** class MypyCommand
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
@@ -295,8 +423,6 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn, root)
-
-
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn: str, root: Position) -> None:
         """Run mypy on one file."""
@@ -304,7 +430,7 @@ class MypyCommand:
         if not mypy:
             print('install mypy with `pip install mypy`')
             return
-        command = f"{sys.executable} -m mypy {fn}"
+        command = f"{sys.executable} -m mypy {fn}".split()
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command,
             fn=fn,
@@ -326,8 +452,45 @@ class MypyCommand:
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        g.printObj([z.h for z in roots], tag='mypy.run')
         self.check_all(roots)
+    #@-others
+#@+node:ekr.20221128123238.1: ** class Flake8Command
+class Flake8Command:
+    """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
+
+    def __init__(self, c: Cmdr) -> None:
+        """ctor for Flake8Command class."""
+        self.c = c
+        self.seen: List[str] = []  # List of checked paths.
+
+    #@+others
+    #@+node:ekr.20221128123523.3: *3* flake8.check_all
+    def check_all(self, roots: List[Position]) -> None:
+        """Run flake8 on all files in paths."""
+        c, tag = self.c, 'flake8'
+        for root in roots:
+            path = g.fullPath(c, root)
+            if path and os.path.exists(path):
+                g.es_print(f"{tag}: {path}")
+                g.execute_shell_commands(f'&"{sys.executable}" -m flake8 "{path}"')
+            else:
+                g.es_print(f"{tag}: file not found: {path}")
+
+    #@+node:ekr.20221128123523.6: *3* flake8.run
+    def run(self, p: Position) -> None:
+        """
+        Run flake8 on all Python @<file> nodes in p's tree.
+        """
+        c, root = self.c, p
+        if not flake8:
+            return
+        # Make sure Leo is on sys.path.
+        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+        if leo_path not in sys.path:
+            sys.path.append(leo_path)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        if roots:
+            self.check_all(roots)
     #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
 class PyflakesCommand:
@@ -344,7 +507,7 @@ class PyflakesCommand:
 
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n: int=0, roots: List[Position]=None) -> None:
+        def __init__(self, fn_n: int = 0, roots: List[Position] = None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
@@ -368,9 +531,10 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, roots: List[Position]) -> int:
         """Run pyflakes on all files in paths."""
+        c = self.c
         total_errors = 0
         for i, root in enumerate(roots):
-            fn = self.finalize(root)
+            fn = os.path.normpath(g.fullPath(c, root))
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
             if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):
@@ -404,34 +568,25 @@ class PyflakesCommand:
         )
         errors = api.check(script, '', r)
         return errors == 0
-    #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
-    def finalize(self, p: Position) -> str:
-        """Finalize p's path."""
-        c = self.c
-        # Use os.path.normpath to give system separators.
-        return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p: Position) -> bool:
         """Run Pyflakes on all Python @<file> nodes in p's tree."""
-        ok = True
+        c, root = self.c, p
         if not pyflakes:
-            return ok
-        c = self.c
-        root = p
+            return True
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if roots:
-            # These messages are important for clarity.
-            total_errors = self.check_all(roots)
-            if total_errors > 0:
-                g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
-            ok = total_errors == 0
-        else:
-            ok = True
-        return ok
+        if not roots:
+            return True
+        total_errors = self.check_all(roots)
+        if total_errors > 0:
+            # This message is important for clarity.
+            g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
+        return total_errors == 0
+
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
@@ -442,7 +597,7 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str=None) -> Optional[Tuple[str, Position]]:
+    def run(self, last_path: str = None) -> Optional[Tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not lint:
@@ -457,46 +612,68 @@ class PylintCommand:
             sys.path.append(leo_path)
 
         # Ignore @nopylint trees.
-
         def predicate(p: Position) -> bool:
             for parent in p.self_and_parents():
                 if g.match_word(parent.h, 0, '@nopylint'):
                     return False
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
+        data: List[Tuple[str, Position]] = []
+        is_at_file = False
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
-        data: List[Tuple[str, Position]] = [(self.get_fn(p), p.copy()) for p in roots]
-        data = [z for z in data if z[0] is not None]
-        if not data and last_path:
-            # Default to the last path.
-            fn = last_path
-            for p in c.all_positions():
-                if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
-                    data = [(fn, p.copy())]
-                    break
+        if roots:
+            roots = g.findRootsWithPredicate(c, root, predicate=predicate)
+            data = [(self.get_fn(p), p.copy()) for p in roots]
+            data = [z for z in data if z[0] is not None]
+            is_at_file = True
+        else:
+            last_path = None
         if not data:
-            g.es('pylint: no files found', color='red')
-            return None
+            if last_path:
+                # Default to the last path.
+                fn = last_path
+                for p in c.all_positions():
+                    if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
+                        data = [(fn, p.copy())]
+                        break
+            else:
+                g.trace('pylint: not an external file, using temp file')
+                script = g.getScript(c, c.p, False, False)
+                fd, fn = tempfile.mkstemp(suffix='.py', prefix="")
+                with os.fdopen(fd, 'w') as f:
+                    f.write(script)
+                data = [(fn, c.p.copy())]
+
         for fn, p in data:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
-        return data[-1] if data else None
+        return data[-1] if data and is_at_file else None
     #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
     def get_rc_file(self) -> Optional[str]:
         """Return the path to the pylint configuration file."""
-        base = 'pylint-leo-rc.txt'
+        c = self.c
+        base1 = '.pylintrc'  # Standard name.
+        base2 = 'pylint-leo-rc.txt'  # Leo-centric name
+        local_dir = g.os_path_dirname(c.fileName())
         table = (
+            # In the directory containing the outline.
+            g.os_path_finalize_join(local_dir, base1),
+            g.os_path_finalize_join(local_dir, base2),
             # In ~/.leo
-            g.os_path_finalize_join(g.app.homeDir, '.leo', base),
+            g.os_path_finalize_join(g.app.homeDir, '.leo', base1),
+            g.os_path_finalize_join(g.app.homeDir, '.leo', base2),
             # In leo/test
-            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
+            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
+            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
         )
         for fn in table:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
+                print(f"pylint: {fn}")
                 return fn
         table_s = '\n'.join(table)
         g.es_print(f"no pylint configuration file found in\n{table_s}")
+        # g.es_print('Not found: .pylintrc and pylint-leo-rc.txt')
         return None
     #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
     def get_fn(self, p: Position) -> Optional[str]:
@@ -514,7 +691,7 @@ class PylintCommand:
     def run_pylint(self, fn: str, p: Position) -> None:
         """Run pylint on fn with the given pylint configuration file."""
         c, rc_fn = self.c, self.rc_fn
-        #
+
         # Invoke pylint directly.
         is_win = sys.platform.startswith('win')
         args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])

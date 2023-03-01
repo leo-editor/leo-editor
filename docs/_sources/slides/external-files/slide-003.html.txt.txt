@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/external-files/slide-003.html
+
+Sentinel lines
+==============
+
+Leo stores the structure of @file trees in external files themselves using
+comment lines called **sentinel lines** (sentinels, for short). Sentinels
+represent outline structure, including clone relationships.
+
+.. This slides contains no image.
+

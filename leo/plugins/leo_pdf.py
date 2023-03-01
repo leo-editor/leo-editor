@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 #! /usr/bin/env python
 #@+leo-ver=5-thin
 #@+node:ekr.20090704103932.5160: * @file ../plugins/leo_pdf.py
-#@@first
 #@@first
 
 """
@@ -152,8 +150,8 @@ except ImportError:
     # raise
 try:
     # pylint: disable=import-error
-    #copyright ReportLab Inc. 2000
-    #see rllicense.txt for license details
+    # copyright ReportLab Inc. 2000
+    # see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
     from reportlab.lib.styles import StyleSheet1, ParagraphStyle
     from reportlab.lib.enums import TA_CENTER  # , TA_LEFT, TA_RIGHT, TA_JUSTIFY
@@ -517,7 +515,7 @@ if docutils:
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
             self.output = b'\n'.join(self.output.splitlines(False))
-            #self.output = self.output.replace(b'\r\n',b'\n')
+            # self.output = self.output.replace(b'\r\n',b'\n')
             if 0:  # This is the actual .pdf output returned from doc.build(story)
                 # doc is a Platypus (and this reportlab) document.
                 g.trace('output', '*' * 40)
@@ -925,41 +923,41 @@ if docutils:  # NOQA
             #@+<< define keys to be printed >>
             #@+node:ekr.20090704103932.5219: *5* << define keys to be printed >>
             keys = (
-                #'anonymous_refs'
-                #'anonymous_targets'
+                # 'anonymous_refs'
+                # 'anonymous_targets'
                 'attributes'
                 'autofootnote_refs'
                 'autofootnote_start'
                 'autofootnotes'
-                #'children'
-                #'citation_refs'
-                #'citations'
-                #'current_line'
-                #'current_source'
-                #'decoration'
-                #'document'
+                # 'children'
+                # 'citation_refs'
+                # 'citations'
+                # 'current_line'
+                # 'current_source'
+                # 'decoration'
+                # 'document'
                 'footnote_refs'
                 'footnotes'
                 'id_start'
                 'ids'  # keys are sectinon names, values are section objects or reference objects.
                 'indirect_targets'
                 'nameids'  # This might be what we want: keys are section names, values are munged names.
-                #'nametypes'
-                #'parse_messages'
-                #'rawsource'
+                # 'nametypes'
+                # 'parse_messages'
+                # 'rawsource'
                 'refids'
                 'refnames'
-                #'reporter'
-                #'settings'
-                #'substitution_defs'
-                #'substitution_names'
-                #'substitution_refs'
-                #'symbol_footnote_refs'
-                #'symbol_footnote_start'
-                #'symbol_footnotes'
-                #'tagname'
-                #'transform_messages'
-                #'transformer',
+                # 'reporter'
+                # 'settings'
+                # 'substitution_defs'
+                # 'substitution_names'
+                # 'substitution_refs'
+                # 'symbol_footnote_refs'
+                # 'symbol_footnote_start'
+                # 'symbol_footnotes'
+                # 'tagname'
+                # 'transform_messages'
+                # 'transformer',
             )
             #@-<< define keys to be printed >>
 

@@ -45,10 +45,9 @@ def init():
     """Return True if the plugin has loaded successfully."""
     ok = True
     if ok:
-        #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)
-    #serve_thread()
-    #g.app.remoteserver = ss = LeoSocketServer()
+    # serve_thread()
+    # g.app.remoteserver = ss = LeoSocketServer()
     return ok
 #@+node:ville.20091010231411.5262: ** g.command('leoserv-start')
 @g.command('leoserv-start')

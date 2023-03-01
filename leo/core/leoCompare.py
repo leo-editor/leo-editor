@@ -1,28 +1,21 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
-#@@first
 """Leo's base compare class."""
-#@+<< leoCompare imports >>
-#@+node:ekr.20220901161941.1: ** << leoCompare imports >>
+#@+<< leoCompare imports & annotations >>
+#@+node:ekr.20220901161941.1: ** << leoCompare imports & annotations >>
+from __future__ import annotations
 import difflib
 import filecmp
 import os
 from typing import Any, BinaryIO, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-#@-<< leoCompare imports >>
-#@+<< leoCompare annotations >>
-#@+node:ekr.20220901162009.1: ** << leoCompare annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-#@-<< leoCompare annotations >>
+#@-<< leoCompare imports & annotations >>
+
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare:
@@ -33,22 +26,22 @@ class BaseLeoCompare:
 
     def __init__(
         self,  # Keyword arguments are much convenient and more clear for scripts.
-        commands: Cmdr=None,
-        appendOutput: bool=False,
-        ignoreBlankLines: bool=True,
-        ignoreFirstLine1: bool=False,
-        ignoreFirstLine2: bool=False,
-        ignoreInteriorWhitespace: bool=False,
-        ignoreLeadingWhitespace: bool=True,
-        ignoreSentinelLines: bool=False,
-        limitCount: int=0,  # Zero means don't stop.
-        limitToExtension: str=".py",  # For directory compares.
-        makeWhitespaceVisible: bool=True,
-        printBothMatches: bool=False,
-        printMatches: bool=False,
-        printMismatches: bool=True,
-        printTrailingMismatches: bool=False,
-        outputFileName: str=None,
+        commands: Cmdr = None,
+        appendOutput: bool = False,
+        ignoreBlankLines: bool = True,
+        ignoreFirstLine1: bool = False,
+        ignoreFirstLine2: bool = False,
+        ignoreInteriorWhitespace: bool = False,
+        ignoreLeadingWhitespace: bool = True,
+        ignoreSentinelLines: bool = False,
+        limitCount: int = 0,  # Zero means don't stop.
+        limitToExtension: str = ".py",  # For directory compares.
+        makeWhitespaceVisible: bool = True,
+        printBothMatches: bool = False,
+        printMatches: bool = False,
+        printMismatches: bool = True,
+        printTrailingMismatches: bool = False,
+        outputFileName: str = None,
     ) -> None:
         # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
@@ -478,7 +471,7 @@ class CompareLeoOutlines:
         self.path2: str = None
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList: List[str], visible: bool=True) -> None:
+    def diff_list_of_files(self, aList: List[str], visible: bool = True) -> None:
         """The main entry point for scripts."""
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))

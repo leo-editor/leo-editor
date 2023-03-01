@@ -1,31 +1,23 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514041209.1: * @file ../commands/editFileCommands.py
-#@@first
 """Leo's file-editing commands."""
-#@+<< editFileCommands imports >>
-#@+node:ekr.20170806094317.4: ** << editFileCommands imports >>
+#@+<< editFileCommands imports & annotations >>
+#@+node:ekr.20170806094317.4: ** << editFileCommands imports & annotations >>
+from __future__ import annotations
 import difflib
 import io
 import os
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< editFileCommands imports >>
-#@+<< editFileCommands annotations >>
-#@+node:ekr.20220826200438.1: ** << editFileCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-#@-<< editFileCommands annotations >>
+#@-<< editFileCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the EditFileCommandsClass class."""
@@ -169,7 +161,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: Event=None) -> None:
+    def convert_at_root(self, event: Event = None) -> None:
         #@+<< convert-at-root docstring >>
         #@+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         #@@wrap
@@ -209,7 +201,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
+            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith(('py', 'pyw')):
                 n = 0
                 for p2 in p.subtree():
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
@@ -246,7 +238,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c = self.c
         # Look for an @clean node.
         for p in c.p.self_and_parents(copy=False):
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
+            if g.match_word(p.h, 0, '@clean') and \
+                            p.h.rstrip().endswith(('py', 'pyw')):
                 break
         else:
             g.es_print('no an @clean node found', p.h, color='blue')
@@ -355,7 +348,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         ):
             self.createCompareClones(d, kind, parent)
         c.selectPosition(parent)
-        u.afterChangeGroup(parent, undoType, reportFlag=True)
+        u.afterChangeGroup(parent, undoType)
         c.redraw()
     #@+node:ekr.20170806094317.12: *5* efc.createCompareClones
     def createCompareClones(self, d: Dict[str, str], kind: str, parent: Position) -> None:
@@ -493,7 +486,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Not Deleted: {k.arg}")
     #@+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: Event=None) -> None:
+    def diff(self, event: Event = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
         c = self.c
         fn = self.getReadableTextFile()
@@ -526,13 +519,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: Event=None) -> None:  # 2020/07/18, for leoInteg.
+    def gitDiff(self, event: Event = None) -> None:  # 2020/07/18, for leoInteg.
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: Event=None) -> None:
+    def gitDiffPullRequest(self, event: Event = None) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
@@ -710,7 +703,7 @@ class GitDiffController:
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
-    def diff_file(self, fn: str, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for fn.
         """
@@ -808,7 +801,7 @@ class GitDiffController:
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, rev1: str='HEAD', rev2: str='') -> None:
+    def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -844,7 +837,7 @@ class GitDiffController:
         u.afterChangeGroup(c.p, undoType=undoType)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
-    def git_diff(self, rev1: str='HEAD', rev2: str='') -> None:
+    def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """The main line of the git diff command."""
         if not self.get_directory():
             return
@@ -936,10 +929,11 @@ class GitDiffController:
                 if new_p:  # Make a clone, if possible.
                     p = new_p.clone()
                     p.moveToLastChildOf(parent)
+                    # #2950: do not change p.b.
                 else:
                     p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
+                    p.h = v.h
+                    p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
@@ -1085,7 +1079,7 @@ class GitDiffController:
                 if not z.strip().endswith(('.db', '.zip'))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
-    def get_revno(self, revspec: str, abbreviated: bool=True) -> str:
+    def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
         """Return the abbreviated hash the given revision spec."""
         if not revspec:
             return 'uncommitted'
@@ -1158,8 +1152,8 @@ class GitDiffController:
         c1: Cmdr,
         c2: Cmdr,
         fn: str,
-        rev1: str='',
-        rev2: str='',
+        rev1: str = '',
+        rev2: str = '',
     ) -> None:
         """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
         added, deleted, changed = self.compute_dicts(c1, c2)

@@ -1,0 +1,16 @@
+.. rst3: filename: html/slides/external-files/slide-016.html
+
+SpamClass
+=========
+
+The first child node creates the expansion of SpamClass. The lines::
+
+    class SpamClass:
+        '''A class representing spam.'''
+
+have no extra indentation, because the @others in the top-level node has no leading whitespace.
+
+However, the two methods of the class will have 4 spaces of indentation because the @others directive in this node is indented by 4 spaces.
+
+.. image:: _images/slide-016.png
+

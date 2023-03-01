@@ -1,0 +1,33 @@
+.. rst3: filename: html/slides/external-files/external-files.html
+
+####################
+Using external files
+####################
+
+.. toctree::
+    :maxdepth: 1
+    
+    About external files                <slide-001>
+    Loading and saving files            <slide-002>
+    Sentinel lines                      <slide-003>
+    External files without sentinels    <slide-004>
+    Using @file trees                   <slide-005>
+    Top-level markup                    <slide-006>
+    Section references                  <slide-007>
+    Section definitions                 <slide-008>
+    The @others directive               <slide-009>
+    References & expansions             <slide-010>
+    Indentation                         <slide-011>
+    More about indentation              <slide-012>
+    More about expansions               <slide-013>
+    Orphan nodes                        <slide-014>
+    A common pattern                    <slide-015>
+    SpamClass                           <slide-016>
+    EggsClass                           <slide-017>
+    Alternatives to @file               <slide-019>
+    Using @auto nodes                   <slide-020>
+    @auto example                       <slide-021>
+    Using @edit nodes                   <slide-022>
+    
+..  Using @others to group code         <slide-018>
+

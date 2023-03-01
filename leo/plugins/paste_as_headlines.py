@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:danr7.20060912105041.1: * @file ../plugins/paste_as_headlines.py
-#@@first
 #@+<< docstring >>
 #@+node:danr7.20060912105041.2: ** << docstring >>
 """ Creates new headlines from clipboard text.

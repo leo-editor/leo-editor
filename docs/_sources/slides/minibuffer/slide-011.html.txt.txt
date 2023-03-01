@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/minibuffer/slide-011.html
+
+Doing the replace
+=================
+
+Now Leo has found the next instance of “def” in the body pane.
+
+- <Ctrl-minus> makes the replacement.
+- <F3> continues searching without making a replacement.
+- <Ctrl-G> ends the search.
+
+.. image:: _images/slide-011.png
+

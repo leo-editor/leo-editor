@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3719: * @file leoGui.py
-#@@first
 """
 A module containing the base gui-related classes.
 
@@ -10,29 +8,22 @@ Leo's core calls this class to allocate all gui objects.
 
 Plugins may define their own gui classes by setting g.app.gui.
 """
-#@+<< leoGui imports >>
-#@+node:ekr.20220414080546.1: ** << leoGui imports >>
+#@+<< leoGui imports & annotations >>
+#@+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
-#@-<< leoGui imports >>
-#@+<< leoGui annotations >>
-#@+node:ekr.20220827062419.1: ** << leoGui annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    FindTabManager = Any
-    Position = Any
-    Wrapper = Any
-Widget = Any
-#@-<< leoGui annotations >>
+    Widget = Any
+#@-<< leoGui imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui:
@@ -71,14 +62,14 @@ class LeoGui:
     def create_key_event(
         self,
         c: Cmdr,
-        binding: str=None,
-        char: str=None,
-        event: Event=None,
-        w: Wrapper=None,
-        x: int=None,
-        x_root: int=None,
-        y: int=None,
-        y_root: int=None,
+        binding: str = None,
+        char: str = None,
+        event: Event = None,
+        w: Wrapper = None,
+        x: int = None,
+        x_root: int = None,
+        y: int = None,
+        y_root: int = None,
     ) -> Event:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
@@ -91,7 +82,7 @@ class LeoGui:
         except Exception:
             return "invalid gui name"
     #@+node:ekr.20031218072017.2231: *4* LeoGui.setScript
-    def setScript(self, script: str=None, scriptFileName: str=None) -> None:
+    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
         self.script = script
         self.scriptFileName = scriptFileName
     #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
@@ -114,7 +105,7 @@ class LeoGui:
         """Create and run a dialog to get g.app.LeoID."""
         self.oops()
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> Any:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
         """Create and run an askOK dialog ."""
         self.oops()
 
@@ -122,8 +113,8 @@ class LeoGui:
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str=None,
-        okButtonText: str=None,
+        cancelButtonText: str = None,
+        okButtonText: str = None,
     ) -> Any:
         """Create and run askOkCancelNumber dialog ."""
         self.oops()
@@ -133,10 +124,10 @@ class LeoGui:
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str=None,
-        okButtonText: str=None,
-        default: str="",
-        wide: bool=False,
+        cancelButtonText: str = None,
+        okButtonText: str = None,
+        default: str = "",
+        wide: bool = False,
     ) -> Any:
         """Create and run askOkCancelString dialog ."""
         self.oops()
@@ -144,9 +135,9 @@ class LeoGui:
     def runAskYesNoDialog(self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yes_all: bool=False,
-        no_all: bool=False,
+        message: str = None,
+        yes_all: bool = False,
+        no_all: bool = False,
     ) -> Any:
         """Create and run an askYesNo dialog."""
         self.oops()
@@ -155,21 +146,21 @@ class LeoGui:
         self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yesMessage: str="Yes",
-        noMessage: str="No",
-        yesToAllMessage: str=None,
-        defaultButton: str="Yes",
-        cancelMessage: str=None,
+        message: str = None,
+        yesMessage: str = "Yes",
+        noMessage: str = "No",
+        yesToAllMessage: str = None,
+        defaultButton: str = "Yes",
+        cancelMessage: str = None,
     ) -> Any:
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
 
     def runPropertiesDialog(self,
-        title: str='Properties',
-        data: str=None,
-        callback: Callable=None,
-        buttons: List[str]=None,
+        title: str = 'Properties',
+        data: str = None,
+        callback: Callable = None,
+        buttons: List[str] = None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
         self.oops()
@@ -179,8 +170,8 @@ class LeoGui:
         title: str,
         filetypes: List[str],
         defaultextension: str,
-        multiple: bool=False,
-        startpath: str=None,
+        multiple: bool = False,
+        startpath: str = None,
     ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         """Create and run an open file dialog ."""
         self.oops()
@@ -203,7 +194,7 @@ class LeoGui:
         """Create a hidden Font panel."""
         self.oops()
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> None:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a new Leo frame."""
         self.oops()
     #@+node:ekr.20031218072017.3729: *4* LeoGui.runMainLoop
@@ -235,11 +226,11 @@ class LeoGui:
 
     def create_labeled_frame(self,
         parent: str,
-        caption: str=None,
-        relief: str="groove",
-        bd: int=2,
-        padx: int=0,
-        pady: int=0,
+        caption: str = None,
+        relief: str = "groove",
+        bd: int = 2,
+        padx: int = 0,
+        pady: int = 0,
     ) -> None:
         """Create a labeled frame."""
         self.oops()
@@ -249,26 +240,26 @@ class LeoGui:
         self.oops()
         return 0, 0, 0, 0
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> Any:
+    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
 
         self.oops()
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
-    def getFullVersion(self, c: Cmdr=None) -> str:
+    def getFullVersion(self, c: Cmdr = None) -> str:
         return 'LeoGui: dummy version'
     #@+node:ekr.20070212070820: *5* LeoGui.makeScriptButton
     def makeScriptButton(
         self,
         c: Cmdr,
-        args: str=None,
-        p: Position=None,
-        script: str=None,
-        buttonText: str=None,
-        balloonText: str='Script Button',
-        shortcut: str=None,
-        bg: str='LightSteelBlue1',
-        define_g: bool=True,
-        define_name: str='__main__',
-        silent: bool=False,
+        args: str = None,
+        p: Position = None,
+        script: str = None,
+        buttonText: str = None,
+        balloonText: str = 'Script Button',
+        shortcut: str = None,
+        bg: str = 'LightSteelBlue1',
+        define_g: bool = True,
+        define_name: str = '__main__',
+        silent: bool = False,
     ) -> None:
         self.oops()
     #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
@@ -300,7 +291,7 @@ class LeoGui:
     #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
     def widget_name(self, w: Widget) -> str:
         # First try the widget's getName method.
-        if not 'w':
+        if not w:
             return '<no widget>'
         if hasattr(w, 'getName'):
             return w.getName()
@@ -320,10 +311,10 @@ class LeoKeyEvent:
         event: Event,
         binding: Any,
         w: Any,
-        x: int=None,
-        y: int=None,
-        x_root: int=None,
-        y_root: int=None,
+        x: int = None,
+        y: int = None,
+        x_root: int = None,
+        y_root: int = None,
     ) -> None:
         """Ctor for LeoKeyEvent class."""
         stroke: Any
@@ -371,7 +362,7 @@ class NullGui(LeoGui):
     """Null gui class."""
     #@+others
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
-    def __init__(self, guiName: str='nullGui') -> None:
+    def __init__(self, guiName: str = 'nullGui') -> None:
         """ctor for the NullGui class."""
         super().__init__(guiName)
         self.clipboardContents = ''
@@ -387,7 +378,7 @@ class NullGui(LeoGui):
     def runAskLeoIDDialog(self) -> str:
         return self.simulateDialog("leoIDDialog", None)
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> str:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
         return self.simulateDialog("okDialog", "Ok")
 
     def runAskOkCancelNumberDialog(
@@ -395,8 +386,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str=None,
-        okButtonText: str=None,
+        cancelButtonText: str = None,
+        okButtonText: str = None,
     ) -> str:
         return self.simulateDialog("numberDialog", 'no')
 
@@ -405,10 +396,10 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str=None,
-        okButtonText: str=None,
-        default: str="",
-        wide: bool=False,
+        cancelButtonText: str = None,
+        okButtonText: str = None,
+        default: str = "",
+        wide: bool = False,
     ) -> str:
         return self.simulateDialog("stringDialog", '')
 
@@ -421,8 +412,8 @@ class NullGui(LeoGui):
         title: str,
         filetypes: List[str],
         defaultextension: str,
-        multiple: bool=False,
-        startpath: str=None,
+        multiple: bool = False,
+        startpath: str = None,
     ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         return self.simulateDialog("openFileDialog", None)
 
@@ -433,9 +424,9 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yes_all: bool=False,
-        no_all: bool=False,
+        message: str = None,
+        yes_all: bool = False,
+        no_all: bool = False,
     ) -> str:
         return self.simulateDialog("yesNoDialog", "no")
 
@@ -443,12 +434,12 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str=None,
-        yesMessage: str="Yes",
-        noMessage: str="No",
-        yesToAllMessage: str=None,
-        defaultButton: str="Yes",
-        cancelMessage: str=None,
+        message: str = None,
+        yesMessage: str = "Yes",
+        noMessage: str = "No",
+        yesToAllMessage: str = None,
+        defaultButton: str = "Yes",
+        cancelMessage: str = None,
     ) -> str:
         return self.simulateDialog("yesNoCancelDialog", "cancel")
 
@@ -479,7 +470,7 @@ class NullGui(LeoGui):
     def finishCreate(self) -> None:
         pass
 
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> Any:
+    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
         return None
 
     def getIconImage(self, name: str) -> None:
@@ -540,7 +531,7 @@ class NullScriptingControllerClass:
 
     This keeps pylint happy."""
 
-    def __init__(self, c: Cmdr, iconBar: Widget=None) -> None:
+    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
         self.c = c
         self.iconBar = iconBar
 
@@ -550,7 +541,7 @@ class NullScriptingControllerClass:
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
-    def __init__(self, name: str, label: str=None) -> None:
+    def __init__(self, name: str, label: str = None) -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -679,9 +670,9 @@ class StringFindTabManager:
                 if val != w.isChecked():
                     w.toggle()
         # Ensure one radio button is set.
-        if not find.node_only and not find.suboutline_only:
+        if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
-            if val != w.isChecked():
+            if not w.isChecked():
                 w.toggle()
     #@+node:ekr.20210312122351.1: *3* sftm.set_body_and_headline_checkbox
     def set_body_and_headline_checkbox(self) -> None:
@@ -771,7 +762,7 @@ class StringGui(LeoGui):
 class StringLineEdit:
     """Simulate a QLineEdit."""
 
-    def __init__(self, name: str, disabled: bool=False) -> None:
+    def __init__(self, name: str, disabled: bool = False) -> None:
         self.disabled = disabled
         self.name = name
         self.pos = 0
@@ -796,7 +787,7 @@ class StringLineEdit:
 class StringRadioButton:
     """Simulate a QRadioButton."""
 
-    def __init__(self, name: str, label: str=None) -> None:
+    def __init__(self, name: str, label: str = None) -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -815,7 +806,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: Dict=None) -> None:
+    def __init__(self, theDict: Dict = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")

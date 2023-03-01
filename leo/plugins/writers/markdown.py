@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
-#@@first
 """The @auto write code for markdown."""
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position

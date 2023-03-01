@@ -1,26 +1,18 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20150514035559.1: * @file ../commands/bufferCommands.py
-#@@first
 """Leo's buffer commands."""
-#@+<< bufferCommands imports >>
-#@+node:ekr.20150514045750.1: ** << bufferCommands imports >>
+#@+<< bufferCommands imports & annotations >>
+#@+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
+from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< bufferCommands imports >>
-#@+<< bufferCommands annotations >>
-#@+node:ekr.20220826072120.1: ** << bufferCommands annotations >>
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-#@-<< bufferCommands annotations >>
+#@-<< bufferCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
     """Command decorator for the BufferCommands class."""

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20221019064053.1: * @file ../plugins/pane_commands.py
-#@@first
 """A plugin that adds top-of-pane and bottom-of-pane commands."""
 # https://github.com/leo-editor/leo-editor/issues/2910
 # Original code by jknGH. Plugin by EKR.

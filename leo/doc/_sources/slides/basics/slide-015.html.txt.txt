@@ -1,0 +1,7 @@
+.. rst3: filename: html/slides/basics/slide-015.html
+
+Add a to-do item
+================
+
+.. image:: _images/slide-015.png
+

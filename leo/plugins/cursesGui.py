@@ -78,7 +78,7 @@ class textGui(leoGui.LeoGui):
 
         return leoKeys.KeyHandlerClass(c)
     #@+node:ekr.20150107090324.9: *3* createLeoFrame
-    def createLeoFrame(self, c, title=None):
+    def createLeoFrame(self, c, title=None) -> Any:
         gui = self
         ret = TextFrame(c, gui)
         self.frames.append(ret)
@@ -182,7 +182,7 @@ class TextFrame(leoFrame.LeoFrame):
         c.fileCommands.gnxDict = {}
         #
         v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
+        p = leoNodes.Position(v)
         v.initHeadString("newHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong:
         # the node hasn't been linked yet.

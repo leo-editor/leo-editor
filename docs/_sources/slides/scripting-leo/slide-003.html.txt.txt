@@ -1,0 +1,23 @@
+.. rst3: filename: html/slides/scripting-leo/slide-003.html
+
+Official ivars
+==============
+
+The c, g and p objects give Leo scripts access to all parts of Leo and Leo outlines. There are many official ivars (instance variables) that scripts may use. Here are a few:
+
+**c.frame** is an object representing the actual parts of Leo screen.
+
+For any frame, frame.c is the frame’s commander, so c.frame.c is always c.
+
+**g.app** is the object representing the entire Leo application.
+
+The ivars of g.app represent Leo’s global variables.
+
+**p.v** is the **vnode** at position p.
+
+A vnode represents an outline node. Vnodes hold most of the data in Leo outlines. For any vnode v, v.h is the node’s headline, and v.b is the node’s body text.
+
+**p.h** and **p.b** are synonyms for p.v.h and p.v.b.
+
+Because of clones, a *vnode may appear in several positions in a traversal*.
+

@@ -1,0 +1,81 @@
+.. rst3: filename: html/download.html
+
+.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+.. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
+.. _`Nightly snapshot`:         download.html#snapshots       
+.. _`Python wheel`:             https://pythonwheels.com/
+.. _`git`:                      https://git-scm.com/
+.. .. _`Standalone leo.exe`:       download.html#standalone
+
+###############
+Downloading Leo
+###############
+
+There are two ways to download Leo:
+
+- ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
+
+- Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
+
+- If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
+
+Snapshots
++++++++++
+
+.zip snapshots can be downloaded directly from `GitHub <https://github.com/leo-editor>`_. No account is required.  The downloaded file will have a name like::
+
+  leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
+
+where the ``50c0...cad5`` part is the ID or fingerprint of the version you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
+
+Here are direct download links for the "devel" branch, which changes frequently and contains all recent bug fixes:
+
+  - `Latest devel <https://github.com/leo-editor/leo-editor/archive/devel.zip>`_
+  - `devel: 1 day ago <https://github.com/leo-editor/leo-editor/archive/devel@{1%20day%20ago}.zip>`_
+  - `devel: 2 days ago <https://github.com/leo-editor/leo-editor/archive/devel@{2%20days%20ago}.zip>`_
+  - `devel: 5 days ago <https://github.com/leo-editor/leo-editor/archive/devel@{5%20days%20ago}.zip>`_
+  - `devel: 10 days ago <https://github.com/leo-editor/leo-editor/archive/devel@{10%20days%20ago}.zip>`_
+  - `devel: 30 days ago <https://github.com/leo-editor/leo-editor/archive/devel@{30%20days%20ago}.zip>`_
+  - `devel: 90 days ago <https://github.com/leo-editor/leo-editor/archive/devel@{90%20days%20ago}.zip>`_
+
+
+Here are direct download links for the "master" branch, which rarely changes and contains the most stable code:
+
+  - `Latest master <https://github.com/leo-editor/leo-editor/archive/master.zip>`_
+  - `master: 1 day ago <https://github.com/leo-editor/leo-editor/archive/master@{1%20day%20ago}.zip>`_
+  - `master: 2 days ago <https://github.com/leo-editor/leo-editor/archive/master@{2%20days%20ago}.zip>`_
+  - `master: 5 days ago <https://github.com/leo-editor/leo-editor/archive/master@{5%20days%20ago}.zip>`_
+  - `master: 10 days ago <https://github.com/leo-editor/leo-editor/archive/master@{10%20days%20ago}.zip>`_
+  - `master: 30 days ago <https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip>`_
+  - `master: 90 days ago <https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip>`_
+
+@ignore Standalone Leo.exe
+++++++++++++++++++++++++++
+
+.. This section is no longer valid.
+
+Getting to the archive in order to download is a bit of work as there isn't a stable url.
+
+Getting to the latest leo.exe:
+
+ 1. Navigate to **Actions**
+ 2. Select `Build standalone leo.exe`_ from workflow list in the left table of contents
+ 3. Look for a recent event with a check mark and click on it
+ 4. Look for **Artifacts** heading and under it: **leo-windows-exe** in blue.
+
+.. image:: https://user-images.githubusercontent.com/486200/83912441-bb38a600-a722-11ea-9abf-43ce833723c2.png
+
+.. image:: https://user-images.githubusercontent.com/486200/83912469-c390e100-a722-11ea-868a-cf56c379eec0.png
+
+.. _`Build standalone leo.exe`: https://github.com/leo-editor/leo-editor/actions?query=workflow:%22Build+standalone+leo.exe%22
+
+
+##################
+Upgrading in place
+##################
+
+ 1. Download source archive from Github repository, `devel branch`_
+ 2. Replace contents of ``C:\Apps\leo\leo\*.*`` with contents of ``leo-editor\leo\*.*``. (Note: the nested "leo\leo" folder structure is significant.)
+
+.. _`devel branch`: https://github.com/leo-editor/leo-editor/tree/devel
+

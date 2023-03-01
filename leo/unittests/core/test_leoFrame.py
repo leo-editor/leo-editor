@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210903161742.1: * @file ../unittests/core/test_leoFrame.py
-#@@first
 """Tests of leoFrame.py"""
 
 from leo.core.leoTest2 import LeoUnitTest

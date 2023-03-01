@@ -199,6 +199,7 @@ Jacob Peck added markdown support to this plugin.
 #@+<< vr imports >>
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 # pylint: disable = c-extension-no-member
+from __future__ import annotations
 import json
 import os
 from pathlib import Path
@@ -287,13 +288,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-else:
-    Cmdr = Any
-    Event = Any
-    Position = Any
-    VNode = Any
-    Wrapper = Any
-Widget = Any
+    Widget = Any
 #@-<< vr annotations >>
 # pylint: disable=no-member
 trace = False  # This global trace is convenient.
@@ -1506,16 +1501,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
         oldp = None
 
-        #print "try act"
         if not h.startswith('@jinja'):
-            #print("Not a @jinja node")
             return
 
         def find_root(p: Position) -> Optional[Tuple[Position, Position]]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
-                    #print("Found @jinja node")
                     return oldp, p
             return None, None
 
@@ -1545,12 +1537,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         for child in p.children():
             if child.h == '@jinja template':
                 template_path = g.os_path_finalize_join(c.getNodePath(p), untangle(c, child).strip())
-                #print("template_path: ", template_path)
             elif child.h == '@jinja inputs':
                 for template_var_node in child.children():
                     # pylint: disable=line-too-long
                     template_data[template_var_node.h.replace('@jinja variable', '').strip()] = untangle(c, template_var_node).strip()
-                #print("template_data: ", template_data)
 
         if not template_path:
             g.es(
@@ -1559,7 +1549,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 "with the path to the template (relative or absolute)")
             return
 
-        #print "act"
         tmpl = Template(Path(template_path).read_text())
         out = tmpl.render(template_data)
         w = pc.ensure_text_widget()

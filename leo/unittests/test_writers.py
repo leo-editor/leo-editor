@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20220812224747.1: * @file ../unittests/test_writers.py
-#@@first
 """Tests of leo/plugins/writers"""
 import textwrap
 from leo.core.leoTest2 import LeoUnitTest

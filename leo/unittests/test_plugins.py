@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210907081548.1: * @file ../unittests/test_plugins.py
-#@@first
 """General tests of plugins."""
 
 import glob
@@ -105,6 +103,20 @@ class TestPlugins(LeoUnitTest):
             assert p2
             self.assertEqual(p2.v, p.v)
             assert c.positionExists(p2), 'does not exist: %s' % p2
+    #@+node:ekr.20221219090253.1: *3* TestPlugins.test_cursesGui2
+    def test_cursesGui2(self):
+
+        # New unit test for #3008
+        # https://github.com/leo-editor/leo-editor/issues/3008
+
+        # #3017: Skip the test if npyscreen, curses (_curses) or tkinter are missing.
+        try:
+            import leo.plugins.cursesGui2 as cursesGui2
+        except Exception:
+            self.skipTest('Missing cursesGui2 requirements')
+
+        # Instantiating this class caused the crash.
+        cursesGui2.LeoTreeData()
     #@+node:ekr.20210909194336.57: *3* TestPlugins.test_regularizeName
     def test_regularizeName(self):
         pc = LeoPluginsController()

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18138: * @file ../plugins/importers/html.py
-#@@first
 """The @auto importer for HTML."""
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position

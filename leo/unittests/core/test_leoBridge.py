@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210903153138.1: * @file ../unittests/core/test_leoBridge.py
-#@@first
 """Tests of leoBridge.py"""
 
 import os
