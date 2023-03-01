@@ -147,6 +147,7 @@
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
+<v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
@@ -1443,14 +1444,14 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: `6.7.2`.
+Create the **release branch**: `6.7.3`.
 - Change version in this checklist to match.
-- Do all release work in `6.7.2` or `gh-pages`.
+- Do all release work in `6.7.3` or `gh-pages`.
 
 About merges:
-- Merge bug fix branches into `devel` and `6.7.2`
-- Merge `6.7.2` into `devel` any time.
-- Do *not* merge devel into 6.7.2.
+- Merge bug fix branches into `devel` and `6.7.3`
+- Merge `6.7.3` into `devel` any time.
+- Do *not* merge devel into 6.7.3.
 
 @language rest
 </t>
@@ -1466,7 +1467,7 @@ About merges:
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.7.2
+- git merge 6.7.3
 - Run the `make-sphinx` from LeoDocs.leo
 - Copy files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1492,18 +1493,21 @@ git push --follow-tags
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.7.2
-update version in leoVersion.py.
-git tag -a v6.7.2-devel -m "Added v6.7.2-devel tag"
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
+- git merge 6.7.3
+- update version in leoVersion.py.
+
+Create a branch for the *new* version:
+
+git tag -a v6.7.4-devel -m "Added v6.7.4-devel tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.2 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.3 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.2</t>
+- git merge 6.7.3</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1526,11 +1530,8 @@ Public announcements, after creating a package.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout master
-
-- test-all
-- mypy leo
-- Run pylint on all files.
+<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout master
+- full-test-leo
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 # Processed in order listed
@@ -1584,12 +1585,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.7.2-2-py3-none-any.whl
-    leo-6.7.2-2.tar.gz
+    leo-6.7.3-2-py3-none-any.whl
+    leo-6.7.3-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.2
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.3
 
 **test**
 
@@ -1602,7 +1603,7 @@ python -m pip uninstall leo</t>
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
+  The final version in PKG-INFO.TXT must be called 6.7.3, not 6.7.3-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1617,6 +1618,9 @@ python -m pip uninstall leo</t>
 
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
+</t>
+<t tx="ekr.20230301084201.1">- Change 6.7.3 (the old version) to 6.7.4.
+  Be careful about the new version in the `Update version in devel` item.
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
