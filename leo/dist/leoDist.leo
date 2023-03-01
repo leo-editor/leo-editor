@@ -156,7 +156,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2022 by Edward K. Ream.
+Copyright (c) 1997-2023 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -200,7 +200,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.1
+Version: 6.7.2
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1604,7 +1604,7 @@ python -m pip uninstall leo</t>
   The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
-- Check 'PKG-INFO.TXT'
+- Update version in 'PKG-INFO.TXT'
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
