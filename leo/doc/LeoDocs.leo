@@ -2516,7 +2516,6 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
-<v t="ekr.20230301071635.1"><vh>*** Add bug</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31103,7 +31102,7 @@ Settings and features:
 
 Other changes:
 
-- 80 issues and 100 pull requests.
+- 80+ issues and 100+ pull requests.
 
 **Links**
 
@@ -32592,7 +32591,6 @@ Leo's beautify command differs from `Black`_ as follows:
                 ],trace=trace)
     finally:
         c.selectPosition(old_p)</t>
-<t tx="ekr.20230301071635.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
