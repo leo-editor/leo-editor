@@ -1,5 +1,7 @@
+# flake8: noqa
 #@+leo-ver=5-thin
 #@+node:ekr.20090428133936.2: * @file html/conf.py
+#@@first
 #@@language python
 # leo/doc/html/conf.py
 
@@ -9,9 +11,9 @@
 # leo/doc/html is the current directory.
 # This file is execfile()d with the current directory set to its containing dir.
 
-import os
-tag = 'leo/doc/html/conf.py'
-print(f"\n{tag}\ncwd: {os.getcwd()}")
+# import os
+# tag = 'leo/doc/html/conf.py'
+# print(f"\n{tag} cwd: {os.getcwd()}")
 
 #@+<< general settings >>
 #@+node:ekr.20230121091126.1: ** << general settings >>
@@ -46,7 +48,7 @@ master_doc = 'leo_toc'  # don't use any suffix.
 project = 'Leo'
 copyright = '1997-2023, Edward K. Ream'
 
-# The version info for thid project.
+# The version info for this project.
 version = '6.7.2'
 release = '6.7.2'
 
@@ -72,7 +74,7 @@ html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 # The theme to use for HTML and HTML Help pages.
 html_theme = 'classic'  # 'default', 'sphinxdoc'.
 
-# These paths are either relative to html_static_path or fully qualified paths (eg. https://...)
+# These paths are either relative to html_static_path or fully qualified paths.
 html_css_files = [
     'custom.css',
 ]

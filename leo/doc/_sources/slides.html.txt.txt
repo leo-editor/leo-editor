@@ -13,7 +13,7 @@ This is the front page for various slide shows about Leo.
 
     slides/clones-and-views/clones-and-views
     slides/external-files/external-files
-    slides/leo-basics-step-by-step/leo-basics-step-by-step
+    slides/basics/basics
     slides/scripting-leo/scripting-leo
-    slides/using-leos-minibuffer/using-leos-minibuffer
+    slides/minibuffer/minibuffer
 

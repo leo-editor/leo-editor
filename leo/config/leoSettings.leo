@@ -655,13 +655,14 @@
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
+<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
-<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -675,7 +676,6 @@
 <v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
-<v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
 <v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
@@ -1467,7 +1467,6 @@
 </v>
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
-<v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
@@ -2150,20 +2149,20 @@
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
-<v t="ekr.20170819113555.2"><vh>@color patch.keyword1 = green</vh></v>
-<v t="ekr.20170819113555.3"><vh>@color patch.keyword2 = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch.keyword3 = yellow</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch.literal1 = yellow</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch.literal2 = yellow</vh></v>
+<v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch-keyword3-color = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch-literal1-color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch-literal2-color = blue</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php.operator = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php.keyword</vh></v>
+<v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth.keyword3 = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth.keyword4 = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth.keyword5 = black</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth-keyword4-color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth-keyword5-color = black</vh></v>
 <v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
 <v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
 <v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
@@ -2171,10 +2170,10 @@
 <v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
 <v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
 <v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth.keyword2</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth.keyword3</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth.keyword4</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
+<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -2319,9 +2318,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20230112123841.1"></v>
-<v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
-<v t="ekr.20041119034357.70"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4635,19 +4631,6 @@ This allows you to increase the font size.
     #00AA00, UnclosedString
 </t>
 <t tx="ekr.20081023060109.14"></t>
-<t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
-
-If a line starts with \\-N, Leo will write the line with N fewer spaces
-than expected.
-
-An **underindented line** is a line of body text that is indented less then
-the starting line of the class, method or function in which it appears. Leo
-outlines can not represent such lines exactly: every line in an external
-file will have at least the indentation of any unindented line of the
-corresponding node in the outline. Leo will issue a warning (not an error)
-for underindented Python comment lines. Such lines can not change the
-meaning of Python programs.
-</t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
 <t tx="ekr.20090203131919.1">'''Check that all commands mentioned in the @menus tree actually exist.'''
@@ -5740,7 +5723,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22126"></t>
 <t tx="ekr.20131213135427.22127"></t>
 <t tx="ekr.20131213135427.22128">Open External &amp;Debugger</t>
-<t tx="ekr.20131213135427.22129">Open &amp;Pdb Debugger</t>
 <t tx="ekr.20131213135427.22130"></t>
 <t tx="ekr.20131213135427.22131"></t>
 <t tx="ekr.20131213135427.22132"></t>
@@ -10670,9 +10652,9 @@ if 0: # The base class
 <t tx="ekr.20170819113555.1"></t>
 <t tx="ekr.20170819113555.2"># +</t>
 <t tx="ekr.20170819113555.3"># -</t>
-<t tx="ekr.20170819113555.4">#84c805</t>
-<t tx="ekr.20170819113555.5"></t>
-<t tx="ekr.20170819170521.1">#84c805</t>
+<t tx="ekr.20170819113555.4"># +++</t>
+<t tx="ekr.20170819113555.5"># ---</t>
+<t tx="ekr.20170819170521.1"># @@</t>
 <t tx="ekr.20170823083657.1">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
@@ -11132,13 +11114,13 @@ See https://jedi.readthedocs.io/en/latest/index.html
         'margin', 'padding', 'relief',
         'solarized', 'split-bar', 'text-foreground', 'tree-image',
     ):
-        if setting.find(munge(pattern)) &gt; -1:
+        if munge(pattern) in setting:
             return False
     #
     # These plugins use settings in non-standard ways.
     if setting.startswith((
         'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'zodb'),
+        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
     ):
         return False
     #
@@ -11348,7 +11330,11 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
     
     This method requires exact matches between settings: it does no munging.
     """
+    unusual_keys = (
+        '@color',  # per-key @color settings have changed.
+    )
     unusual_settings = (
+        # 'forth',  # Experimental.
         'color-theme',  # Uses td.get_string_setting.
         'theme-name',  # Uses td.get_string_setting.
     )
@@ -11356,7 +11342,11 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
         settings = settings_d.get(key, [])
         user_settings = user_settings_d.get(key, [])
         for user_setting in user_settings:
-            if user_setting not in settings and user_setting not in unusual_settings:
+            if (
+                user_setting not in settings
+                and user_setting not in unusual_settings
+                and key not in unusual_keys
+            ):
                 print(f"Unknown setting in myLeoSettings.leo: {key} {user_setting}")
 </t>
 <t tx="ekr.20200226173056.1"></t>

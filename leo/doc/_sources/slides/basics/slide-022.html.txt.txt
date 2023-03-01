@@ -1,0 +1,18 @@
+.. rst3: filename: html/slides/basics/slide-022.html
+
+Shift-Ctrl-C: copy an outline
+=============================
+
+
+We can copy and paste nodes and all their descendants.
+
+Using the arrow keys as necessary, I select the
+"to do" node.
+
+The Shift-Ctrl-C key copies the selected outline.
+
+I want to do the paste *after* the to-do list, so I collapse
+the original node before doing the paste:
+
+.. image:: _images/slide-022.png
+

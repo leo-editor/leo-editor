@@ -1,0 +1,9 @@
+.. rst3: filename: html/slides/basics/slide-006.html
+
+Switching focus
+===============
+
+- Alt-D always puts focus in the body.
+- Alt-T always puts focus in the outline.
+- When the focus is in the tree, <return> puts the focus in the body.
+

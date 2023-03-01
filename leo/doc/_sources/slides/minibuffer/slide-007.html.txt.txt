@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/minibuffer/slide-007.html
+
+Search arguments
+================
+
+Leo’s find command accumulates the search and replace strings in the minibuffer.
+
+<Ctrl-F> invoke the find command, type <Ctrl-F>.
+
+Focus moves to the minibuffer and shows the Find tab.
+
+.. image:: _images/slide-007.png
+

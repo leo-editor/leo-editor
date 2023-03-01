@@ -1,0 +1,14 @@
+.. rst3: filename: html/slides/external-files/slide-021.html
+
+@auto example
+=============
+
+Here is an example of an actual Python file imported into Leo.
+
+The importer has created the entire outline, including the body text of the root @auto node.
+
+The importer created an @others directive (1) to place the expansion of the descendant nodes properly, before the final top-level lines of the file (2).
+
+.. image number is misleading.
+.. image:: _images/slide-022.png
+

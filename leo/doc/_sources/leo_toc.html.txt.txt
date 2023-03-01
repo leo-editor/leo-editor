@@ -1,55 +1,35 @@
-.. rst3: filename: html\leo_toc.html
+.. rst3: filename: html/leo_toc.html
 
 .. This is the table of contents for Leo's documentation.
 
 Leo's Documentation Page
 ========================
 
-**Important**: the easiest way to search Leo's documentation is to search LeoDocs.leo.
+.. |br| raw:: html
 
-.. _`Leo's home page`: https://leo-editor.github.io/leo-editor/
+   <br />
 
-`Leo's home page`_
+**Note**: the easiest way to search Leo's documentation is to search LeoDocs.leo.
 
-.. toctree::
-   :maxdepth: 2
-   
-   preliminaries
-   
-.. toctree::
-   :maxdepth: 1
+.. _`Leo's forum`:          https://groups.google.com/g/leo-editor
+.. _`Leo's home page`:      https://leo-editor.github.io/leo-editor/
+.. _`Leo's IRC channel`:    http://webchat.freenode.net/?channels=%23leo&uio=d4
+.. _`Leo's Wikipedia page`: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
-   getting-started
-   
-.. toctree::
-   :maxdepth: 1
-
-   Cheat Sheet <cheatsheet>
-   
-.. toctree::
-   :maxdepth: 2
-
-   screencasts
-   Tutorials <tutorial>
-   Users Guide <usersguide>
-   leoandotherprograms
-   intermediatetopics
-   appendices
+`Leo's home page`_ |br|
+`Leo's forum`_ |br|
+`Leo's IRC channel`_ |br|
+`Leo's Wikipedia page`_
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   history
-   FAQ
-   glossary
-   What's New <what-is-new>
-
-.. toctree::
-   :hidden:
-
-   slides
-   leoLinks
-   screen-shots
-
-`Leo's home page`_.
+    Preliminaries           <preliminaries>
+    Getting Started         <getting-started>
+    Tutorials               <tutorial>
+    Users Guide             <usersguide>
+    Leo and other programs  <leoandotherprograms>
+    Advanced Topics         <intermediatetopics>
+    Appendices              <appendices>
+    More links              <toc-more-links>
 

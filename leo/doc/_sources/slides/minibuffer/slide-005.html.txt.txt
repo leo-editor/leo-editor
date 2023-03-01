@@ -1,0 +1,11 @@
+.. rst3: filename: html/slides/minibuffer/slide-005.html
+
+Example, concluded
+==================
+
+You will see the output of the print-commands command in the commands tab.
+
+Focus returns to the body pane.
+
+.. image:: _images/slide-005.png
+

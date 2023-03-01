@@ -34,6 +34,10 @@
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
+<v t="ekr.20230228100301.1"><vh>Find panel defaults</vh>
+<v t="ekr.20230228100301.2"><vh>@bool ignore-case = True</vh></v>
+<v t="ekr.20230228100301.3"><vh>@bool whole-word = False</vh></v>
+</v>
 <v t="ekr.20050407144342"><vh>http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
@@ -60,6 +64,7 @@
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
 <v t="ekr.20230111164618.1"><vh>get_paths</vh></v>
+<v t="ekr.20230228105847.1"><vh>run</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
 <v t="ekr.20230110152349.1"><vh>@ignore disabled buttons</vh>
@@ -1650,19 +1655,19 @@
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
-<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6.x</vh>
+<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6 and earlier</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
 <v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
 <v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
-</v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
+</v>
 <v t="ekr.20221108064344.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
@@ -7153,7 +7158,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2022 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2023 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -8879,7 +8884,7 @@ What's New in Leo
 ##################
 
 .. contents:: Contents
-    :depth: 2
+    :depth: 0
     :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
@@ -15734,30 +15739,30 @@ Downloading, Installing &amp; Running Leo
 For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
 <t tx="ekr.20131016083406.16724">@language python
 """
-- Generate intermediate files for all headlines in the table.
-- Run `make clean ; make html` from the leo/doc/html directory.
+Run this script from the `gh-pages` branch.
+
+1. Generate intermediate files for all headlines in the table.
+2. Run `make clean` and `make html` from the leo/doc/html directory.
+
+After running this script, copy files from leo/doc/html/_build/html to leo-editor/docs
 """
+
+@language python
+
 g.cls()
 import os
-
 trace = False
-@others  # define helpers
-if c.isChanged():
-    c.save()
 headlines = [
     "Leo's Documentation"
 ]
-old_p = c.p
-try:
-    docs_path, html_path = get_paths()
-    if html_path:
-        os.chdir(html_path)
-        if write_intermediate_files():
-            # Don't do make-clean by default.
-            # g.execute_shell_commands('make clean',trace=trace)
-            g.execute_shell_commands('make html',trace=trace)
-finally:
-    c.selectPosition(old_p)</t>
+
+@others  # define helpers
+
+if c.isChanged():
+    c.save()
+run()
+
+</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
     bookmarks.py:       Manages URL's used as bookmarks.
@@ -31078,12 +31083,26 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.2**
 
-- Move Leo's website to https://leo-editor.github.io/leo-editor/
-- Support the --black-sentinels command-line option.
-- Leo's beautify command is now PEP8 compliant.
-- A new script packages Leo as a MacOS .app bundle:
-  https://github.com/leo-editor/leo-editor/issues/2966
-- The usual minor bug fixes.
+- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+Commands:
+
+- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- PR #3056: Leo's beautify command is now PEP8 compliant.
+- PR #3140: Run pylint on node.
+- PR #3166: Add the `execute-external-file` command.
+
+Settings and features:
+
+- PR #2979: Add `@bool run-flake8-on-write` setting.
+- PR #2983: Add `--black-sentinels` command-line option.
+- PR #3038: Add `@string rst3-action` setting.
+- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
+
+Other changes:
+
+- 80+ issues and 100+ pull requests.
 
 **Links**
 
@@ -31196,11 +31215,50 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
         g.es_print(f"Bad link: {link}")
     return broken_links
 </t>
-<t tx="ekr.20230111160833.1">- Leo's website has moved to https://leo-editor.github.io/leo-editor/
-- Improve rst3 command: add `@string rst3-action` setting.
-- Leo's beautify command is now PEP8 compliant.
-- Support the --black-sentinels command-line option.
-- Many minor bug fixes.</t>
+<t tx="ekr.20230111160833.1">.. _`PR #3019`: https://github.com/leo-editor/leo-editor/pull/3019
+
+Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+- `PR #3019`_: Host Leo's website using GitHub pages.
+
+Commands:
+
+.. _`PR #3031`: https://github.com/leo-editor/leo-editor/pull/3031
+.. _`PR #3056`: https://github.com/leo-editor/leo-editor/pull/3056
+.. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
+.. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
+
+- `PR #3031`_: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- `PR #3056`_: Leo's beautify command is now PEP8 compliant.
+- `PR #3140`_: Run pylint on node.
+- `PR #3166`_: Add the `execute-external-file` command.
+
+Settings and features:
+
+.. _`PR #2979`: https://github.com/leo-editor/leo-editor/pull/2979
+.. _`PR #2983`: https://github.com/leo-editor/leo-editor/pull/2983
+.. _`PR #3038`: https://github.com/leo-editor/leo-editor/pull/3038
+.. _`PR #3053`: https://github.com/leo-editor/leo-editor/pull/3053
+.. _`PR #3132`: https://github.com/leo-editor/leo-editor/pull/3132
+
+- `PR #2979`_: Add `@bool run-flake8-on-write` setting.
+- `PR #2983`_: Add `--black-sentinels` command-line option.
+- `PR #3038`_: Add `@string rst3-action` setting.
+- `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+
+Bugs
+
+.. _`PR #2962`: https://github.com/leo-editor/leo-editor/pull/2962
+
+- `PR #2962`_: Leo's git-diff command can clear top-level cloned node.
+
+All noteworthy pull requests:
+https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
+
+All noteworthy issues:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
+</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111164618.1">def get_paths():
@@ -31570,9 +31628,7 @@ echo off
 cd C:\Repos\leo-editor\leo\doc\html
 echo make clean
 call make clean
-echo .
-echo make html
-call make html</t>
+</t>
 <t tx="ekr.20230121110345.1"></t>
 <t tx="ekr.20230121110533.1">@language batch
 echo off
@@ -32511,6 +32567,30 @@ Leo's beautify command differs from `Black`_ as follows:
   That is, beautify simulates Black's --skip-string-normalization command-line option.
 - beautify doesn't insert extra blank lines at the end of nodes.
   Technically, this is a pep8 violation, but these extra lines are not Leonine.</t>
+<t tx="ekr.20230228100301.1"></t>
+<t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
+</t>
+<t tx="ekr.20230228100301.3"></t>
+<t tx="ekr.20230228105847.1">def run():
+    
+    if g.gitBranchName() != 'gh-pages':
+        g.es_print('Run `make-sphinx` from `gh-pages` branch')
+        return
+    
+    old_p = c.p
+    try:
+        docs_path, html_path = get_paths()
+        if html_path:
+            os.chdir(html_path)
+            if write_intermediate_files():
+                g.execute_shell_commands([
+                    'make clean',
+                    'make html',
+                    'echo.',
+                    'echo copy files from html/_build/html to /docs',
+                ],trace=trace)
+    finally:
+        c.selectPosition(old_p)</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

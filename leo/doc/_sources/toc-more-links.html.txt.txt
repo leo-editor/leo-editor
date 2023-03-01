@@ -1,0 +1,20 @@
+.. rst3: filename: html/toc-more-links.html
+
+##############
+More Leo Links
+##############
+
+.. toctree::
+    :maxdepth: 1
+
+    FAQ                 <FAQ>
+    Cheat Sheet         <cheatsheet>
+    Code Snippets       <https://github.com/leo-editor/snippets>
+    Tutorial slides     <slides>
+    Screen shots        <screen-shots>
+    Screencasts         <screencasts>
+    History of Leo      <history>
+    Glossary            <glossary>
+    What's New          <what-is-new>
+    Still more links    <leoLinks>
+

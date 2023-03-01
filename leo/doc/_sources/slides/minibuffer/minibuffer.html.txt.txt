@@ -1,0 +1,21 @@
+.. rst3: filename: html/slides/minibuffer/minibuffer.html
+
+####################
+Using the minibuffer
+####################
+
+.. toctree::
+    :maxdepth: 1
+
+    Introduction        <slide-001>
+    Tab completion      <slide-002>
+    Example             <slide-003>
+    Example, continued  <slide-004>
+    Example, concluded  <slide-005>
+    Shortcuts           <slide-006>
+    Search arguments    <slide-007>
+    Search string       <slide-008>
+    Replace string      <slide-009>
+    Doing the find      <slide-010>
+    Doing the replace   <slide-011>
+

@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/basics/slide-016.html
+
+Move a node up
+==============
+
+
+The car should have first priority.
+
+Type Ctrl-U to move the "fix car" node up.
+The node becomes the first child of the "to do" node.
+
+.. image:: _images/slide-016.png
+

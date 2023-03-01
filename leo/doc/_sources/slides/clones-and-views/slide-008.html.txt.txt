@@ -1,0 +1,13 @@
+.. rst3: filename: html/slides/clones-and-views/slide-008.html
+
+Tracking changed files
+======================
+
+After changing either clone, Leo marks both as changed.
+
+Leo also marks any ancestor @file nodes as changed, ensuring
+that Leo will also update all changed external files.
+
+
+.. image:: _images/slide-008.png
+
