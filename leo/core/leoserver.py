@@ -1215,6 +1215,7 @@ class LeoServer:
             for c in g.app.commanders():
                 if c.fileName() == filename:
                     found = True
+                    break
         if not found:
             c = self.bridge.openLeoFile(filename)
             # Add ftm. This won't happen if opened outside leoserver
