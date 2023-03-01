@@ -31250,15 +31250,12 @@ Settings and features:
 Bugs
 
 .. _`PR #2962`: https://github.com/leo-editor/leo-editor/pull/2962
+.. _`All noteworthy pull requests`: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
+.. _`All noteworthy issues`: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
 
 - `PR #2962`_: Leo's git-diff command can clear top-level cloned node.
-
-All noteworthy pull requests:
-https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
-
-All noteworthy issues:
-https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
-</t>
+- `All noteworthy pull requests`_.
+- `All noteworthy issues`_.</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
 <t tx="ekr.20230111164618.1">def get_paths():
