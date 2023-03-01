@@ -52,6 +52,12 @@ Settings and features:
 - `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
 - `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
 
+Bugs
+
+.. _`PR #2962`: https://github.com/leo-editor/leo-editor/pull/2962
+
+- `PR #2962`_: Leo's git-diff command can clear top-level cloned node.
+
 All noteworthy pull requests:
 https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
 
