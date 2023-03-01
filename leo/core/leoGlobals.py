@@ -7242,7 +7242,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Position]:
                 if n < 0:
                     p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
                     if not ok:
-                        g.trace(f"Not found: global line {n} in {p.h}")
+                        g.trace(f"Not found: global line {n}")
                     return p if ok else None
                 insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
                 c.redraw(p)
