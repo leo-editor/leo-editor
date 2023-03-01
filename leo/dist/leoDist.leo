@@ -1470,6 +1470,9 @@ About merges:
 - Run the `make-sphinx` from LeoDocs.leo
 - Copy files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
+- Check the GitHub Pages actions page:
+  https://github.com/leo-editor/leo-editor/actions
+- Check Leo's website.
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
