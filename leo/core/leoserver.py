@@ -1215,6 +1215,7 @@ class LeoServer:
             for c in g.app.commanders():
                 if c.fileName() == filename:
                     found = True
+                    break
         if not found:
             c = self.bridge.openLeoFile(filename)
             # Add ftm. This won't happen if opened outside leoserver
@@ -1861,31 +1862,6 @@ class LeoServer:
         result = {"found": bool(p), "pos": pos, "range": selRange,
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
-    #@+node:felix.20230204161448.1: *5* server.find_all_unique_regex
-    def find_all_unique_regex(self, param: Param) -> Response:
-        """Find Unique Regex / Replace All Unique Regex"""
-        tag = 'find_all_unique_regex'
-        c = self._check_c()
-        fc = c.findCommands
-        replace = param.get("replace")
-        findText = param.get("findText")
-        replaceText = param.get("replaceText", "")
-        result = Any
-        try:
-            settings = fc.ftm.get_settings()
-            settings["findText"] = findText
-            settings["replaceText"] = replaceText
-            fc.findAllUniqueFlag = True
-            if replace:
-                result = fc.do_change_all(settings)
-            else:
-                result = fc.do_find_all(settings)
-        except Exception as e:
-            raise ServerError(f"{tag}: Running find_all_unique_regex operation gave exception: {e}")
-        #
-        focus = self._get_focus()
-        return self._make_response({"found": result, "focus": focus})
-
     #@+node:felix.20210621233316.22: *5* server.find_all
     def find_all(self, param: Param) -> Response:
         """Run Leo's find all command and return results."""

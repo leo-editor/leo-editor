@@ -10,31 +10,32 @@
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
+<v t="tom.20230227101705.1"><vh>&lt;&lt; undefined section &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="tom.20230218225340.1"><vh>@settings</vh>
-<v t="tom.20230218225340.2"><vh>@theme tbp_dark</vh>
+<v t="tom.20230218225340.2"><vh>@theme tbp_light</vh>
 <v t="tom.20230218225340.3"><vh>Theme description settings</vh>
-<v t="tom.20230218225340.4"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="tom.20230218225340.5"><vh>@string color_theme = dark</vh></v>
-<v t="tom.20230218225340.6"><vh>@string theme-name = tbp_dark</vh></v>
+<v t="tom.20230218225340.4"><vh>@bool color_theme_is_dark = False</vh></v>
+<v t="tom.20230218225340.5"><vh>@string color_theme = light</vh></v>
+<v t="tom.20230218225340.6"><vh>@string theme-name = tbp_light</vh></v>
 </v>
 <v t="tom.20230218225340.7"><vh> Theme Settings</vh>
 <v t="tom.20230218225544.1"><vh>Colors...</vh>
 <v t="tom.20230218225544.2"><vh>Base colors: not all are solarized colors</vh>
-<v t="tom.20230218225544.3"><vh>@color dark-base0 = #b8cac8</vh></v>
-<v t="tom.20230218225544.7"><vh>@color dark-base00 = #657b83</vh></v>
-<v t="tom.20230218225544.8"><vh>@color dark-base01 = #586e75</vh></v>
-<v t="tom.20230218225544.9"><vh>@color dark-base02 = #073642</vh></v>
-<v t="tom.20230218225544.10"><vh>@color dark-base03 = #202020</vh></v>
-<v t="tom.20230218225544.12"><vh>@color dark-base04 = #000059</vh></v>
-<v t="tom.20230218225544.13"><vh>@color dark-base05 = #003b00</vh></v>
-<v t="tom.20230218225544.14"><vh>@color dark-base06 = #3b0000</vh></v>
-<v t="tom.20230218225544.15"><vh>@color dark-base1 = #93a1a1</vh></v>
-<v t="tom.20230218225544.16"><vh>@color dark-base2 = #eee8d5</vh></v>
-<v t="tom.20230218225544.17"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="tom.20230218225544.3"><vh>@color base00 = #b8cac8</vh></v>
+<v t="tom.20230218225544.7"><vh>@color base0 = #4c5d63</vh></v>
+<v t="tom.20230218225544.8"><vh>@color -base1 = #586e75</vh></v>
+<v t="tom.20230218225544.9"><vh>@color base2 = #073642</vh></v>
+<v t="tom.20230218225544.10"><vh>@color base3 = #202020</vh></v>
+<v t="tom.20230218225544.12"><vh>@color base4 = #000059</vh></v>
+<v t="tom.20230218225544.13"><vh>@color base5 = #003b00</vh></v>
+<v t="tom.20230218225544.14"><vh>@color base6 = #3b0000</vh></v>
+<v t="tom.20230218225544.15"><vh>@color base01 = #93a1a1</vh></v>
+<v t="tom.20230218225544.16"><vh>@color base02 = #eee8d5</vh></v>
+<v t="tom.20230218225544.17"><vh>@color base03 = #fdf6e3</vh></v>
 <v t="tom.20230218225544.19"><vh>@color solarized-black = #202020</vh></v>
 <v t="tom.20230218225544.20"><vh>@@color solarized-blue = #268bd2</vh></v>
 <v t="tom.20230218225544.22"><vh>@color solarized-cyan = #2aa198</vh></v>
@@ -108,17 +109,15 @@
 </v>
 </v>
 <v t="tom.20230218225544.86"><vh>Colors: Text</vh>
-<v t="tom.20230218225544.87"><vh>@color log_text_background_color = #181818</vh></v>
-<v t="tom.20230218225544.88"><vh>@@color log_text_foreground_color = #ffffff</vh></v>
-<v t="tom.20230218225544.89"><vh>@@color log_text_foreground_color = @text-foreground</vh></v>
-<v t="tom.20230226180941.1"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="tom.20230218225544.90"><vh>@color text-background =@dark-base03</vh></v>
-<v t="tom.20230218225544.91"><vh>@color text-background-bright =@dark-base02</vh></v>
-<v t="tom.20230218225544.92"><vh>@color text-foreground =@dark-base0</vh></v>
-<v t="tom.20230218225544.93"><vh>@color text-foreground-bright =@dark-base2</vh></v>
+<v t="tom.20230218225544.87"><vh>@color log_text_background_color = @text-background</vh></v>
+<v t="tom.20230226180941.1"><vh>@color log_text_foreground_color = @base0</vh></v>
+<v t="tom.20230218225544.90"><vh>@color text-background =@base03</vh></v>
+<v t="tom.20230218225544.91"><vh>@color text-background-bright =@base02</vh></v>
+<v t="tom.20230218225544.92"><vh>@color text-foreground =@base0</vh></v>
+<v t="tom.20230218225544.93"><vh>@color text-foreground-bright =@base2</vh></v>
 </v>
 <v t="tom.20230218225544.94"><vh>Colors: Widgets</vh>
-<v t="tom.20230218225544.95"><vh>@color button-hover-fg =@dark-base03</vh></v>
+<v t="tom.20230218225544.95"><vh>@color button-hover-fg =@base03</vh></v>
 </v>
 </v>
 <v t="tom.20230218225340.96"><vh>Fonts &amp; text sizes</vh>
@@ -137,7 +136,7 @@
 </v>
 <v t="tom.20230218225340.109"><vh>Gradients</vh>
 <v t="tom.20230218225340.110"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="tom.20230218225340.111"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="tom.20230218225340.111"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @base00,stop:0.4 @base0, stop:0.6 @base0, stop:0.9@base00)</vh></v>
 </v>
 <v t="tom.20230218225340.112"><vh>Outline indicators</vh>
 <v t="tom.20230218225340.113"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
@@ -186,7 +185,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0,3">A dark theme based on minimal-ui-tbp_dark_solarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0,3">A light theme based on tbp_dark.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -195,13 +194,13 @@ g.es_print('black',color='black')</t>
 2. The rest of the doc parts depends on the @bool color-doc-parts-as-rest setting:
    True:  Colorize the doc part as **markdown**.
    False: Colorize the doc part using @color docpart.
-   
+
 Leo colorizes constructs with two kinds of color constants.
 - **Default colors** defined in the node "Colors: defaults".
   These constants correspond to jEdit names used in leo/modes/*.py.
   See the "Colors: defaults" node for more details.
 - **Leo-specific colors**, defined in the node "Colors: Leo constructs".
-  
+
 Most languages use only a subset of these color names.
 Here are all the colors used to color python:
 @c # @color leo_keyword_color
@@ -209,7 +208,7 @@ Here are all the colors used to color python:
 # Comments: @color comment1
 
 def spam():
-    
+
     # Reserved words...
     pass     # Python keywords: @color keyword1
     abs(1)   # Standard functions: @color keyword2.
@@ -221,20 +220,20 @@ def spam():
     except IOError: # Exception names: @color keyword3
         pass
     a = 2    # Operators (the = sign): @color operator_color
-    
+
     # Strings...
     a = 'Regular string' # @color literal1
     '''Triple single-quoted docstring''' # @color literal2
     """Triple double-quoted docstring""" # @color literal2
-    
+
 # All languages use the following names...
-    
+
 # Urls: http://leoeditor.com/  @color url_color
 &lt;&lt; undefined section &gt;&gt;      # @color undefined_section_name_color
 &lt;&lt; defined section &gt;&gt;
     # The brackets:            @color section_name_brackets_color
     # The section name itself: @color section_name_color
-    
+
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052441.2"></t>
@@ -287,11 +286,10 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 
 QWidget {
   /* Not for text widgets */
-  background:  @dark-base03;
-  color: @dark-base0;
-  border-color: @dark-base1;
+  background:  @base03;
+  color: @base0;
+  border-color: @base1;
 }
-
 QDockWidget {
  border: 5px solid red;
 }
@@ -301,7 +299,7 @@ QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
   margin-right: 5px;
 }
 QLabel {
-  color: @dark-base1;
+  color: @base1;
 }
 QLineEdit {
   border: none;
@@ -337,7 +335,7 @@ QTextEdit#log-widget {
   border-color: @log_text_background_color;
 }
 LeoQTreeWidget#treeWidget {
-  border-color: @dark-base03;
+  border-color: @base03;
 }
 QTextEdit#richTextEdit {
   border-color: @text-background;
@@ -362,7 +360,7 @@ QPushButton:hover {
 </t>
 <t tx="tom.20230218225340.121">QFrame#gutter {
   font-size: @font-size-gutter;
-  background: @dark-base02;
+  background: @base02;
 }</t>
 <t tx="tom.20230218225340.122">/* Warning: do not change the order of these items! */
 QMenu {
@@ -425,7 +423,7 @@ QScrollBar::vertical {
    width: 15px;
 }
 QScrollBar::add-page, QScrollBar::sub-page {
-   background: @dark-base02;
+   background: @base02;
 }
 
 </t>
@@ -433,21 +431,21 @@ QScrollBar::add-page, QScrollBar::sub-page {
 
 QLineEdit#status1 {
   /* at-color status-bg overrides this! */
-  /* background: @dark-base03; */
-  border-color: @dark-base02;
+  /* background: @base03; */
+  border-color: @base02;
   border-width: 1px;
   border-style: solid;
 }
 QLineEdit#status2 {
     /* at-color status-bg overrides this! */
-  /* background: @dark-base03; */
-  border-color: @dark-base02;
+  /* background: @base03; */
+  border-color: @base02;
   border-width: 1px;
   border-style: solid;
 }
 </t>
 <t tx="tom.20230218225340.126">QSplitter::handle {
-  background: @dark-base01;
+  background: @base01;
 }
 QSplitter::handle:hover {
   background: @solarized-violet;
@@ -488,7 +486,7 @@ QTreeView {
 }
 QTreeView::item:selected, QTreeView::item:active:selected {
   background: @solarized-blue;
-  color: @dark-base03;
+  color: @base03;
 }
 QTreeView::branch:closed:has-children{
     image: @tree-image-closed;
@@ -509,7 +507,7 @@ QTreeView QLineEdit {
 @wrap
 @tabwidth -2
 
-Same as minimal-ui-tbp_dark_solarized.leo except for colors.</t>
+Same as tbp_dark.leo except for colors.</t>
 <t tx="tom.20230218225340.3"></t>
 <t tx="tom.20230218225340.4">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
@@ -565,18 +563,11 @@ div#bg {background:#eee8d5}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="tom.20230218225544.17">@language md
-&lt;style&gt;
-div#bg {background:#fdf6e3}
-&lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-</t>
+<t tx="tom.20230218225544.17"></t>
 <t tx="tom.20230218225544.19">@language md
 
 &lt;!-- Not an official solarized color. --&gt;
-&lt;!-- Same as dark-base-03 --&gt;
+&lt;!-- Same as base-03 --&gt;
 
 &lt;style&gt;
 div#bg {background:#000005}
@@ -863,26 +854,6 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="tom.20230218225544.88">&lt;!-- Foreground color of log text. --&gt;
-
-@language md
-&lt;style&gt;
-div#bg {background:#ffffff}
-&lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-</t>
-<t tx="tom.20230218225544.89">&lt;!-- Foreground color of log text. --&gt;
-
-@language md
-&lt;style&gt;
-div#bg {background:#ffffff}
-&lt;/style&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-&lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
-</t>
 <t tx="tom.20230218225544.9">@language md
 &lt;style&gt;
 div#bg {background:#073642}
@@ -954,5 +925,6 @@ This is a test
 &lt;/pre&gt;
 
 </t>
+<t tx="tom.20230227101705.1"></t>
 </tnodes>
 </leo_file>
