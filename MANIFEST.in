@@ -30,3 +30,6 @@ prune leo/unittests/htmlcov
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
+
+# Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
+prune leo/docs
