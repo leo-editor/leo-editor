@@ -1563,7 +1563,9 @@ prune leo/unittests/htmlcov
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
-</t>
+
+# Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
+prune leo/docs</t>
 <t tx="ekr.20210815103531.1">**build**
 
 - git checkout master
