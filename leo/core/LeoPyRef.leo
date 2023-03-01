@@ -26,15 +26,6 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
-<v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
-<v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
-<v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
-<v t="ekr.20201018070822.1"><vh>main</vh></v>
-<v t="ekr.20201018072911.1"><vh>oops</vh></v>
-<v t="ekr.20201018063747.1"><vh>put_content</vh></v>
-<v t="ekr.20210510071427.1"><vh>put_prolog</vh></v>
-<v t="ekr.20210510071812.1"><vh>put_tnodes</vh></v>
-</v>
 <v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
@@ -96,6 +87,15 @@
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
+<v t="ekr.20201018062305.1"><vh>@@button write-leoPyRef</vh>
+<v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
+<v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
+<v t="ekr.20201018070822.1"><vh>main</vh></v>
+<v t="ekr.20201018072911.1"><vh>oops</vh></v>
+<v t="ekr.20201018063747.1"><vh>put_content</vh></v>
+<v t="ekr.20210510071427.1"><vh>put_prolog</vh></v>
+<v t="ekr.20210510071812.1"><vh>put_tnodes</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20210110092457.1"><vh>leojs buttons</vh>
@@ -2335,6 +2335,7 @@ This script will delete any nodes that are in LeoPyRef.leo but not in
 leoPy.leo.
 
 """
+# Do not use this script—it creates huge diffs.
 import io
 import os
 @others

@@ -135,6 +135,8 @@
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
+<v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
+<v t="ekr.20230301070807.1"><vh>LeoPyRef.leo</vh></v>
 <v t="ekr.20180405171433.2"><vh>LeoDocs.leo</vh></v>
 <v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
@@ -1461,14 +1463,6 @@ About merges:
 
 - Run the full-tests script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
-
-LeoSettings.leo:
-- Run all "check" buttons in leoSettings.leo.
-
-LeoPyRef.leo:
-Do *not* use the write-LeoPyRef button in LeoPy.leo. It is buggy.
-- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
-- Open LeoPyRef.leo. Verify the diff after saving.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
@@ -1598,6 +1592,14 @@ python -m pip uninstall leo</t>
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
+</t>
+<t tx="ekr.20230301070738.1">- Run all "check" buttons in leoSettings.leo.
+
+</t>
+<t tx="ekr.20230301070807.1">Do *not* use the (disabled) write-LeoPyRef button in LeoPy.leo. It is buggy.
+
+- Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
+- Open LeoPyRef.leo. Verify the diff after saving.
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
