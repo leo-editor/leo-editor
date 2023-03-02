@@ -433,7 +433,7 @@ def make_at_file_node(line, path):
     c.refreshFromDisk()
     return p
 #@+node:ekr.20180701061957.1: *3* function: show_line
-def show_line(line, fn):
+def show_line(line, fn) -> None:
     """
     Put the cursor on the requested line of the given file.
     fn should be a full path to a file.
