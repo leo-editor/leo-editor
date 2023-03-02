@@ -2733,19 +2733,16 @@ class Commands:
             Return the node corresponding to line n of external file given by path.
             """
             if path == root_path:
-                p, offset, found = c.gotoCommands.find_file_line(n, root)
+                p, offset = c.gotoCommands.find_file_line(n, root)
             else:
                 # Find an @<file> node with the given path.
-                found = False
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
                         norm_path = os.path.normpath(g.fullPath(c, p))
                         if path == norm_path:
-                            p, offset, found = c.gotoCommands.find_file_line(n, p)
+                            p, offset = c.gotoCommands.find_file_line(n, p)
                             break
-            if found:
-                return p, offset
-            return root, n
+            return (p, offset) if p else (root, n)
         #@-others
         # Compile and check the regex.
         if regex:

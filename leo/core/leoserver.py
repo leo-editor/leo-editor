@@ -2110,9 +2110,10 @@ class LeoServer:
         gc = c.gotoCommands
         line = param.get('line', 1)
         try:
-            junk_p, junk_offset, found = gc.find_file_line(n=int(line))
+            p, junk_offset = gc.find_file_line(n=int(line))
         except Exception as e:
             raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
+        found = bool(p)
         focus = self._get_focus()
         return self._make_response({"found": found, "focus": focus})
     #@+node:felix.20210621233316.33: *5* server.clone_find_tag
