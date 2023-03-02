@@ -37,7 +37,6 @@ class GoToCommands:
         p = p or c.p
         root, fileName = self.find_root(p)
         if not root:
-            g.trace('no root')
             return self.find_script_line(n, p)
         # Step 1: Get the lines of external files *with* sentinels,
         #         even if the actual external file actually contains no sentinels.
@@ -54,7 +53,7 @@ class GoToCommands:
         if gnx:
             p = self.find_gnx(root, gnx, h)
             if p:
-                g.trace('Found', p.h, offset)
+                self.success(n, offset, p)
                 return p, offset
         self.fail(lines, n, root)
         return None, -1
@@ -100,7 +99,6 @@ class GoToCommands:
             p = self.find_gnx(root, gnx, h)
             if p:
                 self.success(n, offset, p)
-                g.trace('Found', p.h, offset)  ###
                 return p, offset
         self.fail(lines, n, root)
         return None, -1
@@ -254,8 +252,8 @@ class GoToCommands:
         Scan root's tree for a node with the given gnx and vnodeName.
         return a copy of the position or None.
         """
-        g.trace(gnx)
-        assert gnx
+        if not gnx:
+            return None  # Should never happen.
         gnx = g.toUnicode(gnx)
         for p in root.self_and_subtree(copy=False):
             if p.matchHeadline(vnodeName):
