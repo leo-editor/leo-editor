@@ -51,7 +51,7 @@ class GoToCommands:
             # Not all sentinels count as real lines.
             gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx(root, gnx, h)
+            p = self.find_gnx2(root, gnx, h)
             if p:
                 self.success(n, offset, p)
                 return p, offset
@@ -96,7 +96,7 @@ class GoToCommands:
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx(root, gnx, h)
+            p = self.find_gnx2(root, gnx, h)
             if p:
                 self.success(n, offset, p)
                 return p, offset
@@ -246,8 +246,20 @@ class GoToCommands:
         w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
         w.seeInsertPoint()
-    #@+node:ekr.20100216141722.5626: *4* goto.find_gnx
-    def find_gnx(self, root: Position, gnx: str, vnodeName: str) -> Optional[Position]:
+    #@+node:ekr.20100216141722.5626: *4* goto.find_gnx & find_gnx2
+    def find_gnx(
+        self,
+        root: Position,
+        gnx: str, vnodeName: str,
+    ) -> Tuple[Position, bool]:  # Retain find_gnx for compatibility.
+        """
+        Scan root's tree for a node with the given gnx and vnodeName.
+        return (p,found)
+        """
+        p = self.find_gnx2(root, gnx, vnodeName)
+        return p, bool(p)
+
+    def find_gnx2(self, root: Position, gnx: str, vnodeName: str) -> Optional[Position]:
         """
         Scan root's tree for a node with the given gnx and vnodeName.
         return a copy of the position or None.
