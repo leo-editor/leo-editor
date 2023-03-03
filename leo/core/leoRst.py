@@ -163,7 +163,7 @@ class RstCommands:
         print(f"{old_h} => {p.h}")
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: Event = None) -> None:
+    def rst3(self, event: Event = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -174,6 +174,7 @@ class RstCommands:
             f"{self.n_intermediate:4} intermediate file{g.plural(self.n_intermediate)}\n"
             f"{self.n_docutils:4} docutils file{g.plural(self.n_docutils)}\n"
             f"in {t2 - t1:4.2f} sec.")
+        return self.n_intermediate
     #@+node:ekr.20230113050522.1: *5* rst.do_actions & helper
     def do_actions(self) -> None:
         """Handle actions specified by @string rst3-action."""
