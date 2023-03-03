@@ -1234,10 +1234,9 @@ class GlobalConfigManager:
         limit = c.config.getInt('print-settings-at-data-limit')
         if limit is None:
             limit = 20  # A reasonable default.
-        # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
-            assert isinstance(gs, g.GeneralSetting), repr(gs)
+            assert isinstance(gs, (None.__class__, g.GeneralSetting)), repr(gs)
             if gs and gs.kind:
                 letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
