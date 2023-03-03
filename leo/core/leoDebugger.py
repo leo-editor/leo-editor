@@ -433,7 +433,7 @@ def make_at_file_node(line, path):
     c.refreshFromDisk()
     return p
 #@+node:ekr.20180701061957.1: *3* function: show_line
-def show_line(line, fn):
+def show_line(line, fn) -> None:
     """
     Put the cursor on the requested line of the given file.
     fn should be a full path to a file.
@@ -448,14 +448,14 @@ def show_line(line, fn):
             path = g.fullPath(c, p).replace('\\', '/')
             if target == path:
                 # Select the line.
-                junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
-                if not ok:
+                p, junk_offset = c.gotoCommands.find_file_line(n=line, p=p)
+                if not p:
                     g.trace('FAIL:', target)
                 c.bodyWantsFocusNow()
                 return
     p = make_at_file_node(line, target)
-    junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
-    if not ok:
+    p, junk_offset = c.gotoCommands.find_file_line(n=line, p=p)
+    if not p:
         g.trace('FAIL:', target)
 #@+node:ekr.20181001054314.1: ** top-level xdb commands
 #@+node:ekr.20181003015017.1: *3* db-again
