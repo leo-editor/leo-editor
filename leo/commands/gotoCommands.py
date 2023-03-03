@@ -25,36 +25,38 @@ class GoToCommands:
 
     #@+others
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
-    def find_file_line(self, n: int, p: Position = None) -> Tuple[Position, int, bool]:
+    def find_file_line(self, n: int, p: Position = None) -> Tuple[Position, int]:
         """
         Place the cursor on the n'th line (one-based) of an external file.
-        Return (p, offset, found) for unit testing.
+
+        Return (p, offset) if found or (None, -1) if not found.
         """
         c = self.c
         if n < 0:
-            return None, -1, False
+            return None, -1
         p = p or c.p
         root, fileName = self.find_root(p)
-        if root:
-            # Step 1: Get the lines of external files *with* sentinels,
-            # even if the actual external file actually contains no sentinels.
-            sentinels = root.isAtFileNode()
-            s = self.get_external_file_with_sentinels(root)
-            lines = g.splitLines(s)
-            # Step 2: scan the lines for line n.
-            if sentinels:
-                # All sentinels count as real lines.
-                gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
-            else:
-                # Not all sentinels count as real lines.
-                gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
-            p, found = self.find_gnx(root, gnx, h)
-            if gnx and found:
+        if not root:
+            return self.find_script_line(n, p)
+        # Step 1: Get the lines of external files *with* sentinels,
+        #         even if the actual external file actually contains no sentinels.
+        sentinels = root.isAtFileNode()
+        s = self.get_external_file_with_sentinels(root)
+        lines = g.splitLines(s)
+        # Step 2: scan the lines for line n.
+        if sentinels:
+            # All sentinels count as real lines.
+            gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
+        else:
+            # Not all sentinels count as real lines.
+            gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
+        if gnx:
+            p = self.find_gnx2(root, gnx, h)
+            if p:
                 self.success(n, offset, p)
-                return p, offset, True
-            self.fail(lines, n, root)
-            return None, -1, False
-        return self.find_script_line(n, p)
+                return p, offset
+        self.fail(lines, n, root)
+        return None, -1
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start
     def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
         """Return the global line number of the first line of p.b"""
@@ -81,24 +83,25 @@ class GoToCommands:
                 return i + 1
         return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
-    def find_script_line(self, n: int, root: Position) -> Tuple[Position, int, bool]:
+    def find_script_line(self, n: int, root: Position) -> Tuple[Position, int]:
         """
         Go to line n (zero based) of the script with the given root.
-        Return p, offset, found for unit testing.
+        Return (p, offset) if found or (None, -1) otherwise.
         """
         c = self.c
         if n < 0:
-            return None, -1, False
+            return None, -1
         script = g.getScript(c, root, useSelectedText=False)
         lines = g.splitLines(script)
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
-        p, found = self.find_gnx(root, gnx, h)
-        if gnx and found:
-            self.success(n, offset, p)
-            return p, offset, True
+        if gnx:
+            p = self.find_gnx2(root, gnx, h)
+            if p:
+                self.success(n, offset, p)
+                return p, offset
         self.fail(lines, n, root)
-        return None, -1, False
+        return None, -1
     #@+node:ekr.20181003080042.1: *3* goto.node_offset_to_file_line
     def node_offset_to_file_line(self, target_offset: int, target_p: Position, root: Position) -> int:
         """
@@ -243,20 +246,32 @@ class GoToCommands:
         w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
         w.seeInsertPoint()
-    #@+node:ekr.20100216141722.5626: *4* goto.find_gnx
-    def find_gnx(self, root: Position, gnx: str, vnodeName: str) -> Tuple[Position, bool]:
+    #@+node:ekr.20100216141722.5626: *4* goto.find_gnx & find_gnx2
+    def find_gnx(
+        self,
+        root: Position,
+        gnx: str, vnodeName: str,
+    ) -> Tuple[Position, bool]:  # Retain find_gnx for compatibility.
         """
         Scan root's tree for a node with the given gnx and vnodeName.
-        return (p,found)
+        return (p, True) if found or (None, False) otherwise.
         """
-        if gnx:
-            gnx = g.toUnicode(gnx)
-            for p in root.self_and_subtree(copy=False):
-                if p.matchHeadline(vnodeName):
-                    if p.v.fileIndex == gnx:
-                        return p.copy(), True
-            return None, False
-        return root, False
+        p = self.find_gnx2(root, gnx, vnodeName)
+        return p, bool(p)
+
+    def find_gnx2(self, root: Position, gnx: str, vnodeName: str) -> Optional[Position]:
+        """
+        Scan root's tree for a node with the given gnx and vnodeName.
+        return a copy of the position or None.
+        """
+        if not gnx:
+            return None  # Should never happen.
+        gnx = g.toUnicode(gnx)
+        for p in root.self_and_subtree(copy=False):
+            if p.matchHeadline(vnodeName):
+                if p.v.fileIndex == gnx:
+                    return p.copy()
+        return None
     #@+node:ekr.20100216141722.5627: *4* goto.find_root
     def find_root(self, p: Position) -> Tuple[Position, str]:
         """

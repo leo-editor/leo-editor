@@ -2110,11 +2110,11 @@ class LeoServer:
         gc = c.gotoCommands
         line = param.get('line', 1)
         try:
-            junk_p, junk_offset, found = gc.find_file_line(n=int(line))
+            p, junk_offset = gc.find_file_line(n=int(line))
         except Exception as e:
-            raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
+            raise ServerError(f"{tag}: Running goto-global-line gave exception: {e}")
         focus = self._get_focus()
-        return self._make_response({"found": found, "focus": focus})
+        return self._make_response({"found": bool(p), "focus": focus})
     #@+node:felix.20210621233316.33: *5* server.clone_find_tag
     def clone_find_tag(self, param: Param) -> Response:
         """Run Leo's clone-find-tag command and return results."""
