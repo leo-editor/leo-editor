@@ -12,7 +12,7 @@ Python programs running independently of Leo. Let us call such a program a
 - the contents of any .leo file,
 - the commander of any .leo file.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 

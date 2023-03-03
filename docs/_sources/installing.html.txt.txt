@@ -18,7 +18,7 @@ These instructions look complicated because they're long, but really they just b
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
-.. contents::
+.. contents:: Contents
     :depth: 4
     :local:
 

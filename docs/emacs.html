@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Leo and Emacs, including org mode &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -48,7 +51,8 @@
   <section id="leo-and-emacs-including-org-mode">
 <h1>Leo and Emacs, including org mode<a class="headerlink" href="#leo-and-emacs-including-org-mode" title="Permalink to this heading">¶</a></h1>
 <p>This chapter several topics relating to the Emacs editor.</p>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#leo-vs-org-mode" id="id1">Leo vs org mode</a></p></li>
 <li><p><a class="reference internal" href="#using-org-mode-org-files-in-leo" id="id2">Using org-mode (.org) files in Leo</a></p></li>
@@ -56,9 +60,9 @@
 <li><p><a class="reference internal" href="#functions-in-leopymacs-py" id="id4">Functions in leoPymacs.py</a></p></li>
 <li><p><a class="reference internal" href="#the-minibuffer" id="id5">The minibuffer</a></p></li>
 </ul>
-</nav>
+</div>
 <section id="leo-vs-org-mode">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Leo vs org mode</a><a class="headerlink" href="#leo-vs-org-mode" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Leo vs org mode</a><a class="headerlink" href="#leo-vs-org-mode" title="Permalink to this heading">¶</a></h2>
 <p>Leo and <a class="reference external" href="http://orgmode.org/">Emacs org mode</a> share similar goals. Org mode has many strengths related to non-programming tasks:</p>
 <ul class="simple">
 <li><p>Drawers: visible, pure text, easily extensible uA’s.</p></li>
@@ -99,7 +103,7 @@
 </ul>
 </section>
 <section id="using-org-mode-org-files-in-leo">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Using org-mode (.org) files in Leo</a><a class="headerlink" href="#using-org-mode-org-files-in-leo" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Using org-mode (.org) files in Leo</a><a class="headerlink" href="#using-org-mode-org-files-in-leo" title="Permalink to this heading">¶</a></h2>
 <p>Leo can automatically import and export Emacs org-mode (.org) files. Nodes like:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@auto</span><span class="o">-</span><span class="n">org</span><span class="o">-</span><span class="n">mode</span> <span class="o">&lt;</span><span class="n">path</span> <span class="n">to</span> <span class="o">.</span><span class="n">org</span> <span class="n">file</span><span class="o">&gt;</span>
 </pre></div>
@@ -114,7 +118,7 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">refresh-from-disk</span></code> command creates an &#64;auto-org-mode node whose <strong>children</strong> represent the contents of the external .org file. Leo does <em>not</em> write the &#64;auto-org-mode node itself. This allows you to put Leo directives in the node.</p>
 </section>
 <section id="controlling-leo-from-emacs-using-pymacs">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Controlling Leo from Emacs using Pymacs</a><a class="headerlink" href="#controlling-leo-from-emacs-using-pymacs" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Controlling Leo from Emacs using Pymacs</a><a class="headerlink" href="#controlling-leo-from-emacs-using-pymacs" title="Permalink to this heading">¶</a></h2>
 <p>Leo’s leoPymacs module is a simple ‘server’ for the <a class="reference external" href="http://pymacs.progiciels-bpi.ca/index.html">pymacs</a> package. Using pymacs and leoPymacs, <a class="reference external" href="http://en.wikipedia.org/wiki/Emacs_Lisp">elisp</a> scripts in <a class="reference external" href="http://www.xemacs.org/">Emacs</a> can open .leo files and execute <em>Python</em> scripts as if they were executed inside Leo. In particular, such scripts can use Leo’s predefined c, g and p variables. Thus, <em>Python</em> scripts running in Emacs can:</p>
 <ul class="simple">
 <li><p>Open any .leo file.</p></li>
@@ -238,7 +242,7 @@ We can execute that script in the hidden Leo application as follows:</p>
 </div>
 </section>
 <section id="functions-in-leopymacs-py">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">Functions in leoPymacs.py</a><a class="headerlink" href="#functions-in-leopymacs-py" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Functions in leoPymacs.py</a><a class="headerlink" href="#functions-in-leopymacs-py" title="Permalink to this heading">¶</a></h2>
 <p>The leoPymacs module is intended to be called from Emacs using pymacs.  It contains the following top-level functions:</p>
 <ul>
 <li><p>get_app()</p>
@@ -270,7 +274,7 @@ Returns g.app.scriptResult, where g.app is the hidden app.</p>
 </ul>
 </section>
 <section id="the-minibuffer">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">The minibuffer</a><a class="headerlink" href="#the-minibuffer" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">The minibuffer</a><a class="headerlink" href="#the-minibuffer" title="Permalink to this heading">¶</a></h2>
 <p>Leo’s mini-buffer is a text area at the bottom of the body pane. You use Leo’s minibuffer like the Emacs mini-buffer to invoke commands by their so-called <em>long name</em>. The following commands affect the minibuffer:</p>
 <ul class="simple">
 <li><p><strong>full-command</strong>: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a full command name, then hit &lt;Return&gt; to execute the command. Tab completion works, but not yet for file names.</p></li>
@@ -339,8 +343,8 @@ Returns g.app.scriptResult, where g.app is the hidden app.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on March 01, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

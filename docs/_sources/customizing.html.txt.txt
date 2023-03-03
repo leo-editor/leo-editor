@@ -8,7 +8,7 @@ Customizing Leo
 
 This chapter discusses how to customize Leo using the plugins and other means. See `Using settings`_ for a description of how to change Leo's settings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

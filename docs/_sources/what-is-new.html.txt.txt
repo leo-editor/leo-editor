@@ -4,8 +4,8 @@
 What's New in Leo
 ##################
 
-.. contents::
-    :depth: 2
+.. contents:: Contents
+    :depth: 0
     :local:
 
 .. Links used in this document.
@@ -20,11 +20,49 @@ What's New in Leo
 What's new in Leo 6.7.2
 +++++++++++++++++++++++
 
-- Leo's website has moved to https://leo-editor.github.io/leo-editor/
-- Improve rst3 command: add `@string rst3-action` setting.
-- Leo's beautify command is now PEP8 compliant.
-- Support the --black-sentinels command-line option.
-- Many minor bug fixes.
+.. _`PR #3019`: https://github.com/leo-editor/leo-editor/pull/3019
+
+Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+
+- `PR #3019`_: Host Leo's website using GitHub pages.
+
+Commands:
+
+.. _`PR #3031`: https://github.com/leo-editor/leo-editor/pull/3031
+.. _`PR #3056`: https://github.com/leo-editor/leo-editor/pull/3056
+.. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
+.. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
+
+- `PR #3031`_: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- `PR #3056`_: Leo's beautify command is now PEP8 compliant.
+- `PR #3140`_: Run pylint on node.
+- `PR #3166`_: Add the `execute-external-file` command.
+
+Settings and features:
+
+.. _`PR #2979`: https://github.com/leo-editor/leo-editor/pull/2979
+.. _`PR #2983`: https://github.com/leo-editor/leo-editor/pull/2983
+.. _`PR #3038`: https://github.com/leo-editor/leo-editor/pull/3038
+.. _`PR #3053`: https://github.com/leo-editor/leo-editor/pull/3053
+.. _`PR #3132`: https://github.com/leo-editor/leo-editor/pull/3132
+
+- `PR #2979`_: Add `@bool run-flake8-on-write` setting.
+- `PR #2983`_: Add `--black-sentinels` command-line option.
+- `PR #3038`_: Add `@string rst3-action` setting.
+- `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
+- `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+
+Bugs
+
+.. _`PR #2962`: https://github.com/leo-editor/leo-editor/pull/2962
+
+- `PR #2962`_: Leo's git-diff command can clear top-level cloned node.
+
+All noteworthy pull requests:
+https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy
+
+All noteworthy issues:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+
 
 What's new in Leo 6.7.1
 +++++++++++++++++++++++
@@ -50,8 +88,8 @@ What's new in Leo 6.7.0
   - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
   - Retire Tk indices, except in unit tests.
 
-What's new in Leo 6.6.x
-+++++++++++++++++++++++
+What's new in Leo 6.6 and earlier
++++++++++++++++++++++++++++++++++
 
 What's new in Leo 6.6.4
 ***********************
@@ -104,7 +142,7 @@ What's new in Leo 6.6
 - Many bug fixes.
 
 What's new in Leo 6.5
-+++++++++++++++++++++
+*********************
 
 - Add python-to-typescript and view-recent-commands.
 - Add c.findCommands.interactive_search_helper.
@@ -114,7 +152,7 @@ What's new in Leo 6.5
 - Many code-level cleanups.
 
 What's new in Leo 6.4
-+++++++++++++++++++++
+*********************
 
 - Support for leoInteg: "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
@@ -127,7 +165,7 @@ What's new in Leo 6.4
 - Add execute-general-script command and c.general_script_helper.
 
 What's new in Leo 6.3
-+++++++++++++++++++++
+*********************
 
 Major features:
 - leoAst.py unifies the ast and token worlds.
@@ -144,7 +182,7 @@ Features:
 Fixed all known bugs.
 
 What's new in Leo 6.2
-+++++++++++++++++++++
+*********************
 
 Commands:
 
@@ -170,7 +208,7 @@ Bugs:
 - Fixed all known bugs, including some notable, long-standing bugs.
 
 What's new in Leo 6.1
-+++++++++++++++++++++
+*********************
 
 The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
 
@@ -190,7 +228,7 @@ New command-line arguments::
   --window-spot
 
 What's new in Leo 6.0
-+++++++++++++++++++++
+*********************
 
 Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
 
@@ -344,7 +382,6 @@ Commands
     diff-and-open-leo-files
     edit-pane-csv
     edit-pane-test-open
-    find-all-unique-regex
     insert-as-first-child
     insert-as-last-child
     read-ref-file

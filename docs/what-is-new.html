@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>What’s New in Leo &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -47,77 +50,47 @@
             
   <section id="what-s-new-in-leo">
 <h1>What’s New in Leo<a class="headerlink" href="#what-s-new-in-leo" title="Permalink to this heading">¶</a></h1>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-2" id="id72">What’s new in Leo 6.7.2</a></p></li>
 <li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-1" id="id73">What’s new in Leo 6.7.1</a></p></li>
 <li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-0" id="id74">What’s new in Leo 6.7.0</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-x" id="id75">What’s new in Leo 6.6.x</a></p>
-<ul>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-4" id="id76">What’s new in Leo 6.6.4</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-3" id="id77">What’s new in Leo 6.6.3</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-2" id="id78">What’s new in Leo 6.6.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-1" id="id79">What’s new in Leo 6.6.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6" id="id80">What’s new in Leo 6.6</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-and-earlier" id="id75">What’s new in Leo 6.6 and earlier</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id76">What’s new in Leo 5.x</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id77">What’s new in Leo 4.x</a></p></li>
 </ul>
-</li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-5" id="id81">What’s new in Leo 6.5</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-4" id="id82">What’s new in Leo 6.4</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-3" id="id83">What’s new in Leo 6.3</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-2" id="id84">What’s new in Leo 6.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-1" id="id85">What’s new in Leo 6.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-0" id="id86">What’s new in Leo 6.0</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id87">What’s new in Leo 5.x</a></p>
-<ul>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-9" id="id88">What’s new in Leo 5.9</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-8" id="id89">What’s new in Leo 5.8</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-7-3" id="id90">What’s new in Leo 5.7.3</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-7-2" id="id91">What’s new in Leo 5.7.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-7-1" id="id92">What’s new in Leo 5.7.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-7" id="id93">What’s new in Leo 5.7</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-6" id="id94">What’s new in Leo 5.6</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-5" id="id95">What’s new in Leo 5.5</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-4" id="id96">What’s new in Leo 5.4</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-3" id="id97">What’s new in Leo 5.3</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-2" id="id98">What’s new in Leo 5.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-1" id="id99">What’s new in Leo 5.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-0" id="id100">What’s new in Leo 5.0</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id101">What’s new in Leo 4.x</a></p>
-<ul>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-11" id="id102">What’s new in Leo 4.11</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-10" id="id103">What’s new in Leo 4.10</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-9" id="id104">What’s new in Leo 4.9</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-8" id="id105">What’s new in Leo 4.8</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-7" id="id106">What’s new in Leo 4.7</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-6" id="id107">What’s new in Leo 4.6</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-5" id="id108">What’s new in Leo 4.5</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-8" id="id109">What’s new in Leo 4.4.8</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-7" id="id110">What’s new in Leo 4.4.7</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-6" id="id111">What’s new in Leo 4.4.6</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-5" id="id112">What’s new in Leo 4.4.5</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-4" id="id113">What’s new in Leo 4.4.4</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-3" id="id114">What’s new in Leo 4.4.3</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-2" id="id115">What’s new in Leo 4.4.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4-1" id="id116">What’s new in Leo 4.4.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-4" id="id117">What’s new in Leo 4.4</a></p></li>
-</ul>
-</li>
-</ul>
-</nav>
+</div>
 <section id="what-s-new-in-leo-6-7-2">
-<h2><a class="toc-backref" href="#id72" role="doc-backlink">What’s new in Leo 6.7.2</a><a class="headerlink" href="#what-s-new-in-leo-6-7-2" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id72">What’s new in Leo 6.7.2</a><a class="headerlink" href="#what-s-new-in-leo-6-7-2" title="Permalink to this heading">¶</a></h2>
+<p>Leo’s website has moved to Github Pages: <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p>
 <ul class="simple">
-<li><p>Leo’s website has moved to <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p></li>
-<li><p>Improve rst3 command: add <cite>&#64;string rst3-action</cite> setting.</p></li>
-<li><p>Leo’s beautify command is now PEP8 compliant.</p></li>
-<li><p>Support the –black-sentinels command-line option.</p></li>
-<li><p>Many minor bug fixes.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3019">PR #3019</a>: Host Leo’s website using GitHub pages.</p></li>
+</ul>
+<p>Commands:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3031">PR #3031</a>: Add <cite>check-nodes</cite> command. It helps keep <cite>&#64;clean</cite> files in sync.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3056">PR #3056</a>: Leo’s beautify command is now PEP8 compliant.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3140">PR #3140</a>: Run pylint on node.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3166">PR #3166</a>: Add the <cite>execute-external-file</cite> command.</p></li>
+</ul>
+<p>Settings and features:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/2979">PR #2979</a>: Add <cite>&#64;bool run-flake8-on-write</cite> setting.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/2983">PR #2983</a>: Add <cite>–black-sentinels</cite> command-line option.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3038">PR #3038</a>: Add <cite>&#64;string rst3-action</cite> setting.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3053">PR #3053</a>: Add <cite>&#64;string gxn-kind</cite> setting: Support gnxs formatted as UUIDs.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3132">PR #3132</a>: Add <cite>&#64;bool rst3-remove-leo-directives</cite> setting.</p></li>
+</ul>
+<p>Bugs</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/2962">PR #2962</a>: Leo’s git-diff command can clear top-level cloned node.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2+label%3ANoteworthy">All noteworthy pull requests</a>.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+label%3ANoteworthy+">All noteworthy issues</a>.</p></li>
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-7-1">
-<h2><a class="toc-backref" href="#id73" role="doc-backlink">What’s new in Leo 6.7.1</a><a class="headerlink" href="#what-s-new-in-leo-6-7-1" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id73">What’s new in Leo 6.7.1</a><a class="headerlink" href="#what-s-new-in-leo-6-7-1" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Several enhancements to leoserver.py.</p></li>
 <li><p>Add support for ocaml syntax coloring.</p></li>
@@ -128,24 +101,29 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-7-0">
-<h2><a class="toc-backref" href="#id74" role="doc-backlink">What’s new in Leo 6.7.0</a><a class="headerlink" href="#what-s-new-in-leo-6-7-0" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id74">What’s new in Leo 6.7.0</a><a class="headerlink" href="#what-s-new-in-leo-6-7-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Leo now requires Python 3.9 or later.</p></li>
 <li><p>Enhance leoserver.py to support leoInteg and leoJS.</p></li>
 <li><p>Importers no longer generate underindented escape strings.</p></li>
 <li><p>Delete all of Leo’s cover- and test- commands.</p></li>
 <li><p>Allow unit tests to run with the Qt gui.</p></li>
-<li><p>Several mass code updates:
-- Annotate Leo’s core files and important plugins.
-- Simplify all of Leo’s importers.
-- Speed Leo’s redraw code by rewriting Leo’s icon drawing logic.
-- Retire Tk indices, except in unit tests.</p></li>
+<li><dl class="simple">
+<dt>Several mass code updates:</dt><dd><ul>
+<li><p>Annotate Leo’s core files and important plugins.</p></li>
+<li><p>Simplify all of Leo’s importers.</p></li>
+<li><p>Speed Leo’s redraw code by rewriting Leo’s icon drawing logic.</p></li>
+<li><p>Retire Tk indices, except in unit tests.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </section>
-<section id="what-s-new-in-leo-6-6-x">
-<h2><a class="toc-backref" href="#id75" role="doc-backlink">What’s new in Leo 6.6.x</a><a class="headerlink" href="#what-s-new-in-leo-6-6-x" title="Permalink to this heading">¶</a></h2>
+<section id="what-s-new-in-leo-6-6-and-earlier">
+<h2><a class="toc-backref" href="#id75">What’s new in Leo 6.6 and earlier</a><a class="headerlink" href="#what-s-new-in-leo-6-6-and-earlier" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-6-6-4">
-<h3><a class="toc-backref" href="#id76" role="doc-backlink">What’s new in Leo 6.6.4</a><a class="headerlink" href="#what-s-new-in-leo-6-6-4" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 6.6.4<a class="headerlink" href="#what-s-new-in-leo-6-6-4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Enhance leoserver.py to support leoInteg and leoJS.</p></li>
 <li><p>Simplify all of Leo’s importers.</p></li>
@@ -155,7 +133,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-6-3">
-<h3><a class="toc-backref" href="#id77" role="doc-backlink">What’s new in Leo 6.6.3</a><a class="headerlink" href="#what-s-new-in-leo-6-6-3" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 6.6.3<a class="headerlink" href="#what-s-new-in-leo-6-6-3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Enhance leoserver.py to support leoInteg and leoJS.</p></li>
 <li><p>Improve how Leo handles url’s.</p></li>
@@ -164,7 +142,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-6-2">
-<h3><a class="toc-backref" href="#id78" role="doc-backlink">What’s new in Leo 6.6.2</a><a class="headerlink" href="#what-s-new-in-leo-6-6-2" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 6.6.2<a class="headerlink" href="#what-s-new-in-leo-6-6-2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Add “File Only” option in Leo’s Find Pane.</p></li>
 <li><p>Remove pylint-leo.py, pyflakes-leo.py and related code.</p></li>
@@ -172,7 +150,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-6-1">
-<h3><a class="toc-backref" href="#id79" role="doc-backlink">What’s new in Leo 6.6.1</a><a class="headerlink" href="#what-s-new-in-leo-6-6-1" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 6.6.1<a class="headerlink" href="#what-s-new-in-leo-6-6-1" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Improve support for Python 3.10 and PyQt6.</p></li>
 <li><p>Simplify the TokenOrderGenerator class in leoAst.py.</p></li>
@@ -186,7 +164,7 @@ Run <cite>python -m leo.core.leoAst -h</cite> for details.</p></li>
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-6">
-<h3><a class="toc-backref" href="#id80" role="doc-backlink">What’s new in Leo 6.6</a><a class="headerlink" href="#what-s-new-in-leo-6-6" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 6.6<a class="headerlink" href="#what-s-new-in-leo-6-6" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Replaced &#64;raw and &#64;end_raw with &#64;section-delims.</p></li>
 <li><p>Leo recognizes section references only when they appear on an otherwise blank line.</p></li>
@@ -199,9 +177,8 @@ Run <cite>python -m leo.core.leoAst -h</cite> for details.</p></li>
 <li><p>Many bug fixes.</p></li>
 </ul>
 </section>
-</section>
 <section id="what-s-new-in-leo-6-5">
-<h2><a class="toc-backref" href="#id81" role="doc-backlink">What’s new in Leo 6.5</a><a class="headerlink" href="#what-s-new-in-leo-6-5" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.5<a class="headerlink" href="#what-s-new-in-leo-6-5" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Add python-to-typescript and view-recent-commands.</p></li>
 <li><p>Add c.findCommands.interactive_search_helper.</p></li>
@@ -212,7 +189,7 @@ Remove leoTest.py.</p></li>
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-4">
-<h2><a class="toc-backref" href="#id82" role="doc-backlink">What’s new in Leo 6.4</a><a class="headerlink" href="#what-s-new-in-leo-6-4" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.4<a class="headerlink" href="#what-s-new-in-leo-6-4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Support for leoInteg: “Leo in vs-code”.
 - Add leoserver.py, stand-alone server for Leo.
@@ -226,7 +203,7 @@ Remove leoTest.py.</p></li>
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-3">
-<h2><a class="toc-backref" href="#id83" role="doc-backlink">What’s new in Leo 6.3</a><a class="headerlink" href="#what-s-new-in-leo-6-3" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.3<a class="headerlink" href="#what-s-new-in-leo-6-3" title="Permalink to this heading">¶</a></h3>
 <p>Major features:
 - leoAst.py unifies the ast and token worlds.
 - Retired support for Qt docks.
@@ -240,7 +217,7 @@ Remove leoTest.py.</p></li>
 <p>Fixed all known bugs.</p>
 </section>
 <section id="what-s-new-in-leo-6-2">
-<h2><a class="toc-backref" href="#id84" role="doc-backlink">What’s new in Leo 6.2</a><a class="headerlink" href="#what-s-new-in-leo-6-2" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.2<a class="headerlink" href="#what-s-new-in-leo-6-2" title="Permalink to this heading">¶</a></h3>
 <p>Commands:</p>
 <ul class="simple">
 <li><p>Added the fstringify-files and diff-fstringify-files commands.</p></li>
@@ -266,7 +243,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-1">
-<h2><a class="toc-backref" href="#id85" role="doc-backlink">What’s new in Leo 6.1</a><a class="headerlink" href="#what-s-new-in-leo-6-1" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.1<a class="headerlink" href="#what-s-new-in-leo-6-1" title="Permalink to this heading">¶</a></h3>
 <p>The pyzo_in_leo plugin embeds pyzo (<a class="reference external" href="https://pyzo.org/">https://pyzo.org/</a>) within Leo.</p>
 <p>Added support for black: <a class="reference external" href="https://pypi.org/project/black/">https://pypi.org/project/black/</a>.</p>
 <p>Added support for asciidoc, asciidoctor, pandoc and sphinx.</p>
@@ -280,7 +257,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </div>
 </section>
 <section id="what-s-new-in-leo-6-0">
-<h2><a class="toc-backref" href="#id86" role="doc-backlink">What’s new in Leo 6.0</a><a class="headerlink" href="#what-s-new-in-leo-6-0" title="Permalink to this heading">¶</a></h2>
+<h3>What’s new in Leo 6.0<a class="headerlink" href="#what-s-new-in-leo-6-0" title="Permalink to this heading">¶</a></h3>
 <p>Leo’s default gui uses Qt Docks. Use –no-dock to use Leo’s legacy gui.</p>
 <p>New and improved commands and features:</p>
 <ul class="simple">
@@ -303,10 +280,11 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 <p>&#64;bool dockable-log-tabs = False
 &#64;string central-dock-widget = outline</p>
 </section>
+</section>
 <section id="what-s-new-in-leo-5-x">
-<h2><a class="toc-backref" href="#id87" role="doc-backlink">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id76">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-5-9">
-<h3><a class="toc-backref" href="#id88" role="doc-backlink">What’s new in Leo 5.9</a><a class="headerlink" href="#what-s-new-in-leo-5-9" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.9<a class="headerlink" href="#what-s-new-in-leo-5-9" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>LeoWapp: Leo in a browser.</p></li>
 <li><p>Integrated debugger.</p></li>
@@ -321,7 +299,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </ul>
 </section>
 <section id="what-s-new-in-leo-5-8">
-<h3><a class="toc-backref" href="#id89" role="doc-backlink">What’s new in Leo 5.8</a><a class="headerlink" href="#what-s-new-in-leo-5-8" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.8<a class="headerlink" href="#what-s-new-in-leo-5-8" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Much faster file-read code.</p></li>
 <li><p>Leo no longer caches file contents. Removed –no-cache!</p></li>
@@ -332,7 +310,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </ul>
 </section>
 <section id="what-s-new-in-leo-5-7-3">
-<h3><a class="toc-backref" href="#id90" role="doc-backlink">What’s new in Leo 5.7.3</a><a class="headerlink" href="#what-s-new-in-leo-5-7-3" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.7.3<a class="headerlink" href="#what-s-new-in-leo-5-7-3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added support for Jedi autocompletion.</p></li>
 <li><p>Much improved python_terminal plugin.</p></li>
@@ -347,7 +325,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </ul>
 </section>
 <section id="what-s-new-in-leo-5-7-2">
-<h3><a class="toc-backref" href="#id91" role="doc-backlink">What’s new in Leo 5.7.2</a><a class="headerlink" href="#what-s-new-in-leo-5-7-2" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.7.2<a class="headerlink" href="#what-s-new-in-leo-5-7-2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Much improved support for Jupyter (.ipynb) files.</p></li>
 <li><p>Fixed bugs that prevented switching between git branches easily.</p></li>
@@ -357,7 +335,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </ul>
 </section>
 <section id="what-s-new-in-leo-5-7-1">
-<h3><a class="toc-backref" href="#id92" role="doc-backlink">What’s new in Leo 5.7.1</a><a class="headerlink" href="#what-s-new-in-leo-5-7-1" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.7.1<a class="headerlink" href="#what-s-new-in-leo-5-7-1" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Improved support for themes</dt><dd><ul>
@@ -389,7 +367,7 @@ This feature is disabled by default. To enable, set &#64;bool replace-meta-with-
 </section>
 </section>
 <section id="what-s-new-in-leo-5-7">
-<h3><a class="toc-backref" href="#id93" role="doc-backlink">What’s new in Leo 5.7</a><a class="headerlink" href="#what-s-new-in-leo-5-7" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.7<a class="headerlink" href="#what-s-new-in-leo-5-7" title="Permalink to this heading">¶</a></h3>
 <section id="highlights">
 <h4>Highlights<a class="headerlink" href="#highlights" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
@@ -434,7 +412,6 @@ This feature is disabled by default. To enable, set &#64;bool replace-meta-with-
 <span class="n">diff</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="nb">open</span><span class="o">-</span><span class="n">leo</span><span class="o">-</span><span class="n">files</span>
 <span class="n">edit</span><span class="o">-</span><span class="n">pane</span><span class="o">-</span><span class="n">csv</span>
 <span class="n">edit</span><span class="o">-</span><span class="n">pane</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="nb">open</span>
-<span class="n">find</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">unique</span><span class="o">-</span><span class="n">regex</span>
 <span class="n">insert</span><span class="o">-</span><span class="k">as</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">child</span>
 <span class="n">insert</span><span class="o">-</span><span class="k">as</span><span class="o">-</span><span class="n">last</span><span class="o">-</span><span class="n">child</span>
 <span class="n">read</span><span class="o">-</span><span class="n">ref</span><span class="o">-</span><span class="n">file</span>
@@ -472,7 +449,7 @@ This feature is disabled by default. To enable, set &#64;bool replace-meta-with-
 </section>
 </section>
 <section id="what-s-new-in-leo-5-6">
-<h3><a class="toc-backref" href="#id94" role="doc-backlink">What’s new in Leo 5.6</a><a class="headerlink" href="#what-s-new-in-leo-5-6" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.6<a class="headerlink" href="#what-s-new-in-leo-5-6" title="Permalink to this heading">¶</a></h3>
 <section id="id1">
 <h4>Highlights<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
@@ -625,7 +602,7 @@ These can be used when no text is selected.</p></li>
 </section>
 </section>
 <section id="what-s-new-in-leo-5-5">
-<h3><a class="toc-backref" href="#id95" role="doc-backlink">What’s new in Leo 5.5</a><a class="headerlink" href="#what-s-new-in-leo-5-5" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.5<a class="headerlink" href="#what-s-new-in-leo-5-5" title="Permalink to this heading">¶</a></h3>
 <section id="id5">
 <h4>Highlights<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
@@ -683,7 +660,7 @@ Create a table of expected headlines in a unit test.</p></li>
 </section>
 </section>
 <section id="what-s-new-in-leo-5-4">
-<h3><a class="toc-backref" href="#id96" role="doc-backlink">What’s new in Leo 5.4</a><a class="headerlink" href="#what-s-new-in-leo-5-4" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.4<a class="headerlink" href="#what-s-new-in-leo-5-4" title="Permalink to this heading">¶</a></h3>
 <section id="id9">
 <h4>Highlights<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h4>
 <p>New Commands</p>
@@ -766,7 +743,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
 </section>
 </section>
 <section id="what-s-new-in-leo-5-3">
-<h3><a class="toc-backref" href="#id97" role="doc-backlink">What’s new in Leo 5.3</a><a class="headerlink" href="#what-s-new-in-leo-5-3" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.3<a class="headerlink" href="#what-s-new-in-leo-5-3" title="Permalink to this heading">¶</a></h3>
 <section id="id13">
 <h4>Highlights<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h4>
 <p>Leo 5.3-final released May 2, 2016.</p>
@@ -798,7 +775,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
 </section>
 </section>
 <section id="what-s-new-in-leo-5-2">
-<h3><a class="toc-backref" href="#id98" role="doc-backlink">What’s new in Leo 5.2</a><a class="headerlink" href="#what-s-new-in-leo-5-2" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.2<a class="headerlink" href="#what-s-new-in-leo-5-2" title="Permalink to this heading">¶</a></h3>
 <section id="id16">
 <h4>Highlights<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">5.2</span><span class="o">-</span><span class="n">final</span> <span class="n">release</span> <span class="n">March</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">2016</span>
@@ -899,7 +876,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
 </section>
 </section>
 <section id="what-s-new-in-leo-5-1">
-<h3><a class="toc-backref" href="#id99" role="doc-backlink">What’s new in Leo 5.1</a><a class="headerlink" href="#what-s-new-in-leo-5-1" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.1<a class="headerlink" href="#what-s-new-in-leo-5-1" title="Permalink to this heading">¶</a></h3>
 <section id="id19">
 <h4>Highlights<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">5.1</span> <span class="n">b2</span> <span class="n">released</span> <span class="n">April</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">2015.</span>
@@ -949,7 +926,7 @@ Added g.getLanguageAtPosition. Should have been done long ago.
 </section>
 </section>
 <section id="what-s-new-in-leo-5-0">
-<h3><a class="toc-backref" href="#id100" role="doc-backlink">What’s new in Leo 5.0</a><a class="headerlink" href="#what-s-new-in-leo-5-0" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 5.0<a class="headerlink" href="#what-s-new-in-leo-5-0" title="Permalink to this heading">¶</a></h3>
 <section id="id21">
 <h4>Highlights<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">5.0</span> <span class="n">final</span> <span class="n">released</span> <span class="n">November</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">2014</span>
@@ -1066,9 +1043,9 @@ Added g.getLanguageAtPosition. Should have been done long ago.
 </section>
 </section>
 <section id="what-s-new-in-leo-4-x">
-<h2><a class="toc-backref" href="#id101" role="doc-backlink">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id77">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-4-11">
-<h3><a class="toc-backref" href="#id102" role="doc-backlink">What’s new in Leo 4.11</a><a class="headerlink" href="#what-s-new-in-leo-4-11" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.11<a class="headerlink" href="#what-s-new-in-leo-4-11" title="Permalink to this heading">¶</a></h3>
 <section id="id26">
 <h4>Highlights<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.11</span> <span class="n">final</span> <span class="n">released</span> <span class="n">November</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2013</span>
@@ -1173,7 +1150,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-10">
-<h3><a class="toc-backref" href="#id103" role="doc-backlink">What’s new in Leo 4.10</a><a class="headerlink" href="#what-s-new-in-leo-4-10" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.10<a class="headerlink" href="#what-s-new-in-leo-4-10" title="Permalink to this heading">¶</a></h3>
 <section id="id31">
 <h4>Highlights<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.10</span> <span class="n">final</span> <span class="n">released</span> <span class="n">March</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">2012</span>
@@ -1217,7 +1194,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-9">
-<h3><a class="toc-backref" href="#id104" role="doc-backlink">What’s new in Leo 4.9</a><a class="headerlink" href="#what-s-new-in-leo-4-9" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.9<a class="headerlink" href="#what-s-new-in-leo-4-9" title="Permalink to this heading">¶</a></h3>
 <section id="id34">
 <h4>Highlights<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.9</span> <span class="n">final</span> <span class="n">released</span> <span class="n">June</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">2011</span>
@@ -1290,7 +1267,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-8">
-<h3><a class="toc-backref" href="#id105" role="doc-backlink">What’s new in Leo 4.8</a><a class="headerlink" href="#what-s-new-in-leo-4-8" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.8<a class="headerlink" href="#what-s-new-in-leo-4-8" title="Permalink to this heading">¶</a></h3>
 <section id="id37">
 <h4>Highlights<a class="headerlink" href="#id37" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.8</span> <span class="n">final</span> <span class="n">released</span> <span class="n">November</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2010</span>
@@ -1324,7 +1301,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-7">
-<h3><a class="toc-backref" href="#id106" role="doc-backlink">What’s new in Leo 4.7</a><a class="headerlink" href="#what-s-new-in-leo-4-7" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.7<a class="headerlink" href="#what-s-new-in-leo-4-7" title="Permalink to this heading">¶</a></h3>
 <section id="id40">
 <h4>Highlights<a class="headerlink" href="#id40" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.7</span> <span class="n">final</span> <span class="n">released</span> <span class="n">February</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">2010</span>
@@ -1350,7 +1327,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-6">
-<h3><a class="toc-backref" href="#id107" role="doc-backlink">What’s new in Leo 4.6</a><a class="headerlink" href="#what-s-new-in-leo-4-6" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.6<a class="headerlink" href="#what-s-new-in-leo-4-6" title="Permalink to this heading">¶</a></h3>
 <section id="id43">
 <h4>Highlights<a class="headerlink" href="#id43" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.6</span> <span class="n">final</span> <span class="n">released</span> <span class="n">July</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">2009</span>
@@ -1387,7 +1364,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-5">
-<h3><a class="toc-backref" href="#id108" role="doc-backlink">What’s new in Leo 4.5</a><a class="headerlink" href="#what-s-new-in-leo-4-5" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.5<a class="headerlink" href="#what-s-new-in-leo-4-5" title="Permalink to this heading">¶</a></h3>
 <section id="id46">
 <h4>Highlights<a class="headerlink" href="#id46" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.5</span> <span class="n">final</span> <span class="n">released</span> <span class="n">September</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2008</span>
@@ -1404,7 +1381,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-8">
-<h3><a class="toc-backref" href="#id109" role="doc-backlink">What’s new in Leo 4.4.8</a><a class="headerlink" href="#what-s-new-in-leo-4-4-8" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.8<a class="headerlink" href="#what-s-new-in-leo-4-4-8" title="Permalink to this heading">¶</a></h3>
 <section id="id47">
 <h4>Highlights<a class="headerlink" href="#id47" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.8</span> <span class="n">final</span> <span class="n">released</span> <span class="n">April</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2008</span>
@@ -1418,7 +1395,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-7">
-<h3><a class="toc-backref" href="#id110" role="doc-backlink">What’s new in Leo 4.4.7</a><a class="headerlink" href="#what-s-new-in-leo-4-4-7" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.7<a class="headerlink" href="#what-s-new-in-leo-4-4-7" title="Permalink to this heading">¶</a></h3>
 <section id="id48">
 <h4>Highlights<a class="headerlink" href="#id48" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.7</span> <span class="n">final</span> <span class="n">released</span> <span class="n">February</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">2008</span>
@@ -1428,7 +1405,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-6">
-<h3><a class="toc-backref" href="#id111" role="doc-backlink">What’s new in Leo 4.4.6</a><a class="headerlink" href="#what-s-new-in-leo-4-4-6" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.6<a class="headerlink" href="#what-s-new-in-leo-4-4-6" title="Permalink to this heading">¶</a></h3>
 <section id="id49">
 <h4>Highlights<a class="headerlink" href="#id49" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.6</span> <span class="n">final</span> <span class="n">released</span> <span class="n">January</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2008</span>
@@ -1440,7 +1417,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-5">
-<h3><a class="toc-backref" href="#id112" role="doc-backlink">What’s new in Leo 4.4.5</a><a class="headerlink" href="#what-s-new-in-leo-4-4-5" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.5<a class="headerlink" href="#what-s-new-in-leo-4-4-5" title="Permalink to this heading">¶</a></h3>
 <section id="id50">
 <h4>Highlights<a class="headerlink" href="#id50" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.5</span> <span class="n">final</span> <span class="n">released</span> <span class="n">December</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2007</span>
@@ -1471,7 +1448,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-4">
-<h3><a class="toc-backref" href="#id113" role="doc-backlink">What’s new in Leo 4.4.4</a><a class="headerlink" href="#what-s-new-in-leo-4-4-4" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.4<a class="headerlink" href="#what-s-new-in-leo-4-4-4" title="Permalink to this heading">¶</a></h3>
 <section id="id53">
 <h4>Highlights<a class="headerlink" href="#id53" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.4</span> <span class="n">Final</span> <span class="n">released</span> <span class="n">November</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2007</span>
@@ -1508,7 +1485,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-3">
-<h3><a class="toc-backref" href="#id114" role="doc-backlink">What’s new in Leo 4.4.3</a><a class="headerlink" href="#what-s-new-in-leo-4-4-3" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.3<a class="headerlink" href="#what-s-new-in-leo-4-4-3" title="Permalink to this heading">¶</a></h3>
 <section id="id56">
 <h4>Highlights<a class="headerlink" href="#id56" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.3</span> <span class="n">final</span> <span class="n">released</span> <span class="n">June</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2006</span>
@@ -1524,7 +1501,7 @@ Major additions to abbreviations, including templates
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-2">
-<h3><a class="toc-backref" href="#id115" role="doc-backlink">What’s new in Leo 4.4.2</a><a class="headerlink" href="#what-s-new-in-leo-4-4-2" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.2<a class="headerlink" href="#what-s-new-in-leo-4-4-2" title="Permalink to this heading">¶</a></h3>
 <section id="id57">
 <h4>Highlights<a class="headerlink" href="#id57" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.2.1</span> <span class="n">final</span> <span class="n">released</span> <span class="n">October</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">2006</span>
@@ -1585,7 +1562,7 @@ Leo is easier to use without using a mouse
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4-1">
-<h3><a class="toc-backref" href="#id116" role="doc-backlink">What’s new in Leo 4.4.1</a><a class="headerlink" href="#what-s-new-in-leo-4-4-1" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4.1<a class="headerlink" href="#what-s-new-in-leo-4-4-1" title="Permalink to this heading">¶</a></h3>
 <section id="id62">
 <h4>Highlights<a class="headerlink" href="#id62" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.1</span> <span class="n">final</span> <span class="n">released</span> <span class="n">August</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">2006</span>
@@ -1662,7 +1639,7 @@ Leo is easier to use without using a mouse
 </section>
 </section>
 <section id="what-s-new-in-leo-4-4">
-<h3><a class="toc-backref" href="#id117" role="doc-backlink">What’s new in Leo 4.4</a><a class="headerlink" href="#what-s-new-in-leo-4-4" title="Permalink to this heading">¶</a></h3>
+<h3>What’s new in Leo 4.4<a class="headerlink" href="#what-s-new-in-leo-4-4" title="Permalink to this heading">¶</a></h3>
 <section id="id67">
 <h4>Highlights<a class="headerlink" href="#id67" title="Permalink to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">4.4</span> <span class="n">final</span> <span class="n">released</span> <span class="n">May</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2006</span>
@@ -1930,8 +1907,8 @@ New settings:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on March 03, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

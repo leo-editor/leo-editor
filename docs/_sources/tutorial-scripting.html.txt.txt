@@ -23,7 +23,7 @@ Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access t
 
 **Further study**: The `scripting portion`_ of `Leo's cheat sheet`_ contains more information about scripting.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 
