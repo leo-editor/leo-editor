@@ -29,7 +29,7 @@ class GoToCommands:
         """
         Place the cursor on the n'th line (one-based) of an external file.
 
-        Return (p, offset).
+        Return (p, offset) if found or (None, -1) if not found.
         """
         c = self.c
         if n < 0:
@@ -86,7 +86,7 @@ class GoToCommands:
     def find_script_line(self, n: int, root: Position) -> Tuple[Position, int]:
         """
         Go to line n (zero based) of the script with the given root.
-        Return (p, offset)
+        Return (p, offset) if found or (None, -1) otherwise.
         """
         c = self.c
         if n < 0:
@@ -254,7 +254,7 @@ class GoToCommands:
     ) -> Tuple[Position, bool]:  # Retain find_gnx for compatibility.
         """
         Scan root's tree for a node with the given gnx and vnodeName.
-        return (p,found)
+        return (p, True) if found or (None, False) otherwise.
         """
         p = self.find_gnx2(root, gnx, vnodeName)
         return p, bool(p)
