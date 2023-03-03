@@ -26,6 +26,7 @@
 <v t="ekr.20111108052738.5507"><vh>@shortcuts</vh></v>
 <v t="ekr.20130816100419.17299"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20150222035621.5"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="ekr.20230303070618.1"><vh>@data history-list</vh></v>
 <v t="ekr.20100907092300.4440"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.4441"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.4442"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
@@ -63,8 +64,12 @@
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
+<v t="ekr.20230303064647.1"><vh>copy_files</vh></v>
 <v t="ekr.20230111164618.1"><vh>get_paths</vh></v>
+<v t="ekr.20230303080626.1"><vh>git_status</vh></v>
+<v t="ekr.20230303064734.1"><vh>make_html</vh></v>
 <v t="ekr.20230228105847.1"><vh>run</vh></v>
+<v t="ekr.20230303065849.1"><vh>last_timestamp</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
 <v t="ekr.20230110152349.1"><vh>@ignore disabled buttons</vh>
@@ -2516,6 +2521,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15750,7 +15756,9 @@ After running this script, copy files from leo/doc/html/_build/html to leo-edito
 @language python
 
 g.cls()
+import glob
 import os
+import shutil
 trace = False
 headlines = [
     "Leo's Documentation"
@@ -31262,25 +31270,34 @@ Bugs
     """
     Return paths to leo-editor/leo/doc/html and leo-editor/docs.
     """
-    docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
-    if not os.path.exists(docs_path):
-        g.es_print(f"Not found: {docs_path!r}")
-        return None, None
-    html_path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
-    if not os.path.exists(html_path):
-        g.es_print(f"Not found: {html_path!r}")
-        return None, None
-    return docs_path, html_path</t>
-<t tx="ekr.20230111165336.1">def write_intermediate_files():
+    join = g.os_path_finalize_join
+    norm = os.path.normpath
+    build_path = norm(join(g.app.loadDir, '..', 'doc', 'html', '_build', 'html'))
+    docs_path = norm(join(g.app.loadDir,'..','..','docs'))
+    html_path = norm(join(g.app.loadDir,'..','doc','html'))
+    paths = build_path, docs_path, html_path
+    if all((os.path.exists(z) for z in paths)):
+        return paths
+    for path in paths:
+        if not os.path.exists(path):
+            g.es_print(f"Not found: {path!r}")
+    return None, None, None
+</t>
+<t tx="ekr.20230111165336.1">def write_intermediate_files() -&gt; int:
+    """Return True if the rst3 command wrote any intermediate files."""
+    total_n = 0
     for headline in headlines:
         p = g.findTopLevelNode(c, headline)
         if p:
             c.selectPosition(p)
-            c.rstCommands.rst3()
+            n = c.rstCommands.rst3()
+            total_n += n
         else:
             g.es_print(f"Not found: {headline!r}")
             return False
-    return True</t>
+    if total_n == 0:
+        g.es_print('No intermediate files changed', color='red')
+    return total_n &gt; 0</t>
 <t tx="ekr.20230111171223.1">def find_docs_links():
     """Find all links in all .html files in the leo-editor/docs directory."""
     docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
@@ -32576,18 +32593,58 @@ Leo's beautify command differs from `Black`_ as follows:
     
     old_p = c.p
     try:
-        docs_path, html_path = get_paths()
+        build_path, docs_path, html_path = get_paths()
         if html_path:
             os.chdir(html_path)
-            if write_intermediate_files():
-                g.execute_shell_commands([
-                    'make clean',
-                    'make html',
-                    'echo.',
-                    'echo copy files from html/_build/html to /docs',
-                ],trace=trace)
+            write_intermediate_files()
+            prev_timestamp = last_timestamp(build_path)
+            make_html(html_path)
+            copy_files(build_path, docs_path, prev_timestamp)
+            git_status()
     finally:
-        c.selectPosition(old_p)</t>
+        c.selectPosition(old_p)
+</t>
+<t tx="ekr.20230303064647.1">def copy_files(from_directory, to_directory, last_timestamp):
+    """Copy only *changed* html files from `from_directory` to `to_directory`."""
+    files = glob.glob(f"{from_directory}{os.sep}*")
+    written = 0
+    for f in files:
+        timestamp = os.path.getmtime(f)
+        if timestamp &gt; last_timestamp:
+            written += 1
+            print(f"copy {timestamp:&gt;24}: {g.shortFileName(f)}")
+            shutil.copy2(f, to_directory)
+    print(f"copied {written} file{g.plural(written)} to {to_directory}")
+</t>
+<t tx="ekr.20230303064734.1">def make_html(html_path):
+    """
+    Run the `make html` command in the `html_path` directory.
+    """
+    assert os.getcwd() == html_path, os.getcwd()
+    g.execute_shell_commands([
+        'make html',
+    ])</t>
+<t tx="ekr.20230303065849.1">def last_timestamp(directory: str) -&gt; str:
+    """Return the last time stamp for all the files in the given directory."""
+    files = glob.glob(f"{directory}{os.sep}*")
+    last_file = max(files, key=os.path.getmtime)
+    timestamp = os.path.getmtime(last_file)
+    # g.trace('Last timestamp:', timestamp, last_file)
+    return timestamp
+</t>
+<t tx="ekr.20230303070618.1">make-sphinx
+find-bad-links</t>
+<t tx="ekr.20230303080626.1">def git_status():
+    """Report git status"""
+    join = g.os_path_finalize_join
+    norm = os.path.normpath
+    leo_path = norm(join(g.app.loadDir, '..', '..'))
+    os.chdir(leo_path)
+    g.execute_shell_commands([
+        'git status',
+    ])
+    
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
