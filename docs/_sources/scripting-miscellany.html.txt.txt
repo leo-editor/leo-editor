@@ -8,7 +8,7 @@ This chapter covers miscellaneous topics related to Leo scripts.
 
 You might call this a FAQ for scripts...
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

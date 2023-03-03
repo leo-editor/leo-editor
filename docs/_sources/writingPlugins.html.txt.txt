@@ -24,7 +24,7 @@ Writing plugins is like writing any other Leo script.  See
 
 The rest of this chapters discusses topics related specifically to plugins.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

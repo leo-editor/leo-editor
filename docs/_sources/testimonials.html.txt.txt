@@ -11,7 +11,7 @@ What People are Saying about Leo
 
    <br />
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

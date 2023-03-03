@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Glossary &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -48,7 +51,8 @@
   <section id="glossary">
 <h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">¶</a></h1>
 <p>This is a short glossary of important terms in Leo’s world. For more information about terms, look in the index for links to discussions in other places, especially in <a class="reference external" href="tutorial.html">Leo’s Tutorial</a> and <a class="reference external" href="directives.html">Leo’s Reference</a>.</p>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#id1" id="id2">&#64;</a></p></li>
 <li><p><a class="reference internal" href="#a-c" id="id3">A - C</a></p></li>
@@ -58,9 +62,9 @@
 <li><p><a class="reference internal" href="#p-r" id="id7">P - R</a></p></li>
 <li><p><a class="reference internal" href="#s-z" id="id8">S - Z</a></p></li>
 </ul>
-</nav>
+</div>
 <section id="id1">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">&#64;</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">&#64;</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <dl class="simple" id="index-0">
 <dt>&#64;</dt><dd><p>Starts a doc part. Doc parts continue until an &#64;c
 directive or the end of the body text.</p>
@@ -200,7 +204,7 @@ spaces.</p>
 </div></blockquote>
 </section>
 <section id="a-c">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">A - C</a><a class="headerlink" href="#a-c" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">A - C</a><a class="headerlink" href="#a-c" title="Permalink to this heading">¶</a></h2>
 <p id="index-29">Body pane</p>
 <blockquote>
 <div><p>The pane containing the body text of the currently selected headline in the
@@ -240,7 +244,7 @@ or &#64;code directives and continue until the next doc part.</p>
 </div></blockquote>
 </section>
 <section id="d-g">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">D - G</a><a class="headerlink" href="#d-g" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">D - G</a><a class="headerlink" href="#d-g" title="Permalink to this heading">¶</a></h2>
 <dl class="simple" id="index-37">
 <dt>Demote</dt><dd><p>To move all siblings that follow a node so that they become children of the node.</p>
 </dd>
@@ -290,7 +294,7 @@ See <a class="reference external" href="appendices.html#format-of-external-files
 </div></blockquote>
 </section>
 <section id="h-l">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">H - L</a><a class="headerlink" href="#h-l" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">H - L</a><a class="headerlink" href="#h-l" title="Permalink to this heading">¶</a></h2>
 <p id="index-47">Headline</p>
 <blockquote>
 <div><p>The headline text of a node.  The part of the node visible in the outline pane.</p>
@@ -316,7 +320,7 @@ also contains the Find tab, the Spell tab, the autocompletion tab.</p>
 </div></blockquote>
 </section>
 <section id="m-o">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">M - O</a><a class="headerlink" href="#m-o" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">M - O</a><a class="headerlink" href="#m-o" title="Permalink to this heading">¶</a></h2>
 <p id="index-51">Mark</p>
 <blockquote>
 <div><p>A red vertical line in the icon box of a node.</p>
@@ -362,7 +366,7 @@ of the outline if the outline is hoisted.</p>
 </div></blockquote>
 </section>
 <section id="p-r">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">P - R</a><a class="headerlink" href="#p-r" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">P - R</a><a class="headerlink" href="#p-r" title="Permalink to this heading">¶</a></h2>
 <p id="index-59">Parent</p>
 <blockquote>
 <div><p>The node that directly contains a node.</p>
@@ -378,12 +382,10 @@ See <a class="reference external" href="writingPlugins.html">Writing plugins and
 the node.</p>
 </div></blockquote>
 <p id="index-62">Reference .leo file</p>
-<p>Leo’s <a class="reference external" href="https://github.com/leo-editor/leo-editor">git repository</a> and Leo distributions contain two reference
-files: LeoPyRef.leo and leoGuiPluginsRef.leo. These reference files
-should contain nothing but &#64;file nodes and should change only when new
-external files get added to the project. Developers should use <em>local
-copies</em> of reference files for their own work. For example, instead of
-using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</p>
+<p><cite>leoeditor/leo/core</cite> contains a <strong>reference .leo file</strong>: <strong>LeoPyRef.leo</strong>.
+This file should change only when adding new external files to Leo.
+Developers should use a local copy of LeoPyRef.leo (conventionally called
+<strong>leoPy.leo</strong>) for their own work.</p>
 <p>reStructuredText (rST)</p>
 <blockquote>
 <div><p>A simple, yet powerful markup language for creating .html, or LaTeX output
@@ -395,7 +397,7 @@ files. See the <a class="reference external" href="http://docutils.sourceforge.n
 </div></blockquote>
 </section>
 <section id="s-z">
-<h2><a class="toc-backref" href="#id8" role="doc-backlink">S - Z</a><a class="headerlink" href="#s-z" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">S - Z</a><a class="headerlink" href="#s-z" title="Permalink to this heading">¶</a></h2>
 <p id="index-65">Section</p>
 <blockquote>
 <div><p>A fragment of text that can be incorporated into external files.</p>
@@ -530,8 +532,8 @@ nodes may add additional information to the view.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on March 01, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

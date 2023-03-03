@@ -8,7 +8,7 @@ Appendices
 
    <br />
    
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

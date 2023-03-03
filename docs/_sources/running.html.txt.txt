@@ -8,7 +8,7 @@ Running Leo
 
 This chapter tells how to run Leo and discusses Leo's command-line options.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

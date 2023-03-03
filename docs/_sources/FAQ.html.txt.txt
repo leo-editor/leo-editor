@@ -8,7 +8,7 @@ This is Leo's Frequently Asked Questions document.
 
 .. index:: FAQ
 
-.. contents::
+.. contents:: Contents
     :depth: 4
     :local:
 
@@ -1087,9 +1087,12 @@ Use @clean or @auto unless everyone in your work group uses Leo.  In that case, 
 What is a reference .leo file?
 ******************************
 
-Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
+`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
 
-Leo's `git repository`_ and Leo distributions contain two reference files: LeoPyRef.leo  and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+This file should change only when adding new external files to Leo.
+
+Developers should use a local copy of LeoPyRef.leo (conventionally called
+**leoPy.leo**) for their own work.
 
 Why do files sometimes change when switching branches?
 ******************************************************

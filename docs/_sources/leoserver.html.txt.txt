@@ -24,7 +24,7 @@ as JSON strings.
 Run the leoserver.py script with the "--help" command line parameter to learn
 more about the server's capabilities.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 

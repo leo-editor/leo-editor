@@ -30990,10 +30990,10 @@ Leo, https://leo-editor.github.io/leo-editor/ is an [IDE, outliner and PIM](http
 - Delete all of Leo's cover- and test- commands.
 - Allow unit tests to run with the Qt gui.
 - Several mass code updates:
-  - Annotate Leo's core files and important plugins.
-  - Simplify all of Leo's importers.
-  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
-  - Retire Tk indices, except in unit tests.
+   - Annotate Leo's core files and important plugins.
+   - Simplify all of Leo's importers.
+   - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+   - Retire Tk indices, except in unit tests.
 </t>
 <t tx="ekr.20221018092737.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and

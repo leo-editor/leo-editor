@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Embedding Leo with the leoBridge module &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -55,14 +58,15 @@ Python programs running independently of Leo. Let us call such a program a
 <li><p>the contents of any .leo file,</p></li>
 <li><p>the commander of any .leo file.</p></li>
 </ul>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#the-basics" id="id1">The basics</a></p></li>
 <li><p><a class="reference internal" href="#running-leobridge-from-within-leo" id="id2">Running leoBridge from within Leo</a></p></li>
 </ul>
-</nav>
+</div>
 <section id="the-basics">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">The basics</a><a class="headerlink" href="#the-basics" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">The basics</a><a class="headerlink" href="#the-basics" title="Permalink to this heading">¶</a></h2>
 <p>Host programs use the leoBridge module as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoBridge</span> <span class="k">as</span> <span class="nn">leoBridge</span>
 
@@ -141,7 +145,7 @@ Python programs running independently of Leo. Let us call such a program a
 </div>
 </section>
 <section id="running-leobridge-from-within-leo">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Running leoBridge from within Leo</a><a class="headerlink" href="#running-leobridge-from-within-leo" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Running leoBridge from within Leo</a><a class="headerlink" href="#running-leobridge-from-within-leo" title="Permalink to this heading">¶</a></h2>
 <p>This following is adapted from Terry Brown’s entry in Leo’s wiki.</p>
 <p>You can not just run leoBridge from Leo, because the leoBridge module is designed to run a separate copy of Leo. However, it is possible to run leoBridge from a separate process. That turned out to be more, um, interesting than anticipated, so I’m recording the results here.</p>
 <p>The idea is that script A running in Leo (i.e. in a regular GUI Leo session) calls script B through subprocess.Popen(), script B uses LeoBridge to do something (parse unloaded Leo files), and returns the result to script A. Passing the result back via the clipboard seemed like a possibility, but XWindows clipboard madness being what it is, that didn’t seem to work.</p>
@@ -239,8 +243,8 @@ Python programs running independently of Leo. Let us call such a program a
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on March 01, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

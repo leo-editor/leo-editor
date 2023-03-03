@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Customizing Leo &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -49,7 +52,8 @@
 <section id="customizing-leo">
 <h1>Customizing Leo<a class="headerlink" href="#customizing-leo" title="Permalink to this heading">¶</a></h1>
 <p>This chapter discusses how to customize Leo using the plugins and other means. See <a class="reference internal" href="#using-settings">Using settings</a> for a description of how to change Leo’s settings.</p>
-<nav class="contents local" id="contents">
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#using-settings" id="id1">Using settings</a></p>
 <ul>
@@ -91,9 +95,9 @@
 <li><p><a class="reference internal" href="#translating-leo-s-menus-and-messages" id="id29">Translating Leo’s menus and messages</a></p></li>
 <li><p><a class="reference internal" href="#writing-new-importers" id="id30">Writing new importers</a></p></li>
 </ul>
-</nav>
+</div>
 <section id="using-settings">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Using settings</a><a class="headerlink" href="#using-settings" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Using settings</a><a class="headerlink" href="#using-settings" title="Permalink to this heading">¶</a></h2>
 <p>Leo stores options in <strong>&#64;settings trees</strong>, outlines whose headline is &#64;settings. When opening a .leo file, Leo looks for &#64;settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:</p>
 <ul class="simple">
 <li><p>Per-installation or per-machine settings.</p></li>
@@ -110,7 +114,7 @@
 </ol>
 <p>The following sections describe the kinds of nodes in &#64;settings trees.</p>
 <section id="configuration-directories">
-<h3><a class="toc-backref" href="#id2" role="doc-backlink">Configuration directories</a><a class="headerlink" href="#configuration-directories" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id2">Configuration directories</a><a class="headerlink" href="#configuration-directories" title="Permalink to this heading">¶</a></h3>
 <p>Settings files can be found in the following directories:</p>
 <ul class="simple">
 <li><p><strong>homeDir</strong>, the HOME/.leo directory. HOME is given by Python’s HOME environment variable, or by os.expanduser(‘~’) if no HOME environment variable exists.</p></li>
@@ -121,7 +125,7 @@
 <p>Leo reports in the Log pane window on startup and when opening .leo files what HOME dir is used and which settings files are read.</p>
 </section>
 <section id="search-order-for-settings-files">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">Search order for settings files</a><a class="headerlink" href="#search-order-for-settings-files" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">Search order for settings files</a><a class="headerlink" href="#search-order-for-settings-files" title="Permalink to this heading">¶</a></h3>
 <p>When reading a .leo file, Leo looks for settings in default settings files first, then settings in personal settings files, and finally settings in local settings files.  The exact search order is:</p>
 <ol class="arabic simple">
 <li><p>Default settings files:</p>
@@ -151,7 +155,7 @@
 <p><strong>Important</strong>: it is good style to limit settings placed in myLeoSettings.leo to those settings that differ from default settings.</p>
 </section>
 <section id="safe-rules-for-local-settings">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">Safe rules for local settings</a><a class="headerlink" href="#safe-rules-for-local-settings" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">Safe rules for local settings</a><a class="headerlink" href="#safe-rules-for-local-settings" title="Permalink to this heading">¶</a></h3>
 <p>You should use special care when placing default or personal settings files in <strong>local</strong> directories, that is, directories other than homeDir, configDir or machineDir. In particular, the value of localDir can change when Leo reads additional files. This can result in Leo finding new default and personal settings files. The values of these newly-read settings files will, as always, override any previously-read settings.</p>
 <p>Let us say that a setting is <strong>volatile</strong> if it is different from a default setting. Let us say that settings file A.leo <strong>covers</strong> settings file if B.leo if all volatile settings in B.leo occur in A.leo. With these definitions, the <strong>safe rule</strong> for placing settings files in local directories is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Settings</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">local</span> <span class="n">directories</span> <span class="n">should</span>
@@ -161,11 +165,11 @@
 <p>Following this rule will ensure that the per-directory defaults specified in the local settings file will take precedence over all previously-read default and personal settings files. Ignore this principle at your peril.</p>
 </section>
 <section id="organizer-nodes">
-<h3><a class="toc-backref" href="#id5" role="doc-backlink">Organizer nodes</a><a class="headerlink" href="#organizer-nodes" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Organizer nodes</a><a class="headerlink" href="#organizer-nodes" title="Permalink to this heading">¶</a></h3>
 <p>Organizer nodes have headlines that do no start with &#64;. Organizer nodes may be inserted freely without changing the meaning of an &#64;setting tree.</p>
 </section>
 <section id="ignore-and-if-nodes">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink">&#64;ignore and &#64;if nodes</a><a class="headerlink" href="#ignore-and-if-nodes" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">&#64;ignore and &#64;if nodes</a><a class="headerlink" href="#ignore-and-if-nodes" title="Permalink to this heading">¶</a></h3>
 <p>Leo ignores any subtree of an &#64;settings tree whose headline starts with &#64;ignore.</p>
 <p>You can use several other kinds of nodes to cause Leo to ignore parts of  an &#64;settings tree:</p>
 <ul>
@@ -181,7 +185,7 @@
 </ul>
 </section>
 <section id="simple-settings-nodes">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink">Simple settings nodes</a><a class="headerlink" href="#simple-settings-nodes" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Simple settings nodes</a><a class="headerlink" href="#simple-settings-nodes" title="Permalink to this heading">¶</a></h3>
 <p>Simple settings nodes have headlines of the form <code class="docutils literal notranslate"><span class="pre">&#64;&lt;type&gt;</span> <span class="pre">name</span> <span class="pre">=</span> <span class="pre">val</span></code>.
 These settings set the value of name to val, with the indicated type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nb">type</span><span class="o">&gt;</span>          <span class="n">Valid</span> <span class="n">values</span>
@@ -211,7 +215,7 @@ These settings set the value of name to val, with the indicated type:</p>
 <p><strong>Important</strong>: you can use the show-colors minibuffer command to guide you in making these settings.</p>
 </section>
 <section id="complex-settings-nodes">
-<h3><a class="toc-backref" href="#id8" role="doc-backlink">Complex settings nodes</a><a class="headerlink" href="#complex-settings-nodes" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">Complex settings nodes</a><a class="headerlink" href="#complex-settings-nodes" title="Permalink to this heading">¶</a></h3>
 <p>Complex settings nodes have headlines of the form <code class="docutils literal notranslate"><span class="pre">&#64;&lt;type&gt;</span> <span class="pre">description</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">@&lt;</span><span class="nb">type</span><span class="o">&gt;</span>             <span class="n">Valid</span> <span class="n">values</span>
 <span class="o">-------</span>             <span class="o">------------</span>
@@ -232,23 +236,23 @@ These settings set the value of name to val, with the indicated type:</p>
 <p>Complex nodes specify settings in their body text.
 See the following sections for details.</p>
 <section id="buttons">
-<h4><a class="toc-backref" href="#id9" role="doc-backlink">&#64;buttons</a><a class="headerlink" href="#buttons" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id9">&#64;buttons</a><a class="headerlink" href="#buttons" title="Permalink to this heading">¶</a></h4>
 <p>An &#64;buttons tree in a settings file defines global buttons that are created in the icon area of all .leo files. All &#64;button nodes in the &#64;commands tree create global buttons. All &#64;button nodes outside the commands tree create buttons local to the settings file.</p>
 </section>
 <section id="commands">
-<h4><a class="toc-backref" href="#id10" role="doc-backlink">&#64;commands</a><a class="headerlink" href="#commands" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id10">&#64;commands</a><a class="headerlink" href="#commands" title="Permalink to this heading">¶</a></h4>
 <p>An &#64;commands tree in a settings file defines global commands. All &#64;command nodes in the &#64;commands tree create global commands. All &#64;command nodes outside the commands tree create commands local to the settings file.</p>
 </section>
 <section id="command-history">
-<h4><a class="toc-backref" href="#id11" role="doc-backlink">&#64;command-history</a><a class="headerlink" href="#command-history" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id11">&#64;command-history</a><a class="headerlink" href="#command-history" title="Permalink to this heading">¶</a></h4>
 <p>The body text contains a list of commands, one per line, to be preloaded into Leo’s command history. You access command history using the up and down arrow keys in Leo’s minibuffer.</p>
 </section>
 <section id="data">
-<h4><a class="toc-backref" href="#id12" role="doc-backlink">&#64;data</a><a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id12">&#64;data</a><a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h4>
 <p>The body text contains a list of strings, one per line. Lines starting with ‘#’ are ignored.</p>
 </section>
 <section id="enabled-plugins">
-<h4><a class="toc-backref" href="#id13" role="doc-backlink">&#64;enabled-plugins</a><a class="headerlink" href="#enabled-plugins" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id13">&#64;enabled-plugins</a><a class="headerlink" href="#enabled-plugins" title="Permalink to this heading">¶</a></h4>
 <p>The body text of the &#64;enabled plugins node contains a list of enabled plugins, one per line. Comment lines starting with ‘#’ are ignored. Leo loads plugins in the order they appear. <strong>Important</strong>: Leo handles &#64;enabled-plugins nodes a differently from other kinds of settings. To avoid confusion, <strong>please read the following carefully</strong>.</p>
 <p>As always, Leo looks for &#64;enabled-plugins nodes in settings files in the order specified by <a class="reference internal" href="#search-order-for-settings-files">Search order for settings files</a>. Leo will enable all plugins found in the &#64;enabled-plugins node it finds <em>last</em> in the search order. Leo does <em>not</em> enable plugins found in any other &#64;enabled-plugins node. In particular, <strong>you can not specify a list of default plugins by placing that list in a settings file that appears early in the search list</strong>. Instead, the last &#64;enabled-plugins node found in the search list specifies all and <em>only</em> the plugins that will be enabled.</p>
 <p>Let us distinguish two different situations. First, what Leo does when loading a file, say x.leo. Second, what Leo does when loading a second file, say y.leo, <em>from x.leo</em>. When loading the first .leo file, Leo enables plugins from the
@@ -263,7 +267,7 @@ plugins.</p>
 </div>
 </section>
 <section id="font">
-<h4><a class="toc-backref" href="#id14" role="doc-backlink">&#64;font</a><a class="headerlink" href="#font" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id14">&#64;font</a><a class="headerlink" href="#font" title="Permalink to this heading">¶</a></h4>
 <p>The body text contains a list of settings for a font.  For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">body_text_font_family</span> <span class="o">=</span> <span class="n">Courier</span> <span class="n">New</span>
 <span class="n">body_text_font_size</span> <span class="o">=</span> <span class="kc">None</span>
@@ -274,7 +278,7 @@ plugins.</p>
 <p><strong>Important</strong>: you can use the show-fonts minibuffer command to guide you in making these settings.</p>
 </section>
 <section id="menuat">
-<h4><a class="toc-backref" href="#id15" role="doc-backlink">&#64;menuat</a><a class="headerlink" href="#menuat" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id15">&#64;menuat</a><a class="headerlink" href="#menuat" title="Permalink to this heading">¶</a></h4>
 <p>&#64;menuat modifies the menu tree created by &#64;menus. This allows settings in myLeoSettings.leo to change menus without copying the entire menu tree from leoSettings.leo. This ensures you don’t miss out when new things are added in the &#64;menus in leoSettings.leo, as you would if you replaced the &#64;menus in leoSettings.leo with one in myLeoSettings.leo.</p>
 <p>&#64;menuat should occur in a &#64;settings tree, but not as a descendant of a &#64;menus tree. Its children are &#64;menu and &#64;item nodes as for the &#64;menu setting.</p>
 <p>The &#64;menuat setting has 2-3 parameters in its head text]:</p>
@@ -305,14 +309,14 @@ plugins.</p>
 <p>The optional clipboard argument modifies the action of the before, after, and append actions. By default these actions insert the menus and items supplied as descendants of the &#64;menuat setting. If you specify “clipboard” (without the quotes) as the source, the contents of the clipboard from a previous cut or copy action will be used instead.</p>
 </section>
 <section id="menus">
-<h4><a class="toc-backref" href="#id16" role="doc-backlink">&#64;menus</a><a class="headerlink" href="#menus" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id16">&#64;menus</a><a class="headerlink" href="#menus" title="Permalink to this heading">¶</a></h4>
 <p>Leo creates its menus from the &#64;menu, &#64;item and &#64;popup nodes in the &#64;menus tree. Within &#64;menus trees, &#64;menu nodes create menus and &#64;item nodes create menu items.</p>
 <p>The menu name always follows &#64;menu. If the menu name is ‘Plugins’, Leo will create the Plugins menu and populate the menu by calling the ‘create-optional-menus’ hook. This creates the Plugins menu as usual. Nested &#64;menu nodes define submenus.</p>
 <p>The command name follows &#64;item. If the body text of an &#64;item node exists, this body text is the menu name. Otherwise, the menu name is the command name. However, if the command name starts with a ‘*’, hyphens are removed from the menu name. Menu names and command names may contain a single ampersand (&amp;). If present, the following character is underlined in the name. If the command name in an &#64;item node is just a hyphen (-), the item represents a menu separator.</p>
 <p>&#64;popup <em>&lt;widget-name&gt;</em> creates a popup menu for use by the contextmenu.py plugin. The children of this node should be &#64;menu and &#64;item nodes, used as with &#64;menus.</p>
 </section>
 <section id="mode">
-<h4><a class="toc-backref" href="#id17" role="doc-backlink">&#64;mode</a><a class="headerlink" href="#mode" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id17">&#64;mode</a><a class="headerlink" href="#mode" title="Permalink to this heading">¶</a></h4>
 <p>Leo allows you to specify input modes. You enter mode x with the enter-x-mode command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.</p>
 <p>You can specify modes with &#64;mode nodes in leoSettings.leo. &#64;mode nodes work just like &#64;shortcuts nodes, but in addition they have the side effect of creating the enter-&lt;mode name&gt;-mode command.</p>
 <p>The form of this node is:</p>
@@ -337,7 +341,7 @@ plugins.</p>
 <p>With all these options it should be possible to emulate the keyboard behavior of any other editor.</p>
 </section>
 <section id="rclick">
-<h4><a class="toc-backref" href="#id18" role="doc-backlink">&#64;rclick</a><a class="headerlink" href="#rclick" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id18">&#64;rclick</a><a class="headerlink" href="#rclick" title="Permalink to this heading">¶</a></h4>
 <p>For each &#64;button node, Leo adds right-click menu items for:</p>
 <ul class="simple">
 <li><p>&#64;rclick nodes directly <em>following</em> the &#64;button.</p></li>
@@ -356,17 +360,17 @@ Leo script to execute when the user selects the menu item.</p>
 <p>Unicode chars like ▼ ▾ and … are typical choices for this text.</p>
 </section>
 <section id="recentfiles">
-<h4><a class="toc-backref" href="#id19" role="doc-backlink">&#64;recentfiles</a><a class="headerlink" href="#recentfiles" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id19">&#64;recentfiles</a><a class="headerlink" href="#recentfiles" title="Permalink to this heading">¶</a></h4>
 <p>The body text contains a list of paths of recently opened files, one path per line. Leo writes the list of recent files to .leoRecentFiles.txt in Leo’s config directory, again one file per line.</p>
 </section>
 <section id="shortcuts">
-<h4><a class="toc-backref" href="#id20" role="doc-backlink">&#64;shortcuts</a><a class="headerlink" href="#shortcuts" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id20">&#64;shortcuts</a><a class="headerlink" href="#shortcuts" title="Permalink to this heading">¶</a></h4>
 <p>The body text contains a list of shortcut specifiers.</p>
 </section>
 </section>
 </section>
 <section id="customizing-the-rst3-command">
-<h2><a class="toc-backref" href="#id21" role="doc-backlink">Customizing the rst3 command</a><a class="headerlink" href="#customizing-the-rst3-command" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id21">Customizing the rst3 command</a><a class="headerlink" href="#customizing-the-rst3-command" title="Permalink to this heading">¶</a></h2>
 <p>This section explains how to use <strong>user filters</strong> to alter the output of
 the rst3 command.</p>
 <p><strong>Background</strong></p>
@@ -459,7 +463,7 @@ that the rst3 command includes “top-level” clones themselves.</p>
 <p>The example filters shown above simulate the often-requested “half clone” feature.</p>
 </section>
 <section id="theme-files">
-<h2><a class="toc-backref" href="#id22" role="doc-backlink">Theme files</a><a class="headerlink" href="#theme-files" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id22">Theme files</a><a class="headerlink" href="#theme-files" title="Permalink to this heading">¶</a></h2>
 <p>A <strong>theme</strong> file is a .leo file containing appearance-related settings.  The leo/themes folder contains several examples.</p>
 <p>The open-theme-file command will show you the effect of a theme file without changing Leo in any way.</p>
 <p>To enable a theme, put the following setting in myLeoSettings.leo:</p>
@@ -483,7 +487,7 @@ that the rst3 command includes “top-level” clones themselves.</p>
 </div>
 </section>
 <section id="input-modes">
-<h2><a class="toc-backref" href="#id23" role="doc-backlink">Input modes</a><a class="headerlink" href="#input-modes" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id23">Input modes</a><a class="headerlink" href="#input-modes" title="Permalink to this heading">¶</a></h2>
 <p>Leo now allows you to specify input modes. You enter mode x with the enter-x-mode command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.</p>
 <p>You can specify modes with &#64;mode nodes in leoSettings.leo. &#64;mode nodes work just like &#64;shortcuts nodes, but in addition they have the side effect of creating the enter-&lt;mode name&gt;-mode command.</p>
 <p>Notes:</p>
@@ -503,7 +507,7 @@ that the rst3 command includes “top-level” clones themselves.</p>
 <p>With all these options it should be possible to emulate the keyboard behavior of any other editor.</p>
 </section>
 <section id="ua-s-extensible-attribues-of-nodes">
-<h2><a class="toc-backref" href="#id24" role="doc-backlink">uA’s: extensible attribues of nodes</a><a class="headerlink" href="#ua-s-extensible-attribues-of-nodes" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id24">uA’s: extensible attribues of nodes</a><a class="headerlink" href="#ua-s-extensible-attribues-of-nodes" title="Permalink to this heading">¶</a></h2>
 <p id="index-0">Leo’s .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as <strong>user attributes</strong>, uA’s for short. Leo translates between uA’s and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will <em>not</em> be written to the .leo file. These two ivars are called <strong>attribute ivars</strong>.</p>
 <p>Attribute ivars must be Python dictionaries, whose keys are names of plugins and whose values are <em>other</em> dictionaries, called <strong>inner dictionaries</strong>, for exclusive use of each plugin.</p>
 <p>The v.u Python property allows plugins to get and set v.unknownAttributes easily:</p>
@@ -544,7 +548,7 @@ that the rst3 command includes “top-level” clones themselves.</p>
 </ul>
 </section>
 <section id="decluttering-headlines">
-<h2><a class="toc-backref" href="#id25" role="doc-backlink">Decluttering headlines</a><a class="headerlink" href="#decluttering-headlines" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id25">Decluttering headlines</a><a class="headerlink" href="#decluttering-headlines" title="Permalink to this heading">¶</a></h2>
 <p><strong>Decluttering</strong> replaces controls custom formatting of headlines, including:</p>
 <ul class="simple">
 <li><p>Hiding or changing headline text,</p></li>
@@ -576,7 +580,7 @@ You specify decluttering rulesets in the body text of:</p>
 Decluttering affects only those headlines that match a rule pattern.</p>
 <p>The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.</p>
 <section id="examples">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id26">Examples</a><a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
 <p>Here are some examples of decluttering rulesets:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Hide org-mode tags and bold the headline.
 RULE :([\w_@]+:)+\s*$
@@ -595,7 +599,7 @@ REPLACE …\1\2
 </div>
 </section>
 <section id="rule-replacement-lines">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Rule &amp; replacement lines</a><a class="headerlink" href="#rule-replacement-lines" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id27">Rule &amp; replacement lines</a><a class="headerlink" href="#rule-replacement-lines" title="Permalink to this heading">¶</a></h3>
 <p>All rulesets start with a <strong>rule line</strong> of the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RULE</span> <span class="o">&lt;</span><span class="n">regular</span> <span class="n">expression</span><span class="o">&gt;</span>
 </pre></div>
@@ -621,7 +625,7 @@ REPLACE …\1\2
 </ul>
 </section>
 <section id="style-lines">
-<h3><a class="toc-backref" href="#id28" role="doc-backlink">Style lines</a><a class="headerlink" href="#style-lines" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id28">Style lines</a><a class="headerlink" href="#style-lines" title="Permalink to this heading">¶</a></h3>
 <p>Leo applies style lines only if they appear in a ruleset that matches a headline. Style lines do the following…</p>
 <p>Add an icon to the headline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ICON</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">icon</span>
@@ -653,7 +657,7 @@ REPLACE …\1\2
 </section>
 </section>
 <section id="translating-leo-s-menus-and-messages">
-<h2><a class="toc-backref" href="#id29" role="doc-backlink">Translating Leo’s menus and messages</a><a class="headerlink" href="#translating-leo-s-menus-and-messages" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id29">Translating Leo’s menus and messages</a><a class="headerlink" href="#translating-leo-s-menus-and-messages" title="Permalink to this heading">¶</a></h2>
 <p>It is easy to translate Leo’s menu strings: simply create an &#64;menus tree in leoSettings.leo or myLeoSettings.leo that contains the translated menu names.</p>
 <p><strong>New in Leo 4.4.8</strong>: Leo now contains support for translating messages sent to Leo’s log:</p>
 <ul class="simple">
@@ -664,7 +668,7 @@ REPLACE …\1\2
 </ul>
 </section>
 <section id="writing-new-importers">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">Writing new importers</a><a class="headerlink" href="#writing-new-importers" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id30">Writing new importers</a><a class="headerlink" href="#writing-new-importers" title="Permalink to this heading">¶</a></h2>
 <p>This section describes the process of creating an importer for a new language. There are a set of “importers” in leoImport.py, all based on the baseScannerClass class. You can define your own importer by creating a subclass. This shouldn’t be too difficult: baseScannerClass is supposed to do almost all the work. With luck, your subclass might be very simple, as with class cScanner.</p>
 <p><strong>Important</strong> As I write this, I realize that I remember very little about the code, but I do remember its general organization and the process of creating a new importer. The following should be all you need to write any importer.</p>
 <p>This base class has three main parts:</p>
@@ -764,8 +768,8 @@ REPLACE …\1\2
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on January 24, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
+      Last updated on March 01, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
