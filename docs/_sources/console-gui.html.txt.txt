@@ -8,7 +8,7 @@ Leo's Console Gui
 
 This chapter describes Leo's console gui. This allows Leo to be run remotely.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 

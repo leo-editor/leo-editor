@@ -20,7 +20,7 @@ Using Leo as a Personal Information Manager
 
 This chapter tells how you can use Leo as a Personal Information Manager. It introduces `clones`_: one of Leo's most unusual and powerful features for organizing data.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 

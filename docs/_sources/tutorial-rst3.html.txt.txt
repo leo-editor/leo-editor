@@ -35,7 +35,7 @@ The tutorial covers only the basic features of the rst3 command. This is enough 
 
 CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo's help menu.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

@@ -8,7 +8,7 @@ One of these tips appears on startup, by default.
 
 You can disable these tips by setting @bool show-tips = False.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

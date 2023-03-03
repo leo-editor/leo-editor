@@ -12,7 +12,7 @@ This is the theory of operation of Leo's vim mode, contained in
 leo/core/leoVim.py. It discusses everything you need to understand the code
 and to add new vim commands.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

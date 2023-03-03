@@ -16,7 +16,7 @@ This is a short glossary of important terms in Leo's world. For more information
 .. .. glossary::
 ..    :sorted:
 
-.. contents::
+.. contents:: Contents
     :depth: 2
     :local:
 
@@ -531,12 +531,10 @@ Promote
 
 Reference .leo file
 
-Leo's `git repository`_ and Leo distributions contain two reference
-files: LeoPyRef.leo and leoGuiPluginsRef.leo. These reference files
-should contain nothing but @file nodes and should change only when new
-external files get added to the project. Developers should use *local
-copies* of reference files for their own work. For example, instead of
-using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
+This file should change only when adding new external files to Leo.
+Developers should use a local copy of LeoPyRef.leo (conventionally called
+**leoPy.leo**) for their own work.
 
 
 .. index::

@@ -10,7 +10,7 @@ This chapter discusses these topics:
 - How to import and export vim's .otl files.
 - How to install and use stand-alone vim-like bindings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
     :local:
 

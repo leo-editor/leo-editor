@@ -8,7 +8,7 @@ This chapter discusses Leo's plugins. The plugins found in LeoPyRef.leo are part
 
 The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes <tutorial-scripting#using-button-nodes>`_. Script buttons are extraordinarily useful.
 
-.. contents::
+.. contents:: Contents
     :depth: 5
     :local:
 
