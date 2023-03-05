@@ -1235,8 +1235,7 @@ class GlobalConfigManager:
         if limit is None:
             limit = 20  # A reasonable default.
         for key in sorted(list(d.keys())):
-            gs = d.get(key)
-            assert isinstance(gs, (None.__class__, g.GeneralSetting)), repr(gs)
+            gs = d.get(key)  # gs is a GeneralSetting or None
             if gs and gs.kind:
                 letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
