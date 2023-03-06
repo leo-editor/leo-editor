@@ -11689,7 +11689,7 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 .*test_
 .*Test
 </t>
-<t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious.
+<t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious by the check-nodes command.
 # Headlines must match exactly.
 
 </t>
