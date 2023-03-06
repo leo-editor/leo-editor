@@ -1253,7 +1253,7 @@ class GlobalConfigManager:
                         val = f"<{len(aList)} non-comment lines>"
                 elif isinstance(val, str) and val.startswith('<?xml'):
                     val = '<xml>'
-                key2 = f"@{gs.kind:>6} {key}"
+                key2 = f"@{gs.kind:<6} {key}"
                 yield key2, val, c, letter
     #@+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
     def canonicalizeSettingName(self, name: str) -> str:
@@ -1910,10 +1910,85 @@ class LocalConfigManager:
             if found:
                 return True
         return False
+    #@+node:ekr.20230306104439.1: *3* c.config.printColorSettings (new)
+    def printColorSettings(self) -> None:
+        """
+        Print the value of all @color settings.
+
+        The following shows where the each setting comes from:
+
+        -     leoSettings.leo,
+        -  @  @button, @command, @mode.
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+        - [T] theme .leo file.
+        """
+        legend = '''\
+    legend:
+        leoSettings.leo
+     @  @button, @command, @mode
+    [D] default settings
+    [F] loaded .leo File
+    [M] myLeoSettings.leo
+    [T] theme .leo file.
+    '''
+        c = self.c
+        if g.unitTesting:
+            return
+        legend = textwrap.dedent(legend)
+        result = []
+        for name, val, _c, letter in g.app.config.config_iter(c):
+            if name.strip().startswith('@color'):
+                kind = '   ' if letter == ' ' else f"[{letter}]"
+                result.append(f"{kind} {name} = {val}\n")
+        # Use a single g.es statement.
+        result.append('\n' + legend)
+        g.es_print('', ''.join(result), tabName='Settings')
+    #@+node:ekr.20230306104456.1: *3* c.config.printFontSettings (new)
+    def printFontSettings(self) -> None:
+        """
+        Print the value of every @font setting.
+
+        The following shows where the each setting comes from:
+
+        -     leoSettings.leo,
+        -  @  @button, @command, @mode.
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+        - [T] theme .leo file.
+        """
+        legend = '''\
+    legend:
+        leoSettings.leo
+     @  @button, @command, @mode
+    [D] default settings
+    [F] loaded .leo File
+    [M] myLeoSettings.leo
+    [T] theme .leo file.
+    '''
+        c = self.c
+        if g.unitTesting:
+            return
+        legend = textwrap.dedent(legend)
+        result = []
+        for name, val, _c, letter in g.app.config.config_iter(c):
+            #@verbatim
+            # @font nodes set @family, @weight, @slant, @size settings.
+            if name.strip().startswith(('@font', '@family', '@weight', '@slant', '@size')):
+                kind = '   ' if letter == ' ' else f"[{letter}]"
+                result.append(f"{kind} {name} = {val}\n")
+        # Use a single g.es statement.
+        result.append('\n' + legend)
+        g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self) -> None:
-        """Prints the value of every setting, except key bindings and commands and open-with tables.
-        The following shows where the active setting came from:
+        """
+        Print the value of every setting, except key bindings, commands, and
+        open-with tables.
+
+        The following shows where the each setting comes from:
 
         -     leoSettings.leo,
         -  @  @button, @command, @mode.
