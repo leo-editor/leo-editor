@@ -1974,6 +1974,8 @@ class LocalConfigManager:
         legend = textwrap.dedent(legend)
         result = []
         for name, val, _c, letter in g.app.config.config_iter(c):
+            #@verbatim
+            # @font nodes set @family, @weight, @slant, @size settings.
             if name.strip().startswith(('@font', '@family', '@weight', '@slant', '@size')):
                 kind = '   ' if letter == ' ' else f"[{letter}]"
                 result.append(f"{kind} {name} = {val}\n")
