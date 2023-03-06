@@ -1134,13 +1134,46 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)
+    #@+node:ekr.20230306104232.1: *3* help.showColorSettings
+    @cmd('show-color-settings')
+    def showColorSettings(self, event: Event = None) -> None:
+        """
+        Print the value of all @color settings.
+
+        The following shows where the each setting comes from:
+
+        -     leoSettings.leo,
+        -  @  @button, @command, @mode.
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+        - [T] theme .leo file.
+        """
+        self.c.config.printColorSettings()
+    #@+node:ekr.20230306104131.1: *3* help.showFontSettings
+    @cmd('show-font-settings')
+    def showFontSettings(self, event: Event = None) -> None:
+        """
+        Print the value of every @font setting.
+
+        The following shows where the each setting comes from:
+
+        -     leoSettings.leo,
+        -  @  @button, @command, @mode.
+        - [D] default settings.
+        - [F] indicates the file being loaded,
+        - [M] myLeoSettings.leo,
+        - [T] theme .leo file.
+        """
+        self.c.config.printFontSettings()
     #@+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
     def showSettings(self, event: Event = None) -> None:
         """
-        Prints the value of every setting, except key bindings and commands and
-        open-with tables. The following shows where the active setting came
-        from:
+        Print the value of every setting, except key bindings, commands, and
+        open-with tables.
+
+        The following shows where the each setting comes from:
 
         -     leoSettings.leo,
         -  @  @button, @command, @mode.
@@ -1150,7 +1183,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [T] theme .leo file.
         """
         self.c.config.printSettings()
-    #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)
+    #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline
     @cmd('show-settings-outline')
     def showSettingsOutline(self, event: Event = None) -> None:
         """
