@@ -11692,6 +11692,9 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20230104151508.1"># Additional headlines that are never considered dubious by the check-nodes command.
 # Headlines must match exactly.
 
+# The most natural place for this node is in the .leo file to be checked,
+# *not* myLeoSettings.leo.
+
 </t>
 <t tx="ekr.20230112123841.1">This setting tells what the rst3 should do when writing changed files.
 The valid actions are:
