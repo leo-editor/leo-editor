@@ -1910,7 +1910,7 @@ class LocalConfigManager:
             if found:
                 return True
         return False
-    #@+node:ekr.20230306104439.1: *3* c.config.printColorSettings (new)
+    #@+node:ekr.20230306104439.1: *3* c.config.printColorSettings
     def printColorSettings(self) -> None:
         """
         Print the value of all @color settings.
@@ -1945,7 +1945,7 @@ class LocalConfigManager:
         # Use a single g.es statement.
         result.append('\n' + legend)
         g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20230306104456.1: *3* c.config.printFontSettings (new)
+    #@+node:ekr.20230306104456.1: *3* c.config.printFontSettings
     def printFontSettings(self) -> None:
         """
         Print the value of every @font setting.
