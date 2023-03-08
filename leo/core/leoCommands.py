@@ -13,7 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Callable, Generator, Iterable, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
@@ -4504,6 +4504,77 @@ class Commands:
             c.selectPosition(c.rootPosition())
         return undodata
 
+    #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
+    def doBatchOperations(self, aList: List = None) -> None:
+        # Validate aList and create the parents dict
+        if aList is None:
+            aList = []
+        ok, d = self.checkBatchOperationsList(aList)
+        if not ok:
+            g.error('do-batch-operations: invalid list argument')
+            return
+        for v in list(d.keys()):
+            aList2 = d.get(v, [])
+            if aList2:
+                aList.sort()
+    #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
+    def checkBatchOperationsList(self, aList: List) -> Tuple[bool, Dict]:
+        ok = True
+        d: Dict[VNode, List[Any]] = {}
+        for z in aList:
+            try:
+                op, p, n = z
+                ok = (op in ('insert', 'delete') and
+                    isinstance(p, leoNodes.position) and isinstance(n, int))
+                if ok:
+                    aList2 = d.get(p.v, [])
+                    data = n, op
+                    aList2.append(data)
+                    d[p.v] = aList2
+            except ValueError:
+                ok = False
+            if not ok:
+                break
+        return ok, d
+    #@+node:ekr.20230307155313.1: *4* c.find_b & find_h
+    #@+node:ekr.20230307155313.4: *5* c.find_b
+    def find_b(self,
+        regex: re.Pattern,
+        flags: re.RegexFlag = re.IGNORECASE,
+        it: Iterable[Position] = None,
+    ) -> List[Position]:
+        """
+        Return list of all Positions whose body matches the regex at least once.
+        """
+        c = self
+        if it is None:
+            it = c.all_positions()
+        try:
+            pattern = re.compile(regex, flags)
+            return [p.copy() for p in it if any(m for m in re.finditer(pattern, p.b))]
+        except Exception:
+            g.es_error('Exception in c.find_b')
+            g.es_exception()
+            return []
+    #@+node:ekr.20230307155313.3: *5* c.find_h
+    def find_h(self,
+        regex: re.Pattern,
+        flags: re.RegexFlag = re.IGNORECASE,
+        it: Iterable[Position] = None,
+    ) -> List[Position]:
+        """
+        Return list of all Positions whose headline matches the regex.
+        """
+        c = self
+        if it is None:
+            it = c.all_positions()
+        try:
+            pattern = re.compile(regex, flags)
+            return [z.copy() for z in it if re.match(pattern, z.h)]
+        except Exception:
+            g.es_error('Exception in c.find_h')
+            g.es_exception()
+            return []
     #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions
     def undoableDeletePositions(self, aList: List) -> None:
         """
@@ -4538,38 +4609,6 @@ class Commands:
             undoHelper=undo,
             redoHelper=redo,
         ))
-    #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: List = None) -> None:
-        # Validate aList and create the parents dict
-        if aList is None:
-            aList = []
-        ok, d = self.checkBatchOperationsList(aList)
-        if not ok:
-            g.error('do-batch-operations: invalid list argument')
-            return
-        for v in list(d.keys()):
-            aList2 = d.get(v, [])
-            if aList2:
-                aList.sort()
-    #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
-    def checkBatchOperationsList(self, aList: List) -> Tuple[bool, Dict]:
-        ok = True
-        d: Dict[VNode, List[Any]] = {}
-        for z in aList:
-            try:
-                op, p, n = z
-                ok = (op in ('insert', 'delete') and
-                    isinstance(p, leoNodes.position) and isinstance(n, int))
-                if ok:
-                    aList2 = d.get(p.v, [])
-                    data = n, op
-                    aList2.append(data)
-                    d[p.v] = aList2
-            except ValueError:
-                ok = False
-            if not ok:
-                break
-        return ok, d
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
     def registerReloadSettings(self, obj: Any) -> None:

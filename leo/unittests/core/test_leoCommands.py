@@ -135,6 +135,28 @@ class TestCommands(LeoUnitTest):
                 expected = expected.replace('\\', '/')
             got = c.expand_path_expression(s)
             self.assertEqual(got, expected, msg=repr(s))
+    #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
+    def test_find_b_h(self):
+
+        c, p = self.c, self.c.p
+
+        # Create two children of c.p.
+        child1 = p.insertAsLastChild()
+        child1.h = 'child1 headline'
+        child1.b = 'child1 line1\nchild2 line2\n'
+        child2 = p.insertAsLastChild()
+        child2.h = 'child2 headline'
+        child2.b = 'child2 line1\nchild2 line2\n'
+
+        # Tests.
+        list1 = c.find_h(r'^child1')
+        assert list1 == [child1], repr(list1)
+        list2 = c.find_h(r'^child1', it=[child2])
+        assert not list2, repr(list2)
+        list3 = c.find_b(r'.*\bline2\n')
+        assert list3 == [child1, child2], repr(list3)
+        list4 = c.find_b(r'.*\bline2\n', it=[child1])
+        assert list4 == [child1], repr(list3)
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
         c, w = self.c, self.c.frame.body.wrapper
