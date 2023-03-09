@@ -802,10 +802,10 @@ class Commands:
                 if 'PROCESSORS' in line:
                     active_map = processor_map
                     continue
-                elif 'EXTENSIONS' in line:
+                if 'EXTENSIONS' in line:
                     active_map = extension_map
                     continue
-                elif TERM in line:
+                if TERM in line:
                     terminal = line
                     active_map = None
                     continue
