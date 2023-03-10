@@ -600,11 +600,6 @@ class QuickSearchController:
                 parents: Dict[str, Match_List] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        ###
-                            # if node.level() == 0:
-                                # parents["Root"].append(node)
-                            # else:
-                                # parents[node.parent().gnx].append(node)
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
                         aList: Match_List = parents.get(key, [])
                         aList.append(node)

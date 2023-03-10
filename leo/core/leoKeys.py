@@ -512,7 +512,6 @@ class AutoCompleterClass:
                 return key, []
             options = d.get(key)
             if options:
-                ### g.trace(len(options), repr(key))
                 return key, options
         return None, []
     #@+node:ekr.20061031131434.29: *4* ac.do_backspace
@@ -1976,10 +1975,6 @@ class KeyHandlerClass:
         k.inited = True
         k.setDefaultInputState()
         k.resetLabel()
-    #@+node:ekr.20061101071425: *4* k.oops
-    def oops(self) -> None:
-
-        g.trace('Should be defined in subclass:', g.callers(4))
     #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
     def reloadSettings(self) -> None:
         # Part 1: These were in the ctor.

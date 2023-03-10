@@ -688,11 +688,6 @@ class ParserBaseClass:
     #@+node:ekr.20041124063257: *3* pbc.munge
     def munge(self, s: str) -> str:
         return g.app.config.canonicalizeSettingName(s)
-    #@+node:ekr.20041119204700.2: *3* pbc.oops
-    def oops(self) -> None:
-        g.pr("ParserBaseClass oops:",
-            g.callers(),
-            "must be overridden in subclass")
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
     def parseFont(self, p: Position) -> Dict[str, Any]:
@@ -916,8 +911,7 @@ class ParserBaseClass:
         self.error(f"{val} is not a valid {kind} for {name}")
     #@+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
     def visitNode(self, p: Position) -> str:
-        self.oops()
-        return ''
+        raise NotImplementedError
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others
