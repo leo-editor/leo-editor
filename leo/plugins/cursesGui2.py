@@ -2013,7 +2013,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170504052042.1: *4* CGui.oops
     def oops(self) -> None:
         """Ignore do-nothing methods."""
-        g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
     #@+node:ekr.20170612063102.1: *4* CGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         """Put a help message in a dialog."""
@@ -2288,12 +2288,10 @@ class CoreFrame(leoFrame.LeoFrame):
 
     def oops(self) -> None:
         """Ignore do-nothing methods."""
-        g.pr("CoreFrame oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         """Resize splitter1 and splitter2 using the given ratios."""
-        # self.divideLeoSplitter1(ratio)
-        # self.divideLeoSplitter2(secondary_ratio)
 
     def resizeToScreen(self, event: Event=None) -> None:
         pass
@@ -2433,9 +2431,6 @@ class CoreMenu(leoMenu.LeoMenu):
 
     def oops(self) -> None:
         """Ignore do-nothing methods."""
-        # g.pr("CoreMenu oops:", g.callers(4), "should be overridden in subclass")
-
-
 #@+node:ekr.20170501024424.1: *3* class CoreTree (leoFrame.LeoTree)
 class CoreTree(leoFrame.LeoTree):
     """

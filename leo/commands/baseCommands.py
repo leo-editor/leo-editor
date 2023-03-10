@@ -95,9 +95,7 @@ class BaseEditCommandsClass:
     #@+node:ekr.20150514043714.9: *3* BaseEdit.oops
     def oops(self) -> None:  # pragma: no cover
         """Return a "must be overridden" message"""
-        g.pr("BaseEditCommandsClass oops:",
-            g.callers(),
-            "must be overridden in subclass")
+        raise NotImplementedError
     #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
     def _chckSel(self, event: Event, warning: str = 'no selection') -> bool:

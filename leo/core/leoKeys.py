@@ -1978,8 +1978,7 @@ class KeyHandlerClass:
         k.resetLabel()
     #@+node:ekr.20061101071425: *4* k.oops
     def oops(self) -> None:
-
-        g.trace('Should be defined in subclass:', g.callers(4))
+        raise NotImplementedError
     #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
     def reloadSettings(self) -> None:
         # Part 1: These were in the ctor.

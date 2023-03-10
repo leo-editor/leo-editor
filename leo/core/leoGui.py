@@ -281,10 +281,7 @@ class LeoGui:
         pass
     #@+node:ekr.20031218072017.3741: *4* LeoGui.oops
     def oops(self) -> Any:
-        # It is not usually an error to call methods of this class.
-        # However, this message is useful when writing gui plugins.
-        if 1:
-            g.pr("LeoGui oops", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
     #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         pass
@@ -499,7 +496,7 @@ class NullGui(LeoGui):
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
     def oops(self) -> None:
-        g.trace("NullGui", g.callers(4))
+        raise NotImplementedError
     #@+node:ekr.20070301172456: *3* NullGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
@@ -752,8 +749,8 @@ class StringGui(LeoGui):
     #@+others
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self) -> None:
+        raise NotImplementedError
 
-        g.trace("StringGui", g.callers(4))
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self) -> None:
         self.oops()

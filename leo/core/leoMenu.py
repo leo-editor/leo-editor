@@ -110,7 +110,7 @@ class LeoMenu:
                     g.trace(f"*** bad entry for {key}")
     #@+node:ekr.20031218072017.3775: *3* LeoMenu.error and oops
     def oops(self) -> None:
-        g.pr("LeoMenu oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
 
     def error(self, s: str) -> None:
         g.error('', s)
@@ -689,11 +689,11 @@ class LeoMenu:
 class NullMenu(LeoMenu):
     """A null menu class for testing and batch execution."""
     #@+others
-    #@+node:ekr.20050104094308: *3* ctor (NullMenu)
+    #@+node:ekr.20050104094308: *3* NullMenu.ctor
     def __init__(self, frame: Widget) -> None:
         super().__init__(frame)
         self.isNull = True
-    #@+node:ekr.20050104094029: *3* oops
+    #@+node:ekr.20050104094029: *3* NullMenu.oops (do-nothing oops)
     def oops(self) -> None:
         pass
     #@-others

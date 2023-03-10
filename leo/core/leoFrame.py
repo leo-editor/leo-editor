@@ -333,18 +333,16 @@ class LeoBody:
 
     def oops(self) -> None:
         """Say that a required method in a subclass is missing."""
-        g.trace("(LeoBody) %s should be overridden in a subclass", g.callers())
+        raise NotImplementedError
 
-    def createEditorFrame(self, w: Wrapper) -> Wrapper:  # pylint: disable=useless-return
-        self.oops()
-        return None
+    def createEditorFrame(self, w: Wrapper) -> Wrapper:
+        raise NotImplementedError
 
-    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:  # pylint: disable=useless-return
-        self.oops()
-        return None
+    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
+        raise NotImplementedError
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def onFocusOut(self, obj: Any) -> None:
         pass
@@ -791,7 +789,7 @@ class LeoFrame:
         return g.shortFileName(self.c.mFileName)
     #@+node:ekr.20031218072017.3691: *4* LeoFrame.oops
     def oops(self) -> None:
-        g.pr("LeoFrame oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
     #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
     def promptForSave(self) -> bool:
         """
@@ -1738,19 +1736,20 @@ class LeoTree:
             c.frame.putStatusLine(p.get_UNL())
     #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self) -> None:
-        g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
+
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:
     """A class representing a tabbed outline pane."""
     #@+others
-    #@+node:ekr.20070317073627.1: *3*  ctor (LeoTreeTab)
+    #@+node:ekr.20070317073627.1: *3* LeoTreeTab.ctor (LeoTreeTab)
     def __init__(self, c: Cmdr, chapterController: ChapterController, parentFrame: Widget) -> None:
         self.c = c
         self.cc: ChapterController
         self.nb: NbController = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
-    #@+node:ekr.20070317073755: *3* Must be defined in subclasses
+    #@+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
     def createControl(self) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
         return None
@@ -1766,9 +1765,9 @@ class LeoTreeTab:
 
     def setTabLabel(self, tabName: str) -> None:
         self.oops()
-    #@+node:ekr.20070317083104: *3* oops
+    #@+node:ekr.20070317083104: *3* LeoTreeTab.oops
     def oops(self) -> None:
-        g.pr("LeoTreeTree oops:", g.callers(4), "should be overridden in subclass")
+        raise NotImplementedError
     #@-others
 #@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody(LeoBody):
@@ -1950,7 +1949,7 @@ class NullFrame(LeoFrame):
         pass
 
     def oops(self) -> None:
-        g.trace("NullFrame", g.callers(4))
+        raise NotImplementedError
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
@@ -2103,7 +2102,7 @@ class NullLog(LeoLog):
         return False
     #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self) -> None:
-        g.trace("NullLog:", g.callers(4))
+        raise NotImplementedError
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self,
         s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False, nodeLink: str = None,
