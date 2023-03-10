@@ -686,8 +686,8 @@ class NullMenu(LeoMenu):
         super().__init__(frame)
         self.isNull = True
     #@+node:ekr.20050104094029: *3* NullMenu.oops (do-nothing oops)
-    def oops(self) -> None:
-        pass
+    # def oops(self) -> None:
+        # pass
     #@-others
 #@-others
 #@@language python

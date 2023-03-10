@@ -1933,9 +1933,6 @@ class NullFrame(LeoFrame):
     def minimizeAll(self, event: Event = None) -> None:
         pass
 
-    # def oops(self) -> None:
-        # raise NotImplementedError
-
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
 
@@ -2086,8 +2083,8 @@ class NullLog(LeoLog):
     def isLogWidget(self, w: Wrapper) -> bool:
         return False
     #@+node:ekr.20041012083237.2: *3* NullLog.oops
-    def oops(self) -> None:
-        pass
+    # def oops(self) -> None:
+        # pass
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self,
         s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False, nodeLink: str = None,
