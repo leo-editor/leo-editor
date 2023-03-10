@@ -93,21 +93,21 @@ class LeoGui:
     #@+node:ekr.20061109212618: *3* LeoGu: Must be defined in subclasses
     #@+node:ekr.20031218072017.3725: *4* LeoGui.destroySelf
     def destroySelf(self) -> None:
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20031218072017.3730: *4* LeoGui.dialogs
     def runAboutLeoDialog(self,
         c: Cmdr, version: str, theCopyright: str, url: str, email: str,
     ) -> Any:  # Must be any, for compatibility with testing subclass.
         """Create and run Leo's About Leo dialog."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskLeoIDDialog(self) -> Any:
         """Create and run a dialog to get g.app.LeoID."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
         """Create and run an askOK dialog ."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskOkCancelNumberDialog(self,
         c: Cmdr,
@@ -117,7 +117,7 @@ class LeoGui:
         okButtonText: str = None,
     ) -> Any:
         """Create and run askOkCancelNumber dialog ."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskOkCancelStringDialog(
         self,
@@ -130,7 +130,7 @@ class LeoGui:
         wide: bool = False,
     ) -> Any:
         """Create and run askOkCancelString dialog ."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskYesNoDialog(self,
         c: Cmdr,
@@ -140,7 +140,7 @@ class LeoGui:
         no_all: bool = False,
     ) -> Any:
         """Create and run an askYesNo dialog."""
-        self.oops()
+        raise NotImplementedError
 
     def runAskYesNoCancelDialog(
         self,
@@ -154,7 +154,7 @@ class LeoGui:
         cancelMessage: str = None,
     ) -> Any:
         """Create and run an askYesNoCancel dialog ."""
-        self.oops()
+        raise NotImplementedError
 
     def runPropertiesDialog(self,
         title: str = 'Properties',
@@ -163,7 +163,7 @@ class LeoGui:
         buttons: List[str] = None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20031218072017.3731: *4* LeoGui.file dialogs
     def runOpenFileDialog(self,
         c: Cmdr,
@@ -174,33 +174,33 @@ class LeoGui:
         startpath: str = None,
     ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         """Create and run an open file dialog ."""
-        self.oops()
-        return 'no'
+        raise NotImplementedError
+        ### return 'no'
 
     def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
         """Create and run a save file dialog ."""
-        self.oops()
-        return 'no'
+        raise NotImplementedError
+        ### return 'no'
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
-        self.oops()
+        raise NotImplementedError
 
     def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
         """Create a find tab in the indicated frame."""
-        self.oops()
+        raise NotImplementedError
 
     def createFontPanel(self, c: Cmdr) -> None:
         """Create a hidden Font panel."""
-        self.oops()
+        raise NotImplementedError
 
     def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a new Leo frame."""
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20031218072017.3729: *4* LeoGui.runMainLoop
     def runMainLoop(self) -> None:
         """Run the gui's main loop."""
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20031218072017.3733: *4* LeoGui.utils
     #@+at Subclasses are expected to subclass all of the following methods.
     # These are all do-nothing methods: callers are expected to check for
@@ -210,19 +210,19 @@ class LeoGui:
     # one of its subcommanders.
     #@+node:ekr.20031218072017.3734: *5* LeoGui.Clipboard
     def replaceClipboardWith(self, s: str) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def getTextFromClipboard(self) -> str:
-        self.oops()
-        return ''
+        raise NotImplementedError
+        ### return ''
     #@+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
     def attachLeoIcon(self, window: Any) -> None:
         """Attach the Leo icon to a window."""
-        self.oops()
+        raise NotImplementedError
 
     def center_dialog(self, dialog: str) -> None:
         """Center a dialog."""
-        self.oops()
+        raise NotImplementedError
 
     def create_labeled_frame(self,
         parent: str,
@@ -233,16 +233,15 @@ class LeoGui:
         pady: int = 0,
     ) -> None:
         """Create a labeled frame."""
-        self.oops()
+        raise NotImplementedError
 
     def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
         """Return the window information."""
-        self.oops()
-        return 0, 0, 0, 0
+        raise NotImplementedError
+        ### return 0, 0, 0, 0
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
-
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
     def getFullVersion(self, c: Cmdr = None) -> str:
         return 'LeoGui: dummy version'
@@ -261,7 +260,7 @@ class LeoGui:
         define_name: str = '__main__',
         silent: bool = False,
     ) -> None:
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
     #@+node:ekr.20110613103140.16423: *4* LeoGui.dismiss_spash_screen
     def dismiss_splash_screen(self) -> None:
@@ -496,15 +495,13 @@ class NullGui(LeoGui):
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
     def oops(self) -> None:
-        raise NotImplementedError
+        pass
     #@+node:ekr.20070301172456: *3* NullGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
-        self.oops()
 
     def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
         """Create a find tab in the indicated frame."""
-        pass  # Now always done during startup.
 
     def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a null Leo Frame."""
@@ -753,7 +750,7 @@ class StringGui(LeoGui):
 
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self) -> None:
-        self.oops()
+        raise NotImplementedError
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (leoGui)
 class StringLineEdit:

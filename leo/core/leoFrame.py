@@ -1076,98 +1076,98 @@ class LeoFrame:
             k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def cascade(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def contractBodyPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def contractLogPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def contractOutlinePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def contractPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def deiconify(self) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def equalSizedPanes(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def expandBodyPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def expandLogPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def expandOutlinePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def expandPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def fullyExpandBodyPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def fullyExpandLogPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def fullyExpandOutlinePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def fullyExpandPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def get_window_info(self) -> Tuple[int, int, int, int]:
-        self.oops()
-        return 0, 0, 0, 0
+        raise NotImplementedError
+        ### return 0, 0, 0, 0
 
     def hideBodyPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def hideLogPane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def hideLogWindow(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def hideOutlinePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def hidePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def leoHelp(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def lift(self) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def minimizeAll(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def resizeToScreen(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def setInitialWindowGeometry(self) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def toggleActivePane(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def toggleSplitDirection(self, event: Event = None) -> None:
-        self.oops()
+        raise NotImplementedError
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog
 class LeoLog:
@@ -1565,20 +1565,20 @@ class LeoTree:
     # Drawing & scrolling.
 
     def redraw(self, p: Position = None) -> None:
-        self.oops()
+        raise NotImplementedError
     redraw_now = redraw
 
     def scrollTo(self, p: Position) -> None:
-        self.oops()
+        raise NotImplementedError
 
     # Headlines.
 
     def editLabel(self, p: Position, selectAll: bool = False, selection: Tuple = None) -> Tuple[Any, Any]:
-        self.oops()
-        return None, None  # pylint: disable=useless-return
+        raise NotImplementedError
+        ### return None, None  # pylint: disable=useless-return
 
     def edit_widget(self, p: Position) -> Wrapper:  # pylint: disable=useless-return
-        self.oops()
+        raise NotImplementedError
         return None
 
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
@@ -1751,20 +1751,20 @@ class LeoTreeTab:
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
     def createControl(self) -> Wrapper:  # pylint: disable=useless-return
-        self.oops()
+        raise NotImplementedError
         return None
 
     def createTab(self, tabName: str, createText: bool = True, widget: Widget = None, select: bool = True) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def destroyTab(self, tabName: str) -> None:
-        self.oops()
+        raise NotImplementedError
 
     def selectTab(self, tabName: str, wrap: str = 'none') -> None:
-        self.oops()
+        raise NotImplementedError
 
     def setTabLabel(self, tabName: str) -> None:
-        self.oops()
+        raise NotImplementedError
     #@+node:ekr.20070317083104: *3* LeoTreeTab.oops
     def oops(self) -> None:
         raise NotImplementedError
@@ -2102,7 +2102,7 @@ class NullLog(LeoLog):
         return False
     #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self) -> None:
-        raise NotImplementedError
+        pass
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self,
         s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False, nodeLink: str = None,

@@ -625,65 +625,60 @@ class LeoMenu:
     #@+node:ekr.20031218072017.3808: *3* LeoMenu.Must be overridden in menu subclasses
     #@+node:ekr.20031218072017.3809: *4* LeoMenu.9 Routines with Tk spellings
     def add_cascade(self, parent: Any, label: str, menu: Any, underline: int) -> None:
-        self.oops()
+        pass
 
     def add_command(self, menu: Widget,
         accelerator: str = '', command: Callable = None, commandName: str = None, label: str = None, underline: int = 0,
     ) -> None:
-        self.oops()
+        pass
 
     def add_separator(self, menu: str) -> None:
-        self.oops()
-
-    # def bind (self,bind_shortcut,callback):
-    #     self.oops()
+        pass
 
     def delete(self, menu: Any, realItemName: str) -> None:
-        self.oops()
+        pass
 
     def delete_range(self, menu: Any, n1: int, n2: int) -> None:
-        self.oops()
+        pass
 
     def destroy(self, menu: Any) -> None:
-        self.oops()
+        pass
 
     def insert(self, menuName: str, position: int, label: str, command: Callable, underline: int = None) -> None:
-        self.oops()
+        pass
 
     def insert_cascade(self, parent: Widget, index: int, label: str, menu: Any, underline: int) -> Widget:
-        self.oops()
+        pass
 
     def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> Any:
-        # 2010: added label arg for pylint.
-        self.oops()
+        pass
     #@+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
     def activateMenu(self, menuName: str) -> None:  # New in Leo 4.4b2.
-        self.oops()
+        pass
 
     def clearAccel(self, menu: str, name: str) -> None:
-        self.oops()
+        pass
 
     def createMenuBar(self, frame: Widget) -> None:
-        self.oops()
+        pass
 
     def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
-        self.oops()
+        pass
 
     def disableMenu(self, menu: str, name: str) -> None:
-        self.oops()
+        pass
 
     def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
-        self.oops()
+        pass
 
     def getMacHelpMenu(self, table: List) -> Any:
-        self.oops()
+        pass
 
     def getMenuLabel(self, menu: str, name: str) -> str:
-        self.oops()
         return ''
 
     def setMenuLabel(self, menu: str, name: str, label: str, underline: int = -1) -> None:
-        self.oops()
+        pass
     #@-others
 #@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)
 class NullMenu(LeoMenu):
