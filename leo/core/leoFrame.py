@@ -2082,9 +2082,6 @@ class NullLog(LeoLog):
     #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
     def isLogWidget(self, w: Wrapper) -> bool:
         return False
-    #@+node:ekr.20041012083237.2: *3* NullLog.oops
-    # def oops(self) -> None:
-        # pass
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self,
         s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False, nodeLink: str = None,

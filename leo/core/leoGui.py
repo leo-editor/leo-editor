@@ -490,9 +490,6 @@ class NullGui(LeoGui):
     def isTextWrapper(self, w: Any) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and getattr(w, 'supportsHighLevelInterface', None)
-    #@+node:ekr.20031218072017.2230: *3* NullGui.oops
-    # def oops(self) -> None:
-        # pass
     #@+node:ekr.20070301172456: *3* NullGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""

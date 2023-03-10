@@ -680,15 +680,9 @@ class LeoMenu:
 #@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)
 class NullMenu(LeoMenu):
     """A null menu class for testing and batch execution."""
-    #@+others
-    #@+node:ekr.20050104094308: *3* NullMenu.ctor
     def __init__(self, frame: Widget) -> None:
         super().__init__(frame)
         self.isNull = True
-    #@+node:ekr.20050104094029: *3* NullMenu.oops (do-nothing oops)
-    # def oops(self) -> None:
-        # pass
-    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
