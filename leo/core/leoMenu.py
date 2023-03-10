@@ -109,8 +109,8 @@ class LeoMenu:
                 if key not in commandKeys:
                     g.trace(f"*** bad entry for {key}")
     #@+node:ekr.20031218072017.3775: *3* LeoMenu.error and oops
-    def oops(self) -> None:
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # raise NotImplementedError
 
     def error(self, s: str) -> None:
         g.error('', s)

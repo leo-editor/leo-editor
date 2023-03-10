@@ -103,8 +103,8 @@ class textGui(leoGui.LeoGui):
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and isinstance(w, leoFrame.StringTextWrapper)
     #@+node:ekr.20150107090324.14: *3* textGui.oops
-    def oops(self):
-        raise NotImplementedError
+    # def oops(self):
+        # raise NotImplementedError
     #@+node:ekr.20150107090324.69: *3* runAskYesNoDialog
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         return 'yes'

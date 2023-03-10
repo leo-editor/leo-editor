@@ -331,9 +331,9 @@ class LeoBody:
     # Methods of this class call the following methods of subclasses (LeoQtBody)
     # Fail loudly if these methods are not defined.
 
-    def oops(self) -> None:
-        """Say that a required method in a subclass is missing."""
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # """Say that a required method in a subclass is missing."""
+        # raise NotImplementedError
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         raise NotImplementedError
@@ -788,8 +788,8 @@ class LeoFrame:
     def shortFileName(self) -> str:
         return g.shortFileName(self.c.mFileName)
     #@+node:ekr.20031218072017.3691: *4* LeoFrame.oops
-    def oops(self) -> None:
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # raise NotImplementedError
     #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
     def promptForSave(self) -> bool:
         """
@@ -1735,8 +1735,8 @@ class LeoTree:
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL())
     #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
-    def oops(self) -> None:
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # raise NotImplementedError
 
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
@@ -1766,8 +1766,8 @@ class LeoTreeTab:
     def setTabLabel(self, tabName: str) -> None:
         raise NotImplementedError
     #@+node:ekr.20070317083104: *3* LeoTreeTab.oops
-    def oops(self) -> None:
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # raise NotImplementedError
     #@-others
 #@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody(LeoBody):
@@ -1948,8 +1948,8 @@ class NullFrame(LeoFrame):
     def minimizeAll(self, event: Event = None) -> None:
         pass
 
-    def oops(self) -> None:
-        raise NotImplementedError
+    # def oops(self) -> None:
+        # raise NotImplementedError
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
