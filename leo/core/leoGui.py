@@ -175,12 +175,10 @@ class LeoGui:
     ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         """Create and run an open file dialog ."""
         raise NotImplementedError
-        ### return 'no'
 
     def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
-        ### return 'no'
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
@@ -214,7 +212,6 @@ class LeoGui:
 
     def getTextFromClipboard(self) -> str:
         raise NotImplementedError
-        ### return ''
     #@+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
     def attachLeoIcon(self, window: Any) -> None:
         """Attach the Leo icon to a window."""
@@ -238,7 +235,6 @@ class LeoGui:
     def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
         """Return the window information."""
         raise NotImplementedError
-        ### return 0, 0, 0, 0
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
         raise NotImplementedError

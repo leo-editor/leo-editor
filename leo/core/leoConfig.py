@@ -912,7 +912,6 @@ class ParserBaseClass:
     #@+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
     def visitNode(self, p: Position) -> str:
         raise NotImplementedError
-        ### return ''
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others

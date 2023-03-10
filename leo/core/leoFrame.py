@@ -1117,7 +1117,6 @@ class LeoFrame:
 
     def get_window_info(self) -> Tuple[int, int, int, int]:
         raise NotImplementedError
-        ### return 0, 0, 0, 0
 
     def hideBodyPane(self, event: Event = None) -> None:
         raise NotImplementedError
@@ -1567,12 +1566,9 @@ class LeoTree:
 
     def editLabel(self, p: Position, selectAll: bool = False, selection: Tuple = None) -> Tuple[Any, Any]:
         raise NotImplementedError
-        ### return None, None  # pylint: disable=useless-return
 
-    def edit_widget(self, p: Position) -> Wrapper:  # pylint: disable=useless-return
+    def edit_widget(self, p: Position) -> Wrapper:
         raise NotImplementedError
-        return None
-
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 

@@ -512,7 +512,6 @@ class AutoCompleterClass:
                 return key, []
             options = d.get(key)
             if options:
-                ### g.trace(len(options), repr(key))
                 return key, options
         return None, []
     #@+node:ekr.20061031131434.29: *4* ac.do_backspace
