@@ -92,12 +92,6 @@ class BaseEditCommandsClass:
     def getWSString(self, s: str) -> str:  # pragma: no cover
         """Return s with all characters replaced by tab or space."""
         return ''.join([ch if ch == '\t' else ' ' for ch in s])
-    #@+node:ekr.20150514043714.9: *3* BaseEdit.oops
-    def oops(self) -> None:  # pragma: no cover
-        """Return a "must be overridden" message"""
-        g.pr("BaseEditCommandsClass oops:",
-            g.callers(),
-            "must be overridden in subclass")
     #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
     def _chckSel(self, event: Event, warning: str = 'no selection') -> bool:
