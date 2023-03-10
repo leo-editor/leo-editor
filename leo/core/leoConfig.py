@@ -688,9 +688,6 @@ class ParserBaseClass:
     #@+node:ekr.20041124063257: *3* pbc.munge
     def munge(self, s: str) -> str:
         return g.app.config.canonicalizeSettingName(s)
-    #@+node:ekr.20041119204700.2: *3* pbc.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
     def parseFont(self, p: Position) -> Dict[str, Any]:

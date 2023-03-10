@@ -2010,10 +2010,6 @@ class LeoCursesGui(leoGui.LeoGui):
     def isTextWrapper(self, w: Wrapper) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return bool(w and getattr(w, 'supportsHighLevelInterface', None))
-    #@+node:ekr.20170504052042.1: *4* CGui.oops
-    # def oops(self) -> None:
-        # """Ignore do-nothing methods."""
-        # raise NotImplementedError
     #@+node:ekr.20170612063102.1: *4* CGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         """Put a help message in a dialog."""
@@ -2286,10 +2282,6 @@ class CoreFrame(leoFrame.LeoFrame):
     def minimizeAll(self, event: Event=None) -> None:
         pass
 
-    # def oops(self) -> None:
-        # """Ignore do-nothing methods."""
-        # raise NotImplementedError
-
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         """Resize splitter1 and splitter2 using the given ratios."""
 
@@ -2424,13 +2416,9 @@ class CoreLog(leoFrame.LeoLog):
 class CoreMenu(leoMenu.LeoMenu):
 
     def __init__(self, c: Cmdr) -> None:
-
         dummy_frame = g.Bunch(c=c)
         super().__init__(dummy_frame)
         self.c = c
-
-    # def oops(self) -> None:
-        # """Ignore do-nothing methods."""
 #@+node:ekr.20170501024424.1: *3* class CoreTree (leoFrame.LeoTree)
 class CoreTree(leoFrame.LeoTree):
     """

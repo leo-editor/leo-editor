@@ -328,12 +328,7 @@ class LeoBody:
 
     recolor_now = recolor
     #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
-    # Methods of this class call the following methods of subclasses (LeoQtBody)
-    # Fail loudly if these methods are not defined.
-
-    # def oops(self) -> None:
-        # """Say that a required method in a subclass is missing."""
-        # raise NotImplementedError
+    # LeoBody methods that must be defined in subclasses.
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         raise NotImplementedError
@@ -787,9 +782,6 @@ class LeoFrame:
 
     def shortFileName(self) -> str:
         return g.shortFileName(self.c.mFileName)
-    #@+node:ekr.20031218072017.3691: *4* LeoFrame.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
     #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
     def promptForSave(self) -> bool:
         """
@@ -1734,10 +1726,6 @@ class LeoTree:
         c.frame.clearStatusLine()
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL())
-    #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
-
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:
@@ -1765,9 +1753,6 @@ class LeoTreeTab:
 
     def setTabLabel(self, tabName: str) -> None:
         raise NotImplementedError
-    #@+node:ekr.20070317083104: *3* LeoTreeTab.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
     #@-others
 #@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody(LeoBody):

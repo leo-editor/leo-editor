@@ -278,9 +278,6 @@ class LeoGui:
 
     def postPopupMenu(self, *args: str, **keys: str) -> None:
         pass
-    #@+node:ekr.20031218072017.3741: *4* LeoGui.oops
-    # def oops(self) -> Any:
-        # raise NotImplementedError
     #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         pass
@@ -744,10 +741,6 @@ class StringGui(LeoGui):
     leoFrame.StringTextWrapper class.
     """
     #@+others
-    #@+node:ekr.20170613095422.7: *3* StringGui.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
-
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self) -> None:
         raise NotImplementedError

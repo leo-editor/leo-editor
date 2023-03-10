@@ -1976,9 +1976,6 @@ class KeyHandlerClass:
         k.inited = True
         k.setDefaultInputState()
         k.resetLabel()
-    #@+node:ekr.20061101071425: *4* k.oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
     #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
     def reloadSettings(self) -> None:
         # Part 1: These were in the ctor.

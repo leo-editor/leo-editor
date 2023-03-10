@@ -108,10 +108,7 @@ class LeoMenu:
             for key in sorted(d.keys()):
                 if key not in commandKeys:
                     g.trace(f"*** bad entry for {key}")
-    #@+node:ekr.20031218072017.3775: *3* LeoMenu.error and oops
-    # def oops(self) -> None:
-        # raise NotImplementedError
-
+    #@+node:ekr.20031218072017.3775: *3* LeoMenu.error
     def error(self, s: str) -> None:
         g.error('', s)
     #@+node:ekr.20031218072017.3781: *3* LeoMenu.Gui-independent menu routines
