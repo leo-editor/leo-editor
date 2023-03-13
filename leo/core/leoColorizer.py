@@ -112,7 +112,8 @@ class BaseColorizer:
             """
             option_name, default_color = self.default_colors_dict[key]
             colors = (
-                c.config.getColor(f"{self.language}.{option_name}"),
+                c.config.getColor(f"{self.language}.{option_name}"),  # Preferred.
+                c.config.getColor(f"{self.language}{option_name}"),  # Legacy.
                 c.config.getColor(option_name),
                 default_color,
             )
