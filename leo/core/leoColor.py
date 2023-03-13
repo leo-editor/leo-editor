@@ -34,16 +34,8 @@ will return None.
 from typing import Tuple
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
-#@@language rest
-#@+at
-# All names added to this database should be in normalized form,
-# otherwise the accessor functions won't work.
-#
-# Adding names here will make them availiable to all gui's and
-# dhtml that use this service.
-#
-# Names are normalized by removing spaces and capitalization.
-#@@c
+# Names should be lower case, without spaces or special characteres.
+# See BaseColorizer.normalize().
 leo_color_database = {
     # leo colors
     "leoblue": "#F0F8FF",  #alice blue
