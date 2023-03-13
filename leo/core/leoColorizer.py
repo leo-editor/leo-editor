@@ -148,7 +148,35 @@ class BaseColorizer:
         """Configure all fonts in the default fonts dict."""
         c = self.c
         isQt = g.app.gui.guiName().startswith('qt')
-        #
+        font_tails = ('family', 'size', 'slant', 'weight')
+        new_fonts: Dict[str, List] = {}  # Keys are font names. Values are Lists of values.
+
+        def resolve_font(key: str, val: str) -> None:
+            """
+            Resolve the given font key to a font and init the font.
+
+            Set self.fonts to the font.
+            """
+            for tail in font_tails:
+                i = key.find(tail)
+                if i > -1:
+                    head = key[:i]
+                    if head.startswith('font'):
+                        continue  # Special case.
+                    if head.endswith('font'):
+                        head = head[:-4]
+                    font_name = f"{head}_font"
+                    if 0:  ### Not yet.
+                        if font_name not in all_font_keys:
+                            all_font_keys.append(font_name)
+                    font = self.find_font(key, font_name)
+                    if not font:
+                        g.trace(f"new font: {font_name:>30} {key:<30} {val}")
+                        font_info = new_fonts.get(font_name, [])
+                        font_info.append((tail, val))
+                        new_fonts[font_name] = font_info
+                    break
+
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
         if not defaultBodyfont:
@@ -157,9 +185,21 @@ class BaseColorizer:
                 "body_text_font_slant", "body_text_font_weight",
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
-        #
+
         # Set all fonts.
-        for key in sorted(self.default_font_dict.keys()):
+        all_font_keys = list(self.default_font_dict.keys())
+        if c.config.settingsDict:
+            gs: GeneralSetting
+            for key, gs in c.config.settingsDict.items():
+                if key.endswith(font_tails):
+                    resolve_font(key, gs.val)
+            if 1:  ###
+                g.trace('new_fonts...')
+                for z in new_fonts:
+                    g.trace(f"{z:>25} {new_fonts.get(z)}")
+
+        ### for key in sorted(self.default_font_dict.keys()):
+        for key in sorted(all_font_keys):
             option_name = self.default_font_dict[key]
             # Find language specific setting before general setting.
             table = (
@@ -171,6 +211,7 @@ class BaseColorizer:
                 if font:
                     break
                 font = self.find_font(key, name)
+                # g.trace(f"{key:>30} {name:<20} {font}")
                 if font:
                     self.fonts[key] = font
                     if isQt and key == 'url':
@@ -189,7 +230,7 @@ class BaseColorizer:
         """
         Return the font for the given setting name.
         """
-        trace = 'zoom' in g.app.debug
+        trace = 'coloring' in g.app.debug
         c, get = self.c, self.c.config.get
         default_size = c.config.defaultBodyFontSize
         for name in (setting_name, setting_name.rstrip('_font')):
@@ -217,7 +258,7 @@ class BaseColorizer:
                 elif not isinstance(old_size, int):
                     size_error = True
                 if size_error:
-                    g.trace('bad old_size:', old_size.__class__, old_size)
+                    # g.trace('bad old_size:', old_size.__class__, old_size)
                     size = old_size
                 else:
                     # #490: Use c.zoom_size if it exists.
@@ -965,8 +1006,8 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        # if 'coloring' in g.app.debug and not g.unitTesting:
-        #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
+        if 'coloring' in g.app.debug:
+            g.trace(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
