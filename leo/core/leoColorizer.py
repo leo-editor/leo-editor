@@ -121,7 +121,7 @@ class BaseColorizer:
                 while color:
                     color = self.normalize(color)
                     if color in leo_color_database:
-                        color = leo_color_database [color]
+                        color = leo_color_database.get(color)
                     qt_color = QtGui.QColor(color)
                     if qt_color.isValid():
                         return color
@@ -522,7 +522,7 @@ class BaseColorizer:
     def normalize(self, s: str) -> str:
         """Return the normalized value of s."""
         if s.startswith('@'):
-            s = s [1:]
+            s = s[1:]
         return s.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
     #@+node:ekr.20171114041307.1: *3* BaseColorizer.reloadSettings
     #@@nobeautify
