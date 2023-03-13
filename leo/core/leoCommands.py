@@ -715,6 +715,9 @@ class Commands:
         c = self
         MAP_SETTING_NODE = 'run-external-processor-map'
         #@+others
+        #@+node:tom.20230313002434.1: *4* Declarations
+        PREFERRED_TERMINALS = ('konsole', 'xfce4-terminal', 'mate-terminal',
+                               'gnome-terminal', 'xterm')
         #@+node:tom.20230308193758.3: *4* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
@@ -905,7 +908,8 @@ class Commands:
         #@+others
         #@+node:tom.20230308193758.12: *5* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
-            BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm', 'koi8rxterm')
+            BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
+                         'koi8rxterm', 'rofi-sensible-terminal')
             TERM_STRINGS = ('*-terminal', '*term')
             # pylint: disable=subprocess-run-check
             for ts in TERM_STRINGS:
@@ -916,7 +920,7 @@ class Commands:
                     bare_term = t.split('/')[-1]
                     if bare_term not in BAD_NAMES:
                         return t
-            return None
+            return ''
         #@+node:tom.20230308193758.13: *5* getCommonTerminal
         def getCommonTerminal(names: Union[str, List, Tuple]) -> str:
             """Return a terminal name given candidate names.
@@ -939,9 +943,9 @@ class Commands:
         #@-others
 
         def getTerminal() -> str:
-            return (getTerminalFromDirectory('/usr/bin')
+            return (getCommonTerminal(PREFERRED_TERMINALS)
+                    or getTerminalFromDirectory('/usr/bin')
                     or getTerminalFromDirectory('/bin')
-                    or getCommonTerminal(('konsole', 'xterm'))
                     )
         #@+node:tom.20230308193758.14: *4* getTermExecuteCmd
         def getTermExecuteCmd(terminal: str) -> str:
