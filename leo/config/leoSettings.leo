@@ -311,13 +311,13 @@
 <v t="ekr.20140912075503.19274"><vh>@color splitter-bg = white</vh></v>
 <v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
-<v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19276"><vh>@string splitter-border-style = solid</vh></v>
 <v t="ekr.20180317172528.1"><vh>@color splitter-hover-bg = @LightSteelBlue1</vh></v>
 </v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
 <v t="ekr.20150711073509.1"><vh>@color status-fg = black</vh></v>
-<v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19348"><vh>@string status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
 <v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
