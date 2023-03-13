@@ -94,9 +94,10 @@ class BaseColorizer:
         self.configure_variable_tags()
         if 'coloring' in g.app.debug:
             if 1:  # shorter.
+                g.trace('(BaseColorizer) tags...')
                 keys = sorted(list(self.configDict.keys()))
                 for key in keys:
-                    if 'keyword' in key:
+                    if any(z in key for z in ('keyword', 'operator', 'name', 'link')):
                         print(f"{key:>20} {self.configDict[key]}")
             if 0:
                 g.printObj(self.configDict, tag='configDict')
@@ -1179,7 +1180,7 @@ class JEditColorizer(BaseColorizer):
             p = self.c and self.c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
-                g.trace(f"\nNEW NODE: {p.h}\n")
+                g.trace(f"NEW NODE: {p.h}\n")
         t1 = time.process_time()
         i = f(s) if f else 0
         while i < len(s):
@@ -2743,7 +2744,7 @@ class PygmentsColorizer(BaseColorizer):
             p = self.c and self.c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
-                g.trace(f"\nNEW NODE: {p.h}\n")
+                g.trace(f"(pygments) NEW NODE: {p.h}\n")
         t1 = time.process_time()
         highlighter = self.highlighter
         #
@@ -2833,7 +2834,7 @@ class PygmentsColorizer(BaseColorizer):
             # pylint: disable=no-member
             if trace and language not in self.unknown_languages:
                 self.unknown_languages.append(language)
-                g.trace(f"\nno lexer for {language!r}. Using python 3 lexer\n")
+                g.trace(f"\nno pygments lexer for {language!r}. Using python 3 lexer\n")
             lexer = lexers.Python3Lexer()
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
