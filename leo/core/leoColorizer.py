@@ -56,7 +56,7 @@ def make_colorizer(c: Cmdr, widget: Widget) -> Any:
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
-    #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
+    #@+node:ekr.20220317050513.1: *3*  BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
     def __init__(self, c: Cmdr, widget: Widget = None) -> None:
         """ctor for BaseColorizer class."""
@@ -93,50 +93,55 @@ class BaseColorizer:
         self.configure_colors()
         self.configure_variable_tags()
         if 'coloring' in g.app.debug:
-            if 1:  # shorter.
-                g.trace('(BaseColorizer) tags...')
-                keys = sorted(list(self.configDict.keys()))
-                for key in keys:
-                    if any(z in key for z in ('keyword', 'operator', 'name', 'link')):
-                        print(f"{key:>20} {self.configDict[key]}")
+            g.trace('BaseColorizer.configDict...')
+            for key, value in self.configDict.items():
+                print(f"{key:>30}: {value or repr(value)}")
             if 0:
-                g.printObj(self.configDict, tag='configDict')
-                g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
+                g.printObj(self.configUnderlineDict, tag='BaseColorizer: configUnderlineDict')
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
     def configure_colors(self) -> None:
         """Configure all colors in the default colors dict."""
         c = self.c
+
         # getColor puts the color name in standard form:
         # color = color.replace(' ', '').lower().strip()
-        getColor = c.config.getColor
 
-        # Compute *all* color keys.
-        all_keys = list(self.default_colors_dict.keys())
-        assert not any(z.endswith('color') for z in all_keys)
+        def resolve_color_key(key: str) -> str:
+            """
+            Resolve the given color name to a *valid* color.
+            """
+            option_name, default_color = self.default_colors_dict[key]
+            colors = (
+                c.config.getColor(f"{self.language}.{option_name}"),
+                c.config.getColor(option_name),
+                default_color,
+            )
+            for color in colors:
+                color1 = color
+                while color:
+                    color = self.normalize(color)
+                    if color in leo_color_database:
+                        color = leo_color_database [color]
+                    qt_color = QtGui.QColor(color)
+                    if qt_color.isValid():
+                        return color
+                    if color.startswith('@'):
+                        color = color[1:]
+                    else:
+                        g.trace('Invalid @color setting:', key, color1)
+                        break
+            return None  # Reasonable default.
+
+        # Compute *all* color keys, not just those in default_colors_dict.
+        all_color_keys = list(self.default_colors_dict.keys())
         if c.config.settingsDict:
             gs: GeneralSetting
             for key, gs in c.config.settingsDict.items():
-                if False and 'leokeyword' in key:  ###
-                    print(f"{key} {gs.val}")
-                if gs and gs.kind == 'color':
-                    if gs.val and not gs.val.startswith('@'):  ### Hack:
-                        if key.endswith('color'):
-                            key = key[:-5]
-                        all_keys.append(key)
-                        self.default_colors_dict[key] = (key, gs.val)
-        if 0:  ###
-            for key in self.default_colors_dict:
-                if key.startswith(('rest', 'php', 'forth')):
-                    print(f"{key} {self.default_colors_dict[key]}")
-
-        for key in sorted(all_keys):
-            option_name, default_color = self.default_colors_dict[key]
-            color = (
-                getColor(f"{self.language}.{option_name}") or
-                getColor(option_name) or
-                default_color
-            )
-            self.configDict[key] = color
+                if gs and gs.kind == 'color' and gs.val:
+                    all_color_keys.append(key)
+                    self.default_colors_dict[key] = (key, self.normalize(gs.val))
+        for key in sorted(all_color_keys):
+            self.configDict[key] = resolve_color_key(key)
     #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
     def configure_fonts(self) -> None:
         """Configure all fonts in the default fonts dict."""
@@ -513,6 +518,12 @@ class BaseColorizer:
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
+    #@+node:ekr.20230313051116.1: *3* BaseColorizer.normalize
+    def normalize(self, s: str) -> str:
+        """Return the normalized value of s."""
+        if s.startswith('@'):
+            s = s [1:]
+        return s.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
     #@+node:ekr.20171114041307.1: *3* BaseColorizer.reloadSettings
     #@@nobeautify
     def reloadSettings(self) -> None:
@@ -692,9 +703,8 @@ class BaseColorizer:
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.
-        # This now works because all keys in leo_color_database are normalized.
-        colorName = colorName.replace(
-            ' ', '').replace('-', '').replace('_', '').lower().strip()
+        #                   (All keys in leo_color_database are normalized.)
+        colorName = self.normalize(colorName)
         colorName = leo_color_database.get(colorName, colorName)
         # Get the actual color.
         color = self.actualColorDict.get(colorName)
@@ -703,7 +713,10 @@ class BaseColorizer:
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
+                # Leo 6.7.2: This should never happen because configure_colors does a pre-check.
                 report(extra='*** unknown color name')
+                g.trace(f"{self.language}.{tag}", d.get(f"{self.language}.{tag}"))
+                g.trace(tag, d.get(tag))
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
