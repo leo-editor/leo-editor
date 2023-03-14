@@ -921,11 +921,13 @@ class LeoQtGui(leoGui.LeoGui):
         w.setFocus()
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
     size_warnings: List[str] = []
+    font_ids: List[int] = []  # id's of traced fonts.
 
     def getFontFromParams(self,
         family: str, size: str, slant: str, weight: str, defaultSize: int=12,
     ) -> Any:
         """Required to handle syntax coloring."""
+        trace = 'coloring' in g.app.debug
         if isinstance(size, str):
             if size.endswith('pt'):
                 size = size[:-2].strip()
@@ -958,10 +960,14 @@ class LeoQtGui(leoGui.LeoGui):
                     font.setHintingPreference(font.PreferFullHinting)
                 except AttributeError:
                     pass
+            if trace:
+                if id(font) not in self.font_ids:
+                    self.font_ids.append(id(font))
+                    g.trace(f"font: {id(font)} {family} size: {i_size} weight: {weight_val} italic? {italic}")
             return font
         except Exception:
-            g.es("exception setting font", g.callers(4))
-            g.es(
+            g.es_print("exception setting font", g.callers(4))
+            g.es_print(
                 f"family: {family}\n"
                 f"  size: {i_size}\n"
                 f" slant: {slant}\n"
