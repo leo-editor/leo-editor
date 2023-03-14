@@ -165,22 +165,29 @@ class BaseColorizer:
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
 
-        # Set all fonts.
-        all_font_keys = list(self.default_font_dict.keys())
+        # Get the list of all new fonts.
+        self.all_font_keys = list(self.default_font_dict.keys())
         if c.config.settingsDict:
             gs: GeneralSetting
-            for key, gs in c.config.settingsDict.items():
-                if key.endswith(self.font_tails):
-                    self.resolve_font(key, gs.val)
-            if 1:  ###
+            for setting, gs in c.config.settingsDict.items():
+                if setting.endswith(self.font_tails):
+                    self.resolve_font(setting, gs.val)
+            if 1:
                 print('')
                 g.trace('new_fonts...')
-                for z in self.new_fonts:
-                    print(f"{z:>25} {self.new_fonts.get(z)}")
+                for font_name in self.new_fonts:
+                    print('')
+                    print(font_name)
+                    for key, tail, val in self.new_fonts.get(font_name):
+                        print(f"  setting: {key:<25} {tail:>6}:{val}")
                 print('')
+                
+        # Create all new fonts.
+        for font_name in self.new_fonts:
+            assert not font_name in self.fonts, font_name
 
         ### for key in sorted(self.default_font_dict.keys()):
-        for key in sorted(all_font_keys):
+        for key in sorted(self.all_font_keys):
             option_name = self.default_font_dict[key]
             # Find language specific setting before general setting.
             table = (
@@ -208,33 +215,29 @@ class BaseColorizer:
                 # Neither setting exists.
                 self.fonts[key] = None  # Essential
     #@+node:ekr.20230314052820.1: *6* BaseColorizer.resolve_font
-    def resolve_font(self, key: str, val: str) -> None:
+    def resolve_font(self, setting: str, val: str) -> None:
         """
-        Resolve the given font key to a font and init the font.
+        Resolve the given font setting to a font and init the font.
 
         Set self.fonts to the font.
         """
         for tail in self.font_tails:
-            i = key.find(tail)
+            i = setting.find(tail)
             if i == -1:
                 continue
-            head = key[:i]
+            head = setting[:i]
             if head.startswith('font'):
                 continue  # Special case.
             if head.endswith('font'):
                 head = head[:-4]
             head = self.normalize(head)
             font_name = f"{head}_font"
-            if 0:  ### Not yet.
-                if font_name not in self.all_font_keys:
-                    self.all_font_keys.append(font_name)
-            font = self.find_font(key, font_name)
+            font = self.find_font(setting, font_name)
             if not font:
-                g.trace(f"new font: {font_name:>30} {key:<30} {val}")
                 font_info = self.new_fonts.get(font_name, [])
-                font_info.append((tail, val))
+                font_info.append((setting, tail, val))
                 self.new_fonts[font_name] = font_info
-            break
+            return
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
     # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
