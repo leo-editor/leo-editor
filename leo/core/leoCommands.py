@@ -1057,10 +1057,11 @@ class Commands:
 
             # Check terminal from MAP_SETTING_NODE setting
             setting_terminal = terminal
-            terminal = which(terminal)
-            if not terminal:
-                g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
-                g.es('Trying an alternative')
+            if setting_terminal:
+                terminal = which(terminal)
+                if not terminal:
+                    g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
+                    g.es('Trying an alternative')
 
             path = g.fullPath(c, root)
             path = g.os_path_finalize(path)
