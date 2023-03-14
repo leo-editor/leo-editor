@@ -152,7 +152,7 @@ class BaseColorizer:
     def configure_fonts(self) -> None:
         """Configure all fonts in the default fonts dict."""
         c = self.c
-        self.font_tails = ('family', 'size', 'slant', 'weight')
+        self.font_selectors = ('family', 'size', 'slant', 'weight')
         # Keys are font names. Values are Lists of values.
         self.new_fonts: Dict[str, List] = {}
 
@@ -170,21 +170,26 @@ class BaseColorizer:
         if c.config.settingsDict:
             gs: GeneralSetting
             for setting, gs in c.config.settingsDict.items():
-                if setting.endswith(self.font_tails):
+                if setting.endswith(self.font_selectors):
                     self.resolve_font(setting, gs.val)
-            if 1:
+            if 0:
                 print('')
                 g.trace('new_fonts...')
                 for font_name in self.new_fonts:
                     print('')
                     print(font_name)
-                    for key, tail, val in self.new_fonts.get(font_name):
-                        print(f"  setting: {key:<25} {tail:>6}:{val}")
+                    for setting, selector, val in self.new_fonts.get(font_name):
+                        print(f"  setting: {setting:<25} {selector:>6}:{val}")
                 print('')
                 
         # Create all new fonts.
+        g.trace('new_fonts...\n')
         for font_name in self.new_fonts:
+            print(font_name)
             assert not font_name in self.fonts, font_name
+            for setting, selector, val in self.new_fonts.get(font_name):
+                print(f"  setting: {setting:<25} {selector:>6}:{val}")
+            print('')
 
         ### for key in sorted(self.default_font_dict.keys()):
         for key in sorted(self.all_font_keys):
@@ -221,8 +226,8 @@ class BaseColorizer:
 
         Set self.fonts to the font.
         """
-        for tail in self.font_tails:
-            i = setting.find(tail)
+        for selector in self.font_selectors:
+            i = setting.find(selector)
             if i == -1:
                 continue
             head = setting[:i]
@@ -235,7 +240,7 @@ class BaseColorizer:
             font = self.find_font(setting, font_name)
             if not font:
                 font_info = self.new_fonts.get(font_name, [])
-                font_info.append((setting, tail, val))
+                font_info.append((setting, selector, val))
                 self.new_fonts[font_name] = font_info
             return
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
