@@ -193,7 +193,7 @@ class BaseColorizer:
                     break
                 font = self.find_font(key, name)
                 if font:
-                    g.trace(f"{key:>30} {name:<20} {font}")
+                    g.trace(f"{key:>30} {name:<20} {id(font)}")
                     self.fonts[name] = font
                     if key == 'url':
                         # Special case code for Qt.
