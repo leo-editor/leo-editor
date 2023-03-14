@@ -696,8 +696,8 @@ class Commands:
 
             # Map language names to processor names or paths
             PROCESSORS
-            .lua: lua
-            .ruby: C:\Ruby27-x64\bin\ruby.exe
+            lua: lua
+            ruby: C:\Ruby27-x64\bin\ruby.exe
 
             # Optionally specify a Linux terminal here (e.g., konsole)
             TERMINAL
@@ -775,8 +775,8 @@ class Commands:
 
                 # Map language names to processor names or paths
                 PROCESSORS
-                .lua: lua
-                .ruby: C:\Ruby27-x64\bin\ruby.exe
+                lua: lua
+                ruby: C:\Ruby27-x64\bin\ruby.exe
 
                 # Specify a particular Linux terminal to use
                 # e.g, /usr/bin/konsole
@@ -797,23 +797,24 @@ class Commands:
             extension_map: Dict[str, str] = {}
             active_map = None
             terminal: str = ''
+            found_term = False
             TERM = 'TERMINAL'
             for line in data:
                 if not line or line.startswith('#'):
                     continue
                 line = line.split('#', 1)[0]  # Allow in-line trailing comments
-                if 'PROCESSORS' in line:
-                    active_map = processor_map
-                    continue
                 if 'EXTENSIONS' in line:
                     active_map = extension_map
-                    continue
-                if TERM in line:
-                    terminal = line
+                elif 'PROCESSORS' in line:
+                    active_map = processor_map
+                elif TERM in line:
                     active_map = None
-                    continue
-                # Line format: a: b
-                if active_map is not None:
+                    found_term = True
+                elif found_term:
+                    terminal = line
+                    break  # Don't process any lines after this
+                else:
+                    # Line format: a: b
                     keyval = line.split(':', 1)
                     key = keyval[0].strip()
                     val = keyval[1].strip()
@@ -909,7 +910,8 @@ class Commands:
         #@+node:tom.20230308193758.12: *5* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
             BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
-                         'koi8rxterm', 'rofi-sensible-terminal')
+                         'koi8rxterm', 'rofi-sensible-terminal',
+                         'x-terminal-emulator')
             TERM_STRINGS = ('*-terminal', '*term')
             # pylint: disable=subprocess-run-check
             for ts in TERM_STRINGS:
@@ -1054,10 +1056,11 @@ class Commands:
             _, ext = os.path.splitext(path)
 
             # Check terminal from MAP_SETTING_NODE setting
-            if terminal:
-                terminal = which(terminal)
-                if not terminal:
-                    g.es('Cannot find terminal specified in setting - trying an alternative')
+            setting_terminal = terminal
+            terminal = which(terminal)
+            if not terminal:
+                g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
+                g.es('Trying an alternative')
 
             path = g.fullPath(c, root)
             path = g.os_path_finalize(path)
