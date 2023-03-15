@@ -94,6 +94,8 @@ class BaseColorizer:
         self.configure_variable_tags()
         if 'coloring' in g.app.debug:
             if 0:
+                g.printObj(sorted(list(self.fonts.keys())), tag='font keys')
+            if 0:
                 g.trace('BaseColorizer.configDict...')
                 for key, value in self.configDict.items():
                     print(f"{key:>30}: {value or repr(value)}")
@@ -166,29 +168,27 @@ class BaseColorizer:
             self.fonts['default_body_font'] = defaultBodyfont
 
         # Get the list of all new fonts.
-        self.all_font_keys = list(self.default_font_dict.keys())
+        self.all_font_keys = list(self.default_font_dict.keys())  ### Not used yet.
         if c.config.settingsDict:
             gs: GeneralSetting
             for setting, gs in c.config.settingsDict.items():
                 if setting.endswith(self.font_selectors):
+                # if gs.setting in self.font_selectors:
+                # if 'font' in setting:
+                    ### g.trace(setting, gs.kind, gs.setting)
                     self.resolve_font(setting, gs.val)
-            if 0:
-                print('')
-                g.trace('new_fonts...')
-                for font_name in self.new_fonts:
-                    print('')
-                    print(font_name)
-                    for setting, selector, val in self.new_fonts.get(font_name):
-                        print(f"  setting: {setting:<25} {selector:>6}:{val}")
-                print('')
                 
         # Create all new fonts.
-        g.trace('new_fonts...\n')
-        for font_name in self.new_fonts:
-            print(font_name)
-            assert not font_name in self.fonts, font_name
-            for setting, selector, val in self.new_fonts.get(font_name):
-                print(f"  setting: {setting:<25} {selector:>6}:{val}")
+        if 0:
+            g.trace('Any new rest fonts?', any('rest' in z for z in self.new_fonts))
+            g.trace('new_fonts...')
+            for font_name in self.new_fonts:
+                print(font_name)
+                assert not font_name in self.fonts, font_name
+                if 0:
+                    for setting, selector, val in self.new_fonts.get(font_name):
+                        print(f"  setting: {setting:<25} {selector:>6}:{val}")
+                    print('')
             print('')
 
         ### for key in sorted(self.default_font_dict.keys()):
@@ -205,7 +205,7 @@ class BaseColorizer:
                     break
                 font = self.find_font(key, name)
                 if font:
-                    g.trace(f"{key:>30} {name:<20} {id(font)}")
+                    # g.trace(f"{key:>30} {name:<20} {id(font)}")  ###
                     self.fonts[name] = font
                     if key == 'url':
                         # Special case code for Qt.
@@ -230,13 +230,13 @@ class BaseColorizer:
             i = setting.find(selector)
             if i == -1:
                 continue
-            head = setting[:i]
-            if head.startswith('font'):
+            font_name = setting[:i]
+            if font_name.startswith('font'):
                 continue  # Special case.
-            if head.endswith('font'):
-                head = head[:-4]
-            head = self.normalize(head)
-            font_name = f"{head}_font"
+            for tail in ('_font', 'font'):
+                if font_name.endswith(tail):
+                    font_name = font_name[:-len(tail)]
+            font_name = self.normalize(font_name)
             font = self.find_font(setting, font_name)
             if not font:
                 font_info = self.new_fonts.get(font_name, [])
@@ -293,7 +293,7 @@ class BaseColorizer:
                 slant = slant or 'roman'
                 weight = weight or 'normal'
                 size = str(size)
-                font = g.app.gui.getFontFromParams(family, size, slant, weight)
+                font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
                 # A good trace: the key shows what is happening.
                 if font:
                     if trace and name not in self.find_font_trace_dict:
@@ -788,7 +788,11 @@ class BaseColorizer:
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        font = self.fonts.get(tag)
+        for font_name in (f"{self.language}.{tag}", f"{self.language}{tag}", tag):
+            ### g.trace('TRY', font_name)
+            font = self.fonts.get(font_name)
+            if font:
+                break
         if font:
             format.setFont(font)
             self.configure_hard_tab_width(font)  # #1919.

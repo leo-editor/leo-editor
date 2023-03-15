@@ -924,10 +924,10 @@ class LeoQtGui(leoGui.LeoGui):
     font_ids: List[int] = []  # id's of traced fonts.
 
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int=12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int=12, tag = ''
     ) -> Any:
         """Required to handle syntax coloring."""
-        trace = 'coloring' in g.app.debug
+        ### trace = 'coloring' in g.app.debug
         if isinstance(size, str):
             if size.endswith('pt'):
                 size = size[:-2].strip()
@@ -953,17 +953,19 @@ class LeoQtGui(leoGui.LeoGui):
         italic = slant == 'italic'
         if not family:
             family = 'DejaVu Sans Mono'
+        family = None  ###
         try:
             font = QtGui.QFont(family, i_size, weight_val, italic)
+            # g.trace(id(font), family, i_size, weight_val, italic, tag or '')  ###
+            # g.trace(id(font), font.toString(), tag or '')  ###
+            # if 'max' in tag: g.trace(g.callers(8))
             if sys.platform.startswith('linux'):
                 try:
                     font.setHintingPreference(font.PreferFullHinting)
                 except AttributeError:
                     pass
-            if trace:
-                if id(font) not in self.font_ids:
-                    self.font_ids.append(id(font))
-                    g.trace(f"font: {id(font)} {family} size: {i_size} weight: {weight_val} italic? {italic}")
+            if 0: ### id(font) not in self.font_ids:
+                self.font_ids.append(id(font))
             return font
         except Exception:
             g.es_print("exception setting font", g.callers(4))
@@ -972,7 +974,7 @@ class LeoQtGui(leoGui.LeoGui):
                 f"  size: {i_size}\n"
                 f" slant: {slant}\n"
                 f"weight: {weight}")
-            # g.es_exception() # Confusing for most users.
+            g.es_exception() # Confusing for most users.
             return None
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
     def getFullVersion(self, c: Cmdr=None) -> str:
