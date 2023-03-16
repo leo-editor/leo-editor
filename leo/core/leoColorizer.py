@@ -89,12 +89,15 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configureTags & helpers
     def configureTags(self) -> None:
         """Configure all tags."""
+        trace = 'coloring' in g.app.debug
+        if trace:
+            g.printObj(sorted(list(self.fonts.keys())), tag='font keys: before')
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if 'coloring' in g.app.debug:
-            if 0:
-                g.printObj(sorted(list(self.fonts.keys())), tag='font keys')
+        if trace:
+            if 1:
+                g.printObj(sorted(list(self.fonts.keys())), tag='font keys: after')
             if 0:
                 g.trace('BaseColorizer.configDict...')
                 for key, value in self.configDict.items():
@@ -171,16 +174,19 @@ class BaseColorizer:
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
 
+        self.all_font_keys = list(self.default_font_dict.keys())
         # Get the list of all new fonts.
-        self.all_font_keys = list(self.default_font_dict.keys())  ### Not used yet.
         if c.config.settingsDict:
             gs: GeneralSetting
-            for setting, gs in c.config.settingsDict.items():
-                if setting.endswith(self.font_selectors):
-                # if gs.setting in self.font_selectors:
-                # if 'font' in setting:
-                    ### g.trace(setting, gs.kind, gs.setting)
-                    self.resolve_font(setting, gs.val)
+            g.trace('font-related settings...')
+            ### for setting, gs in c.config.settingsDict.items():
+            for setting in sorted(c.config.settingsDict):
+                gs = c.config.settingsDict.get(setting)
+                if 'font' in setting:
+                    g.trace(f"{setting:>25} {gs.kind:<6} {gs.val}")
+                elif setting.endswith(self.font_selectors):
+                    g.trace("POSSIBLE FONT:", repr(gs))
+                    ### self.resolve_font(setting, gs.val)
         # Create all new fonts.
         if 0:
             g.trace('Any new rest fonts?', any('rest' in z for z in self.new_fonts))
@@ -194,7 +200,6 @@ class BaseColorizer:
                     print('')
             print('')
 
-        ### for key in sorted(self.default_font_dict.keys()):
         for key in sorted(self.all_font_keys):
             option_name = self.default_font_dict[key]
             # Find language specific setting before general setting.

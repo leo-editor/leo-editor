@@ -293,7 +293,9 @@ class ParserBaseClass:
             if data is not None:
                 name, val = data
                 setKind = key
-                self.set(p, setKind, name, val)
+                setting = self.set(p, setKind, name, val)
+                if setting:
+                    setting.source = 'font'
     #@+node:ekr.20150426034813.1: *4* pbc.doIfEnv
     def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
@@ -857,7 +859,7 @@ class ParserBaseClass:
         bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         return name, bi
     #@+node:ekr.20041120094940.9: *3* pbc.set
-    def set(self, p: Position, kind: str, name: str, val: Any) -> None:
+    def set(self, p: Position, kind: str, name: str, val: Any) -> g.GeneralSetting:
         """Init the setting for name to val."""
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
@@ -868,7 +870,7 @@ class ParserBaseClass:
             while parent:
                 g.trace('parent', parent.h)
                 parent.moveToParent()
-            return
+            return None
         d = self.settingsDict
         gs = d.get(key)
         if gs:
@@ -877,12 +879,13 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind,
+        d[key] = setting = g.GeneralSetting(kind,
             path=c.mFileName,
             tag='setting',
             unl=p.get_UNL() if p else '',
             val=val,
         )
+        return setting
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""

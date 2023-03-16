@@ -605,7 +605,7 @@ class GeneralSetting:
         kind: str,
         encoding: str = None,
         ivar: str = None,
-        setting: str = None,
+        source: str = None,
         val: Any = None,
         path: str = None,
         tag: str = 'setting',
@@ -616,7 +616,7 @@ class GeneralSetting:
         self.kind = kind
         self.path = path
         self.unl = unl
-        self.setting = setting
+        self.source = source  # Only @font sets this.
         self.val = val
         self.tag = tag
 
@@ -624,8 +624,9 @@ class GeneralSetting:
         # Better for g.printObj.
         val = str(self.val).replace('\n', ' ')
         return (
-            f"GS: {g.shortFileName(self.path):20} "
-            f"{self.kind:7} = {g.truncate(val, 50)}")
+            f"GS: path: {g.shortFileName(self.path or ''):<20} "
+            f"source {self.source or '':<4} "
+            f"kind: {self.kind:7} val: {g.truncate(val, 50)}")
 
     dump = __repr__
     __str__ = __repr__
