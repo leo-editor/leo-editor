@@ -177,7 +177,6 @@ class BaseColorizer:
                 # if 'font' in setting:
                     ### g.trace(setting, gs.kind, gs.setting)
                     self.resolve_font(setting, gs.val)
-                
         # Create all new fonts.
         if 0:
             g.trace('Any new rest fonts?', any('rest' in z for z in self.new_fonts))
@@ -734,23 +733,29 @@ class BaseColorizer:
             'trailing_whitespace',
         ]
     #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
+    rest_font = QtGui.QFont(None, 15, -1, True)  ### family, i_size, weight_val, italic
+    # print('rest_font.toString():', repr(rest_font.toString()))
+
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
+        full_tag = f"{self.language}.{tag}"
         font: Any = None  # Set below. Define here for report().
 
         def report(extra: str = None) -> None:
             """A superb trace. Don't remove it."""
-            if len(repr(s[i:j])) <= 20:
-                s2 = repr(s[i:j])
-            else:
+            s2 = repr(s[i:j])
+            if len(s2) > 20:
                 s2 = repr(s[i : i + 17 - 2] + '...')
-            kind_s = f"{self.language}.{tag}"
-            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
+            # if len(repr(s[i:j])) <= 20:
+                # s2 = repr(s[i:j])
+            # else:
+                # s2 = repr(s[i : i + 17 - 2] + '...')
+            delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             print(
-                f"setTag: {kind_s:32} {i:3} {j:3} {colorName:7} font: {font_s:7} {s2:>22} "
-                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
+                f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:14} {s2:>22} "
+                f"{self.rulesetName}:{delegate_s}{self.matcher_name}"
             )
             if extra:
                 print(f"{' ':48} {extra}")
@@ -781,18 +786,21 @@ class BaseColorizer:
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
-                # Leo 6.7.2: This should never happen because configure_colors does a pre-check.
+                # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
                 report(extra='*** unknown color name')
-                g.trace(f"{self.language}.{tag}", d.get(f"{self.language}.{tag}"))
+                g.trace(full_tag, d.get(full_tag))
                 g.trace(tag, d.get(tag))
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        for font_name in (f"{self.language}.{tag}", f"{self.language}{tag}", tag):
-            ### g.trace('TRY', font_name)
-            font = self.fonts.get(font_name)
-            if font:
-                break
+        if 1:  ### Temp: Use predefined tag.
+            font = self.rest_font if full_tag == 'rest.comment1' else None
+        else:  ### Experimental, new.
+            for font_name in (full_tag, tag):  ### f"{self.language}{tag}", 
+                ### g.trace('TRY', font_name)
+                font = self.fonts.get(font_name)
+                if font:
+                    break
         if font:
             format.setFont(font)
             self.configure_hard_tab_width(font)  # #1919.
