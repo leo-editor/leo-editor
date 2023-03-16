@@ -2710,6 +2710,9 @@ def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) ->
     """
     if not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
+        # Put opening/closing delims on separate lines.
+        if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
+            result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
     elif '\n' not in obj:
         result = repr(obj)
     else:
