@@ -295,7 +295,7 @@ class ParserBaseClass:
                 setKind = key
                 setting = self.set(p, setKind, name, val)
                 if setting:
-                    setting.source = 'font'
+                    setting.source = p.h
     #@+node:ekr.20150426034813.1: *4* pbc.doIfEnv
     def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
         """

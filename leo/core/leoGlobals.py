@@ -624,9 +624,9 @@ class GeneralSetting:
         # Better for g.printObj.
         val = str(self.val).replace('\n', ' ')
         return (
-            f"GS: path: {g.shortFileName(self.path or ''):<20} "
-            f"source {self.source or '':<4} "
-            f"kind: {self.kind:7} val: {g.truncate(val, 50)}")
+            f"GS: path: {g.shortFileName(self.path or '')} "
+            f"source: {self.source or ''} "
+            f"kind: {self.kind:} val: {val}")
 
     dump = __repr__
     __str__ = __repr__
