@@ -924,7 +924,7 @@ class LeoQtGui(leoGui.LeoGui):
     font_ids: List[int] = []  # id's of traced fonts.
 
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int=12, tag = ''
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag = '',
     ) -> Any:
         """Required to handle syntax coloring."""
         ### trace = 'coloring' in g.app.debug

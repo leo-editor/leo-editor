@@ -1400,7 +1400,7 @@ class GlobalConfigManager:
             return None
     #@+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
     ) -> Any:
         """Compute a font from font parameters.
 
@@ -1730,7 +1730,7 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
     ) -> Any:
         """
         Compute a font from font parameters. This should be used *only*

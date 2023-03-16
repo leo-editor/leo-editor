@@ -152,7 +152,11 @@ class BaseColorizer:
             self.configDict[key] = resolve_color_key(key)
     #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helpers
     def configure_fonts(self) -> None:
-        """Configure all fonts in the default fonts dict."""
+        """
+        Configure:
+        - All fonts in the the default fonts dict.
+        - All fonts mentioned in any @font setting.
+        """
         c = self.c
         self.font_selectors = ('family', 'size', 'slant', 'weight')
         # Keys are font names. Values are Lists of values.
@@ -183,7 +187,7 @@ class BaseColorizer:
             g.trace('new_fonts...')
             for font_name in self.new_fonts:
                 print(font_name)
-                assert not font_name in self.fonts, font_name
+                assert font_name not in self.fonts, font_name
                 if 0:
                     for setting, selector, val in self.new_fonts.get(font_name):
                         print(f"  setting: {setting:<25} {selector:>6}:{val}")
@@ -234,7 +238,7 @@ class BaseColorizer:
                 continue  # Special case.
             for tail in ('_font', 'font'):
                 if font_name.endswith(tail):
-                    font_name = font_name[:-len(tail)]
+                    font_name = font_name[: -len(tail)]
             font_name = self.normalize(font_name)
             font = self.find_font(setting, font_name)
             if not font:
@@ -747,10 +751,6 @@ class BaseColorizer:
             s2 = repr(s[i:j])
             if len(s2) > 20:
                 s2 = repr(s[i : i + 17 - 2] + '...')
-            # if len(repr(s[i:j])) <= 20:
-                # s2 = repr(s[i:j])
-            # else:
-                # s2 = repr(s[i : i + 17 - 2] + '...')
             delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             print(
@@ -796,7 +796,7 @@ class BaseColorizer:
         if 1:  ### Temp: Use predefined tag.
             font = self.rest_font if full_tag == 'rest.comment1' else None
         else:  ### Experimental, new.
-            for font_name in (full_tag, tag):  ### f"{self.language}{tag}", 
+            for font_name in (full_tag, tag):  ### f"{self.language}{tag}",
                 ### g.trace('TRY', font_name)
                 font = self.fonts.get(font_name)
                 if font:

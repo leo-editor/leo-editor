@@ -2004,7 +2004,9 @@ class LeoCursesGui(leoGui.LeoGui):
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
     #@+node:ekr.20170514060742.1: *4* CGui.Fonts
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> None:
+    def getFontFromParams(self,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
+    ) -> None:
         return None
     #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
     def isTextWrapper(self, w: Wrapper) -> bool:
