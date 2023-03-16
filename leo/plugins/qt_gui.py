@@ -927,7 +927,6 @@ class LeoQtGui(leoGui.LeoGui):
         family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag = '',
     ) -> Any:
         """Required to handle syntax coloring."""
-        ### trace = 'coloring' in g.app.debug
         if isinstance(size, str):
             if size.endswith('pt'):
                 size = size[:-2].strip()
@@ -953,19 +952,13 @@ class LeoQtGui(leoGui.LeoGui):
         italic = slant == 'italic'
         if not family:
             family = 'DejaVu Sans Mono'
-        family = None  ###
         try:
             font = QtGui.QFont(family, i_size, weight_val, italic)
-            # g.trace(id(font), family, i_size, weight_val, italic, tag or '')  ###
-            # g.trace(id(font), font.toString(), tag or '')  ###
-            # if 'max' in tag: g.trace(g.callers(8))
             if sys.platform.startswith('linux'):
                 try:
                     font.setHintingPreference(font.PreferFullHinting)
                 except AttributeError:
                     pass
-            if 0: ### id(font) not in self.font_ids:
-                self.font_ids.append(id(font))
             return font
         except Exception:
             g.es_print("exception setting font", g.callers(4))

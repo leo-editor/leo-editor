@@ -174,8 +174,6 @@ class BaseColorizer:
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
 
-        ### self.all_font_keys = list(self.default_font_dict.keys())
-
         # Get the list of all new syntax-coloring fonts.
         if c.config.settingsDict:
             gs: GeneralSetting
@@ -194,54 +192,44 @@ class BaseColorizer:
                             g.trace('Ignoring', gs.source)
 
         # Create all new syntax-coloring fonts.
-        g.printObj(self.new_fonts)  ###
         for font_name in self.new_fonts:
             assert font_name not in self.fonts
-            d = self.new_fonts [font_name]
-            ### font = self.create_font(font_name, font_name)
+            d = self.new_fonts[font_name]
             font = g.app.gui.getFontFromParams(
-                family = d.get('family'),
-                size = d.get('size'),
-                slant = d.get('slant'),
-                weight = d.get('weight'),
+                family=d.get('family'),
+                size=d.get('size'),
+                slant=d.get('slant'),
+                weight=d.get('weight'),
                 tag=font_name,
             )
             # #1919: This really isn't correct.
             self.configure_hard_tab_width(font)
             self.fonts[font_name] = font
-                
+
         # Set language-specific fonts.
         for key in self.default_font_dict.keys():
+            self.fonts[key] = None  # Default
             option_name = self.default_font_dict[key]
-            # Find language specific setting before general setting.
-            table = (
-                f"{self.language}_{option_name}",
-            )
-            for name in table:
-                font = self.fonts.get(name)
-                if font:
-                    break
-                font = self.create_font(key, name)
-                if font:
-                    # g.trace(f"{key:>30} {name:<20} {id(font)}")  ###
-                    self.fonts[name] = font
-                    if key == 'url':
-                        # Special case code for Qt.
-                        try:
-                            font.setUnderline(True)
-                        except Exception:
-                            pass
-                    # #1919: This really isn't correct.
-                    self.configure_hard_tab_width(font)
-                    break
-            else:
-                # default to defaultBodyfont
-                self.fonts[key] = None ### defaultBodyfont  # Essential
+            name = f"{self.language}_{option_name}"
+            font = self.fonts.get(name)
+            if font:
+                continue
+            font = self.create_font(key, name)
+            if not font:
+                continue
+            self.fonts[name] = font
+            if key == 'url':
+                try:  # Special case for Qt.
+                    font.setUnderline(True)
+                except Exception:
+                    pass
+            # #1919: This really isn't correct.
+            self.configure_hard_tab_width(font)
     #@+node:ekr.20230314052820.1: *6* BaseColorizer.resolve_font
     def resolve_font(self, setting: str, language: str, tag: str, val: str) -> None:
         """
         Resolve the arguments to a selector and font name.
-        
+
         Add the selector to the font's entry in self.new_fonts.
         """
         for selector in self.font_selectors:
@@ -249,20 +237,17 @@ class BaseColorizer:
                 font_name = f"{language}.{tag}".lower()
                 if font_name not in self.fonts:
                     font_info = self.new_fonts.get(font_name, {})
-                    font_info [selector] = val
+                    font_info[selector] = val
                     self.new_fonts[font_name] = font_info
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.create_font
     # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
 
-    # Keys are settings_names. Values are True if a trace has been given.
-    find_font_trace_dict: Dict[str, bool] = {}
-
     def create_font(self, key: str, setting_name: str) -> Any:
         """
         Return the font for the given setting name.
         """
-        trace = True ### and 'coloring' in g.app.debug
+        trace = 'coloring' in g.app.debug
         c, get = self.c, self.c.config.get
         default_size = c.config.defaultBodyFontSize
         for name in (setting_name, setting_name.rstrip('_font')):
@@ -290,7 +275,7 @@ class BaseColorizer:
                 elif not isinstance(old_size, int):
                     size_error = True
                 if size_error:
-                    g.trace('bad old_size:', old_size.__class__, old_size)  ###
+                    # g.trace('bad old_size:', old_size.__class__, old_size)
                     size = old_size
                 else:
                     # #490: Use c.zoom_size if it exists.
@@ -301,20 +286,16 @@ class BaseColorizer:
                 slant = slant or 'roman'
                 weight = weight or 'normal'
                 size = str(size)
-                g.trace(default_size)  ###
-                g.trace(family, size, slant, weight, setting_name)  ###
                 font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
                 # A good trace: the key shows what is happening.
                 if font:
-                    if trace and name not in self.find_font_trace_dict:
-                        self.find_font_trace_dict[name] = True
+                    if trace:
                         g.trace(
                             f"Create font: {id(font)} "
                             f"setting: {setting_name} "
                             f"key: {key} family: {family or 'None'} "
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
-        # g.trace('No font', setting_name)
         return None
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font: Font) -> None:
@@ -745,9 +726,6 @@ class BaseColorizer:
             'trailing_whitespace',
         ]
     #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
-    ### rest_font = QtGui.QFont(None, 15, -1, True)  # family, i_size, weight_val, italic
-    ### print('rest_font.toString():', repr(rest_font.toString()))
-
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
