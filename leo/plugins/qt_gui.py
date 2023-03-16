@@ -967,7 +967,7 @@ class LeoQtGui(leoGui.LeoGui):
                 f"  size: {i_size}\n"
                 f" slant: {slant}\n"
                 f"weight: {weight}")
-            g.es_exception() # Confusing for most users.
+            # g.es_exception() # Confusing for most users.
             return None
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
     def getFullVersion(self, c: Cmdr=None) -> str:
