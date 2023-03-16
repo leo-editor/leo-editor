@@ -170,7 +170,7 @@ class BaseColorizer:
             valid_tags = self.default_font_dict.keys()
             for setting in sorted(c.config.settingsDict):
                 gs = c.config.settingsDict.get(setting)
-                if gs.source:  # An @font setting.
+                if gs and gs.source:  # An @font setting.
                     m = setting_pat.match(gs.source)
                     if m:
                         language, tag = m.group(1), m.group(2)
