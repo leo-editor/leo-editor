@@ -487,10 +487,6 @@
 <v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
 <v t="ekr.20140912075503.19360"><vh>@color screencast-bg = yellow</vh></v>
 <v t="ekr.20230316031838.1"><vh>@font screencast</vh></v>
-<v t="ekr.20140912075503.19361"><vh>@@@string screencast-font-family = Times New Roman</vh></v>
-<v t="ekr.20140912075503.19362"><vh>@@@string screencaset-font-size = 18pt</vh></v>
-<v t="ekr.20140912075503.19363"><vh>@@@string screencast-font-weight = normal</vh></v>
-<v t="ekr.20140912075503.19364"><vh>@@@string screencaset-font-style = normal</vh></v>
 </v>
 </v>
 </v>
@@ -1032,8 +1028,6 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
-<v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
@@ -5490,8 +5484,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21838">Save A &amp;Copy...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
-<t tx="ekr.20131213135427.21842"></t>
-<t tx="ekr.20131213135427.21843"></t>
 <t tx="ekr.20131213135427.21844">&amp;Compare Leo Files...</t>
 <t tx="ekr.20131213135427.21845"></t>
 <t tx="ekr.20131213135427.21846"></t>
@@ -8851,10 +8843,6 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19358"></t>
 <t tx="ekr.20140912075503.19359"></t>
 <t tx="ekr.20140912075503.19360"></t>
-<t tx="ekr.20140912075503.19361"></t>
-<t tx="ekr.20140912075503.19362"></t>
-<t tx="ekr.20140912075503.19363"></t>
-<t tx="ekr.20140912075503.19364"></t>
 <t tx="ekr.20140912075503.19365">These must be @string settings, even though they do affect colors.</t>
 <t tx="ekr.20140912075503.19366"></t>
 <t tx="ekr.20140912075503.19367"></t>
