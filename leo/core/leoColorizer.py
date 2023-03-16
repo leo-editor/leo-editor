@@ -89,21 +89,9 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configureTags & helpers
     def configureTags(self) -> None:
         """Configure all tags."""
-        trace = 'coloring' in g.app.debug
-        if 0:
-            g.printObj(sorted(list(self.fonts.keys())), tag='font keys: before')
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if trace:
-            if 0:
-                g.printObj(sorted(list(self.fonts.keys())), tag='font keys: after')
-            if 0:
-                g.trace('BaseColorizer.configDict...')
-                for key, value in self.configDict.items():
-                    print(f"{key:>30}: {value or repr(value)}")
-            if 0:
-                g.printObj(self.configUnderlineDict, tag='BaseColorizer: configUnderlineDict')
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors & helper
     def configure_colors(self) -> None:
         """Configure all colors in the default colors dict."""
