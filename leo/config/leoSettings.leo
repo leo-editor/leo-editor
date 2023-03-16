@@ -485,11 +485,12 @@
 </v>
 </v>
 <v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
-<v t="ekr.20140912075503.19360"><vh>@string screencast-bg = yellow</vh></v>
-<v t="ekr.20140912075503.19361"><vh>@string screencast-font-family = Times New Roman</vh></v>
-<v t="ekr.20140912075503.19362"><vh>@string screencaset-font-size = 18pt</vh></v>
-<v t="ekr.20140912075503.19363"><vh>@string screencast-font-weight = normal</vh></v>
-<v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
+<v t="ekr.20140912075503.19360"><vh>@color screencast-bg = yellow</vh></v>
+<v t="ekr.20230316031838.1"><vh>@font screencast</vh></v>
+<v t="ekr.20140912075503.19361"><vh>@@@string screencast-font-family = Times New Roman</vh></v>
+<v t="ekr.20140912075503.19362"><vh>@@@string screencaset-font-size = 18pt</vh></v>
+<v t="ekr.20140912075503.19363"><vh>@@@string screencast-font-weight = normal</vh></v>
+<v t="ekr.20140912075503.19364"><vh>@@@string screencaset-font-style = normal</vh></v>
 </v>
 </v>
 </v>
@@ -11749,6 +11750,11 @@ date;;={|{x=time.asctime()}|}
 # teh=the
 # hellow=hello
 
+</t>
+<t tx="ekr.20230316031838.1">screencast_family = Times New Roman
+screencast_size = 18pt
+screencast_weight = normal
+screencaset_style = normal
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
