@@ -162,7 +162,7 @@ class BaseColorizer:
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
 
-        # Get the list of all new syntax-coloring fonts.
+        # Handle syntax-coloring fonts.
         if c.config.settingsDict:
             gs: GeneralSetting
             setting_pat = re.compile(r'@font\s+(\w+)\.(\w+)')
@@ -181,12 +181,10 @@ class BaseColorizer:
 
         # Create all new syntax-coloring fonts.
         for font_name in self.new_fonts:
-            assert font_name not in self.fonts
             d = self.new_fonts[font_name]
-            ###zoomed_size = self.set_zoomed_size(???)
             font = g.app.gui.getFontFromParams(
                 family=d.get('family'),
-                size=d.get('size'),
+                size=self.zoomed_size(font_name, d.get('size')),
                 slant=d.get('slant'),
                 weight=d.get('weight'),
                 tag=font_name,
@@ -224,10 +222,9 @@ class BaseColorizer:
         for selector in self.font_selectors:
             if selector in setting:
                 font_name = f"{language}.{tag}".lower()
-                if font_name not in self.fonts:
-                    font_info = self.new_fonts.get(font_name, {})
-                    font_info[selector] = val
-                    self.new_fonts[font_name] = font_info
+                font_info = self.new_fonts.get(font_name, {})
+                font_info[selector] = val
+                self.new_fonts[font_name] = font_info
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.create_font
     # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
@@ -261,7 +258,11 @@ class BaseColorizer:
         return None
     #@+node:ekr.20230317072911.1: *6* BaseColorizer.zoomed_size
     def zoomed_size(self, key: str, size: str) -> str:
-        """Return the effect size (as a string) of the font after zooming."""
+        """
+        Return the effect size (as a string) of the font after zooming.
+
+        `key`: key for the zoom_dict.
+        """
         c = self.c
         default_size: str = c.config.defaultBodyFontSize
         # Compute i_size.
