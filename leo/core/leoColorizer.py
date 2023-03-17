@@ -183,6 +183,7 @@ class BaseColorizer:
         for font_name in self.new_fonts:
             assert font_name not in self.fonts
             d = self.new_fonts[font_name]
+            ###zoomed_size = self.set_zoomed_size(???)
             font = g.app.gui.getFontFromParams(
                 family=d.get('family'),
                 size=d.get('size'),
@@ -236,48 +237,21 @@ class BaseColorizer:
         Return the font for the given setting name.
         """
         trace = 'coloring' in g.app.debug
-        c, get = self.c, self.c.config.get
-        default_size = c.config.defaultBodyFontSize
+        c = self.c
+        get = c.config.get
         for name in (setting_name, setting_name.rstrip('_font')):
-            size_error = False
             family = get(name + '_family', 'family')
             size = get(name + '_size', 'size')
             slant = get(name + '_slant', 'slant')
             weight = get(name + '_weight', 'weight')
             if family or slant or weight or size:
-                key2 = f"{key}::{setting_name}"
-                if key2 in self.zoom_dict:
-                    old_size = self.zoom_dict.get(key2)
-                else:
-                    # It's a good idea to set size explicitly.
-                    old_size = size or default_size
-                if isinstance(old_size, str):
-                    # All settings should be in units of points.
-                    try:
-                        if old_size.endswith(('pt', 'px'),):
-                            old_size = int(old_size[:-2])
-                        else:
-                            old_size = int(old_size)
-                    except ValueError:
-                        size_error = True
-                elif not isinstance(old_size, int):
-                    size_error = True
-                if size_error:
-                    # g.trace('bad old_size:', old_size.__class__, old_size)
-                    size = old_size
-                else:
-                    # #490: Use c.zoom_size if it exists.
-                    zoom_delta = getattr(c, 'zoom_delta', 0)
-                    if zoom_delta:
-                        size = old_size + zoom_delta
-                        self.zoom_dict[key2] = size
                 slant = slant or 'roman'
                 weight = weight or 'normal'
-                size = str(size)
+                size = self.zoomed_size(f"{key}::{setting_name}", size)
                 font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
-                # A good trace: the key shows what is happening.
                 if font:
                     if trace:
+                        # A good trace: the key shows what is happening.
                         g.trace(
                             f"Create font: {id(font)} "
                             f"setting: {setting_name} "
@@ -285,6 +259,38 @@ class BaseColorizer:
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
+    #@+node:ekr.20230317072911.1: *6* BaseColorizer.zoomed_size
+    def zoomed_size(self, key: str, size: str) -> str:
+        """Return the effect size of the font after zooming."""
+        c = self.c
+        default_size = c.config.defaultBodyFontSize
+        size_error = False
+        if key in self.zoom_dict:
+            old_size = self.zoom_dict.get(key)
+        else:
+            # It's a good idea to set size explicitly.
+            old_size = size or int(default_size)
+        if isinstance(old_size, str):
+            # All settings should be in units of points.
+            try:
+                if old_size.endswith(('pt', 'px'),):
+                    old_size = int(old_size[:-2])
+                else:
+                    old_size = int(old_size)
+            except ValueError:
+                size_error = True
+        elif not isinstance(old_size, int):
+            size_error = True
+        if size_error:
+            # g.trace('bad old_size:', old_size.__class__, old_size)
+            size = old_size
+        else:
+            # #490: Use c.zoom_size if it exists.
+            zoom_delta = getattr(c, 'zoom_delta', 0)
+            if zoom_delta:
+                size = old_size + zoom_delta
+                self.zoom_dict[key] = size
+        return str(size)
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font: Font) -> None:
         """
