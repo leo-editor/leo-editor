@@ -2152,7 +2152,7 @@
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php.keyword</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
 <v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
@@ -2165,10 +2165,10 @@
 <v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
 <v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
 <v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+<v t="ekr.20080703111151.17"><vh>@font forth.keyword2</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth.keyword3</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth.keyword4</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -3453,7 +3453,12 @@ aquamarine1</t>
 <t tx="ekr.20060827102902.1"></t>
 <t tx="ekr.20060827102902.2"></t>
 <t tx="ekr.20060828110551"></t>
-<t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.</t>
+<t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.
+
+New in Leo 6.7.3:
+
+@font settings for particular languages must have the form @font &lt;language-name&gt;.&lt;tag&gt;
+where &lt;tag&gt; is one of the tags in the default_font_dict in leoColor.py.</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
