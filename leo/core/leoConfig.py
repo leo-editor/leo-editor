@@ -293,9 +293,7 @@ class ParserBaseClass:
             if data is not None:
                 name, val = data
                 setKind = key
-                setting = self.set(p, setKind, name, val)
-                if setting:
-                    setting.source = p.h
+                self.set(p, setKind, name, val)
     #@+node:ekr.20150426034813.1: *4* pbc.doIfEnv
     def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
@@ -859,7 +857,7 @@ class ParserBaseClass:
         bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         return name, bi
     #@+node:ekr.20041120094940.9: *3* pbc.set
-    def set(self, p: Position, kind: str, name: str, val: Any) -> g.GeneralSetting:
+    def set(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Init the setting for name to val."""
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
@@ -870,7 +868,7 @@ class ParserBaseClass:
             while parent:
                 g.trace('parent', parent.h)
                 parent.moveToParent()
-            return None
+            return
         d = self.settingsDict
         gs = d.get(key)
         if gs:
@@ -879,13 +877,13 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = setting = g.GeneralSetting(kind,
+        d[key] = g.GeneralSetting(kind,
             path=c.mFileName,
             tag='setting',
+            source=p.h if p else '',
             unl=p.get_UNL() if p else '',
             val=val,
         )
-        return setting
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
@@ -2032,7 +2030,13 @@ class LocalConfigManager:
             path = gs.path
             if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):  # #1341.
                 g.trace("over-riding setting:", name, "from", path)
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+        d[key] = g.GeneralSetting(
+            kind,
+            path=c.mFileName,
+            source=p.h if p else '',
+            val=val,
+            tag='setting',
+        )
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
     def settingIsActiveInPath(self, gs: str, target_path: str) -> bool:
         """Return True if settings file given by path actually defines the setting, gs."""

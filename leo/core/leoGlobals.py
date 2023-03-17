@@ -593,12 +593,10 @@ class EmergencyDialog:
         self.root.wait_window(self.top)
     #@-others
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
-# Important: The startup code uses this class,
-# so it is convenient to define it in leoGlobals.py.
-
-
 class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
+    # Important: The startup code uses this class,
+    # so it is convenient to define it in leoGlobals.py.
 
     def __init__(
         self,
