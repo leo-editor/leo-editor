@@ -261,36 +261,29 @@ class BaseColorizer:
         return None
     #@+node:ekr.20230317072911.1: *6* BaseColorizer.zoomed_size
     def zoomed_size(self, key: str, size: str) -> str:
-        """Return the effect size of the font after zooming."""
+        """Return the effect size (as a string) of the font after zooming."""
         c = self.c
-        default_size = c.config.defaultBodyFontSize
-        size_error = False
+        default_size: str = c.config.defaultBodyFontSize
+        # Compute i_size.
+        i_size: int
         if key in self.zoom_dict:
-            old_size = self.zoom_dict.get(key)
+            i_size = self.zoom_dict.get(key)
         else:
-            # It's a good idea to set size explicitly.
-            old_size = size or int(default_size)
-        if isinstance(old_size, str):
-            # All settings should be in units of points.
+            s_size: str = size or default_size
+            if s_size.endswith(('pt', 'px'),):
+                s_size = s_size[:-2]
             try:
-                if old_size.endswith(('pt', 'px'),):
-                    old_size = int(old_size[:-2])
-                else:
-                    old_size = int(old_size)
+                i_size = int(s_size)
             except ValueError:
-                size_error = True
-        elif not isinstance(old_size, int):
-            size_error = True
-        if size_error:
-            # g.trace('bad old_size:', old_size.__class__, old_size)
-            size = old_size
-        else:
-            # #490: Use c.zoom_size if it exists.
-            zoom_delta = getattr(c, 'zoom_delta', 0)
-            if zoom_delta:
-                size = old_size + zoom_delta
-                self.zoom_dict[key] = size
-        return str(size)
+                # Don't zoom.
+                return s_size
+
+        # Bump i_size by the zoom_delta.
+        zoom_delta: int = getattr(c, 'zoom_delta', 0)
+        if zoom_delta:
+            i_size += zoom_delta
+            self.zoom_dict[key] = i_size
+        return str(i_size)
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font: Font) -> None:
         """
