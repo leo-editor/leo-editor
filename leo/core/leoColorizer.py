@@ -193,25 +193,28 @@ class BaseColorizer:
             self.configure_hard_tab_width(font)
             self.fonts[font_name] = font
 
-        # Set language-specific fonts.
+        # Set default fonts.
         for key in self.default_font_dict.keys():
             self.fonts[key] = None  # Default
             option_name = self.default_font_dict[key]
-            name = f"{self.language}_{option_name}"
-            font = self.fonts.get(name)
-            if font:
-                continue
-            font = self.create_font(key, name)
-            if not font:
-                continue
-            self.fonts[name] = font
-            if key == 'url':
-                try:  # Special case for Qt.
-                    font.setUnderline(True)
-                except Exception:
-                    pass
-            # #1919: This really isn't correct.
-            self.configure_hard_tab_width(font)
+            for name in (
+                f"{self.language}_{option_name}",
+                option_name,
+            ):
+                font = self.fonts.get(name)
+                if font:
+                    break
+                font = self.create_font(key, name)
+                if font:
+                    self.fonts[name] = font
+                    if key == 'url':
+                        try:  # Special case for Qt.
+                            font.setUnderline(True)
+                        except Exception:
+                            pass
+                    # #1919: This really isn't correct.
+                    self.configure_hard_tab_width(font)
+                    break
     #@+node:ekr.20230314052820.1: *6* BaseColorizer.resolve_font
     def resolve_font(self, setting: str, language: str, tag: str, val: str) -> None:
         """
@@ -232,6 +235,8 @@ class BaseColorizer:
     def create_font(self, key: str, setting_name: str) -> Any:
         """
         Return the font for the given setting name.
+
+        Return None if no font setting with the given name exists.
         """
         trace = 'coloring' in g.app.debug
         c = self.c
