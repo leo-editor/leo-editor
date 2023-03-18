@@ -727,37 +727,13 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-    #@+node:ekr.20080425060424.2: *5* u.afterSort*
-    def afterSortChildren(self, oldChildren: List[VNode], newChildren: List[VNode]) -> None:
-        """Push the undo bead for sort-children."""
-        p, u = self.p, self
-        if u.redoing or u.undoing:
-            return  # pragma: no cover
-        bunch = u.createCommonBunch(p)
-        bunch.kind = 'sort'
-        bunch.undoType = 'Sort Children'
-        bunch.oldChildren = oldChildren
-        bunch.newChildren = newChildren
-        bunch.undoHelper = u.undoSortChildren
-        bunch.redoHelper = u.redoSortChildren
-        # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead:] = [bunch]
-        # Recalculate the menu labels.
-        u.setUndoTypes()
-
-    def afterSortSiblings(self, p: Position, bunch: g.Bunch) -> None:
-        """Create an undo node for sort operations"""
+    #@+node:ekr.20080425060424.2: *5* u.afterSort
+    def afterSort(self, p: Position, bunch: g.Bunch) -> None:
+        """Completes bead for sort operations, which was added to u.beads in beforeSort"""
         u = self
+        # c = self.c
         if u.redoing or u.undoing:
             return  # pragma: no cover
-        bunch.kind = 'sort'
-        bunch.undoType = 'Sort Siblings'
-        bunch.undoHelper = u.undoSortChildren
-        bunch.redoHelper = u.redoSortChildren
-        # # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050318085432.3: *4* u.beforeX...

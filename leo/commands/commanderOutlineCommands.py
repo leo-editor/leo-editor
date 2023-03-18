@@ -1758,36 +1758,6 @@ def sortChildren(self: Self, event: Event=None, key: str=None, reverse: bool=Fal
     c, p = self, self.p
     if p and p.hasChildren():
         c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
-
-
-# def sortChildren(
-#     self: Self,
-#     event: Event = None,
-#     key: Callable = None,  # Not used in Leo's core.
-#     p: Position = None,  # Not used in Leo's core.
-#     reverse: bool = False,  # Not used in Leo's core.
-# ) -> None:
-
-#     """Sort the children of p."""
-#     c, u = self, self.undoer
-#     if not p:
-#         p = c.p
-#     if not p:
-#         return
-
-#     def lowerKey(v: VNode) -> str:
-#         return v.h.lower()
-
-#     c.endEditing()
-#     oldChildren: List[VNode] = p.v.children[:]
-#     newChildren: List[VNode] = sorted(p.v.children, key=key or lowerKey, reverse=reverse)
-#     if p.v.children == newChildren:
-#         return
-#     c.setChanged()
-#     p.v.children = newChildren
-#     u.afterSortChildren(oldChildren, newChildren)
-#     p.setDirty()
-#     c.redraw(p)
 #@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
 @g.commander_command('sort-siblings')
 def sortSiblings(
@@ -1843,42 +1813,6 @@ def sortSiblings(
     if p.parent():
         p.parent().setDirty()
     c.redraw(p)
-
-# def sortSiblings(
-#     self: Self,
-#     event: Event = None,
-#     key: Callable = None,  # Not used in Leo's core.
-#     p: Position = None,  # Required.
-#     reverse: bool = False,  # Not used in Leo's core.
-# ) -> None:
-#     """Sort the siblings of a node."""
-#     c, u = self, self.undoer
-#     if not p:
-#         p = c.p
-#     if not p:
-#         return
-
-#     def lowerKey(v: VNode) -> str:
-#         return v.h.lower()
-
-#     oldP, newP = p.copy(), p.copy()
-#     c.endEditing()
-#     parent_v = p._parentVnode()
-#     oldSiblings = parent_v.children[:]
-#     newSiblings: List[VNode] = sorted(parent_v.children, key=key or lowerKey, reverse=reverse)
-#     if oldSiblings == newSiblings:
-#         return
-#     c.setChanged()
-#     parent_v.children = newSiblings
-#     # Sorting destroys position p, and possibly the root position.
-#     # Only the child index of new position changes!
-#     for i, v in enumerate(newSiblings):
-#         if v.gnx == oldP.v.gnx:
-#             newP._childIndex = i
-#             break
-#     u.afterSortSiblings(oldP, newP, oldSiblings, newSiblings)
-#     newP.setDirty()
-#     c.redraw(newP)
 #@+node:ekr.20070420092425: ** def cantMoveMessage
 def cantMoveMessage(c: Cmdr) -> None:
     h = c.rootPosition().h
