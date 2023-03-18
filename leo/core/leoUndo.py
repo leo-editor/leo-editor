@@ -1848,7 +1848,6 @@ class Undoer:
             c.selectPosition(u.p)
     #@+node:ekr.20050411112033: *4* u.undoMove
     def undoMove(self) -> None:
-
         u = self
         c = u.c
         cc = c.chapterController
@@ -1981,11 +1980,13 @@ class Undoer:
         return p  # Nothing really changes.
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self) -> None:
-        u = self
-        c = u.c
+        c, u = self.c, self
         parent_v = u.p._parentVnode()
         parent_v.children = u.oldChildren
-        p = c.setPositionAfterSort(u.sortChildren)
+        if u.sortChildren:
+            p = u.p.parent()  # Special case for undo, use u.p
+        else:
+            p = c.setPositionAfterSort(False)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree
