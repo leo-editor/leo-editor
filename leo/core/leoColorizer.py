@@ -102,7 +102,6 @@ class BaseColorizer:
 
         #@+<< function: resolve_color_key >>
         #@+node:ekr.20230314052558.1: *6* << function: resolve_color_key >>
-
         def resolve_color_key(key: str) -> str:
             """
             Resolve the given color name to a *valid* color.
