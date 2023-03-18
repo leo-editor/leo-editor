@@ -120,7 +120,6 @@ class Undoer:
         self.oldIns = None
         self.oldMarked = None
         self.oldN = None
-        self.oldP = None
         self.oldParent = None
         self.oldParent_v = None
         self.oldRecentFiles = None
@@ -454,7 +453,7 @@ class Undoer:
     def afterChangeGroup(self,
         p: Position,
         undoType: str,
-        reportFlag: bool = False,  # unused: retained for compatiblility with existing scripts.
+        reportFlag: bool = False,  # unused: retained for compatibility with existing scripts.
     ) -> None:
         """
         Create an undo node for general tree operations using d created by
@@ -747,25 +746,15 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
 
-    def afterSortSiblings(self,
-        oldP: Position,
-        newP: Position,
-        oldSiblings: List[VNode],
-        newSiblings: List[VNode],
-    ) -> None:
+    def afterSortSiblings(self, p: Position, bunch: g.Bunch) -> None:
         """Create an undo node for sort operations"""
         u = self
         if u.redoing or u.undoing:
             return  # pragma: no cover
-        bunch = u.createCommonBunch(p=None)
         bunch.kind = 'sort'
         bunch.undoType = 'Sort Siblings'
-        bunch.undoHelper = u.undoSortSiblings
-        bunch.redoHelper = u.redoSortSiblings
-        bunch.oldP = oldP
-        bunch.newP = newP
-        bunch.oldSiblings = oldSiblings
-        bunch.newSiblings = newSiblings
+        bunch.undoHelper = u.undoSortChildren
+        bunch.redoHelper = u.redoSortChildren
         # # Push the bunch.
         u.bead += 1
         u.beads[u.bead:] = [bunch]
@@ -886,6 +875,29 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
+        return bunch
+    #@+node:ekr.20080425060424.3: *5* u.beforeSort
+    def beforeSort(self,
+        p: Position,
+        undoType: str,
+        oldChildren: List[VNode],
+        newChildren: List[VNode],
+        sortChildren: List[VNode],
+    ) -> None:
+        """Create an undo node for sort operations."""
+        u = self
+        bunch = u.createCommonBunch(p)
+        # Set types.
+        bunch.kind = 'sort'
+        bunch.undoType = undoType
+        bunch.undoHelper = u.undoSort
+        bunch.redoHelper = u.redoSort
+        bunch.oldChildren = oldChildren
+        bunch.newChildren = newChildren
+        bunch.sortChildren = sortChildren  # A bool
+        # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
         return bunch
     #@+node:ekr.20050318085432.2: *5* u.createCommonBunch
     def createCommonBunch(self, p: Position) -> None:
@@ -1575,20 +1587,15 @@ class Undoer:
             child.parents.append(parent_v)
         u.p.setDirty()
         c.setCurrentPosition(u.p)
-    #@+node:ekr.20080425060424.4: *4* u.redoSort*
-    def redoSortChildren(self) -> None:
-        c, p, u = self.c, self.c.p, self
-        p.v.children = u.newChildren[:]
+    #@+node:ekr.20080425060424.4: *4* u.redoSort
+    def redoSort(self) -> None:
+        u = self
+        c = u.c
+        parent_v = u.p._parentVnode()
+        parent_v.children = u.newChildren
+        p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-
-    def redoSortSiblings(self) -> None:
-        c, u = self.c, self
-        newP = u.newP
-        parent_v = newP._parentVnode()
-        parent_v.children = u.newSiblings[:]
-        newP.setDirty()
-        c.setCurrentPosition(newP)
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self) -> None:
         """Redo replacement of an entire tree."""
@@ -1996,20 +2003,15 @@ class Undoer:
         u.restoreTree(old_data)
         c.setBodyString(p, p.b)  # This is not a do-nothing.
         return p  # Nothing really changes.
-    #@+node:ekr.20080425060424.5: *4* u.undoSort*
-    def undoSortChildren(self) -> None:
-        c, p, u = self.c, self.c.p, self
-        p.v.children = u.oldChildren[:]
+    #@+node:ekr.20080425060424.5: *4* u.undoSort
+    def undoSort(self) -> None:
+        u = self
+        c = u.c
+        parent_v = u.p._parentVnode()
+        parent_v.children = u.oldChildren
+        p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-
-    def undoSortSiblings(self) -> None:
-        c, u = self.c, self
-        oldP = u.oldP
-        parent_v = oldP._parentVnode()
-        parent_v.children = u.oldSiblings[:]
-        oldP.setDirty()
-        c.setCurrentPosition(oldP)
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self) -> None:
         """Redo replacement of an entire tree."""
