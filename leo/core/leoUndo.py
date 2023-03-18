@@ -1569,7 +1569,10 @@ class Undoer:
         c = u.c
         parent_v = u.p._parentVnode()
         parent_v.children = u.newChildren
-        p = c.setPositionAfterSort(u.sortChildren)
+        if u.sortChildren:
+            p = u.p.parent()  # Special case, use u.p
+        else:
+            p = u.p
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085432.8: *4* u.redoTree
@@ -1986,7 +1989,7 @@ class Undoer:
         if u.sortChildren:
             p = u.p.parent()  # Special case for undo, use u.p
         else:
-            p = c.setPositionAfterSort(False)
+            p = u.p
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree
