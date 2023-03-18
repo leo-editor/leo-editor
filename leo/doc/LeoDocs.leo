@@ -4739,6 +4739,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'after-auto'                           after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
+'after-reload-settings'                after 'reload-settings' command     c
 'before-create-leo-frame'              before frame.finishCreate           c
 'bodyclick1'                   yes     before normal click in body         c,p,v,event
 'bodyclick2'                           after normal click in body          c,p,v,event

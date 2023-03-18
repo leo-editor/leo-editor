@@ -4655,6 +4655,7 @@ class Commands:
                 # pylint: disable=not-callable
                 try:
                     func()
+                    g.doHook("after-reload-settings", c=c)
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
