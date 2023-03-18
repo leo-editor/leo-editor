@@ -1750,9 +1750,32 @@ def toggleSparseMove(self: Self, event: Event = None) -> None:
     if not g.unitTesting:
         g.blue(f"sparse-move: {c.sparse_move}")
 #@+node:ekr.20080425060424.1: ** c_oc.Sort commands
+#@+node:felix.20230318172503.1: *3* c_oc.reverseSortChildren
+@g.commander_command('reverse-sort-children')
+def reverseSortChildren(
+    self: Self,
+    event: Event = None,
+    key: str = None
+) -> None:
+    """Sort the children of a node in reverse order."""
+    self.sortChildren(key=key, reverse=True)  # as reverse
+#@+node:felix.20230318172511.1: *3* c_oc.reverseSortSiblings
+@g.commander_command('reverse-sort-siblings')
+def reverseSortSiblings(
+    self: Self,
+    event: Event = None,
+    key: str = None
+) -> None:
+    """Sort the siblings of a node in reverse order."""
+    self.sortSiblings(key=key, reverse=True)  # as reverse
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
-def sortChildren(self: Self, event: Event=None, key: str=None, reverse: bool=False) -> None:
+def sortChildren(
+    self: Self,
+    event: Event = None,
+    key: str = None,
+    reverse: bool = False
+) -> None:
     """Sort the children of a node."""
     # This method no longer supports the 'cmp' keyword arg.
     c, p = self, self.p
