@@ -6566,7 +6566,7 @@ Leo attempts to load all plugins every time an @enabled-plugins node is seen. If
 
 You can enable plugins by file name or by module name:
 - Leo looks in the leo/plugins directory for names ending in .py.
-- Leo uses imports a module directly for names that do *not* end in .py, so you can load plugins from any path on PYTHONPATH (including paths given in sitecustomize.py.
+- Leo uses imports a module directly for names that do *not* end in .py, so you can load plugins from any path on PYTHONPATH, including paths given in sitecustomize.py.
 
 g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
 </t>
