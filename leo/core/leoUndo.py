@@ -295,7 +295,6 @@ class Undoer:
             u.realUndoMenuLabel = realLabel
     #@+node:ekr.20031218072017.3616: *4* u.setUndoTypes
     def setUndoTypes(self) -> None:
-
         u = self
         # Set the undo type and undo menu label.
         bunch = u.peekBead(u.bead)
@@ -858,7 +857,7 @@ class Undoer:
         undoType: str,
         oldChildren: List[VNode],
         newChildren: List[VNode],
-        sortChildren: List[VNode],
+        sortChildren: bool,
     ) -> None:
         """Create an undo node for sort operations."""
         u = self
@@ -1569,10 +1568,7 @@ class Undoer:
         c = u.c
         parent_v = u.p._parentVnode()
         parent_v.children = u.newChildren
-        if u.sortChildren:
-            p = u.p.parent()  # Special case, use u.p
-        else:
-            p = u.p
+        p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085432.8: *4* u.redoTree
@@ -1983,13 +1979,11 @@ class Undoer:
         return p  # Nothing really changes.
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self) -> None:
-        c, u = self.c, self
+        u = self
+        c = u.c
         parent_v = u.p._parentVnode()
         parent_v.children = u.oldChildren
-        if u.sortChildren:
-            p = u.p.parent()  # Special case for undo, use u.p
-        else:
-            p = u.p
+        p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree

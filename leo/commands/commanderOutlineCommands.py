@@ -1800,6 +1800,8 @@ def sortSiblings(
     start_gnx = p.v.gnx
     c.endEditing()
     undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
+    if reverse:
+        undoType = 'Reverse ' + undoType
     parent_v = p._parentVnode()
     oldChildren = parent_v.children[:]
     newChildren = parent_v.children[:]
