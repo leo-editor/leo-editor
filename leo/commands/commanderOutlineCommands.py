@@ -6,6 +6,7 @@
 from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
+import copy
 from collections import defaultdict
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -1804,8 +1805,8 @@ def sortSiblings(
     if reverse:
         undoType = 'Reverse ' + undoType
     parent_v = p._parentVnode()
-    oldChildren = parent_v.children[:]
-    newChildren = parent_v.children[:]
+    oldChildren = copy.copy(parent_v.children)
+    newChildren = copy.copy(parent_v.children)
     if key is None:
 
         def lowerKey(self: Self) -> str:

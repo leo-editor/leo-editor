@@ -46,6 +46,7 @@
 #@+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
 from typing import Callable, List, Tuple, TYPE_CHECKING
+import copy
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -1582,13 +1583,13 @@ class Undoer:
         # savedP = u.p.copy()
         savedP = u.p
         if u.sortChildren:
-            savedP.v.children = u.newChildren
+            savedP.v.children = copy.copy(u.newChildren)
             p = savedP  # leave selection on parent of sorted children
         else:
             parent_v = savedP._parentVnode()
-            parent_v.children = u.newChildren
+            parent_v.children = copy.copy(u.newChildren)
             p = savedP  # is that enough?
-            testParentPos = p.parent()
+            testParentPos = p.parent()  # this gives 'falsy' position without v.
             newSiblings = parent_v.children
             # Only the child index of new position changes!
             for i, v in enumerate(newSiblings):
@@ -1885,8 +1886,8 @@ class Undoer:
         assert v
         # Adjust the children arrays.
         assert u.newParent_v.children[u.newN] == v
-        del u.newParent_v.children[u.newN]
-        u.oldParent_v.children.insert(u.oldN, v)
+        del u.newParent_v.children[u.newN]  # ! This line changes oldChildren of sort beads unless sorts are copied!
+        u.oldParent_v.children.insert(u.oldN, v)  # ! This line changes oldChildren of sort beads  unless sorts are copied!
         # Recompute the parent links.
         v.parents.append(u.oldParent_v)
         v.parents.remove(u.newParent_v)
@@ -2011,19 +2012,19 @@ class Undoer:
         # savedP = u.p.copy()
         savedP = u.p
         if u.sortChildren:
-            savedP.v.children = u.oldChildren
+            savedP.v.children = copy.copy(u.oldChildren)
             p = savedP  # leave selection on parent of unsorted children
         else:
             parent_v = savedP._parentVnode()
-            parent_v.children = u.oldChildren
+            parent_v.children = copy.copy(u.oldChildren)
             p = savedP  # is that enough?
-            tempParentPos = p.parent()
+            testParentPos = p.parent()  # this gives 'falsy' position without v.
             newSiblings = parent_v.children
             # Only the child index of new position changes!
-            # for i, v in enumerate(newSiblings):
-            #     if v.gnx == savedP.v.gnx:
-            #         p._childIndex = i
-            #         break
+            for i, v in enumerate(newSiblings):
+                if v.gnx == savedP.v.gnx:
+                    p._childIndex = i
+                    break
         # p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
