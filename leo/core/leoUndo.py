@@ -110,7 +110,6 @@ class Undoer:
         self.newParent_v = None
         self.newRecentFiles = None
         self.newSel = None
-        self.newSiblings = None
         self.newTree = None
         self.newYScroll = None
         self.oldBack = None
@@ -1580,7 +1579,8 @@ class Undoer:
         u = self
         c = u.c
         g.es("in redoSort")
-        savedP = u.p.copy()
+        # savedP = u.p.copy()
+        savedP = u.p
         if u.sortChildren:
             savedP.v.children = u.newChildren
             p = savedP  # leave selection on parent of sorted children
@@ -1588,7 +1588,8 @@ class Undoer:
             parent_v = savedP._parentVnode()
             parent_v.children = u.newChildren
             p = savedP  # is that enough?
-            newSiblings = p.parent().v.children
+            testParentPos = p.parent()
+            newSiblings = parent_v.children
             # Only the child index of new position changes!
             for i, v in enumerate(newSiblings):
                 if v.gnx == savedP.v.gnx:
@@ -2007,7 +2008,8 @@ class Undoer:
     def undoSort(self) -> None:
         u = self
         c = u.c
-        savedP = u.p.copy()
+        # savedP = u.p.copy()
+        savedP = u.p
         if u.sortChildren:
             savedP.v.children = u.oldChildren
             p = savedP  # leave selection on parent of unsorted children
@@ -2015,12 +2017,13 @@ class Undoer:
             parent_v = savedP._parentVnode()
             parent_v.children = u.oldChildren
             p = savedP  # is that enough?
-            newSiblings = p.parent().v.children
+            tempParentPos = p.parent()
+            newSiblings = parent_v.children
             # Only the child index of new position changes!
-            for i, v in enumerate(newSiblings):
-                if v.gnx == savedP.v.gnx:
-                    p._childIndex = i
-                    break
+            # for i, v in enumerate(newSiblings):
+            #     if v.gnx == savedP.v.gnx:
+            #         p._childIndex = i
+            #         break
         # p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
