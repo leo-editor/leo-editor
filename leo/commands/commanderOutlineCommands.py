@@ -1797,7 +1797,8 @@ def sortSiblings(
         p = c.p
     if not p:
         return
-    start_gnx = p.v.gnx
+
+    oldP, newP = p.copy(), p.copy()
     c.endEditing()
     undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
     if reverse:
@@ -1821,23 +1822,33 @@ def sortSiblings(
     parent_v.children = newChildren
     u.afterSort(p, bunch)
     # Sorting destroys position p, and possibly the root position.
-    # Restore the focus to its pre-sort node
-    found_gnx = False
-    for p1 in c.all_unique_positions():
-        if p1.v.gnx == start_gnx:
-            found_gnx = True
-            break
-    if found_gnx:
-        if sortChildren:
-            p = p1.parent()
-        else:
-            p = p1
-    else:
-        p = c.setPositionAfterSort(sortChildren)
+    # # Restore the focus to its pre-sort node
+    # found_gnx = False
+    # for p1 in c.all_unique_positions():
+    #     if p1.v.gnx == start_gnx:
+    #         found_gnx = True
+    #         break
+    # if found_gnx:
+    #     if sortChildren:
+    #         p = p1.parent()
+    #     else:
+    #         p = p1
+    # else:
+    #     p = c.setPositionAfterSort(sortChildren)
 
-    if p.parent():
-        p.parent().setDirty()
-    c.redraw(p)
+    # Only the child index of new position changes!
+    for i, v in enumerate(newChildren):
+        if v.gnx == oldP.v.gnx:
+            newP._childIndex = i
+            break
+
+    if newP.parent():
+        newP.parent().setDirty()
+
+    if sortChildren:
+        c.redraw(newP.parent())
+    else:
+        c.redraw(newP)
 #@+node:ekr.20070420092425: ** def cantMoveMessage
 def cantMoveMessage(c: Cmdr) -> None:
     h = c.rootPosition().h

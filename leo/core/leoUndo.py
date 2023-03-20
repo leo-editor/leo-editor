@@ -861,7 +861,10 @@ class Undoer:
     ) -> None:
         """Create an undo node for sort operations."""
         u = self
-        bunch = u.createCommonBunch(p)
+        if sortChildren:
+            bunch = u.createCommonBunch(p.parent())
+        else:
+            bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'sort'
         bunch.undoType = undoType
@@ -1293,7 +1296,9 @@ class Undoer:
         # Init status.
         u.redoing = True
         u.groupCount = 0
+        g.es("start redo!")
         if u.redoHelper:
+            g.es("has redo helper")
             u.redoHelper()
         else:
             g.trace(f"no redo helper for {u.kind} {u.undoType}")
@@ -1303,6 +1308,7 @@ class Undoer:
         u.update_status()
         u.redoing = False
         u.bead += 1
+        g.es("end of redo!")
         u.setUndoTypes()
     #@+node:ekr.20110519074734.6092: *3* u.redo helpers
     #@+node:ekr.20191213085226.1: *4*  u.reloadHelper (do nothing)
@@ -1497,13 +1503,19 @@ class Undoer:
         c = u.c
         cc = c.chapterController
         v = u.p.v
+        g.es("start of redo move")
         assert u.oldParent_v
         assert u.newParent_v
         assert v
         if cc:
             cc.selectChapterByName('main')
+
+        g.es(u.oldParent_v.children[u.oldN].gnx)
+        g.es(v.gnx)
         # Adjust the children arrays of the old parent.
         assert u.oldParent_v.children[u.oldN] == v
+        g.es("assertions done")
+
         del u.oldParent_v.children[u.oldN]
         u.oldParent_v.setDirty()
         # Adjust the children array of the new parent.
@@ -1515,6 +1527,7 @@ class Undoer:
         #
         u.updateMarks('new')
         u.newP.setDirty()
+        g.es("end of redo move")
         c.selectPosition(u.newP)
     #@+node:ekr.20050318085432.7: *4* u.redoNodeContents
     def redoNodeContents(self) -> None:
@@ -1566,9 +1579,22 @@ class Undoer:
     def redoSort(self) -> None:
         u = self
         c = u.c
-        parent_v = u.p._parentVnode()
-        parent_v.children = u.newChildren
-        p = c.setPositionAfterSort(u.sortChildren)
+        g.es("in redoSort")
+        savedP = u.p.copy()
+        if u.sortChildren:
+            savedP.v.children = u.newChildren
+            p = savedP  # leave selection on parent of sorted children
+        else:
+            parent_v = savedP._parentVnode()
+            parent_v.children = u.newChildren
+            p = savedP  # is that enough?
+            newSiblings = p.parent().v.children
+            # Only the child index of new position changes!
+            for i, v in enumerate(newSiblings):
+                if v.gnx == savedP.v.gnx:
+                    p._childIndex = i
+                    break
+        # p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085432.8: *4* u.redoTree
@@ -1981,9 +2007,21 @@ class Undoer:
     def undoSort(self) -> None:
         u = self
         c = u.c
-        parent_v = u.p._parentVnode()
-        parent_v.children = u.oldChildren
-        p = c.setPositionAfterSort(u.sortChildren)
+        savedP = u.p.copy()
+        if u.sortChildren:
+            savedP.v.children = u.oldChildren
+            p = savedP  # leave selection on parent of unsorted children
+        else:
+            parent_v = savedP._parentVnode()
+            parent_v.children = u.oldChildren
+            p = savedP  # is that enough?
+            newSiblings = p.parent().v.children
+            # Only the child index of new position changes!
+            for i, v in enumerate(newSiblings):
+                if v.gnx == savedP.v.gnx:
+                    p._childIndex = i
+                    break
+        # p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree

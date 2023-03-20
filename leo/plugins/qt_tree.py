@@ -429,7 +429,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Set the headline and maybe the icon.
         self.setItemText(item, p.h)
         # #1310: Add a tool tip.
-        item.setToolTip(0, p.h)
+        item.setToolTip(0, p.h + " " + p.v.gnx)
         if self.use_declutter:
             icon = self.declutter_node(c, p.v, item)
             if icon:
