@@ -1,6 +1,6 @@
 echo off
 cls
-cd C:\Repos\leo-editor
+call set-repo-dir
 
 echo full-test-leo
 call reindent-leo.cmd
