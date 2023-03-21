@@ -593,19 +593,17 @@ class EmergencyDialog:
         self.root.wait_window(self.top)
     #@-others
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
-# Important: The startup code uses this class,
-# so it is convenient to define it in leoGlobals.py.
-
-
 class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
+    # Important: The startup code uses this class,
+    # so it is convenient to define it in leoGlobals.py.
 
     def __init__(
         self,
         kind: str,
         encoding: str = None,
         ivar: str = None,
-        setting: str = None,
+        source: str = None,
         val: Any = None,
         path: str = None,
         tag: str = 'setting',
@@ -616,7 +614,7 @@ class GeneralSetting:
         self.kind = kind
         self.path = path
         self.unl = unl
-        self.setting = setting
+        self.source = source  # Only @font sets this.
         self.val = val
         self.tag = tag
 
@@ -624,8 +622,9 @@ class GeneralSetting:
         # Better for g.printObj.
         val = str(self.val).replace('\n', ' ')
         return (
-            f"GS: {g.shortFileName(self.path):20} "
-            f"{self.kind:7} = {g.truncate(val, 50)}")
+            f"GS: path: {g.shortFileName(self.path or '')} "
+            f"source: {self.source or ''} "
+            f"kind: {self.kind:} val: {val}")
 
     dump = __repr__
     __str__ = __repr__
@@ -2710,6 +2709,9 @@ def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) ->
     """
     if not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
+        # Put opening/closing delims on separate lines.
+        if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
+            result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
     elif '\n' not in obj:
         result = repr(obj)
     else:

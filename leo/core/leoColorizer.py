@@ -37,6 +37,7 @@ except Exception:
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoGlobals import GeneralSetting
     Color = Any
     Font = Any
     Mode = g.Bunch
@@ -55,7 +56,7 @@ def make_colorizer(c: Cmdr, widget: Widget) -> Any:
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
-    #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
+    #@+node:ekr.20220317050513.1: *3*  BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
     def __init__(self, c: Cmdr, widget: Widget = None) -> None:
         """ctor for BaseColorizer class."""
@@ -91,30 +92,66 @@ class BaseColorizer:
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if 'coloring' in g.app.debug:
-            g.printObj(self.configDict, tag='configDict')
-            g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
-    #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
+    #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors & helper
     def configure_colors(self) -> None:
         """Configure all colors in the default colors dict."""
         c = self.c
+
         # getColor puts the color name in standard form:
         # color = color.replace(' ', '').lower().strip()
-        getColor = c.config.getColor
-        for key in sorted(self.default_colors_dict.keys()):
+
+        #@+<< function: resolve_color_key >>
+        #@+node:ekr.20230314052558.1: *6* << function: resolve_color_key >>
+        def resolve_color_key(key: str) -> str:
+            """
+            Resolve the given color name to a *valid* color.
+            """
             option_name, default_color = self.default_colors_dict[key]
-            color = (
-                getColor(f"{self.language}_{option_name}") or
-                getColor(option_name) or
-                default_color
+            colors = (
+                c.config.getColor(f"{self.language}.{option_name}"),  # Preferred.
+                c.config.getColor(f"{self.language}{option_name}"),  # Legacy.
+                c.config.getColor(option_name),
+                default_color,
             )
-            self.configDict[key] = color
-    #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
+            for color in colors:
+                color1 = color
+                while color:
+                    color = self.normalize(color)
+                    if color in leo_color_database:
+                        color = leo_color_database.get(color)
+                    qt_color = QtGui.QColor(color)
+                    if qt_color.isValid():
+                        return color
+                    if color.startswith('@'):
+                        color = color[1:]
+                    else:
+                        g.trace('Invalid @color setting:', key, color1)
+                        break
+            return None  # Reasonable default.
+        #@-<< function: resolve_color_key >>
+
+        # Compute *all* color keys, not just those in default_colors_dict.
+        all_color_keys = list(self.default_colors_dict.keys())
+        if c.config.settingsDict:
+            gs: GeneralSetting
+            for key, gs in c.config.settingsDict.items():
+                if gs and gs.kind == 'color' and gs.val:
+                    all_color_keys.append(key)
+                    self.default_colors_dict[key] = (key, self.normalize(gs.val))
+        for key in sorted(all_color_keys):
+            self.configDict[key] = resolve_color_key(key)
+    #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helpers
     def configure_fonts(self) -> None:
-        """Configure all fonts in the default fonts dict."""
+        """
+        Configure:
+        - All fonts in the the default fonts dict.
+        - All fonts mentioned in any @font setting.
+        """
         c = self.c
-        isQt = g.app.gui.guiName().startswith('qt')
-        #
+        self.font_selectors = ('family', 'size', 'slant', 'weight')
+        # Keys are font names. Values are Dicts[selector, value]
+        self.new_fonts: Dict[str, Dict] = {}
+
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
         if not defaultBodyfont:
@@ -123,86 +160,135 @@ class BaseColorizer:
                 "body_text_font_slant", "body_text_font_weight",
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
-        #
-        # Set all fonts.
-        for key in sorted(self.default_font_dict.keys()):
+
+        # Handle syntax-coloring fonts.
+        if c.config.settingsDict:
+            gs: GeneralSetting
+            setting_pat = re.compile(r'@font\s+(\w+)\.(\w+)')
+            valid_languages = g.app.language_delims_dict.keys()
+            valid_tags = self.default_font_dict.keys()
+            for setting in sorted(c.config.settingsDict):
+                gs = c.config.settingsDict.get(setting)
+                if gs and gs.source:  # An @font setting.
+                    m = setting_pat.match(gs.source)
+                    if m:
+                        language, tag = m.group(1), m.group(2)
+                        if language in valid_languages and tag in valid_tags:
+                            self.resolve_font(setting, language, tag, gs.val)
+                        else:
+                            g.trace('Ignoring', gs.source)
+
+        # Create all new syntax-coloring fonts.
+        for font_name in self.new_fonts:
+            d = self.new_fonts[font_name]
+            font = g.app.gui.getFontFromParams(
+                family=d.get('family'),
+                size=self.zoomed_size(font_name, d.get('size')),
+                slant=d.get('slant'),
+                weight=d.get('weight'),
+                tag=font_name,
+            )
+            # #1919: This really isn't correct.
+            self.configure_hard_tab_width(font)
+            self.fonts[font_name] = font
+
+        # Set default fonts.
+        for key in self.default_font_dict.keys():
+            self.fonts[key] = None  # Default
             option_name = self.default_font_dict[key]
-            # Find language specific setting before general setting.
-            table = (
+            for name in (
                 f"{self.language}_{option_name}",
                 option_name,
-            )
-            for name in table:
+            ):
                 font = self.fonts.get(name)
                 if font:
                     break
-                font = self.find_font(key, name)
+                font = self.create_font(key, name)
                 if font:
-                    self.fonts[key] = font
-                    if isQt and key == 'url':
-                        font.setUnderline(True)
+                    self.fonts[name] = font
+                    if key == 'url':
+                        try:  # Special case for Qt.
+                            font.setUnderline(True)
+                        except Exception:
+                            pass
                     # #1919: This really isn't correct.
                     self.configure_hard_tab_width(font)
                     break
-            else:
-                # Neither setting exists.
-                self.fonts[key] = None  # Essential
-    #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
-    # Keys are key::settings_names, values are cumulative font size.
+    #@+node:ekr.20230314052820.1: *6* BaseColorizer.resolve_font
+    def resolve_font(self, setting: str, language: str, tag: str, val: str) -> None:
+        """
+        Resolve the arguments to a selector and font name.
+
+        Add the selector to the font's entry in self.new_fonts.
+        """
+        for selector in self.font_selectors:
+            if selector in setting:
+                font_name = f"{language}.{tag}".lower()
+                font_info = self.new_fonts.get(font_name, {})
+                font_info[selector] = val
+                self.new_fonts[font_name] = font_info
+    #@+node:ekr.20190326034006.1: *6* BaseColorizer.create_font
+    # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
 
-    def find_font(self, key: str, setting_name: str) -> Any:
+    def create_font(self, key: str, setting_name: str) -> Any:
         """
         Return the font for the given setting name.
+
+        Return None if no font setting with the given name exists.
         """
-        trace = 'zoom' in g.app.debug
-        c, get = self.c, self.c.config.get
-        default_size = c.config.defaultBodyFontSize
+        trace = 'coloring' in g.app.debug
+        c = self.c
+        get = c.config.get
         for name in (setting_name, setting_name.rstrip('_font')):
-            size_error = False
             family = get(name + '_family', 'family')
             size = get(name + '_size', 'size')
             slant = get(name + '_slant', 'slant')
             weight = get(name + '_weight', 'weight')
             if family or slant or weight or size:
-                key = f"{key}::{setting_name}"
-                if key in self.zoom_dict:
-                    old_size = self.zoom_dict.get(key)
-                else:
-                    # It's a good idea to set size explicitly.
-                    old_size = size or default_size
-                if isinstance(old_size, str):
-                    # All settings should be in units of points.
-                    try:
-                        if old_size.endswith(('pt', 'px'),):
-                            old_size = int(old_size[:-2])
-                        else:
-                            old_size = int(old_size)
-                    except ValueError:
-                        size_error = True
-                elif not isinstance(old_size, int):
-                    size_error = True
-                if size_error:
-                    g.trace('bad old_size:', old_size.__class__, old_size)
-                    size = old_size
-                else:
-                    # #490: Use c.zoom_size if it exists.
-                    zoom_delta = getattr(c, 'zoom_delta', 0)
-                    if zoom_delta:
-                        size = old_size + zoom_delta
-                        self.zoom_dict[key] = size
                 slant = slant or 'roman'
                 weight = weight or 'normal'
-                size = str(size)
-                font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                # A good trace: the key shows what is happening.
+                size = self.zoomed_size(f"{key}::{setting_name}", size)
+                font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
                 if font:
                     if trace:
+                        # A good trace: the key shows what is happening.
                         g.trace(
-                            f"key: {key:>35} family: {family or 'None'} "
+                            f"Create font: {id(font)} "
+                            f"setting: {setting_name} "
+                            f"key: {key} family: {family or 'None'} "
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
+    #@+node:ekr.20230317072911.1: *6* BaseColorizer.zoomed_size
+    def zoomed_size(self, key: str, size: str) -> str:
+        """
+        Return the effect size (as a string) of the font after zooming.
+
+        `key`: key for the zoom_dict.
+        """
+        c = self.c
+        default_size: str = c.config.defaultBodyFontSize
+        # Compute i_size.
+        i_size: int
+        if key in self.zoom_dict:
+            i_size = self.zoom_dict.get(key)
+        else:
+            s_size: str = size or default_size
+            if s_size.endswith(('pt', 'px'),):
+                s_size = s_size[:-2]
+            try:
+                i_size = int(s_size)
+            except ValueError:
+                # Don't zoom.
+                return s_size
+
+        # Bump i_size by the zoom_delta.
+        zoom_delta: int = getattr(c, 'zoom_delta', 0)
+        if zoom_delta:
+            i_size += zoom_delta
+            self.zoom_dict[key] = i_size
+        return str(i_size)
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font: Font) -> None:
         """
@@ -482,6 +568,12 @@ class BaseColorizer:
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
+    #@+node:ekr.20230313051116.1: *3* BaseColorizer.normalize
+    def normalize(self, s: str) -> str:
+        """Return the normalized value of s."""
+        if s.startswith('@'):
+            s = s[1:]
+        return s.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
     #@+node:ekr.20171114041307.1: *3* BaseColorizer.reloadSettings
     #@@nobeautify
     def reloadSettings(self) -> None:
@@ -629,6 +721,24 @@ class BaseColorizer:
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
+        full_tag = f"{self.language}.{tag}"
+        default_tag = f"{tag}_font"  # See default_font_dict.
+        font: Any = None  # Set below. Define here for report().
+
+        def report(extra: str = None) -> None:
+            """A superb trace. Don't remove it."""
+            s2 = repr(s[i:j])
+            if len(s2) > 20:
+                s2 = repr(s[i : i + 17 - 2] + '...')
+            delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
+            font_s = id(font) if font else 'None'
+            print(
+                f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:14} {s2:>22} "
+                f"{self.rulesetName}:{delegate_s}{self.matcher_name}"
+            )
+            if extra:
+                print(f"{' ':48} {extra}")
+
         self.n_setTag += 1
         if i == j:
             return
@@ -639,13 +749,14 @@ class BaseColorizer:
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots') :]
-        colorName = self.configDict.get(tag)  # This color name should already be valid.
+        # This color name should already be valid.
+        d = self.configDict
+        colorName = d.get(f"{self.language}.{tag}") or d.get(tag)
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.
-        # This now works because all keys in leo_color_database are normalized.
-        colorName = colorName.replace(
-            ' ', '').replace('-', '').replace('_', '').lower().strip()
+        #                   (All keys in leo_color_database are normalized.)
+        colorName = self.normalize(colorName)
         colorName = leo_color_database.get(colorName, colorName)
         # Get the actual color.
         color = self.actualColorDict.get(colorName)
@@ -654,14 +765,19 @@ class BaseColorizer:
             if color.isValid():
                 self.actualColorDict[colorName] = color
             else:
-                g.trace('unknown color name', colorName, g.callers())
+                # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
+                report(extra='*** unknown color name')
+                g.trace(full_tag, d.get(full_tag))
+                g.trace(tag, d.get(tag))
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
-        font = self.fonts.get(tag)
-        if font:
-            format.setFont(font)
-            self.configure_hard_tab_width(font)  # #1919.
+        for font_name in (full_tag, tag, default_tag):
+            font = self.fonts.get(font_name)
+            if font:
+                format.setFont(font)
+                self.configure_hard_tab_width(font)  # #1919.
+                break
         if tag in ('blank', 'tab'):
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
@@ -679,17 +795,7 @@ class BaseColorizer:
             format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
         if trace:
-            # A superb trace.
-            if len(repr(s[i:j])) <= 20:
-                s2 = repr(s[i:j])
-            else:
-                s2 = repr(s[i : i + 17 - 2] + '...')
-            kind_s = f"{self.language}.{tag}"
-            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
-            print(
-                f"setTag: {kind_s:32} {i:3} {j:3} {s2:>22} "
-                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
-            )
+            report()  # A superb trace.
         self.highlighter.setFormat(i, j - i, format)
     #@+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
@@ -904,12 +1010,6 @@ class JEditColorizer(BaseColorizer):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20170514054524.1: *4* jedit.getFontFromParams
-    def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int = 12) -> None:
-        return None
-
-    # def setFontFromConfig(self):
-        # pass
     #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name: str) -> bool:
         """Name may be a language name or a delegate name."""
@@ -918,8 +1018,8 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        # if 'coloring' in g.app.debug and not g.unitTesting:
-        #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
+        if 'coloring' in g.app.debug:
+            g.trace(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
@@ -1147,7 +1247,7 @@ class JEditColorizer(BaseColorizer):
             p = self.c and self.c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
-                g.trace(f"\nNEW NODE: {p.h}\n")
+                g.trace(f"NEW NODE: {p.h}\n")
         t1 = time.process_time()
         i = f(s) if f else 0
         while i < len(s):
@@ -2711,7 +2811,7 @@ class PygmentsColorizer(BaseColorizer):
             p = self.c and self.c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
-                g.trace(f"\nNEW NODE: {p.h}\n")
+                g.trace(f"(pygments) NEW NODE: {p.h}\n")
         t1 = time.process_time()
         highlighter = self.highlighter
         #
@@ -2801,7 +2901,7 @@ class PygmentsColorizer(BaseColorizer):
             # pylint: disable=no-member
             if trace and language not in self.unknown_languages:
                 self.unknown_languages.append(language)
-                g.trace(f"\nno lexer for {language!r}. Using python 3 lexer\n")
+                g.trace(f"\nno pygments lexer for {language!r}. Using python 3 lexer\n")
             lexer = lexers.Python3Lexer()
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer

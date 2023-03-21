@@ -880,6 +880,7 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind,
             path=c.mFileName,
             tag='setting',
+            source=p.h if p else '',
             unl=p.get_UNL() if p else '',
             val=val,
         )
@@ -1400,7 +1401,7 @@ class GlobalConfigManager:
             return None
     #@+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
     ) -> Any:
         """Compute a font from font parameters.
 
@@ -1730,7 +1731,7 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: str, slant: str, weight: str, defaultSize: int = 12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
     ) -> Any:
         """
         Compute a font from font parameters. This should be used *only*
@@ -1904,7 +1905,7 @@ class LocalConfigManager:
             if found:
                 return True
         return False
-    #@+node:ekr.20230306104439.1: *3* c.config.printColorSettings (new)
+    #@+node:ekr.20230306104439.1: *3* c.config.printColorSettings
     def printColorSettings(self) -> None:
         """
         Print the value of all @color settings.
@@ -1939,7 +1940,7 @@ class LocalConfigManager:
         # Use a single g.es statement.
         result.append('\n' + legend)
         g.es_print('', ''.join(result), tabName='Settings')
-    #@+node:ekr.20230306104456.1: *3* c.config.printFontSettings (new)
+    #@+node:ekr.20230306104456.1: *3* c.config.printFontSettings
     def printFontSettings(self) -> None:
         """
         Print the value of every @font setting.
@@ -2029,7 +2030,13 @@ class LocalConfigManager:
             path = gs.path
             if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):  # #1341.
                 g.trace("over-riding setting:", name, "from", path)
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+        d[key] = g.GeneralSetting(
+            kind,
+            path=c.mFileName,
+            source=p.h if p else '',
+            val=val,
+            tag='setting',
+        )
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
     def settingIsActiveInPath(self, gs: str, target_path: str) -> bool:
         """Return True if settings file given by path actually defines the setting, gs."""
