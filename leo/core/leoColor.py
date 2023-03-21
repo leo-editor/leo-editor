@@ -34,16 +34,8 @@ will return None.
 from typing import Tuple
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
-#@@language rest
-#@+at
-# All names added to this database should be in normalized form,
-# otherwise the accessor functions won't work.
-#
-# Adding names here will make them availiable to all gui's and
-# dhtml that use this service.
-#
-# Names are normalized by removing spaces and capitalization.
-#@@c
+# Names should be lower case, without spaces or special characteres.
+# See BaseColorizer.normalize().
 leo_color_database = {
     # leo colors
     "leoblue": "#F0F8FF",  #alice blue
@@ -739,7 +731,7 @@ for key in leo_color_database:
         print(f'\nleoColor.py: non-normalized key: {key!r}\n')
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
-#@+node:bob.20071231111744.2: *3* get / getColor
+#@+node:bob.20071231111744.2: *3* function: leoColor.get / getColor
 def getColor(name: str, default: str = None) -> str:
     """ Translate a named color into #rrggbb' format.
 
@@ -763,7 +755,7 @@ def getColor(name: str, default: str = None) -> str:
     return None
 
 get = getColor
-#@+node:bob.20080115070511.4: *3* getRGB / getColorRGB
+#@+node:bob.20080115070511.4: *3* function: leoColor.getRGB / getColorRGB
 def getColorRGB(name: str, default: str = None) -> Tuple[int, int, int]:
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
@@ -774,15 +766,17 @@ def getColorRGB(name: str, default: str = None) -> Tuple[int, int, int]:
     return color
 
 getRGB = getColorRGB
-#@+node:bob.20080115072302: *3* getCairo / getColorCairo
+#@+node:bob.20080115072302: *3* function: leoColor.getCairo / getColorCairo
 def getColorCairo(name: str, default: str = None) -> Tuple[float, float, float]:
     """Convert a named color into a cairo color tuple."""
-    # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)
     if color is None:
         return None
-    r, g, b = color
-    return r / 255.0, g / 255.0, b / 255.0
+    try:
+        r, g, b = color
+        return r / 255.0, g / 255.0, b / 255.0
+    except Exception:
+        return None
 
 getCairo = getColorCairo
 #@-others

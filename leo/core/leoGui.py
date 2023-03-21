@@ -236,7 +236,9 @@ class LeoGui:
         """Return the window information."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
+    def getFontFromParams(self,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
+    ) -> Any:
         raise NotImplementedError
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
     def getFullVersion(self, c: Cmdr = None) -> str:
@@ -459,7 +461,9 @@ class NullGui(LeoGui):
     def finishCreate(self) -> None:
         pass
 
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int = 12) -> Any:
+    def getFontFromParams(self,
+        family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
+    ) -> Any:
         return None
 
     def getIconImage(self, name: str) -> None:
