@@ -1,8 +1,8 @@
 echo off
-cd c:\Repos\leo-editor
+call set-repo-dir
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
 
 echo mypy-leo
-python -m mypy --debug-cache leo %*
+py -m mypy --debug-cache leo %*
