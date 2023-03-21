@@ -1491,10 +1491,8 @@ class Undoer:
         assert v
         if cc:
             cc.selectChapterByName('main')
-
         # Adjust the children arrays of the old parent.
         assert u.oldParent_v.children[u.oldN] == v
-
         del u.oldParent_v.children[u.oldN]
         u.oldParent_v.setDirty()
         # Adjust the children array of the new parent.
@@ -1843,8 +1841,8 @@ class Undoer:
         assert v
         # Adjust the children arrays.
         assert u.newParent_v.children[u.newN] == v
-        del u.newParent_v.children[u.newN]  # ! This line changes oldChildren of sort beads unless sorts are copied!
-        u.oldParent_v.children.insert(u.oldN, v)  # ! This line changes oldChildren of sort beads  unless sorts are copied!
+        del u.newParent_v.children[u.newN]
+        u.oldParent_v.children.insert(u.oldN, v)
         # Recompute the parent links.
         v.parents.append(u.oldParent_v)
         v.parents.remove(u.newParent_v)

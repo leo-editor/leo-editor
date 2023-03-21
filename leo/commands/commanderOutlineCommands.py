@@ -1773,7 +1773,7 @@ def reverseSortSiblings(
 def sortChildren(
     self: Self,
     event: Event = None,
-    key: str = None,
+    key: Callable = None,
     reverse: bool = False
 ) -> None:
     """Sort the children of a node."""
@@ -1785,11 +1785,11 @@ def sortChildren(
 @g.commander_command('sort-siblings')
 def sortSiblings(
     self: Self,
-    event: Event=None,  # cmp keyword is no longer supported.
-    key: Callable=None,
-    p: Position=None,
-    sortChildren: bool=False,
-    reverse: bool=False,
+    event: Event = None,  # cmp keyword is no longer supported.
+    key: Callable = None,
+    p: Position = None,
+    sortChildren: bool = False,
+    reverse: bool = False,
 ) -> None:
     """Sort the siblings of a node."""
     c, u = self, self.undoer

@@ -4278,7 +4278,6 @@ class Commands:
     # Compatibility, but confusing.
 
     selectVnode = selectPosition
-
     #@+node:ekr.20070226113916: *5* c.treeSelectHelper
     def treeSelectHelper(self, p: Position) -> None:
         c = self
