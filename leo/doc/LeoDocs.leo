@@ -4739,6 +4739,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'after-auto'                           after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
+'after-reload-settings'                after 'reload-settings' command     c
 'before-create-leo-frame'              before frame.finishCreate           c
 'bodyclick1'                   yes     before normal click in body         c,p,v,event
 'bodyclick2'                           after normal click in body          c,p,v,event
@@ -6562,11 +6563,13 @@ The **Great Graph Aha**: Leo outlines can represent arbitrary directed graphs. T
 
 The body text of the @enabled-plugins node contains a list of enabled plugins. Notes:
 
-- Leo attempts to load all plugins every time an @enabled-plugins node is seen. If the plugin has already been loaded, Leo silently ignores the request to re-enable the plugin. Leo never attempts to disable a plugin while processing enabled plugin strings. Thus, plugins enabled in an @enabled-plugins node in leoSettings.leo *will* be enabled regardless of the contents of any other @enabled-plugins node.
+Leo attempts to load all plugins every time an @enabled-plugins node is seen. If the plugin has already been loaded, Leo silently ignores the request to re-enable the plugin. Leo never attempts to disable a plugin while processing enabled plugin strings. Thus, plugins enabled in an @enabled-plugins node in leoSettings.leo *will* be enabled regardless of the contents of any other @enabled-plugins node.
 
-- You can enable plugins by file name or by module name.  File names end in .py and are resolved relative to the leo/plugins directory.  Module names do *not* end in .py and are found using Python's import mechanism--the module name must be on PYTHONPATH.
+You can enable plugins by file name or by module name:
+- Leo looks in the leo/plugins directory for names ending in .py.
+- Leo uses imports a module directly for names that do *not* end in .py, so you can load plugins from any path on PYTHONPATH, including paths given in sitecustomize.py.
 
-- g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
+g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
 </t>
 <t tx="ekr.20070816092449">Question and answer from plumloco.
 
@@ -15201,7 +15204,7 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 .. index::
     pair: Plugins; Tutorial
 
-`Leo plugins &lt;plugins.html&gt;`_ are Python programs that extend what Leo can do. Plugins reside in the leo/plugins folder. **@enabled-plugins** settings node enable plugins. Leo has dozens of plugins, including:
+`Leo plugins &lt;plugins.html&gt;`_ are Python programs that extend what Leo can do. Plugins usually reside in the leo/plugins folder. **@enabled-plugins** settings node enable plugins. Leo has dozens of plugins, including:
 
 - `bookmarks.py`_ manages and shows bookmarks.
 - `contextmenu.py`_ shows a context menu when you right-click a headline.

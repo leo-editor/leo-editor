@@ -4647,11 +4647,15 @@ class Commands:
         c.configurables = list(set(c.configurables))
         c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
         for obj in c.configurables:
-            func = getattr(obj, 'reloadSettings', None)
+            func = (
+                getattr(obj, 'reloadSettings', None)
+                or getattr(obj, 'reload_settings', None)  # An official alias.
+            )
             if func:
                 # pylint: disable=not-callable
                 try:
                     func()
+                    g.doHook("after-reload-settings", c=c)
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
