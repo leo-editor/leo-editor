@@ -6,7 +6,6 @@
 from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
-import copy
 from collections import defaultdict
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -1759,7 +1758,7 @@ def reverseSortChildren(
     key: str = None
 ) -> None:
     """Sort the children of a node in reverse order."""
-    self.sortChildren(key=key, reverse=True)  # as reverse
+    self.sortChildren(key=key, reverse=True)  # as reverse, Fixes #3188
 #@+node:felix.20230318172511.1: *3* c_oc.reverseSortSiblings
 @g.commander_command('reverse-sort-siblings')
 def reverseSortSiblings(
@@ -1768,7 +1767,7 @@ def reverseSortSiblings(
     key: str = None
 ) -> None:
     """Sort the siblings of a node in reverse order."""
-    self.sortSiblings(key=key, reverse=True)  # as reverse
+    self.sortSiblings(key=key, reverse=True)  # as reverse, Fixes #3188
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
 def sortChildren(
@@ -1805,8 +1804,8 @@ def sortSiblings(
     if reverse:
         undoType = 'Reverse ' + undoType
     parent_v = p._parentVnode()
-    oldChildren = copy.copy(parent_v.children)
-    newChildren = copy.copy(parent_v.children)
+    oldChildren = parent_v.children[:]
+    newChildren = parent_v.children[:]
     if key is None:
 
         def lowerKey(self: Self) -> str:
@@ -1820,23 +1819,10 @@ def sortSiblings(
     # 2010/01/20. Fix bug 510148.
     c.setChanged()
     bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
-    parent_v.children = newChildren
+    # A copy, so its not the undo bead's oldChildren. Fixes #3205
+    parent_v.children = newChildren[:]
     u.afterSort(p, bunch)
     # Sorting destroys position p, and possibly the root position.
-    # # Restore the focus to its pre-sort node
-    # found_gnx = False
-    # for p1 in c.all_unique_positions():
-    #     if p1.v.gnx == start_gnx:
-    #         found_gnx = True
-    #         break
-    # if found_gnx:
-    #     if sortChildren:
-    #         p = p1.parent()
-    #     else:
-    #         p = p1
-    # else:
-    #     p = c.setPositionAfterSort(sortChildren)
-
     # Only the child index of new position changes!
     for i, v in enumerate(newChildren):
         if v.gnx == oldP.v.gnx:
