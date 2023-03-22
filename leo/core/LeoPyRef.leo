@@ -205,6 +205,7 @@
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
+<v t="tom.20230319122643.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
 <v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
 <v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
 <v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
@@ -3956,9 +3957,10 @@ def batch_rule8a(colorer, s, i):
 </t>
 <t tx="ekr.20221201043917.1">@language batch
 echo off
-cd C:\Repos\leo-editor
+call set-repo-dir
+
 echo test-leo
-python -m unittest %*
+py -m unittest %*
 </t>
 <t tx="ekr.20221201080228.1">@language python
 #!/usr/bin/env python3
@@ -3985,42 +3987,36 @@ black.main()
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
 echo off
+call set-repo-dir
+
 echo pylint-leo
 time /T
-call python -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
+call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
 time /T
 </t>
 <t tx="ekr.20221204071146.1">@language batch
 echo off
-cd c:\Repos\leo-editor
+call set-repo-dir
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
 
 echo mypy-leo
-python -m mypy --debug-cache leo %*
+py -m mypy --debug-cache leo %*
 </t>
 <t tx="ekr.20221204071220.1">@language batch
 echo off
 cls
-cd c:\Repos\leo-editor
-
-rem echo test-one-leo: TestHtml.test_brython
-rem call python -m unittest leo.unittests.test_importers.TestHtml.test_brython
-
-rem echo test-one-leo: test_leoFind.TestFind
-rem call python -m unittest leo.unittests.core.test_leoFind.TestFind
-
-rem echo test-one-leo: test_CheckerCommands.TestFind.test_check_nodes
-rem call python -m unittest leo.unittests.commands.test_checkerCommands.TestChecker.test_check_nodes
+::cd c:\Repos\leo-editor
+call set-repo-dir
 
 echo test-one-leo: test_leoFind.TestFind
-call python -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
+call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
 </t>
 <t tx="ekr.20221204071554.1">@language batch
 echo off
 cls
-cd C:\Repos\leo-editor
+call set-repo-dir
 
 echo full-test-leo
 call reindent-leo.cmd
@@ -4036,35 +4032,39 @@ echo Done!
 </t>
 <t tx="ekr.20221204072154.1">@language batch
 echo off
-cd c:\Repos\leo-editor
+::cd c:\Repos\leo-editor
+call set-repo-dir
 
 echo reindent-leo
 call reindent leo
 </t>
 <t tx="ekr.20221204072456.1">@language batch
 echo off
-cd C:\Repos\leo-editor
+call set-repo-dir
 
 echo beautify-leo
-call python -m leo.core.leoAst --orange --recursive leo\core
-call python -m leo.core.leoAst --orange --recursive leo\commands
-call python -m leo.core.leoAst --orange --recursive leo\plugins\importers
-call python -m leo.core.leoAst --orange --recursive leo\plugins\writers
+call py -m leo.core.leoAst --orange --recursive leo\core
+call py -m leo.core.leoAst --orange --recursive leo\commands
+call py -m leo.core.leoAst --orange --recursive leo\plugins\importers
+call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
 </t>
 <t tx="ekr.20221204074235.1">@language batch
 echo off
-cd c:\Repos\leo-editor
+::cd c:\Repos\leo-editor
+call set-repo-dir
+
 rem: See leo-editor/setup.cfg for defaults.
 
 echo flake8-leo
-python -m flake8 %*
+py -m flake8 %*
 </t>
 <t tx="ekr.20230115020533.1">@language batch
 echo off
-cd c:\Repos\leo-editor
+::cd c:\Repos\leo-editor
+call set-repo-dir
 
 echo black leo.core
-call python -m black --skip-string-normalization leo\core
+call py -m black --skip-string-normalization leo\core
 
 rem echo.
 rem echo black leo.commands
@@ -4073,11 +4073,17 @@ rem call python -m black --skip-string-normalization leo\commands</t>
 echo off
 cls
 rem -a: write all files  (make clean)
-cd C:\Repos\leo-editor\doc\html
+call set-repo-dir
+cd leo\doc\html
+
 echo.
 echo sphinx-build -a (make clean)
 echo.
 sphinx-build -M html . _build -a
+</t>
+<t tx="tom.20230319122643.1">:: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
+@echo off
+cd %~dp0..\..
 </t>
 </tnodes>
 </leo_file>
