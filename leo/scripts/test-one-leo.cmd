@@ -1,4 +1,4 @@
-echo off
+@echo off
 cls
 call %~dp0\set-repo-dir
 

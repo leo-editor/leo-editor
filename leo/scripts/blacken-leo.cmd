@@ -1,4 +1,4 @@
-echo off
+@echo off
 call %~dp0\set-repo-dir
 
 echo black leo.core

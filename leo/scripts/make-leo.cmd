@@ -1,4 +1,4 @@
-echo off
+@echo off
 cls
 rem -a: write all files  (make clean)
 call %~dp0\set-repo-dir
