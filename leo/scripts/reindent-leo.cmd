@@ -15,3 +15,8 @@ echo Cannot find reindent.py, skipping reindentation
 
 :done
 
+echo reindent-leo leo/core
+call reindent leo/core
+
+echo reindent-leo leo/commands
+call reindent leo/commands
