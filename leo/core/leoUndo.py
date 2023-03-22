@@ -878,7 +878,7 @@ class Undoer:
     def createCommonBunch(self, p: Position) -> None:
         """Return a bunch containing all common undo info.
         This is mostly the info for recreating an empty node at position p."""
-        c, u = self.c, self
+        c = self.c
         w = c.frame.body.wrapper
         return g.Bunch(
             oldMarked=p and p.isMarked(),
