@@ -311,13 +311,13 @@
 <v t="ekr.20140912075503.19274"><vh>@color splitter-bg = white</vh></v>
 <v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
-<v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19276"><vh>@string splitter-border-style = solid</vh></v>
 <v t="ekr.20180317172528.1"><vh>@color splitter-hover-bg = @LightSteelBlue1</vh></v>
 </v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
 <v t="ekr.20150711073509.1"><vh>@color status-fg = black</vh></v>
-<v t="ekr.20140912075503.19348"><vh>@color status-border-style = solid</vh></v>
+<v t="ekr.20140912075503.19348"><vh>@string status-border-style = solid</vh></v>
 <v t="ekr.20140912075503.19349"><vh>@color status-border-color = darkgrey</vh></v>
 </v>
 <v t="ekr.20150626061905.1"><vh>Status area colors for searches</vh>
@@ -485,11 +485,8 @@
 </v>
 </v>
 <v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
-<v t="ekr.20140912075503.19360"><vh>@string screencast-bg = yellow</vh></v>
-<v t="ekr.20140912075503.19361"><vh>@string screencast-font-family = Times New Roman</vh></v>
-<v t="ekr.20140912075503.19362"><vh>@string screencaset-font-size = 18pt</vh></v>
-<v t="ekr.20140912075503.19363"><vh>@string screencast-font-weight = normal</vh></v>
-<v t="ekr.20140912075503.19364"><vh>@string screencaset-font-style = normal</vh></v>
+<v t="ekr.20140912075503.19360"><vh>@color screencast-bg = yellow</vh></v>
+<v t="ekr.20230316031838.1"><vh>@font screencast</vh></v>
 </v>
 </v>
 </v>
@@ -1031,8 +1028,6 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
-<v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
@@ -2157,7 +2152,7 @@
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
-<v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
+<v t="ekr.20060828145228.1"><vh>@font php.keyword</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
 <v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
@@ -2170,10 +2165,10 @@
 <v t="ekr.20080705064822.6"><vh>@data forth-italic-words</vh></v>
 <v t="ekr.20080705064822.7"><vh>@data forth-string-word-pairs</vh></v>
 <v t="ekr.20080705064822.5"><vh>@data forth-words</vh></v>
-<v t="ekr.20080703111151.17"><vh>@font forth keyword2_font</vh></v>
-<v t="ekr.20080703111151.12"><vh>@font forth keyword3_font</vh></v>
-<v t="ekr.20080703111151.14"><vh>@font forth keyword4_font</vh></v>
-<v t="ekr.20080703111151.15"><vh>@font forth keyword5_font</vh></v>
+<v t="ekr.20080703111151.17"><vh>@font forth.keyword2</vh></v>
+<v t="ekr.20080703111151.12"><vh>@font forth.keyword3</vh></v>
+<v t="ekr.20080703111151.14"><vh>@font forth.keyword4</vh></v>
+<v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -3458,7 +3453,12 @@ aquamarine1</t>
 <t tx="ekr.20060827102902.1"></t>
 <t tx="ekr.20060827102902.2"></t>
 <t tx="ekr.20060828110551"></t>
-<t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.</t>
+<t tx="ekr.20060828110551.1">Valid settings for _style strings are None, normal, bold, italic, bold-italic.
+
+New in Leo 6.7.3:
+
+@font settings for particular languages must have the form @font &lt;language-name&gt;.&lt;tag&gt;
+where &lt;tag&gt; is one of the tags in the default_font_dict in leoColor.py.</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
@@ -5489,8 +5489,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21838">Save A &amp;Copy...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
-<t tx="ekr.20131213135427.21842"></t>
-<t tx="ekr.20131213135427.21843"></t>
 <t tx="ekr.20131213135427.21844">&amp;Compare Leo Files...</t>
 <t tx="ekr.20131213135427.21845"></t>
 <t tx="ekr.20131213135427.21846"></t>
@@ -8850,10 +8848,6 @@ do at first. All other font settings are defined in terms of the basic fonts.</t
 <t tx="ekr.20140912075503.19358"></t>
 <t tx="ekr.20140912075503.19359"></t>
 <t tx="ekr.20140912075503.19360"></t>
-<t tx="ekr.20140912075503.19361"></t>
-<t tx="ekr.20140912075503.19362"></t>
-<t tx="ekr.20140912075503.19363"></t>
-<t tx="ekr.20140912075503.19364"></t>
 <t tx="ekr.20140912075503.19365">These must be @string settings, even though they do affect colors.</t>
 <t tx="ekr.20140912075503.19366"></t>
 <t tx="ekr.20140912075503.19367"></t>
@@ -11749,6 +11743,11 @@ date;;={|{x=time.asctime()}|}
 # teh=the
 # hellow=hello
 
+</t>
+<t tx="ekr.20230316031838.1">screencast_family = Times New Roman
+screencast_size = 18pt
+screencast_weight = normal
+screencaset_style = normal
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 

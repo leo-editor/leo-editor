@@ -561,6 +561,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
 def revert(self: Self, event: Event = None) -> None:
     """Revert the contents of a Leo outline to last saved contents."""
     c = self
+    u = c.undoer
     # Make sure the user wants to Revert.
     fn = c.mFileName
     if not fn:
@@ -573,6 +574,7 @@ def revert(self: Self, event: Event = None) -> None:
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
+        u.clearUndoState()
 #@+node:ekr.20210316075815.1: *3* c_file.save-as-leojs
 @g.commander_command('file-save-as-leojs')
 @g.commander_command('save-file-as-leojs')
