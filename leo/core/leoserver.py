@@ -3469,9 +3469,9 @@ class LeoServer:
             # 'search-forward',
             'search-return-to-origin',
 
-            'set-find-everywhere',
-            'set-find-node-only',
-            'set-find-suboutline-only',
+            # 'set-find-everywhere',
+            # 'set-find-node-only',
+            # 'set-find-suboutline-only',
             'set-replace-string',
             'set-search-string',
 
