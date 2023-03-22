@@ -1180,7 +1180,7 @@ def insertHeadline(
 
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self: Self, event: Event = None) -> Optional[Position]:
-    """Insert a node as the last last of the previous node."""
+    """Insert a node as the first child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_first_child=True)
 
