@@ -1,6 +1,6 @@
 echo off
 cls
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo full-test-leo
 call reindent-leo.cmd

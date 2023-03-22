@@ -1,5 +1,5 @@
 echo off
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo pylint-leo
 time /T

@@ -1,6 +1,6 @@
 echo off
 ::cd c:\Repos\leo-editor
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 rem: See leo-editor/setup.cfg for defaults.
 
