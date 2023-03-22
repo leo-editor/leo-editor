@@ -897,7 +897,7 @@ class Undoer:
         return u.undoMenuLabel != "Can't Undo"
     #@+node:ekr.20031218072017.3609: *4* u.clearUndoState
     def clearUndoState(self) -> None:
-        """Clears then entire Undo state.
+        """Clears the entire Undo state.
 
         All non-undoable commands should call this method."""
         u = self
