@@ -1,5 +1,5 @@
-echo off
-call set-repo-dir
+@echo off
+call %~dp0\set-repo-dir
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.

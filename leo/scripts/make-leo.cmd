@@ -1,7 +1,7 @@
-echo off
+@echo off
 cls
 rem -a: write all files  (make clean)
-call set-repo-dir
+call %~dp0\set-repo-dir
 cd leo\doc\html
 
 echo.
