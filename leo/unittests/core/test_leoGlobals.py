@@ -141,6 +141,18 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl (new)
+    def test_g_findUnl(self):
+        
+        assert False
+        # table = (
+            # ('abc a bc x', 'bc', 0, 6),
+            # ('abc a bc x', 'bc', 1, 6),
+            # ('abc a x', 'bc', 0, -1),
+        # )
+        # for s, word, i, expected in table:
+            # actual = g.find_word(s, word, i)
+            # self.assertEqual(actual, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
