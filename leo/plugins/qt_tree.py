@@ -103,6 +103,8 @@ class LeoQtTree(leoFrame.LeoTree):
         tw = self.treeWidget
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
+        tw.setMouseTracking(True)
+        tw.itemEntered.connect(self.onItemEntered)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
         tw.itemCollapsed.connect(self.onItemCollapsed)
         tw.itemExpanded.connect(self.onItemExpanded)
@@ -725,6 +727,21 @@ class LeoQtTree(leoFrame.LeoTree):
         # Only methods that actually generate events should set lockouts.
         self.select(p)  # This is a call to LeoTree.select(!!)
         c.outerUpdate()
+    #@+node:tom.20230324155453.1: *4* qtree.onItemEntered
+    def onItemEntered(self, item: Item, col: int):
+        """Expand/Contract a node when mouse moves over it.
+        
+        <CTRL-hover> -- expand;
+        <SHIFT-hover> -- contract.
+        """
+        if hasattr(g.app.gui, 'qtApp'):
+            mods = g.app.gui.qtApp.keyboardModifiers()
+            isCtrl = bool(mods & KeyboardModifier.ControlModifier)
+            isShift = bool(mods & KeyboardModifier.ShiftModifier)
+            if isCtrl:
+                self.expandItem(item)
+            elif isShift:
+                self.contractItem(item)
     #@+node:ekr.20110605121601.17944: *3* qtree.Focus
     def getFocus(self) -> Any:
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30

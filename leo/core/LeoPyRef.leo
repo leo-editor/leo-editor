@@ -206,6 +206,7 @@
 </v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
 <v t="tom.20230319122643.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
+<v t="tom.20230321222112.1"><vh>@clean ../scripts/find-reindent.py</vh></v>
 <v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
 <v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
 <v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
@@ -3957,7 +3958,7 @@ def batch_rule8a(colorer, s, i):
 </t>
 <t tx="ekr.20221201043917.1">@language batch
 echo off
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo test-leo
 py -m unittest %*
@@ -3987,7 +3988,7 @@ black.main()
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
 echo off
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo pylint-leo
 time /T
@@ -3996,7 +3997,7 @@ time /T
 </t>
 <t tx="ekr.20221204071146.1">@language batch
 echo off
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
@@ -4008,7 +4009,7 @@ py -m mypy --debug-cache leo %*
 echo off
 cls
 ::cd c:\Repos\leo-editor
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo test-one-leo: test_leoFind.TestFind
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
@@ -4016,7 +4017,7 @@ call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handle
 <t tx="ekr.20221204071554.1">@language batch
 echo off
 cls
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo full-test-leo
 call reindent-leo.cmd
@@ -4030,17 +4031,27 @@ call pylint-leo.cmd
 echo.
 echo Done!
 </t>
-<t tx="ekr.20221204072154.1">@language batch
-echo off
-::cd c:\Repos\leo-editor
-call set-repo-dir
+<t tx="ekr.20221204072154.1">@echo off
+:: Save path to reindent.py to a file .leo\reindent-path.txt
+py %~dp0\find-reindent.py
 
-echo reindent-leo
-call reindent leo
+set PATH_FILE=%USERPROFILE%\.leo\reindent-path.txt
+set /P "REINDENT_PATH="&lt; %PATH_FILE%
+
+if "%REINDENT_PATH%"=="" goto no_reindent
+echo re-indenting
+py %REINDENT_PATH% -r leo
+goto done
+
+:no_reindent
+echo Cannot find reindent.py, skipping reindentation
+
+:done
+
 </t>
 <t tx="ekr.20221204072456.1">@language batch
 echo off
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo beautify-leo
 call py -m leo.core.leoAst --orange --recursive leo\core
@@ -4051,7 +4062,7 @@ call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
 <t tx="ekr.20221204074235.1">@language batch
 echo off
 ::cd c:\Repos\leo-editor
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 rem: See leo-editor/setup.cfg for defaults.
 
@@ -4061,7 +4072,7 @@ py -m flake8 %*
 <t tx="ekr.20230115020533.1">@language batch
 echo off
 ::cd c:\Repos\leo-editor
-call set-repo-dir
+call %~dp0\set-repo-dir
 
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
@@ -4073,7 +4084,7 @@ rem call python -m black --skip-string-normalization leo\commands</t>
 echo off
 cls
 rem -a: write all files  (make clean)
-call set-repo-dir
+call %~dp0\set-repo-dir
 cd leo\doc\html
 
 echo.
@@ -4085,5 +4096,26 @@ sphinx-build -M html . _build -a
 @echo off
 cd %~dp0..\..
 </t>
+<t tx="tom.20230321222112.1">"""Find reindent.py script.
+
+Writes the path to a file named "reindent-dir.txt" in the user's .leo directory.
+"""
+
+import sys, os, os.path
+
+SUFFIX = r'Tools\Scripts\reindent.py'
+LEO_HOME_DIR = os.environ['USERPROFILE'] + r'\.leo'
+PATH_FILE = LEO_HOME_DIR + r'\reindent-path.txt'
+
+path = None
+for p in sys.path:
+    candidate = os.path.join(p, SUFFIX)
+    if os.path.exists(candidate):
+        path = candidate
+        break
+
+if path:
+     with open(PATH_FILE, 'w', encoding = 'utf-8') as f:
+         f.write(path)</t>
 </tnodes>
 </leo_file>

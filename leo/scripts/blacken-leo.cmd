@@ -1,6 +1,5 @@
-echo off
-::cd c:\Repos\leo-editor
-call set-repo-dir
+@echo off
+call %~dp0\set-repo-dir
 
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
