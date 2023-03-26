@@ -391,7 +391,7 @@ class FastRead:
         """
         Recreate a file from a JSON string s, and return its hidden vnode.
         """
-        v, g_element = self.readWithJsonTree(path=None, s=s)
+        v, unused = self.readWithJsonTree(path=None, s=s)
         if not v:  # #1510.
             return None
         #
@@ -411,7 +411,7 @@ class FastRead:
             return None, None
 
         try:
-            g_element = d.get('globals', {})
+            g_element = d.get('globals', {})  # globals is optional
             v_elements = d.get('vnodes')
             t_elements = d.get('tnodes')
             gnx2ua: Dict = defaultdict(dict)
@@ -1763,7 +1763,7 @@ class FileCommands:
             return False
         try:
             # Create the dict corresponding to the JSON.
-            d = self.leojs_file()
+            d = self.leojs_file()  # Checks for illegal ua's
             # Convert the dict to JSON.
             json_s = json.dumps(d, indent=2, cls=SetJSONEncoder)
             # Write bytes.
@@ -1793,11 +1793,17 @@ class FileCommands:
             # build uas dict
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
-                    uas[p.v.gnx] = p.v.unknownAttributes
+                    try:
+                        json.dumps(p.v.unknownAttributes, skipkeys=True)  # If this passes ok, ua's are valid json
+                        # UA's are not encoded one level deeper as a json string.
+                        uas[p.v.gnx] = p.v.unknownAttributes
+                    except TypeError:
+                        g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
+                        # g.printObj(p.u)
+
             # result for specific starting p
             result = {
                     'leoHeader': {'fileFormat': 2},
-                    'globals': self.leojs_globals(),
                     'vnodes': [
                         self.leojs_vnode(sp, gnxSet)
                     ],
@@ -1808,11 +1814,17 @@ class FileCommands:
             # build uas dict
             for v in c.all_unique_nodes():
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
-                    uas[v.gnx] = v.unknownAttributes
+                    try:
+                        json.dumps(v.unknownAttributes, skipkeys=True)  # If this passes ok, ua's are valid json
+                        # UA's are not encoded one level deeper as a json string.
+                        uas[v.gnx] = v.unknownAttributes
+                    except TypeError:
+                        g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
+                        # g.printObj(p.u)
+
             # result for whole outline
             result = {
                     'leoHeader': {'fileFormat': 2},
-                    'globals': self.leojs_globals(),
                     'vnodes': [
                         self.leojs_vnode(p, gnxSet) for p in c.rootPosition().self_and_siblings()
                     ],
@@ -1820,21 +1832,22 @@ class FileCommands:
                         v.gnx: v._bodyString for v in c.all_unique_nodes() if (v._bodyString and v.isWriteBit())
                     }
                 }
-
+        self.leojs_globals()  # Call only to set db like non-json save file.
         # uas could be empty. Only add it if needed
         if uas:
             result["uas"] = uas
 
-        self.currentPosition = p or c.p
-        self.setCachedBits()
+        if not self.usingClipboard:
+            self.currentPosition = p or c.p
+            self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
-    def leojs_globals(self) -> Dict[str, Any]:
+    def leojs_globals(self) -> Optional[Dict[str, Any]]:
         """Put json representation of Leo's cached globals."""
         c = self.c
         width, height, left, top = c.frame.get_window_info()
         if 1:  # Write to the cache, not the file.
-            d: Dict[str, str] = {}
+            d = None
             c.db['body_outline_ratio'] = str(c.frame.ratio)
             c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
             c.db['window_position'] = str(top), str(left), str(height), str(width)
