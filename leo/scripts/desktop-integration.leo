@@ -232,7 +232,11 @@ except WindowsError as e:
     SetValue(leoKey, None, REG_SZ, "Leo.File")
     CloseKey(leoKey)
 
-    g.es_print("  .leo, .leox files associated as 'Leo.File'")
+    leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leojs")
+    SetValue(leoKey, None, REG_SZ, "Leo.File")
+    CloseKey(leoKey)
+
+    g.es_print("  .leo, .leojs and .leox files associated as 'Leo.File'")
 
 except WindowsError as e:
     g.es_print("  Failed:", e)
@@ -357,7 +361,13 @@ from winreg import *
         g.es_print("  .leo, .leox file associations removed from registry")
     except WindowsError as e:
         g.es_print("  Removing .leo, leox associations failed: ", e)
-</t>
+
+    # May not have the (newer) .leojs file association
+    try:
+        DeleteKey(HKEY_CLASSES_ROOT, ".leojs")
+        g.es_print("  .leojs file association removed from registry")
+    except WindowsError as e:
+        g.es_print("  Removing .leojs associations failed: ", e)</t>
 <t tx="mhw-debug-1081.20190221070850.1">def get_launch_leo():
     """Prefer leo exe script in PATH over launchLeo.py relative to Leo library"""
     leo_script = os.path.join(sys.exec_prefix, "Scripts", "leo.exe")
