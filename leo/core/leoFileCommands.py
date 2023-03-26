@@ -1814,10 +1814,11 @@ class FileCommands:
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
                     try:
-                        json.dumps(p.v.unknownAttributes, skipkeys=True)  # If this test passes ok
+                        json.dumps(p.v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this test passes ok
                         uas[p.v.gnx] = p.v.unknownAttributes  # Valid UA's as-is. UA's are NOT encoded.
                     except TypeError:
                         g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
+                        g.printObj(p.v.unknownAttributes)
                         # g.printObj(p.u)
 
             # result for specific starting p
@@ -1834,10 +1835,11 @@ class FileCommands:
             for v in c.all_unique_nodes():
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                     try:
-                        json.dumps(v.unknownAttributes, skipkeys=True)  # If this passes ok, ua's are valid json
+                        json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this passes ok, ua's are valid json
                         uas[v.gnx] = v.unknownAttributes    # Valid UA's as-is. UA's are NOT encoded.
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
+                        g.printObj(v.unknownAttributes)
                         # g.printObj(p.u)
 
             # result for whole outline
