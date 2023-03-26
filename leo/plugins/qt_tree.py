@@ -127,7 +127,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.use_mouse_expand_gestures = c.config.getBool('use-mouse-expand-gestures',
                                                            default = False)
-        g.es(self.use_mouse_expand_gestures)
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
     def wrapQLineEdit(self, w: Wrapper) -> Wrapper:
         """A wretched kludge for MacOs k.masterMenuHandler."""
