@@ -1819,7 +1819,6 @@ class FileCommands:
                     except TypeError:
                         g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
                         g.printObj(p.v.unknownAttributes)
-                        # g.printObj(p.u)
 
             # result for specific starting p
             result = {
@@ -1840,7 +1839,6 @@ class FileCommands:
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
                         g.printObj(v.unknownAttributes)
-                        # g.printObj(p.u)
 
             # result for whole outline
             result = {
