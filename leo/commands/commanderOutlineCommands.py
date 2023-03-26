@@ -37,18 +37,11 @@ def copyOutline(self: Self, event: Event = None) -> str:
 #@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
 def copyOutlineAsJSON(self: Self, event: Event = None) -> Optional[str]:
-    """Copy the selected outline to the clipboard in json format."""
+    """Copy the selected outline as JSON to the clipboard"""
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    #
-    # JSON Equivalent of c.fileCommands.outline_to_clipboard_string
-    p = c.p
-    c.fileCommands.usingClipboard = True
-    d = c.fileCommands.leojs_file(p)  # Checks for illegal ua's
-    s = json.dumps(d, indent=2, cls=leoFileCommands.SetJSONEncoder)
-    c.fileCommands.usingClipboard = False
-    #
+    s = c.fileCommands.outline_to_clipboard_json_string()
     g.app.paste_c = c
     if g.app.inBridge:
         return s
