@@ -29,6 +29,7 @@ def copyOutline(self: Self, event: Event = None) -> str:
     c = self
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_string()
+    g.app.paste_c = c
     if g.app.inBridge:
         return s
     g.app.gui.replaceClipboardWith(s)
@@ -41,6 +42,7 @@ def copyOutlineAsJSON(self: Self, event: Event = None) -> Optional[str]:
     c = self
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_json_string()
+    g.app.paste_c = c
     if g.app.inBridge:
         return s
     g.app.gui.replaceClipboardWith(s)
