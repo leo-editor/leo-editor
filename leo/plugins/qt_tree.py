@@ -103,8 +103,9 @@ class LeoQtTree(leoFrame.LeoTree):
         tw = self.treeWidget
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
-        tw.setMouseTracking(True)
-        tw.itemEntered.connect(self.onItemEntered)
+        if 0:  # Emergency: Disable PR #3214. This code may have caused a hard crash.
+            tw.setMouseTracking(True)
+            tw.itemEntered.connect(self.onItemEntered)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
         tw.itemCollapsed.connect(self.onItemCollapsed)
         tw.itemExpanded.connect(self.onItemExpanded)
