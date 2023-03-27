@@ -141,7 +141,7 @@
 <v t="ekr.20180309185230.26"><vh>@color literal1-color = #00aa00</vh></v>
 <v t="ekr.20180309185230.27"><vh>@color literal2-color = #00aa00</vh></v>
 <v t="ekr.20180309185230.28"><vh>@color literal3-color = #00aa00</vh></v>
-<v t="ekr.20180309185230.29"><vh>@color literal4-color = ##00aa00</vh></v>
+<v t="ekr.20180309185230.29"><vh>@color literal4-color = #00aa00</vh></v>
 <v t="ekr.20180309185230.30"><vh>@color markup-color =black</vh></v>
 <v t="ekr.20180309185230.31"><vh>@color comment1-color = firebrick3</vh></v>
 <v t="ekr.20180309185230.32"><vh>@color comment2-color = firebrick3</vh></v>
@@ -173,7 +173,7 @@ Notes:
 1. This file should *not* contain @string theme-name.
 2. This file should contain *only* appearance-related settings. </t>
 <t tx="ekr.20180307205426.1">table = (
-    # g.actualColor calls 
+    # g.actualColor calls
     'error', 'info', 'warning',
     'black', 'white',
     'xxx',
@@ -273,7 +273,7 @@ QPushButton[button_kind="script-button"] {
     /* Buttons created by the script-button button. */
     background-color: @script-button-btn-bg;
 }
-QPushButton#script-button-button { 
+QPushButton#script-button-button {
     /* The singleton script-button button. */
     background-color: @script-button-button-btn-bg;
 }
@@ -641,13 +641,13 @@ Colors are clear, not solarized.</t>
 2. The rest of the doc parts depends on the @bool color-doc-parts-as-rest setting:
    True:  Colorize the doc part as **markdown**.
    False: Colorize the doc part using @color docpart.
-   
+
 Leo colorizes constructs with two kinds of color constants.
 - **Default colors** defined in the node "Colors: defaults".
   These constants correspond to jEdit names used in leo/modes/*.py.
   See the "Colors: defaults" node for more details.
 - **Leo-specific colors**, defined in the node "Colors: Leo constructs".
-  
+
 Most languages use only a subset of these color names.
 Here are all the colors used to color python:
 @c # @color leo_keyword_color
@@ -655,7 +655,7 @@ Here are all the colors used to color python:
 # Comments: @color comment1
 
 def spam():
-    
+
     # Reserved words...
     pass     # Python keywords: @color keyword1
     abs(1)   # Standard functions: @color keyword2.
@@ -667,20 +667,20 @@ def spam():
     except IOError: # Exception names: @color keyword3
         pass
     a = 2    # Operators (the = sign): @color operator_color
-    
+
     # Strings...
     a = 'Regular string' # @color literal1
     '''Triple single-quoted docstring''' # @color literal2
     """Triple double-quoted docstring""" # @color literal2
-    
+
 # All languages use the following names...
-    
+
 # Urls: http://leoeditor.com/  @color url_color
 &lt;&lt; undefined section &gt;&gt;      # @color undefined_section_name_color
 &lt;&lt; defined section &gt;&gt;
     # The brackets:            @color section_name_brackets_color
     # The section name itself: @color section_name_color
-    
+
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052351.2"></t>
