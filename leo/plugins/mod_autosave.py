@@ -88,9 +88,11 @@ def onIdle(tag, keywords):
     )
     save(c)
     print(f"Autosave: redraw? {int(redraw_flag)} {time.ctime()} {c.shortFileName()}")
-    c.changed = False  # Does not automatically update the UI.
     if redraw_flag:
+        c.clearChanged()  # Updates all dirty bits.
         c.redraw()
+    else:
+        c.changed = False  # Does not automatically update the UI.
     d['last'] = time.time()
     gDict[c.hash()] = d
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
