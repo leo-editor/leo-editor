@@ -101,7 +101,8 @@ def save(c: Cmdr, verbose: bool) -> None:
     finally:
         # Print the queued messages produced by g.es.
         if verbose:
-            for s, color, newline in g.app.logWaiting:
+            for msg in g.app.logWaiting:
+                s, color, newline = msg[:3]  # May have 4 elements.
                 print(s.rstrip())
         # Restore the log.
         g.app.logWaiting = []
