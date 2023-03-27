@@ -63,7 +63,10 @@ def onCreate(tag, keywords):
     print(message)
 #@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
-    """Save the current document if it has a name"""
+    """
+    Save the current document if it has a name.
+    Make minimal changes to the UI: redraw only if it is safe to do so.
+    """
     global gDict
     if g.app.killed or g.unitTesting:
         return
@@ -71,26 +74,25 @@ def onIdle(tag, keywords):
     d = gDict.get(c.hash())
     if not c or not c.exists or not d or not c.mFileName:
         return
-    # Redraw the screen only if we aren't editing a headline.
-    redraw_flag = (
-        g.app.gui.guiName() in ('qt', 'qttabs')
-        and not isinstance(c.get_focus(), QtWidgets.QLineEdit)
-    )
     # Wait the entire interval after c is changed.
     if not c.changed:
         d['last'] = time.time()
         gDict[c.hash()] = d
         return
-    last = d.get('last')
-    interval = d.get('interval')
-    if time.time() - last >= interval:
-        save(c)
-        print(f"Autosave: {time.ctime()} {c.shortFileName()}")
-        if redraw_flag:
-            c.redraw()
-        c.changed = False  # Clear the flag *without* updating the UI.
-        d['last'] = time.time()
-        gDict[c.hash()] = d
+    if time.time() - d.get('last') < d.get('interval'):
+        return
+    # Redraw the screen only if we aren't editing a headline.
+    redraw_flag = (
+        g.app.gui.guiName() in ('qt', 'qttabs')
+        and not isinstance(c.get_focus(), QtWidgets.QLineEdit)
+    )
+    save(c)
+    print(f"Autosave: redraw? {int(redraw_flag)} {time.ctime()} {c.shortFileName()}")
+    c.changed = False  # Does not automatically update the UI.
+    if redraw_flag:
+        c.redraw()
+    d['last'] = time.time()
+    gDict[c.hash()] = d
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
 def save(c: Cmdr) -> None:
     """Save c's outlines without changing any part of the UI."""
