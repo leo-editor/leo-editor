@@ -81,8 +81,7 @@ def onIdle(tag, keywords):
     # Do *not* update the outline's change status.
     # Continue to save the outline to the .bak file
     # until the user explicitly saves the outline.
-    d['last'] = time.time()
-    gDict[c.hash()] = d
+    gDict[c.hash()]['last'] = time.time()
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
 def save(c: Cmdr) -> None:
     """Save c's outlines to a .bak file without changing any part of the UI."""
@@ -90,12 +89,17 @@ def save(c: Cmdr) -> None:
     old_log = g.app.log
     # Make sure nothing goes to the log.
     try:
+        # Disable the log so that g.es will append to g.app.logWaiting.
         g.app.log = None
+        # The following methods call g.es.
         fc.writeAllAtFileNodes()  # Ignore any errors.
         fc.writeOutline(f"{c.mFileName}.bak")
     finally:
+        # Print the queued messages produced by g.es.
         for s, color, newline in g.app.logWaiting:
             print(s.rstrip())
+        # Restore the log.
+        g.app.logWaiting = []
         g.app.log = old_log
 #@-others
 #@@language python
