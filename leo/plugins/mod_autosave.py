@@ -50,19 +50,19 @@ def onCreate(tag, keywords):
     active = c.config.getBool('mod-autosave-active', default=False)
     interval = c.config.getInt('mod-autosave-interval')
     verbose = c.config.getBool('mod-autosave-verbose', default=False)
-    if active:
-        # Create an entry in the global settings dict.
-        gDict[c.hash()] = {
-            'last': time.time(),
-            'interval': interval,
-            'verbose': verbose,
-        }
-        message = f"auto save {interval} every sec. {c.shortFileName()}"
-        g.registerHandler('idle', onIdle)
-    else:
-        message = "@bool mod_autosave_active=False"
+    if not active:
+        if verbose:
+            print(f"{c.shortFileName()}: @bool mod_autosave_active=False")
+        return
+    # Create an entry in the global settings dict.
+    gDict[c.hash()] = {
+        'last': time.time(),
+        'interval': interval,
+        'verbose': verbose,
+    }
     if verbose:
-        print(message)
+        print(f"{c.shortFileName()} auto save {interval} every sec.")
+    g.registerHandler('idle', onIdle)
 #@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
     """
