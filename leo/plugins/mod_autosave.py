@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.724: * @file ../plugins/mod_autosave.py
-""" Autosaves the Leo outline every so often.
+""" Autosaves the Leo outline every so often to a .bak file.
 
 The time between saves is given by the setting, with default as shown::
 
@@ -17,7 +17,6 @@ from __future__ import annotations
 import time
 from typing import Dict, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 
@@ -56,7 +55,7 @@ def onCreate(tag, keywords):
             'last': time.time(),
             'interval': interval,
         }
-        message = f"auto save {interval} sec. after changes"
+        message = f"auto save {interval} every sec. {c.shortFileName()}"
         g.registerHandler('idle', onIdle)
     else:
         message = "@bool mod_autosave_active=False"
@@ -64,43 +63,40 @@ def onCreate(tag, keywords):
 #@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
     """
-    Save the current outline to a .bak file.
-    Make minimal changes to the UI: redraw only if it is safe to do so.
+    Save the outline to a .bak file every "interval" seconds if it has changed.
+    Make *no* changes to the UI and do *not* update c.changed.
     """
     global gDict
     if g.app.killed or g.unitTesting:
         return
     c = keywords.get('c')
     d = gDict.get(c.hash())
-    if not c or not c.exists or not d or not c.mFileName:
+    if not d or not c or not c.exists or not c.changed or not c.mFileName:
         return
-    # Wait the entire interval after c is changed.
-    if not c.changed:
-        d['last'] = time.time()
-        gDict[c.hash()] = d
-        return
+    # Wait the entire interval.
     if time.time() - d.get('last') < d.get('interval'):
         return
-    # Redraw the screen only if we aren't editing a headline.
-    redraw_flag = (
-        g.app.gui.guiName() in ('qt', 'qttabs')
-        and not isinstance(c.get_focus(), QtWidgets.QLineEdit)
-    )
     save(c)
-    print(f"Autosave: redraw? {int(redraw_flag)} {time.ctime()} {c.shortFileName()}.bak")
-    if redraw_flag:
-        c.clearChanged()  # Updates all dirty bits.
-        c.redraw()
-    else:
-        c.changed = False  # Does not automatically update the UI.
+    print(f"Autosave: {time.ctime()} {c.shortFileName()}.bak")
+    # Do *not* update the outline's change status.
+    # Continue to save the outline to the .bak file
+    # until the user explicitly saves the outline.
     d['last'] = time.time()
     gDict[c.hash()] = d
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
 def save(c: Cmdr) -> None:
     """Save c's outlines to a .bak file without changing any part of the UI."""
     fc = c.fileCommands
-    fc.writeAllAtFileNodes()  # Ignore any errors.
-    fc.writeOutline(f"{c.mFileName}.bak")
+    old_log = g.app.log
+    # Make sure nothing goes to the log.
+    try:
+        g.app.log = None
+        fc.writeAllAtFileNodes()  # Ignore any errors.
+        fc.writeOutline(f"{c.mFileName}.bak")
+    finally:
+        for s, color, newline in g.app.logWaiting:
+            print(s.rstrip())
+        g.app.log = old_log
 #@-others
 #@@language python
 #@@tabwidth -4
