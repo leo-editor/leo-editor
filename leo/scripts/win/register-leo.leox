@@ -97,7 +97,11 @@ def register_leo(pyexe, launchLeo, icon):
             SetValue(leoKey, None, REG_SZ, "Leo.File")
             CloseKey(leoKey)
 
-            g.es_print("  .leo, .leox files associated as 'Leo.File'")
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leojs")
+            SetValue(leoKey, None, REG_SZ, "Leo.File")
+            CloseKey(leoKey)
+
+            g.es_print("  .leo, .leojs and .leox files associated as 'Leo.File'")
 
         except WindowsError as e:
             g.es_print("  Failed:", e)
