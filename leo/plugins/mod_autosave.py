@@ -49,17 +49,20 @@ def onCreate(tag, keywords):
         return
     active = c.config.getBool('mod-autosave-active', default=False)
     interval = c.config.getInt('mod-autosave-interval')
+    verbose = c.config.getBool('mod-autosave-verbose', default=False)
     if active:
         # Create an entry in the global settings dict.
         gDict[c.hash()] = {
             'last': time.time(),
             'interval': interval,
+            'verbose': verbose,
         }
         message = f"auto save {interval} every sec. {c.shortFileName()}"
         g.registerHandler('idle', onIdle)
     else:
         message = "@bool mod_autosave_active=False"
-    print(message)
+    if verbose:
+        print(message)
 #@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
     """
@@ -76,14 +79,13 @@ def onIdle(tag, keywords):
     # Wait the entire interval.
     if time.time() - d.get('last') < d.get('interval'):
         return
-    save(c)
-    print(f"Autosave: {time.ctime()} {c.shortFileName()}.bak")
+    save(c, d.get('verbose'))
     # Do *not* update the outline's change status.
     # Continue to save the outline to the .bak file
     # until the user explicitly saves the outline.
-    gDict[c.hash()]['last'] = time.time()
+    d['last'] = time.time()
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
-def save(c: Cmdr) -> None:
+def save(c: Cmdr, verbose: bool) -> None:
     """Save c's outlines to a .bak file without changing any part of the UI."""
     fc = c.fileCommands
     old_log = g.app.log
@@ -94,10 +96,13 @@ def save(c: Cmdr) -> None:
         # The following methods call g.es.
         fc.writeAllAtFileNodes()  # Ignore any errors.
         fc.writeOutline(f"{c.mFileName}.bak")
+        if verbose:
+            print(f"Autosave: {time.ctime()} {c.shortFileName()}.bak")
     finally:
         # Print the queued messages produced by g.es.
-        for s, color, newline in g.app.logWaiting:
-            print(s.rstrip())
+        if verbose:
+            for s, color, newline in g.app.logWaiting:
+                print(s.rstrip())
         # Restore the log.
         g.app.logWaiting = []
         g.app.log = old_log
