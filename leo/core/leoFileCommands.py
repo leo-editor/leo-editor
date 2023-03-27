@@ -1835,7 +1835,7 @@ class FileCommands:
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                     try:
                         json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this passes ok, ua's are valid json
-                        uas[v.gnx] = v.unknownAttributes    # Valid UA's as-is. UA's are NOT encoded.
+                        uas[v.gnx] = v.unknownAttributes  # Valid UA's as-is. UA's are NOT encoded.
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
                         g.printObj(v.unknownAttributes)
