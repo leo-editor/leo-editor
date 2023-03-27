@@ -64,7 +64,7 @@ def onCreate(tag, keywords):
 #@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
     """
-    Save the current document if it has a name.
+    Save the current outline to a .bak file.
     Make minimal changes to the UI: redraw only if it is safe to do so.
     """
     global gDict
@@ -87,7 +87,7 @@ def onIdle(tag, keywords):
         and not isinstance(c.get_focus(), QtWidgets.QLineEdit)
     )
     save(c)
-    print(f"Autosave: redraw? {int(redraw_flag)} {time.ctime()} {c.shortFileName()}")
+    print(f"Autosave: redraw? {int(redraw_flag)} {time.ctime()} {c.shortFileName()}.bak")
     if redraw_flag:
         c.clearChanged()  # Updates all dirty bits.
         c.redraw()
@@ -97,11 +97,10 @@ def onIdle(tag, keywords):
     gDict[c.hash()] = d
 #@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
 def save(c: Cmdr) -> None:
-    """Save c's outlines without changing any part of the UI."""
+    """Save c's outlines to a .bak file without changing any part of the UI."""
     fc = c.fileCommands
-    g.app.commander_cacher.save(c, c.mFileName)
     fc.writeAllAtFileNodes()  # Ignore any errors.
-    fc.writeOutline(c.mFileName)
+    fc.writeOutline(f"{c.mFileName}.bak")
 #@-others
 #@@language python
 #@@tabwidth -4
