@@ -1090,6 +1090,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if p is None:
             p = c.p
+        if p.isAnyAtFileNode():
+            return
         self.hn_delete(p=p)
         s = '.'.join(reversed(list(str(z.childIndex()) for z in p.self_and_parents())))
         p.h = s + ' ' + p.h.lstrip()
@@ -1121,7 +1123,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         m = re.match(self.hn_pattern, p.h)
         if m:
             n = len(m.group(0))
-            p.h = p.h[n:]
+            p.h = p.h[n:].lstrip()
     #@+node:ekr.20230328014542.1: *4* hn-delete-all
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
