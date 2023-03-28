@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.724: * @file ../plugins/mod_autosave.py
-""" Autosaves the Leo outline every so often.
+""" Autosaves the Leo outline every so often to a .bak file.
 
 The time between saves is given by the setting, with default as shown::
 
@@ -13,27 +13,29 @@ This plugin is active only if::
 """
 
 # By Paul Paterson. Rewritten by EKR.
+from __future__ import annotations
 import time
-from typing import Any, Dict
+from typing import Dict, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
-#
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
-# The global settings dict.
-gDict: Dict[Any, Any] = {}  # Keys are commanders, values are settings dicts.
+
+# The global settings dict: Keys are commanders. Values are settings dicts.
+gDict: Dict[Cmdr, Dict] = {}
 
 #@+others
-#@+node:ekr.20060108123141.2: ** init
+#@+node:ekr.20060108123141.2: ** init (mod_autosave.py)
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = not g.unitTesting  # Don't want autosave after unit testing.
-    if ok:
-        # Register the handlers...
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-    return ok
+    if g.unitTesting:
+        return False
+    # Register the handlers...
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:edream.110203113231.726: ** onCreate (mod_autosave.py)
 def onCreate(tag, keywords):
     """Handle the per-Leo-file settings."""
@@ -43,51 +45,68 @@ def onCreate(tag, keywords):
         return
     # Do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())
-    if not d:
-        active = c.config.getBool('mod-autosave-active', default=False)
-        interval = c.config.getInt('mod-autosave-interval')
-        if active:
-            # Create an entry in the global settings dict.
-            gDict[c.hash()] = {
-                'last': time.time(),
-                'interval': interval,
-            }
-            message = "auto save %s sec. after changes" % (interval)
-            g.registerHandler('idle', onIdle)
-        else:
-            message = "@bool mod_autosave_active=False"
-        g.es(message, color='orange')
-#@+node:ekr.20100904062957.10654: ** onIdle
+    if d:
+        return
+    active = c.config.getBool('mod-autosave-active', default=False)
+    interval = c.config.getInt('mod-autosave-interval')
+    verbose = c.config.getBool('mod-autosave-verbose', default=False)
+    if not active:
+        if verbose:
+            print(f"{c.shortFileName()}: @bool mod_autosave_active=False")
+        return
+    # Create an entry in the global settings dict.
+    gDict[c.hash()] = {
+        'last': time.time(),
+        'interval': interval,
+        'verbose': verbose,
+    }
+    if verbose:
+        print(f"{c.shortFileName()} auto save {interval} every sec.")
+    g.registerHandler('idle', onIdle)
+#@+node:ekr.20100904062957.10654: ** onIdle (mod_autosave.py)
 def onIdle(tag, keywords):
-    """Save the current document if it has a name"""
+    """
+    Save the outline to a .bak file every "interval" seconds if it has changed.
+    Make *no* changes to the UI and do *not* update c.changed.
+    """
     global gDict
-    guiName = g.app.gui.guiName()
-    if guiName not in ('qt', 'qttabs'):
+    if g.app.killed or g.unitTesting:
         return
     c = keywords.get('c')
     d = gDict.get(c.hash())
-    if c and d and c.exists and c.mFileName and not g.app.killed and not g.unitTesting:
-        # Wait the entire interval after c is first changed or saved.
-        # Imo (EKR) this is the desired behavior.
-        # It gives the user a chance to revert changes before they are changed.
-        if c.changed:
-            w = c.get_focus()
-            if isinstance(w, QtWidgets.QLineEdit):
-                # Saving now would destroy the focus.
-                # There is **no way** to recreate outline editing after a redraw.
-                pass
-            else:
-                last = d.get('last')
-                interval = d.get('interval')
-                if time.time() - last >= interval:
-                    g.es_print("Autosave: %s" % time.ctime(), color="orange")
-                    c.fileCommands.save(c.mFileName)
-                    c.set_focus(w)
-                    d['last'] = time.time()
-                    gDict[c.hash()] = d
-        else:
-            d['last'] = time.time()
-            gDict[c.hash()] = d
+    if not d or not c or not c.exists or not c.changed or not c.mFileName:
+        return
+    # Wait the entire interval.
+    if time.time() - d.get('last') < d.get('interval'):
+        return
+    save(c, d.get('verbose'))
+    # Do *not* update the outline's change status.
+    # Continue to save the outline to the .bak file
+    # until the user explicitly saves the outline.
+    d['last'] = time.time()
+#@+node:ekr.20230327042532.1: ** save (mode_autosave.py)
+def save(c: Cmdr, verbose: bool) -> None:
+    """Save c's outlines to a .bak file without changing any part of the UI."""
+    fc = c.fileCommands
+    old_log = g.app.log
+    # Make sure nothing goes to the log.
+    try:
+        # Disable the log so that g.es will append to g.app.logWaiting.
+        g.app.log = None
+        # The following methods call g.es.
+        fc.writeAllAtFileNodes()  # Ignore any errors.
+        fc.writeOutline(f"{c.mFileName}.bak")
+        if verbose:
+            print(f"Autosave: {time.ctime()} {c.shortFileName()}.bak")
+    finally:
+        # Printing queued messages quickly becomes annoying.
+        if 0:
+            for msg in g.app.logWaiting:
+                s, color, newline = msg[:3]  # May have 4 elements.
+                print(s.rstrip())
+        # Restore the log.
+        g.app.logWaiting = []
+        g.app.log = old_log
 #@-others
 #@@language python
 #@@tabwidth -4

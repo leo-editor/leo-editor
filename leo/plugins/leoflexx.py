@@ -1319,7 +1319,7 @@ class LeoBrowserGui(leoGui.NullGui):
             # c.setLog()
         g.app.logInited = True  # Prevent recursive call.
         for msg in g.app.logWaiting:
-            s, color, newline = msg[:3]
+            s, color, newline = msg[:3]  # May have 4 elements.
             w.log.put(s.rstrip())
         g.app.logWaiting = []
         g.app.setLog(None)  # Essential when opening multiple files...
