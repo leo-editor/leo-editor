@@ -1113,7 +1113,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.hn_add(p=p)
     #@+node:ekr.20230328014223.1: *4* hn-delete
     # Match exactly one trailing blank.
-    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)*\s')
+    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)* ')
 
     @cmd('hn-delete')
     @cmd('headline-number-delete')
