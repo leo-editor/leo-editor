@@ -1082,12 +1082,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         c.widgetWantsFocus(w)
     #@+node:ekr.20230327200504.1: *3* ec: headline numbers
-    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)*\.\s+')
     #@+node:ekr.20230328013256.1: *4* hn-add
     @cmd('hn-add')
     @cmd('headline-number-add')
     @cmd('add-headline-number')
-    def hn_add(self, event=None, p=None):
+    def hn_add(self, event: Event = None, p: Position = None) -> None:
         c = self.c
         if p is None:
             p = c.p
@@ -1098,7 +1097,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-add-all')
     @cmd('headline-number-add-all')
     @cmd('add-all-headline-numbers')
-    def hn_add_all(self, event=None):
+    def hn_add_all(self, event: Event = None) -> None:
         c = self.c
         for p in c.all_unique_positions():
             self.hn_add(p=p)
@@ -1106,14 +1105,16 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-add-tree')
     @cmd('headline-number-add-tree')
     @cmd('add-tree-headline-numbers')
-    def hn_add_tree(self, event=None):
+    def hn_add_tree(self, event: Event = None) -> None:
         for p in self.c.p.self_and_subtree():
             self.hn_add(p=p)
     #@+node:ekr.20230328014223.1: *4* hn-delete
+    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)*\.\s+')
+
     @cmd('hn-delete')
     @cmd('headline-number-delete')
     @cmd('delete-headline-number')
-    def hn_delete(self, event=None, p=None):
+    def hn_delete(self, event: Event = None, p: Position = None) -> None:
         c = self.c
         if p is None:
             p = c.p
@@ -1125,7 +1126,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
     @cmd('delete-all-headline-numbers')
-    def hn_delete_all(self, event=None):
+    def hn_delete_all(self, event: Event = None) -> None:
         c = self.c
         for p in c.all_unique_positions():
             self.hn_delete(p=p)
@@ -1133,7 +1134,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-delete-tree')
     @cmd('headline-number-delete-tree')
     @cmd('delete-tree-headline-numbers')
-    def hn_delete_tree(self, event=None):
+    def hn_delete_tree(self, event: Event = None) -> None:
         c = self.c
         for p in c.p.self_and_subtree():
             self.hn_delete(p=p)
