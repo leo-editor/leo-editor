@@ -1103,6 +1103,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         for p in c.all_unique_positions():
             self.hn_add(p=p)
+        c.redraw()
     #@+node:ekr.20230328013557.1: *4* hn-add-tree
     @cmd('hn-add-tree')
     @cmd('headline-number-add-tree')
@@ -1132,6 +1133,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         for p in c.all_unique_positions():
             self.hn_delete(p=p)
+        c.redraw()
     #@+node:ekr.20230328015118.1: *4* hn-delete-tree
     @cmd('hn-delete-tree')
     @cmd('headline-number-delete-tree')
