@@ -1086,7 +1086,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-add')
     @cmd('headline-number-add')
     @cmd('add-headline-number')
-    def hn_add(self, event: Event = None, p: Position = None) -> None:
+    def hn_add(self, event: Event = None, *, p: Position = None) -> None:
         c = self.c
         if p is None:
             p = c.p
@@ -1121,7 +1121,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-delete')
     @cmd('headline-number-delete')
     @cmd('delete-headline-number')
-    def hn_delete(self, event: Event = None, p: Position = None) -> None:
+    def hn_delete(self, event: Event = None, *, p: Position = None) -> None:
         c = self.c
         if p is None:
             p = c.p
