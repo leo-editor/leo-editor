@@ -1094,7 +1094,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         self.hn_delete(p=p)
         s = '.'.join(reversed(list(str(z.childIndex()) for z in p.self_and_parents())))
-        p.h = s + ' ' + p.h.lstrip()
+        # Do not strip the original headline!
+        p.h = s + ' ' + p.h
+
     #@+node:ekr.20230328012036.1: *4* hn-add-all
     @cmd('hn-add-all')
     @cmd('headline-number-add-all')
