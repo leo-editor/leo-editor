@@ -1090,7 +1090,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if p is None:
             p = c.p
-        if p.isAnyAtFileNode():
+        # Don't add numbers anywhere in @<file> trees.
+        if any(z.isAnyAtFileNode() for z in p.self_and_parents()):
             return
         self.hn_delete(p=p)
         s = '.'.join(reversed(list(str(z.childIndex()) for z in p.self_and_parents())))
