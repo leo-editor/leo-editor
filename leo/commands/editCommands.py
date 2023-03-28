@@ -1090,13 +1090,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if p is None:
             p = c.p
-        # Don't add numbers anywhere in @<file> trees.
-        if any(z.isAnyAtFileNode() for z in p.self_and_parents()):
+
+        def is_section_def(p: Position) -> bool:
+            return any('>>' in z.h and z.h.strip().startswith('<<')
+                for z in p.self_and_parents())
+
+        # Don't add numbers to @<file> or section definition nodes.
+        if p.isAnyAtFileNode() or is_section_def(p):
             return
         self.hn_delete(p=p)
-        s = '.'.join(reversed(list(str(z.childIndex()) for z in p.self_and_parents())))
+        s = '.'.join(reversed(list(str(1 + z.childIndex()) for z in p.self_and_parents())))
         # Do not strip the original headline!
-        p.h = s + ' ' + p.h
+        p.v.h = s + ' ' + p.v.h
 
     #@+node:ekr.20230328012036.1: *4* hn-add-all
     @cmd('hn-add-all')
@@ -1128,7 +1133,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         m = re.match(self.hn_pattern, p.h)
         if m:
             n = len(m.group(0))
-            p.h = p.h[n:]
+            p.v.h = p.v.h[n:]
     #@+node:ekr.20230328014542.1: *4* hn-delete-all
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
