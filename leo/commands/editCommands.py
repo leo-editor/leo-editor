@@ -1092,7 +1092,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p = c.p
         self.hn_delete(p=p)
         s = '.'.join(reversed(list(str(z.childIndex()) for z in p.self_and_parents())))
-        p.h = s + '. ' + p.h.lstrip()
+        p.h = s + ' ' + p.h.lstrip()
     #@+node:ekr.20230328012036.1: *4* hn-add-all
     @cmd('hn-add-all')
     @cmd('headline-number-add-all')
@@ -1109,7 +1109,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         for p in self.c.p.self_and_subtree():
             self.hn_add(p=p)
     #@+node:ekr.20230328014223.1: *4* hn-delete
-    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)*\.\s+')
+    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)*\s+')
 
     @cmd('hn-delete')
     @cmd('headline-number-delete')
