@@ -1121,7 +1121,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         m = re.match(self.hn_pattern, p.h)
         if m:
             n = len(m.group(0))
-            p.h = p.h[:n]
+            p.h = p.h[n:]
     #@+node:ekr.20230328014542.1: *4* hn-delete-all
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
