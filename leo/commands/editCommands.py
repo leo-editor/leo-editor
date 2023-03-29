@@ -1132,7 +1132,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def hn_add_relative(self, p: Position, root: Position) -> None:
         """
         Helper: Add a 1-based outline number (relative to the root) to p.h.
-        
+
         Never add outline numbers to @-nodes or section definition nodes.
         """
         # Don't add numbers to special nodes.
