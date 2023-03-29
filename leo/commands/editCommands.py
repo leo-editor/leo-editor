@@ -1088,17 +1088,19 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('add-all-headline-numbers')
     def hn_add_all(self, event: Event = None) -> None:
         """
-        Add headline numbers to all nodes of the outline,
-        except for:
+        Add headline numbers to all nodes of the outline *except*:
         -  @<file> nodes and their descendants.
         - Any node whose headline starts with "@".
 
         Use the *first* clone's position for all clones.
         """
-        c = self.c
+        c, command = self.c, 'add-all-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
         for p in c.all_unique_positions():
             self.hn_delete(p)
             self.hn_add(p)
+        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
         c.redraw()
     #@+node:ekr.20230328013256.1: *5* hn_add
@@ -1137,11 +1139,14 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Use the *last* clone's position for all clones.
         """
-        c = self.c
+        c, command = self.c, 'add-subtree-headline-numbers'
+        u = c.undoer
         root = c.p
+        data = u.beforeChangeMultiHeadline(root)
         for p in c.p.subtree():
             self.hn_delete(p)
             self.hn_add_relative(p, root)
+        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
         root.expand()
         c.redraw()
@@ -1165,9 +1170,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-all-headline-numbers')
     def hn_delete_all(self, event: Event = None) -> None:
         """Delete all headline numbers in the entire outline."""
-        c = self.c
+        c, command = self.c, 'delete-all-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
         for p in c.all_unique_positions():
             self.hn_delete(p)
+        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
         c.redraw()
     #@+node:ekr.20230328015118.1: *4* hn-delete-subtree
@@ -1176,9 +1184,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-subtree-headline-numbers')
     def hn_delete_tree(self, event: Event = None) -> None:
         """Delete all headline numbers in c.p's subtree."""
-        c = self.c
+        c, command = self.c, 'delete-subtree-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
         for p in c.p.subtree():
             self.hn_delete(p)
+        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
         c.redraw()
     #@+node:ekr.20230328014223.1: *4* hn_delete
