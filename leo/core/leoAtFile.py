@@ -2125,6 +2125,8 @@ class AtFile:
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
+        if not g.app.log:
+            return  # We are auto-saving.
         at = self
         is_python = fileName and fileName.endswith(('py', 'pyw'))
 
