@@ -1100,8 +1100,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         for p in c.all_unique_positions():
             self.hn_delete(p)
             self.hn_add(p)
-        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
         c.redraw()
     #@+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
@@ -1146,8 +1146,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         for p in c.p.subtree():
             self.hn_delete(p)
             self.hn_add_relative(p, root)
-        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
         root.expand()
         c.redraw()
     #@+node:ekr.20230329031045.1: *5* hn_add_relative
@@ -1175,8 +1175,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         data = u.beforeChangeMultiHeadline(c.p)
         for p in c.all_unique_positions():
             self.hn_delete(p)
-        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
         c.redraw()
     #@+node:ekr.20230328015118.1: *4* hn-delete-subtree
     @cmd('hn-delete-subtree')
@@ -1189,8 +1189,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         data = u.beforeChangeMultiHeadline(c.p)
         for p in c.p.subtree():
             self.hn_delete(p)
-        u.afterChangeMultiHeadline(command, data)
         c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
         c.redraw()
     #@+node:ekr.20230328014223.1: *4* hn_delete
     # Match exactly one trailing blank.
@@ -1204,10 +1204,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             n = len(m.group(0))
             p.v.h = p.v.h[n:]
             p.v.setDirty()
-    #@+node:ekr.20230329031137.1: *4* hn_is_section_def
-    def hn_is_section_def(self, p: Position) -> bool:
-        """True if p is a section definition node."""
-        return '>>' in p.h and p.h.strip().startswith('<<')
     #@+node:ekr.20150514063305.229: *3* ec: icons
     #@+at
     # To do:
