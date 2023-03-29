@@ -1101,7 +1101,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         Helper: Add a 1-based outline number to p.h.
 
-        Never add outline numbers to @<file> or section defintion nodes.
+        Never add outline numbers to @<file> or section definition nodes.
         """
         # Don't add numbers to special nodes.
         if p.h.startswith('@') or self.hn_is_section_def(p):
@@ -1133,7 +1133,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         Helper: Add a 1-based outline number (relative to the root) to p.h.
 
-        Never add outline numbers to @<file> or section defintion nodes.
+        Never add outline numbers to @<file> or section definition nodes.
         """
         # Don't add numbers to special nodes.
         if p.h.startswith('@') or self.hn_is_section_def(p):
