@@ -545,6 +545,7 @@ class Undoer:
     def afterChangeMultiHeadline(self, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeMultiHeadline."""
         u = self
+        c = self.c
         if u.redoing or u.undoing:
             return  # pragma: no cover
         # Set the type & helpers.
@@ -557,7 +558,15 @@ class Undoer:
         for p in c.all_unique_positions():
             if p.h != oldHeadlines[p.gnx][0]:
                 newHeadlines[p.gnx] = (oldHeadlines[p.gnx][0], p.h)
-                # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
+                # Note : The currently selected node may be reverted to its original headline
+                #        string by leoFrame's unselect_helper by the next node selection!
+                #        (This can happen if changed by user script instead of the Tree UI.)
+                if p == c.p:
+                    w = c.frame.tree.edit_widget(c.p)
+                    if w:
+                        s = w.getAllText()
+                        if s != p.h:
+                            w.setAllText(p.h)  # was c.p, and different
         # Filtered down dict containing only the changed ones.
         bunch.headlines = newHeadlines
         u.pushBead(bunch)
@@ -1393,25 +1402,23 @@ class Undoer:
         c.frame.body.recolor(u.p)
         # Restore the headline.
         u.p.initHeadString(u.newHead)
-        # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
         # This is required. Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.newHead)
     #@+node:felix.20230326231408.1: *4* u.redoChangeMultiHeadline
     def redoChangeMultiHeadline(self) -> None:
         c, u = self.c, self
-        # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)  # TODO : Maybe not select now or keep old
         c.frame.body.recolor(u.p)
         # Swap the ones from the 'bunch.headline' dict
-        for gnx, oldNewTuple in u.headlines:
+        for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
             v.initHeadString(oldNewTuple[1])
-            # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
             if v.gnx == u.p.gnx:
                 u.p.setDirty()
                 # This is required.  Otherwise redraw will revert the change!
                 c.frame.tree.setHeadline(u.p, oldNewTuple[1])
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
     #@+node:ekr.20050424170219: *4* u.redoClearRecentFiles
     def redoClearRecentFiles(self) -> None:
         c, u = self.c, self
@@ -1741,7 +1748,6 @@ class Undoer:
         u.p.setDirty()
         c.frame.body.recolor(u.p)
         u.p.initHeadString(u.oldHead)
-        # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
         # This is required. Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
     #@+node:felix.20230326231543.1: *4* u.undoChangeMultiHeadline
@@ -1749,18 +1755,18 @@ class Undoer:
         """Undo a change to a node's headline."""
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
-            c.selectPosition(u.p)  # TODO : Maybe not select now or keep old
         c.frame.body.recolor(u.p)
         # Swap the ones from the 'bunch.headline' dict
-        for gnx, oldNewTuple in u.headlines:
+        for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
-            v.initHeadString(oldNewTuple[1])
-            # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
+            v.initHeadString(oldNewTuple[0])
             if v.gnx == u.p.gnx:
                 u.p.setDirty()
                 # This is required.  Otherwise redraw will revert the change!
                 c.frame.tree.setHeadline(u.p, oldNewTuple[0])
+        #
+        if c.p != u.p:
+            c.selectPosition(u.p)
     #@+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
     def undoClearRecentFiles(self) -> None:
         c, u = self.c, self
