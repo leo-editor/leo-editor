@@ -1082,58 +1082,73 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         c.widgetWantsFocus(w)
     #@+node:ekr.20230327200504.1: *3* ec: headline numbers
-    #@+node:ekr.20230328013256.1: *4* hn-add
-    @cmd('hn-add')
-    @cmd('headline-number-add')
-    @cmd('add-headline-number')
-    def hn_add(self, event: Event = None, *, p: Position = None) -> None:
-        c = self.c
-        if p is None:
-            p = c.p
-
-        def is_section_def(p: Position) -> bool:
-            return any('>>' in z.h and z.h.strip().startswith('<<')
-                for z in p.self_and_parents())
-
-        # Don't add numbers to @<file> or section definition nodes.
-        if p.isAnyAtFileNode() or is_section_def(p):
-            return
-        self.hn_delete(p=p)
-        s = '.'.join(reversed(list(str(1 + z.childIndex()) for z in p.self_and_parents())))
-        # Do not strip the original headline!
-        p.v.h = s + ' ' + p.v.h
-
-    #@+node:ekr.20230328012036.1: *4* hn-add-all
+    #@+node:ekr.20230328012036.1: *4* hn-add-all & helper
     @cmd('hn-add-all')
     @cmd('headline-number-add-all')
     @cmd('add-all-headline-numbers')
     def hn_add_all(self, event: Event = None) -> None:
+        """
+        Add headline numbers to all nodes of the outline.
+        Use the *first* clone's position for all clones.
+        """
         c = self.c
         for p in c.all_unique_positions():
-            self.hn_add(p=p)
+            self.hn_add(p)
+        c.setChanged()
         c.redraw()
-    #@+node:ekr.20230328013557.1: *4* hn-add-tree
-    @cmd('hn-add-tree')
-    @cmd('headline-number-add-tree')
-    @cmd('add-tree-headline-numbers')
-    def hn_add_tree(self, event: Event = None) -> None:
-        for p in self.c.p.self_and_subtree():
-            self.hn_add(p=p)
-    #@+node:ekr.20230328014223.1: *4* hn-delete
-    # Match exactly one trailing blank.
-    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)* ')
+    #@+node:ekr.20230328013256.1: *5* hn_add
+    def hn_add(self, p: Position) -> None:
+        """
+        Helper: Add a 1-based outline number to p.h.
 
-    @cmd('hn-delete')
-    @cmd('headline-number-delete')
-    @cmd('delete-headline-number')
-    def hn_delete(self, event: Event = None, *, p: Position = None) -> None:
+        Never add outline numbers to @<file> or section defintion nodes.
+        """
+        # Don't add numbers to special nodes.
+        if p.h.startswith('@') or self.hn_is_section_def(p):
+            return
+
+        self.hn_delete(p)
+        s = '.'.join(reversed(list(str(1 + z.childIndex()) for z in p.self_and_parents())))
+        # Do not strip the original headline!
+        p.v.h = f"{s} {p.v.h}"
+        p.v.setDirty()
+    #@+node:ekr.20230328013557.1: *4* hn-add-subtree & helper
+    @cmd('hn-add-subtree')
+    @cmd('headline-number-add-subtree')
+    @cmd('add-subtree-headline-numbers')
+    def hn_add_children(self, event: Event = None) -> None:
+        """
+        Add headline numbers to all children of c.p.
+        Use the *last* clone's position for all clones.
+        """
         c = self.c
-        if p is None:
-            p = c.p
-        m = re.match(self.hn_pattern, p.h)
-        if m:
-            n = len(m.group(0))
-            p.v.h = p.v.h[n:]
+        root = c.p
+        for p in c.p.subtree():
+            self.hn_add_relative(p, root)
+        c.setChanged()
+        root.expand()
+        c.redraw()
+    #@+node:ekr.20230329031045.1: *5* hn_add_relative
+    def hn_add_relative(self, p: Position, root: Position) -> None:
+        """
+        Helper: Add a 1-based outline number (relative to the root) to p.h.
+
+        Never add outline numbers to @<file> or section defintion nodes.
+        """
+        # Don't add numbers to special nodes.
+        if p.h.startswith('@') or self.hn_is_section_def(p):
+            return
+
+        self.hn_delete(p)
+        indices: List[int] = []
+        for p2 in p.self_and_parents():
+            if p2 == root:
+                break
+            indices.insert(0, p2.childIndex())
+        s = '.'.join([str(1 + z) for z in indices])
+        # Do not strip the original headline!
+        p.v.h = f"{s} {p.v.h}"
+        p.v.setDirty()
     #@+node:ekr.20230328014542.1: *4* hn-delete-all
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
@@ -1141,16 +1156,35 @@ class EditCommandsClass(BaseEditCommandsClass):
     def hn_delete_all(self, event: Event = None) -> None:
         c = self.c
         for p in c.all_unique_positions():
-            self.hn_delete(p=p)
+            self.hn_delete(p)
+        c.setChanged()
         c.redraw()
-    #@+node:ekr.20230328015118.1: *4* hn-delete-tree
-    @cmd('hn-delete-tree')
-    @cmd('headline-number-delete-tree')
-    @cmd('delete-tree-headline-numbers')
+    #@+node:ekr.20230328015118.1: *4* hn-delete-subtree
+    @cmd('hn-delete-subtree')
+    @cmd('headline-number-delete-subtree')
+    @cmd('delete-subtree-headline-numbers')
     def hn_delete_tree(self, event: Event = None) -> None:
         c = self.c
-        for p in c.p.self_and_subtree():
-            self.hn_delete(p=p)
+        for p in c.p.subtree():
+            self.hn_delete(p)
+        c.setChanged()
+        c.redraw()
+    #@+node:ekr.20230328014223.1: *4* hn_delete
+    # Match exactly one trailing blank.
+    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)* ')
+
+    def hn_delete(self, p: Position) -> None:
+        """Helper: delete the headline number in p.h."""
+        m = re.match(self.hn_pattern, p.h)
+        if m:
+            # Do not strip the headline!
+            n = len(m.group(0))
+            p.v.h = p.v.h[n:]
+            p.v.setDirty()
+    #@+node:ekr.20230329031137.1: *4* hn_is_section_def
+    def hn_is_section_def(self, p: Position) -> bool:
+        """True if p is a section definition node."""
+        return '>>' in p.h and p.h.strip().startswith('<<')
     #@+node:ekr.20150514063305.229: *3* ec: icons
     #@+at
     # To do:
