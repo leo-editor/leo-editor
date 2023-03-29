@@ -556,7 +556,7 @@ class Undoer:
         newHeadlines = {}
         for p in c.all_unique_positions():
             if p.h != oldHeadlines[p.gnx][0]:
-                newHeadlines[p.g.x] = (oldHeadlines[p.gnx][0], p.h)
+                newHeadlines[p.gnx] = (oldHeadlines[p.gnx][0], p.h)
                 # TODO : Same trick as afterChangeHeadline for tree widget setAllText!
         # Filtered down dict containing only the changed ones.
         bunch.headlines = newHeadlines
@@ -826,7 +826,7 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         headlines = {}
         for p in c.all_unique_positions():
-            headlines[p.g.x] = (p.h, None)
+            headlines[p.gnx] = (p.h, None)
         # contains all, but will get reduced by afterChangeMultiHeadline
         bunch.headlines = headlines
         return bunch
