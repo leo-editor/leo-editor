@@ -2999,11 +2999,11 @@ class LeoServer:
         oldH: str = p.h
         if h == oldH:
             return self._make_response()
-        bunch = u.beforeChangeNodeContents(p)
-        p.setDirty()
+        bunch = u.beforeChangeHeadline(p)
+        p.initHeadString(h)  # change p.h *after* calling undoer's before method.
         c.setChanged()
-        p.h = h
-        u.afterChangeNodeContents(p, 'Change Headline', bunch)
+        p.setDirty()
+        u.afterChangeHeadline(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:felix.20210621233316.63: *5* server.set_selection
     def set_selection(self, param: Param) -> Response:
