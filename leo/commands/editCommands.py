@@ -1101,7 +1101,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         Helper: Add a 1-based outline number to p.h.
 
-        Never add outline numbers to @<file> or section definition nodes.
+        Never add outline numbers to @-nodes or section definition nodes.
         """
         # Don't add numbers to special nodes.
         if p.h.startswith('@') or self.hn_is_section_def(p):
@@ -1132,8 +1132,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def hn_add_relative(self, p: Position, root: Position) -> None:
         """
         Helper: Add a 1-based outline number (relative to the root) to p.h.
-
-        Never add outline numbers to @<file> or section definition nodes.
+        
+        Never add outline numbers to @-nodes or section definition nodes.
         """
         # Don't add numbers to special nodes.
         if p.h.startswith('@') or self.hn_is_section_def(p):
@@ -1154,6 +1154,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('headline-number-delete-all')
     @cmd('delete-all-headline-numbers')
     def hn_delete_all(self, event: Event = None) -> None:
+        """Delete all headline numbers in the entire outline."""
         c = self.c
         for p in c.all_unique_positions():
             self.hn_delete(p)
@@ -1164,6 +1165,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('headline-number-delete-subtree')
     @cmd('delete-subtree-headline-numbers')
     def hn_delete_tree(self, event: Event = None) -> None:
+        """Delete all headline numbers in c.p's subtree."""
         c = self.c
         for p in c.p.subtree():
             self.hn_delete(p)
