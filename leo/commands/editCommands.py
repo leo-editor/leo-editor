@@ -1088,26 +1088,39 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('add-all-headline-numbers')
     def hn_add_all(self, event: Event = None) -> None:
         """
-        Add headline numbers to all nodes of the outline.
+        Add headline numbers to all nodes of the outline,
+        except for:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
+
         Use the *first* clone's position for all clones.
         """
         c = self.c
         for p in c.all_unique_positions():
+            self.hn_delete(p)
             self.hn_add(p)
         c.setChanged()
         c.redraw()
     #@+node:ekr.20230328013256.1: *5* hn_add
     def hn_add(self, p: Position) -> None:
         """
-        Helper: Add a 1-based outline number to p.h.
+        Add a 1-based outline number to p.h.
 
-        Never add outline numbers to @-nodes or section definition nodes.
+        Do *not* add a headline number for:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
         """
+
+        def skip(p: Position) -> bool:
+            """True if we should skip p."""
+            if any(z.isAnyAtFileNode() for z in p.self_and_parents()):
+                return True  # In an @<file> tree.
+            return p.h.strip().startswith('@')
+
         # Don't add numbers to special nodes.
-        if p.h.startswith('@') or self.hn_is_section_def(p):
+        if skip(p):
             return
 
-        self.hn_delete(p)
         s = '.'.join(reversed(list(str(1 + z.childIndex()) for z in p.self_and_parents())))
         # Do not strip the original headline!
         p.v.h = f"{s} {p.v.h}"
@@ -1118,12 +1131,16 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('add-subtree-headline-numbers')
     def hn_add_children(self, event: Event = None) -> None:
         """
-        Add headline numbers to all children of c.p.
+        Add headline numbers to *all* children of c.p, *including*:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
+
         Use the *last* clone's position for all clones.
         """
         c = self.c
         root = c.p
         for p in c.p.subtree():
+            self.hn_delete(p)
             self.hn_add_relative(p, root)
         c.setChanged()
         root.expand()
@@ -1131,15 +1148,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20230329031045.1: *5* hn_add_relative
     def hn_add_relative(self, p: Position, root: Position) -> None:
         """
-        Helper: Add a 1-based outline number (relative to the root) to p.h.
-
-        Never add outline numbers to @-nodes or section definition nodes.
+        Add a 1-based outline number (relative to the root) to p.h.
         """
-        # Don't add numbers to special nodes.
-        if p.h.startswith('@') or self.hn_is_section_def(p):
-            return
-
-        self.hn_delete(p)
         indices: List[int] = []
         for p2 in p.self_and_parents():
             if p2 == root:
