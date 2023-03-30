@@ -518,19 +518,8 @@ class Undoer:
     def afterChangeHeadline(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
-        c = self.c
         if u.redoing or u.undoing:
             return  # pragma: no cover
-        #
-        # Note : The currently selected node may be reverted to its original headline
-        #        string by leoFrame's unselect_helper by the next node selection!
-        #        (This can happen if changed by user script instead of the Tree UI.)
-        if p == c.p:
-            w = c.frame.tree.edit_widget(c.p)
-            if w:
-                s = w.getAllText()
-                if s != p.h:
-                    w.setAllText(p.h)  # was c.p, and different
         #
         # Set the type & helpers.
         bunch.kind = 'headline'
@@ -558,15 +547,6 @@ class Undoer:
         for p in c.all_unique_positions():
             if p.h != oldHeadlines[p.gnx][0]:
                 newHeadlines[p.gnx] = (oldHeadlines[p.gnx][0], p.h)
-                # Note : The currently selected node may be reverted to its original headline
-                #        string by leoFrame's unselect_helper by the next node selection!
-                #        (This can happen if changed by user script instead of the Tree UI.)
-                if p == c.p:
-                    w = c.frame.tree.edit_widget(c.p)
-                    if w:
-                        s = w.getAllText()
-                        if s != p.h:
-                            w.setAllText(p.h)  # was c.p, and different
         # Filtered down dict containing only the changed ones.
         bunch.headlines = newHeadlines
         u.pushBead(bunch)
