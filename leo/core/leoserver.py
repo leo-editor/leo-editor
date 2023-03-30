@@ -3001,7 +3001,6 @@ class LeoServer:
         if h == oldH:
             return self._make_response()
         bunch = u.beforeChangeHeadline(p)
-        # p.initHeadString(h)  # change p.h *after* calling undoer's before method.
         c.setHeadString(p, h)  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
         c.setChanged()
         p.setDirty()
