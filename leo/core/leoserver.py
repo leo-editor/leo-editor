@@ -1536,6 +1536,7 @@ class LeoServer:
                     g.chdir(fileName)  # TODO : IS THIS NEEDED
                     s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
                     p = c.insertHeadline(op_name=undoType)
+                    # New node does not need c.setHeadString. p.setHeadString is ok.
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
             except Exception as err:
@@ -3000,7 +3001,7 @@ class LeoServer:
         if h == oldH:
             return self._make_response()
         bunch = u.beforeChangeHeadline(p)
-        p.initHeadString(h)  # change p.h *after* calling undoer's before method.
+        c.setHeadString(p, h)  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
         c.setChanged()
         p.setDirty()
         u.afterChangeHeadline(p, 'Change Headline', bunch)

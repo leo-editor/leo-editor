@@ -773,8 +773,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
     #@@language rest
     #@+at
-    # These methods are currently just used in tandem to center the line or
-    # region within the fill column. for example, dependent upon the fill column, this text:
+    # These methods are currently just used in tandem to center the line or region
+    # within the fill column. for example, dependent upon the fill column, this text:
     #
     #     cats
     #     raaaaaaaaaaaats
@@ -1155,6 +1155,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         Add a 1-based outline number (relative to the root) to p.h.
         """
+        c = self.c
         indices: List[int] = []
         for p2 in p.self_and_parents():
             if p2 == root:
@@ -1162,7 +1163,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             indices.insert(0, p2.childIndex())
         s = '.'.join([str(1 + z) for z in indices])
         # Do not strip the original headline!
-        p.v.h = f"{s} {p.v.h}"
+        c.setHeadString(p, f"{s} {p.v.h}")
         p.v.setDirty()
     #@+node:ekr.20230328014542.1: *4* hn-delete-all
     @cmd('hn-delete-all')
@@ -1198,11 +1199,12 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     def hn_delete(self, p: Position) -> None:
         """Helper: delete the headline number in p.h."""
+        c = self.c
         m = re.match(self.hn_pattern, p.h)
         if m:
             # Do not strip the headline!
             n = len(m.group(0))
-            p.v.h = p.v.h[n:]
+            c.setHeadString(p, p.v.h[n:])
             p.v.setDirty()
     #@+node:ekr.20150514063305.229: *3* ec: icons
     #@+at
