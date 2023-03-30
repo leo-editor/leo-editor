@@ -141,17 +141,72 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl (new)
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl
     def test_g_findUnl(self):
         
-        assert False
-        # table = (
-            # ('abc a bc x', 'bc', 0, 6),
-            # ('abc a bc x', 'bc', 1, 6),
-            # ('abc a x', 'bc', 0, -1),
-        # )
-        # for s, word, i, expected in table:
-            # actual = g.find_word(s, word, i)
+        c = self.c
+        
+        # Define helper functions.
+        #@+others
+        #@+node:ekr.20230330042946.1: *4* function: add_tree
+        def add_tree(c):
+            pass
+        #@+node:ekr.20230330042647.1: *4* function: make_tree
+        def make_tree(c):
+            """Make a test tree for other tests"""
+            root = c.rootPosition()
+            root.h = '@file test.py'
+            root.b = "def root():\n    pass\n"
+            last = root
+
+            def make_child(n, p):
+                p2 = p.insertAsLastChild()
+                p2.h = f"child {n}"
+                p2.b = (
+                    f"def child{n}():\n"
+                    f"    v{n} = 2\n"
+                    f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
+                    f"    # node {n} line 2: blabla second blabla bla second ble blu"
+                )
+                return p2
+
+            def make_top(n, sib):
+                p = sib.insertAfter()
+                p.h = f"Node {n}"
+                p.b = (
+                    f"def top{n}():\n:"
+                    f"    v{n} = 3\n"
+                )
+                return p
+
+            for n in range(0, 4, 3):
+                last = make_top(n + 1, last)
+                child = make_child(n + 2, last)
+                make_child(n + 3, child)
+
+            for p in c.all_positions():
+                p.v.clearDirty()
+                p.v.clearVisited()
+
+            # Always start with the root selected.
+            c.selectPosition(c.rootPosition())
+        #@-others
+        
+        make_tree(c)
+        
+        h = '@file test.py'
+        test_p = g.findNodeAnywhere(c, h)
+        assert(test_p)
+        
+        table = (
+            f"{h}",
+            'test.py',
+        )
+        for i, s in enumerate(table):
+            unl = g.computeFileUrl(s, c)
+            result = g.findUNL([unl], c)
+            print(i, s, unl, repr(result))
+        
             # self.assertEqual(actual, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
