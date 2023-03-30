@@ -518,7 +518,6 @@ class Undoer:
     def afterChangeHeadline(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
-        c = self.c
         if u.redoing or u.undoing:
             return  # pragma: no cover
         #
