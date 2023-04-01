@@ -449,8 +449,7 @@ class MypyCommand:
         root = p.copy()
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        g.appendToSysPath(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
     #@-others
@@ -486,8 +485,7 @@ class Flake8Command:
             return
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        g.appendToSysPath(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             self.check_all(roots)
@@ -576,8 +574,7 @@ class PyflakesCommand:
             return True
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        g.appendToSysPath(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if not roots:
             return True
@@ -608,8 +605,7 @@ class PylintCommand:
             return None
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        g.appendToSysPath(leo_path)
 
         # Ignore @nopylint trees.
         def predicate(p: Position) -> bool:

@@ -39,15 +39,13 @@ you see is real, and most of it is "live".
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 import os
 import re
-import sys
 import time
 from typing import Optional
 
 # This is what Leo typically does.
 # pylint: disable=wrong-import-position
-path = os.getcwd()
-if path not in sys.path:
-    sys.path.append(path)
+g.appendToSysPath(os.getcwd())
+
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
 from leo.core import leoFastRedraw

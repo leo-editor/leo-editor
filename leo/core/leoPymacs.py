@@ -66,9 +66,12 @@ def init():
     import os
     import sys
     theDir = os.path.abspath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
-    if theDir not in sys.path:
-        print('leoPymacs:adding', theDir, 'to sys.path')
-        sys.path.append(theDir)
+    # Like g.appendToSysPath.
+    isWindows = sys.platform.startswith('win')
+    theDir2 = theDir.replace('/', '\\') if isWindows else theDir
+    if theDir2 not in sys.path:
+        sys.path.append(theDir2)
+        print(f"leoPymacs: Append {theDir2!r} to sys.path")
     # Create the dummy app
     try:
         from leo.core import runLeo as leo

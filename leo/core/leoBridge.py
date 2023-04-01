@@ -209,13 +209,12 @@ class BridgeController:
             'config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test')  # 2008/7/30
         for theDir in leoDirs:
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
-            if path not in sys.path:
-                sys.path.append(path)
+            g.appendToSysPath(path)
+
         # #258: leoBridge does not work with @auto-md subtrees.
         for theDir in ('importers', 'writers'):
             path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', theDir)
-            if path not in sys.path:
-                sys.path.append(path)
+            g.appendToSysPath(path)
     #@+node:ekr.20070227095743: *4* bridge.createGui
     def createGui(self) -> None:
         g = self.g
