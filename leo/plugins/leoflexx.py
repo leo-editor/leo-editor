@@ -39,12 +39,19 @@ you see is real, and most of it is "live".
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 import os
 import re
+import sys
 import time
 from typing import Optional
 
+# Like g.appendToSysPath.
 # This is what Leo typically does.
+path = os.getcwd()
+isWindows = sys.platform.startswith('win')
+theDir2 = path.replace('/', '\\') if isWindows else path
+if path not in sys.path:
+    sys.path.append(path)
+
 # pylint: disable=wrong-import-position
-g.appendToSysPath(os.getcwd())
 
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
