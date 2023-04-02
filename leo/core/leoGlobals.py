@@ -7106,8 +7106,8 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
         parent_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if parent_dir.endswith('site-packages'):
             if parent_dir not in sys.path:
-                sys.path.append(parent_dir)
                 g.trace(f"Append {parent_dir!r} to sys.path")
+                sys.path.insert(0, parent_dir)
         else:
             g.trace('Can not happen: wrong parent directory', parent_dir)
             return

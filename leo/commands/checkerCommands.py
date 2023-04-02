@@ -450,7 +450,7 @@ class MypyCommand:
         # Make sure the leo-editor directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
-            sys.path.append(path)
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
     #@-others
@@ -487,7 +487,7 @@ class Flake8Command:
         # Make sure the leo-editor directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
-            sys.path.append(path)
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             self.check_all(roots)
@@ -577,7 +577,7 @@ class PyflakesCommand:
         # Make sure the leo-editor directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
-            sys.path.append(path)
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if not roots:
             return True
@@ -608,7 +608,7 @@ class PylintCommand:
         # Make sure the leo-editor directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
-            sys.path.append(path)
+            sys.path.insert(0, path)
 
         # Ignore @nopylint trees.
         def predicate(p: Position) -> bool:

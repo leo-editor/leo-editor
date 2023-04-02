@@ -45,7 +45,7 @@ from typing import Optional
 
 path = os.getcwd()
 if path not in sys.path:
-    sys.path.append(path)
+    sys.path.insert(0, path)
 del path
 
 # pylint: disable=wrong-import-position

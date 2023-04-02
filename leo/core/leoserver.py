@@ -40,7 +40,7 @@ core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
 assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
-    sys.path.append(leo_path)
+    sys.path.insert(0, leo_path)
 del core_dir, leo_path
 # Leo
 from leo.core.leoCommands import Commands as Cmdr  # noqa

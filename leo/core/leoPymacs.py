@@ -67,8 +67,8 @@ def init():
     import sys
     path = os.path.normpath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
     if path not in sys.path:
-        sys.path.append(path)
         print(f"leoPymacs: Append {path!r} to sys.path")
+        sys.path.insert(0, path)
     del path
     # Create the dummy app
     try:
