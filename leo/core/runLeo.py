@@ -31,10 +31,7 @@ if sys.executable.endswith("pythonw.exe"):
         os.path.join(os.getenv("TEMP", default=""),  # #1557.
         "stderr-" + os.path.basename(sys.argv[0])),
         "w")
-# Like g.appendToSysPath.
 path = os.getcwd()
-isWindows = sys.platform.startswith('win')
-theDir2 = path.replace('/', '\\') if isWindows else path
 if path not in sys.path:
     sys.path.append(path)
 try:
