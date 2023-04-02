@@ -6436,8 +6436,7 @@ def os_path_finalize(path: str) -> str:
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
-    # os.path.normpath uses *platform' delims (os.sep).
-    # Here we *must forward slashes to make caching work properly.
+    # We *must* use forward slashes to make caching work properly.
     if g.isWindows:
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
