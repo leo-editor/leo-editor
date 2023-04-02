@@ -7115,7 +7115,7 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
         os.chdir(os.path.normpath(os.path.join(g.app.loadDir, '..')))
     else:
         # Run tests in leo-editor.
-        os.chdir(os.path.normpath.os.path.join(g.app.loadDir, '..', '..'))
+        os.chdir(os.path.normpath(os.path.join(g.app.loadDir, '..', '..')))
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)

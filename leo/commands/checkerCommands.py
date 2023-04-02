@@ -447,8 +447,8 @@ class MypyCommand:
             print('install mypy with `pip install mypy`')
             return
         root = p.copy()
-        # Make sure the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        # Make sure the leo-editor directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
@@ -484,8 +484,8 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
-        # Make sure the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        # Make sure the leo-editor directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
@@ -574,8 +574,8 @@ class PyflakesCommand:
         c, root = self.c, p
         if not pyflakes:
             return True
-        # Make sure the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        # Make sure the leo-editor directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
@@ -605,8 +605,8 @@ class PylintCommand:
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
             return None
-        # Make sure the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        # Make sure the leo-editor directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.append(path)
 

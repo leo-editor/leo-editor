@@ -66,7 +66,6 @@ def init():
     import os
     import sys
     path = os.path.normpath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
-    # Make sure the leo-editor directory is on sys.path.
     if path not in sys.path:
         sys.path.append(path)
         print(f"leoPymacs: Append {path!r} to sys.path")
