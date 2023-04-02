@@ -447,9 +447,10 @@ class MypyCommand:
             print('install mypy with `pip install mypy`')
             return
         root = p.copy()
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        g.appendToSysPath(leo_path)
+        # Make sure the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        if path not in sys.path:
+            sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
     #@-others
@@ -483,9 +484,10 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        g.appendToSysPath(leo_path)
+        # Make sure the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        if path not in sys.path:
+            sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             self.check_all(roots)
@@ -572,9 +574,10 @@ class PyflakesCommand:
         c, root = self.c, p
         if not pyflakes:
             return True
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        g.appendToSysPath(leo_path)
+        # Make sure the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        if path not in sys.path:
+            sys.path.append(path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if not roots:
             return True
@@ -583,7 +586,6 @@ class PyflakesCommand:
             # This message is important for clarity.
             g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
         return total_errors == 0
-
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
@@ -603,9 +605,10 @@ class PylintCommand:
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
             return None
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        g.appendToSysPath(leo_path)
+        # Make sure the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..'))
+        if path not in sys.path:
+            sys.path.append(path)
 
         # Ignore @nopylint trees.
         def predicate(p: Position) -> bool:

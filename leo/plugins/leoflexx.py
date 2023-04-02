@@ -43,12 +43,10 @@ import sys
 import time
 from typing import Optional
 
-# Like g.appendToSysPath.
 path = os.getcwd()
-isWindows = sys.platform.startswith('win')
-theDir2 = path.replace('/', '\\') if isWindows else path
 if path not in sys.path:
     sys.path.append(path)
+del path
 
 # pylint: disable=wrong-import-position
 

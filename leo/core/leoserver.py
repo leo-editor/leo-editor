@@ -39,11 +39,9 @@ except Exception:
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
 assert os.path.exists(leo_path), repr(leo_path)
-# Like g.appendToSysPath
-isWindows = sys.platform.startswith('win')
-leo_path2 = leo_path.replace('/', '\\') if isWindows else leo_path
-if leo_path2 not in sys.path:
-    sys.path.append(leo_path2)
+if leo_path not in sys.path:
+    sys.path.append(leo_path)
+del core_dir, leo_path
 # Leo
 from leo.core.leoCommands import Commands as Cmdr  # noqa
 from leo.core.leoNodes import Position, VNode  # noqa

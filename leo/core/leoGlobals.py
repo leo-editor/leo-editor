@@ -3431,19 +3431,6 @@ def update_directives_pat() -> None:
 # #1688: Initialize g.directives_pat
 update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
-#@+node:ekr.20230401054152.1: *3* g.appendToSysPath (new)
-def appendToSysPath(path: str) -> str:
-    """
-    Append path to sys.path, converting slashes to os.sep.
-
-    Return the path added to sys.path or None.
-    """
-    # A horrible special case to undo the hack in g.os_path_finalize.
-    path2 = path.replace('/', '\\') if g.isWindows else path
-    if path2 in sys.path:
-        return None
-    sys.path.append(path2)
-    return path2
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir(path: str) -> None:
     if not g.os_path_isdir(path):
@@ -7117,7 +7104,7 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
     """
     if 'site-packages' in __file__:
         # Add site-packages to sys.path.
-        parent_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+        parent_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if parent_dir.endswith('site-packages'):
             changed = g.appendToSysPath(parent_dir)
             if changed:
@@ -7126,10 +7113,10 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
             g.trace('Can not happen: wrong parent directory', parent_dir)
             return
         # Run tests in site-packages/leo
-        os.chdir(g.os_path_finalize_join(g.app.loadDir, '..'))
+        os.chdir(os.path.normpath(os.path.join(g.app.loadDir, '..')))
     else:
         # Run tests in leo-editor.
-        os.chdir(g.os_path_finalize_join(g.app.loadDir, '..', '..'))
+        os.chdir(os.path.normpath.os.path.join(g.app.loadDir, '..', '..'))
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)

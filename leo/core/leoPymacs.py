@@ -65,13 +65,12 @@ def init():
     # Add the parent path of this file to sys.path
     import os
     import sys
-    theDir = os.path.abspath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
-    # Like g.appendToSysPath.
-    isWindows = sys.platform.startswith('win')
-    theDir2 = theDir.replace('/', '\\') if isWindows else theDir
-    if theDir2 not in sys.path:
-        sys.path.append(theDir2)
-        print(f"leoPymacs: Append {theDir2!r} to sys.path")
+    path = os.path.normpath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
+    # Make sure the leo-editor directory is on sys.path.
+    if path not in sys.path:
+        sys.path.append(path)
+        print(f"leoPymacs: Append {path!r} to sys.path")
+    del path
     # Create the dummy app
     try:
         from leo.core import runLeo as leo
