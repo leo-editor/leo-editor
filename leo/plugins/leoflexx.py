@@ -44,7 +44,6 @@ import time
 from typing import Optional
 
 # Like g.appendToSysPath.
-# This is what Leo typically does.
 path = os.getcwd()
 isWindows = sys.platform.startswith('win')
 theDir2 = path.replace('/', '\\') if isWindows else path
@@ -53,6 +52,7 @@ if path not in sys.path:
 
 # pylint: disable=wrong-import-position
 
+# This is what Leo typically does.
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
 from leo.core import leoFastRedraw
