@@ -6522,7 +6522,7 @@ def os_path_normslashes(path: str) -> str:
     os.path.normpath does the *reverse* of what we want.
     """
     if g.isWindows and path:
-        if path.endswith('.py'):
+        if path.endswith(('.leo', '.py')):
             return path  ### Experimental.
         callers = g.callers(6)
         suppress = (  # 'os_path_finalize'
