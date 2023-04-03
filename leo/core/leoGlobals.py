@@ -6517,8 +6517,6 @@ def os_path_normpath(path: str) -> str:
         path = path.replace('\\', '/').lower()  # #2049: ignore case!
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (bad hack)
-normslashes_traces: Dict = {}
-
 def os_path_normslashes(path: str) -> str:
     """
     A Windows-only hack: convert backslashes to slashes.

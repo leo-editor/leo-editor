@@ -2256,7 +2256,7 @@ class Commands:
             g.es_exception()
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
-    #@+node:ekr.20230402232100.1: *4* c.fullPath (new)
+    #@+node:ekr.20230402232100.1: *4* c.fullPath
     def fullPath(self, p: Position, simulate: bool = False) -> str:
         """
         Return the full path (including fileName) in effect at p. Neither the
