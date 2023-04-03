@@ -2256,6 +2256,30 @@ class Commands:
             g.es_exception()
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
+    #@+node:ekr.20230402232100.1: *4* c.fullPath (NEW, experimental)
+    def fullPath(self, p: Position, simulate: bool = False) -> str:
+        """
+        Return the full path (including fileName) in effect at p. Neither the
+        path nor the fileName will be created if it does not exist.
+        """
+        c = self
+        # Search p and p's parents.
+        for p in p.self_and_parents(copy=False):
+            aList = g.get_directives_dict_list(p)
+            path = c.scanAtPathDirectives(aList)
+            fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
+            if fn:
+                # Fix #102: expand path expressions.
+                fn = c.expand_path_expression(fn)  # #1341.
+                fn = os.path.expanduser(fn)  # 1900.
+                if 'idle' not in g.callers():
+                    print(f"c.fullPath: {g.os_path_finalize_join(path, fn):70} {g.callers()}")
+                path = os.path.normpath(os.path.join(path, fn))
+                if g.isWindows:
+                    path = path.replace('\\', '/')
+                ### return g.os_path_finalize_join(path, fn)  # #1341.
+                return path
+        return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
         c = self

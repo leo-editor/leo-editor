@@ -3532,6 +3532,14 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
             fn = os.path.expanduser(fn)  # 1900.
+            if False and 'idle' not in g.callers():
+                g.trace(f"{g.os_path_finalize_join(path, fn):70} {g.callers()}")
+            if 1:  ### Experimental:
+                path = os.path.normpath(os.path.join(path, fn))
+                if False and g.isWindows:
+                    path = path.replace('\\', '/')
+                ### return g.os_path_finalize_join(path, fn)  # #1341.
+                return path
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
@@ -6424,7 +6432,9 @@ def os_path_expanduser(path: str) -> str:
     if g.isWindows:
         path = path.replace('\\', '/')
     return result
-#@+node:ekr.20080921060401.14: *3* g.os_path_finalize
+#@+node:ekr.20080921060401.14: *3* g.os_path_finalize (bad hack)
+finalize_traces: Dict = {}
+
 def os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
@@ -6438,6 +6448,12 @@ def os_path_finalize(path: str) -> str:
     path = os.path.normpath(path)
     # We *must* use forward slashes to make caching work properly.
     if g.isWindows:
+        if False and '\\' in path and g.callers(5) not in finalize_traces:
+            finalize_traces[g.callers(5)] = True
+            path_s = path.lower().replace(r'c:\repos\leo-editor', '')
+            callers_s = g.callers(5).replace('os_path_finalize_join', '')
+            if True:  # any(z in callers_s for z in ('find', 'read')):
+                g.trace(f"HACK {path_s:45} {callers_s}")
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
     return path
