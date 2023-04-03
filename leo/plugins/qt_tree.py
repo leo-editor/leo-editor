@@ -406,7 +406,7 @@ class LeoQtTree(leoFrame.LeoTree):
             else:
                 # Draw the hidden children.
                 for child in p.children():
-                    self.drawTree(child, parent_item)
+                    self.drawNode(child, parent_item)
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)
@@ -932,7 +932,7 @@ class LeoQtTree(leoFrame.LeoTree):
         wrapper = self.connectEditorWidget(e, item)
         self.sizeTreeEditor(c, e)
         return e, wrapper
-    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
+    #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem (*** trace)
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 
         w = self.treeWidget
@@ -952,11 +952,10 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
-        if 0:  ### Testing only!
-            try:
-                g.visit_tree_item(self.c, p, item)
-            except leoPlugins.TryNext:
-                pass
+        try:
+            g.visit_tree_item(self.c, p, item)
+        except leoPlugins.TryNext:
+            pass
         return item
     #@+node:ekr.20110605121601.18423: *4* qtree.getCurrentItem
     def getCurrentItem(self) -> Item:

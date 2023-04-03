@@ -3230,7 +3230,7 @@ class FastAtRead:
                         gnx2vnode[gnx] = v
                         v.fileIndex = gnx
                     v.children = []
-                    trace_v('root', v)
+                    ### trace_v('root', v)
                     continue
                 #
                 # Case 2: We are scanning the descendants of a clone.
@@ -3245,7 +3245,7 @@ class FastAtRead:
                     # Always clear the children!
                     v.children = []
                     parent_v.children.append(v)
-                    trace_v('clone2', v)
+                    ### trace_v('clone2', v)
                     continue
                 #
                 # Case 3: we are not already scanning the descendants of a clone.
@@ -3253,11 +3253,11 @@ class FastAtRead:
                     # The *start* of a clone tree. Reset the children.
                     clone_v = v
                     v.children = []
-                    trace_v('normal1', v)
+                    ### trace_v('normal1', v)
                 else:
                     # Make a new vnode.
                     v = leoNodes.VNode(context=context, gnx=gnx)
-                    trace_v('normal2', v)
+                    ### trace_v('normal2', v)
                 #
                 # The last version of the body and headline wins.
                 gnx2vnode[gnx] = v
