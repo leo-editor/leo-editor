@@ -2564,8 +2564,7 @@ class Commands:
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = os.path.normpath(os.path.join(*paths))
-        path = g.os_path_normslashes(path)
+        path = g.os_path_finalize_join(*paths)
         return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event

@@ -6438,7 +6438,7 @@ def os_path_finalize(path: str) -> str:
         g.trace('NULL in', repr(path), g.callers())
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
-    path = os.path.abspath(path)
+    path = os.path.abspath(path)  # mostly the same as os.path.normpath.
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
