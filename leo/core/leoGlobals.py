@@ -3534,11 +3534,9 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
             fn = os.path.expanduser(fn)  # 1900.
             if False and 'idle' not in g.callers():
                 g.trace(f"{g.os_path_finalize_join(path, fn):70} {g.callers()}")
-            if 1:  ### Experimental:
+            if 1:  ### Experimental: should be identical to legacy code.
                 path = os.path.normpath(os.path.join(path, fn))
-                if False and g.isWindows:
-                    path = path.replace('\\', '/')
-                ### return g.os_path_finalize_join(path, fn)  # #1341.
+                path = g.os_path_normslashes(path)  # #1341.
                 return path
             return g.os_path_finalize_join(path, fn)  # #1341.
     return ''
@@ -6432,9 +6430,7 @@ def os_path_expanduser(path: str) -> str:
     if g.isWindows:
         path = path.replace('\\', '/')
     return result
-#@+node:ekr.20080921060401.14: *3* g.os_path_finalize (bad hack)
-finalize_traces: Dict = {}
-
+#@+node:ekr.20080921060401.14: *3* g.os_path_finalize
 def os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
@@ -6446,16 +6442,7 @@ def os_path_finalize(path: str) -> str:
     path = os.path.expanduser(path)  # #1383.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
-    # We *must* use forward slashes to make caching work properly.
-    if g.isWindows:
-        if '\\' in path and g.callers(5) not in finalize_traces:
-            finalize_traces[g.callers(5)] = True
-            path_s = path.lower().replace(r'c:\repos\leo-editor', '')
-            callers_s = g.callers(5).replace('os_path_finalize_join', '')
-            if True:  # any(z in callers_s for z in ('find', 'read')):
-                g.trace(f"{path_s:45} {callers_s}")
-        ### Removing this statement destroys .leo files.
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
@@ -6545,11 +6532,19 @@ def os_path_normpath(path: str) -> str:
     if g.isWindows:
         path = path.replace('\\', '/').lower()  # #2049: ignore case!
     return path
-#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
+#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (bad hack)
+normslashes_traces: Dict = {}
+
 def os_path_normslashes(path: str) -> str:
 
     # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
+        if not g.unitTesting and g.callers(5) not in normslashes_traces:
+            normslashes_traces[g.callers(5)] = True
+            path_s = path.lower().replace(r'c:\repos\leo-editor', '')
+            callers_s = g.callers(5).replace('os_path_finalize_join', '')
+            if True:  # any(z in callers_s for z in ('find', 'read')):
+                g.trace(f"{path_s:45} {callers_s}")
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath

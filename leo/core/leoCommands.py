@@ -2566,10 +2566,9 @@ class Commands:
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        if 1:  ### Is this where the hack is essential?
+        if 1:  ### Experimental
             path = os.path.normpath(os.path.join(*paths))
-            if g.isWindows:
-                path = path.replace('\\', '/')
+            path = g.os_path_normslashes(path)  # #1341.
         else:
             path = g.os_path_finalize_join(*paths)  # #1341.
         return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
