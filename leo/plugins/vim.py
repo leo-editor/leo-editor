@@ -290,7 +290,7 @@ class VimCommander:
             args.append('+0')  # Go to first line of the file. This is an Ex command.
             assert root.isAnyAtFileNode(), root
             # Use os.path.normpath to give system separators.
-            fn = os.path.normpath(g.fullPath(c, root))  # #1914.
+            fn = os.path.normpath(c.fullPath(root))  # #1914.
         else:
             # vim-open-node
             # Set the cursor position to the current line in the node.

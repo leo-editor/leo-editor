@@ -643,7 +643,7 @@ class LeoImportCommands:
         c = self.c
         p = parent.copy()
         self.treeType = '@file'  # Fix #352.
-        fileName = g.fullPath(c, parent)
+        fileName = c.fullPath(parent)
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
         # Init ivars.

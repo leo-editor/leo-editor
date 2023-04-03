@@ -3517,23 +3517,16 @@ def ensure_extension(name: str, ext: str) -> str:
     if old_ext and old_ext == ext:
         return name
     return name + ext
-#@+node:ekr.20150403150655.1: *3* g.fullPath
+#@+node:ekr.20150403150655.1: *3* g.fullPath (deprecated)
 def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
     """
-    Return the full path (including fileName) in effect at p. Neither the
-    path nor the fileName will be created if it does not exist.
+    Return the full path (including fileName) in effect at p.
+
+    Create neither the path nor the fileName.
+
+    This function is deprecated. Use c.fullPath(p) instead.
     """
-    # Search p and p's parents.
-    for p in p.self_and_parents(copy=False):
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
-        if fn:
-            # Fix #102: expand path expressions.
-            fn = c.expand_path_expression(fn)  # #1341.
-            fn = os.path.expanduser(fn)  # 1900.
-            return g.os_path_finalize_join(path, fn)  # #1341.
-    return ''
+    return c.fullPath(p, simulate)
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory: str, kinds: List = None, recursive: bool = True) -> List[str]:
     """
@@ -3633,7 +3626,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
 def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
-        path = g.fullPath(c, p)
+        path = c.fullPath(p)
         if path:
             dir_ = g.os_path_dirname(path)
             if dir_ and g.os_path_exists(dir_):
@@ -6434,11 +6427,9 @@ def os_path_finalize(path: str) -> str:
         g.trace('NULL in', repr(path), g.callers())
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
-    path = os.path.abspath(path)
+    path = os.path.abspath(path)  # mostly the same as os.path.normpath.
     path = os.path.normpath(path)
-    # We *must* use forward slashes to make caching work properly.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
@@ -6524,14 +6515,17 @@ def os_path_normpath(path: str) -> str:
     if not path:
         return ''
     path = os.path.normpath(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/').lower()  # #2049: ignore case!
+    path = g.os_path_normslashes(path)
     return path
-#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
+#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (bad hack)
 def os_path_normslashes(path: str) -> str:
+    """
+    A Windows-only hack: convert backslashes to slashes.
 
-    # os.path.normpath does the *reverse* of what we want.
+    os.path.normpath does the *reverse* of what we want.
+
+    To do: make this function a do-nothing.
+    """
     if g.isWindows and path:
         path = path.replace('\\', '/')
     return path
@@ -6889,7 +6883,8 @@ def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
     path = g.os_path_normpath(path)  # #2049. Do *not* use os.path.normpath.
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            if path == g.os_path_normpath(g.fullPath(c, p)):  # #2049. Do *not* use os.path.normpath.
+            # #2049. Do *not* use os.path.normpath.
+            if path == g.os_path_normpath(c.fullPath(p)):
                 return p
     return None
 #@+node:ekr.20210303123423.1: *4* g.findNodeInChildren
