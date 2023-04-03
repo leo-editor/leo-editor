@@ -1120,7 +1120,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                     # this splitter could have been added since
                     ns.setSizes(ns._unzoom)
         else:
-            focused = Qt.QApplication.focusWidget()
+            focused = g.app.gui.qtApp.focusWidget()
             parents = []
             parent = focused
             while parent:
