@@ -938,13 +938,14 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        g.trace(
-            'level:', p.level(),
-            'item:',  f"{(id(item) if item else '<None>'):<15}",
-            'parent', f"{(id(parent_item) if parent_item else '<None>'):<15}",
-            'children?', int(p.hasChildren()),
-            'expanded?', int(p.isExpanded()),
-            p.h)
+        if 0:
+            g.trace(
+                'level:', p.level(),
+                'item:',  f"{(id(item) if item else '<None>'):<15}",
+                'parent', f"{(id(parent_item) if parent_item else '<None>'):<15}",
+                'children?', int(p.hasChildren()),
+                'expanded?', int(p.isExpanded()),
+                p.h)
         if isQt6:
             item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
