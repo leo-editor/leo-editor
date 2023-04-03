@@ -6526,7 +6526,7 @@ def os_path_normslashes(path: str) -> str:
 
     To do: make this function a do-nothing.
     """
-    if g.isWindows and path:
+    if g.isWindows and path:  ###
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath

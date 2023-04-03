@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 #@-<< leoAtFile imports & annotations >>
+g_tracing_flag = False  ###
 
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
@@ -281,12 +282,14 @@ class AtFile:
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
     def read(self, root: Position, fromString: str = None) -> bool:
         """Read an @thin or @file tree."""
+        global g_tracing_flag  ###
         at, c = self, self.c
         fileName = c.fullPath(root)  # #1341. #1889.
         # g.trace('fromString?', bool(fromString), fileName)
-        if 'leoApp.py' in fileName and 'test_' not in fileName:
-            g.trace(fileName)
-            g.pdb()
+        g_tracing_flag = 'leoApp.py' in fileName and 'test_' not in fileName  ###
+        # if 'leoApp.py' in fileName and 'test_' not in fileName:
+            # g.trace(fileName)
+            # g.pdb()
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
@@ -3197,6 +3200,12 @@ class FastAtRead:
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = self.node_start_pat.match(line)
             if m:
+                global g_tracing_flag  ###
+                
+                def trace_v(tag, v):
+                    if g_tracing_flag:
+                        g.trace(f"{tag:8} level: {level} v? {bool(v)} gnx: {gnx:25} v.h: {v.h}")
+                    
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 # m.group(3) is the level number, m.group(4) is the number of stars.
@@ -3222,6 +3231,7 @@ class FastAtRead:
                         gnx2vnode[gnx] = v
                         v.fileIndex = gnx
                     v.children = []
+                    trace_v('root', v)
                     continue
                 #
                 # Case 2: We are scanning the descendants of a clone.
@@ -3236,6 +3246,7 @@ class FastAtRead:
                     # Always clear the children!
                     v.children = []
                     parent_v.children.append(v)
+                    trace_v('clone2', v)
                     continue
                 #
                 # Case 3: we are not already scanning the descendants of a clone.
@@ -3243,9 +3254,11 @@ class FastAtRead:
                     # The *start* of a clone tree. Reset the children.
                     clone_v = v
                     v.children = []
+                    trace_v('normal1', v)
                 else:
                     # Make a new vnode.
                     v = leoNodes.VNode(context=context, gnx=gnx)
+                    trace_v('normal2', v)
                 #
                 # The last version of the body and headline wins.
                 gnx2vnode[gnx] = v
