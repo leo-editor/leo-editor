@@ -282,11 +282,10 @@ class AtFile:
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
     def read(self, root: Position, fromString: str = None) -> bool:
         """Read an @thin or @file tree."""
-        global g_tracing_flag  ###
+        ### global g_tracing_flag  ###
         at, c = self, self.c
         fileName = c.fullPath(root)  # #1341. #1889.
-        # g.trace('fromString?', bool(fromString), fileName)
-        g_tracing_flag = 'leoApp.py' in fileName and 'test_' not in fileName  ###
+        ### g_tracing_flag = 'leoApp.py' in fileName and 'test_' not in fileName  ###
         # if 'leoApp.py' in fileName and 'test_' not in fileName:
             # g.trace(fileName)
             # g.pdb()
