@@ -3200,11 +3200,11 @@ class FastAtRead:
             m = self.node_start_pat.match(line)
             if m:
                 global g_tracing_flag  ###
-                
-                def trace_v(tag, v):
+
+                def trace_v(tag: str, v: VNode) -> None:
                     if g_tracing_flag:
-                        g.trace(f"{tag:8} level: {level} v? {bool(v)} gnx: {gnx:25} v.h: {v.h}")
-                    
+                        g.trace(f"{tag:8} level: {v.level()} v? {bool(v)} gnx: {v.gnx:25} v.h: {v.h}")
+
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 # m.group(3) is the level number, m.group(4) is the number of stars.
