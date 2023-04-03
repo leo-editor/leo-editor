@@ -421,7 +421,7 @@ class MypyCommand:
             return
         self.unknown_path_names = []
         for root in roots:
-            fn = os.path.normpath(c.fullPath(root))  ###
+            fn = os.path.normpath(c.fullPath(root))
             self.check_file(fn, root)
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn: str, root: Position) -> None:
@@ -534,7 +534,7 @@ class PyflakesCommand:
         c = self.c
         total_errors = 0
         for i, root in enumerate(roots):
-            fn = os.path.normpath(c.fullPath(root))  ###
+            fn = os.path.normpath(c.fullPath(root))
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
             if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):

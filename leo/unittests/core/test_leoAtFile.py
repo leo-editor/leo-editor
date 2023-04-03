@@ -980,7 +980,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('#@', '# @')
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        ### g.printObj(contents2, tag='contents2')
+        # g.printObj(contents2, tag='contents2')
         self.assertEqual(contents, s, 'Test 2: -b')
     #@+node:ekr.20211101154632.1: *3* TestFastAtRead.test_html_doc_part
     def test_html_doc_part(self):
@@ -1029,7 +1029,7 @@ class TestFastAtRead(LeoUnitTest):
             #ATverbatim
             #AT+node (should be protected by verbatim)
             #AT-leo
-        ''').replace('AT', '@') ### .replace('LB', '<<')
+        ''').replace('AT', '@') # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)

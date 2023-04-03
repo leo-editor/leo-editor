@@ -6520,7 +6520,7 @@ def os_path_normslashes(path: str) -> str:
     A Windows-only hack: convert backslashes to slashes.
 
     os.path.normpath does the *reverse* of what we want.
-    
+
     To do: make this function a do-nothing.
     """
     if g.isWindows and path:
@@ -6871,13 +6871,12 @@ def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Optional[Pos
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123525.1: *4* g.findNodeByPath ***
+#@+node:ekr.20210303123525.1: *4* g.findNodeByPath
 def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
     """Return the first @<file> node in Cmdr c whose path is given."""
     if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
         g.trace(f"path not absolute: {repr(path)}")
         return None
-    ###
     path = g.os_path_normpath(path)  # #2049. Do *not* use os.path.normpath.
     for p in c.all_positions():
         if p.isAnyAtFileNode():

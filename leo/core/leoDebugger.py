@@ -445,7 +445,7 @@ def show_line(line, fn) -> None:
         return
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            path = c.fullPath(p).replace('\\', '/')  ###
+            path = c.fullPath(p).replace('\\', '/')
             if target == path:
                 # Select the line.
                 p, junk_offset = c.gotoCommands.find_file_line(n=line, p=p)

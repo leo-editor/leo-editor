@@ -288,7 +288,7 @@ class AtFile:
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(c.fullPath(root), root)  ###
+        at.rememberReadPath(c.fullPath(root), root)
         at.initReadIvars(root, fileName)
         at.fromString = fromString
         if at.errors:
