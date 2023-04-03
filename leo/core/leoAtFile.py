@@ -283,6 +283,10 @@ class AtFile:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)  # #1341. #1889.
+        # g.trace('fromString?', bool(fromString), fileName)
+        if 'leoApp.py' in fileName and 'test_' not in fileName:
+            g.trace(fileName)
+            g.pdb()
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
