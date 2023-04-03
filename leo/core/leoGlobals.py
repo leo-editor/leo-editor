@@ -6448,12 +6448,13 @@ def os_path_finalize(path: str) -> str:
     path = os.path.normpath(path)
     # We *must* use forward slashes to make caching work properly.
     if g.isWindows:
-        if False and '\\' in path and g.callers(5) not in finalize_traces:
+        if '\\' in path and g.callers(5) not in finalize_traces:
             finalize_traces[g.callers(5)] = True
             path_s = path.lower().replace(r'c:\repos\leo-editor', '')
             callers_s = g.callers(5).replace('os_path_finalize_join', '')
             if True:  # any(z in callers_s for z in ('find', 'read')):
-                g.trace(f"HACK {path_s:45} {callers_s}")
+                g.trace(f"{path_s:45} {callers_s}")
+        ### Removing this statement destroys .leo files.
         path = path.replace('\\', '/')
     # calling os.path.realpath here would cause problems in some situations.
     return path

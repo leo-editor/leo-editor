@@ -2272,7 +2272,7 @@ class Commands:
                 # Fix #102: expand path expressions.
                 fn = c.expand_path_expression(fn)  # #1341.
                 fn = os.path.expanduser(fn)  # 1900.
-                if 'idle' not in g.callers():
+                if False and 'idle' not in g.callers():
                     print(f"c.fullPath: {g.os_path_finalize_join(path, fn):70} {g.callers()}")
                 path = os.path.normpath(os.path.join(path, fn))
                 if g.isWindows:
@@ -2566,7 +2566,12 @@ class Commands:
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = g.os_path_finalize_join(*paths)  # #1341.
+        if 1:  ### Is this where the hack is essential?
+            path = os.path.normpath(os.path.join(*paths))
+            if g.isWindows:
+                path = path.replace('\\', '/')
+        else:
+            path = g.os_path_finalize_join(*paths)  # #1341.
         return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
