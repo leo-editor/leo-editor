@@ -6522,6 +6522,28 @@ def os_path_normslashes(path: str) -> str:
     os.path.normpath does the *reverse* of what we want.
     """
     if g.isWindows and path:
+        if path.endswith('.py'):
+            return path  ### Experimental.
+        callers = g.callers(6)
+        suppress = (  # 'os_path_finalize'
+            'idle', 'icon', 'backup', 'findIconPath', 'fullPath',
+            'compute', 'createSettingsDicts',
+            'initIvars', 'initReadIvars', 'initWriteIvars',
+            'readGlobalSettingsFiles',
+            'recent')
+        if (
+            '\\' in path
+            and not any (z.lower() in callers.lower() for z in suppress)
+        ):
+            callers2 = (
+                callers.replace('os_path_normpath', 'N')
+                .replace('os_path_finalize_join', 'FJ')
+                .replace('os_path_finalize', 'F')
+                .replace('scanAllDirectives', 'ScanAll')
+                .replace('scanAtPathDirectives', 'ScanPath')
+                .replace('expand_css_constants', 'Expand')
+            )
+            g.trace(f"{path:55} {callers2}")
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
