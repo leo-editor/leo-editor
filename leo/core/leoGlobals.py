@@ -3523,21 +3523,7 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
     Return the full path (including fileName) in effect at p. Neither the
     path nor the fileName will be created if it does not exist.
     """
-    # Search p and p's parents.
-    for p in p.self_and_parents(copy=False):
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
-        if fn:
-            # Fix #102: expand path expressions.
-            fn = c.expand_path_expression(fn)  # #1341.
-            fn = os.path.expanduser(fn)  # 1900.
-            if False and 'idle' not in g.callers():  ###
-                g.trace(f"{g.os_path_finalize_join(path, fn):70} {g.callers()}")
-            path = os.path.normpath(os.path.join(path, fn))
-            path = g.os_path_normslashes(path)
-            return path
-    return ''
+    return c.fullPath(p, simulate)
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory: str, kinds: List = None, recursive: bool = True) -> List[str]:
     """
@@ -6534,15 +6520,12 @@ def os_path_normpath(path: str) -> str:
 normslashes_traces: Dict = {}
 
 def os_path_normslashes(path: str) -> str:
+    """
+    A Windows-only hack: convert backslashes to slashes.
 
-    # os.path.normpath does the *reverse* of what we want.
+    os.path.normpath does the *reverse* of what we want.
+    """
     if g.isWindows and path:
-        if False and not g.unitTesting and g.callers(5) not in normslashes_traces:
-            normslashes_traces[g.callers(5)] = True
-            path_s = path.lower().replace(r'c:\repos\leo-editor', '')
-            callers_s = g.callers(5).replace('os_path_finalize_join', '')
-            if True:  # any(z in callers_s for z in ('find', 'read')):
-                g.trace(f"{path_s:45} {callers_s}")
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath

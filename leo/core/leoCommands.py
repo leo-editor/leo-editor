@@ -2272,11 +2272,7 @@ class Commands:
                 # Fix #102: expand path expressions.
                 fn = c.expand_path_expression(fn)  # #1341.
                 fn = os.path.expanduser(fn)  # 1900.
-                if False and 'idle' not in g.callers():  ###
-                    print(f"c.fullPath: {g.os_path_finalize_join(path, fn):70} {g.callers()}")
-                path = os.path.normpath(os.path.join(path, fn))
-                path = g.os_path_normslashes(path)
-                return path
+                return g.os_path_finalize_join(path, fn)
         return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
