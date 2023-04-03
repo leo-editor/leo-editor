@@ -3532,7 +3532,7 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
             fn = os.path.expanduser(fn)  # 1900.
-            if False and 'idle' not in g.callers():
+            if False and 'idle' not in g.callers():  ###
                 g.trace(f"{g.os_path_finalize_join(path, fn):70} {g.callers()}")
             path = os.path.normpath(os.path.join(path, fn))
             path = g.os_path_normslashes(path)

@@ -2256,7 +2256,7 @@ class Commands:
             g.es_exception()
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
-    #@+node:ekr.20230402232100.1: *4* c.fullPath (NEW, experimental)
+    #@+node:ekr.20230402232100.1: *4* c.fullPath (new)
     def fullPath(self, p: Position, simulate: bool = False) -> str:
         """
         Return the full path (including fileName) in effect at p. Neither the
@@ -2272,7 +2272,7 @@ class Commands:
                 # Fix #102: expand path expressions.
                 fn = c.expand_path_expression(fn)  # #1341.
                 fn = os.path.expanduser(fn)  # 1900.
-                if False and 'idle' not in g.callers():
+                if False and 'idle' not in g.callers():  ###
                     print(f"c.fullPath: {g.os_path_finalize_join(path, fn):70} {g.callers()}")
                 path = os.path.normpath(os.path.join(path, fn))
                 path = g.os_path_normslashes(path)
