@@ -3623,7 +3623,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
 def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
-        path = g.fullPath(c, p)
+        path = c.fullPath(p)
         if path:
             dir_ = g.os_path_dirname(path)
             if dir_ and g.os_path_exists(dir_):
@@ -6869,16 +6869,18 @@ def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Optional[Pos
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123525.1: *4* g.findNodeByPath
+#@+node:ekr.20210303123525.1: *4* g.findNodeByPath ***
 def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
     """Return the first @<file> node in Cmdr c whose path is given."""
     if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
         g.trace(f"path not absolute: {repr(path)}")
         return None
+    ###
     path = g.os_path_normpath(path)  # #2049. Do *not* use os.path.normpath.
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            if path == g.os_path_normpath(g.fullPath(c, p)):  # #2049. Do *not* use os.path.normpath.
+            # #2049. Do *not* use os.path.normpath.
+            if path == g.os_path_normpath(c.fullPath(p)):
                 return p
     return None
 #@+node:ekr.20210303123423.1: *4* g.findNodeInChildren

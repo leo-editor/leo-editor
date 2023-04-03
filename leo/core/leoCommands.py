@@ -652,7 +652,7 @@ class Commands:
         regex = get_setting_for_language('exec-script-patterns')
         # Set the directory, if possible.
         if p.isAnyAtFileNode():
-            path = g.fullPath(c, p)
+            path = c.fullPath(p)
             directory = os.path.dirname(path)
         else:
             directory = None
@@ -1063,7 +1063,7 @@ class Commands:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
 
-            path = g.fullPath(c, root)
+            path = c.fullPath(root)
             path = g.os_path_finalize(path)
             language = getExeKind(root, ext)
             processor = getProcessor(language, path, ext)
@@ -2459,7 +2459,7 @@ class Commands:
         for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
             if name:
-                return g.fullPath(c, p)  # #1914.
+                return c.fullPath(p)  # #1914.
         return ''
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLanguage
     def hasAmbiguousLanguage(self, p: Position) -> int:
@@ -2765,7 +2765,7 @@ class Commands:
                 # Find an @<file> node with the given path.
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
-                        norm_path = os.path.normpath(g.fullPath(c, p))
+                        norm_path = os.path.normpath(c.fullPath(p))
                         if path == norm_path:
                             p, offset = c.gotoCommands.find_file_line(n, p)
                             break
@@ -2792,7 +2792,7 @@ class Commands:
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
         else:
-            root_path = g.fullPath(c, root)
+            root_path = c.fullPath(root)
         # Compute the final command.
         if '<FILE>' in command:
             final_command = command.replace('<FILE>', root_path)

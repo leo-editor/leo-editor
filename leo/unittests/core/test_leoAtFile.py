@@ -86,7 +86,7 @@ class TestAtFile(LeoUnitTest):
             child = root.insertAsLastChild()
             child.h = '@file test_bug_1889.py'
             child.b = '@language python\n# test #1889'
-            path = g.fullPath(c, child)
+            path = c.fullPath(child)
             assert '~' not in path, repr(path)
     #@+node:ekr.20210901140645.13: *3* TestAtFile.test_checkPythonSyntax
     def test_checkPythonSyntax(self):

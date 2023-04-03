@@ -445,7 +445,7 @@ def show_line(line, fn) -> None:
         return
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            path = g.fullPath(c, p).replace('\\', '/')
+            path = c.fullPath(p).replace('\\', '/')  ###
             if target == path:
                 # Select the line.
                 p, junk_offset = c.gotoCommands.find_file_line(n=line, p=p)
@@ -487,7 +487,7 @@ def xdb_breakpoint(event):
     if not root:
         g.trace('no root', p.h)
         return
-    path = g.fullPath(c, root)
+    path = c.fullPath(root)
     n0 = x.find_node_start(p=p)
     if n0 is None:
         g.trace('no n0')

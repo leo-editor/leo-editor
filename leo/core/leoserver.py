@@ -279,7 +279,7 @@ class ServerExternalFilesController(ExternalFilesController):
     def idle_check_at_file_node(self, c: Cmdr, p: Position) -> None:
         """Check the @<file> node at p for external changes."""
         trace = False
-        path = g.fullPath(c, p)
+        path = c.fullPath(p)
         has_changed = self.has_changed(path)
         if trace:
             g.trace('changed', has_changed, p.h)
