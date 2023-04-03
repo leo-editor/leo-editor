@@ -1175,7 +1175,8 @@ asciidoc_processors = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
 #@-<< declarations >>
-
+open_in_tab = False
+open_in_splitter = False
 trace = False  # This global trace is convenient.
 
 #@+<< define html templates >>
@@ -1547,7 +1548,7 @@ def unfreeze_rendering_pane(event):
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    global controllers, layouts
+    global controllers, layouts, open_in_splitter
     if g.app.gui.guiName() != 'qt':
         return
 
@@ -1557,7 +1558,8 @@ def hide_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-
+    if open_in_tab:
+        return
     vr3 = controllers.get(c.hash())
     if not vr3:
         vr3 = viewrendered(event)
@@ -1565,9 +1567,12 @@ def hide_rendering_pane(event):
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
-    vr3.store_layout('open')
-    vr3.deactivate()
-    vr3.deleteLater()
+    try:
+        vr3.store_layout('open')
+    except:
+        pass
+    # vr3.deactivate()
+    # vr3.deleteLater()
 
     def at_idle(c=c, _vr3=vr3):
         c = event.get('c')
@@ -1579,6 +1584,7 @@ def hide_rendering_pane(event):
     c.bodyWantsFocus()
     if vr3 == controllers.get(h):
         del controllers[h]
+        open_in_splitter = False
     else:
         g.trace(f'Can not happen: no controller for {c}')
 # Compatibility
@@ -1609,15 +1615,20 @@ def pause_play_movie(event):
 @g.command('vr3-show')
 def show_rendering_pane(event):
     """Show the rendering pane."""
+    global open_in_splitter, open_in_tab
+    if open_in_tab: return
     vr3 = getVr3(event)
     if not vr3: return
 
     vr3.show_dock_or_pane()
+    open_in_splitter = True
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
     """Toggle the rendering pane."""
-    global controllers
+    global controllers, open_in_tab, open_in_splitter
+    if open_in_tab:
+        return
     if g.app.gui.guiName() != 'qt':
         return
     c = event.get('c')
@@ -1634,8 +1645,10 @@ def toggle_rendering_pane(event):
 
     if vr3.isHidden():
         show_rendering_pane(event)
+        open_in_splitter = True
     else:
         hide_rendering_pane(event)
+        open_in_splitter = False
 
     c.bodyWantsFocusNow()
 
@@ -2072,6 +2085,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
 
+        # This allows us to open in a Log Panel tab
+        h = c.hash()
+        controllers[h] = self
 
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
@@ -4613,10 +4629,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
 
-        c, vr = self.c, self
-        vr.activate()
-        vr.show()
-        vr.adjust_layout('open')
+        c, vr3 = self.c, self
+        vr3.activate()
+        vr3.show()
+        vr3.adjust_layout('open')
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
