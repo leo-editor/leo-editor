@@ -3534,11 +3534,9 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
             fn = os.path.expanduser(fn)  # 1900.
             if False and 'idle' not in g.callers():
                 g.trace(f"{g.os_path_finalize_join(path, fn):70} {g.callers()}")
-            if 1:  ### Experimental: should be identical to legacy code.
-                path = os.path.normpath(os.path.join(path, fn))
-                path = g.os_path_normslashes(path)  # #1341.
-                return path
-            return g.os_path_finalize_join(path, fn)  # #1341.
+            path = os.path.normpath(os.path.join(path, fn))
+            path = g.os_path_normslashes(path)
+            return path
     return ''
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory: str, kinds: List = None, recursive: bool = True) -> List[str]:
@@ -6539,7 +6537,7 @@ def os_path_normslashes(path: str) -> str:
 
     # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
-        if not g.unitTesting and g.callers(5) not in normslashes_traces:
+        if False and not g.unitTesting and g.callers(5) not in normslashes_traces:
             normslashes_traces[g.callers(5)] = True
             path_s = path.lower().replace(r'c:\repos\leo-editor', '')
             callers_s = g.callers(5).replace('os_path_finalize_join', '')

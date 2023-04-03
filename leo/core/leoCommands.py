@@ -2275,9 +2275,7 @@ class Commands:
                 if False and 'idle' not in g.callers():
                     print(f"c.fullPath: {g.os_path_finalize_join(path, fn):70} {g.callers()}")
                 path = os.path.normpath(os.path.join(path, fn))
-                if g.isWindows:
-                    path = path.replace('\\', '/')
-                ### return g.os_path_finalize_join(path, fn)  # #1341.
+                path = g.os_path_normslashes(path)
                 return path
         return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
@@ -2566,11 +2564,8 @@ class Commands:
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        if 1:  ### Experimental
-            path = os.path.normpath(os.path.join(*paths))
-            path = g.os_path_normslashes(path)  # #1341.
-        else:
-            path = g.os_path_finalize_join(*paths)  # #1341.
+        path = os.path.normpath(os.path.join(*paths))
+        path = g.os_path_normslashes(path)
         return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event

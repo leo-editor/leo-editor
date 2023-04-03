@@ -358,10 +358,7 @@ class AtFile:
         files: List[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:
-            if 1:  ### Experimental.
-                data = (p.gnx, c.fullPath(p))
-            else:
-                data = (p.gnx, g.fullPath(c, p))
+            data = (p.gnx, c.fullPath(p))
             # skip clones referring to exactly the same paths.
             if data in scanned_nodes:
                 p.moveToNodeAfterTree()
