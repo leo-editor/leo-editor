@@ -401,16 +401,12 @@ class LeoQtTree(leoFrame.LeoTree):
         if p.hasChildren():
             if p.isExpanded():
                 self.expandItem(parent_item)
-                child = p.firstChild()
-                while child:
+                for child in p.children():
                     self.drawTree(child, parent_item)
-                    child.moveToNext()
             else:
                 # Draw the hidden children.
-                child = p.firstChild()
-                while child:
-                    self.drawNode(child, parent_item)
-                    child.moveToNext()
+                for child in p.children():
+                    self.drawTree(child, parent_item)
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)
@@ -939,20 +935,27 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 
-        g.trace(p.level(), p.h)
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
+        g.trace(
+            'level:', p.level(),
+            'item:',  f"{(id(item) if item else '<None>'):<15}",
+            'parent', f"{(id(parent_item) if parent_item else '<None>'):<15}",
+            'children?', int(p.hasChildren()),
+            'expanded?', int(p.isExpanded()),
+            p.h)
         if isQt6:
             item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
             item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
-        try:
-            g.visit_tree_item(self.c, p, item)
-        except leoPlugins.TryNext:
-            pass
+        if 0:  ### Testing only!
+            try:
+                g.visit_tree_item(self.c, p, item)
+            except leoPlugins.TryNext:
+                pass
         return item
     #@+node:ekr.20110605121601.18423: *4* qtree.getCurrentItem
     def getCurrentItem(self) -> Item:
