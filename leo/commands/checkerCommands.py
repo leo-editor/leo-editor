@@ -447,7 +447,7 @@ class MypyCommand:
             print('install mypy with `pip install mypy`')
             return
         root = p.copy()
-        # Make sure the leo-editor directory is on sys.path.
+        # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)
@@ -484,7 +484,7 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
-        # Make sure the leo-editor directory is on sys.path.
+        # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)
@@ -574,7 +574,7 @@ class PyflakesCommand:
         c, root = self.c, p
         if not pyflakes:
             return True
-        # Make sure the leo-editor directory is on sys.path.
+        # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)
@@ -605,7 +605,7 @@ class PylintCommand:
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
             return None
-        # Make sure the leo-editor directory is on sys.path.
+        # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)

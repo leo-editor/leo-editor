@@ -35,7 +35,7 @@ try:
     import websockets
 except Exception:
     websockets = None
-# Make sure leo-editor folder is on sys.path.
+# Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
 assert os.path.exists(leo_path), repr(leo_path)
