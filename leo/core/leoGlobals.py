@@ -3521,9 +3521,9 @@ def ensure_extension(name: str, ext: str) -> str:
 def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
     """
     Return the full path (including fileName) in effect at p.
-    
+
     Create neither the path nor the fileName.
-    
+
     This function is deprecated. Use c.fullPath(p) instead.
     """
     return c.fullPath(p, simulate)
