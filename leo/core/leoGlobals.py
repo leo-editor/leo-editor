@@ -6512,9 +6512,7 @@ def os_path_normpath(path: str) -> str:
     if not path:
         return ''
     path = os.path.normpath(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/').lower()  # #2049: ignore case!
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (bad hack)
 def os_path_normslashes(path: str) -> str:
