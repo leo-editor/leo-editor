@@ -174,7 +174,7 @@ class AtFile:
             at.root.v._p_changed = True
         #
         # #1907: Compute the file name and create directories as needed.
-        targetFileName = g.os_path_realpath(g.fullPath(c, root))
+        targetFileName = g.os_path_realpath(c.fullPath(root))
         at.targetFileName = targetFileName  # For at.writeError only.
         #
         # targetFileName can be empty for unit tests & @command nodes.
@@ -210,7 +210,7 @@ class AtFile:
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             g.red('Please select an @thin or @file node')
             return
-        fn = g.fullPath(c, p)  # #1910.
+        fn = c.fullPath(p)  # #1910.
         if not g.os_path_exists(fn):
             g.red(f"file not found: {fn}")
             return
@@ -282,13 +282,13 @@ class AtFile:
     def read(self, root: Position, fromString: str = None) -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
-        fileName = g.fullPath(c, root)  # #1341. #1889.
+        fileName = c.fullPath(root)  # #1341. #1889.
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
         # Fix bug 760531: always mark the root as read, even if there was an error.
         # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(g.fullPath(c, root), root)
+        at.rememberReadPath(c.fullPath(root), root)
         at.initReadIvars(root, fileName)
         at.fromString = fromString
         if at.errors:
@@ -358,7 +358,7 @@ class AtFile:
         files: List[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:
-            data = (p.gnx, g.fullPath(c, p))
+            data = (p.gnx, c.fullPath(p))
             # skip clones referring to exactly the same paths.
             if data in scanned_nodes:
                 p.moveToNodeAfterTree()
@@ -400,7 +400,7 @@ class AtFile:
         elif p.isAtShadowFileNode():
             at.readOneAtShadowNode(fileName, p)
         elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            at.rememberReadPath(g.fullPath(c, p), p)
+            at.rememberReadPath(c.fullPath(p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
@@ -440,7 +440,7 @@ class AtFile:
     def readOneAtAutoNode(self, p: Position) -> Position:  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
         at, c, ic = self, self.c, self.c.importCommands
-        fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
+        fileName = c.fullPath(p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fileName):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return p
@@ -476,7 +476,7 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         # #1521
-        fn = g.fullPath(c, p)
+        fn = c.fullPath(p)
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -507,7 +507,7 @@ class AtFile:
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
         # #1521 & #1341.
-        fn = g.fullPath(c, p)
+        fn = c.fullPath(p)
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -527,7 +527,7 @@ class AtFile:
     def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
-        fileName = g.fullPath(c, root)
+        fileName = c.fullPath(root)
         if not g.os_path_exists(fileName):
             g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
@@ -597,7 +597,7 @@ class AtFile:
                 f"can not happen: fn: {fn} != atShadowNodeName: "
                 f"{p.atShadowFileNodeName()}")
             return
-        fn = g.fullPath(c, p)  # #1521 & #1341.
+        fn = c.fullPath(p)  # #1521 & #1341.
         # #889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         shadow_fn = x.shadowPathName(fn)
@@ -615,7 +615,7 @@ class AtFile:
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
         c, ic = self.c, self.c.importCommands
-        fn = g.fullPath(c, p)  # #1521, #1341, #1914.
+        fn = c.fullPath(p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return False
@@ -1030,7 +1030,7 @@ class AtFile:
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
-                data = p.v, g.fullPath(c, p)
+                data = p.v, c.fullPath(p)
                 if data in seen:
                     if trace and force:
                         g.trace('Already seen', p.h)
@@ -1125,7 +1125,7 @@ class AtFile:
         if c.ignoreChangedPaths:
             return  # pragma: no cover
         oldPath = g.os_path_normcase(at.getPathUa(p))
-        newPath = g.os_path_normcase(g.fullPath(c, p))
+        newPath = g.os_path_normcase(c.fullPath(p))
         try:  # #1367: samefile can throw an exception.
             changed = oldPath and not os.path.samefile(oldPath, newPath)
         except Exception:
@@ -1234,7 +1234,7 @@ class AtFile:
             ):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
-                    fileName = g.fullPath(c, p)  # #1914.
+                    fileName = c.fullPath(p)  # #1914.
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True
@@ -1463,7 +1463,7 @@ class AtFile:
             assert fn, p.h
             # A hack to support unknown extensions. May set c.target_language.
             self.adjustTargetLanguage(fn)
-            full_path = g.fullPath(c, p)
+            full_path = c.fullPath(p)
             at.initWriteIvars(root)
             # Force python sentinels to suppress an error message.
             # The actual sentinels will be set below.

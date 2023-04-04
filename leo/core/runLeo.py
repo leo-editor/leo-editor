@@ -33,7 +33,6 @@ if sys.executable.endswith("pythonw.exe"):
         "w")
 path = os.getcwd()
 if path not in sys.path:
-    # print('appending %s to sys.path' % path)
     sys.path.append(path)
 try:
     # #1472: bind to g immediately.

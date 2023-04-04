@@ -51,7 +51,7 @@ def orange_diff_files(event: Event) -> None:
     settings = orange_settings(c)
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
@@ -79,7 +79,7 @@ def orange_files(event: Event) -> None:
     roots = g.findRootsWithPredicate(c, c.p)
     n_changed = 0
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             changed = leoAst.Orange(settings=settings).beautify_file(filename)
             if changed:
@@ -105,7 +105,7 @@ def blacken_files(event: Event) -> None:
         return
     python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
-        path = g.fullPath(c, root)
+        path = c.fullPath(root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization "{path}"')
@@ -128,7 +128,7 @@ def blacken_files_diff(event: Event) -> None:
         return
     python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
-        path = g.fullPath(c, root)
+        path = c.fullPath(root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization --diff "{path}"')
@@ -148,7 +148,7 @@ def fstringify_files(event: Event) -> None:
     roots = g.findRootsWithPredicate(c, c.p)
     n_changed = 0
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(g.shortFileName(filename))
@@ -183,7 +183,7 @@ def fstringify_diff_files(event: Event) -> None:
     g.es(f"{tag}...")
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(g.shortFileName(filename))
@@ -211,7 +211,7 @@ def fstringify_files_silent(event: Event) -> None:
     n_changed = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             changed = leoAst.Fstringify().fstringify_file_silent(filename)
             if changed:
