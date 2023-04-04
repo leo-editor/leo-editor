@@ -392,25 +392,39 @@ class LeoQtTree(leoFrame.LeoTree):
                         color='error')
         self.declutter_patterns = patterns
         return patterns
-    #@+node:ekr.20110605121601.17874: *5* qtree.drawChildren
+    #@+node:ekr.20110605121601.17874: *5* qtree.drawChildren (*** trace)
     def drawChildren(self, p: Position, parent_item: Item) -> None:
         """Draw the children of p if they should be expanded."""
+        trace = False
         if not p:
             g.trace('can not happen: no p')
             return
+        if trace and p.hasChildren():  ###
+            print('')
+            g.trace(
+                'level:', p.level(),
+                #'item:',  f"{(id(item) if item else '<None>'):<15}",
+                # 'parent:', f"{(id(parent_item) if parent_item else '<None>'):<15}",
+                'children:', p.numberOfChildren(),
+                'expanded?', int(p.isExpanded()),
+                p.h)
         if p.hasChildren():
             if p.isExpanded():
                 self.expandItem(parent_item)
+                # Draw the tree recursively.
                 for child in p.children():
                     self.drawTree(child, parent_item)
             else:
-                # Draw the hidden children.
+                # Draw the hidden *direct* children.
                 for child in p.children():
                     self.drawNode(child, parent_item)
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)
-    #@+node:ekr.20110605121601.17875: *5* qtree.drawNode
+            
+        if trace and p.hasChildren():  ###
+             print('')
+    #@+node:ekr.20110605121601.17875: *5* qtree.drawNode (*** trace)
     def drawNode(self, p: Position, parent_item: Item) -> Item:
         """Draw the node p."""
         c = self.c
@@ -427,6 +441,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if item not in aList:
             aList.append(item)
         d[v] = aList
+        if 1: ###
+            print(' ' * 2 * p.level(),
+            'drawNode', 'level:', p.level(),
+            'children', p.numberOfChildren(),
+            'expanded?', int(p.isExpanded()),
+            # 'item', id(item),
+            p.h)
         # Set the headline and maybe the icon.
         self.setItemText(item, p.h)
         # #1310: Add a tool tip.
@@ -441,7 +462,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if icon:
             item.setIcon(0, icon)
         return item
-    #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree
+    #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree (*** trace)
     def drawTopTree(self, p: Position) -> None:
         """Draw the tree rooted at p."""
         trace = 'drawing' in g.app.debug and not g.unitTesting
@@ -466,6 +487,10 @@ class LeoQtTree(leoFrame.LeoTree):
             while p:
                 self.drawTree(p)
                 p.moveToNext()
+        if 0:  ###
+            d = self.vnode2itemsDict
+            g.printObj([f"{z.h:40} {[id(z2) for z2 in d.get(z)]}" for z in d.keys()], tag='vnode2itemsDict')
+            # g.printObj(d, tag='vnode2itemsDict')
         if trace:
             t2 = time.process_time()
             g.trace(f"{t2 - t1:5.2f} sec.", g.callers(5))
@@ -935,17 +960,27 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem (*** trace)
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 
+        trace = False  ###
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        if 0:
-            g.trace(
-                'level:', p.level(),
-                'item:',  f"{(id(item) if item else '<None>'):<15}",
-                'parent', f"{(id(parent_item) if parent_item else '<None>'):<15}",
-                'children?', int(p.hasChildren()),
-                'expanded?', int(p.isExpanded()),
-                p.h)
+        if trace:  ###
+            if 1:
+               print('    createTreeItem',
+                    # 'parent:', f"{(id(parent_item) if parent_item else '<None>'):<15}",
+                    'item', id(item),
+                    'parent_item?', bool(parent_item), id(parent_item),
+                    # 'itemOrTree:', itemOrTree.__class__.__name__,
+                    p.h)
+            else:
+                g.trace(
+                    'level:', p.level(),
+                    'item:',  f"{(id(item) if item else '<None>'):<15}",
+                    'parent:', f"{(id(parent_item) if parent_item else '<None>'):<15}",
+                    # 'children?', int(p.hasChildren()),
+                    'children:', p.numberOfChildren(),
+                    'expanded?', int(p.isExpanded()),
+                    p.h)
         if isQt6:
             item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy

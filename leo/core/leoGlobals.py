@@ -60,6 +60,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
+#@+<< define g.normslashes >>
+#@+node:ekr.20230404011736.1: ** << define g.normslashes >>
+normslashes = True  ### True: use legacy normslashes.
+print('')
+print('g.normslashes:', normslashes)
+print('')
+#@-<< define g.normslashes >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
@@ -2703,15 +2710,22 @@ def pdb(message: str = '') -> None:
     # pylint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
-def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
+def objToString(obj: Any, indent: int = 4, tag: str = None, width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
     """
     if not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
-        if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
-            result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
+        if 1:
+            indent_s = ' ' * indent
+            if result[0] in '([{' and result[-1] in ')]}':
+                inner = [f"{indent_s}{z.rstrip()}" for z in g.splitLines(result[1:-2])]
+                result = '\n'.join([result[0]] + inner + [result[-1]])
+                # result = f"{result[0]}\n{inner}\n{result[-1]}"
+        else:
+            if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
+                result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
     elif '\n' not in obj:
         result = repr(obj)
     else:
@@ -2732,7 +2746,7 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, tag: str = None, indent: int = 0) -> None:
+def printObj(obj: Any, tag: str = None, indent: int = 4) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag))
 
@@ -6526,7 +6540,7 @@ def os_path_normslashes(path: str) -> str:
 
     To do: make this function a do-nothing.
     """
-    if True and g.isWindows and path:  ###
+    if g.normslashes and g.isWindows and path:  ###
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
@@ -6874,7 +6888,7 @@ def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Optional[Pos
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123525.1: *4* g.findNodeByPath
+#@+node:ekr.20210303123525.1: *4* g.findNodeByPath (not used in Leo's core)
 def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
     """Return the first @<file> node in Cmdr c whose path is given."""
     if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
