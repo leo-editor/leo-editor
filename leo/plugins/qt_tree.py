@@ -427,6 +427,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17875: *5* qtree.drawNode (*** trace)
     def drawNode(self, p: Position, parent_item: Item) -> Item:
         """Draw the node p."""
+        trace = False  ###
         c = self.c
         v = p.v
         # Allocate the QTreeWidgetItem.
@@ -441,7 +442,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if item not in aList:
             aList.append(item)
         d[v] = aList
-        if 1: ###
+        if trace: ###
             print(' ' * 2 * p.level(),
             'drawNode', 'level:', p.level(),
             'children', p.numberOfChildren(),
