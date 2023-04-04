@@ -2,7 +2,7 @@
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
 # pylint: disable=cell-var-from-loop
 #@+others
@@ -1120,7 +1120,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                     # this splitter could have been added since
                     ns.setSizes(ns._unzoom)
         else:
-            focused = Qt.QApplication.focusWidget()
+            focused = g.app.gui.qtApp.focusWidget()
             parents = []
             parent = focused
             while parent:

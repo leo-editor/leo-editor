@@ -401,16 +401,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if p.hasChildren():
             if p.isExpanded():
                 self.expandItem(parent_item)
-                child = p.firstChild()
-                while child:
+                # Draw the tree recursively.
+                for child in p.children():
                     self.drawTree(child, parent_item)
-                    child.moveToNext()
             else:
-                # Draw the hidden children.
-                child = p.firstChild()
-                while child:
+                # Draw only the hidden *direct* children.
+                for child in p.children():
                     self.drawNode(child, parent_item)
-                    child.moveToNext()
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)

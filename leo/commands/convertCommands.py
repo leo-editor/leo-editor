@@ -1316,7 +1316,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
-                abs_fn = g.fullPath(c, p)
+                abs_fn = c.fullPath(p)
                 if not g.os_path_exists(abs_fn):
                     g.es_print('not found', abs_fn)
                     return
@@ -1410,7 +1410,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if not fn.endswith(('py', 'pyw')):
                     g.es_print('not a python file', fn)
                     return
-                abs_fn = g.fullPath(c, p)
+                abs_fn = c.fullPath(p)
                 if not g.os_path_exists(abs_fn):
                     g.es_print('not found', abs_fn)
                     return

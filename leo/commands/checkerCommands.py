@@ -232,7 +232,7 @@ def flake8_command(event: Event) -> None:
         return
     python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
-        path = g.fullPath(c, root)
+        path = c.fullPath(root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
@@ -421,7 +421,7 @@ class MypyCommand:
             return
         self.unknown_path_names = []
         for root in roots:
-            fn = os.path.normpath(g.fullPath(c, root))
+            fn = os.path.normpath(c.fullPath(root))
             self.check_file(fn, root)
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn: str, root: Position) -> None:
@@ -447,10 +447,10 @@ class MypyCommand:
             print('install mypy with `pip install mypy`')
             return
         root = p.copy()
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        # Make sure the parent of the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        if path not in sys.path:
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
     #@-others
@@ -469,7 +469,7 @@ class Flake8Command:
         """Run flake8 on all files in paths."""
         c, tag = self.c, 'flake8'
         for root in roots:
-            path = g.fullPath(c, root)
+            path = c.fullPath(root)
             if path and os.path.exists(path):
                 g.es_print(f"{tag}: {path}")
                 g.execute_shell_commands(f'&"{sys.executable}" -m flake8 "{path}"')
@@ -484,10 +484,10 @@ class Flake8Command:
         c, root = self.c, p
         if not flake8:
             return
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        # Make sure the parent of the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        if path not in sys.path:
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             self.check_all(roots)
@@ -534,7 +534,7 @@ class PyflakesCommand:
         c = self.c
         total_errors = 0
         for i, root in enumerate(roots):
-            fn = os.path.normpath(g.fullPath(c, root))
+            fn = os.path.normpath(c.fullPath(root))
             sfn = g.shortFileName(fn)
             # #1306: nopyflakes
             if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):
@@ -574,10 +574,10 @@ class PyflakesCommand:
         c, root = self.c, p
         if not pyflakes:
             return True
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        # Make sure the parent of the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        if path not in sys.path:
+            sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if not roots:
             return True
@@ -586,7 +586,6 @@ class PyflakesCommand:
             # This message is important for clarity.
             g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
         return total_errors == 0
-
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand:
@@ -606,10 +605,10 @@ class PylintCommand:
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
             return None
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
+        # Make sure the parent of the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        if path not in sys.path:
+            sys.path.insert(0, path)
 
         # Ignore @nopylint trees.
         def predicate(p: Position) -> bool:
@@ -633,7 +632,7 @@ class PylintCommand:
                 # Default to the last path.
                 fn = last_path
                 for p in c.all_positions():
-                    if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
+                    if p.isAnyAtFileNode() and c.fullPath(p) == fn:
                         data = [(fn, p.copy())]
                         break
             else:
@@ -686,7 +685,7 @@ class PylintCommand:
         if not fn:
             g.trace(f"not an @<file> node: {p.h!r}")
             return None
-        return g.fullPath(c, p)  # #1914
+        return c.fullPath(p)  # #1914
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
     def run_pylint(self, fn: str, p: Position) -> None:
         """Run pylint on fn with the given pylint configuration file."""

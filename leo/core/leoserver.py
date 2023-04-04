@@ -35,12 +35,13 @@ try:
     import websockets
 except Exception:
     websockets = None
-# Make sure leo-editor folder is on sys.path.
+# Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
 assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
-    sys.path.append(leo_path)
+    sys.path.insert(0, leo_path)
+del core_dir, leo_path
 # Leo
 from leo.core.leoCommands import Commands as Cmdr  # noqa
 from leo.core.leoNodes import Position, VNode  # noqa
@@ -278,7 +279,7 @@ class ServerExternalFilesController(ExternalFilesController):
     def idle_check_at_file_node(self, c: Cmdr, p: Position) -> None:
         """Check the @<file> node at p for external changes."""
         trace = False
-        path = g.fullPath(c, p)
+        path = c.fullPath(p)
         has_changed = self.has_changed(path)
         if trace:
             g.trace('changed', has_changed, p.h)

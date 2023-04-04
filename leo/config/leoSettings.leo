@@ -2128,7 +2128,7 @@
 <v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
 <v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
 <v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
-<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = solarized-red</vh></v>
 <v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
 <v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
 <v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
