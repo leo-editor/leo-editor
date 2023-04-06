@@ -98,7 +98,7 @@
 <v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 <v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
 <v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
