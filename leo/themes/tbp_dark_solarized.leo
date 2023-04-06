@@ -97,7 +97,7 @@
 <v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 <v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
 <v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
@@ -237,14 +237,14 @@ def spam():
 <t tx="ekr.20180318145515.1">@language rest
 @wrap
 </t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
+<t tx="ekr.20180318145515.704" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
 @wrap
 @tabwidth -2
 
 Same as tbp_light_solarized except swapped the solarized
 colors base0 - base3 and base00 - base03.  Also change log panel
 background color.</t>
-<t tx="ekr.20180318145515.710" lineYOffset="4b002e"></t>
+<t tx="ekr.20180318145515.710"></t>
 <t tx="ekr.20180318145515.711"></t>
 <t tx="ekr.20180318145515.712"></t>
 <t tx="ekr.20180318145515.713">Original solarized base0: #839496</t>
@@ -442,7 +442,7 @@ Terry: #dc322f</t>
 Terry: #268bd2</t>
 <t tx="ekr.20180318145515.750"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180318145515.751"></t>
-<t tx="ekr.20180318145515.752" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20180318145515.752">These settings must exist because they are *not* used in the css.</t>
 <t tx="ekr.20180318145515.753">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
 There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
@@ -634,9 +634,9 @@ The following settings specify the indicators.  You can use an absolute path, or
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
 <t tx="ekr.20180318145515.810"></t>
-<t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="ekr.20180318145515.811">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme, used to find icon files:
+<t tx="ekr.20180318145515.812">Name of the theme, used to find icon files:
 
 leo_dark_0
 ekr_dark</t>
