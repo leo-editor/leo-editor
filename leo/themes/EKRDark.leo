@@ -154,7 +154,7 @@
 <v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = purple</vh></v>
 </v>
 <v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
 <v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
@@ -676,7 +676,7 @@ something to see)</t>
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="ekr.20180318145515.811">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180318145515.813">/*
 @language css

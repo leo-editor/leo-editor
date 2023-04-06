@@ -7,6 +7,7 @@ from __future__ import annotations
 import binascii
 from collections import defaultdict
 from contextlib import contextmanager
+from datetime import datetime
 import difflib
 import hashlib
 import io
@@ -617,7 +618,7 @@ class FileCommands:
         self.gnxDict: Dict[str, VNode] = {}  # Keys are gnx strings. Values are vnodes.
         self.vnodesDict: Dict[str, Any] = {}  # keys are gnx strings; values are ignored
     #@+node:ekr.20210316042224.1: *3* fc: Commands
-    #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
+    #@+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event: Event = None) -> None:
         """Write all @file nodes in the selected outline."""
@@ -626,15 +627,7 @@ class FileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(all=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20031218072017.3050: *4* fc.write-outline-only
-    @cmd('write-outline-only')
-    def writeOutlineOnly(self, event: Event = None) -> None:
-        """Write the entire outline without writing any derived files."""
-        c = self.c
-        c.endEditing()
-        self.writeOutline(fileName=self.mFileName)
-
-    #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
+    #@+node:ekr.20031218072017.1666: *4* write-dirty-at-file-nodes
     @cmd('write-dirty-at-file-nodes')
     def writeDirtyAtFileNodes(self, event: Event = None) -> None:
         """Write all changed @file Nodes."""
@@ -643,13 +636,68 @@ class FileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(dirty=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20031218072017.2013: *4* fc.writeMissingAtFileNodes
+    #@+node:ekr.20031218072017.2013: *4* write-missing-at-file-nodes
     @cmd('write-missing-at-file-nodes')
     def writeMissingAtFileNodes(self, event: Event = None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
         c.atFileCommands.writeMissing(c.p)
+    #@+node:ekr.20031218072017.3050: *4* write-outline-only
+    @cmd('write-outline-only')
+    def writeOutlineOnly(self, event: Event = None) -> None:
+        """Write the entire outline without writing any derived files."""
+        c = self.c
+        c.endEditing()
+        self.writeOutline(fileName=self.mFileName)
+
+    #@+node:ekr.20230406053535.1: *4* write-zip-archive
+    @cmd('write-zip-archive')
+    def writeZipArchive(self, event: Event = None) -> None:
+        """
+        Write a .zip file containing this .leo file and all external files.
+
+        Write to os.environ['LEO_ARCHIVE'] or the directory containing this .leo file.
+        """
+        c = self.c
+        leo_file = c.fileName()
+        if not leo_file:
+            print('Please save this outline first')
+            return
+
+        # Compute the timestamp.
+        timestamp = datetime.now().timestamp()
+        time = datetime.fromtimestamp(timestamp)
+        time_s = time.strftime('%Y-%m-%d-%H-%M-%S')
+
+        # Compute archive_name.
+        archive_name = None
+        try:
+            directory = os.environ['LEO_ARCHIVE']
+            if not os.path.exists(directory):
+                g.es_print(f"Not found: {directory!r}")
+                archive_name = rf"{directory}{os.sep}{g.shortFileName(leo_file)}-{time_s}.zip"
+        except KeyError:
+            pass
+        if not archive_name:
+            archive_name = rf"{leo_file}-{time_s}.zip"
+
+        # Write the archive.
+        try:
+            n = 1
+            with zipfile.ZipFile(archive_name, 'w') as f:
+                f.write(leo_file)
+                for p in c.all_unique_positions():
+                    if p.isAnyAtFileNode():
+                        fn = c.fullPath(p)
+                        if os.path.exists(fn):
+                            n += 1
+                            f.write(fn)
+            print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
+        except Exception:
+            g.es_print(f"Error writing {archive_name}")
+            g.es_exception()
+
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
     #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
     def createBackupFile(self, fileName: str) -> Tuple[bool, str]:
@@ -1834,8 +1882,9 @@ class FileCommands:
             for v in c.all_unique_nodes():
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                     try:
-                        json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this passes ok, ua's are valid json
-                        uas[v.gnx] = v.unknownAttributes  # Valid UA's as-is. UA's are NOT encoded.
+                        # If this passes, the (unencoded) uAs are valid json.
+                        json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)
+                        uas[v.gnx] = v.unknownAttributes
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
                         g.printObj(v.unknownAttributes)

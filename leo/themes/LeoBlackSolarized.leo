@@ -173,7 +173,7 @@
 <v t="ekr.20180307010409.42"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180307010409.43"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="ekr.20180307010409.44"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180307010409.45"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180307010409.45"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 <v t="ekr.20180314165700.1"><vh>Colors: patch (diff)</vh>
 <v t="ekr.20180314165700.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
@@ -224,7 +224,7 @@ def spam():
 for s in table:
     g.es(s, color=s)
 </t>
-<t tx="ekr.20180307010409.1" lineYOffset="4b002e">@language rest
+<t tx="ekr.20180307010409.1">@language rest
 @wrap
 
 A black theme with solarized colors.  Based on Chris George's superb work.
@@ -251,9 +251,9 @@ Changes made by EKR:
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180307010409.101">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180307010409.103" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="ekr.20180307010409.103">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180307010409.104" lineYOffset="4b002e">Name of the theme,
+<t tx="ekr.20180307010409.104">Name of the theme,
 used to find icon files</t>
 <t tx="ekr.20180307010409.105">/*
 @language css
@@ -503,7 +503,7 @@ QWidget {
 <t tx="ekr.20180307010409.14"></t>
 <t tx="ekr.20180307010409.15"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180307010409.16"></t>
-<t tx="ekr.20180307010409.17" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20180307010409.17">These settings must exist because they are *not* used in the css.</t>
 <t tx="ekr.20180307010409.18">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
 There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
