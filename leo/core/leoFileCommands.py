@@ -662,7 +662,7 @@ class FileCommands:
         c = self.c
         leo_file = c.fileName()
         if not leo_file:
-            print('Please name this .leo file.')
+            print('Please save this outline first')
             return
 
         # Compute the timestamp.
@@ -683,16 +683,21 @@ class FileCommands:
             archive_name = rf"{leo_file}-{time_s}.zip"
 
         # Write the archive.
-        n = 1
-        with zipfile.ZipFile(archive_name, 'w') as f:
-            f.write(leo_file)
-            for p in c.all_unique_positions():
-                if p.isAnyAtFileNode():
-                    fn = c.fullPath(p)
-                    if os.path.exists(fn):
-                        n += 1
-                        f.write(fn)
-        print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
+        try:
+            n = 1
+            with zipfile.ZipFile(archive_name, 'w') as f:
+                f.write(leo_file)
+                for p in c.all_unique_positions():
+                    if p.isAnyAtFileNode():
+                        fn = c.fullPath(p)
+                        if os.path.exists(fn):
+                            n += 1
+                            f.write(fn)
+            print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
+        except Exception:
+            g.es_print(f"Error writing {archive_name}")
+            g.es_exception()
+
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
     #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
     def createBackupFile(self, fileName: str) -> Tuple[bool, str]:
