@@ -6,12 +6,13 @@ r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
+#@@nocolor
 Creates a window for live rendering of reSTructuredText,
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.91
+About Viewrendered3 V4.0
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -56,6 +57,16 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+VR3 can now open either in a pane in the splitter (up until now this is been the
+only location) or in a tab in the log frame.  Two new commands give access to
+the tab: *vr3-tab* and *vr3-toggle-tab*.
+
+*@*/*@c* now work correctly for ReStructuredText for multiline strings.  This
+fix makes them work the same way for all three structured languages: *rest*,
+*md*, and *asciidoc*.
+
+Previous Recent Changes
+========================
 #@@language plain is equivalent to @language text.
 
 For both plain and text, an @language directive at the top of a node is removed.
@@ -63,8 +74,6 @@ For both plain and text, an @language directive at the top of a node is removed.
 For both plain and text, the command *vr3-open-markup-in-editor* can display
 the entire subtree's text when that option is active.
 
-Previous Recent Changes
-========================
 An external Ruby asciidoctor processor is found more reliably.  The complete
 path to the processor can be specified in the *vr3-prefer-external* setting
 (sometimes Ruby can be installed into a location not on the PATH).
@@ -385,25 +394,34 @@ Commands
 ========
 
 viewrendered3-specific commands all start with a "vr3-" prefix.  There is
-rarely a reason to invoke any of them, except three:
+rarely a reason to invoke any of them, except these:
 
-    1. ``vr3-toggle``, which shows or hides the VR3 pane.
-    This is best bound to a hot key (see `Hot Key`_).
+    1. ``vr3-toggle`` and ``vr3-toggle-tab``, which show or hide the VR3 pane.
+    They are best bound to a hot key (see `Hot Key`_) or button.  The "*-tab*"
+    versions open in a tab in the log frame.  Either command will close
+    the VR3 pane, no matter whether it is open in a tab or in a splitter pane.
 
-    2.``vr3-open-markup-in-editor`` exports the generated markup
+    2. ``vr3`` and ``vr3-tab`` open VR3 in a splitter pane or a tab in the
+    log panel, respectively.  If one of these commands is issued while VR3
+    is already open, it will stay open but move from splitter to tab or
+    vice-versa depending on which command was issued.
+    
+    .. Note:: ``vr3-use-default-layout`` opens VR3 in a splitter pane with three full-height panes.
+
+    3.``vr3-open-markup-in-editor`` exports the generated markup
     to temporary file and opens it in a text editor. The editor
     is one specified by the setting ``@string vr3-ext-editor``,
     the setting ``@string external-editor``, by the environmental
     variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
     editor chosen by Leo.
 
-    3. ``vr3-help-plot-2d`` opens a help page in the system browser
+    4. ``vr3-help-plot-2d`` opens a help page in the system browser
     for the *Plot 2D* capability.
 
-    4. ``vr3-lock-unlock-tree`` locks/unlocks the rendering to the current
+    5. ``vr3-lock-unlock-tree`` locks/unlocks the rendering to the current
     subtree if the *Entire Tree* option is set.
 
-    5. ``vr3-freeze``/``vr3-unfreeze`` prevents/allows updating the rendering
+    6. ``vr3-freeze``/``vr3-unfreeze`` prevents/allows updating the rendering
     panel.
 
 
@@ -1046,6 +1064,10 @@ C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
 VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
 
+TABNAME = 'VR3'
+OPENED_IN_TAB = 'tab'
+OPENED_IN_SPLITTER = 'splitter'
+
 ASCIIDOC = 'asciidoc'
 CODE = 'code'
 CSS = 'css'
@@ -1064,7 +1086,6 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
-DART = 'dart'
 
 ASCIIDOC_CONF_FILENAME = 'html5.conf'
 MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
@@ -1203,10 +1224,11 @@ latex_template = f'''\
 </html>
 '''
 #@-<< define html templates >>
-# Keys are c.hash(): values are PluginControllers (QWidget's).
-controllers = {}
-# Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
-layouts = {}
+
+# keys for all three below: c.hash()
+controllers = {}  # values: VR3 widets
+positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
+layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1422,7 +1444,7 @@ def init():
     return True
 #@+node:TomP.20191215195433.10: *3* vr3.isVisible
 def isVisible():
-    """Return True if the VR pane is visible."""
+    """Return True if the VR3 pane is visible."""
     return
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
@@ -1444,12 +1466,24 @@ def onClose(tag, keys):
         vr3.deleteLater()
 #@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
 def show_scrolled_message(tag, kw):
+    """Show "scrolled message" in VR3.
+    
+    If not already open, open in last opened position,
+    or in splitter if none.
+    """
     if g.unitTesting:
         return None  # This just slows the unit tests.
 
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
-    vr3 = viewrendered(event=kw)
+    h = c.hash()
+    vr3 = controllers.get(h, None)
+    if not vr3:
+        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+            vr3 = viewrendered(event=kw)
+        else:
+            vr3 = viewrendered_tab(event=kw)
+
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
     s = '\n'.join([
@@ -1458,7 +1492,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr3.show_dock_or_pane()  # #1332.
+
     vr3.update(
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
@@ -1470,6 +1504,25 @@ def split_last_sizes(sizes):
     result.append(sizes[-1])
     result.append(sizes[-1])
     return result
+#@+node:tom.20230403142205.1: *3* vr3.open_in_tab
+def open_in_tab(c, vr3):
+    """Open a vr3 instance in a tab in the log pane."""
+    log = c.frame.log
+    log.createTab(TABNAME, widget = vr3, createText = False)
+    log.selectTab(TABNAME)
+    positions[c.hash()] = OPENED_IN_TAB
+#@+node:tom.20230403143106.1: *3* vr3.close_tab
+def close_tab(c, vr3):
+    """Close the VR3 tab if it is open.
+    
+    Does not delete or deactivate the vr3 instance.
+    """
+    log = c.frame.log
+    log.hideTab(TABNAME)
+    log.deleteTab(TABNAME)
+    h = c.hash()
+    positions[h] = OPENED_IN_TAB
+
 #@+node:TomP.20191215195433.15: *3* vr3.getVr3
 def getVr3(event):
     """Return the VR3 ViewRenderedController3
@@ -1524,9 +1577,27 @@ def viewrendered(event):
         elif splitter.orientation() == Orientation.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
+        positions[c.hash()] = OPENED_IN_SPLITTER
 
     c.bodyWantsFocusNow()
 
+    return vr3
+#@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
+@g.command('vr3-tab')
+def viewrendered_tab(event):
+    """Open render view for commander"""
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return None
+    c = event.get('c')
+    if not c:
+        return None
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if not vr3:
+        controllers[h] = vr3 = ViewRenderedController3(c)
+
+    open_in_tab(c, vr3)
     return vr3
 #@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
 @g.command('vr3-freeze')
@@ -1551,36 +1622,34 @@ def hide_rendering_pane(event):
     if g.app.gui.guiName() != 'qt':
         return
 
-#    vr3 = getVr3(event)
-#    if not vr3: return
-
     c = event.get('c')
     if not c:
         return
 
-    vr3 = controllers.get(c.hash())
-    if not vr3:
-        vr3 = viewrendered(event)
+    vr3 = getVr3(event)
+    if not vr3: return
 
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
-    vr3.store_layout('open')
-    vr3.deactivate()
-    vr3.deleteLater()
+
+    pos = positions[c.hash()]
+    if pos == OPENED_IN_SPLITTER:
+        vr3.store_layout('open')
+    elif pos == OPENED_IN_TAB:
+        close_tab(c, vr3)
 
     def at_idle(c=c, _vr3=vr3):
         c = event.get('c')
         _vr3.adjust_layout('closed')
         c.bodyWantsFocusNow()
 
+    vr3.deactivate()
+    vr3.deleteLater()
+    del controllers[c.hash()]
+
     QtCore.QTimer.singleShot(0, at_idle)
-    h = c.hash()
     c.bodyWantsFocus()
-    if vr3 == controllers.get(h):
-        del controllers[h]
-    else:
-        g.trace(f'Can not happen: no controller for {c}')
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -1616,29 +1685,59 @@ def show_rendering_pane(event):
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
-    """Toggle the rendering pane."""
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it, respecting its position if any from
+    the last time it was open.
+    """
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+
+    h = c.hash()
+    vr3 = controllers.get(h, None)
+
+    if not vr3:
+        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+            vr3 = viewrendered(event)
+        else:
+            vr3 = viewrendered_tab(event)
+    else:
+        # c.k.simulateCommand('vr3-hide')  # Doesn't work
+        # This timer is *required* or vr3 won't open on next toggle
+        QtCore.QTimer.singleShot(0, lambda: c.k.simulateCommand('vr3-hide'))
+#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
+@g.command('vr3-toggle-tab')
+def toggle_rendering_pane_tab(event):
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it in a tab in the log pane, or in
+    the last position it had when previously open.
+    """
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
     c = event.get('c')
     if not c:
         return
-    if g.app.gui.guiName() != 'qt':
-        return
 
     h = c.hash()
-    controllers[h] = vr3 = controllers.get(h) if h else None
+    vr3 = controllers.get(h, None)
+
     if not vr3:
-        vr3 = viewrendered(event)
-        vr3.hide()  # So the toggle below will work.
-
-    if vr3.isHidden():
-        show_rendering_pane(event)
+        if positions.get(h, None) == None or OPENED_IN_TAB:
+            vr3 = viewrendered_tab(event)
+        else:
+            vr3 = viewrendered(event)
     else:
-        hide_rendering_pane(event)
-
-    c.bodyWantsFocusNow()
-
+        # c.k.simulateCommand('vr3-hide')  # Doesn't work
+        # This timer is *required* or vr3 won't open on next toggle
+        QtCore.QTimer.singleShot(0, lambda: c.k.simulateCommand('vr3-hide'))
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
@@ -2048,16 +2147,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None  # The present widget in the rendering pane.
 
         # For viewrendered3
-        self.qwev = self.create_base_text_widget()
-        self.rst_html = ''
         self.code_only = False
-        self.show_whole_tree = False
-        self.execute_flag = False
         self.code_only = False
-        self.lock_to_tree = False
         self.current_tree_root = None
+        self.execute_flag = False
         self.freeze = False
         self.last_markup = ''
+        self.lock_to_tree = False
+        self.qwev = self.create_base_text_widget()
+        self.rst_html = ''
+        self.show_whole_tree = False
 
         # User settings.
         self.reloadSettings()
@@ -2937,7 +3036,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for i in range(layout.count()):
             layout.removeItem(layout.itemAt(0))
         self.layout().addWidget(w)
-        w.show()
+        # w.show()
 
         # Special inits for text widgets...
         if w.__class__ == QtWidgets.QTextBrowser:
@@ -2951,11 +3050,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            # if isQt6:
-                # WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
-            # else:
-                # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
-            # w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
             w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
@@ -4019,8 +4113,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _structure = RST
         _lang = RST
         _tag = TEXT
-        _skipthis = False
 
+        _at_skip_in_effect = False
         _got_language = False
         _in_rst_block = False
         _in_code_block = False
@@ -4087,17 +4181,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+<< handle_ats >>
             #@+node:TomP.20200112103729.2: *7* << handle_ats >>
             # Honor "@", "@c": skip all lines after "@" until next "@c".
-            # However, ignore these markers if we are in a code block and
-            # and also within a quoted section.
-            if not (_in_code_block and _in_quotes):
-                if line.rstrip() == '@':
-                    _skipthis = True
-                    continue
-                if line.rstrip() == '@c':
-                    _skipthis = False
-                    continue
-                if _skipthis:
-                    continue
+            if line.rstrip() == '@':
+                _at_skip_in_effect = True
+            elif line.rstrip() == '@c':
+                _at_skip_in_effect = False
+                continue  # Needed to avoid displaying the "@c"
+
+            if _at_skip_in_effect:
+                continue
             #@-<< handle_ats >>
             #@+<< handle at-image >>
             #@+node:TomP.20200416153716.1: *7* << handle at-image >>
@@ -4502,7 +4593,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         try:
             exec(code, environment)
         except Exception as e:
-            g.es('Viewrendered3 exception')
+            # g.es('Viewrendered3 exception:')
+            # g.es('    ', e)
+            print('Viewrendered3 exception:')
+            print('    ', e)
             g.es_exception()
             except_err = f'{type(e).__name__}: {str(e)}\n'
         # Restore stdout, stderr
@@ -4612,11 +4706,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.current_tree_root = None
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
-
-        c, vr = self.c, self
-        vr.activate()
-        vr.show()
-        vr.adjust_layout('open')
+        c, vr3 = self.c, self
+        vr3.activate()
+        # vr3.show()
+        if positions[c.hash()] == OPENED_IN_SPLITTER:
+            vr3.adjust_layout('open')
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
