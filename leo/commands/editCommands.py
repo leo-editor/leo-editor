@@ -773,8 +773,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
     #@@language rest
     #@+at
-    # These methods are currently just used in tandem to center the line or
-    # region within the fill column. for example, dependent upon the fill column, this text:
+    # These methods are currently just used in tandem to center the line or region
+    # within the fill column. for example, dependent upon the fill column, this text:
     #
     #     cats
     #     raaaaaaaaaaaats
@@ -1081,6 +1081,131 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.clearState()
         c.widgetWantsFocus(w)
+    #@+node:ekr.20230327200504.1: *3* ec: headline numbers
+    #@+node:ekr.20230328012036.1: *4* hn-add-all & helper
+    @cmd('hn-add-all')
+    @cmd('headline-number-add-all')
+    @cmd('add-all-headline-numbers')
+    def hn_add_all(self, event: Event = None) -> None:
+        """
+        Add headline numbers to all nodes of the outline *except*:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
+
+        Use the *first* clone's position for all clones.
+        """
+        c, command = self.c, 'add-all-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
+        for p in c.all_unique_positions():
+            self.hn_delete(p)
+            self.hn_add(p)
+        c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
+        c.redraw()
+    #@+node:ekr.20230328013256.1: *5* hn_add
+    def hn_add(self, p: Position) -> None:
+        """
+        Add a 1-based outline number to p.h.
+
+        Do *not* add a headline number for:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
+        """
+
+        def skip(p: Position) -> bool:
+            """True if we should skip p."""
+            if any(z.isAnyAtFileNode() for z in p.self_and_parents()):
+                return True  # In an @<file> tree.
+            return p.h.strip().startswith('@')
+
+        # Don't add numbers to special nodes.
+        if skip(p):
+            return
+
+        s = '.'.join(reversed(list(str(1 + z.childIndex()) for z in p.self_and_parents())))
+        # Do not strip the original headline!
+        p.v.h = f"{s} {p.v.h}"
+        p.v.setDirty()
+    #@+node:ekr.20230328013557.1: *4* hn-add-subtree & helper
+    @cmd('hn-add-subtree')
+    @cmd('headline-number-add-subtree')
+    @cmd('add-subtree-headline-numbers')
+    def hn_add_children(self, event: Event = None) -> None:
+        """
+        Add headline numbers to *all* children of c.p, *including*:
+        -  @<file> nodes and their descendants.
+        - Any node whose headline starts with "@".
+
+        Use the *last* clone's position for all clones.
+        """
+        c, command = self.c, 'add-subtree-headline-numbers'
+        u = c.undoer
+        root = c.p
+        data = u.beforeChangeMultiHeadline(root)
+        for p in c.p.subtree():
+            self.hn_delete(p)
+            self.hn_add_relative(p, root)
+        c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
+        root.expand()
+        c.redraw()
+    #@+node:ekr.20230329031045.1: *5* hn_add_relative
+    def hn_add_relative(self, p: Position, root: Position) -> None:
+        """
+        Add a 1-based outline number (relative to the root) to p.h.
+        """
+        c = self.c
+        indices: List[int] = []
+        for p2 in p.self_and_parents():
+            if p2 == root:
+                break
+            indices.insert(0, p2.childIndex())
+        s = '.'.join([str(1 + z) for z in indices])
+        # Do not strip the original headline!
+        c.setHeadString(p, f"{s} {p.v.h}")
+        p.v.setDirty()
+    #@+node:ekr.20230328014542.1: *4* hn-delete-all
+    @cmd('hn-delete-all')
+    @cmd('headline-number-delete-all')
+    @cmd('delete-all-headline-numbers')
+    def hn_delete_all(self, event: Event = None) -> None:
+        """Delete all headline numbers in the entire outline."""
+        c, command = self.c, 'delete-all-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
+        for p in c.all_unique_positions():
+            self.hn_delete(p)
+        c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
+        c.redraw()
+    #@+node:ekr.20230328015118.1: *4* hn-delete-subtree
+    @cmd('hn-delete-subtree')
+    @cmd('headline-number-delete-subtree')
+    @cmd('delete-subtree-headline-numbers')
+    def hn_delete_tree(self, event: Event = None) -> None:
+        """Delete all headline numbers in c.p's subtree."""
+        c, command = self.c, 'delete-subtree-headline-numbers'
+        u = c.undoer
+        data = u.beforeChangeMultiHeadline(c.p)
+        for p in c.p.subtree():
+            self.hn_delete(p)
+        c.setChanged()
+        u.afterChangeMultiHeadline(command, data)
+        c.redraw()
+    #@+node:ekr.20230328014223.1: *4* hn_delete
+    # Match exactly one trailing blank.
+    hn_pattern = re.compile(r'^[0-9]+(\.[0-9]+)* ')
+
+    def hn_delete(self, p: Position) -> None:
+        """Helper: delete the headline number in p.h."""
+        c = self.c
+        m = re.match(self.hn_pattern, p.h)
+        if m:
+            # Do not strip the headline!
+            n = len(m.group(0))
+            c.setHeadString(p, p.v.h[n:])
+            p.v.setDirty()
     #@+node:ekr.20150514063305.229: *3* ec: icons
     #@+at
     # To do:

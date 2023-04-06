@@ -180,7 +180,7 @@ class ExternalFilesController:
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
-            path = g.fullPath(c, p)
+            path = c.fullPath(p)
             if not self.has_changed(path):
                 continue
             # Prevent further checks for path.
@@ -270,7 +270,7 @@ class ExternalFilesController:
                 root: Position = d.get('p')
                 if root:
                     # Open the external file itself.
-                    path = g.fullPath(c, root)  # #1914.
+                    path = c.fullPath(root)  # #1914.
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.

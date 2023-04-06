@@ -415,7 +415,7 @@ class quickMove:
                 ]:
                     but = b.button
                     rc = QAction(txt, but)
-                    rc.triggered.connect(cb)
+                    rc.triggered.connect(cb)  # type:ignore
                     # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
 

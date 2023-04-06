@@ -103,6 +103,9 @@ class LeoQtTree(leoFrame.LeoTree):
         tw = self.treeWidget
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
+        if self.use_mouse_expand_gestures:  
+            tw.setMouseTracking(True)
+            tw.itemEntered.connect(self.onItemEntered)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
         tw.itemCollapsed.connect(self.onItemCollapsed)
         tw.itemExpanded.connect(self.onItemExpanded)
@@ -123,6 +126,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
+        self.use_mouse_expand_gestures = c.config.getBool('use-mouse-expand-gestures',
+                                                           default = False)
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
     def wrapQLineEdit(self, w: Wrapper) -> Wrapper:
         """A wretched kludge for MacOs k.masterMenuHandler."""
@@ -396,16 +401,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if p.hasChildren():
             if p.isExpanded():
                 self.expandItem(parent_item)
-                child = p.firstChild()
-                while child:
+                # Draw the tree recursively.
+                for child in p.children():
                     self.drawTree(child, parent_item)
-                    child.moveToNext()
             else:
-                # Draw the hidden children.
-                child = p.firstChild()
-                while child:
+                # Draw only the hidden *direct* children.
+                for child in p.children():
                     self.drawNode(child, parent_item)
-                    child.moveToNext()
                 self.contractItem(parent_item)
         else:
             self.contractItem(parent_item)
@@ -733,6 +735,24 @@ class LeoQtTree(leoFrame.LeoTree):
 
     def setFocus(self) -> None:
         g.app.gui.set_focus(self.c, self.treeWidget)
+    #@+node:tom.20230324155453.1: *3* qtree.onItemEntered
+    def onItemEntered(self, item: Item, col: int):
+        """Expand/Contract a node when mouse moves over it.
+        
+        <CTRL-hover> -- expand;
+        <SHIFT-hover> -- contract.
+        """
+        if not self.use_mouse_expand_gestures:
+            return
+
+        if hasattr(g.app.gui, 'qtApp'):
+            mods = g.app.gui.qtApp.keyboardModifiers()
+            isCtrl = bool(mods & KeyboardModifier.ControlModifier)
+            isShift = bool(mods & KeyboardModifier.ShiftModifier)
+            if isCtrl and not isShift:
+                self.expandItem(item)
+            elif isShift and not isCtrl:
+                self.contractItem(item)
     #@+node:ekr.20110605121601.18409: *3* qtree.Icons
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helpers
     def getIcon(self, v: VNode) -> Icon:

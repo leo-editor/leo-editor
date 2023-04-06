@@ -652,7 +652,7 @@ class Commands:
         regex = get_setting_for_language('exec-script-patterns')
         # Set the directory, if possible.
         if p.isAnyAtFileNode():
-            path = g.fullPath(c, p)
+            path = c.fullPath(p)
             directory = os.path.dirname(path)
         else:
             directory = None
@@ -1063,7 +1063,7 @@ class Commands:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
 
-            path = g.fullPath(c, root)
+            path = c.fullPath(root)
             path = g.os_path_finalize(path)
             language = getExeKind(root, ext)
             processor = getProcessor(language, path, ext)
@@ -2256,6 +2256,24 @@ class Commands:
             g.es_exception()
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
+    #@+node:ekr.20230402232100.1: *4* c.fullPath
+    def fullPath(self, p: Position, simulate: bool = False) -> str:
+        """
+        Return the full path (including fileName) in effect at p. Neither the
+        path nor the fileName will be created if it does not exist.
+        """
+        c = self
+        # Search p and p's parents.
+        for p in p.self_and_parents(copy=False):
+            aList = g.get_directives_dict_list(p)
+            path = c.scanAtPathDirectives(aList)
+            fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
+            if fn:
+                # Fix #102: expand path expressions.
+                fn = c.expand_path_expression(fn)  # #1341.
+                fn = os.path.expanduser(fn)  # 1900.
+                return g.os_path_finalize_join(path, fn)
+        return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
         c = self
@@ -2441,7 +2459,7 @@ class Commands:
         for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
             if name:
-                return g.fullPath(c, p)  # #1914.
+                return c.fullPath(p)  # #1914.
         return ''
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLanguage
     def hasAmbiguousLanguage(self, p: Position) -> int:
@@ -2542,7 +2560,7 @@ class Commands:
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = g.os_path_finalize_join(*paths)  # #1341.
+        path = g.os_path_finalize_join(*paths)
         return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
@@ -2747,7 +2765,7 @@ class Commands:
                 # Find an @<file> node with the given path.
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
-                        norm_path = os.path.normpath(g.fullPath(c, p))
+                        norm_path = os.path.normpath(c.fullPath(p))
                         if path == norm_path:
                             p, offset = c.gotoCommands.find_file_line(n, p)
                             break
@@ -2774,7 +2792,7 @@ class Commands:
             with os.fdopen(fd, 'w') as f:
                 f.write(script)
         else:
-            root_path = g.fullPath(c, root)
+            root_path = c.fullPath(root)
         # Compute the final command.
         if '<FILE>' in command:
             final_command = command.replace('<FILE>', root_path)

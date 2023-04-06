@@ -2128,7 +2128,7 @@
 <v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
 <v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
 <v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
-<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = solarized-red</vh></v>
 <v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
 <v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
 <v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
@@ -2200,6 +2200,7 @@
 <v t="ekr.20110601103939.19339"><vh>@bool single-click-auto-edits-headline = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse-move-outline-left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+<v t="ekr.20230327033157.1"><vh>@bool use-mouse-expand-gestures = False </vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline-nav-extend-delay = 2.0</vh></v>
 <v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
 <v t="ekr.20171121100639.1"><vh>Declutter</vh>
@@ -11749,6 +11750,11 @@ screencast_size = 18pt
 screencast_weight = normal
 screencaset_style = normal
 </t>
+<t tx="ekr.20230327033157.1">True: expand/contract nodes when the mouse hovers over the outline:
+    &lt;CTRL-hover&gt;: expand.
+    &lt;SHIFT-hover&gt;: contract.
+    
+False: do nothing when the mouse hovers over nodes.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

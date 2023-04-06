@@ -43,11 +43,14 @@ import sys
 import time
 from typing import Optional
 
-# This is what Leo typically does.
-# pylint: disable=wrong-import-position
 path = os.getcwd()
 if path not in sys.path:
-    sys.path.append(path)
+    sys.path.insert(0, path)
+del path
+
+# pylint: disable=wrong-import-position
+
+# This is what Leo typically does.
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
 from leo.core import leoFastRedraw
@@ -1319,7 +1322,7 @@ class LeoBrowserGui(leoGui.NullGui):
             # c.setLog()
         g.app.logInited = True  # Prevent recursive call.
         for msg in g.app.logWaiting:
-            s, color, newline = msg[:3]
+            s, color, newline = msg[:3]  # May have 4 elements.
             w.log.put(s.rstrip())
         g.app.logWaiting = []
         g.app.setLog(None)  # Essential when opening multiple files...
