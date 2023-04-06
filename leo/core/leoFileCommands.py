@@ -674,7 +674,7 @@ class FileCommands:
         archive_name = None
         try:
             directory = os.environ['LEO_ARCHIVE']
-            if os.path.exists(directory):
+            if not os.path.exists(directory):
                 g.es_print(f"Not found: {directory!r}")
                 archive_name = rf"{directory}{os.sep}{g.shortFileName(leo_file)}-{time_s}.zip"
         except KeyError:
