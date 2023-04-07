@@ -358,7 +358,7 @@ UserTip(
     text="""\
 <p>The rst3 command converts an @rst tree to a document file.</p>
 
-<p>See <a href="http://leoeditor.com/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
+<p>See <a href="https://leo-editor.github.io/leo-editor/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
 
 </html>"""),
 #@+node:ekr.20180324072625.1: *4* sort-siblings command
@@ -401,7 +401,7 @@ For example:</p>
 <p><pre>    g.trace(g.callers())</pre></p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -416,7 +416,7 @@ UserTip(
 adapted for Leo.</p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -431,7 +431,7 @@ UserTip(
 <p>It's great for seeing patterns in running code.</p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -506,7 +506,7 @@ UserTip(
     text="""
 
 <p>Leo's
-<a href="http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates">
+<a href="https://leo-editor.github.io/leo-editor/tutorial-pim.html#using-abbreviations-and-templates">
 abbreviations</a>
 can correct spelling mistakes, expand to multiple lines or even trees of nodes.
 </p>
@@ -522,7 +522,7 @@ UserTip(
     title="<html>Clones",
     text="""
 <p>
-<a href="http://leoeditor.com/tutorial-pim.html#clones">Clones</a>
+<a href="https://leo-editor.github.io/leo-editor/tutorial-pim.html#clones">Clones</a>
 are "live" copies of the node itself and all its descendants.</p>
 
 <p>Clones are a unique feature of Leo.</p>
