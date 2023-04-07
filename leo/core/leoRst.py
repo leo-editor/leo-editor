@@ -4,7 +4,7 @@
 #@+node:ekr.20090502071837.4: ** << leoRst docstring >>
 """Support for restructured text (rST), adapted from rst3 plugin.
 
-For full documentation, see: http://leoeditor.com/rstplugin3.html
+For full documentation, see: https://leo-editor.github.io/leo-editor/tutorial-rst3.html
 
 To generate documents from rST files, Python's docutils_ module must be
 installed. The code will use the SilverCity_ syntax coloring package if is is

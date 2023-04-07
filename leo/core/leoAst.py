@@ -1,7 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
-# This file is part of Leo: https://leoeditor.com
-# Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
+# This file is part of Leo: https://leo-editor.github.io/leo-editor
+# Leo's copyright notice is based on the MIT license:
+# https://leo-editor.github.io/leo-editor/license.html
 
 # For now, suppress all mypy checks
 # type: ignore
@@ -126,7 +127,7 @@ variable-length data at all.
 Leo...
 Ask for help:       https://groups.google.com/forum/#!forum/leo-editor
 Report a bug:       https://github.com/leo-editor/leo-editor/issues
-leoAst.py docs:     http://leoeditor.com/appendices.html#leoast-py
+leoAst.py docs:     https://leo-editor.github.io/leo-editor/appendices.html#leoast-py
 
 Other tools...
 asttokens:          https://pypi.org/project/asttokens
@@ -2834,9 +2835,9 @@ class TokenOrderGenerator:
 
     Theory of operation:
     - https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883
-    - http://leoeditor.com/appendices.html#tokenorder-classes-theory-of-operation
+    - https://leo-editor.github.io/leo-editor/appendices.html#tokenorder-classes-theory-of-operation
 
-    How to: http://leoeditor.com/appendices.html#tokenorder-class-how-to
+    How to: https://leo-editor.github.io/leo-editor/appendices.html#tokenorder-class-how-to
 
     Project history: https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-574145510
     """
