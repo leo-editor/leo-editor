@@ -30,7 +30,7 @@ def about(self: Self, event: Event = None) -> None:
         "Copyright 1999-%s by Edward K. Ream\n" +
         "All Rights Reserved\n" +
         "Leo is distributed under the MIT License") % datetime.date.today().year
-    url = "http://leoeditor.com/"
+    url = "https://leo-editor.github.io/leo-editor/"
     email = "edreamleo@gmail.com"
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
 #@+node:vitalije.20170713174950.1: ** c_help.editOneSetting
@@ -239,7 +239,7 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
         "Only nodes that are descendants of the @settings node are read.\n\n"
         "Only settings you need to modify should be in this file, do\n"
         "not copy large parts of leoSettings.py here.\n\n"
-        "For more information see http://leoeditor.com/customizing.html"
+        "For more information see https://leo-editor.github.io/leo-editor/customizing.html"
         "".format(time=time.asctime())
     )
     nd = nd.insertAfter()
@@ -264,7 +264,7 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
 def leoHome(self: Self, event: Event = None) -> None:
     """Open Leo's Home page in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/"
+    url = "https://leo-editor.github.io/leo-editor/"
     try:
         webbrowser.open_new(url)
     except Exception:
@@ -274,7 +274,7 @@ def leoHome(self: Self, event: Event = None) -> None:
 def openLeoTOC(self: Self, event: Event = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/leo_toc.html"
+    url = "https://leo-editor.github.io/leo-editor/leo_toc.html"
     try:
         webbrowser.open_new(url)
     except Exception:
@@ -284,7 +284,7 @@ def openLeoTOC(self: Self, event: Event = None) -> None:
 def openLeoScriptingMiscellany(self: Self, event: Event = None) -> None:
     """Open Leo's scripting miscellany page in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/scripting-miscellany.html"
+    url = "https://leo-editor.github.io/leo-editor/scripting-miscellany.html"
     try:
         webbrowser.open_new(url)
     except Exception:
@@ -294,7 +294,7 @@ def openLeoScriptingMiscellany(self: Self, event: Event = None) -> None:
 def openLeoTutorials(self: Self, event: Event = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/tutorial.html"
+    url = "https://leo-editor.github.io/leo-editor/tutorial.html"
     try:
         webbrowser.open_new(url)
     except Exception:
@@ -304,7 +304,7 @@ def openLeoTutorials(self: Self, event: Event = None) -> None:
 def openLeoUsersGuide(self: Self, event: Event = None) -> None:
     """Open Leo's users guide in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/usersguide.html"
+    url = "https://leo-editor.github.io/leo-editor/usersguide.html"
     try:
         webbrowser.open_new(url)
     except Exception:
@@ -314,7 +314,7 @@ def openLeoUsersGuide(self: Self, event: Event = None) -> None:
 def openLeoVideos(self: Self, event: Event = None) -> None:
     """Open Leo's videos page in a web browser."""
     import webbrowser
-    url = "http://leoeditor.com/screencasts.html"
+    url = "https://leo-editor.github.io/leo-editor/screencasts.html"
     try:
         webbrowser.open_new(url)
     except Exception:

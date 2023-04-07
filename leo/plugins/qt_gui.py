@@ -1671,7 +1671,7 @@ class StyleSheetManager:
         # This warning is inappropriate in some contexts.
             # if not self.settings_p:
                 # g.es("No '@settings' node found in outline.  See:")
-                # g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
+                # g.es("https://leo-editor.github.io/leo-editor/tutorial-basics.html#configuring-leo")
     #@+node:ekr.20170222051716.1: *4* ssm.reload_settings
     def reload_settings(self, sheet: str=None) -> None:
         """

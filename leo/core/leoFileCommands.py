@@ -2173,11 +2173,13 @@ class FileCommands:
         self.put("<preferences/>\n")
     #@+node:ekr.20031218072017.1246: *5* fc.putProlog
     def putProlog(self) -> None:
-        """Put the prolog of the xml file."""
-        tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
+        """
+        Put the prolog of the xml file.
+        """
+        tag = 'http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
         # Put "created by Leo" line.
-        self.put('<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->\n')
+        self.put('<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->\n')
         self.putStyleSheetLine()
         # Put the namespace
         self.put(f'<leo_file xmlns:leo="{tag}" >\n')
