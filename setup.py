@@ -35,7 +35,6 @@ classifiers = [
 #@+node:maphew.20171120133429.1: ** << define install_requires >>
 install_requires = [
     'PyQt5 >= 5.15',  # #2884: reuire v5.15. #1217: require v5.12+.
-    'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
     'build >= 0.6.0',  # simple PEP 517 package builder
     'docutils',  # used by Sphinx, rST plugin
