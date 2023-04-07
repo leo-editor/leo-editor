@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>A Miscellany of Leo Scripting &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,9 +12,6 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -52,7 +49,7 @@
 <h1>A Miscellany of Leo Scripting<a class="headerlink" href="#a-miscellany-of-leo-scripting" title="Permalink to this heading">¶</a></h1>
 <p>This chapter covers miscellaneous topics related to Leo scripts.</p>
 <p>You might call this a FAQ for scripts…</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#button-example" id="id1">&#64;button example</a></p></li>
@@ -98,9 +95,9 @@
 <li><p><a class="reference internal" href="#writing-g-es-output-to-other-tabs" id="id32">Writing g.es output to other tabs</a></p></li>
 <li><p><a class="reference internal" href="#writing-clickable-links-to-the-log-tab" id="id33">Writing clickable links to the Log tab</a></p></li>
 </ul>
-</div>
+</nav>
 <section id="button-example">
-<h2><a class="toc-backref" href="#id1">&#64;button example</a><a class="headerlink" href="#button-example" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">&#64;button example</a><a class="headerlink" href="#button-example" title="Permalink to this heading">¶</a></h2>
 <p>The .leo files in Leo’s distribution contain many &#64;button nodes (many disabled), that do repetitive chores. Here is one, &#64;button promote-child-bodies, from LeoDocs.leo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;Copy the body text of all children to the parent&#39;s body text.&#39;&#39;&#39;</span>
 
@@ -119,7 +116,7 @@
 <p>This creates a fully undoable promote-child-bodies command.</p>
 </section>
 <section id="comparing-two-similar-outlines">
-<h2><a class="toc-backref" href="#id2">Comparing two similar outlines</a><a class="headerlink" href="#comparing-two-similar-outlines" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Comparing two similar outlines</a><a class="headerlink" href="#comparing-two-similar-outlines" title="Permalink to this heading">¶</a></h2>
 <p>efc.compareTrees does most of the work of comparing two similar outlines.
 For example, here is “&#64;button compare vr-controller” in leoPyRef.leo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">findNodeAnywhere</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s1">&#39;class ViewRenderedController (QWidget) (vr)&#39;</span><span class="p">)</span>
@@ -132,7 +129,7 @@ For example, here is “&#64;button compare vr-controller” in leoPyRef.leo:</p
 <p>This script will compare the trees whose roots are p1 and p2 and show the results like “Recovered nodes”.  That is, the script creates a node called “compare vr1 &amp; vr2”.  This top-level node contains one child node for every node that is different.  Each child node contains a diff of the node.  The grand children are one or two clones of the changed or inserted node.</p>
 </section>
 <section id="converting-body-text-to-title-case">
-<h2><a class="toc-backref" href="#id3">Converting Body Text To Title Case</a><a class="headerlink" href="#converting-body-text-to-title-case" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Converting Body Text To Title Case</a><a class="headerlink" href="#converting-body-text-to-title-case" title="Permalink to this heading">¶</a></h2>
 <p>Title case means that all words start with capital letters.  The
 following script converts the selected body text to title case.  If
 nothing has been selected, the entire current node is converted. The
@@ -165,7 +162,7 @@ conversion is undoable:</p>
 <p>[Contributed by T. B. Passin]</p>
 </section>
 <section id="creating-minimal-outlines">
-<h2><a class="toc-backref" href="#id4">Creating minimal outlines</a><a class="headerlink" href="#creating-minimal-outlines" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Creating minimal outlines</a><a class="headerlink" href="#creating-minimal-outlines" title="Permalink to this heading">¶</a></h2>
 <p>The following script will create a minimal Leo outline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
     <span class="c1"># Create a visible frame.</span>
@@ -184,7 +181,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="creating-qt-windows-from-leo-scripts">
-<h2><a class="toc-backref" href="#id5">Creating Qt Windows from Leo scripts</a><a class="headerlink" href="#creating-qt-windows-from-leo-scripts" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Creating Qt Windows from Leo scripts</a><a class="headerlink" href="#creating-qt-windows-from-leo-scripts" title="Permalink to this heading">¶</a></h2>
 <p>The following puts up a test window when run as a Leo script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtGui</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
@@ -202,7 +199,7 @@ conversion is undoable:</p>
 <p>creates a permanent reference to the window so the window won’t be garbage collected after the Leo script exits.</p>
 </section>
 <section id="cutting-and-pasting-text">
-<h2><a class="toc-backref" href="#id6">Cutting and pasting text</a><a class="headerlink" href="#cutting-and-pasting-text" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Cutting and pasting text</a><a class="headerlink" href="#cutting-and-pasting-text" title="Permalink to this heading">¶</a></h2>
 <p>The following shows how to cut and paste text to the clipboard:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">replaceClipboardWith</span><span class="p">(</span><span class="s1">&#39;hi&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">getTextFromClipboard</span><span class="p">())</span>
@@ -210,7 +207,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="g-app-gui-run-methods-run-dialogs">
-<h2><a class="toc-backref" href="#id7">g.app.gui.run* methods run dialogs</a><a class="headerlink" href="#g-app-gui-run-methods-run-dialogs" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">g.app.gui.run* methods run dialogs</a><a class="headerlink" href="#g-app-gui-run-methods-run-dialogs" title="Permalink to this heading">¶</a></h2>
 <p>Scripts can invoke various dialogs using the following methods of the g.app.gui object.</p>
 <p>Here is a partial list. Use typing completion to get the full list:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskOkCancelNumberDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">)</span>
@@ -230,7 +227,7 @@ conversion is undoable:</p>
 <p>For details about how to use these file dialogs, look for examples in Leo’s own source code. The runOpenFileDialog returns a list of file names.</p>
 </section>
 <section id="getting-commander-preferences">
-<h2><a class="toc-backref" href="#id8">Getting commander preferences</a><a class="headerlink" href="#getting-commander-preferences" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Getting commander preferences</a><a class="headerlink" href="#getting-commander-preferences" title="Permalink to this heading">¶</a></h2>
 <p>Each commander sets ivars corresponding to settings.</p>
 <p>Scripts can get the following ivars of the Commands class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ivars</span> <span class="o">=</span> <span class="p">(</span>
@@ -253,7 +250,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="getting-configuration-settings">
-<h2><a class="toc-backref" href="#id9">Getting configuration settings</a><a class="headerlink" href="#getting-configuration-settings" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Getting configuration settings</a><a class="headerlink" href="#getting-configuration-settings" title="Permalink to this heading">¶</a></h2>
 <p>Settings may be different for each commander.</p>
 <p>The c.config class has the following getters.</p>
 <ul class="simple">
@@ -271,7 +268,7 @@ conversion is undoable:</p>
 <p>The getBool ‘default’ argument to getBool specifies the value to be returned if the setting does not exist.</p>
 </section>
 <section id="getting-interactive-input-in-scripts-and-commands">
-<h2><a class="toc-backref" href="#id10">Getting interactive input in scripts and commands</a><a class="headerlink" href="#getting-interactive-input-in-scripts-and-commands" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Getting interactive input in scripts and commands</a><a class="headerlink" href="#getting-interactive-input-in-scripts-and-commands" title="Permalink to this heading">¶</a></h2>
 <p>k.get1Arg handles the next character the user types when accumulating a user argument from the minibuffer.  k.get1Arg handles details such as tab completion, backspacing, Ctrl-G etc.</p>
 <p>Commands should use k.get1Arg to get the first minibuffer argument and k.getNextArg to get all other arguments.</p>
 <p>k.get1Arg is a state machine. It has to be because it’s almost always waiting for the user to type the next character. The handle keyword arg specifies the next state in the machine.</p>
@@ -330,7 +327,7 @@ conversion is undoable:</p>
 </ul>
 </section>
 <section id="inserting-and-deleting-icons">
-<h2><a class="toc-backref" href="#id11">Inserting and deleting icons</a><a class="headerlink" href="#inserting-and-deleting-icons" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Inserting and deleting icons</a><a class="headerlink" href="#inserting-and-deleting-icons" title="Permalink to this heading">¶</a></h2>
 <p>You can add an icon to the presently selected node with c.editCommands.insertIconFromFile(path). path is an absolute path or a path relative to the leo/Icons folder. A relative path is recommended if you plan to use the icons on machines with different directory structures.</p>
 <p>For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;rt_arrow_disabled.gif&#39;</span>
@@ -345,7 +342,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="invoking-commands-from-scripts">
-<h2><a class="toc-backref" href="#id12">Invoking commands from scripts</a><a class="headerlink" href="#invoking-commands-from-scripts" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Invoking commands from scripts</a><a class="headerlink" href="#invoking-commands-from-scripts" title="Permalink to this heading">¶</a></h2>
 <p>You can invoke minibuffer commands by name.  For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">executeMinibufferCommand</span><span class="p">(</span><span class="s1">&#39;open-outline&#39;</span><span class="p">)</span>
 </pre></div>
@@ -353,14 +350,14 @@ conversion is undoable:</p>
 <p>c.keyHandler.funcReturn contains the value returned from the command. In many cases, as above, this value is simply ‘break’.</p>
 </section>
 <section id="making-operations-undoable">
-<h2><a class="toc-backref" href="#id13">Making operations undoable</a><a class="headerlink" href="#making-operations-undoable" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Making operations undoable</a><a class="headerlink" href="#making-operations-undoable" title="Permalink to this heading">¶</a></h2>
 <p>Plugins and scripts should call u.beforeX and u.afterX methods to describe the operation that is being performed. <strong>Note</strong>: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the ‘before’ snapshot. The u.afterX methods then create a bead containing both the ‘before’ and ‘after’ snapshots.</p>
 <p>u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.</p>
 <p>Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.</p>
 <p>See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo’s core calls the u.beforeX and afterX methods.</p>
 </section>
 <section id="modifying-plugins-with-script-scripts">
-<h2><a class="toc-backref" href="#id14">Modifying plugins with &#64;script scripts</a><a class="headerlink" href="#modifying-plugins-with-script-scripts" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Modifying plugins with &#64;script scripts</a><a class="headerlink" href="#modifying-plugins-with-script-scripts" title="Permalink to this heading">¶</a></h2>
 <p>The mod_scripting plugin runs &#64;scripts before plugin initiation is complete. Thus, such scripts can not directly modify plugins. Instead, a script can create an event handler for the after-create-leo-frame that will modify the plugin.</p>
 <p>For example, the following modifies the cleo.py plugin after Leo has completed loading it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prikey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
@@ -388,7 +385,7 @@ conversion is undoable:</p>
 <p>Attempting to modify c.cleo.prikey immediately in the &#64;script gives an AttributeError as c has no .cleo when the &#64;script is executed. Deferring it by using registerHandler() avoids the problem.</p>
 </section>
 <section id="modifying-the-body-pane-directly">
-<h2><a class="toc-backref" href="#id15">Modifying the body pane directly</a><a class="headerlink" href="#modifying-the-body-pane-directly" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Modifying the body pane directly</a><a class="headerlink" href="#modifying-the-body-pane-directly" title="Permalink to this heading">¶</a></h2>
 <p><strong>Important</strong>: The changes you make below <strong>will not persist</strong> unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onBodyChanged</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">undoType</span><span class="p">,</span><span class="n">oldSel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">oldText</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">oldYview</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </pre></div>
@@ -418,7 +415,7 @@ conversion is undoable:</p>
 </ul>
 </section>
 <section id="recovering-vnodes">
-<h2><a class="toc-backref" href="#id16">Recovering vnodes</a><a class="headerlink" href="#recovering-vnodes" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">Recovering vnodes</a><a class="headerlink" href="#recovering-vnodes" title="Permalink to this heading">¶</a></h2>
 <p>Positions become invalid whenever the outline changes.</p>
 <p>This script finds a position p2 having the same vnode as an invalid position p:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">positionExists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
@@ -431,7 +428,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="recursive-import-script">
-<h2><a class="toc-backref" href="#id17">Recursive import script</a><a class="headerlink" href="#recursive-import-script" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Recursive import script</a><a class="headerlink" href="#recursive-import-script" title="Permalink to this heading">¶</a></h2>
 <p>The following script imports files from a given directory and all subdirectories:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">recursiveImport</span><span class="p">(</span>
     <span class="n">dir_</span> <span class="o">=</span> <span class="s1">&#39;path to file or directory&#39;</span><span class="p">,</span>
@@ -444,7 +441,7 @@ conversion is undoable:</p>
 </div>
 </section>
 <section id="retaining-pointers-to-qt-windows">
-<h2><a class="toc-backref" href="#id18">Retaining pointers to Qt windows</a><a class="headerlink" href="#retaining-pointers-to-qt-windows" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Retaining pointers to Qt windows</a><a class="headerlink" href="#retaining-pointers-to-qt-windows" title="Permalink to this heading">¶</a></h2>
 <p>&#64;pagewidth 75</p>
 <p>The following script won’t work as intended:</p>
 <blockquote>
@@ -465,7 +462,7 @@ w.show()</p>
 </div>
 </section>
 <section id="running-code-at-idle-time">
-<h2><a class="toc-backref" href="#id19">Running code at idle time</a><a class="headerlink" href="#running-code-at-idle-time" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Running code at idle time</a><a class="headerlink" href="#running-code-at-idle-time" title="Permalink to this heading">¶</a></h2>
 <p>Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
 the callback to be called at idle time forever. This should suffice for most purposes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_hi</span><span class="p">():</span>
@@ -544,7 +541,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 <p>There is seldom a need to recycle a timer, but if you must, you can call its destroySelf method. This removes the reference to the timer in g.app.idle_timers. <strong>Warning</strong>: Accessing a timer after calling its destroySelf method can lead to a hard crash.</p>
 </section>
 <section id="running-code-in-separate-processes">
-<h2><a class="toc-backref" href="#id20">Running code in separate processes</a><a class="headerlink" href="#running-code-in-separate-processes" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Running code in separate processes</a><a class="headerlink" href="#running-code-in-separate-processes" title="Permalink to this heading">¶</a></h2>
 <p>It is dead easy for scripts, including &#64;button scripts, plugins, etc., to drive any external processes, including compilers and interpreters, from within Leo.</p>
 <ul class="simple">
 <li><p>The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.</p></li>
@@ -552,10 +549,10 @@ the callback to be called at idle time forever. This should suffice for most pur
 <li><p>The last two sections discuss using g.execute_shell_commands and g.execute_shell_commands_with_options.</p></li>
 </ul>
 <section id="using-subprocess-popen">
-<h3><a class="toc-backref" href="#id21">Using subprocess.popen</a><a class="headerlink" href="#using-subprocess-popen" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Using subprocess.popen</a><a class="headerlink" href="#using-subprocess-popen" title="Permalink to this heading">¶</a></h3>
 <p>The first section discusses three <em>easy</em> ways to run code in a separate process by calling subprocess.popen either directly or via Leo helper functions.</p>
 <section id="call-subprocess-popen-directly">
-<h4><a class="toc-backref" href="#id22">Call subprocess.popen directly</a><a class="headerlink" href="#call-subprocess-popen-directly" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id22" role="doc-backlink">Call subprocess.popen directly</a><a class="headerlink" href="#call-subprocess-popen-directly" title="Permalink to this heading">¶</a></h4>
 <p>Calling subprocess.popen is often simple and good. For example, the following executes the ‘npm run dev’ command in a given directory.  Leo continues, without waiting for the command to return:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span>
 <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;npm run dev&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -570,7 +567,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 <p><strong>Note</strong>: ‘cd directory’ does not seem to work when run using subprocess.popen on Windows 10.</p>
 </section>
 <section id="call-g-execute-shell-commands">
-<h4><a class="toc-backref" href="#id23">Call g.execute_shell_commands</a><a class="headerlink" href="#call-g-execute-shell-commands" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id23" role="doc-backlink">Call g.execute_shell_commands</a><a class="headerlink" href="#call-g-execute-shell-commands" title="Permalink to this heading">¶</a></h4>
 <p>Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with ‘&amp;’. Here it is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_shell_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span> <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
@@ -589,7 +586,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 </div>
 </section>
 <section id="call-g-execute-shell-commands-with-options">
-<h4><a class="toc-backref" href="#id24">Call g.execute_shell_commands_with_options</a><a class="headerlink" href="#call-g-execute-shell-commands-with-options" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id24" role="doc-backlink">Call g.execute_shell_commands_with_options</a><a class="headerlink" href="#call-g-execute-shell-commands-with-options" title="Permalink to this heading">¶</a></h4>
 <p>g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo’s settings. Its signature is:</p>
 <dl>
 <dt>def execute_shell_commands_with_options(</dt><dd><p>base_dir = None,
@@ -628,7 +625,7 @@ warning:            A warning to be printed before executing the commands.
 </section>
 </section>
 <section id="using-g-app-backgroundprocessmanager">
-<h3><a class="toc-backref" href="#id25">Using g.app.backgroundProcessManager</a><a class="headerlink" href="#using-g-app-backgroundprocessmanager" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Using g.app.backgroundProcessManager</a><a class="headerlink" href="#using-g-app-backgroundprocessmanager" title="Permalink to this heading">¶</a></h3>
 <p>g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, <em>without blocking Leo</em>. The BPM manages a queue of processes, and runs them <em>one at a time</em> so that their output remains separate.</p>
 <p>BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bpm</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">backgroundProcessManager</span>
@@ -648,7 +645,7 @@ warning:            A warning to be printed before executing the commands.
 <p>You can run as many of these process as you like, without involving the BPM in any way</p>
 </section>
 <section id="using-g-execute-shell-commands">
-<h3><a class="toc-backref" href="#id26">Using g.execute_shell_commands</a><a class="headerlink" href="#using-g-execute-shell-commands" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Using g.execute_shell_commands</a><a class="headerlink" href="#using-g-execute-shell-commands" title="Permalink to this heading">¶</a></h3>
 <p>g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with ‘&amp;’ are executed without waiting. Commands that do not start with ‘&amp;’ finish before running later commands. Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the qml app in a separate process:</span>
 <span class="n">g</span><span class="o">.</span><span class="n">execute_shell_commands</span><span class="p">(</span><span class="s1">&#39;qmlscene /test/qml_test.qml&#39;</span><span class="p">)</span>
@@ -667,7 +664,7 @@ warning:            A warning to be printed before executing the commands.
 </section>
 </section>
 <section id="running-leo-in-batch-mode">
-<h2><a class="toc-backref" href="#id27">Running Leo in batch mode</a><a class="headerlink" href="#running-leo-in-batch-mode" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">Running Leo in batch mode</a><a class="headerlink" href="#running-leo-in-batch-mode" title="Permalink to this heading">¶</a></h2>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">script</span> <span class="n">scriptFile</span>
 </pre></div>
@@ -687,9 +684,9 @@ warning:            A warning to be printed before executing the commands.
 </div>
 </section>
 <section id="using-pyplot-and-matplotlib">
-<h2><a class="toc-backref" href="#id28">Using &#64;pyplot and matplotlib</a><a class="headerlink" href="#using-pyplot-and-matplotlib" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Using &#64;pyplot and matplotlib</a><a class="headerlink" href="#using-pyplot-and-matplotlib" title="Permalink to this heading">¶</a></h2>
 <section id="overview">
-<h3><a class="toc-backref" href="#id29">Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h3>
 <p>Leo’s &#64;pyplot nodes support
 <a class="reference external" href="https://matplotlib.org/users/index.html">matplotlib</a>.
 &#64;pyplot nodes start with &#64;pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this:</p>
@@ -723,7 +720,7 @@ warning:            A warning to be printed before executing the commands.
 <p>and then predefines the animation, matplotlib, np, numpy and plt vars in the &#64;pyplot script. numpy is also predefined as an alias for np.</p>
 </section>
 <section id="displaying-images-externally">
-<h3><a class="toc-backref" href="#id30">Displaying images externally</a><a class="headerlink" href="#displaying-images-externally" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Displaying images externally</a><a class="headerlink" href="#displaying-images-externally" title="Permalink to this heading">¶</a></h3>
 <p>To display images and animations in an external window, <em>don’t</em> put the script in an &#64;pyplot node. Instead, put the script in a regular node, with the following modifications:</p>
 <ol class="arabic">
 <li><p>Add the required imports:</p>
@@ -750,7 +747,7 @@ warning:            A warning to be printed before executing the commands.
 </section>
 </section>
 <section id="working-with-directives-and-paths">
-<h2><a class="toc-backref" href="#id31">Working with directives and paths</a><a class="headerlink" href="#working-with-directives-and-paths" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">Working with directives and paths</a><a class="headerlink" href="#working-with-directives-and-paths" title="Permalink to this heading">¶</a></h2>
 <p>Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">scanAllDirectives</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dictToString</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 </pre></div>
@@ -765,7 +762,7 @@ warning:            A warning to be printed before executing the commands.
 </div>
 </section>
 <section id="writing-g-es-output-to-other-tabs">
-<h2><a class="toc-backref" href="#id32">Writing g.es output to other tabs</a><a class="headerlink" href="#writing-g-es-output-to-other-tabs" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Writing g.es output to other tabs</a><a class="headerlink" href="#writing-g-es-output-to-other-tabs" title="Permalink to this heading">¶</a></h2>
 <p>g.es can send it’s output to tabs other than the log tab:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">selectTab</span><span class="p">(</span><span class="s1">&#39;Test&#39;</span><span class="p">)</span>
     <span class="c1"># Create Test or make it visible.</span>
@@ -783,7 +780,7 @@ warning:            A warning to be printed before executing the commands.
 </div>
 </section>
 <section id="writing-clickable-links-to-the-log-tab">
-<h2><a class="toc-backref" href="#id33">Writing clickable links to the Log tab</a><a class="headerlink" href="#writing-clickable-links-to-the-log-tab" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Writing clickable links to the Log tab</a><a class="headerlink" href="#writing-clickable-links-to-the-log-tab" title="Permalink to this heading">¶</a></h2>
 <p>g.es_clickable_link(c, p, line_number, message) writes a clickable
 message to the Log pane.</p>
 <p>Clicking it selects the given line number of p.b.</p>
@@ -847,8 +844,8 @@ message to the Log pane.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on March 01, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Last updated on April 07, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>

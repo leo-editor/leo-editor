@@ -3365,7 +3365,7 @@ class FastAtRead:
             #@-<< handle @first and @last >>
             #@+<< handle @comment >>
             #@+node:ekr.20180621050901.1: *4* << handle @comment >>
-            # http://leoeditor.com/directives.html#part-4-dangerous-directives
+            # https://leo-editor.github.io/leo-editor/directives.html#part-4-dangerous-directives
             m = self.comment_pat.match(line)
             if m:
                 # <1, 2 or 3 comment delims>

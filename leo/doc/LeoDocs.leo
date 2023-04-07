@@ -31270,7 +31270,12 @@ Bugs
 </t>
 <t tx="ekr.20230111164618.1">def get_paths():
     """
-    Return paths to leo-editor/leo/doc/html and leo-editor/docs.
+    Return (build_path, docs_path, html_path), that is: 
+    (
+        leo-editor/leo/doc/_build/html,
+        leo-editor/docs,
+        leo-editor/leo/doc/html,
+    )
     """
     join = g.os_path_finalize_join
     norm = os.path.normpath

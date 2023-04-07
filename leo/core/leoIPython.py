@@ -4,7 +4,7 @@
 #@+node:ekr.20180326102140.1: ** << leoIpython docstring >>
 """
 Support for the --ipython command-line option and the IPython bridge:
-http://leoeditor.com/IPythonBridge.html
+https://leo-editor.github.io/leo-editor/IPythonBridge.html
 
 This code will run on IPython 1.0 and higher, as well as the IPython
 0.x versions that define the IPKernelApp class.

@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Directives Reference &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,9 +12,6 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -50,7 +47,7 @@
             
   <section id="directives-reference">
 <h1>Directives Reference<a class="headerlink" href="#directives-reference" title="Permalink to this heading">¶</a></h1>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#part-1-file-directives" id="id2">Part 1: &#64;&lt;file&gt; directives</a></p>
@@ -74,9 +71,9 @@
 <li><p><a class="reference internal" href="#part-4-dangerous-directives" id="id14">Part 4: Dangerous directives</a></p></li>
 <li><p><a class="reference internal" href="#part-5-all-other-directives" id="id15">Part 5: All other directives</a></p></li>
 </ul>
-</div>
+</nav>
 <section id="part-1-file-directives">
-<h2><a class="toc-backref" href="#id2">Part 1: &#64;&lt;file&gt; directives</a><a class="headerlink" href="#part-1-file-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Part 1: &#64;&lt;file&gt; directives</a><a class="headerlink" href="#part-1-file-directives" title="Permalink to this heading">¶</a></h2>
 <p id="index-0">This section discusses the &#64;&lt;file&gt; directives. These directives create or import external files.</p>
 <p>&#64;&lt;file&gt; nodes create external files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@asis</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">write</span> <span class="n">only</span><span class="p">,</span> <span class="n">no</span> <span class="n">sentinels</span><span class="p">,</span> <span class="n">exact</span> <span class="n">line</span> <span class="n">endings</span>
@@ -141,7 +138,7 @@ By default, the file’s extension determines the importer:</p>
 </div>
 <p><strong>Important</strong>: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatically generate section heading of the appropriate level. Body text of the top-level &#64;auto node is ignored.</p>
 <section id="asis-path">
-<h3><a class="toc-backref" href="#id3">&#64;asis &lt;path&gt;</a><a class="headerlink" href="#asis-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">&#64;asis &lt;path&gt;</a><a class="headerlink" href="#asis-path" title="Permalink to this heading">¶</a></h3>
 <p id="index-1">The &#64;asis directive creates an external file without sentinels and without any expansions.</p>
 <p>Use this directive only when you must have complete control over every character of the external file. When writing &#64;asis nodes, writes the body text of all nodes in outline order. Leo writes the body text <em>as is</em>, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including &#64; or &#64;c directives, to the external file as text. <strong>Warning</strong>: Because the external file contains no sentinels, &#64;nosent trees can not be updated from changes made outside of Leo. If you want this capability, use &#64;clean instead.</p>
 <p id="index-2"><strong>The &#64;&#64; convention</strong>: Within &#64;asis trees only, if a headline starts with &#64;&#64;, Leo writes everything in the headline following the &#64;&#64; just before the corresponding body text.</p>
@@ -153,7 +150,7 @@ line from the next node will concatenated to the last line of the preceding node
 <p><strong>Note</strong>: &#64;file-asis and &#64;silent are deprecated synonyms for &#64;asis.</p>
 </section>
 <section id="auto-path">
-<h3><a class="toc-backref" href="#id4">&#64;auto &lt;path&gt;</a><a class="headerlink" href="#auto-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">&#64;auto &lt;path&gt;</a><a class="headerlink" href="#auto-path" title="Permalink to this heading">¶</a></h3>
 <p id="index-3">The &#64;auto directive imports an external file into a tree of nodes.</p>
 <p>&#64;auto trees allow people to use Leo in collaborative environments without using sentinels in external files. Even without sentinels, &#64;auto trees can change when the corresponding external file changes outside of Leo.</p>
 <p id="index-4">&#64;auto nodes read files using language-specific importers.
@@ -199,7 +196,7 @@ By default, the file’s extension determines the importer:</p>
 <p><strong>Note 4</strong>: See Leo’s <a class="reference external" href="vimBindings.html#using-vimoutline-otl-files-in-leo">vim</a> documentation and Vim’s <a class="reference external" href="http://www.vim.org/scripts/script.php?script_id=3515">vim outline</a> documentation.</p>
 <p><strong>Note 5</strong>: See the <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> documentation.</p>
 <section id="auto-sanity-checks">
-<h4><a class="toc-backref" href="#id5">&#64;auto sanity checks</a><a class="headerlink" href="#auto-sanity-checks" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id5" role="doc-backlink">&#64;auto sanity checks</a><a class="headerlink" href="#auto-sanity-checks" title="Permalink to this heading">¶</a></h4>
 <p>When importing files into &#64;auto trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a potentially serious problem. Leo inserts an &#64;ignore directive in the &#64;auto tree if any error is found. This prevents the &#64;auto tree from modifying the external file.</p>
 <p id="index-5">Before importing a file, Leo <strong>regularizes</strong> the leading whitespace of all lines of the original source file. That is, Leo converts blanks to tabs or tabs to blanks depending on the value of the &#64;tabwidth directive in effect for the &#64;auto node. Leo also checks that the indentation of any non-blank line is a multiple of the indentation specified by the &#64;tabwidth directive. <strong>Strict languages</strong> are languages such as Python for which leading whitespace must be preserved exactly as it appears in the original source file. Problems during regularizing whitespace generate errors for strict languages and warnings for non-strict languages.</p>
 <p>After importing a file, Leo verifies that writing the &#64;auto node would create the same file as the original file. Such file comparison mismatches generate errors unless the problem involves only leading whitespace for non-strict languages. Whenever a mismatch occurs the first non-matching line is printed.</p>
@@ -212,7 +209,7 @@ By default, the file’s extension determines the importer:</p>
 </section>
 </section>
 <section id="clean-path">
-<h3><a class="toc-backref" href="#id6">&#64;clean &lt;path&gt;</a><a class="headerlink" href="#clean-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">&#64;clean &lt;path&gt;</a><a class="headerlink" href="#clean-path" title="Permalink to this heading">¶</a></h3>
 <p id="index-7">The &#64;clean &lt;filename&gt; creates an external file without sentinel lines.
 &#64;clean trees will probably be the most convenient way of creating and
 accessing external files for most people.</p>
@@ -226,7 +223,7 @@ The default is True.</p>
 collaborating with others.</p>
 </section>
 <section id="edit-path">
-<h3><a class="toc-backref" href="#id7">&#64;edit &lt;path&gt;</a><a class="headerlink" href="#edit-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">&#64;edit &lt;path&gt;</a><a class="headerlink" href="#edit-path" title="Permalink to this heading">¶</a></h3>
 <p id="index-8">The &#64;edit directive imports an external file into a single node.</p>
 <p>When reading &#64;edit nodes, Leo reads the entire file into the &#64;edit node. Lines
 that look like sentinels will be read just as they are.</p>
@@ -234,7 +231,7 @@ that look like sentinels will be read just as they are.</p>
 references and &#64;others are not allowed.</p>
 </section>
 <section id="file-path-aka-thin">
-<h3><a class="toc-backref" href="#id8">&#64;file &lt;path&gt; (aka &#64;thin)</a><a class="headerlink" href="#file-path-aka-thin" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">&#64;file &lt;path&gt; (aka &#64;thin)</a><a class="headerlink" href="#file-path-aka-thin" title="Permalink to this heading">¶</a></h3>
 <p id="index-9">The &#64;file directive creates an external file containing sentinels. When writing
 &#64;file trees, Leo expands section references and &#64;all and &#64;others directives.</p>
 <p>When reading external files created by &#64;file, the sentinels allow Leo to
@@ -252,19 +249,19 @@ comment delimiters.</p>
 a problem: Leo 4.7 can read all external files written by Leo 4.6.</p>
 </section>
 <section id="nosent-path">
-<h3><a class="toc-backref" href="#id9">&#64;nosent &lt;path&gt;</a><a class="headerlink" href="#nosent-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">&#64;nosent &lt;path&gt;</a><a class="headerlink" href="#nosent-path" title="Permalink to this heading">¶</a></h3>
 <p id="index-10">The &#64;nosent directive creates an external file <strong>without</strong> sentinels. When writing
 &#64;nosent trees, Leo expands section references and &#64;all and &#64;others directives. <strong>Warning</strong>: Because the external file contains no sentinels, &#64;nosent trees can not be updated from changes made outside of Leo. If you want this capability, use &#64;clean instead.</p>
 </section>
 <section id="shadow-path-deprecated">
-<h3><a class="toc-backref" href="#id10">&#64;shadow &lt;path&gt; (deprecated)</a><a class="headerlink" href="#shadow-path-deprecated" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">&#64;shadow &lt;path&gt; (deprecated)</a><a class="headerlink" href="#shadow-path-deprecated" title="Permalink to this heading">¶</a></h3>
 <p id="index-11"><strong>Important</strong>: As of Leo 5.1, &#64;shadow is <strong>deprecated</strong> Use &#64;clean instead. &#64;clean is faster than &#64;shadow and requires no hidden files.</p>
 <p>The &#64;shadow directive creates <em>two</em> external files, a <strong>public</strong> file without sentinels, and a <strong>private</strong> file containing sentinels.</p>
 <p>When reading an &#64;shadow node, Leo uses the <a class="reference external" href="appendices.html#the-mulder-ream-update-algorithm">Mulder/Ream update algorithm</a> to compare the public and private files, then updates the outline based on changes to the <em>public</em> file.</p>
 <p>Leo can do an initial import of &#64;shadow trees by parsing the corresponding public file, exactly as is done for &#64;auto nodes.</p>
 </section>
 <section id="path-expressions">
-<h3><a class="toc-backref" href="#id11">Path expressions</a><a class="headerlink" href="#path-expressions" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Path expressions</a><a class="headerlink" href="#path-expressions" title="Permalink to this heading">¶</a></h3>
 <p>Within &#64;path and &#64;&lt;file&gt; paths, Leo evaluates <code class="docutils literal notranslate"><span class="pre">{{exp}}</span></code> with the the following symbols defined: <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">g</span></code>, <code class="docutils literal notranslate"><span class="pre">p</span></code>, <code class="docutils literal notranslate"><span class="pre">os</span></code> and <code class="docutils literal notranslate"><span class="pre">sys</span></code>. Also, <code class="docutils literal notranslate"><span class="pre">sep</span></code> is defined as os.sep.
 File names are relative to the directory containing the .leo file, but that can be overridden, depending on the form of the file name. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@file</span> <span class="p">{{</span><span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s1">&#39;my-dir&#39;</span><span class="p">)}}{{</span><span class="n">sep</span><span class="p">}}</span><span class="n">myFile</span><span class="o">.</span><span class="n">py</span>
@@ -273,9 +270,9 @@ File names are relative to the directory containing the .leo file, but that can 
 </section>
 </section>
 <section id="part-2-all-and-others">
-<h2><a class="toc-backref" href="#id12">Part 2: &#64;all and &#64;others</a><a class="headerlink" href="#part-2-all-and-others" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Part 2: &#64;all and &#64;others</a><a class="headerlink" href="#part-2-all-and-others" title="Permalink to this heading">¶</a></h2>
 <p>These control how Leo places text when writing external files. They are two of the most important directives in Leo.</p>
-<dl class="glossary simple">
+<dl class="simple glossary">
 </dl>
 <p id="index-12">&#64;all</p>
 <blockquote>
@@ -300,11 +297,11 @@ may have other &#64;others directives.</p>
 </div></blockquote>
 </section>
 <section id="part-3-syntax-coloring-directives">
-<h2><a class="toc-backref" href="#id13">Part 3: Syntax coloring directives</a><a class="headerlink" href="#part-3-syntax-coloring-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Part 3: Syntax coloring directives</a><a class="headerlink" href="#part-3-syntax-coloring-directives" title="Permalink to this heading">¶</a></h2>
 <p>The &#64;color, &#64;killcolor, &#64;nocolor and &#64;nocolor-node directives control how
 Leo colors text in the body pane.</p>
 <p id="index-14">These directives typically affect the node in which they appear and all descendant nodes. Exception: an <strong>ambiguous node</strong>, a node containing both &#64;color and &#64;nocolor directives, has no effect on how Leo colors text in descendant nodes.</p>
-<dl class="glossary simple">
+<dl class="simple glossary">
 </dl>
 <p id="index-15">&#64;color</p>
 <blockquote>
@@ -327,10 +324,10 @@ node.</p>
 </div></blockquote>
 </section>
 <section id="part-4-dangerous-directives">
-<h2><a class="toc-backref" href="#id14">Part 4: Dangerous directives</a><a class="headerlink" href="#part-4-dangerous-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Part 4: Dangerous directives</a><a class="headerlink" href="#part-4-dangerous-directives" title="Permalink to this heading">¶</a></h2>
 <p>These directives alter how Leo represents data in external files. They are <strong>dangerous</strong>–mistakes in using these sentinels can make it impossible for Leo to read the resulting external file. Use them with care!</p>
 <p>Nevertheless, these sentinels can be useful in special situations.</p>
-<dl class="glossary simple">
+<dl class="simple glossary">
 </dl>
 <p id="index-19">&#64;comment &lt;1, 2 or three comment delims&gt;</p>
 <blockquote>
@@ -401,10 +398,10 @@ the &#64;+leo sentinel and the initial &#64;+body and &#64;+node sentinels.</p>
 </div></blockquote>
 </section>
 <section id="part-5-all-other-directives">
-<h2><a class="toc-backref" href="#id15">Part 5: All other directives</a><a class="headerlink" href="#part-5-all-other-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Part 5: All other directives</a><a class="headerlink" href="#part-5-all-other-directives" title="Permalink to this heading">¶</a></h2>
 <p>This section is a reference guide for all other Leo directives, organized alphabetically.</p>
 <p>Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.</p>
-<dl class="glossary simple">
+<dl class="simple glossary">
 </dl>
 <span class="target" id="index-21"></span><span class="target" id="index-22"></span><p id="index-23">&#64; and &#64;doc</p>
 <blockquote>
@@ -505,10 +502,6 @@ than one &#64;last directive may exist. For example:</p>
 This directive overrides the &#64;string output_newline setting.</p>
 <p>The valid forms of the &#64;lineending directive are:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 31%" />
-<col style="width: 69%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>&#64;lineending nl</p></td>
 <td><p>The default, Linux.</p></td>
@@ -634,8 +627,8 @@ Negative tab widths cause Leo to convert tabs to spaces.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on March 01, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Last updated on April 07, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>

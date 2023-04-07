@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Controlling Syntax Coloring &#8212; Leo 6.7.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,9 +12,6 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -51,7 +48,7 @@
   <section id="controlling-syntax-coloring">
 <h1>Controlling Syntax Coloring<a class="headerlink" href="#controlling-syntax-coloring" title="Permalink to this heading">¶</a></h1>
 <p>This chapter discusses the settings to control Leo’s syntax colorer. This chapter also discusses how to extend Leo’s colorizer by creating xml language descriptions files and corresponding Python files. <strong>Important</strong>: this material is for those who want to support Leo’s colorizing code. To use Leo’s colorizers you only need to know about syntax-coloring settings.</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#settings-for-syntax-coloring" id="id1">Settings for syntax coloring</a></p>
@@ -88,12 +85,12 @@
 </ul>
 </li>
 </ul>
-</div>
+</nav>
 <section id="settings-for-syntax-coloring">
-<h2><a class="toc-backref" href="#id1">Settings for syntax coloring</a><a class="headerlink" href="#settings-for-syntax-coloring" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Settings for syntax coloring</a><a class="headerlink" href="#settings-for-syntax-coloring" title="Permalink to this heading">¶</a></h2>
 <p>This section discusses only those settings that affect syntax coloring. See <a class="reference external" href="customizing.html">Customizing Leo</a> for a general discussion of Leo’s settings.</p>
 <section id="color-settings">
-<h3><a class="toc-backref" href="#id2">Color settings</a><a class="headerlink" href="#color-settings" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Color settings</a><a class="headerlink" href="#color-settings" title="Permalink to this heading">¶</a></h3>
 <p>To specify a color, say for comment1, for <em>all</em> languages, create an &#64;color node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@color</span> <span class="n">comment1</span> <span class="o">=</span> <span class="n">blue</span>
 </pre></div>
@@ -212,7 +209,7 @@ with the language name.  For example:</p>
 <p><strong>Note</strong>: all &#64;color settings may optionally end with the _color suffix.</p>
 </section>
 <section id="font-settings">
-<h3><a class="toc-backref" href="#id3">Font settings</a><a class="headerlink" href="#font-settings" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Font settings</a><a class="headerlink" href="#font-settings" title="Permalink to this heading">¶</a></h3>
 <p>To specify a font, say for keyword_font, to be used as the default font for <strong>all</strong> languages, put the following in the body text of an &#64;font node in leoSettings.leo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># keyword_font_family = None</span>
 <span class="n">keyword_font_size</span> <span class="o">=</span> <span class="mi">16</span>
@@ -235,7 +232,7 @@ with the language name.  For example:</p>
 </section>
 </section>
 <section id="files">
-<h2><a class="toc-backref" href="#id4">Files</a><a class="headerlink" href="#files" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Files</a><a class="headerlink" href="#files" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference external" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using xml <strong>language description files.</strong> Rather than using the xml language description files directly, Leo uses Python <strong>colorer control files</strong>, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.</p>
 <p>These Python files contain all the information in the jEdit’s xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.</p>
 <p>Each xml file describes one <strong>colorizing mode</strong>. A mode consists of one or more <strong>rulesets</strong>, and each ruleset consists of a list of <strong>colorizing rules</strong>. In addition, modes, rulesets and rules may have associated <strong>properties</strong> and <strong>attributes</strong>. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).</p>
@@ -250,7 +247,7 @@ with the language name.  For example:</p>
 </ul>
 </section>
 <section id="the-colorizer-s-inner-loop">
-<h2><a class="toc-backref" href="#id5">The colorizer’s inner loop</a><a class="headerlink" href="#the-colorizer-s-inner-loop" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">The colorizer’s inner loop</a><a class="headerlink" href="#the-colorizer-s-inner-loop" title="Permalink to this heading">¶</a></h2>
 <p>When Leo’s syntax colorer sees the <a class="reference external" href="mailto:'&#37;&#52;&#48;language">‘<span>&#64;</span>language</a> x’ directive, it will import x.py from Leo’s modes folder. The colorer can then access any module-level object obj in x.py as x.obj.</p>
 <p>Colorizer control files contain <strong>rules functions</strong> corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing ‘self’ as the first argument of these functions. I call these rules <em>functions</em> to distinguish them from the corresponding <strong>rules methods</strong> which are actual methods of the colorizer class. Rules <em>functions</em> merely call corresponding rules <em>methods</em>. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.</p>
 <p>The colorizer calls rules functions until one matches, at which point a range of text gets colored and the process repeats. The inner loop of the colorizer is this code:</p>
@@ -271,10 +268,10 @@ the list of rules that can start with that character.</p></li>
 <p>Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they fail.</p>
 </section>
 <section id="format-of-colorizer-control-files">
-<h2><a class="toc-backref" href="#id6">Format of colorizer control files</a><a class="headerlink" href="#format-of-colorizer-control-files" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Format of colorizer control files</a><a class="headerlink" href="#format-of-colorizer-control-files" title="Permalink to this heading">¶</a></h2>
 <p>The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo’s Legacy (jEdit-based) colorizer. Leo’s pygments syntax colorizer does not use these files.</p>
 <section id="ruleset-names">
-<h3><a class="toc-backref" href="#id7">Ruleset names</a><a class="headerlink" href="#ruleset-names" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Ruleset names</a><a class="headerlink" href="#ruleset-names" title="Permalink to this heading">¶</a></h3>
 <p>A <strong>ruleset name</strong> is a Python string having the form ‘x_setname’, where setname is the value of the SET attribute of the &lt;RULES&gt; element in x.xml. For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is ‘php_JAVASCRIPT’. <strong>Important</strong>: by convention, the ruleset name of the default &lt;RULES&gt; element is ‘x_main’; note that default &lt;RULES&gt; element have no SET attributes.</p>
 <p>The colorizer uses ruleset names to gain access to all data structures in x.py. To anticipate a bit, ruleset names are keys into two standard dictionaries, x.rulesDict and x.keywordsDictDict, from which the colorizer can get all other information in x.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The rules list for the &#39;JAVASCRIPT&#39; ruleset in php.xml.</span>
@@ -287,7 +284,7 @@ the list of rules that can start with that character.</p></li>
 <p>In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the <strong>only</strong> names that the colorizer needs to know in order to access all information in x.py.</p>
 </section>
 <section id="x-properties">
-<h3><a class="toc-backref" href="#id8">x.properties</a><a class="headerlink" href="#x-properties" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">x.properties</a><a class="headerlink" href="#x-properties" title="Permalink to this heading">¶</a></h3>
 <p><strong>x.properties</strong> is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># properties for mode php.xml</span>
 <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
@@ -301,7 +298,7 @@ the list of rules that can start with that character.</p></li>
 </div>
 </section>
 <section id="attribute-dictionaries-and-x-attributesdictdict">
-<h3><a class="toc-backref" href="#id9">Attribute dictionaries and x.attributesDictDict</a><a class="headerlink" href="#attribute-dictionaries-and-x-attributesdictdict" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Attribute dictionaries and x.attributesDictDict</a><a class="headerlink" href="#attribute-dictionaries-and-x-attributesdictdict" title="Permalink to this heading">¶</a></h3>
 <p>x.py contains a <strong>attribute dictionary</strong> for each ruleset in x.xml. Keys are attribute names, values strings representing the values of the attributes. This dictionary is empty if a ruleset contains no attributes. The valid keys are:</p>
 <ul class="simple">
 <li><p>‘default’: the default token type.  ‘null’ is the default.</p></li>
@@ -339,7 +336,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for attribute dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.attributeDictDict; Leo’s colorer never uses the actual names of attribute dictionaries.</p>
 </section>
 <section id="keyword-dictionaries-and-x-keywordsdictdict">
-<h3><a class="toc-backref" href="#id10">Keyword dictionaries and x.keywordsDictDict</a><a class="headerlink" href="#keyword-dictionaries-and-x-keywordsdictdict" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Keyword dictionaries and x.keywordsDictDict</a><a class="headerlink" href="#keyword-dictionaries-and-x-keywordsdictdict" title="Permalink to this heading">¶</a></h3>
 <p>x.py contains a <strong>keyword dictionary</strong> for each ruleset in x.xml. x.py contains an empty keywords dictionary if a ruleset contains no &lt;KEYWORDS&gt; element.</p>
 <p>Keys are strings representing keywords of the language describe by the mode. Values are strings representing syntactic categories, i.e. a TYPE attribute valid in x.xml, namely: COMMENT1, COMMENT2, COMMENT3, COMMENT4, FUNCTION, KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4, LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4, MARKUP, NULL and OPERATOR.</p>
 <p>For example, here (parts of) some keyword dictionaries in php.py:</p>
@@ -390,7 +387,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for keyword dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.keywordsDictDict; Leo’s colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.</p>
 </section>
 <section id="rules-rules-dictionaries-and-x-rulesdictdict">
-<h3><a class="toc-backref" href="#id11">Rules, rules dictionaries and x.rulesDictDict</a><a class="headerlink" href="#rules-rules-dictionaries-and-x-rulesdictdict" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Rules, rules dictionaries and x.rulesDictDict</a><a class="headerlink" href="#rules-rules-dictionaries-and-x-rulesdictdict" title="Permalink to this heading">¶</a></h3>
 <p>x.py contains one <strong>rule function</strong> for every rule in every ruleset (&lt;RULES&gt; element) in x.xml. These rules have names rule1 through  ruleN, where N is the total number of rules in all rulesets in x.xml.</p>
 <p>Each rules <em>function</em> merely calls a rules <em>method</em> in Leo’s colorizer. Which method gets called depends on the corresponding element in <cite>x.xml</cite>. For example, the first rule in php.xml is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;SPAN TYPE=&quot;MARKUP&quot; DELEGATE=&quot;PHP&quot;&gt;
@@ -465,7 +462,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for rules lists <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.rulesDictDict; Leo’s colorer never uses the actual names of rules lists such as rulesDict8, and Leo’s colorer never uses the actual names of rules functions such as rule64.</p>
 </section>
 <section id="x-importdict-and-imported-versus-delegated-rulesets">
-<h3><a class="toc-backref" href="#id12">x.importDict and imported versus delegated rulesets</a><a class="headerlink" href="#x-importdict-and-imported-versus-delegated-rulesets" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">x.importDict and imported versus delegated rulesets</a><a class="headerlink" href="#x-importdict-and-imported-versus-delegated-rulesets" title="Permalink to this heading">¶</a></h3>
 <p>x.importDict is a Python dictionary. Keys are ruleset names; values are a list of ruleset names. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import dict for php mode.</span>
 <span class="n">importDict</span> <span class="o">=</span> <span class="p">{</span>
@@ -484,11 +481,11 @@ Words matching this regular expression are colored with the digit token type.</p
 </section>
 </section>
 <section id="rule-methods">
-<h2><a class="toc-backref" href="#id13">Rule methods</a><a class="headerlink" href="#rule-methods" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Rule methods</a><a class="headerlink" href="#rule-methods" title="Permalink to this heading">¶</a></h2>
 <p>This section describes each rules method in Leo’s jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit’s language description files.</p>
 <p>All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.</p>
 <section id="arguments-to-rule-methods">
-<h3><a class="toc-backref" href="#id14">Arguments to rule methods</a><a class="headerlink" href="#arguments-to-rule-methods" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Arguments to rule methods</a><a class="headerlink" href="#arguments-to-rule-methods" title="Permalink to this heading">¶</a></h3>
 <p>All rule methods take three required arguments and zero or more optional keyword arguments.</p>
 <p>Here is a list of the required arguments and their meaning:</p>
 <ul class="simple">
@@ -528,7 +525,7 @@ If True, the match will not cross word breaks.</p></li>
 because such matchers are called only if the present search pattern starts with hash_char.</p>
 </section>
 <section id="match-eol-span">
-<h3><a class="toc-backref" href="#id15">match_eol_span</a><a class="headerlink" href="#match-eol-span" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">match_eol_span</a><a class="headerlink" href="#match-eol-span" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -541,7 +538,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_eol_span highlights from i to the end of the line with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-eol-span-regexp">
-<h3><a class="toc-backref" href="#id16">match_eol_span_regexp</a><a class="headerlink" href="#match-eol-span-regexp" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">match_eol_span_regexp</a><a class="headerlink" href="#match-eol-span-regexp" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -558,7 +555,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_eol_span_regexp  highlights from i to the end of the line. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-keywords">
-<h3><a class="toc-backref" href="#id17">match_keywords</a><a class="headerlink" href="#match-keywords" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">match_keywords</a><a class="headerlink" href="#match-keywords" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_keywords</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
 </pre></div>
 </div>
@@ -566,7 +563,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_keywords colors the keyword. match_keywords does not take a kind keyword argument. Instead, the keyword is colored as specified by d.get(theKeyword).</p>
 </section>
 <section id="match-mark-following">
-<h3><a class="toc-backref" href="#id18">match_mark_following</a><a class="headerlink" href="#match-mark-following" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">match_mark_following</a><a class="headerlink" href="#match-mark-following" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_following</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -578,7 +575,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_mark_following colors from i to the start of the next token with the color specified by kind. If the exclude_match argument is True, only the text after the matched text will be colored.</p>
 </section>
 <section id="match-mark-previous">
-<h3><a class="toc-backref" href="#id19">match_mark_previous</a><a class="headerlink" href="#match-mark-previous" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">match_mark_previous</a><a class="headerlink" href="#match-mark-previous" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_previous</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -590,7 +587,7 @@ because such matchers are called only if the present search pattern starts with 
 Its use is deprecated.</p>
 </section>
 <section id="match-seq">
-<h3><a class="toc-backref" href="#id20">match_seq</a><a class="headerlink" href="#match-seq" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">match_seq</a><a class="headerlink" href="#match-seq" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">seq</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -602,7 +599,7 @@ Its use is deprecated.</p>
 <p>If successful, match_seq highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-seq-regexp">
-<h3><a class="toc-backref" href="#id21">match_seq_regexp</a><a class="headerlink" href="#match-seq-regexp" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">match_seq_regexp</a><a class="headerlink" href="#match-seq-regexp" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -618,7 +615,7 @@ Its use is deprecated.</p>
 <p>If successful, match_seq_regexp highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-span">
-<h3><a class="toc-backref" href="#id22">match_span</a><a class="headerlink" href="#match-span" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">match_span</a><a class="headerlink" href="#match-span" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -634,7 +631,7 @@ Its use is deprecated.</p>
 <p>If successful, match_span highlights from s[i:j with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-span-regexp">
-<h3><a class="toc-backref" href="#id23">match_span_regexp</a><a class="headerlink" href="#match-span-regexp" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">match_span_regexp</a><a class="headerlink" href="#match-span-regexp" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -656,7 +653,7 @@ no_escape, no_line_break and no_word_break conditions are all satisfied.</p></li
 <p>If successful, match_span colors s[i:j], with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-terminate">
-<h3><a class="toc-backref" href="#id24">match_terminate</a><a class="headerlink" href="#match-terminate" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">match_terminate</a><a class="headerlink" href="#match-terminate" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_terminate</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">at_char</span><span class="p">):</span>
 </pre></div>
 </div>
@@ -723,8 +720,8 @@ no_escape, no_line_break and no_word_break conditions are all satisfied.</p></li
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on March 01, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Last updated on April 07, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>

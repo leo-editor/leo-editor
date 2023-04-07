@@ -474,7 +474,7 @@ class LeoApp:
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
-        self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+        self.prolog_namespace_string = 'xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1"'
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
 
