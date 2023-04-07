@@ -463,8 +463,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
         This help discusses only @file nodes.
         For other ways of creating external files, see::
 
-            http://leoeditor.com/tutorial-programming.html or
-            http://leoeditor.com/directives.html
+            https://leo-editor.github.io/leo-editor/tutorial-scripting.html or
+            https://leo-editor.github.io/leo-editor/directives.html
 
         Leo creates external files in an unusual way.
         Please fee free to ask for help::

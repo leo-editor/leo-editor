@@ -41,9 +41,9 @@ try:
     g.app = leoApp.LeoApp()
 except Exception as e:
     print(e)
-    msg = "\n*** Leo could not be started ***"
-    msg += "\nPlease verify you've installed the required dependencies:"
-    msg += "\nhttps://leoeditor.com/installing.html"
+    msg = "\n*** Leo could not be started ***\n"
+    msg += "Please verify you've installed the required dependencies:\n"
+    msg += "https://leo-editor.github.io/leo-editor/installing.html"
     sys.exit(msg)
 #@-<< imports and inits >>
 #@+others

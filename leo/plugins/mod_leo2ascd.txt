@@ -431,7 +431,7 @@ From there:
 Here are some web locations for the items I've referenced above:
 
 Leo::
-    http://leoeditor.com/
+    https://leo-editor.github.io/leo-editor/
 Python::
     http://www.python.org[]
 Docbook::

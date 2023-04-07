@@ -229,12 +229,12 @@ class TestGlobals(LeoUnitTest):
         #         See the hacks in jedit.match_any_url and g.handleUrl.
         table1 = (
             (
-                "http://leoeditor.com/preface.html).",
-                "http://leoeditor.com/preface.html",
+                "https://leo-editor.github.io/leo-editor/preface.html).",
+                "https://leo-editor.github.io/leo-editor/preface.html",
             ),
             (
-                "http://leoeditor.com/leo_toc.html)",
-                "http://leoeditor.com/leo_toc.html",
+                "https://leo-editor.github.io/leo-editor/leo_toc.html)",
+                "https://leo-editor.github.io/leo-editor/leo_toc.html",
             ),
             (
                 "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",

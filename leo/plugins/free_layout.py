@@ -316,7 +316,7 @@ class FreeLayoutController:
             self.get_top_splitter().load_layout(c, layout=self.default_layout)
         if id_.startswith('_fl_help'):
             self.c.putHelpFor(__doc__)
-            # g.handleUrl("http://leoeditor.com/")
+            # g.handleUrl("https://leo-editor.github.io/leo-editor/")
             return True
         if id_ == '_fl_save_layout':
             if self.c.config.getData("free-layout-layout"):

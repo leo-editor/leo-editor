@@ -14,13 +14,14 @@ The ``--gui=curses`` command-line option enables this plugin.
 - This is beta-level code. Be prepared to recover from data loss. Testing
   on files under git control gives you diffs and easy reverts.
 
-- There are many limitations: see http://leoeditor.com/console-gui.html
+- There are many limitations: see
+  https://leo-editor.github.io/leo-editor/console-gui.html
 
 Please report any problem here:
 https://github.com/leo-editor/leo-editor/issues/488
 
 Devs, please read:
-http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
+https://leo-editor.github.io/leo-editor/console-gui.html#developing-the-cursesgui2-plugin
 """
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
