@@ -5860,7 +5860,7 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
     for line in traceback.format_exception(typ, val, tb):
-        print(line)
+        g.es_print_error(line)
 #@+node:ekr.20061015090538: *3* g.es_exception_type
 def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
     # exctype is a Exception class object; value is the error message.
