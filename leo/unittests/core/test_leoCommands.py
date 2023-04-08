@@ -126,20 +126,26 @@ class TestCommands(LeoUnitTest):
     def test_c_expand_path_expression(self):
         import os
         c = self.c
+        
+        try:
+            base = os.environ['LEO_BASE_DIRECTORY']
+        except KeyError:
+            # Default to home.
+            base = os.path.expanduser('~')
 
         # filename is 'base/test'
         table1 = (
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'base/z.py'),
-           ('{{*}}w.py', f"{os.path.expanduser('~/w.py')}"),
+           ('{{*}}w.py', f"{base}/w.py"),
         )
         # filename is 'test'
         table2 = (
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'z.py'),
-           ('{{*}}w.py', f"{os.path.expanduser('~/w.py')}"),
+           ('{{*}}w.py', f"{base}/w.py"),
         )
         for filename, table in (
             ('base/test', table1),
