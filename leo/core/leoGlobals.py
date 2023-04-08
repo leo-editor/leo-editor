@@ -7129,7 +7129,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         path = url[i:]
         path = g.os_path_expanduser(path)
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.os_path_expandExpression(path)
+            # path = c.expand_path_expression(path)
         path = g.os_path_finalize(path)
         url = url[:i] + path
     else:
@@ -7142,7 +7142,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         else:
             path = url
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.os_path_expandExpression(path)
+            # path = c.expand_path_expression(path)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
