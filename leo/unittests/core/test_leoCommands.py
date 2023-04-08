@@ -124,17 +124,27 @@ class TestCommands(LeoUnitTest):
         self.assertEqual(2, p.numberOfChildren())
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
-        c = self.c
         import os
-        sep = os.sep
-        table = (
-            ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+        c = self.c
+        # filename is 'base/test'
+        table1 = (
+           ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
+           ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
+           ('z.py', 'base/z.py'),
         )
-        for s, expected in table:
-            if g.isWindows:
-                expected = expected.replace('\\', '/')
-            got = c.expand_path_expression(s)
-            self.assertEqual(got, expected, msg=repr(s))
+        # filename is 'test'
+        table2 = (
+           ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
+           ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
+           ('z.py', 'z.py'),
+        )
+        for filename, table in (('base/test', table1), ('test', table2)):
+            c.mFileName = filename
+            for s, expected in table:
+                if g.isWindows:
+                    expected = expected.replace('\\', '/')
+                got = c.expand_path_expression(s)
+                self.assertEqual(got, expected, msg=f"{filename}:{s}")
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
 

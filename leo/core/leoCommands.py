@@ -3001,69 +3001,69 @@ class Commands:
             path = None
         return path
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
+    path_regex = re.compile(r'^\{\{([~!]?)([./]*)\}\}')
+
     def expand_path_expression(self, s: str) -> str:
-        """Expand all {{anExpression}} in c's context."""
+        """
+        Expand a leading path expression in c's context.
+
+        The result of the evaluation is a directory, initialized by default to:
+
+            os.path.normpath(os.path.dirname(c.fileName())).
+
+        Path expressions can optionally start with '!' or '~':
+
+        '!' sets the directory to g.app.loadDir.
+        '~' sets the directory to os.path.expanduser('~')
+
+        After these two optional characters, only '/' and '..' are allowed:
+
+        '/' separates '..' sequences and may optionally end the path expression.
+        '..' evaluates to os.path.normpath(os.path.join(directory, '..'))
+
+        This method returns the final directory, replacing backslashes with forward slashes.
+        """
         c = self
         if not s:
             return ''
+        if not c.fileName():
+            return s
         s = g.toUnicode(s)
-        # find and replace repeated path expressions
-        previ, aList = 0, []
-        while previ < len(s):
-            i = s.find('{{', previ)
-            j = s.find('}}', previ)
-            if -1 < i < j:
-                # Add anything from previous index up to '{{'
-                if previ < i:
-                    aList.append(s[previ:i])
-                # Get expression and find substitute
-                exp = s[i + 2 : j].strip()
-                if exp:
-                    try:
-                        s2 = c.replace_path_expression(exp)
-                        aList.append(s2)
-                    except Exception:
-                        g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
-                        g.es_exception()
-                # Prepare to search again after the last '}}'
-                previ = j + 2
-            else:
-                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
-                aList.append(s[previ:])
-                break
-        val = ''.join(aList)
-        if g.isWindows:
-            val = val.replace('\\', '/')
-        return val
-    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
-    replace_errors: List[str] = []
+        m = self.path_regex.match(s)
+        if not m:
+            path = os.path.normpath(os.path.join(os.path.dirname(c.fileName()), s))
+            path = g.os_path_normslashes(path)
+            return path
+        rest = s[len(m.group(0)) :].strip()
+        if rest.startswith(('\\', '/')):
+            rest = rest[1:]
+        if not rest:
+            return s
+        e1 = m.group(1) or ''
 
-    def replace_path_expression(self, expr: Any) -> str:
-        """ local function to replace a single path expression."""
-        c = self
-        d = {
-            'c': c,
-            'g': g,
-            # 'getString': c.config.getString,
-            'p': c.p,
-            'os': os,
-            'sep': os.sep,
-            'sys': sys,
-        }
-        # #1338: Don't report errors when called by g.getUrlFromNode.
-        try:
-            # pylint: disable=eval-used
-            path = eval(expr, d)
-            return g.toUnicode(path, encoding='utf-8')
-        except Exception as e:
-            message = (
-                f"{c.shortFileName()}: {c.p.h}\n"
-                f"expression: {expr!s}\n"
-                f"     error: {e!s}")
-            if message not in self.replace_errors:
-                self.replace_errors.append(message)
-                g.trace(message)
-            return expr
+        # Initialize the directory.
+        if e1 == '~':
+            directory = os.path.expanduser('~')
+        elif e1 == '!':
+            directory = g.app.loadDir
+        else:
+            directory = os.path.normpath(os.path.dirname(c.fileName()))
+
+        # Evaluate remaining components of the path expresssion.
+        e2 = m.group(2) or ''
+        while e2:
+            if e2.startswith('..'):
+                directory = os.path.normpath(os.path.join(directory, '..'))
+                e2 = e2[2:]
+            elif e2.endswith('/'):
+                break
+            elif e2.startswith('/'):
+                e2 = e2[1:]
+
+        # Compute the resulting directory.
+        directory = os.path.normpath(os.path.join(directory, rest))
+        directory = g.os_path_normslashes(directory)
+        return directory
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
     def archivedPositionToPosition(self, s: str) -> Position:
