@@ -3056,7 +3056,6 @@ class Commands:
             except KeyError:
                 # Default to home.
                 directory = os.path.expanduser('~')
-                return s
         else:
             directory = os.path.normpath(os.path.dirname(c.fileName()))
 

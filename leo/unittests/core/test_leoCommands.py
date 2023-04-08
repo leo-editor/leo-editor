@@ -132,14 +132,14 @@ class TestCommands(LeoUnitTest):
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'base/z.py'),
-           ('{{*}}w.py', None),
+           ('{{*}}w.py', f"{os.path.expanduser('~/w.py')}"),
         )
         # filename is 'test'
         table2 = (
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'z.py'),
-           ('{{*}}w.py', None),
+           ('{{*}}w.py', f"{os.path.expanduser('~/w.py')}"),
         )
         for filename, table in (
             ('base/test', table1),
@@ -147,9 +147,7 @@ class TestCommands(LeoUnitTest):
         ):
             c.mFileName = filename
             for s, expected in table:
-                if not expected:
-                    expected = s
-                elif expected and g.isWindows:
+                if g.isWindows:
                     expected = expected.replace('\\', '/')
                 got = c.expand_path_expression(s)
                 self.assertEqual(got, expected, msg=f"{filename}:{s}")
