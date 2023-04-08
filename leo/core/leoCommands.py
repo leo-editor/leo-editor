@@ -3001,7 +3001,7 @@ class Commands:
             path = None
         return path
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
-    path_regex = re.compile(r'^\{\{([~!]?)([./]*)\}\}')
+    path_regex = re.compile(r'^\{\{([~!*]?)([./]*)\}\}')
 
     def expand_path_expression(self, s: str) -> str:
         """
@@ -3011,17 +3011,21 @@ class Commands:
 
             os.path.normpath(os.path.dirname(c.fileName())).
 
-        Path expressions can optionally start with '!' or '~':
+        Path expressions can optionally start with '!' or '~' or '*':
 
         '!' sets the directory to g.app.loadDir.
         '~' sets the directory to os.path.expanduser('~')
+        '*' sets the directory to os.environ['LEO_BASE_DIRECTORY'] or
+            os.path.expanduser('~') if the environment variable does not exist.
 
-        After these two optional characters, only '/' and '..' are allowed:
+        After these three optional characters, only '/' and '..' are allowed:
 
         '/' separates '..' sequences and may optionally end the path expression.
         '..' evaluates to os.path.normpath(os.path.join(directory, '..'))
 
-        This method returns the final directory, replacing backslashes with forward slashes.
+        Returns:
+        - s if there are errors.
+        - Otherwise, the final directory, replacing backslashes with forward slashes.
         """
         c = self
         if not s:
@@ -3046,8 +3050,19 @@ class Commands:
             directory = os.path.expanduser('~')
         elif e1 == '!':
             directory = g.app.loadDir
+        elif e1 == '*':
+            try:
+                directory = os.environ['LEO_BASE_DIRECTORY']
+            except KeyError:
+                # Default to home.
+                directory = os.path.expanduser('~')
+                return s
         else:
             directory = os.path.normpath(os.path.dirname(c.fileName()))
+
+        # Silently do nothing if the directory does not exist.
+        if not os.path.exists(directory):
+            return s
 
         # Evaluate remaining components of the path expresssion.
         e2 = m.group(2) or ''

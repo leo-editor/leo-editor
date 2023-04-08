@@ -126,22 +126,30 @@ class TestCommands(LeoUnitTest):
     def test_c_expand_path_expression(self):
         import os
         c = self.c
+
         # filename is 'base/test'
         table1 = (
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'base/z.py'),
+           ('{{*}}w.py', None),
         )
         # filename is 'test'
         table2 = (
            ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
            ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
            ('z.py', 'z.py'),
+           ('{{*}}w.py', None),
         )
-        for filename, table in (('base/test', table1), ('test', table2)):
+        for filename, table in (
+            ('base/test', table1),
+            ('test', table2),
+        ):
             c.mFileName = filename
             for s, expected in table:
-                if g.isWindows:
+                if not expected:
+                    expected = s
+                elif expected and g.isWindows:
                     expected = expected.replace('\\', '/')
                 got = c.expand_path_expression(s)
                 self.assertEqual(got, expected, msg=f"{filename}:{s}")
