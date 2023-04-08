@@ -277,7 +277,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 return
         else:
             # Prompt for the file to be compared with the present outline.
-            filetypes = [("Leo files", "*.leo"), ("All files", "*"),]
+            filetypes = [("Leo files", "*.leo *.leojs"), ("All files", "*"),]
             fileName = g.app.gui.runOpenFileDialog(c,
                 title="Compare .leo Files", filetypes=filetypes, defaultextension='.leo')
             if not fileName:

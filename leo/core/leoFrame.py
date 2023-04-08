@@ -818,7 +818,7 @@ class LeoFrame:
                 return False  # Don't save and don't veto.
             c.mFileName = g.app.gui.runSaveFileDialog(c,
                 title="Save",
-                filetypes=[("Leo files", "*.leo")],
+                filetypes=[("Leo files", "*.leo *.leojs")],
                 defaultextension=".leo")
             c.bringToFront()
         if c.mFileName:

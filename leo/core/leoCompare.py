@@ -724,7 +724,7 @@ def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
     if not c:
         return
     types = [
-        ("Leo files", "*.leo"),
+        ("Leo files", "*.leo *.leojs"),
         ("All files", "*"),
     ]
     paths = g.app.gui.runOpenFileDialog(c,

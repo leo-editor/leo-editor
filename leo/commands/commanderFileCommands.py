@@ -839,7 +839,7 @@ def readFileIntoNode(self: Self, event: Event = None) -> None:
     c = self
     undoType = 'Read File Into Node'
     c.endEditing()
-    filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
+    filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs"),]
     fileName = g.app.gui.runOpenFileDialog(c,
         title="Read File Into Node",
         filetypes=filetypes,
@@ -865,7 +865,7 @@ def readOutlineOnly(self: Self, event: Event = None) -> None:
     c.endEditing()
     fileName = g.app.gui.runOpenFileDialog(c,
         title="Read Outline Only",
-        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        filetypes=[("Leo files", "*.leo *.leojs"), ("All files", "*")],
         defaultextension=".leo")
     if not fileName:
         return
@@ -900,7 +900,7 @@ def writeFileFromNode(self: Self, event: Event = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
             defaultextension=None)
     if fileName:
         try:
@@ -935,7 +935,7 @@ def writeFileFromSubtree(self: Self, event: Event = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
             defaultextension=None)
     if fileName:
         try:
