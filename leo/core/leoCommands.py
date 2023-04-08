@@ -3071,7 +3071,7 @@ class Commands:
                 directory = os.path.normpath(os.path.join(directory, '..'))
                 e2 = e2[2:]
             elif e2.endswith('/'):
-                break
+                e2 = e2[:-1]
             elif e2.startswith('/'):
                 e2 = e2[1:]
 
