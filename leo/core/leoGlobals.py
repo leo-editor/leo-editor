@@ -6454,41 +6454,15 @@ def os_path_isfile(path: str) -> bool:
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args: Any, **keys: Any) -> str:
     """
-    Join paths, like os.path.join, with enhancements:
-
-    A '!!' arg prepends g.app.loadDir to the list of paths.
-    A '.'  arg prepends c.openDirectory to the list of paths,
-           provided there is a 'c' kwarg.
+    Wrap os.path.join.
     """
-    c = keys.get('c')
+
     uargs = [z for z in args if z]
     if not uargs:
         return ''
     path = os.path.join(*uargs)
     path = g.os_path_normslashes(path)
     return path
-
-    if 0:
-        # Note:  This is exactly the same convention as used by getBaseDirectory.
-        if uargs[0] == '!!':
-            uargs[0] = g.app.loadDir
-        elif uargs[0] == '.':
-            c = keys.get('c')
-            if c and c.openDirectory:
-                uargs[0] = c.openDirectory
-        try:
-            path = os.path.join(*uargs)
-        except TypeError:
-            g.trace(uargs, args, keys, g.callers())
-            raise
-        # May not be needed on some Pythons.
-        if '\x00' in path:
-            g.trace('NULL in', repr(path), g.callers())
-            path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
-        # os.path.normpath does the *reverse* of what we want.
-        if g.isWindows:
-            path = path.replace('\\', '/')
-        return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
