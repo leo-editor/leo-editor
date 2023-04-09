@@ -3010,7 +3010,7 @@ class Commands:
 
         Resolve relative paths to the directory containing this outine.
 
-        Return resulting file or directory.
+        Return the resulting file or directory using forward slashes regardless of platform.
         """
         c = self
         if not s:
