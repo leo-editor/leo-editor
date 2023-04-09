@@ -32670,8 +32670,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3208: Add 'reload-settings' hook.
 - PR #3214: Optionally expand headlines on mouseover.
 - PR #3224: Improve mod_autosave plugin.
-
-And the usual assortment of tweaks and small bug fixes.
+- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
 
 **Links**
 
