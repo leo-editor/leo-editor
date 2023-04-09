@@ -65,7 +65,7 @@ def on_save(tag, keywords):
         if g.match_word(h, 0, "@text") and p.isDirty():
             savetextnode(c, p)
             p.b = ""
-#@+node:tbrown.20080128221824: ** getPath
+#@+node:tbrown.20080128221824: ** getPath (textnode.py)
 def getPath(c, p):
     path = [i.h[6:] for i in p.self_and_parents()
             if i.h[:6] in ('@path ', '@text ')]

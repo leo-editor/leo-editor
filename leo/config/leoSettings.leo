@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -121,6 +121,7 @@
 </v>
 <v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
 </v>
+<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -658,7 +659,6 @@
 <v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
-<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
