@@ -6354,13 +6354,8 @@ def os_path_abspath(path: str) -> str:
     """Convert a path to an absolute path."""
     if not path:
         return ''
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path: str) -> str:
@@ -6385,22 +6380,15 @@ def os_path_dirname(path: str) -> str:
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path: str) -> bool:
     """Return True if path exists."""
-    if not path:
-        return False
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
-    return os.path.exists(path)
+    return os.path.exists(path) if path else False
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path: str) -> str:
     """wrap os.path.expanduser"""
     if not path:
         return ''
-    result = os.path.normpath(os.path.expanduser(path))
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
-    return result
+    path = os.path.normpath(os.path.expanduser(path))
+    path = g.os_path_normslashes(path)
+    return path
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
 def os_path_finalize(path: str) -> str:
     """
@@ -6466,12 +6454,8 @@ def os_path_join(*args: Any, **keys: Any) -> str:
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
-    if not path:
-        return ''
-    path = os.path.normcase(path)
-    if g.isWindows:
-        path = path.replace('\\', '/')
-    return path
+    return  os.path.normcase(path) if path else ''
+
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path: str) -> str:
     """Normalize the path."""

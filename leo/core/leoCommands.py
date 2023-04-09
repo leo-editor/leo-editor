@@ -2527,18 +2527,7 @@ class Commands:
         """
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
-        # Step 1: Compute the starting path.
-        # The correct fallback directory is the absolute path to the base.
-        if c.openDirectory:  # Bug fix: 2008/9/18
-            base = c.openDirectory
-        else:
-            base = c.config.getString('relative-path-base-directory')
-            if base and base == "!":
-                base = g.app.loadDir
-            elif base and base == ".":
-                base = c.openDirectory
-            else:
-                base = None  # Settings error.
+        base = c.openDirectory
         base = c.expand_path_expression(base)  # #1341.
         base = g.os_path_expanduser(base)  # #1889.
         absbase = g.os_path_finalize_join(g.app.loadDir, base)  # #1341.
@@ -2551,11 +2540,11 @@ class Commands:
             if path is not None:  # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
+                # Silently ignore empty @path directives.
                 if path and not warning:
                     path = c.expand_path_expression(path)  # #1341.
                     path = g.os_path_expanduser(path)  # #1889.
                     paths.append(path)
-                # We will silently ignore empty @path directives.
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
