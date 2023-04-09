@@ -2561,7 +2561,7 @@ class Commands:
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
         path = g.os_path_finalize_join(*paths)
-        return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
+        return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: Event) -> None:
