@@ -3001,83 +3001,36 @@ class Commands:
             path = None
         return path
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
-    path_regex = re.compile(r'^\{\{([~!*]?)([./]*)\}\}')
-
     def expand_path_expression(self, s: str) -> str:
         """
-        Expand a leading path expression in c's context.
-
-        The result of the evaluation is a directory, initialized by default to:
-
-            os.path.normpath(os.path.dirname(c.fileName())).
-
-        Path expressions can optionally start with '!' or '~' or '*':
-
-        '!' sets the directory to g.app.loadDir.
-        '~' sets the directory to os.path.expanduser('~')
-        '*' sets the directory to os.environ['LEO_BASE_DIRECTORY'] or
-            os.path.expanduser('~') if the environment variable does not exist.
-
-        After these three optional characters, only '/' and '..' are allowed:
-
-        '/' separates '..' sequences and may optionally end the path expression.
-        '..' evaluates to os.path.normpath(os.path.join(directory, '..'))
-
-        Returns:
-        - s if there are errors.
-        - Otherwise, the final directory, replacing backslashes with forward slashes.
+        Apply Python's *standard* os.path tools on s:
+            
+        - os.path.expanduser: https://docs.python.org/3/library/os.path.html#os.path.expanduser
+        - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expanduser
+        
+        Resolve relative paths to the directory containing this outine:
+            os.path.join(os.path.dirname(c.fileName()), path)
+            
+        Return the result of the evaluation.
+            
         """
         c = self
         if not s:
             return ''
-        if not c.fileName():
-            return s
-        s = g.toUnicode(s)
-        m = self.path_regex.match(s)
-        if not m:
-            path = os.path.normpath(os.path.join(os.path.dirname(c.fileName()), s))
-            path = g.os_path_normslashes(path)
-            return path
-        rest = s[len(m.group(0)) :].strip()
-        if rest.startswith(('\\', '/')):
-            rest = rest[1:]
-        if not rest:
-            return s
-        e1 = m.group(1) or ''
 
-        # Initialize the directory.
-        if e1 == '~':
-            directory = os.path.expanduser('~')
-        elif e1 == '!':
-            directory = g.app.loadDir
-        elif e1 == '*':
-            try:
-                directory = os.environ['LEO_BASE_DIRECTORY']
-            except KeyError:
-                # Default to home.
-                directory = os.path.expanduser('~')
-        else:
-            directory = os.path.normpath(os.path.dirname(c.fileName()))
-
-        # Silently do nothing if the directory does not exist.
-        if not os.path.exists(directory):
-            return s
-
-        # Evaluate remaining components of the path expresssion.
-        e2 = m.group(2) or ''
-        while e2:
-            if e2.startswith('..'):
-                directory = os.path.normpath(os.path.join(directory, '..'))
-                e2 = e2[2:]
-            elif e2.endswith('/'):
-                e2 = e2[:-1]
-            elif e2.startswith('/'):
-                e2 = e2[1:]
-
-        # Compute the resulting directory.
-        directory = os.path.normpath(os.path.join(directory, rest))
-        directory = g.os_path_normslashes(directory)
-        return directory
+        # 1. Convert to platform os.sep so that os.path.isabs and os.path.join will work.
+        norm_s = os.path.normpath(g.toUnicode(s))
+        base_dir = os.path.normpath(os.path.dirname(c.fileName() or ''))
+        
+        # 2. Do all expansions.
+        expansion = os.path.expanduser(os.path.expandvars(norm_s))
+        
+        # 3. Join the results.
+        path = os.path.normpath(os.path.join(base_dir, expansion))
+        
+        # 4. convert backslashes to forward slashes, regardless of platform.
+        path = g.os_path_normslashes(path)
+        return path
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
     def archivedPositionToPosition(self, s: str) -> Position:

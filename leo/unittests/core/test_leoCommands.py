@@ -126,37 +126,25 @@ class TestCommands(LeoUnitTest):
     def test_c_expand_path_expression(self):
         import os
         c = self.c
-        
-        try:
-            base = os.environ['LEO_BASE_DIRECTORY']
-        except KeyError:
-            # Default to home.
-            base = os.path.expanduser('~')
-
-        # filename is 'base/test'
-        table1 = (
-           ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
-           ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
-           ('z.py', 'base/z.py'),
-           ('{{*}}w.py', f"{base}/w.py"),
+        abs_base = '/leo_base'
+        filename = c.mFileName = f"{abs_base}/test.leo"
+        os.environ = {
+            'HOME': '/home/',  # Linux.
+            'USERPROFILE': r'c:\EKR',  # Windows.
+            'LEO_BASE': abs_base,
+        }
+        home = os.path.expanduser('~')
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+        table = (
+            ('~/a.py', f"{home}/a.py"),
+            ('$LEO_BASE/b.py', f"{abs_base}/b.py"),
+            ('c.py', f"{abs_base}/c.py"),
         )
-        # filename is 'test'
-        table2 = (
-           ('{{!}}x.py', f"{g.app.loadDir}/x.py"),
-           ('{{~}}y.py', f"{os.path.expanduser('~/y.py')}"),
-           ('z.py', 'z.py'),
-           ('{{*}}w.py', f"{base}/w.py"),
-        )
-        for filename, table in (
-            ('base/test', table1),
-            ('test', table2),
-        ):
-            c.mFileName = filename
-            for s, expected in table:
-                if g.isWindows:
-                    expected = expected.replace('\\', '/')
-                got = c.expand_path_expression(s)
-                self.assertEqual(got, expected, msg=f"{filename}:{s}")
+        for s, expected in table:
+            if g.isWindows:
+                expected = expected.replace('\\', '/')
+            got = c.expand_path_expression(s)
+            self.assertEqual(got, expected, msg=f"{filename}:{s}")
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
 
