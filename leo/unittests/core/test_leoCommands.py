@@ -140,6 +140,7 @@ class TestCommands(LeoUnitTest):
             # Use forward slashes for the expected result, regardless of platform.
             ('~/a.py', f"{home}/a.py"),
             ('~\\a2.py', f"{home}/a2.py"),
+            ('~/x/../a2.py', f"{home}/a2.py"),
             ('$LEO_BASE/b.py', f"{abs_base}/b.py"),
             ('$LEO_BASE\\b2.py', f"{abs_base}/b2.py"),
             ('c.py', f"{abs_base}/c.py"),
