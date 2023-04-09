@@ -3557,30 +3557,14 @@ def get_files_in_directory(directory: str, kinds: List = None, recursive: bool =
         g.es_exception()
         return []
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
-# Handles the conventions applying to the "relative-path-base- directory" configuration option.
-
 def getBaseDirectory(c: Cmdr) -> str:
-    """Convert '!' or '.' to proper directory references."""
-    if not c:
-        return ''  # No relative base given.
-    base = c.config.getString('relative-path-base-directory')
-    if base and base == "!":
-        base = app.loadDir
-    elif base and base == ".":
-        base = c.openDirectory
-    else:
-        return ''  # Settings error.
-    if not base:
-        return ''
-    if g.os_path_isabs(base):
-        # Set c.chdir_to_relative_path as needed.
-        if not hasattr(c, 'chdir_to_relative_path'):
-            c.chdir_to_relative_path = c.config.getBool('chdir-to-relative-path')
-        # Call os.chdir if requested.
-        if c.chdir_to_relative_path:
-            os.chdir(base)
-        return base  # base need not exist yet.
-    return ''  # No relative base given.
+    """
+    This function is deprectated.
+    
+    Previously it convert '!' or '.' to proper directory references using
+    @string relative-path-base-directory.
+    """
+    return ''
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
 def getEncodingAt(p: Position, s: bytes = None) -> str:
     """

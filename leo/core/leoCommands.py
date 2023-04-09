@@ -2514,7 +2514,7 @@ class Commands:
             "lang-dict":    lang_dict,  # Leo 6.4: New.
             "lineending":   d.get('lineending'),
             "pagewidth":    d.get('pagewidth'),
-            "path":         d.get('path'), # Redundant: or g.getBaseDirectory(c),
+            "path":         d.get('path'),
             "tabwidth":     d.get('tabwidth'),
             "wrap":         d.get('wrap'),
         }
