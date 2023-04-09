@@ -135,14 +135,16 @@ class TestCommands(LeoUnitTest):
         }
         home = os.path.expanduser('~')
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+        home = home.replace('\\', '/')  # To match what c.expand_path_expression returns.
         table = (
+            # Use forward slashes for the expected result, regardless of platform.
             ('~/a.py', f"{home}/a.py"),
+            ('~\\a2.py', f"{home}/a2.py"),
             ('$LEO_BASE/b.py', f"{abs_base}/b.py"),
+            ('$LEO_BASE\\b2.py', f"{abs_base}/b2.py"),
             ('c.py', f"{abs_base}/c.py"),
         )
         for s, expected in table:
-            if g.isWindows:
-                expected = expected.replace('\\', '/')
             got = c.expand_path_expression(s)
             self.assertEqual(got, expected, msg=f"{filename}:{s}")
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
