@@ -3560,7 +3560,7 @@ def get_files_in_directory(directory: str, kinds: List = None, recursive: bool =
 def getBaseDirectory(c: Cmdr) -> str:
     """
     This function is deprectated.
-    
+
     Previously it convert '!' or '.' to proper directory references using
     @string relative-path-base-directory.
     """
@@ -6464,26 +6464,31 @@ def os_path_join(*args: Any, **keys: Any) -> str:
     uargs = [z for z in args if z]
     if not uargs:
         return ''
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-    try:
-        path = os.path.join(*uargs)
-    except TypeError:
-        g.trace(uargs, args, keys, g.callers())
-        raise
-    # May not be needed on some Pythons.
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = os.path.join(*uargs)
+    path = g.os_path_normslashes(path)
     return path
+
+    if 0:
+        # Note:  This is exactly the same convention as used by getBaseDirectory.
+        if uargs[0] == '!!':
+            uargs[0] = g.app.loadDir
+        elif uargs[0] == '.':
+            c = keys.get('c')
+            if c and c.openDirectory:
+                uargs[0] = c.openDirectory
+        try:
+            path = os.path.join(*uargs)
+        except TypeError:
+            g.trace(uargs, args, keys, g.callers())
+            raise
+        # May not be needed on some Pythons.
+        if '\x00' in path:
+            g.trace('NULL in', repr(path), g.callers())
+            path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
+        # os.path.normpath does the *reverse* of what we want.
+        if g.isWindows:
+            path = path.replace('\\', '/')
+        return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
