@@ -3003,16 +3003,14 @@ class Commands:
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
     def expand_path_expression(self, s: str) -> str:
         """
-        Apply Python's *standard* os.path tools on s:
-            
+        Apply Python's *standard* os.path tools to s:
+
         - os.path.expanduser: https://docs.python.org/3/library/os.path.html#os.path.expanduser
-        - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expanduser
-        
-        Resolve relative paths to the directory containing this outine:
-            os.path.join(os.path.dirname(c.fileName()), path)
-            
-        Return the result of the evaluation.
-            
+        - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expandvars
+
+        Resolve relative paths to the directory containing this outine.
+
+        Return resulting file or directory.
         """
         c = self
         if not s:
@@ -3021,13 +3019,13 @@ class Commands:
         # 1. Convert to platform os.sep so that os.path.isabs and os.path.join will work.
         norm_s = os.path.normpath(g.toUnicode(s))
         base_dir = os.path.normpath(os.path.dirname(c.fileName() or ''))
-        
+
         # 2. Do all expansions.
         expansion = os.path.expanduser(os.path.expandvars(norm_s))
-        
+
         # 3. Join the results.
         path = os.path.normpath(os.path.join(base_dir, expansion))
-        
+
         # 4. convert backslashes to forward slashes, regardless of platform.
         path = g.os_path_normslashes(path)
         return path
