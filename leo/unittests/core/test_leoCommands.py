@@ -124,17 +124,30 @@ class TestCommands(LeoUnitTest):
         self.assertEqual(2, p.numberOfChildren())
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
-        c = self.c
         import os
-        sep = os.sep
+        c = self.c
+        abs_base = '/leo_base'
+        c.mFileName = f"{abs_base}/test.leo"
+        os.environ = {
+            'HOME': '/home/',  # Linux.
+            'USERPROFILE': r'c:\EKR',  # Windows.
+            'LEO_BASE': abs_base,
+        }
+        home = os.path.expanduser('~')
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+        home = home.replace('\\', '/')  # To match what c.expand_path_expression returns.
         table = (
-            ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+            # Use forward slashes for the expected result, regardless of platform.
+            ('~/a.py', f"{home}/a.py"),
+            ('~\\a2.py', f"{home}/a2.py"),
+            ('~/x/../a2.py', f"{home}/a2.py"),
+            ('$LEO_BASE/b.py', f"{abs_base}/b.py"),
+            ('$LEO_BASE\\b2.py', f"{abs_base}/b2.py"),
+            ('c.py', f"{abs_base}/c.py"),
         )
         for s, expected in table:
-            if g.isWindows:
-                expected = expected.replace('\\', '/')
             got = c.expand_path_expression(s)
-            self.assertEqual(got, expected, msg=repr(s))
+            self.assertEqual(got, expected, msg=s)
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
 

@@ -5860,7 +5860,7 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
     for line in traceback.format_exception(typ, val, tb):
-        print(line)
+        g.es_print_error(line)
 #@+node:ekr.20061015090538: *3* g.es_exception_type
 def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
     # exctype is a Exception class object; value is the error message.
@@ -7129,7 +7129,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         path = url[i:]
         path = g.os_path_expanduser(path)
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.os_path_expandExpression(path)
+            # path = c.expand_path_expression(path)
         path = g.os_path_finalize(path)
         url = url[:i] + path
     else:
@@ -7142,7 +7142,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         else:
             path = url
         # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.os_path_expandExpression(path)
+            # path = c.expand_path_expression(path)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
