@@ -205,9 +205,10 @@ class TestGlobals(LeoUnitTest):
         for i, s in enumerate(table):
             unl = g.computeFileUrl(s, c)
             result = g.findUNL([unl], c)
-            print(i, s, unl, repr(result))
+            if 0:
+                print(i, s, unl, repr(result))
         
-            # self.assertEqual(actual, expected)
+            ### self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
