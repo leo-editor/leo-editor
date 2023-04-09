@@ -6454,7 +6454,11 @@ def os_path_join(*args: Any, **keys: Any) -> str:
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
-    return  os.path.normcase(path) if path else ''
+    if not path:
+        return ''
+    path = os.path.normcase(path)
+    path = g.os_path_normslashes(path)
+    return path
 
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path: str) -> str:
