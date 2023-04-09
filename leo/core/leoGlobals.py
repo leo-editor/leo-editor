@@ -3557,30 +3557,14 @@ def get_files_in_directory(directory: str, kinds: List = None, recursive: bool =
         g.es_exception()
         return []
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
-# Handles the conventions applying to the "relative-path-base- directory" configuration option.
-
 def getBaseDirectory(c: Cmdr) -> str:
-    """Convert '!' or '.' to proper directory references."""
-    if not c:
-        return ''  # No relative base given.
-    base = c.config.getString('relative-path-base-directory')
-    if base and base == "!":
-        base = app.loadDir
-    elif base and base == ".":
-        base = c.openDirectory
-    else:
-        return ''  # Settings error.
-    if not base:
-        return ''
-    if g.os_path_isabs(base):
-        # Set c.chdir_to_relative_path as needed.
-        if not hasattr(c, 'chdir_to_relative_path'):
-            c.chdir_to_relative_path = c.config.getBool('chdir-to-relative-path')
-        # Call os.chdir if requested.
-        if c.chdir_to_relative_path:
-            os.chdir(base)
-        return base  # base need not exist yet.
-    return ''  # No relative base given.
+    """
+    This function is deprectated.
+
+    Previously it convert '!' or '.' to proper directory references using
+    @string relative-path-base-directory.
+    """
+    return ''
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
 def getEncodingAt(p: Position, s: bytes = None) -> str:
     """
@@ -5860,7 +5844,7 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
     for line in traceback.format_exception(typ, val, tb):
-        print(line)
+        g.es_print_error(line)
 #@+node:ekr.20061015090538: *3* g.es_exception_type
 def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
     # exctype is a Exception class object; value is the error message.
@@ -6470,35 +6454,14 @@ def os_path_isfile(path: str) -> bool:
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
 def os_path_join(*args: Any, **keys: Any) -> str:
     """
-    Join paths, like os.path.join, with enhancements:
-
-    A '!!' arg prepends g.app.loadDir to the list of paths.
-    A '.'  arg prepends c.openDirectory to the list of paths,
-           provided there is a 'c' kwarg.
+    Wrap os.path.join.
     """
-    c = keys.get('c')
+
     uargs = [z for z in args if z]
     if not uargs:
         return ''
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-    try:
-        path = os.path.join(*uargs)
-    except TypeError:
-        g.trace(uargs, args, keys, g.callers())
-        raise
-    # May not be needed on some Pythons.
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = os.path.join(*uargs)
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:

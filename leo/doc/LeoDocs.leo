@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -1243,7 +1243,6 @@
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
 <v t="ekr.20160410044518.1"><vh>\@nosent &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
-<v t="ekr.20160410043905.1"><vh>Path expressions</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
@@ -1830,6 +1829,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20230110152214.1"><vh>Leo 6.x release notes</vh>
 <v t="ekr.20220704113115.1"><vh>Leo 6.6.3 release notes</vh></v>
@@ -2520,7 +2520,9 @@
 </v>
 </v>
 <v t="ekr.20230111160833.1"></v>
-<v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
+<v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
+<v t="ekr.20230110152131.1"></v>
+<v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20120,12 +20122,6 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``. Also, ``sep`` is defined as os.sep.
-File names are relative to the directory containing the .leo file, but that can be overridden, depending on the form of the file name. For example::
-
-    @file {{c.config.getString('my-dir')}}{{sep}}myFile.py
-
-</t>
 <t tx="ekr.20160410044518.1">.. index::
     pair: @nosent; Reference
 
@@ -32652,6 +32648,51 @@ find-bad-links</t>
     ])
     
 </t>
+<t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.3**
+
+- PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+            Leo supports Python's standard os.path expansions.
+            Leo no longer supports {{python-expression}} in headlines.
+
+**Commands**
+
+- PR #3266: Add write-zip-archive command.
+- PR #3227: Add commands to add/remove numbers from headlines.
+
+**Other changes**
+
+- PR #3208: Add 'reload-settings' hook.
+- PR #3214: Optionally expand headlines on mouseover.
+- PR #3224: Improve mod_autosave plugin.
+- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
+- [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
+</t>
+<t tx="ekr.20230409053106.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

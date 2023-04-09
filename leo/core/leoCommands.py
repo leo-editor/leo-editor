@@ -2514,7 +2514,7 @@ class Commands:
             "lang-dict":    lang_dict,  # Leo 6.4: New.
             "lineending":   d.get('lineending'),
             "pagewidth":    d.get('pagewidth'),
-            "path":         d.get('path'), # Redundant: or g.getBaseDirectory(c),
+            "path":         d.get('path'),
             "tabwidth":     d.get('tabwidth'),
             "wrap":         d.get('wrap'),
         }
@@ -2561,7 +2561,7 @@ class Commands:
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
         path = g.os_path_finalize_join(*paths)
-        return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
+        return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: Event) -> None:
@@ -3002,68 +3002,33 @@ class Commands:
         return path
     #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
     def expand_path_expression(self, s: str) -> str:
-        """Expand all {{anExpression}} in c's context."""
+        """
+        Apply Python's *standard* os.path tools to s:
+
+        - os.path.expanduser: https://docs.python.org/3/library/os.path.html#os.path.expanduser
+        - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expandvars
+
+        Resolve relative paths to the directory containing this outine.
+
+        Return the resulting file or directory using forward slashes regardless of platform.
+        """
         c = self
         if not s:
             return ''
-        s = g.toUnicode(s)
-        # find and replace repeated path expressions
-        previ, aList = 0, []
-        while previ < len(s):
-            i = s.find('{{', previ)
-            j = s.find('}}', previ)
-            if -1 < i < j:
-                # Add anything from previous index up to '{{'
-                if previ < i:
-                    aList.append(s[previ:i])
-                # Get expression and find substitute
-                exp = s[i + 2 : j].strip()
-                if exp:
-                    try:
-                        s2 = c.replace_path_expression(exp)
-                        aList.append(s2)
-                    except Exception:
-                        g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
-                        g.es_exception()
-                # Prepare to search again after the last '}}'
-                previ = j + 2
-            else:
-                # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
-                aList.append(s[previ:])
-                break
-        val = ''.join(aList)
-        if g.isWindows:
-            val = val.replace('\\', '/')
-        return val
-    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
-    replace_errors: List[str] = []
 
-    def replace_path_expression(self, expr: Any) -> str:
-        """ local function to replace a single path expression."""
-        c = self
-        d = {
-            'c': c,
-            'g': g,
-            # 'getString': c.config.getString,
-            'p': c.p,
-            'os': os,
-            'sep': os.sep,
-            'sys': sys,
-        }
-        # #1338: Don't report errors when called by g.getUrlFromNode.
-        try:
-            # pylint: disable=eval-used
-            path = eval(expr, d)
-            return g.toUnicode(path, encoding='utf-8')
-        except Exception as e:
-            message = (
-                f"{c.shortFileName()}: {c.p.h}\n"
-                f"expression: {expr!s}\n"
-                f"     error: {e!s}")
-            if message not in self.replace_errors:
-                self.replace_errors.append(message)
-                g.trace(message)
-            return expr
+        # 1. Convert to platform os.sep so that os.path.isabs and os.path.join will work.
+        norm_s = os.path.normpath(g.toUnicode(s))
+        base_dir = os.path.normpath(os.path.dirname(c.fileName() or ''))
+
+        # 2. Do all expansions.
+        expansion = os.path.expanduser(os.path.expandvars(norm_s))
+
+        # 3. Join the results.
+        path = os.path.normpath(os.path.join(base_dir, expansion))
+
+        # 4. convert backslashes to forward slashes, regardless of platform.
+        path = g.os_path_normslashes(path)
+        return path
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
     def archivedPositionToPosition(self, s: str) -> Position:
