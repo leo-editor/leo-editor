@@ -127,7 +127,7 @@ class TestCommands(LeoUnitTest):
         import os
         c = self.c
         abs_base = '/leo_base'
-        filename = c.mFileName = f"{abs_base}/test.leo"
+        c.mFileName = f"{abs_base}/test.leo"
         os.environ = {
             'HOME': '/home/',  # Linux.
             'USERPROFILE': r'c:\EKR',  # Windows.
@@ -146,7 +146,7 @@ class TestCommands(LeoUnitTest):
         )
         for s, expected in table:
             got = c.expand_path_expression(s)
-            self.assertEqual(got, expected, msg=f"{filename}:{s}")
+            self.assertEqual(got, expected, msg=s)
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
 
