@@ -3512,7 +3512,7 @@ def ensure_extension(name: str, ext: str) -> str:
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name  # don't add to an empty name.
-    if old_ext in ('.db', '.leo'):
+    if old_ext in ('.db', '.leo', '.leojs'):
         return name
     if old_ext and old_ext == ext:
         return name
