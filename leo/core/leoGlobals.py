@@ -6354,9 +6354,9 @@ def finalize(path: str) -> str:
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     return path
-    
+
 os_path_finalize = finalize  # compatibility.
-    
+
 
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
