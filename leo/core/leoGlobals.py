@@ -3512,7 +3512,7 @@ def ensure_extension(name: str, ext: str) -> str:
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name  # don't add to an empty name.
-    if old_ext in ('.db', '.leo'):
+    if old_ext in ('.db', '.leo', '.leojs'):
         return name
     if old_ext and old_ext == ext:
         return name
@@ -6354,13 +6354,8 @@ def os_path_abspath(path: str) -> str:
     """Convert a path to an absolute path."""
     if not path:
         return ''
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.abspath(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path: str) -> str:
@@ -6368,9 +6363,7 @@ def os_path_basename(path: str) -> str:
     if not path:
         return ''
     path = os.path.basename(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
 def os_path_dirname(path: str) -> str:
@@ -6378,51 +6371,35 @@ def os_path_dirname(path: str) -> str:
     if not path:
         return ''
     path = os.path.dirname(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path: str) -> bool:
     """Return True if path exists."""
-    if not path:
-        return False
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
-    return os.path.exists(path)
+    return os.path.exists(path) if path else False
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path: str) -> str:
     """wrap os.path.expanduser"""
     if not path:
         return ''
-    result = os.path.normpath(os.path.expanduser(path))
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
-    return result
+    path = os.path.normpath(os.path.expanduser(path))
+    path = g.os_path_normslashes(path)
+    return path
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
 def os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
-    if '\x00' in path:
-        g.trace('NULL in', repr(path), g.callers())
-        path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     path = os.path.expanduser(path)  # #1383.
-    path = os.path.abspath(path)  # mostly the same as os.path.normpath.
+    path = os.path.abspath(path)
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
 def os_path_finalize_join(*args: Any, **keys: Any) -> str:
-    """
-    Join and finalize.
-
-    **keys may contain a 'c' kwarg, used by g.os_path_join.
-    """
+    """Join and finalize."""
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
     return path
@@ -6456,7 +6433,6 @@ def os_path_join(*args: Any, **keys: Any) -> str:
     """
     Wrap os.path.join.
     """
-
     uargs = [z for z in args if z]
     if not uargs:
         return ''
@@ -6469,9 +6445,9 @@ def os_path_normcase(path: str) -> str:
     if not path:
         return ''
     path = os.path.normcase(path)
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
+
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path: str) -> str:
     """Normalize the path."""
@@ -6480,14 +6456,12 @@ def os_path_normpath(path: str) -> str:
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     return path
-#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (bad hack)
+#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path: str) -> str:
     """
-    A Windows-only hack: convert backslashes to slashes.
+    Convert backslashes to slashes (Windows only).
 
     os.path.normpath does the *reverse* of what we want.
-
-    To do: make this function a do-nothing.
     """
     if g.isWindows and path:
         path = path.replace('\\', '/')
@@ -6501,9 +6475,7 @@ def os_path_realpath(path: str) -> str:
     if not path:
         return ''
     path = os.path.realpath(path)
-    # os.path.normpath does the *reverse* of what we want.
-    if g.isWindows:
-        path = path.replace('\\', '/')
+    path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path: str) -> Tuple[str, str]:

@@ -519,8 +519,8 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
 @g.commander_command('save-file-to')
 def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool = False) -> None:
     """
-    Save a Leo outline to a file, prompting for a new file name unless the
-    fileName kwarg is given. Leave the file name of the Leo outline unchanged.
+    Save a copy of the Leo outline to a file, prompting for a new file name.
+    Leave the file name of the Leo outline unchanged.
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
@@ -580,12 +580,13 @@ def revert(self: Self, event: Event = None) -> None:
 @g.commander_command('save-file-as-leojs')
 def save_as_leojs(self: Self, event: Event = None) -> None:
     """
-    Save a Leo outline as a JSON (.leojs) file with a new file name.
+    Save a copy of the Leo outline as a JSON (.leojs) file with a new file name.
+    Leave the file name of the Leo outline unchanged.
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Save As JSON (.leojs)",
-        filetypes=[("Leo files", "*.leojs")],
+        filetypes=[("Leo JSON files", "*.leojs")],
         defaultextension='.leojs')
     if not fileName:
         return
@@ -599,7 +600,8 @@ def save_as_leojs(self: Self, event: Event = None) -> None:
 @g.commander_command('save-file-as-zipped')
 def save_as_zipped(self: Self, event: Event = None) -> None:
     """
-    Save a Leo outline as a zipped (.db) file with a new file name.
+    Save a copy of the Leo outline as a zipped (.db) file with a new file name.
+    Leave the file name of the Leo outline unchanged.
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
@@ -618,8 +620,8 @@ def save_as_zipped(self: Self, event: Event = None) -> None:
 @g.commander_command('save-file-as-xml')
 def save_as_xml(self: Self, event: Event = None) -> None:
     """
-    Save a Leo outline as a .leo file with a new file name.
-
+    Save a copy of the Leo outline as an XML .leo file with a new file name.
+    Leave the file name of the Leo outline unchanged.
     Useful for converting a .leo.db file to a .leo file.
     """
     c = self
@@ -637,7 +639,10 @@ def save_as_xml(self: Self, event: Event = None) -> None:
 #@+node:tom.20220310092720.1: *3* c_file.save-node-as-xml
 @g.commander_command('save-node-as-xml')
 def save_node_as_xml_outline(self: Self, event: Event = None) -> None:
-    """Save a node with its subtree as a Leo outline file."""
+    """
+    Save a node with its subtree as an XML .leo outline file.
+    Leave the outline and the file name of the Leo outline unchanged.
+    """
     c = event.c
     xml = c.fileCommands.outline_to_clipboard_string()
 
@@ -839,7 +844,7 @@ def readFileIntoNode(self: Self, event: Event = None) -> None:
     c = self
     undoType = 'Read File Into Node'
     c.endEditing()
-    filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
+    filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs"),]
     fileName = g.app.gui.runOpenFileDialog(c,
         title="Read File Into Node",
         filetypes=filetypes,
@@ -860,12 +865,12 @@ def readFileIntoNode(self: Self, event: Event = None) -> None:
 #@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
 @g.commander_command('read-outline-only')
 def readOutlineOnly(self: Self, event: Event = None) -> None:
-    """Open a Leo outline from a .leo file, but do not read any derived files."""
+    """Open a Leo outline, but do not read any derived files."""
     c = self
     c.endEditing()
     fileName = g.app.gui.runOpenFileDialog(c,
         title="Read Outline Only",
-        filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+        filetypes=[("Leo files", "*.leo *.leojs *.db"), ("All files", "*")],
         defaultextension=".leo")
     if not fileName:
         return
@@ -900,7 +905,7 @@ def writeFileFromNode(self: Self, event: Event = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
             defaultextension=None)
     if fileName:
         try:
@@ -935,7 +940,7 @@ def writeFileFromSubtree(self: Self, event: Event = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
             defaultextension=None)
     if fileName:
         try:
