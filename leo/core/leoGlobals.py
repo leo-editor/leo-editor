@@ -6353,6 +6353,8 @@ def finalize(path: str) -> str:
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     return path
+
+### os_path_finalize = finalize  ### Experimental.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
     """
@@ -6368,6 +6370,8 @@ def finalize_join(*args: Any) -> str:
     path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
+
+### os_path_finalize_join = finalize_join  ### Experimental.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
