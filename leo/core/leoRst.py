@@ -412,7 +412,7 @@ class RstCommands:
         """
         c = self.c
         theDir, junk = g.os_path_split(fn)
-        theDir = g.os_path_finalize(theDir)  # 1341
+        theDir = g.finalize(theDir)
         if g.os_path_exists(theDir):
             return True
         if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
@@ -742,8 +742,7 @@ class RstCommands:
         """Issue a report to the log pane."""
         if self.silent:
             return
-        name = g.os_path_finalize(name)  # 1341
-        g.pr(f"wrote: {name}")
+        g.pr(f"wrote: {g.finalize(name)}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment(self, s: str) -> str:
         return f".. {s}"

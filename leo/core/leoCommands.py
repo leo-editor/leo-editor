@@ -471,7 +471,7 @@ class Commands:
     def hash(self) -> str:  # Leo 6.6.2: Always return a string.
         c = self
         if c.mFileName:
-            return g.os_path_finalize(c.mFileName).lower()  # #1341.
+            return g.finalize(c.mFileName).lower()
         return f"{id(self)!s}"
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
@@ -1064,7 +1064,7 @@ class Commands:
                     g.es('Trying an alternative')
 
             path = c.fullPath(root)
-            path = g.os_path_finalize(path)
+            ### path = g.finalize(path)  ### redundant.
             language = getExeKind(root, ext)
             processor = getProcessor(language, path, ext)
             runfile(path, processor, terminal)

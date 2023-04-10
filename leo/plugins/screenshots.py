@@ -758,7 +758,7 @@ class ScreenShotController:
         @image directives are relative to g.app.loadDir.
         """
         sc = self
-        base = sc.fix(g.os_path_finalize(g.app.loadDir))
+        base = sc.fix(g.finalize(g.app.loadDir))
         fn = sc.fix(sc.output_fn)
         fn = os.path.relpath(fn, base)
         fn = sc.fix(fn)
@@ -869,7 +869,7 @@ class ScreenShotController:
         # c = sc.c
         template_fn = sc.get_option('template_fn')
         if template_fn:
-            fn = sc.fix(g.os_path_finalize(template_fn))
+            fn = sc.fix(g.finalize(template_fn))
         else:
             fn = sc.fix(g.os_path_finalize_join(g.app.loadDir,
                 '..', 'doc', 'inkscape-template.svg'))

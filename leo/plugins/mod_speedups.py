@@ -27,7 +27,7 @@ g.os_path_exists = os.path.exists
 
 
 
-#@+node:ville.20090804155017.12333: ** os_path_finalize caching
+#@+node:ville.20090804155017.12333: ** os_path_finalize caching (mod_speedups.py)
 os_path_finalize_orig = g.os_path_finalize
 os_path_finalize_join_orig = g.os_path_finalize_join
 

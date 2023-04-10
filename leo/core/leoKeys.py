@@ -1201,7 +1201,7 @@ class FileNameChooser:
             self.prompt = prompt
             self.tabName = tabName
             join = g.os_path_finalize_join
-            finalize = g.os_path_finalize
+            finalize = g.finalize
             normslashes = g.os_path_normslashes
             # #467: Add setting for preferred directory.
             directory = c.config.getString('initial-chooser-directory')
@@ -1260,7 +1260,7 @@ class FileNameChooser:
     def show_tab_list(self, tabList: List[str]) -> None:
         """Show the tab list in the log tab."""
         self.log.clearTab(self.tabName)
-        s = g.os_path_finalize(os.curdir) + os.sep
+        s = g.finalize(os.curdir) + os.sep
         es = []
         for path in tabList:
             theDir, fileName = g.os_path_split(path)

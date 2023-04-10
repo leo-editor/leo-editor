@@ -77,7 +77,7 @@ class ShadowController:
         c = self.c
         filename = c.fileName()
         if filename:
-            return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
+            return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None

@@ -358,8 +358,7 @@ class MarkupCommands:
         """Process i_path and o_path with sphinx."""
         trace = True
         # cd to the command directory, or i_path's directory.
-        command_dir = g.os_path_finalize(
-            self.sphinx_command_dir or os.path.dirname(i_path))
+        command_dir = g.finalize(self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
             if trace:
                 g.trace(f"\nos.chdir: {command_dir!r}")
@@ -376,14 +375,13 @@ class MarkupCommands:
             g.execute_shell_commands(self.sphinx_default_command)
             return
         # Compute the input directory.
-        input_dir = g.os_path_finalize(
+        input_dir = g.finalize(
             self.sphinx_input_dir or os.path.dirname(i_path))
         if not os.path.exists(input_dir):
             g.error(f"input directory not found: {input_dir!r}")
             return
         # Compute the output directory.
-        output_dir = g.os_path_finalize(
-            self.sphinx_output_dir or os.path.dirname(o_path))
+        output_dir = g.finalize(self.sphinx_output_dir or os.path.dirname(o_path))
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return

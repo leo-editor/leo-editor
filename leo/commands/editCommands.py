@@ -1296,13 +1296,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(p.v)
         if not aList:
             return
-        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")  # #1341.
-        absRelPath = g.os_path_finalize_join(basePath, relPath)  # #1341
-        name = g.os_path_finalize(name)  # #1341
+        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
+        absRelPath = g.os_path_finalize_join(basePath, relPath)
+        name = g.finalize(name)
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = g.os_path_finalize(name2)  # #1341
+            name2 = g.finalize(name2)
             name2rel = d.get('relPath')
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
                 newList.append(d)

@@ -1562,7 +1562,7 @@ class LoadManager:
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
     def completeFileName(self, fileName: str) -> str:
         fileName = g.toUnicode(fileName)
-        fileName = g.os_path_finalize(fileName)
+        fileName = g.finalize(fileName)
         # 2011/10/12: don't add .leo to *any* file.
         return fileName
     #@+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
@@ -1659,7 +1659,7 @@ class LoadManager:
         if home:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
-            home = g.os_path_finalize(home)
+            home = g.finalize(home)
             if (not g.os_path_exists(home) or not g.os_path_isdir(home)):
                 home = None
         return home
@@ -1699,7 +1699,7 @@ class LoadManager:
                     if len(path) > 2 and path[1] == ':':
                         # Convert the drive name to upper case.
                         path = path[0].upper() + path[1:]
-                path = g.os_path_finalize(path)
+                path = g.finalize(path)
                 loadDir = g.os_path_dirname(path)
             else:
                 loadDir = None
@@ -1714,7 +1714,7 @@ class LoadManager:
                     loadDir += "/leo/plugins"
                 else:
                     g.pr("Exception getting load directory")
-            loadDir = g.os_path_finalize(loadDir)
+            loadDir = g.finalize(loadDir)
             return loadDir
         except Exception:
             print("Exception getting load directory")
@@ -1833,8 +1833,8 @@ class LoadManager:
         if g.unitTesting or g.app.batchMode:
             return None
         fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
-        fn = g.os_path_finalize(fn)
-        directory = g.os_path_finalize(os.path.dirname(fn))
+        fn = g.finalize(fn)
+        directory = g.finalize(os.path.dirname(fn))
         # #1415.
         return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
@@ -2559,7 +2559,7 @@ class LoadManager:
     def getDefaultFile(self) -> Optional[str]:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
-        fn = g.os_path_finalize(fn)
+        fn = g.finalize(fn)
         if not fn:
             return None
         if g.os_path_exists(fn):
@@ -2966,7 +2966,7 @@ class LoadManager:
         if not fn:
             return lm.openEmptyLeoFile(gui, old_c)
         # Return the commander if the file is an already open outline.
-        fn = g.os_path_finalize(fn)  # #2489.
+        fn = g.finalize(fn)
         c = lm.findOpenFile(fn)
         if c:
             return c
@@ -3248,7 +3248,7 @@ class LoadManager:
             theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
         if v:
             if not c.openDirectory:
-                theDir = g.os_path_finalize(g.os_path_dirname(fn))  # 1341
+                theDir = g.finalize(g.os_path_dirname(fn))
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
             # #970: Never close Leo here.
@@ -3461,7 +3461,7 @@ class RecentFilesManager:
         localConfigPath: str = g.os_path_dirname(localConfigFile)
         for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath):
             if path:
-                path = g.os_path_realpath(g.os_path_finalize(path))
+                path = g.os_path_realpath(g.finalize(path))
             if path and path not in seen:
                 ok = rf.readRecentFilesFile(path)
                 if ok:
@@ -3543,7 +3543,7 @@ class RecentFilesManager:
             return
 
         def munge(name: str) -> str:
-            return g.os_path_finalize(name or '').lower()
+            return g.finalize(name or '').lower()
 
         def munge2(name: str) -> str:
             return g.os_path_finalize_join(g.app.loadDir, name or '')

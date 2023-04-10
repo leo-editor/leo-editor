@@ -874,7 +874,7 @@ class ParserBaseClass:
         if gs:
             assert isinstance(gs, g.GeneralSetting), gs
             path = gs.path
-            if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
+            if g.finalize(c.mFileName) != g.finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
         d[key] = g.GeneralSetting(kind,
@@ -2028,7 +2028,7 @@ class LocalConfigManager:
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
-            if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):  # #1341.
+            if warn and g.finalize(c.mFileName) != g.finalize(path):
                 g.trace("over-riding setting:", name, "from", path)
         d[key] = g.GeneralSetting(
             kind,
