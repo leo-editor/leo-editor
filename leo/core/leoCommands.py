@@ -1064,7 +1064,6 @@ class Commands:
                     g.es('Trying an alternative')
 
             path = c.fullPath(root)
-            ### path = g.finalize(path)  ### redundant.
             language = getExeKind(root, ext)
             processor = getProcessor(language, path, ext)
             runfile(path, processor, terminal)

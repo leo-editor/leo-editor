@@ -4535,16 +4535,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         fn = fn.strip()
         # Similar to code in g.computeFileUrl
         if fn.startswith('~'):
-            #### Expand '~' and handle Leo expressions.
-            ### fn = g.os_path_expanduser(fn)
-            ### fn = c.expand_path_expression(fn)
-
             fn = fn[1:]
             fn = g.finalize(fn)
         else:
-            ### Handle Leo expressions.
-            ### fn = c.expand_path_expression(fn)
-            
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)

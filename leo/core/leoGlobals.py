@@ -6353,8 +6353,6 @@ def finalize(path: str) -> str:
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     return path
-
-### os_path_finalize = finalize  ### Experimental.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
     """
@@ -7095,7 +7093,6 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
     if i > -1:
         # Expand '~'.
         path = url[i:]
-        ### path = g.os_path_expanduser(path)  ## Redundant.
         path = g.finalize(path)
         url = url[:i] + path
     else:
@@ -7107,8 +7104,6 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
             path = url[len(tag) :].lstrip()
         else:
             path = url
-        # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.expand_path_expression(path)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)

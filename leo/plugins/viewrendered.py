@@ -1690,14 +1690,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         fn = fn.strip()
         # Similar to code in g.computeFileUrl
         if fn.startswith('~'):
-            ### Expand '~' and handle Leo expressions.
             fn = fn[1:]
-            ### fn = g.os_path_expanduser(fn)
-            ### fn = c.expand_path_expression(fn)
             fn = g.os_path_finalize(fn)
         else:
-            ### Handle Leo expressions.
-            ### fn = c.expand_path_expression(fn)
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)
@@ -1705,7 +1700,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             else:
                 fn = g.finalize(fn)
         ok = g.os_path_exists(fn)
-        # if not ok: g.trace('not found', fn)
         return ok, fn
     #@+node:ekr.20110321005148.14536: *5* vr.get_url
     def get_url(self, s: str, tag: str) -> str:
