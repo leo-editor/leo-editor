@@ -6341,6 +6341,33 @@ def windows() -> Optional[List]:
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20230410134119.1: *3* g.finalize
+def finalize(path: str) -> str:
+    """
+    Finalize the path. Do not call os.path.realpath.
+    """
+    if not path:
+        return ''
+    path = os.path.expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    path = g.os_path_normslashes(path)
+    return path
+#@+node:ekr.20230410133838.1: *3* g.finalize_join
+def finalize_join(*args: Any) -> str:
+    """
+    Join and finalize. Do not call os.path.realpath.
+    """
+    uargs = [z for z in args if z]
+    if not uargs:
+        return ''
+    path = os.path.join(*uargs)
+    path = os.path.expanduser(path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+    path = g.os_path_normslashes(path)
+    # calling os.path.realpath here would cause problems in some situations.
+    return path
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
