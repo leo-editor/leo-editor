@@ -6354,7 +6354,7 @@ def finalize(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 
-### os_path_finalize = finalize  ### Experimental.
+os_path_finalize = finalize  ### Experimental.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
     """
@@ -6371,7 +6371,7 @@ def finalize_join(*args: Any) -> str:
     # calling os.path.realpath here would cause problems in some situations.
     return path
 
-### os_path_finalize_join = finalize_join  ### Experimental.
+os_path_finalize_join = finalize_join  ### Experimental.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
@@ -6420,7 +6420,7 @@ def os_path_expanduser(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
-def os_path_finalize(path: str) -> str:
+def xxx_os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
@@ -6431,8 +6431,8 @@ def os_path_finalize(path: str) -> str:
     path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
-#@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
-def os_path_finalize_join(*args: Any, **keys: Any) -> str:
+#@+node:ekr.20140917154740.19483: *3* g.xxx_os_path_finalize_join
+def xxx_os_path_finalize_join(*args: Any, **keys: Any) -> str:
     """Join and finalize."""
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
