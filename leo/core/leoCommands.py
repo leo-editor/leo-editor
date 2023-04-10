@@ -2266,11 +2266,8 @@ class Commands:
         for p in p.self_and_parents(copy=False):
             aList = g.get_directives_dict_list(p)
             path = c.scanAtPathDirectives(aList)
-            path = c.expand_path_expression(path)
             fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
             if fn:
-                ### fn = c.expand_path_expression(fn)
-                ### fn = os.path.expanduser(fn)  # 1900.
                 return g.finalize_join(path, fn)
         return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
@@ -2527,10 +2524,9 @@ class Commands:
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         base = c.openDirectory
-        ### base = c.expand_path_expression(base)
-        ### base = g.os_path_expanduser(base)  # #1889.
         absbase = g.finalize_join(g.app.loadDir, base)
-        # Step 2: look for @path directives.
+
+        # Look for @path directives.
         paths = []
         for d in aList:
             # Look for @path directives.
@@ -2539,15 +2535,14 @@ class Commands:
             if path is not None:  # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                # Silently ignore empty @path directives.
-                if path and not warning:
-                    path = c.expand_path_expression(path)  # #1341.
-                    ### path = g.os_path_expanduser(path)  # #1889.
+                if path and not warning:  # Silently ignore empty @path directives.
                     paths.append(path)
+
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
-        # Step 3: Compute the full, effective, absolute path.
+
+        # Compute the full, effective, absolute path.
         path = g.finalize_join(*paths)
         return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
