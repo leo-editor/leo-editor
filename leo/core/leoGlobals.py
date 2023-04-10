@@ -4589,7 +4589,7 @@ def backupGitIssues(c: Cmdr, base_url: str = None) -> None:
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command: str, directory: str) -> List[str]:
     """Execute the given git command in the given directory."""
-    git_dir = g.os_path_finalize_join(directory, '.git')
+    git_dir = g.finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('not found:', git_dir, g.callers())
         return []
@@ -4906,16 +4906,16 @@ def gitInfo(path: str = None) -> Tuple[str, str]:
         g.trace('can not open:', path)
         return branch, commit
     # Try to get a better commit number.
-    git_dir = g.os_path_finalize_join(path, '..')
+    git_dir = g.finalize_join(path, '..')
     try:
-        path = g.os_path_finalize_join(git_dir, pointer)
+        path = g.finalize_join(git_dir, pointer)
         with open(path) as f:
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
     except IOError:
         try:
-            path = g.os_path_finalize_join(git_dir, 'packed-refs')
+            path = g.finalize_join(git_dir, 'packed-refs')
             with open(path) as f:  # type:ignore
                 for line in f:
                     if line.strip().endswith(' ' + pointer):
@@ -6349,6 +6349,7 @@ def finalize(path: str) -> str:
     if not path:
         return ''
     path = os.path.expanduser(path)
+    path = os.path.expandvars(path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
@@ -6361,8 +6362,9 @@ def finalize_join(*args: Any) -> str:
     uargs = [z for z in args if z]
     if not uargs:
         return ''
-    path = os.path.join(*uargs)
-    path = os.path.expanduser(path)
+    # Expand everything before joining.
+    uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
+    path = os.path.join(*uargs2)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
@@ -6417,20 +6419,24 @@ def os_path_expanduser(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
-def xxx_os_path_finalize(path: str) -> str:
+def os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
     """
-    path = os.path.expanduser(path)  # #1383.
+    path = os.path.expanduser(path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     # calling os.path.realpath here would cause problems in some situations.
     return path
-#@+node:ekr.20140917154740.19483: *3* g.xxx_os_path_finalize_join
-def xxx_os_path_finalize_join(*args: Any, **keys: Any) -> str:
-    """Join and finalize."""
+#@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
+def os_path_finalize_join(*args: Any, **keys: Any) -> str:
+    """
+    Join and finalize.
+    
+    This function is deprecated. Use g.finalize_join instead.
+    """
     path = g.os_path_join(*args, **keys)
     path = g.os_path_finalize(path)
     return path
@@ -7049,7 +7055,7 @@ def run_coverage_tests(module: str = '', filename: str = '') -> None:
     """
     Run the coverage tests given by the module and filename strings.
     """
-    unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+    unittests_dir = g.finalize_join(g.app.loadDir, '..', 'unittests')
     assert os.path.exists(unittests_dir)
     os.chdir(unittests_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
@@ -7107,7 +7113,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
-            path = g.os_path_finalize_join(c.openDirectory, base, path)
+            path = g.finalize_join(c.openDirectory, base, path)
         else:
             path = g.finalize(path)
         url = f"{tag}{path}"
@@ -7288,19 +7294,19 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return c
     if c:
         base = g.os_path_dirname(c.fileName())
-        c_path = g.os_path_finalize_join(base, path)
+        c_path = g.finalize_join(base, path)
     else:
         c_path = None
     # Look for the file in various places.
     table = (
         c_path,
-        g.os_path_finalize_join(g.app.loadDir, '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
+        g.finalize_join(g.app.loadDir, '..', path),
+        g.finalize_join(g.app.loadDir, '..', '..', path),
+        g.finalize_join(g.app.loadDir, '..', 'core', path),
+        g.finalize_join(g.app.loadDir, '..', 'config', path),
+        g.finalize_join(g.app.loadDir, '..', 'dist', path),
+        g.finalize_join(g.app.loadDir, '..', 'doc', path),
+        g.finalize_join(g.app.loadDir, '..', 'test', path),
         g.app.loadDir,
         g.app.homeDir,
     )

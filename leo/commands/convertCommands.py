@@ -1322,7 +1322,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return
                 if g.os_path_exists(self.output_directory):
                     base_fn = g.os_path_basename(fn)
-                    out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
+                    out_fn = g.finalize_join(self.output_directory, base_fn)
                 else:
                     g.es_print('not found', self.output_directory)
                     return
@@ -1416,7 +1416,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return
                 if g.os_path_exists(self.output_directory):
                     base_fn = g.os_path_basename(fn)
-                    out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
+                    out_fn = g.finalize_join(self.output_directory, base_fn)
                 else:
                     g.es_print('not found', self.output_directory)
                     return

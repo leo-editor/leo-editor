@@ -1468,8 +1468,7 @@ class LeoApp:
             app.log_listener = None
         # Start a new listener.
         g.es_print('Starting log_listener.py')
-        path = g.os_path_finalize_join(app.loadDir,
-            '..', 'external', 'log_listener.py')
+        path = g.finalize_join(app.loadDir, '..', 'external', 'log_listener.py')
         app.log_listener = subprocess.Popen(
             [sys.executable, path],
             shell=False,
@@ -1569,7 +1568,7 @@ class LoadManager:
     def computeLeoSettingsPath(self) -> Optional[str]:
         """Return the full path to leoSettings.leo."""
         # lm = self
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         settings_fn = 'leoSettings.leo'
         table = (
             # First, leoSettings.leo in the home directories.
@@ -1592,7 +1591,7 @@ class LoadManager:
         The "footnote": Get the local directory from lm.files[0]
         """
         lm = self
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         settings_fn = 'myLeoSettings.leo'
         # This seems pointless: we need a machine *directory*.
         # For now, however, we'll keep the existing code as is.
@@ -1666,7 +1665,7 @@ class LoadManager:
     #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
     def computeHomeLeoDir(self) -> str:
         # lm = self
-        homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
+        homeLeoDir = g.finalize_join(g.app.homeDir, '.leo')
         if g.os_path_exists(homeLeoDir):
             return homeLeoDir
         ok = g.makeAllNonExistentDirectories(homeLeoDir)
@@ -1740,7 +1739,7 @@ class LoadManager:
         """
         Return a list of *existing* directories that might contain theme .leo files.
         """
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         home = g.app.homeDir
         leo = join(g.app.loadDir, '..')
         table = [
@@ -2339,7 +2338,7 @@ class LoadManager:
         if not fn:
             return None  # #1415
         # Open CheatSheet.leo.
-        fn2 = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+        fn2 = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
         if not g.os_path_exists(fn2):
             return None
         c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
@@ -2407,9 +2406,9 @@ class LoadManager:
         # Allow plugins to be defined in ~/.leo/plugins.
         for pattern in (
             # ~/.leo/plugins.
-            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),
+            g.finalize_join(g.app.homeDir, '.leo', 'plugins'),
             # leo/plugins/importers.
-            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),
+            g.finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),
         ):
             filenames = g.glob_glob(pattern)
             for filename in filenames:
@@ -2467,8 +2466,8 @@ class LoadManager:
 
         # Allow plugins to be defined in ~/.leo/plugins.
         for pattern in (
-            g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
-            g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'writers', '*.py'),  # leo/plugins/writers
+            g.finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
+            g.finalize_join(g.app.loadDir, '..', 'plugins', 'writers', '*.py'),  # leo/plugins/writers
         ):
             for filename in g.glob_glob(pattern):
                 sfn = g.shortFileName(filename)
@@ -2770,7 +2769,7 @@ class LoadManager:
         script = args.script
         if script:
             # #1090: use cwd, not g.app.loadDir, to find scripts.
-            fn = g.os_path_finalize_join(os.getcwd(), script)
+            fn = g.finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
                 print(f"script not found: {fn}")
@@ -3546,7 +3545,7 @@ class RecentFilesManager:
             return g.finalize(name or '').lower()
 
         def munge2(name: str) -> str:
-            return g.os_path_finalize_join(g.app.loadDir, name or '')
+            return g.finalize_join(g.app.loadDir, name or '')
 
         # Update the recent files list in all windows.
 
@@ -3615,7 +3614,7 @@ class RecentFilesManager:
         else:
             # Attempt to create .leoRecentFiles.txt in the user's home directory.
             if g.app.homeLeoDir:
-                fileName = g.os_path_finalize_join(g.app.homeLeoDir, tag)
+                fileName = g.finalize_join(g.app.homeLeoDir, tag)
                 if not g.os_path_exists(fileName):
                     g.red(f"creating: {fileName}")
                 rf.writeRecentFilesFileHelper(fileName)

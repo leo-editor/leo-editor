@@ -259,7 +259,7 @@ class MarkupCommands:
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
                 n_path = c.getNodePath(c.p)  # node path
-                i_path = g.os_path_finalize_join(n_path, i_path)
+                i_path = g.finalize_join(n_path, i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
@@ -329,7 +329,7 @@ class MarkupCommands:
                 break
         # #1373.
         base_dir = os.path.dirname(c.fileName())
-        return g.os_path_finalize_join(base_dir, i_path + '.html')
+        return g.finalize_join(base_dir, i_path + '.html')
     #@+node:ekr.20191007043110.1: *4* markup.run_asciidoctor
     def run_asciidoctor(self, i_path: str, o_path: str) -> None:
         """

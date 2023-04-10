@@ -422,7 +422,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.setSelectionRange(
                         w.getInsertPoint() - len(start_text), w.getInsertPoint())
 
-        c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
+        c.k.functionTail = g.finalize_join(self.path_for_p(c, c.p), start_text or '')
         c.k.getFileName(event, callback=callback)
     #@+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
     @cmd('insert-headline-time')
@@ -1296,8 +1296,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(p.v)
         if not aList:
             return
-        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = g.os_path_finalize_join(basePath, relPath)
+        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
+        absRelPath = g.finalize_join(basePath, relPath)
         name = g.finalize(name)
         newList = []
         for d in aList:
@@ -1338,7 +1338,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertIcon(self, event: Event = None) -> None:
         """Prompt for an icon, and insert it into the node's icon list."""
         c, p = self.c, self.c.p
-        iconDir = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
+        iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
         os.chdir(iconDir)
         paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',

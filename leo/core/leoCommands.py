@@ -1114,7 +1114,7 @@ class Commands:
             'else:\n'
             '    g.es(f"failed:{failed} tests")\n')
 
-        fname = g.os_path_finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
+        fname = g.finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
         with open(fname, 'wt', encoding='utf8') as out:
             out.write(script)
         tree = ast.parse(script, filename=fname)
@@ -2266,12 +2266,12 @@ class Commands:
         for p in p.self_and_parents(copy=False):
             aList = g.get_directives_dict_list(p)
             path = c.scanAtPathDirectives(aList)
+            path = c.expand_path_expression(path)
             fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
             if fn:
-                # Fix #102: expand path expressions.
-                fn = c.expand_path_expression(fn)  # #1341.
-                fn = os.path.expanduser(fn)  # 1900.
-                return g.os_path_finalize_join(path, fn)
+                ### fn = c.expand_path_expression(fn)
+                ### fn = os.path.expanduser(fn)  # 1900.
+                return g.finalize_join(path, fn)
         return ''
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
@@ -2527,9 +2527,9 @@ class Commands:
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         base = c.openDirectory
-        base = c.expand_path_expression(base)  # #1341.
-        base = g.os_path_expanduser(base)  # #1889.
-        absbase = g.os_path_finalize_join(g.app.loadDir, base)  # #1341.
+        ### base = c.expand_path_expression(base)
+        ### base = g.os_path_expanduser(base)  # #1889.
+        absbase = g.finalize_join(g.app.loadDir, base)
         # Step 2: look for @path directives.
         paths = []
         for d in aList:
@@ -2542,13 +2542,13 @@ class Commands:
                 # Silently ignore empty @path directives.
                 if path and not warning:
                     path = c.expand_path_expression(path)  # #1341.
-                    path = g.os_path_expanduser(path)  # #1889.
+                    ### path = g.os_path_expanduser(path)  # #1889.
                     paths.append(path)
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        path = g.os_path_finalize_join(*paths)
+        path = g.finalize_join(*paths)
         return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
@@ -2973,10 +2973,10 @@ class Commands:
                 # make the first element absolute
                 parts[0] = driveSpec + os.sep + parts[0]
             allParts = [path] + parts
-            path = g.os_path_finalize_join(*allParts)  # #1431
+            path = g.finalize_join(*allParts)
         else:
-            path = g.os_path_finalize_join(g.app.homeLeoDir, 'scriptFile.py')  # #1431
-        #
+            path = g.finalize_join(g.app.homeLeoDir, 'scriptFile.py')
+
         # Write the file.
         try:
             with open(path, encoding='utf-8', mode='w') as f:
@@ -3054,7 +3054,7 @@ class Commands:
             stamp = time.strftime("%Y%m%d-%H%M%S")
             branch = prefix + '-' if prefix else ''
             fn = f"{branch}{base}-{stamp}.leo"
-            path = g.os_path_finalize_join(theDir, fn)
+            path = g.finalize_join(theDir, fn)
         else:
             path = fn
         if path:
@@ -3078,7 +3078,7 @@ class Commands:
         """
         c = self
         old_cwd = os.getcwd()
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         if not base_dir:
             if env_key:
                 try:

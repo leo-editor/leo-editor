@@ -46,7 +46,7 @@ def _get_action_list():
     import os
     server = leoserver.LeoServer()
     # file_name = "xyzzy.leo"
-    file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+    file_name = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
     assert os.path.exists(file_name), repr(file_name)
     log = False
     exclude_names = [

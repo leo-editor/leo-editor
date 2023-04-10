@@ -393,13 +393,13 @@ class RstCommands:
         c = self.c
         openDirectory = c.frame.openDirectory
         if self.default_path:
-            path = g.os_path_finalize_join(self.path, self.default_path, fn)
+            path = g.finalize_join(self.path, self.default_path, fn)
         elif self.path:
-            path = g.os_path_finalize_join(self.path, fn)
+            path = g.finalize_join(self.path, fn)
         elif openDirectory:
-            path = g.os_path_finalize_join(self.path, openDirectory, fn)
+            path = g.finalize_join(self.path, openDirectory, fn)
         else:
-            path = g.os_path_finalize_join(fn)
+            path = g.finalize_join(fn)
         return path
     #@+node:ekr.20100813041139.5914: *5* rst.createDirectoryForFile
     def createDirectoryForFile(self, fn: str) -> bool:
@@ -449,7 +449,7 @@ class RstCommands:
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding}
         #

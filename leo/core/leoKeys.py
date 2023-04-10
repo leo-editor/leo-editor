@@ -1200,7 +1200,7 @@ class FileNameChooser:
             self.filterExt = filterExt or ['.pyc', '.bin',]
             self.prompt = prompt
             self.tabName = tabName
-            join = g.os_path_finalize_join
+            join = g.finalize_join
             finalize = g.finalize
             normslashes = g.os_path_normslashes
             # #467: Add setting for preferred directory.

@@ -206,7 +206,7 @@ class BaseTest(unittest.TestCase):
     def make_file_data(self, filename):
         """Return (contents, tokens, tree) from the given file."""
         directory = os.path.dirname(__file__)
-        filename = g.os_path_finalize_join(directory, '..', '..', 'core', filename)
+        filename = g.finalize_join(directory, '..', '..', 'core', filename)
         assert os.path.exists(filename), repr(filename)
         contents = read_file(filename)
         contents, tokens, tree = self.make_data(contents, filename)

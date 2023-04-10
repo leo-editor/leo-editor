@@ -1041,8 +1041,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr_input.adoc')
-        o_path = g.os_path_finalize_join(home, 'vr_output.html')
+        i_path = g.finalize_join(home, 'vr_input.adoc')
+        o_path = g.finalize_join(home, 'vr_output.html')
         # Write the input file.
         with open(i_path, 'w') as f:
             f.write(s)
@@ -1363,8 +1363,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr_input.pandoc')
-        o_path = g.os_path_finalize_join(home, 'vr_output.html')
+        i_path = g.finalize_join(home, 'vr_input.pandoc')
+        o_path = g.finalize_join(home, 'vr_output.html')
         # Write the input file.
         with open(i_path, 'w') as f:
             f.write(s)
@@ -1385,7 +1385,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
 
         if pyplot.get_backend() != 'module://leo.plugins.pyplot_backend':
-            backend = g.os_path_finalize_join(
+            backend = g.finalize_join(
                 g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
             if g.os_path_exists(backend):
                 try:
@@ -1536,7 +1536,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         template_data = {}
         for child in p.children():
             if child.h == '@jinja template':
-                template_path = g.os_path_finalize_join(c.getNodePath(p), untangle(c, child).strip())
+                template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
             elif child.h == '@jinja inputs':
                 for template_var_node in child.children():
                     # pylint: disable=line-too-long
@@ -1696,7 +1696,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)
-                fn = g.os_path_finalize_join(c.openDirectory, base, fn)
+                fn = g.finalize_join(c.openDirectory, base, fn)
             else:
                 fn = g.finalize(fn)
         ok = g.os_path_exists(fn)

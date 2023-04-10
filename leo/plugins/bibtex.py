@@ -165,7 +165,7 @@ def onIconDoubleClick(tag, keywords):
     h = p.h.strip()
     if g.match_word(h, 0, "@bibtex"):
         base = g.os_path_dirname(c.fileName() or '')
-        fn = g.os_path_finalize_join(base, h[8:])
+        fn = g.finalize_join(base, h[8:])
         if p.hasChildren():
             writeTreeAsBibTex(c, fn, p)
         else:

@@ -1789,7 +1789,7 @@ def export_rst_html(event):
     # Write to temp file
     c = vr3.c
     path = c.getNodePath(c.rootPosition())
-    pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
+    pathname = g.finalize_join(path, VR3_TEMP_FILE)
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
@@ -2042,7 +2042,7 @@ def vr3_help_for_plot_2d(event):
             output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
 
     path = c.getNodePath(c.rootPosition())
-    pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
+    pathname = g.finalize_join(path, VR3_TEMP_FILE)
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
@@ -2633,10 +2633,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             if is_abs:
                 # This method changes '\' to '/' in the path if needed.
-                self.rst_stylesheet = g.os_path_finalize_join(pth)
+                self.rst_stylesheet = g.finalize_join(pth)
             else:
                 self.rst_stylesheet = g.os_path_join(leodir, VR3_DIR, self.rst_stylesheet)
-                self.rst_stylesheet = g.os_path_finalize_join(self.rst_stylesheet)
+                self.rst_stylesheet = g.finalize_join(self.rst_stylesheet)
 
             if not os.path.exists(self.rst_stylesheet):
                 use_default = True
@@ -3347,8 +3347,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
-        i_path = g.os_path_finalize_join(path, 'vr3_adoc.adoc')
-        o_path = g.os_path_finalize_join(path, 'vr3_adoc.html')
+        i_path = g.finalize_join(path, 'vr3_adoc.adoc')
+        o_path = g.finalize_join(path, 'vr3_adoc.html')
 
         # Write the input file.
         with open(i_path, 'w', encoding='utf-8') as f:
@@ -3798,8 +3798,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr3_input.pandoc')
-        o_path = g.os_path_finalize_join(home, 'vr3_output.html')
+        i_path = g.finalize_join(home, 'vr3_input.pandoc')
+        o_path = g.finalize_join(home, 'vr3_output.html')
         # Write the input file.
         with open(i_path, 'w', encoding = ENCODING) as f:
             f.write(s)
@@ -3819,7 +3819,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             c = self.c
             if not self.pyplot_imported:
                 self.pyplot_imported = True
-                backend = g.os_path_finalize_join(
+                backend = g.finalize_join(
                     g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
                 if g.os_path_exists(backend):
                     if matplotlib:
@@ -4541,7 +4541,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)
-                fn = g.os_path_finalize_join(c.openDirectory, base, fn)
+                fn = g.finalize_join(c.openDirectory, base, fn)
             else:
                 fn = g.finalize(fn)
 

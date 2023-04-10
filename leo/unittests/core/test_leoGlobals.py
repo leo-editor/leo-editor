@@ -654,7 +654,7 @@ class TestGlobals(LeoUnitTest):
     def test_g_warnOnReadOnlyFile(self):
         c = self.c
         fc = c.fileCommands
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
+        path = g.finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
         if os.path.exists(path):  # pragma: no cover
             os.chmod(path, stat.S_IREAD)
             fc.warnOnReadOnlyFiles(path)

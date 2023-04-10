@@ -152,9 +152,7 @@ def safe(s):
 #@+node:bob.20080110210953: *3* abspath
 def abspath(*args):
     """Join the arguments and convert to an absolute file path."""
-    # return g.os_path_abspath(g.os_path_join(*args))
-
-    return g.os_path_finalize_join(*args)
+    return g.finalize_join(*args)
 #@+node:bob.20080107154936.3: *3* onCreate
 def onCreate(tag, keys):
 
@@ -598,11 +596,11 @@ class Leo_to_HTML:
         Setting browser_command to a bad command will slow down browser launch.
 
         """
-        tempdir = g.os_path_finalize_join(tempfile.gettempdir(), 'leo_show')
+        tempdir = g.finalize_join(tempfile.gettempdir(), 'leo_show')
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
         filename = g.sanitize_filename(self.myFileName)
-        filepath = g.os_path_finalize_join(tempdir, filename + '.html')
+        filepath = g.finalize_join(tempdir, filename + '.html')
         self.write(filepath, self.xhtml, basedir='', path='')
         url = "file://%s" % filepath
         msg = ''

@@ -25,7 +25,7 @@ class TestBridge(LeoUnitTest):
         self.assertTrue(g)
         unittest_dir = os.path.abspath(os.path.dirname(__file__))
         self.assertTrue(os.path.exists(unittest_dir))
-        test_dot_leo = g.os_path_finalize_join(unittest_dir, '..', '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(unittest_dir, '..', '..', 'test', 'test.leo')
         self.assertTrue(os.path.exists(test_dot_leo), msg=test_dot_leo)
         c = controller.openLeoFile(test_dot_leo)
         self.assertTrue(c)

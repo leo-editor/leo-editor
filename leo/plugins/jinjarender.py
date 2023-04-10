@@ -63,7 +63,7 @@ def jinja_act_on_node(c, p, event):
         raise leoPlugins.TryNext
     tail = h[7:].strip()
     pth = c.getNodePath(p)
-    fullpath = g.os_path_finalize_join(pth, tail)
+    fullpath = g.finalize_join(pth, tail)
     g.es("Rendering " + fullpath)
     body = untangle(c, p)
     jinja_render(body, fullpath, c.vs)
