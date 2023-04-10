@@ -6379,10 +6379,13 @@ def os_path_exists(path: str) -> bool:
     return os.path.exists(path) if path else False
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path: str) -> str:
-    """wrap os.path.expanduser"""
+    """
+    wrap os.path.expanduser.
+    """
     if not path:
         return ''
-    path = os.path.normpath(os.path.expanduser(path))
+    path = os.path.expanduser(path)
+    path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
