@@ -2997,26 +2997,13 @@ class Commands:
         - os.path.expanduser: https://docs.python.org/3/library/os.path.html#os.path.expanduser
         - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expandvars
 
-        Resolve relative paths to the directory containing this outine.
-
-        Return the resulting file or directory using forward slashes regardless of platform.
+        Do *not* call os.path.abspath, os.path.normpath, or g.os_path_normslashes.
         """
-        c = self
         if not s:
             return ''
-
-        # 1. Convert to platform os.sep so that os.path.isabs and os.path.join will work.
-        norm_s = os.path.normpath(g.toUnicode(s))
-        base_dir = os.path.normpath(os.path.dirname(c.fileName() or ''))
-
-        # 2. Do all expansions.
-        expansion = os.path.expanduser(os.path.expandvars(norm_s))
-
-        # 3. Join the results.
-        path = os.path.normpath(os.path.join(base_dir, expansion))
-
-        # 4. convert backslashes to forward slashes, regardless of platform.
-        path = g.os_path_normslashes(path)
+        path = g.toUnicode(s)
+        path = os.path.expanduser(path)
+        path = os.path.expandvars(path)
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
