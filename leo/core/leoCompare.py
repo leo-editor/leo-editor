@@ -719,12 +719,12 @@ def diffMarkedNodes(event: Event) -> None:
         g.es_print('Please mark at least 2 nodes')
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
-    """Prompt for a list of .leo files to open."""
+    """Prompt for a list of Leo files to open."""
     c = event and event.get('c')
     if not c:
         return
     types = [
-        ("Leo files", "*.leo"),
+        ("Leo files", "*.leo *.leojs *.db"),
         ("All files", "*"),
     ]
     paths = g.app.gui.runOpenFileDialog(c,
