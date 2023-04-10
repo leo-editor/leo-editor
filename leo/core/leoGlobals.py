@@ -6368,7 +6368,6 @@ def finalize_join(*args: Any) -> str:
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     path = g.os_path_normslashes(path)
-    # calling os.path.realpath here would cause problems in some situations.
     return path
 
 os_path_finalize_join = finalize_join  ### Experimental.
