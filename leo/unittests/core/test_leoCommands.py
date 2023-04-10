@@ -135,19 +135,18 @@ class TestCommands(LeoUnitTest):
         }
         home = os.path.expanduser('~')
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
-        home = home.replace('\\', '/')  # To match what c.expand_path_expression returns.
-        table = (
-            # Use forward slashes for the expected result, regardless of platform.
-            ('~/a.py', f"{home}/a.py"),
-            ('~\\a2.py', f"{home}/a2.py"),
-            ('~/x/../a2.py', f"{home}/a2.py"),
-            ('$LEO_BASE/b.py', f"{abs_base}/b.py"),
-            ('$LEO_BASE\\b2.py', f"{abs_base}/b2.py"),
-            ('c.py', f"{abs_base}/c.py"),
-        )
-        for s, expected in table:
-            got = c.expand_path_expression(s)
-            self.assertEqual(got, expected, msg=s)
+
+        # c.expand_path_expressions *only* calls os.path.expanduser and os.path.expandvars.   
+        for sep in ('\\', '/'):
+            table = (
+                (f"~{sep}a.py", f"{home}{sep}a.py"),
+                (f"~{sep}x{sep}..{sep}b.py", f"{home}{sep}x{sep}..{sep}b.py"),
+                (f"$LEO_BASE{sep}b.py", f"{abs_base}{sep}b.py"),
+                ('c.py', 'c.py'),
+            )
+            for s, expected in table:
+                got = c.expand_path_expression(s)
+                self.assertEqual(got, expected, msg=s)
     #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
     def test_find_b_h(self):
 
