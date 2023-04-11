@@ -6366,17 +6366,30 @@ def finalize_join(*args: Any) -> str:
     uargs = [z for z in args if z]
     if not uargs:
         return ''
-    # Expand everything before joining.
-    uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
-    path = os.path.join(*uargs2)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
+    if 0:  # Legacy
+        # 'c:/Repos/leo-editor/leo/core/d.py' != '/leo_base/d.py'
+        if 0:  # Exact legacy.
+            path = os.path.join(*uargs)
+        else:  # Legacy with expansion.
+            path = os.path.join(*uargs)
+            path = os.path.expanduser(path)
+            path = os.path.expandvars(path)  ### Added
+            ### path = os.path.abspath(path)
+            ### path = os.path.normpath(path)
+      
+    else:
+        #  'c:/Repos/leo-editor/leo/core/d.py' != '/leo_base/d.py'
+        # Expand everything before joining.
+        uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
+        path = os.path.join(*uargs2)
+        path = os.path.abspath(path)
+        ### path = os.path.normpath(path)
+        os.path.normpath(os.path.join(g.app.loadDir, path))
+
     path = g.os_path_normslashes(path)
     return path
 
 os_path_finalize_join = finalize_join
-
-
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
@@ -6449,7 +6462,7 @@ def os_path_isdir(path: str) -> bool:
 def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
-#@+node:ekr.20031218072017.2154: *3* g.os_path_join
+#@+node:ekr.20031218072017.2154: *3* g.os_path_join (unchanged)
 def os_path_join(*args: Any, **keys: Any) -> str:
     """
     Wrap os.path.join.

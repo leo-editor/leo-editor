@@ -14,15 +14,6 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
     #@+others
-    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
-    def test_getLastTracebackFileAndLineNumber(self):
-        fn = ''
-        try:
-            assert False
-        except AssertionError:
-            fn, n = g.getLastTracebackFileAndLineNumber()
-        self.assertEqual(fn.lower(), __file__.lower())
-
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
         # for condition in ('<','<=','>','>='):
@@ -141,6 +132,37 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
+    #@+node:ekr.20230411143244.1: *3* TestGlobals.test_g_finalize_join
+    def test_g_finalize_join(self):
+        import os
+        c = self.c
+        normslashes = g.os_path_normslashes
+        abs_base = '/leo_base'
+        c.mFileName = f"{abs_base}/test.leo"
+        os.environ = {
+            'HOME': '/home',  # Linux.
+            'USERPROFILE': normslashes(r'c:\EKR'),  # Windows.
+            'LEO_BASE': abs_base,
+        }
+        home = os.path.expanduser('~')
+        home = normslashes(home)  ###
+        leo_base = normslashes(os.path.normpath(os.path.join(g.app.loadDir)))
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+
+        seps = ('\\', '/') if g.isWindows else ('/',)
+        for sep in seps:
+            table = (
+                ((f"~{sep}a.py",), f"{home}/a.py"),
+                ((f"~{sep}x{sep}..{sep}b.py",), f"{home}/b.py"),
+                ((f"$LEO_BASE{sep}c.py",), f"{abs_base}/c.py"),
+                ### (('d.py',), f"{abs_base}/d.py"),
+                (('e.py',), f"{leo_base}/e.py"),
+            )
+            for args, expected in table:
+                got = g.finalize_join(*args)
+                if g.isWindows:
+                    expected, got = expected.lower(), got.lower()
+                self.assertEqual(got, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
@@ -222,6 +244,29 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         val = g.guessExternalEditor(c)
         assert val, 'no val'  # This can be different on different platforms.
+    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
+    def test_g_handleScriptException(self):
+
+        c = self.c
+        table = (
+            'test_leoGlobals.py", line',
+            'in test_g_handleScriptException',
+            'print(1/0)',
+            'ZeroDivisionError: division by zero'
+        )
+        with self.assertRaises(ZeroDivisionError):
+            try:
+                print(1/0)
+            except ZeroDivisionError:
+                old_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                g.handleScriptException(c, c.p)
+                report = sys.stdout.getvalue()
+                for s in table:
+                    assert s in report, repr(s)
+                sys.stdout = old_stdout
+                # print(report)
+                raise
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
@@ -265,29 +310,6 @@ class TestGlobals(LeoUnitTest):
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
-    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
-    def test_g_handleScriptException(self):
-
-        c = self.c
-        table = (
-            'test_leoGlobals.py", line',
-            'in test_g_handleScriptException',
-            'print(1/0)',
-            'ZeroDivisionError: division by zero'
-        )
-        with self.assertRaises(ZeroDivisionError):
-            try:
-                print(1/0)
-            except ZeroDivisionError:
-                old_stdout = sys.stdout
-                sys.stdout = io.StringIO()
-                g.handleScriptException(c, c.p)
-                report = sys.stdout.getvalue()
-                for s in table:
-                    assert s in report, repr(s)
-                sys.stdout = old_stdout
-                # print(report)
-                raise
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
@@ -494,6 +516,14 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(s, '\r\n')  # pragma: no cover
         else:
             self.assertEqual(s, '\n')  # pragma: no cover
+    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
+    def test_g_scanAtPagewidthDirectives_40(self):
+        c = self.c
+        p = c.p
+        p.b = '@pagewidth 40\n'
+        aList = g.get_directives_dict_list(p)
+        n = g.scanAtPagewidthDirectives(aList)
+        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -504,14 +534,6 @@ class TestGlobals(LeoUnitTest):
         # The @pagewidth directive in the parent should control.
         # Depending on how this test is run, the result could be 80 or None.
         assert n in (None, 80), repr(n)
-    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
-    def test_g_scanAtPagewidthDirectives_40(self):
-        c = self.c
-        p = c.p
-        p.b = '@pagewidth 40\n'
-        aList = g.get_directives_dict_list(p)
-        n = g.scanAtPagewidthDirectives(aList)
-        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.43: *3* TestGlobals.test_g_scanAtTabwidthDirectives_6
     def test_g_scanAtTabwidthDirectives_6(self):
         c = self.c
@@ -661,6 +683,15 @@ class TestGlobals(LeoUnitTest):
             assert fc.read_only
         else:  # pragma: no cover
             fc.warnOnReadOnlyFiles(path)
+    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
+    def test_getLastTracebackFileAndLineNumber(self):
+        fn = ''
+        try:
+            assert False
+        except AssertionError:
+            fn, n = g.getLastTracebackFileAndLineNumber()
+        self.assertEqual(fn.lower(), __file__.lower())
+
     #@-others
 #@-others
 #@-leo
