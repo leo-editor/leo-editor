@@ -7555,7 +7555,7 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
         IMPORTre = r'^import\s+[\./\\]*([^\s/\\].+)'
         IMPORTSre = FROMre + '|' + IMPORTre
 
-        m = re.match(IMPORTSre, line)
+        m = re.match(IMPORTSre, s[i:], re.MULTILINE)
         module = m and (m[2] or m[1])
         if module:
             filename = module + '.py'
