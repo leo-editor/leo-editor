@@ -137,32 +137,59 @@ class TestGlobals(LeoUnitTest):
         import os
         c = self.c
         normslashes = g.os_path_normslashes
-        abs_base = '/leo_base'
-        c.mFileName = f"{abs_base}/test.leo"
+        
+        # Setup environment.
+        expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
+        c.mFileName = "/leo_base/test.leo"
         os.environ = {
             'HOME': '/home',  # Linux.
-            'USERPROFILE': normslashes(r'c:\EKR'),  # Windows.
-            'LEO_BASE': abs_base,
+            'USERPROFILE': normslashes(r'c:/EKR'),  # Windows.
+            'LEO_BASE': expected_leo_base,
         }
-        home = os.path.expanduser('~')
-        home = normslashes(home)  ###
-        leo_base = normslashes(os.path.normpath(os.path.join(g.app.loadDir)))
+        
+        # Compute home.
+        home = normslashes(os.path.expanduser('~'))
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+        
+        # Verify that curdir == load_dir
+        curdir = normslashes(os.getcwd())
+        load_dir = normslashes(os.path.normpath(os.path.join(g.app.loadDir)))
+        self.assertTrue(curdir, load_dir)
 
         seps = ('\\', '/') if g.isWindows else ('/',)
         for sep in seps:
             table = (
-                ((f"~{sep}a.py",), f"{home}/a.py"),
-                ((f"~{sep}x{sep}..{sep}b.py",), f"{home}/b.py"),
-                ((f"$LEO_BASE{sep}c.py",), f"{abs_base}/c.py"),
-                ### (('d.py',), f"{abs_base}/d.py"),
-                (('e.py',), f"{leo_base}/e.py"),
+                # The most basic test.
+                (('basic.py',),                     f"{curdir}/basic.py"),
+                (('basic.py',),                     f"{load_dir}/basic.py"),
+                # One element in *args...
+                ((f"~{sep}a.py",),                  f"{home}/a.py"),
+                ((f"~{sep}x{sep}..{sep}b.py",),     f"{home}/b.py"),
+                ((f"$LEO_BASE{sep}c.py",),          f"{expected_leo_base}/c.py"),
+                # Two elements in *args...
+                (('~', 'w.py'),                     f"{home}/w.py"),
+                (('$LEO_BASE', 'x.py'),             f"{expected_leo_base}/x.py"),
+                # Strange cases...
+                (('~', '~', 's1.py'),               f"{home}/s1.py"),
+                ((f"~{sep}b", '~', 's2.py'),        f"{home}/s2.py"),
+                (('~', f"~{sep}b", 's3.py'),        f"{home}/b/s3.py"),
+                (('$LEO_BASE', '~', 's4.py'),       f"{home}/s4.py"),
+                (('~', '$LEO_BASE', 's5.py'),       f"{expected_leo_base}/s5.py"),
+                # More strange cases.
+                (('~', 'xxx.py', '~', 's6.py'),     f"{home}/s6.py"),
+                (('yyy', '~'),                      f"{home}"),
+                (('zzz', '$LEO_BASE',),             f"{expected_leo_base}"),
+                (('${LEO_BASE}b',),                 f"{expected_leo_base}b"),
+        
+                # This goes beyond the limits of what Windows can do.
+                # (('a${LEO_BASE}b',),                f"a{expected_leo_base}b"),            
             )
             for args, expected in table:
                 got = g.finalize_join(*args)
-                if g.isWindows:
-                    expected, got = expected.lower(), got.lower()
-                self.assertEqual(got, expected)
+                if g.isWindows:  # Weird: the case is wrong whatever the case of expected_leo_base!
+                    expected = expected.replace('C:', 'c:')
+                    got = got.replace('C:', 'c:')
+                self.assertEqual(expected, got)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (

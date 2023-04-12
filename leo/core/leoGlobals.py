@@ -6366,26 +6366,17 @@ def finalize_join(*args: Any) -> str:
     uargs = [z for z in args if z]
     if not uargs:
         return ''
-    if 0:  # Legacy
-        # 'c:/Repos/leo-editor/leo/core/d.py' != '/leo_base/d.py'
-        if 0:  # Exact legacy.
-            path = os.path.join(*uargs)
-        else:  # Legacy with expansion.
-            path = os.path.join(*uargs)
-            path = os.path.expanduser(path)
-            path = os.path.expandvars(path)  ### Added
-            ### path = os.path.abspath(path)
-            ### path = os.path.normpath(path)
-      
-    else:
-        #  'c:/Repos/leo-editor/leo/core/d.py' != '/leo_base/d.py'
-        # Expand everything before joining.
-        uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
-        path = os.path.join(*uargs2)
-        path = os.path.abspath(path)
-        ### path = os.path.normpath(path)
-        os.path.normpath(os.path.join(g.app.loadDir, path))
+    # Expand everything before joining.
+    uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
 
+    # Relative paths are relative to g.app.loadDir.
+    uargs2.insert(0, g.app.loadDir)
+
+    # Joint the paths and convert them to an absolute path.
+    path = os.path.join(*uargs2)
+    path = os.path.abspath(path)
+
+    # Normalize slashes.
     path = g.os_path_normslashes(path)
     return path
 
