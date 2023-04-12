@@ -151,8 +151,6 @@ class TestGlobals(LeoUnitTest):
         home = normslashes(os.path.expanduser('~'))
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
         
-        ### load_dir = normslashes(os.path.abspath(g.app.loadDir))
-        ### outline_dir = normslashes(os.path.abspath(os.path.dirname(c.mFileName)))
 
         seps = ('\\', '/') if g.isWindows else ('/',)
         for sep in seps:
