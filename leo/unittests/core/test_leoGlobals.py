@@ -137,7 +137,7 @@ class TestGlobals(LeoUnitTest):
         import os
         c = self.c
         normslashes = g.os_path_normslashes
-        
+
         # Setup environment.
         expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
         c.mFileName = "/leo_base/test.leo"
@@ -146,17 +146,16 @@ class TestGlobals(LeoUnitTest):
             'USERPROFILE': normslashes(r'c:/EKR'),  # Windows.
             'LEO_BASE': expected_leo_base,
         }
-        
-        # Compute home and load_dir.
+
+        curdir = normslashes(os.getcwd())
         home = normslashes(os.path.expanduser('~'))
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
-        
 
         seps = ('\\', '/') if g.isWindows else ('/',)
         for sep in seps:
             table = (
                 # The most basic test.
-                (('basic.py',),                     f"{expected_leo_base}/basic.py"),
+                (('basic.py',),                     f"{curdir}/basic.py"),
                 # One element in *args...
                 ((f"~{sep}a.py",),                  f"{home}/a.py"),
                 ((f"~{sep}x{sep}..{sep}b.py",),     f"{home}/b.py"),
@@ -181,7 +180,8 @@ class TestGlobals(LeoUnitTest):
             )
             for args, expected in table:
                 got = g.finalize_join(*args)
-                if g.isWindows:  # Weird: the case is wrong whatever the case of expected_leo_base!
+                # Weird: the case is wrong whatever the case of expected_leo_base!
+                if g.isWindows:
                     expected = expected.replace('C:', 'c:')
                     got = got.replace('C:', 'c:')
                 self.assertEqual(expected, got)
