@@ -147,21 +147,18 @@ class TestGlobals(LeoUnitTest):
             'LEO_BASE': expected_leo_base,
         }
         
-        # Compute home.
+        # Compute home and load_dir.
         home = normslashes(os.path.expanduser('~'))
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
         
-        # Verify that curdir == load_dir
-        curdir = normslashes(os.getcwd())
-        load_dir = normslashes(os.path.normpath(os.path.join(g.app.loadDir)))
-        self.assertTrue(curdir, load_dir)
+        ### load_dir = normslashes(os.path.abspath(g.app.loadDir))
+        ### outline_dir = normslashes(os.path.abspath(os.path.dirname(c.mFileName)))
 
         seps = ('\\', '/') if g.isWindows else ('/',)
         for sep in seps:
             table = (
                 # The most basic test.
-                (('basic.py',),                     f"{curdir}/basic.py"),
-                (('basic.py',),                     f"{load_dir}/basic.py"),
+                (('basic.py',),                     f"{expected_leo_base}/basic.py"),
                 # One element in *args...
                 ((f"~{sep}a.py",),                  f"{home}/a.py"),
                 ((f"~{sep}x{sep}..{sep}b.py",),     f"{home}/b.py"),

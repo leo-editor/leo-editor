@@ -6368,14 +6368,9 @@ def finalize_join(*args: Any) -> str:
         return ''
     # Expand everything before joining.
     uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
-
-    # Relative paths are relative to g.app.loadDir.
-    uargs2.insert(0, g.app.loadDir)
-
-    # Joint the paths and convert them to an absolute path.
+    # Join the paths and convert them to an absolute path.
     path = os.path.join(*uargs2)
     path = os.path.abspath(path)
-
     # Normalize slashes.
     path = g.os_path_normslashes(path)
     return path
