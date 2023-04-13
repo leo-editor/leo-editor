@@ -1096,7 +1096,7 @@ class FileNameChooser:
         """Compute the list of completions."""
         path = self.get_label()
         # #215: insert-file-name doesn't process ~
-        path = g.os_path_expanduser(path)
+        path = g.finalize(path)
         sep = os.path.sep
         if g.os_path_exists(path):
             if g.os_path_isdir(path):

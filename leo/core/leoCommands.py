@@ -1002,7 +1002,7 @@ class Commands:
         #@+node:tom.20230308193758.17: *4* checkShebang
         def checkShebang(path: str) -> bool:
             """Return True if file begins with a shebang line, else False."""
-            path = g.os_path_expanduser(path)
+            path = g.finalize(path)
             with open(path, encoding='utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
