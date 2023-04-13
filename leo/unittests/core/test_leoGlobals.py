@@ -143,9 +143,11 @@ class TestGlobals(LeoUnitTest):
         # Setup environment.
         expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
         c.mFileName = "/leo_base/test.leo"
+        
+        # Note: These directories do *not* have to exist.
         os.environ = {
             'HOME': '/home',  # Linux.
-            'USERPROFILE': normslashes(r'c:/EKR'),  # Windows.
+            'USERPROFILE': normslashes(r'c:/Whatever'),  # Windows.
             'LEO_BASE': expected_leo_base,
         }
 
@@ -180,9 +182,11 @@ class TestGlobals(LeoUnitTest):
         # Setup environment.
         expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
         c.mFileName = "/leo_base/test.leo"
+        
+        # Note: These directories do *not* have to exist.
         os.environ = {
             'HOME': '/home',  # Linux.
-            'USERPROFILE': normslashes(r'c:/EKR'),  # Windows.
+            'USERPROFILE': normslashes(r'c:/Whatever'),  # Windows.
             'LEO_BASE': expected_leo_base,
         }
 
