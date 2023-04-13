@@ -6350,8 +6350,12 @@ def finalize(path: str) -> str:
         return ''
     path = os.path.expanduser(path)
     path = os.path.expandvars(path)
+
+    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+
+    # Convert backslashes to forward slashes, regradless of platform.
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
@@ -6364,10 +6368,15 @@ def finalize_join(*args: Any) -> str:
         return ''
     # Expand everything before joining.
     uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
-    # Join the paths and convert them to an absolute path.
+
+    # Join the paths.
     path = os.path.join(*uargs2)
+
+    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
     path = os.path.abspath(path)
-    # Normalize slashes.
+    path = os.path.normpath(path)
+
+    # Convert backslashes to forward slashes, regradless of platform.
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
@@ -6479,13 +6488,13 @@ def os_path_normpath(path: str) -> str:
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path: str) -> str:
     """
-    Convert backslashes to slashes (Windows only).
+    Convert backslashes forward slashes (Windows only).
 
-    os.path.normpath does the *reverse* of what we want.
+    In effect, this convert Windows paths to POSIX paths.
     """
-    if g.isWindows and path:
-        path = path.replace('\\', '/')
-    return path
+    if not path:
+        return ''
+    return path.replace('\\', '/') if g.isWindows else path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path: str) -> str:
     """Return the canonical path of the specified filename, eliminating any

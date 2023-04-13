@@ -132,8 +132,10 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
-    #@+node:ekr.20230411143244.1: *3* TestGlobals.test_g_finalize_join
-    def test_g_finalize_join(self):
+    #@+node:ekr.20230413053714.1: *3* TestGlobals.test_g_finalize
+    def test_g_finalize(self):
+        
+        # This is also a strong test of g.finalize.
         import os
         c = self.c
         normslashes = g.os_path_normslashes
@@ -154,7 +156,44 @@ class TestGlobals(LeoUnitTest):
         seps = ('\\', '/') if g.isWindows else ('/',)
         for sep in seps:
             table = (
-                # The most basic test.
+                # The most basic test. The *only* reasonable base is os.getcwd().
+                ('basic.py',                    f"{curdir}/basic.py"),
+                (f"~{sep}a.py",                 f"{home}/a.py"),
+                (f"~{sep}x{sep}..{sep}b.py",    f"{home}/b.py"),
+                (f"$LEO_BASE{sep}c.py",         f"{expected_leo_base}/c.py"),        
+            )
+            for arg, expected in table:
+                got = g.finalize(arg)
+                # Weird: the case is wrong whatever the case of expected_leo_base!
+                if g.isWindows:
+                    expected = expected.replace('C:', 'c:')
+                    got = got.replace('C:', 'c:')
+                self.assertEqual(expected, got)
+    #@+node:ekr.20230411143244.1: *3* TestGlobals.test_g_finalize_join
+    def test_g_finalize_join(self):
+        
+        # This is also a strong test of g.finalize.
+        import os
+        c = self.c
+        normslashes = g.os_path_normslashes
+
+        # Setup environment.
+        expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
+        c.mFileName = "/leo_base/test.leo"
+        os.environ = {
+            'HOME': '/home',  # Linux.
+            'USERPROFILE': normslashes(r'c:/EKR'),  # Windows.
+            'LEO_BASE': expected_leo_base,
+        }
+
+        curdir = normslashes(os.getcwd())
+        home = normslashes(os.path.expanduser('~'))
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+
+        seps = ('\\', '/') if g.isWindows else ('/',)
+        for sep in seps:
+            table = (
+                # The most basic test. The *only* reasonable base is os.getcwd().
                 (('basic.py',),                     f"{curdir}/basic.py"),
                 # One element in *args...
                 ((f"~{sep}a.py",),                  f"{home}/a.py"),
