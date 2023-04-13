@@ -6345,7 +6345,7 @@ def windows() -> Optional[List]:
 def finalize(path: str) -> str:
     """
     Finalize the path. Do not call os.path.realpath.
-        
+
     - Call os.path.expanduser and  os.path.expandvars.
     - Convert to an absolute path, relative to os.getwd().
     - On Windows, convert backslashes to forward slashes.
