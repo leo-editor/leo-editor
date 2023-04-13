@@ -6345,6 +6345,10 @@ def windows() -> Optional[List]:
 def finalize(path: str) -> str:
     """
     Finalize the path. Do not call os.path.realpath.
+        
+    - Call os.path.expanduser and  os.path.expandvars.
+    - Convert to an absolute path, relative to os.getwd().
+    - On Windows, convert backslashes to forward slashes.
     """
     if not path:
         return ''
@@ -6365,6 +6369,12 @@ os_path_expanduser = finalize  # Compatibility.
 def finalize_join(*args: Any) -> str:
     """
     Join and finalize. Do not call os.path.realpath.
+
+    - Return an empty string if all of the args are empty.
+    - Call os.path.expanduser and  os.path.expandvars for each arg.
+    - Call os.path.join on the resulting list of expanded arguments.
+    - Convert to an absolute path, relative to os.getwd().
+    - On Windows, convert backslashes to forward slashes.
     """
     uargs = [z for z in args if z]
     if not uargs:
