@@ -133,7 +133,7 @@ class AtFile:
         Return the finalized name of the output file.
         """
         at, c = self, self.c
-        if not c and c.config:
+        if not c or not c.config:
             return None  # pragma: no cover
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
