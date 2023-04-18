@@ -6395,6 +6395,7 @@ def finalize_join(*args: Any) -> str:
     return path
 
 # g.finalize_join will *always* be better than the legacy g.os_path_join.
+os_path_join = finalize_join  # Compatibility
 os_path_finalize_join = finalize_join  # Compatibility.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
@@ -6457,18 +6458,6 @@ def os_path_isdir(path: str) -> bool:
 def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
-#@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args: Any, **keys: Any) -> str:
-    """
-    Wrap os.path.join.
-    """
-    uargs = [z for z in args if z]
-    if not uargs:
-        return ''
-    path = os.path.join(*uargs)
-    path = g.os_path_normslashes(path)
-    return path
-
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
