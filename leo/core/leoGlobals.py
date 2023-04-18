@@ -6363,8 +6363,6 @@ def finalize(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 
-# g.finalize will *always* be better than the legacy g.os_path_expanduser.
-os_path_expanduser = finalize  # Compatibility.
 os_path_finalize = finalize  # Compatibility.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
@@ -6428,7 +6426,8 @@ def os_path_dirname(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20230418102243.1: *3* g.os_path_expanduser
-def os_path_expanduser(path):
+def os_path_expanduser(path: str) -> str:
+    """Wrap both os.path.expanduser and os.path.expandvars."""
     if not path:
         return ''
     path = os.path.expanduser(path)
