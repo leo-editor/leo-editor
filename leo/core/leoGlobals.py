@@ -6432,6 +6432,7 @@ def os_path_expanduser(path: str) -> str:
         return ''
     path = os.path.expanduser(path)
     path = os.path.expandvars(path)
+    path = os.path.normpath(path)
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path: str) -> bool:
