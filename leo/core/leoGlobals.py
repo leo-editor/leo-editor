@@ -6365,6 +6365,7 @@ def finalize(path: str) -> str:
 
 # g.finalize will *always* be better than the legacy g.os_path_expanduser.
 os_path_expanduser = finalize  # Compatibility.
+os_path_finalize = finalize  # Compatibility.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
 def finalize_join(*args: Any) -> str:
     """
