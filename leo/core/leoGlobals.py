@@ -6395,7 +6395,7 @@ def finalize_join(*args: Any) -> str:
     return path
 
 # g.finalize_join will *always* be better than the legacy g.os_path_join.
-os_path_join = finalize_join  # Compatibility.
+os_path_finalize_join = finalize_join  # Compatibility.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
