@@ -6457,6 +6457,18 @@ def os_path_isdir(path: str) -> bool:
 def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
+#@+node:ekr.20031218072017.2154: *3* g.os_path_join
+def os_path_join(*args: Any, **keys: Any) -> str:
+    """
+    Wrap os.path.join.
+    """
+    uargs = [z for z in args if z]
+    if not uargs:
+        return ''
+    path = os.path.join(*uargs)
+    path = g.os_path_normslashes(path)
+    return path
+
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
