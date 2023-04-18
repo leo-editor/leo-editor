@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
-from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
@@ -569,7 +569,7 @@ if QtWidgets:
                 c = self.leo_c
                 w = c.frame.body.wrapper
                 key = event.key()
-                if event.modifiers() != Modifier.NoModifier and not event.text():
+                if event.modifiers() != KeyboardModifier.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
                 elif key in (Key.Key_Up, Key.Key_Down):
