@@ -20,7 +20,7 @@ class TestAtShadow(LeoUnitTest):
         delims = '#', '', ''
         c = self.c
         base_dir = os.path.dirname(__file__)
-        c.mFileName = g.os_path_finalize_join(base_dir, '..', '..', 'test666.leo')
+        c.mFileName = g.finalize_join(base_dir, '..', '..', 'test666.leo')
         self.shadow_controller = ShadowController(c)
         self.marker = self.shadow_controller.Marker(delims)
 

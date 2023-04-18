@@ -311,7 +311,7 @@ class BridgeController:
         g = self.g
         if not (fileName and fileName.strip()):
             return ''
-        fileName = g.os_path_finalize_join(os.getcwd(), fileName)
+        fileName = g.finalize_join(os.getcwd(), fileName)
         head, ext = g.os_path_splitext(fileName)
         if not ext:
             fileName = fileName + ".leo"

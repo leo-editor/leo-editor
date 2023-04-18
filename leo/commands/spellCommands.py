@@ -77,7 +77,7 @@ class BaseSpellWrapper:
     def find_user_dict(self) -> str:
         """Return the full path to the local dictionary."""
         c = self.c
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         table = (
             # Settings first.
             c.config.getString('enchant-local-dictionary'),
@@ -240,8 +240,7 @@ class DefaultWrapper(BaseSpellWrapper):
         if fn and g.os_path_exists(fn):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
-        fn = g.os_path_finalize_join(
-            g.app.homeDir, '.leo', 'main_spelling_dict.txt')
+        fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words
     def read_words(self, kind: Any, fn: str) -> Set[str]:

@@ -139,9 +139,9 @@ class TestAtAuto(BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
     def test_importers_can_be_imported(self):
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
+        path = g.finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
         assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path, '*.py')
+        pattern = g.finalize_join(path, '*.py')
         for fn in glob.glob(pattern):
             sfn = g.shortFileName(fn)
             m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])

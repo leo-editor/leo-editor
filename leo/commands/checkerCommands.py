@@ -656,14 +656,14 @@ class PylintCommand:
         local_dir = g.os_path_dirname(c.fileName())
         table = (
             # In the directory containing the outline.
-            g.os_path_finalize_join(local_dir, base1),
-            g.os_path_finalize_join(local_dir, base2),
+            g.finalize_join(local_dir, base1),
+            g.finalize_join(local_dir, base2),
             # In ~/.leo
-            g.os_path_finalize_join(g.app.homeDir, '.leo', base1),
-            g.os_path_finalize_join(g.app.homeDir, '.leo', base2),
+            g.finalize_join(g.app.homeDir, '.leo', base1),
+            g.finalize_join(g.app.homeDir, '.leo', base2),
             # In leo/test
-            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
-            g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
+            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
+            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
         )
         for fn in table:
             fn = g.os_path_abspath(fn)
