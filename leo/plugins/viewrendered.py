@@ -1691,7 +1691,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Similar to code in g.computeFileUrl
         if fn.startswith('~'):
             fn = fn[1:]
-            fn = g.os_path_finalize(fn)
+            fn = g.finalize(fn)
         else:
             # Handle ancestor @path directives.
             if c and c.openDirectory:
