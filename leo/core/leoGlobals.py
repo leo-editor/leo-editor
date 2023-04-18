@@ -6476,7 +6476,7 @@ def os_path_normpath(path: str) -> str:
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path: str) -> str:
     """
-    Convert backslashes forward slashes (Windows only).
+    Convert backslashes to forward slashes (Windows only).
 
     In effect, this convert Windows paths to POSIX paths.
     """
