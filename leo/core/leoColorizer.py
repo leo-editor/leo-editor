@@ -1017,11 +1017,17 @@ class JEditColorizer(BaseColorizer):
             return False
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
-        language, rulesetName = self.nameToRulesetName(name)
-        if 'coloring' in g.app.debug:
-            g.trace(f"language: {language!r}, rulesetName: {rulesetName!r}")
+        language, delegate_language, rulesetName = self.nameToRulesetName(name)
+        if False or 'coloring' in g.app.debug:  ###
+            g.trace(
+                f"name: {name} "
+                f"language: {language!r} "
+                f"delegate_language: {delegate_language} "
+                f"rulesetName: {rulesetName!r}")
+            print('')
         bunch = self.modes.get(rulesetName)
         if bunch:
+            g.trace('===== USE', bunch.language, g.callers())  ###
             if bunch.language == 'unknown-language':
                 return False
             self.initModeFromBunch(bunch)
@@ -1029,12 +1035,20 @@ class JEditColorizer(BaseColorizer):
             return True
         # Don't try to import a non-existent language.
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        fn = g.os_path_join(path, f"{language}.py")
-        if g.os_path_exists(fn):
-            mode = g.import_module(name=f"leo.modes.{language}")
+        if 1:  ### Experimental:
+            for candidate_language in (delegate_language, language):
+                fn = g.os_path_join(path, f"{candidate_language}.py")
+                if g.os_path_exists(fn):
+                    mode = g.import_module(name=f"leo.modes.{candidate_language}")
+                    return self.init_mode_from_module(name, mode)
+            return self.init_mode_from_module(name, None)
         else:
-            mode = None
-        return self.init_mode_from_module(name, mode)
+            fn = g.os_path_join(path, f"{language}.py")
+            if g.os_path_exists(fn):
+                mode = g.import_module(name=f"leo.modes.{language}")
+            else:
+                mode = None
+            return self.init_mode_from_module(name, mode)
     #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
     def init_mode_from_module(self, name: str, mode: Mode) -> bool:
         """
@@ -1042,14 +1056,16 @@ class JEditColorizer(BaseColorizer):
         Mode is a python module or class containing all
         coloring rule attributes for the mode.
         """
-        language, rulesetName = self.nameToRulesetName(name)
+        language, delegate_language, rulesetName = self.nameToRulesetName(name)
+        g.trace(bool(mode), name, delegate_language, rulesetName)
         if mode:
             # A hack to give modes/forth.py access to c.
             if hasattr(mode, 'pre_init_mode'):
                 mode.pre_init_mode(self.c)
         else:
             # Create a dummy bunch to limit recursion.
-            self.modes[rulesetName] = self.modeBunch = g.Bunch(
+            ### self.modes[rulesetName] = self.modeBunch = g.Bunch(
+            self.modes[delegate_language] = self.modeBunch = g.Bunch(
                 attributesDict={},
                 defaultColor=None,
                 keywordsDict={},
@@ -1063,7 +1079,8 @@ class JEditColorizer(BaseColorizer):
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
             return False
-        self.language = language
+        ### self.language = language
+        self.language = delegate_language or language  ###
         self.rulesetName = rulesetName
         self.properties = getattr(mode, 'properties', None) or {}
         #
@@ -1080,7 +1097,8 @@ class JEditColorizer(BaseColorizer):
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
-        self.modes[rulesetName] = self.modeBunch = g.Bunch(
+        ### self.modes[rulesetName] = self.modeBunch = g.Bunch(
+        self.modes[self.language] = self.modeBunch = g.Bunch(
             attributesDict=self.attributesDict,
             defaultColor=self.defaultColor,
             keywordsDict=self.keywordsDict,
@@ -1105,27 +1123,26 @@ class JEditColorizer(BaseColorizer):
             self.language = language  # 2017/01/31
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
-    def nameToRulesetName(self, name: str) -> Tuple[str, str]:
+    def nameToRulesetName(self, name: str) -> Tuple[str, str, str]:
         """
         Compute language and rulesetName from name, which is either a language
         name or a delegate name.
         """
         if not name:
-            # return ''
-            return 'unknown-language', None  # 2022/09/02: Bug fix.
+            return 'unknown-language', None, None
         # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
         i = name.find('::')
         if i == -1:
-            language = name
+            ### language = name
             # New in Leo 5.0: allow delegated language names.
-            language = g.app.delegate_language_dict.get(language, language)
-            rulesetName = f"{language}_main"
+            language = delegate_language = g.app.delegate_language_dict.get(name, name)
+            rulesetName = f"{delegate_language}_main"
         else:
             language = name[:i]
-            delegate = name[i + 2 :]
-            rulesetName = self.munge(f"{language}_{delegate}")
-        return language, rulesetName
+            delegate_language = name[i + 2 :]
+            rulesetName = self.munge(f"{language}_{delegate_language}")
+        return language, delegate_language, rulesetName
     #@+node:ekr.20110605121601.18583: *5* jedit.setKeywords
     def setKeywords(self) -> None:
         """
@@ -1339,8 +1356,8 @@ class JEditColorizer(BaseColorizer):
             return name
         return 'no-language'
     #@+node:ekr.20230418070938.1: *3* jedit.begin_delegate (new)
-    def begin_delegate(self, delegate_name):
-        g.trace(delegate_name, g.callers(2))  ###
+    def begin_delegate(self, s: str, i: int, j: int, delegate_name: str) -> None:
+        g.trace(i, j, s[i:j], delegate_name, g.callers(1))  ###
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -2123,11 +2140,11 @@ class JEditColorizer(BaseColorizer):
         elif not g.match(s, i, begin):
             j = i
         else:
-            if s[i:].startswith('<script'):
-                g.trace('MATCH', s[i:])
             # We have matched the start of the span.
             j = self.match_span_helper(s, i + len(begin), end,
                 no_escape, no_line_break, no_word_break=no_word_break)
+            # g.trace('MATCH', bool(delegate), s[i:j], g.callers(2)) ###
+            g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
             if j == -1:
                 j = i  # A real failure.
             else:
