@@ -104,9 +104,21 @@ def html_rule1(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
+        
+def html_rule1_lower(colorer, s, i):
+    return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="html::javascript", exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
 
 def html_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="html::css", exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
+        
+def html_rule2_lower(colorer, s, i):
+    return colorer.match_span(s, i, kind="markup", begin="<style", end="</style>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
@@ -139,9 +151,10 @@ def html_rule_handlebar(colorer, s, i):
 
 # Rules dict for html_main ruleset.
 rulesDict1 = {
-    "&": [html_rule5,],
-    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4,],
-    "{": [html_rule_handlebar,],
+    "&": [html_rule5],
+    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
+            # html_rule1_lower, html_rule2_lower,  # #3281.
+    "{": [html_rule_handlebar],
 }
 
 # Rules for html_tags ruleset.
