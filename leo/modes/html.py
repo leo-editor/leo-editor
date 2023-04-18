@@ -152,8 +152,9 @@ def html_rule_handlebar(colorer, s, i):
 # Rules dict for html_main ruleset.
 rulesDict1 = {
     "&": [html_rule5],
-    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
-            # html_rule1_lower, html_rule2_lower,  # #3281.
+    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4,
+            html_rule1_lower, html_rule2_lower,  #3281.
+        ],
     "{": [html_rule_handlebar],
 }
 
