@@ -159,7 +159,7 @@ def screen_capture_now(kwargs=None):
             '.leo',
             'screen_captures'
         )
-    dirname = g.os_path_expanduser(dirname)
+    dirname = g.finalize(dirname)
     if not g.os_path_isdir(dirname):
         os.makedirs(dirname)
     filename = g.os_path_join(

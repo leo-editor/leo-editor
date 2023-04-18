@@ -260,7 +260,7 @@ class GetImage:
                 testpath = testpath.split('//', 1)[-1]
             #
             # file on local file system
-            testpath = g.os_path_finalize_join(path, testpath)
+            testpath = g.finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
             #

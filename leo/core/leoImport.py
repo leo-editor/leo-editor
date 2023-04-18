@@ -549,10 +549,10 @@ class LeoImportCommands:
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = g.os_path_finalize_join(path, fileName + ext)  # 1341
+                newFileName = g.finalize_join(path, fileName + ext)  # 1341
             else:
                 head, ext2 = g.os_path_splitext(fileName)
-                newFileName = g.os_path_finalize_join(path, head + ext + ext2)  # 1341
+                newFileName = g.finalize_join(path, head + ext + ext2)  # 1341
             if toString:
                 return s
             #@+<< Write s into newFileName >>

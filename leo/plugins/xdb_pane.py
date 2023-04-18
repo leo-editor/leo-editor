@@ -122,8 +122,7 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004143535.20: *4* get_icon
         def get_icon(self, fn):
             """return the icon from Icons/debug_icons"""
-            path = g.os_path_finalize_join(
-                g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
+            path = g.finalize_join(g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
             return QtGui.QIcon(g.app.gui.getImageImage(path))
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_break(self, checked):

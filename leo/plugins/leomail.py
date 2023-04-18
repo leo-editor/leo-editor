@@ -35,7 +35,7 @@ def mail_refresh(event):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         h = p.h[5:].strip()
-        mb = g.os_path_finalize_join(path, h)
+        mb = g.finalize_join(path, h)
         if g.os_path_exists(mb):
             n = 0
             root = p.copy()

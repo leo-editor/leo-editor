@@ -30,11 +30,11 @@ class TestSyntax(LeoUnitTest):
             ('extensions', 'asciidoc.py'),
             ('test', 'scriptFile.py'),
         )
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         skip_list = [join(g.app.loadDir, '..', a, b) for a, b in skip_tuples]
         n = 0
         for theDir in ('core', 'external', 'extensions', 'modes', 'plugins', 'scripts', 'test'):
-            path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
+            path = g.finalize_join(g.app.loadDir, '..', theDir)
             self.assertTrue(g.os_path_exists(path), msg=path)
             aList = glob.glob(g.os_path_join(path, '*.py'))
             if g.isWindows:
@@ -47,7 +47,7 @@ class TestSyntax(LeoUnitTest):
                     self.assertTrue(self.check_syntax(fn, s), msg=fn)
     #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
     def test_syntax_of_setup_py(self):
-        fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
+        fn = g.finalize_join(g.app.loadDir, '..', '..', 'setup.py')
         # Only run this test if setup.py exists: it may not in the actual distribution.
         if not g.os_path_exists(fn):
             self.skipTest('setup.py not found')  # pragma: no cover

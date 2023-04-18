@@ -259,7 +259,7 @@ class MarkupCommands:
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
                 n_path = c.getNodePath(c.p)  # node path
-                i_path = g.os_path_finalize_join(n_path, i_path)
+                i_path = g.finalize_join(n_path, i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
@@ -329,7 +329,7 @@ class MarkupCommands:
                 break
         # #1373.
         base_dir = os.path.dirname(c.fileName())
-        return g.os_path_finalize_join(base_dir, i_path + '.html')
+        return g.finalize_join(base_dir, i_path + '.html')
     #@+node:ekr.20191007043110.1: *4* markup.run_asciidoctor
     def run_asciidoctor(self, i_path: str, o_path: str) -> None:
         """
@@ -358,8 +358,7 @@ class MarkupCommands:
         """Process i_path and o_path with sphinx."""
         trace = True
         # cd to the command directory, or i_path's directory.
-        command_dir = g.os_path_finalize(
-            self.sphinx_command_dir or os.path.dirname(i_path))
+        command_dir = g.finalize(self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
             if trace:
                 g.trace(f"\nos.chdir: {command_dir!r}")
@@ -376,14 +375,13 @@ class MarkupCommands:
             g.execute_shell_commands(self.sphinx_default_command)
             return
         # Compute the input directory.
-        input_dir = g.os_path_finalize(
+        input_dir = g.finalize(
             self.sphinx_input_dir or os.path.dirname(i_path))
         if not os.path.exists(input_dir):
             g.error(f"input directory not found: {input_dir!r}")
             return
         # Compute the output directory.
-        output_dir = g.os_path_finalize(
-            self.sphinx_output_dir or os.path.dirname(o_path))
+        output_dir = g.finalize(self.sphinx_output_dir or os.path.dirname(o_path))
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return

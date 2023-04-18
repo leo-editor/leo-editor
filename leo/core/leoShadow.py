@@ -77,7 +77,7 @@ class ShadowController:
         c = self.c
         filename = c.fileName()
         if filename:
-            return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
+            return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
@@ -91,7 +91,7 @@ class ShadowController:
         """Return the full path name of filename."""
         x = self
         theDir = x.baseDirName()
-        return g.os_path_finalize_join(theDir, filename) if theDir else ''  # 1341
+        return g.finalize_join(theDir, filename) if theDir else ''
     #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile(self, fn: str) -> bool:
         """
@@ -173,7 +173,7 @@ class ShadowController:
                 fileDir = fileDir.replace(':', '%')
             # build the cache path as a subdir of the base dir
             fileDir = "/".join([baseDir, fname, fileDir])
-        return baseDir and g.os_path_finalize_join(  # 1341
+        return baseDir and g.finalize_join(
                 baseDir,
                 fileDir,  # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,

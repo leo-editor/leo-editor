@@ -342,7 +342,7 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
         return
 
     path = g.scanAllAtPathDirectives(c, p)
-    absp = g.os_path_finalize_join(path, fname)
+    absp = g.finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":
         action = menu.addAction("Create dir " + absp + "/")

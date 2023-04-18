@@ -14,15 +14,6 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
     #@+others
-    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
-    def test_getLastTracebackFileAndLineNumber(self):
-        fn = ''
-        try:
-            assert False
-        except AssertionError:
-            fn, n = g.getLastTracebackFileAndLineNumber()
-        self.assertEqual(fn.lower(), __file__.lower())
-
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
         # for condition in ('<','<=','>','>='):
@@ -141,6 +132,102 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
+    #@+node:ekr.20230413053714.1: *3* TestGlobals.test_g_finalize
+    def test_g_finalize(self):
+        
+        # This is also a strong test of g.finalize.
+        import os
+        c = self.c
+        normslashes = g.os_path_normslashes
+
+        # Setup environment.
+        expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
+        c.mFileName = "/leo_base/test.leo"
+        
+        # Note: These directories do *not* have to exist.
+        os.environ = {
+            'HOME': '/home',  # Linux.
+            'USERPROFILE': normslashes(r'c:/Whatever'),  # Windows.
+            'LEO_BASE': expected_leo_base,
+        }
+
+        curdir = normslashes(os.getcwd())
+        home = normslashes(os.path.expanduser('~'))
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+
+        seps = ('\\', '/') if g.isWindows else ('/',)
+        for sep in seps:
+            table = (
+                # The most basic test. The *only* reasonable base is os.getcwd().
+                ('basic.py',                    f"{curdir}/basic.py"),
+                (f"~{sep}a.py",                 f"{home}/a.py"),
+                (f"~{sep}x{sep}..{sep}b.py",    f"{home}/b.py"),
+                (f"$LEO_BASE{sep}c.py",         f"{expected_leo_base}/c.py"),        
+            )
+            for arg, expected in table:
+                got = g.finalize(arg)
+                # Weird: the case is wrong whatever the case of expected_leo_base!
+                if g.isWindows:
+                    expected = expected.replace('C:', 'c:')
+                    got = got.replace('C:', 'c:')
+                self.assertEqual(expected, got)
+    #@+node:ekr.20230411143244.1: *3* TestGlobals.test_g_finalize_join
+    def test_g_finalize_join(self):
+        
+        # This is also a strong test of g.finalize.
+        import os
+        c = self.c
+        normslashes = g.os_path_normslashes
+
+        # Setup environment.
+        expected_leo_base = 'C:/leo_base' if g.isWindows else '/leo_base'
+        c.mFileName = "/leo_base/test.leo"
+        
+        # Note: These directories do *not* have to exist.
+        os.environ = {
+            'HOME': '/home',  # Linux.
+            'USERPROFILE': normslashes(r'c:/Whatever'),  # Windows.
+            'LEO_BASE': expected_leo_base,
+        }
+
+        curdir = normslashes(os.getcwd())
+        home = normslashes(os.path.expanduser('~'))
+        assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
+
+        seps = ('\\', '/') if g.isWindows else ('/',)
+        for sep in seps:
+            table = (
+                # The most basic test. The *only* reasonable base is os.getcwd().
+                (('basic.py',),                     f"{curdir}/basic.py"),
+                # One element in *args...
+                ((f"~{sep}a.py",),                  f"{home}/a.py"),
+                ((f"~{sep}x{sep}..{sep}b.py",),     f"{home}/b.py"),
+                ((f"$LEO_BASE{sep}c.py",),          f"{expected_leo_base}/c.py"),
+                # Two elements in *args...
+                (('~', 'w.py'),                     f"{home}/w.py"),
+                (('$LEO_BASE', 'x.py'),             f"{expected_leo_base}/x.py"),
+                # Strange cases...
+                (('~', '~', 's1.py'),               f"{home}/s1.py"),
+                ((f"~{sep}b", '~', 's2.py'),        f"{home}/s2.py"),
+                (('~', f"~{sep}b", 's3.py'),        f"{home}/b/s3.py"),
+                (('$LEO_BASE', '~', 's4.py'),       f"{home}/s4.py"),
+                (('~', '$LEO_BASE', 's5.py'),       f"{expected_leo_base}/s5.py"),
+                # More strange cases.
+                (('~', 'xxx.py', '~', 's6.py'),     f"{home}/s6.py"),
+                (('yyy', '~'),                      f"{home}"),
+                (('zzz', '$LEO_BASE',),             f"{expected_leo_base}"),
+                (('${LEO_BASE}b',),                 f"{expected_leo_base}b"),
+        
+                # This goes beyond the limits of what Windows can do.
+                # (('a${LEO_BASE}b',),                f"a{expected_leo_base}b"),            
+            )
+            for args, expected in table:
+                got = g.finalize_join(*args)
+                # Weird: the case is wrong whatever the case of expected_leo_base!
+                if g.isWindows:
+                    expected = expected.replace('C:', 'c:')
+                    got = got.replace('C:', 'c:')
+                self.assertEqual(expected, got)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
@@ -222,6 +309,29 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         val = g.guessExternalEditor(c)
         assert val, 'no val'  # This can be different on different platforms.
+    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
+    def test_g_handleScriptException(self):
+
+        c = self.c
+        table = (
+            'test_leoGlobals.py", line',
+            'in test_g_handleScriptException',
+            'print(1/0)',
+            'ZeroDivisionError: division by zero'
+        )
+        with self.assertRaises(ZeroDivisionError):
+            try:
+                print(1/0)
+            except ZeroDivisionError:
+                old_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                g.handleScriptException(c, c.p)
+                report = sys.stdout.getvalue()
+                for s in table:
+                    assert s in report, repr(s)
+                sys.stdout = old_stdout
+                # print(report)
+                raise
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
@@ -265,29 +375,6 @@ class TestGlobals(LeoUnitTest):
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
-    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
-    def test_g_handleScriptException(self):
-
-        c = self.c
-        table = (
-            'test_leoGlobals.py", line',
-            'in test_g_handleScriptException',
-            'print(1/0)',
-            'ZeroDivisionError: division by zero'
-        )
-        with self.assertRaises(ZeroDivisionError):
-            try:
-                print(1/0)
-            except ZeroDivisionError:
-                old_stdout = sys.stdout
-                sys.stdout = io.StringIO()
-                g.handleScriptException(c, c.p)
-                report = sys.stdout.getvalue()
-                for s in table:
-                    assert s in report, repr(s)
-                sys.stdout = old_stdout
-                # print(report)
-                raise
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
@@ -494,6 +581,14 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(s, '\r\n')  # pragma: no cover
         else:
             self.assertEqual(s, '\n')  # pragma: no cover
+    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
+    def test_g_scanAtPagewidthDirectives_40(self):
+        c = self.c
+        p = c.p
+        p.b = '@pagewidth 40\n'
+        aList = g.get_directives_dict_list(p)
+        n = g.scanAtPagewidthDirectives(aList)
+        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -504,14 +599,6 @@ class TestGlobals(LeoUnitTest):
         # The @pagewidth directive in the parent should control.
         # Depending on how this test is run, the result could be 80 or None.
         assert n in (None, 80), repr(n)
-    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
-    def test_g_scanAtPagewidthDirectives_40(self):
-        c = self.c
-        p = c.p
-        p.b = '@pagewidth 40\n'
-        aList = g.get_directives_dict_list(p)
-        n = g.scanAtPagewidthDirectives(aList)
-        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.43: *3* TestGlobals.test_g_scanAtTabwidthDirectives_6
     def test_g_scanAtTabwidthDirectives_6(self):
         c = self.c
@@ -654,13 +741,22 @@ class TestGlobals(LeoUnitTest):
     def test_g_warnOnReadOnlyFile(self):
         c = self.c
         fc = c.fileCommands
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
+        path = g.finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
         if os.path.exists(path):  # pragma: no cover
             os.chmod(path, stat.S_IREAD)
             fc.warnOnReadOnlyFiles(path)
             assert fc.read_only
         else:  # pragma: no cover
             fc.warnOnReadOnlyFiles(path)
+    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
+    def test_getLastTracebackFileAndLineNumber(self):
+        fn = ''
+        try:
+            assert False
+        except AssertionError:
+            fn, n = g.getLastTracebackFileAndLineNumber()
+        self.assertEqual(fn.lower(), __file__.lower())
+
     #@-others
 #@-others
 #@-leo

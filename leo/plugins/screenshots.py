@@ -736,7 +736,7 @@ class ScreenShotController:
     def finalize(self, fn):
         """Return the absolute path to fn in the slideshow folder."""
         sc = self
-        return sc.fix(g.os_path_finalize_join(sc.slideshow_path, fn))
+        return sc.fix(g.finalize_join(sc.slideshow_path, fn))
     #@+node:ekr.20100911044508.5632: *5* fix
     def fix(self, fn):
         """Fix the case of a file name,
@@ -758,7 +758,7 @@ class ScreenShotController:
         @image directives are relative to g.app.loadDir.
         """
         sc = self
-        base = sc.fix(g.os_path_finalize(g.app.loadDir))
+        base = sc.fix(g.finalize(g.app.loadDir))
         fn = sc.fix(sc.output_fn)
         fn = os.path.relpath(fn, base)
         fn = sc.fix(fn)
@@ -826,7 +826,7 @@ class ScreenShotController:
         h = h[len(tag) :].strip()
         if h:
             theDir = sc.sanitize(h)
-            path = sc.fix(g.os_path_finalize_join(sc.sphinx_path, 'slides', theDir))
+            path = sc.fix(g.finalize_join(sc.sphinx_path, 'slides', theDir))
             return path
         g.error('@slideshow node has no name')
         return None
@@ -854,12 +854,12 @@ class ScreenShotController:
                 if not leo_fn:
                     g.error('relative sphinx path given but outline not named')
                     return None
-                leo_fn = g.os_path_finalize_join(g.app.loadDir, leo_fn)
+                leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
                 base, junk = g.os_path_split(leo_fn)
-                path = g.os_path_finalize_join(base, sphinx_path)
+                path = g.finalize_join(base, sphinx_path)
         else:
             # The default is the leo/doc/html directory.
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'html')
+            path = g.finalize_join(g.app.loadDir, '..', 'doc', 'html')
         path = sc.fix(path)
         return path
     #@+node:ekr.20100908110845.5542: *5* get_template_fn
@@ -869,10 +869,9 @@ class ScreenShotController:
         # c = sc.c
         template_fn = sc.get_option('template_fn')
         if template_fn:
-            fn = sc.fix(g.os_path_finalize(template_fn))
+            fn = sc.fix(g.finalize(template_fn))
         else:
-            fn = sc.fix(g.os_path_finalize_join(g.app.loadDir,
-                '..', 'doc', 'inkscape-template.svg'))
+            fn = sc.fix(g.finalize_join(g.app.loadDir, '..', 'doc', 'inkscape-template.svg'))
         if g.os_path_exists(fn):
             return fn
         g.error('template file not found:', fn)
@@ -909,9 +908,9 @@ class ScreenShotController:
         if not leo_fn:
             g.error('relative wink path given but outline not named')
             return None
-        leo_fn = g.os_path_finalize_join(g.app.loadDir, leo_fn)
+        leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
         base, junk = g.os_path_split(leo_fn)
-        path = g.os_path_finalize_join(base, path)
+        path = g.finalize_join(base, path)
         path = sc.fix(path)
         g.trace(path)
         return path
@@ -1076,13 +1075,13 @@ class ScreenShotController:
         )
         slide_path, junk = g.os_path_split(sc.slide_fn)
         for fn in table:
-            path = g.os_path_finalize_join(slide_path, fn)
+            path = g.finalize_join(slide_path, fn)
             if not g.os_path_exists(path):
                 sc.copy_file(sc.sphinx_path, slide_path, fn)
     #@+node:ekr.20101005193146.5688: *5* copy_file
     def copy_file(self, src_path, dst_path, fn):
-        src_fn = g.os_path_finalize_join(src_path, fn)
-        dst_fn = g.os_path_finalize_join(dst_path, fn)
+        src_fn = g.finalize_join(src_path, fn)
+        dst_fn = g.finalize_join(dst_path, fn)
         junk, dst_dir = g.os_path_split(dst_path)
         g.note('creating', g.os_path_join('slides', dst_dir, fn))
         shutil.copyfile(src_fn, dst_fn)
@@ -1131,7 +1130,7 @@ class ScreenShotController:
         sc = self
         # Don't create path for at_image_fn or directive_fn
         # They are relative paths!
-        static_dir = g.os_path_finalize_join(
+        static_dir = g.finalize_join(
             sc.slideshow_path, '_static')
         table = (
             # ('at_image_fn   ',sc.at_image_fn),
@@ -1164,7 +1163,7 @@ class ScreenShotController:
                 fn = fn[:-4]
             p2 = p.insertAsLastChild()
             p2.h = h
-            p2.b = g.os_path_finalize_join(
+            p2.b = g.finalize_join(
                 sc.slideshow_path, '_build', 'html', fn)
     #@+node:ekr.20101008112639.5631: *4* make_at_url_node_for_output_file
     def make_at_url_node_for_output_file(self):
@@ -1739,8 +1738,7 @@ class ScreenShotController:
         verbose = False
         sc = self
         c = sc.c
-        launch = g.os_path_finalize_join(g.app.loadDir,
-            '..', '..', 'launchLeo.py')
+        launch = g.finalize_join(g.app.loadDir, '..', '..', 'launchLeo.py')
         python = sys.executable
         h, w = sc.screenshot_height, sc.screenshot_width
         cmd = [python, launch, '--window-size=%sx%s' % (h, w)]

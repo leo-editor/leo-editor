@@ -129,15 +129,16 @@ class TestCommands(LeoUnitTest):
         abs_base = '/leo_base'
         c.mFileName = f"{abs_base}/test.leo"
         os.environ = {
-            'HOME': '/home/',  # Linux.
+            'HOME': '/home',  # Linux.
             'USERPROFILE': r'c:\EKR',  # Windows.
             'LEO_BASE': abs_base,
         }
         home = os.path.expanduser('~')
         assert home in (os.environ['HOME'], os.environ['USERPROFILE']), repr(home)
 
-        # c.expand_path_expressions *only* calls os.path.expanduser and os.path.expandvars.   
-        for sep in ('\\', '/'):
+        # c.expand_path_expressions *only* calls os.path.expanduser and os.path.expandvars.
+        seps = ('\\', '/') if g.isWindows else ('/',)
+        for sep in seps:
             table = (
                 (f"~{sep}a.py", f"{home}{sep}a.py"),
                 (f"~{sep}x{sep}..{sep}b.py", f"{home}{sep}x{sep}..{sep}b.py"),

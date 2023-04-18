@@ -282,7 +282,7 @@ class AtFile:
     def read(self, root: Position, fromString: str = None) -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
-        fileName = c.fullPath(root)  # #1341. #1889.
+        fileName = c.fullPath(root)
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
@@ -440,7 +440,7 @@ class AtFile:
     def readOneAtAutoNode(self, p: Position) -> Position:  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
         at, c, ic = self, self.c, self.c.importCommands
-        fileName = c.fullPath(p)  # #1521, #1341, #1914.
+        fileName = c.fullPath(p)
         if not g.os_path_exists(fileName):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return p
@@ -506,7 +506,6 @@ class AtFile:
     def readOneAtAsisNode(self, fn: str, p: Position) -> None:  # pragma: no cover
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
-        # #1521 & #1341.
         fn = c.fullPath(p)
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
@@ -597,7 +596,7 @@ class AtFile:
                 f"can not happen: fn: {fn} != atShadowNodeName: "
                 f"{p.atShadowFileNodeName()}")
             return
-        fn = c.fullPath(p)  # #1521 & #1341.
+        fn = c.fullPath(p)
         # #889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         shadow_fn = x.shadowPathName(fn)
@@ -615,7 +614,7 @@ class AtFile:
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
         c, ic = self.c, self.c.importCommands
-        fn = c.fullPath(p)  # #1521, #1341, #1914.
+        fn = c.fullPath(p)
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return False

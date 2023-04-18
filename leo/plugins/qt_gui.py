@@ -995,7 +995,7 @@ class LeoQtGui(leoGui.LeoGui):
             iconsDir = g.os_path_join(g.app.loadDir, "..", "Icons")
             homeIconsDir = g.os_path_join(g.app.homeLeoDir, "Icons")
             for theDir in (homeIconsDir, iconsDir):
-                fullname = g.os_path_finalize_join(theDir, name)
+                fullname = g.finalize_join(theDir, name)
                 if g.os_path_exists(fullname):
                     if 0:  # Not needed: use QTreeWidget.setIconsize.
                         pixmap = QtGui.QPixmap()
@@ -1371,7 +1371,7 @@ class LeoQtGui(leoGui.LeoGui):
             'SplashScreen.svg',  # Leo's licensed .svg logo.
             'Leosplash.GIF',  # Leo's public domain bitmaped image.
         ):
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', fn)
+            path = g.finalize_join(g.app.loadDir, '..', 'Icons', fn)
             if g.os_path_exists(path):
                 if fn.endswith('svg'):
                     # Convert SVG to un-pixelated pixmap
@@ -1694,7 +1694,7 @@ class StyleSheetManager:
         """
         exists = g.os_path_exists
         home = g.app.homeDir
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         leo = join(g.app.loadDir, '..')
         table = [
             join(home, '.leo', 'Icons'),
@@ -1731,7 +1731,7 @@ class StyleSheetManager:
         if not s:
             return None  # Not an error.
         for directory in self.compute_icon_directories():
-            path = g.os_path_finalize_join(directory, s)
+            path = g.finalize_join(directory, s)
             if g.os_path_exists(path):
                 return path
         g.es_print('no icon found for:', setting)
@@ -1983,7 +1983,7 @@ class StyleSheetManager:
         """Resolve all relative url's so they use absolute paths."""
         trace = 'themes' in g.app.debug
         pattern = re.compile(r'url\((.*)\)')
-        join = g.os_path_finalize_join
+        join = g.finalize_join
         directories = self.compute_icon_directories()
         paths_traced = False
         if trace:

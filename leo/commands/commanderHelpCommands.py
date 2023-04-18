@@ -71,8 +71,7 @@ def leoDocumentation(self: Self, event: Event = None) -> None:
     """Open LeoDocs.leo in a new Leo window."""
     c = self
     name = "LeoDocs.leo"
-    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
-    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    fileName = g.finalize_join(g.app.loadDir, "..", "doc", name)
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2:
@@ -85,8 +84,7 @@ def leoQuickStart(self: Self, event: Event = None) -> None:
     """Open quickstart.leo in a new Leo window."""
     c = self
     name = "quickstart.leo"
-    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
-    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    fileName = g.finalize_join(g.app.loadDir, "..", "doc", name)
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2:
@@ -99,7 +97,7 @@ def leoQuickStart(self: Self, event: Event = None) -> None:
 def openCheatSheet(self: Self, event: Event = None) -> None:
     """Open leo/doc/cheatSheet.leo"""
     c = self
-    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+    fn = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
     if not g.os_path_exists(fn):
         g.es(f"file not found: {fn}")
         return
@@ -115,9 +113,7 @@ def openCheatSheet(self: Self, event: Event = None) -> None:
 def openDesktopIntegration(self: Self, event: Event = None) -> None:
     """Open Desktop-integration.leo."""
     c = self
-    fileName = g.os_path_finalize_join(
-        g.app.loadDir, '..', 'scripts', 'desktop-integration.leo')
-    # only call g.openWithFileName if the file exists.
+    fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'desktop-integration.leo')
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2:
@@ -130,7 +126,7 @@ def openLeoDist(self: Self, event: Event = None) -> None:
     """Open leoDist.leo in a new Leo window."""
     c = self
     name = "leoDist.leo"
-    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "dist", name)
+    fileName = g.finalize_join(g.app.loadDir, "..", "dist", name)
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2:
@@ -144,7 +140,7 @@ def openLeoPy(self: Self, event: Event = None) -> None:
     c = self
     names = ('leoPy.leo', 'LeoPyRef.leo',)  # Used in error message.
     for name in names:
-        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "core", name)
+        fileName = g.finalize_join(g.app.loadDir, "..", "core", name)
         # Only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
@@ -157,8 +153,7 @@ def openLeoPy(self: Self, event: Event = None) -> None:
 def openLeoPyRef(self: Self, event: Event = None) -> None:
     """Open leoPyRef.leo in a new Leo window."""
     c = self
-    path = g.os_path_finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
-    # Only call g.openWithFileName if the file exists.
+    path = g.finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
     if g.os_path_exists(path):
         c2 = g.openWithFileName(path, old_c=c)
         if c2:
@@ -170,8 +165,7 @@ def openLeoPyRef(self: Self, event: Event = None) -> None:
 def openLeoScripts(self: Self, event: Event = None) -> None:
     """Open scripts.leo."""
     c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
-    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2:
