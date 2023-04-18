@@ -407,7 +407,7 @@ class todoController:
 
         for i in range(10):
             button = getattr(ui, f"butPri{i}")
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', "cleo", f"pri{i}.png")
+            path = g.finalize_join(g.app.loadDir, '..', 'Icons', "cleo", f"pri{i}.png")
             button.setIcon(QtGui.QIcon(path))
             button.setIconSize(size)
             button.setToolTip(f"Priority {i}")
@@ -432,7 +432,7 @@ class todoController:
 
         for attr, icon, tooltip in table:
             button = getattr(ui, attr)
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', "cleo", icon)
+            path = g.finalize_join(g.app.loadDir, '..', 'Icons', "cleo", icon)
             button.setIcon(QtGui.QIcon(path))
             button.setIconSize(size)
             button.setToolTip(tooltip)

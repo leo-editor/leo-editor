@@ -4589,7 +4589,7 @@ def backupGitIssues(c: Cmdr, base_url: str = None) -> None:
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command: str, directory: str) -> List[str]:
     """Execute the given git command in the given directory."""
-    git_dir = g.os_path_finalize_join(directory, '.git')
+    git_dir = g.finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('not found:', git_dir, g.callers())
         return []
@@ -4906,16 +4906,16 @@ def gitInfo(path: str = None) -> Tuple[str, str]:
         g.trace('can not open:', path)
         return branch, commit
     # Try to get a better commit number.
-    git_dir = g.os_path_finalize_join(path, '..')
+    git_dir = g.finalize_join(path, '..')
     try:
-        path = g.os_path_finalize_join(git_dir, pointer)
+        path = g.finalize_join(git_dir, pointer)
         with open(path) as f:
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
     except IOError:
         try:
-            path = g.os_path_finalize_join(git_dir, 'packed-refs')
+            path = g.finalize_join(git_dir, 'packed-refs')
             with open(path) as f:  # type:ignore
                 for line in f:
                     if line.strip().endswith(' ' + pointer):
@@ -5944,7 +5944,7 @@ def internalError(*args: Any) -> None:
 def log_to_file(s: str, fn: str = None) -> None:
     """Write a message to ~/test/leo_log.txt."""
     if fn is None:
-        fn = g.os_path_expanduser('~/test/leo_log.txt')
+        fn = g.finalize('~/test/leo_log.txt')
     if not s.endswith('\n'):
         s = s + '\n'
     try:
@@ -6341,6 +6341,60 @@ def windows() -> Optional[List]:
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20230410134119.1: *3* g.finalize
+def finalize(path: str) -> str:
+    """
+    Finalize the path. Do not call os.path.realpath.
+
+    - Call os.path.expanduser and  os.path.expandvars.
+    - Convert to an absolute path, relative to os.getwd().
+    - On Windows, convert backslashes to forward slashes.
+    """
+    if not path:
+        return ''
+    path = os.path.expanduser(path)
+    path = os.path.expandvars(path)
+
+    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+
+    # Convert backslashes to forward slashes, regradless of platform.
+    path = g.os_path_normslashes(path)
+    return path
+
+# g.finalize will *always* be better than the legacy g.os_path_expanduser.
+os_path_expanduser = finalize  # Compatibility.
+#@+node:ekr.20230410133838.1: *3* g.finalize_join
+def finalize_join(*args: Any) -> str:
+    """
+    Join and finalize. Do not call os.path.realpath.
+
+    - Return an empty string if all of the args are empty.
+    - Call os.path.expanduser and  os.path.expandvars for each arg.
+    - Call os.path.join on the resulting list of expanded arguments.
+    - Convert to an absolute path, relative to os.getwd().
+    - On Windows, convert backslashes to forward slashes.
+    """
+    uargs = [z for z in args if z]
+    if not uargs:
+        return ''
+    # Expand everything before joining.
+    uargs2 = [os.path.expandvars(os.path.expanduser(z)) for z in uargs]
+
+    # Join the paths.
+    path = os.path.join(*uargs2)
+
+    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
+    path = os.path.abspath(path)
+    path = os.path.normpath(path)
+
+    # Convert backslashes to forward slashes, regradless of platform.
+    path = g.os_path_normslashes(path)
+    return path
+
+# g.finalize_join will *always* be better than the legacy g.os_path_join.
+os_path_join = finalize_join  # Compatibility.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
 def glob_glob(pattern: str) -> List:
     """Return the regularized glob.glob(pattern)"""
@@ -6377,35 +6431,6 @@ def os_path_dirname(path: str) -> str:
 def os_path_exists(path: str) -> bool:
     """Return True if path exists."""
     return os.path.exists(path) if path else False
-#@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
-def os_path_expanduser(path: str) -> str:
-    """
-    wrap os.path.expanduser.
-    """
-    if not path:
-        return ''
-    path = os.path.expanduser(path)
-    path = os.path.normpath(path)
-    path = g.os_path_normslashes(path)
-    return path
-#@+node:ekr.20080921060401.14: *3* g.os_path_finalize
-def os_path_finalize(path: str) -> str:
-    """
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-    There is no corresponding os.path method
-    """
-    path = os.path.expanduser(path)  # #1383.
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    path = g.os_path_normslashes(path)
-    # calling os.path.realpath here would cause problems in some situations.
-    return path
-#@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
-def os_path_finalize_join(*args: Any, **keys: Any) -> str:
-    """Join and finalize."""
-    path = g.os_path_join(*args, **keys)
-    path = g.os_path_finalize(path)
-    return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path: str) -> float:
     """Return the modification time of path."""
@@ -6431,17 +6456,6 @@ def os_path_isdir(path: str) -> bool:
 def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
-#@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args: Any, **keys: Any) -> str:
-    """
-    Wrap os.path.join.
-    """
-    uargs = [z for z in args if z]
-    if not uargs:
-        return ''
-    path = os.path.join(*uargs)
-    path = g.os_path_normslashes(path)
-    return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
@@ -6462,13 +6476,13 @@ def os_path_normpath(path: str) -> str:
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path: str) -> str:
     """
-    Convert backslashes to slashes (Windows only).
+    Convert backslashes to forward slashes (Windows only).
 
-    os.path.normpath does the *reverse* of what we want.
+    In effect, this convert Windows paths to POSIX paths.
     """
-    if g.isWindows and path:
-        path = path.replace('\\', '/')
-    return path
+    if not path:
+        return ''
+    return path.replace('\\', '/') if g.isWindows else path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path: str) -> str:
     """Return the canonical path of the specified filename, eliminating any
@@ -7021,7 +7035,7 @@ def run_coverage_tests(module: str = '', filename: str = '') -> None:
     """
     Run the coverage tests given by the module and filename strings.
     """
-    unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+    unittests_dir = g.finalize_join(g.app.loadDir, '..', 'unittests')
     assert os.path.exists(unittests_dir)
     os.chdir(unittests_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
@@ -7065,10 +7079,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
     if i > -1:
         # Expand '~'.
         path = url[i:]
-        path = g.os_path_expanduser(path)
-        # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.expand_path_expression(path)
-        path = g.os_path_finalize(path)
+        path = g.finalize(path)
         url = url[:i] + path
     else:
         tag = 'file://'
@@ -7079,14 +7090,12 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
             path = url[len(tag) :].lstrip()
         else:
             path = url
-        # #1338: This is way too dangerous, and a serious security violation.
-            # path = c.expand_path_expression(path)
         # Handle ancestor @path directives.
         if c and c.openDirectory:
             base = c.getNodePath(p)
-            path = g.os_path_finalize_join(c.openDirectory, base, path)
+            path = g.finalize_join(c.openDirectory, base, path)
         else:
-            path = g.os_path_finalize(path)
+            path = g.finalize(path)
         url = f"{tag}{path}"
     return url
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link
@@ -7265,19 +7274,19 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return c
     if c:
         base = g.os_path_dirname(c.fileName())
-        c_path = g.os_path_finalize_join(base, path)
+        c_path = g.finalize_join(base, path)
     else:
         c_path = None
     # Look for the file in various places.
     table = (
         c_path,
-        g.os_path_finalize_join(g.app.loadDir, '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
+        g.finalize_join(g.app.loadDir, '..', path),
+        g.finalize_join(g.app.loadDir, '..', '..', path),
+        g.finalize_join(g.app.loadDir, '..', 'core', path),
+        g.finalize_join(g.app.loadDir, '..', 'config', path),
+        g.finalize_join(g.app.loadDir, '..', 'dist', path),
+        g.finalize_join(g.app.loadDir, '..', 'doc', path),
+        g.finalize_join(g.app.loadDir, '..', 'test', path),
         g.app.loadDir,
         g.app.homeDir,
     )

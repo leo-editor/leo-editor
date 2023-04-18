@@ -392,8 +392,8 @@ class Demo:
     #@+node:ekr.20170208093727.1: *4* demo.get_icon_fn
     def get_icon_fn(self, fn):
         """Resolve fn relative to the Icons directory."""
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
+        dir_ = g.finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
         g.trace('does not exist: %s' % (path))

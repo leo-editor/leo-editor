@@ -1305,7 +1305,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160213070235.6: *5* msf.finalize
             def finalize(self, fn: str) -> str:
                 """Finalize and regularize a filename."""
-                return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
+                return g.finalize(fn)
             #@+node:ekr.20160213070235.7: *5* msf.make_stub_file
             def make_stub_file(self, p: Position) -> None:
                 """Make a stub file in ~/stubs for the @<file> node at p."""
@@ -1322,7 +1322,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return
                 if g.os_path_exists(self.output_directory):
                     base_fn = g.os_path_basename(fn)
-                    out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
+                    out_fn = g.finalize_join(self.output_directory, base_fn)
                 else:
                     g.es_print('not found', self.output_directory)
                     return
@@ -1400,7 +1400,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160316094011.7: *5* py2cs.finalize
             def finalize(self, fn: str) -> str:
                 """Finalize and regularize a filename."""
-                return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
+                return g.finalize(fn)
             #@+node:ekr.20160316094011.8: *5* py2cs.to_coffeescript
             def to_coffeescript(self, p: Position) -> None:
                 """Convert the @<file> node at p to a .coffee file."""
@@ -1416,7 +1416,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return
                 if g.os_path_exists(self.output_directory):
                     base_fn = g.os_path_basename(fn)
-                    out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
+                    out_fn = g.finalize_join(self.output_directory, base_fn)
                 else:
                     g.es_print('not found', self.output_directory)
                     return

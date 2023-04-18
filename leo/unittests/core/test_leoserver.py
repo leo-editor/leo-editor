@@ -72,7 +72,7 @@ class TestLeoServer(LeoUnitTest):
         server = self.server
         tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         # Remove all uA's.
         methods = server._get_all_server_commands()
@@ -152,7 +152,7 @@ class TestLeoServer(LeoUnitTest):
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         table = [
@@ -182,7 +182,7 @@ class TestLeoServer(LeoUnitTest):
     def test_find_commands(self):
 
         tag = 'test_find_commands'
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         # Open the file & create the StringFindTabManager.

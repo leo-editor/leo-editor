@@ -27,9 +27,9 @@ g.os_path_exists = os.path.exists
 
 
 
-#@+node:ville.20090804155017.12333: ** os_path_finalize caching
-os_path_finalize_orig = g.os_path_finalize
-os_path_finalize_join_orig = g.os_path_finalize_join
+#@+node:ville.20090804155017.12333: ** os_path_finalize caching (mod_speedups.py)
+os_path_finalize_orig = g.finalize
+os_path_finalize_join_orig = g.finalize_join
 
 _finalized_cache = {}
 _finalized_join_cache = {}
@@ -52,21 +52,21 @@ def os_path_finalize_join_cached(*args, **keys):
     _finalized_join_cache[args] = res
     return res
 
-def os_path_expanduser_cached(path, encoding=None):
-    res = _expanduser_cache.get(path)
-    if res:
-        return res
-    res = os.path.expanduser(path)
-    _expanduser_cache[path] = res
-    return res
+# def os_path_expanduser_cached(path, encoding=None):
+    # res = _expanduser_cache.get(path)
+    # if res:
+        # return res
+    # res = os.path.expanduser(path)
+    # _expanduser_cache[path] = res
+    # return res
 
 def os_path_join_speedup(*args, **kw):
     path = os.path.join(*args)
     return path
 
-g.os_path_finalize = os_path_finalize_cached
-g.os_path_finalize_join = os_path_finalize_join_cached
-g.os_path_expanduser = os_path_expanduser_cached
+g.finalize = os_path_finalize_cached
+g.finalize_join = os_path_finalize_join_cached
+# g.os_path_expanduser = os_path_expanduser_cached
 
 #@-others
 #@@language python

@@ -1071,8 +1071,8 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         self.d = e.document()  # A QTextDocument.
         self.fm = self.fontMetrics()  # A QFontMetrics
         self.image = QtGui.QImage(g.app.gui.getImageImage(
-            g.os_path_finalize_join(g.app.loadDir,
-                '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
+            g.finalize_join(g.app.loadDir,
+            '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
         self.highest_line = 0  # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets: List[Tuple[int, Any]] = []

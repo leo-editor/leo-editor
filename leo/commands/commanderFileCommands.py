@@ -1073,7 +1073,7 @@ def open_theme_file(self: Self, event: Event) -> None:
     if not c:
         return
     # Get the file name.
-    themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
+    themes_dir = g.finalize_join(g.app.loadDir, '..', 'themes')
     fn = g.app.gui.runOpenFileDialog(c,
         title="Open Theme File",
         filetypes=[
@@ -1085,7 +1085,7 @@ def open_theme_file(self: Self, event: Event) -> None:
     )
     if not fn:
         return
-    leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    leo_dir = g.finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
     #
     # #1425: Open the theme file in a separate process.

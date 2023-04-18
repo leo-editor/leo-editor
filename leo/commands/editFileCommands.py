@@ -733,7 +733,7 @@ class GitDiffController:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             return
         # Finish.
-        path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
+        path = g.finalize_join(directory, fn)  # #1781: bug fix.
         c1 = c2 = None
         if fn.endswith('.leo'):
             c1 = self.make_leo_outline(fn, path, s1, rev1)
@@ -982,9 +982,9 @@ class GitDiffController:
     def find_git_working_directory(self, directory: str) -> Optional[str]:
         """Return the git working directory, starting at directory."""
         while directory:
-            if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
+            if g.os_path_exists(g.finalize_join(directory, '.git')):
                 return directory
-            path2 = g.os_path_finalize_join(directory, '..')
+            path2 = g.finalize_join(directory, '..')
             if path2 == directory:
                 break
             directory = path2
@@ -1027,7 +1027,7 @@ class GitDiffController:
             print(f"git-diff: no .git directory: {directory!r} filename: {filename!r}")
             return None
         # This should guarantee that the directory contains a .git directory.
-        directory = g.os_path_finalize_join(base_directory, '..', '..')
+        directory = g.finalize_join(base_directory, '..', '..')
         return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch: str, fn: str) -> str:
@@ -1047,7 +1047,7 @@ class GitDiffController:
         directory = self.get_directory()
         if not directory:
             return ''
-        path = g.os_path_finalize_join(directory, fn)
+        path = g.finalize_join(directory, fn)
         if not g.os_path_exists(path):
             g.trace(f"File not found: {path!r} fn: {fn!r}")
             return ''

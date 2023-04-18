@@ -414,7 +414,7 @@ def make_at_file_node(line, path):
     c = g.app.log.c
     if not c:
         return None
-    path = g.os_path_finalize(path).replace('\\', '/')
+    path = g.finalize(path)
     if not g.os_path_exists(path):
         g.trace('Not found:', repr(path))
         return None
@@ -439,7 +439,7 @@ def show_line(line, fn) -> None:
     fn should be a full path to a file.
     """
     c = g.app.log.c
-    target = g.os_path_finalize(fn).replace('\\', '/')
+    target = g.finalize(fn)
     if not g.os_path_exists(fn):
         g.trace('===== Does not exist', fn)
         return

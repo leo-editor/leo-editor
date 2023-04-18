@@ -57,7 +57,7 @@ class SessionManager:
         """Return the path to the session file."""
         for path in (g.app.homeLeoDir, g.app.homeDir):
             if g.os_path_exists(path):
-                return g.os_path_finalize_join(path, 'leo.session')
+                return g.finalize_join(path, 'leo.session')
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
     def load_session(self, c: Cmdr = None, unls: List[str] = None) -> None:

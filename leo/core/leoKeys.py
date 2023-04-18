@@ -1096,7 +1096,7 @@ class FileNameChooser:
         """Compute the list of completions."""
         path = self.get_label()
         # #215: insert-file-name doesn't process ~
-        path = g.os_path_expanduser(path)
+        path = g.finalize(path)
         sep = os.path.sep
         if g.os_path_exists(path):
             if g.os_path_isdir(path):
@@ -1200,8 +1200,8 @@ class FileNameChooser:
             self.filterExt = filterExt or ['.pyc', '.bin',]
             self.prompt = prompt
             self.tabName = tabName
-            join = g.os_path_finalize_join
-            finalize = g.os_path_finalize
+            join = g.finalize_join
+            finalize = g.finalize
             normslashes = g.os_path_normslashes
             # #467: Add setting for preferred directory.
             directory = c.config.getString('initial-chooser-directory')
@@ -1260,7 +1260,7 @@ class FileNameChooser:
     def show_tab_list(self, tabList: List[str]) -> None:
         """Show the tab list in the log tab."""
         self.log.clearTab(self.tabName)
-        s = g.os_path_finalize(os.curdir) + os.sep
+        s = g.finalize(os.curdir) + os.sep
         es = []
         for path in tabList:
             theDir, fileName = g.os_path_split(path)
