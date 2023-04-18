@@ -6427,6 +6427,13 @@ def os_path_dirname(path: str) -> str:
     path = os.path.dirname(path)
     path = g.os_path_normslashes(path)
     return path
+#@+node:ekr.20230418102243.1: *3* g.os_path_expanduser
+def os_path_expanduser(path):
+    if not path:
+        return ''
+    path = os.path.expanduser(path)
+    path = os.path.expandvars(path)
+    return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path: str) -> bool:
     """Return True if path exists."""
