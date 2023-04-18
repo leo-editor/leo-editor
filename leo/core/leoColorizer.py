@@ -1018,7 +1018,7 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, delegate_language, rulesetName = self.nameToRulesetName(name)
-        if False or 'coloring' in g.app.debug:  ###
+        if 'coloring' in g.app.debug:
             g.trace(
                 f"name: {name} "
                 f"language: {language!r} "
@@ -1027,7 +1027,7 @@ class JEditColorizer(BaseColorizer):
             print('')
         bunch = self.modes.get(rulesetName)
         if bunch:
-            g.trace('===== USE', bunch.language, g.callers())  ###
+            ### g.trace('===== USE', bunch.language, g.callers())  ###
             if bunch.language == 'unknown-language':
                 return False
             self.initModeFromBunch(bunch)
@@ -1057,7 +1057,7 @@ class JEditColorizer(BaseColorizer):
         coloring rule attributes for the mode.
         """
         language, delegate_language, rulesetName = self.nameToRulesetName(name)
-        g.trace(bool(mode), name, delegate_language, rulesetName)
+        ### g.trace(bool(mode), name, delegate_language, rulesetName)
         if mode:
             # A hack to give modes/forth.py access to c.
             if hasattr(mode, 'pre_init_mode'):
@@ -1355,7 +1355,7 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
-    #@+node:ekr.20230418070938.1: *3* jedit.begin_delegate (new)
+    #@+node:ekr.20230418070938.1: *3* jedit.begin_delegate (new, not used)
     def begin_delegate(self, s: str, i: int, j: int, delegate_name: str) -> None:
         g.trace(i, j, s[i:j], delegate_name, g.callers(1))  ###
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
@@ -2143,8 +2143,8 @@ class JEditColorizer(BaseColorizer):
             # We have matched the start of the span.
             j = self.match_span_helper(s, i + len(begin), end,
                 no_escape, no_line_break, no_word_break=no_word_break)
-            # g.trace('MATCH', bool(delegate), s[i:j], g.callers(2)) ###
-            g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
+            ### g.trace('MATCH', bool(delegate), s[i:j], g.callers(2)) ###
+            ### g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
             if j == -1:
                 j = i  # A real failure.
             else:
