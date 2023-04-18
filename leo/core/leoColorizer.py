@@ -1338,6 +1338,9 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
+    #@+node:ekr.20230418070938.1: *3* jedit.begin_delegate (new)
+    def begin_delegate(self, delegate_name):
+        g.trace(delegate_name, g.callers(2))  ###
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -2120,6 +2123,8 @@ class JEditColorizer(BaseColorizer):
         elif not g.match(s, i, begin):
             j = i
         else:
+            if s[i:].startswith('<script'):
+                g.trace('MATCH', s[i:])
             # We have matched the start of the span.
             j = self.match_span_helper(s, i + len(begin), end,
                 no_escape, no_line_break, no_word_break=no_word_break)
