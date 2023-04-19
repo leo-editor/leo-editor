@@ -307,98 +307,98 @@ keywordsDictDict = {
 #@+node:ekr.20230419163736.1: ** Python rules
 #@+node:ekr.20230419163819.1: *3* python_rule0
 def python_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 #@+node:ekr.20230419163819.2: *3* python_rule1
 def python_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 #@+node:ekr.20230419163819.3: *3* python_rule2
 def python_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
 #@+node:ekr.20230419163819.4: *3* python_rule3
 def python_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 #@+node:ekr.20230419163819.5: *3* python_rule4
 def python_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20230419163819.6: *3* python_rule5
 def python_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="=")
+
+
 #@+node:ekr.20230419163819.7: *3* python_rule6
 def python_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="!")
+
+
 #@+node:ekr.20230419163819.8: *3* python_rule7
 def python_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq=">=")
+
+
 #@+node:ekr.20230419163819.9: *3* python_rule8
 def python_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="<=")
+
+
 #@+node:ekr.20230419163819.10: *3* python_rule9
 def python_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="+")
+
+
 #@+node:ekr.20230419163819.11: *3* python_rule10
 def python_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="-")
+
+
 #@+node:ekr.20230419163819.12: *3* python_rule11
 def python_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="/")
+
+
 #@+node:ekr.20230419163819.13: *3* python_rule12
 def python_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="*")
+
+
 #@+node:ekr.20230419163819.14: *3* python_rule13
 def python_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq=">")
+
+
 #@+node:ekr.20230419163819.15: *3* python_rule14
 def python_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="<")
+
+
 #@+node:ekr.20230419163819.16: *3* python_rule15
 def python_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="%")
+
+
 #@+node:ekr.20230419163819.17: *3* python_rule16
 def python_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="&")
+
+
 #@+node:ekr.20230419163819.18: *3* python_rule17
 def python_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="|")
+
+
 #@+node:ekr.20230419163819.19: *3* python_rule18
 def python_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="^")
+
+
 #@+node:ekr.20230419163819.20: *3* python_rule19
 def python_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, kind="operator", seq="~")
+
+
 #@+node:ekr.20230419163819.21: *3* python_rule20 (not used)
-# #1821.
-# def python_rule20(colorer, s, i):
-    # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+if 0:  # #1821.
+    def python_rule20(colorer, s, i):
+        return colorer.match_mark_previous(s, i, kind="function", pattern="(")
 #@+node:ekr.20230419163819.22: *3* python_rule21
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -410,12 +410,11 @@ if url:
     f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
     def python_rule_h_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex,
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex)
 
     def python_rule_f_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex,
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex)
+
 else:
     # Always fail.
     def python_rule_h_url(colorer, s, i):
