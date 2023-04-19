@@ -104,7 +104,7 @@ def html_rule1(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-        
+
 def html_rule1a(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
@@ -115,7 +115,7 @@ def html_rule2(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-        
+
 def html_rule2a(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
