@@ -2098,6 +2098,7 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
+        *,
         kind: str = '',
         begin: str = '',
         end: str = '',
@@ -2136,8 +2137,8 @@ class JEditColorizer(BaseColorizer):
                 no_line_break=no_line_break,
                 no_word_break=no_word_break,
             )
-            ### g.trace('MATCH', bool(delegate), s[i:j], g.callers(2)) ###
-            ### g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
+            if False and 'end' == '</script>':
+                g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
             if j == -1:
                 j = i  # A real failure.
             else:

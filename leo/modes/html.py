@@ -100,17 +100,23 @@ def html_rule0(colorer, s, i):
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def html_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
+    return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def html_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False,
-        ignore_case=True)
+    return colorer.match_span(s, i, kind="markup", begin="<style", end="</style>",
+        at_line_start=False,
+        at_whitespace_end=False,
+        at_word_start=False,
+        delegate="html::css",
+        exclude_match=False,
+        ignore_case=True,
+        no_escape=False,
+        no_line_break=False,
+        no_word_break=False,
+        )
 
 def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
