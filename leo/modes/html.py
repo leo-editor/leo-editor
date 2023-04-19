@@ -96,10 +96,6 @@ keywordsDictDict = {
 
 def html_rule0(colorer, s, i):
     return colorer.match_span(s, i, "comment1", begin="<!--", end="-->")
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        # delegate="", exclude_match=False,
-        # no_escape=False, no_line_break=False, no_word_break=False)
-
 def match(s: str, i: int, pattern: str) -> bool:
     """Same as g.match."""
     return s and s.find(pattern, i, i + len(pattern)) == i
@@ -115,42 +111,17 @@ def html_rule1(colorer: Any, s: str, i: int) -> int:
 def html_rule2(colorer, s, i):
     return colorer.match_span(s, i, "markup", begin="<style", end="</style>",
         delegate="html::css")
-        # at_line_start=False,
-        # at_whitespace_end=False,
-        # at_word_start=False,
-        # exclude_match=False,
-        # no_escape=False,
-        # no_line_break=False,
-        # no_word_break=False,
-        # )
-
 def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, "keyword2", begin="<!", end=">")
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        # delegate="xml::dtd-tags", exclude_match=False,
-        # no_escape=False, no_line_break=False, no_word_break=False)
-
 def html_rule4(colorer, s, i):
     return colorer.match_span(s, i, "markup", begin="<", end=">",
         delegate="html::tags")
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        # exclude_match=False,
-        # no_escape=False, no_line_break=False, no_word_break=False)
-
 def html_rule5(colorer, s, i):
     return colorer.match_span(s, i, "literal2", begin="&", end=";",
         no_word_break=True)
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        # delegate="", exclude_match=False,
-        # no_escape=False, no_line_break=False,
-
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
     return colorer.match_span(s, i, "literal3", begin="{{", end="}}")
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        # delegate="", exclude_match=False,
-        # no_escape=False, no_line_break=False, no_word_break=False)
-
 
 # Rules dict for html_main ruleset.
 rulesDict1 = {
