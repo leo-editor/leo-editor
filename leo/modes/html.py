@@ -141,15 +141,7 @@ def html_rule_handlebar(colorer, s, i):
 # Rules dict for html_main ruleset.
 rulesDict1 = {
     "&": [html_rule5],
-    "<": [
-        html_rule0,
-        html_rule1,
-        # html_rule1a,  # experimental
-        html_rule2,
-        # html_rule2a,  # experimental
-        html_rule3,
-        html_rule4,
-        ],
+    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
     "{": [html_rule_handlebar],
 }
 
@@ -173,9 +165,9 @@ def html_rule8(colorer, s, i):
 
 # Rules dict for html_tags ruleset.
 rulesDict2 = {
-    "\"": [html_rule6,],
-    "'": [html_rule7,],
-    "=": [html_rule8,],
+    "\"": [html_rule6],
+    "'": [html_rule7],
+    "=": [html_rule8],
 }
 
 # Rules for html_javascript ruleset.
@@ -192,8 +184,8 @@ def html_rule10(colorer, s, i):
 
 # Rules dict for html_javascript ruleset.
 rulesDict3 = {
-    ">": [html_rule9,],
-    "S": [html_rule10,],
+    ">": [html_rule9],
+    "S": [html_rule10],
 }
 
 # Rules for html_back_to_html ruleset.
@@ -205,7 +197,7 @@ def html_rule11(colorer, s, i):
 
 # Rules dict for html_back_to_html ruleset.
 rulesDict4 = {
-    ">": [html_rule11,],
+    ">": [html_rule11],
 }
 
 # Rules for html_css ruleset.
@@ -217,7 +209,7 @@ def html_rule12(colorer, s, i):
 
 # Rules dict for html_css ruleset.
 rulesDict5 = {
-    ">": [html_rule12,],
+    ">": [html_rule12],
 }
 
 # x.rulesDictDict for html mode.
