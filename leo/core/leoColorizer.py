@@ -1017,12 +1017,11 @@ class JEditColorizer(BaseColorizer):
             return False
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
-        language, delegate_language, rulesetName = self.nameToRulesetName(name)
+        language, rulesetName = self.nameToRulesetName(name)
         if 'coloring' in g.app.debug:
             g.trace(
                 f"name: {name} "
                 f"language: {language!r} "
-                f"delegate_language: {delegate_language} "
                 f"rulesetName: {rulesetName!r}")
             print('')
         bunch = self.modes.get(rulesetName)
@@ -1035,20 +1034,12 @@ class JEditColorizer(BaseColorizer):
             return True
         # Don't try to import a non-existent language.
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        if 1:  ### Experimental:
-            for candidate_language in (delegate_language, language):
-                fn = g.os_path_join(path, f"{candidate_language}.py")
-                if g.os_path_exists(fn):
-                    mode = g.import_module(name=f"leo.modes.{candidate_language}")
-                    return self.init_mode_from_module(name, mode)
-            return self.init_mode_from_module(name, None)
+        fn = g.os_path_join(path, f"{language}.py")
+        if g.os_path_exists(fn):
+            mode = g.import_module(name=f"leo.modes.{language}")
         else:
-            fn = g.os_path_join(path, f"{language}.py")
-            if g.os_path_exists(fn):
-                mode = g.import_module(name=f"leo.modes.{language}")
-            else:
-                mode = None
-            return self.init_mode_from_module(name, mode)
+            mode = None
+        return self.init_mode_from_module(name, mode)
     #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
     def init_mode_from_module(self, name: str, mode: Mode) -> bool:
         """
@@ -1056,16 +1047,14 @@ class JEditColorizer(BaseColorizer):
         Mode is a python module or class containing all
         coloring rule attributes for the mode.
         """
-        language, delegate_language, rulesetName = self.nameToRulesetName(name)
-        ### g.trace(bool(mode), name, delegate_language, rulesetName)
+        language, rulesetName = self.nameToRulesetName(name)
         if mode:
             # A hack to give modes/forth.py access to c.
             if hasattr(mode, 'pre_init_mode'):
                 mode.pre_init_mode(self.c)
         else:
             # Create a dummy bunch to limit recursion.
-            ### self.modes[rulesetName] = self.modeBunch = g.Bunch(
-            self.modes[delegate_language] = self.modeBunch = g.Bunch(
+            self.modes[language] = self.modeBunch = g.Bunch(
                 attributesDict={},
                 defaultColor=None,
                 keywordsDict={},
@@ -1079,8 +1068,7 @@ class JEditColorizer(BaseColorizer):
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
             return False
-        ### self.language = language
-        self.language = delegate_language or language  ###
+        self.language = language
         self.rulesetName = rulesetName
         self.properties = getattr(mode, 'properties', None) or {}
         #
@@ -1097,8 +1085,7 @@ class JEditColorizer(BaseColorizer):
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
-        ### self.modes[rulesetName] = self.modeBunch = g.Bunch(
-        self.modes[self.language] = self.modeBunch = g.Bunch(
+        self.modes[rulesetName] = self.modeBunch = g.Bunch(
             attributesDict=self.attributesDict,
             defaultColor=self.defaultColor,
             keywordsDict=self.keywordsDict,
@@ -1123,26 +1110,25 @@ class JEditColorizer(BaseColorizer):
             self.language = language  # 2017/01/31
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
-    def nameToRulesetName(self, name: str) -> Tuple[str, str, str]:
+    def nameToRulesetName(self, name: str) -> Tuple[str, str]:
         """
         Compute language and rulesetName from name, which is either a language
         name or a delegate name.
         """
         if not name:
-            return 'unknown-language', None, None
+            return 'unknown-language', None
         # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
         i = name.find('::')
         if i == -1:
-            ### language = name
             # New in Leo 5.0: allow delegated language names.
-            language = delegate_language = g.app.delegate_language_dict.get(name, name)
-            rulesetName = f"{delegate_language}_main"
+            language = g.app.delegate_language_dict.get(name, name)
+            rulesetName = f"{language}_main"
         else:
             language = name[:i]
             delegate_language = name[i + 2 :]
             rulesetName = self.munge(f"{language}_{delegate_language}")
-        return language, delegate_language, rulesetName
+        return language, rulesetName
     #@+node:ekr.20110605121601.18583: *5* jedit.setKeywords
     def setKeywords(self) -> None:
         """
@@ -2123,6 +2109,7 @@ class JEditColorizer(BaseColorizer):
         no_escape: bool = False,
         no_line_break: bool = False,
         no_word_break: bool = False,
+        ignore_case: bool = False,  # New in Leo 6.7.3.
     ) -> int:
         """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
         dots = False  # A flag that we are using dots as a continuation.
@@ -2137,12 +2124,18 @@ class JEditColorizer(BaseColorizer):
         elif at_word_start and i + len(
             begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
             j = i
-        elif not g.match(s, i, begin):
+        elif not ignore_case and not g.match(s, i, begin):
+            j = i
+        elif ignore_case and not g.match(s.lower(), i, begin.lower()):
             j = i
         else:
             # We have matched the start of the span.
             j = self.match_span_helper(s, i + len(begin), end,
-                no_escape, no_line_break, no_word_break=no_word_break)
+                ignore_case=ignore_case,
+                no_escape=no_escape,
+                no_line_break=no_line_break,
+                no_word_break=no_word_break,
+            )
             ### g.trace('MATCH', bool(delegate), s[i:j], g.callers(2)) ###
             ### g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
             if j == -1:
@@ -2177,12 +2170,22 @@ class JEditColorizer(BaseColorizer):
 
             def span(s: str) -> int:
                 # Note: bindings are frozen by this def.
-                return self.restart_match_span(s,  # Positional args, in alpha order
-                    delegate, end, exclude_match, kind,
-                    no_escape, no_line_break, no_word_break)
+                return self.restart_match_span(s,
+                    # Keyword args...
+                    delegate=delegate,
+                    end=end,
+                    exclude_match=exclude_match,
+                    kind=kind,
+                    ignore_case=ignore_case,
+                    no_escape=no_escape,
+                    no_line_break=no_line_break,
+                    no_word_break=no_word_break,
+                )
 
-            self.setRestart(span,  # These must be keyword args.
-                delegate=delegate, end=end,
+            self.setRestart(span,
+                # These must be keyword args.
+                delegate=delegate,
+                end=end,
                 exclude_match=exclude_match,
                 kind=kind,
                 no_escape=no_escape,
@@ -2191,11 +2194,21 @@ class JEditColorizer(BaseColorizer):
         return j - i  # Correct, whatever j is.
     #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper
     def match_span_helper(self,
-        s: str, i: int, pattern: Any, no_escape: Any, no_line_break: Any, no_word_break: Any,
+        s: str,
+        i: int,
+        pattern: str,
+        *,
+        ignore_case: bool,
+        no_escape: bool,
+        no_line_break: bool,
+        no_word_break: bool,
     ) -> int:
         """
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
+        if ignore_case:
+            s = s.lower()
+            pattern = pattern.lower()
         esc = self.escape
         # pylint: disable=inconsistent-return-statements
         while 1:
@@ -2218,7 +2231,7 @@ class JEditColorizer(BaseColorizer):
                     k += 1
                 if (escapes % 2) == 1:
                     assert s[j - 1] == esc
-                    i += 1  # 2013/08/26: just advance past the *one* escaped character.
+                    i += 1  # Advance past *one* escaped character.
                 else:
                     return j
             else:
@@ -2229,18 +2242,26 @@ class JEditColorizer(BaseColorizer):
     def restart_match_span(
         self,
         s: str,
+        *,
         delegate: Any,
-        end: Any,
-        exclude_match: Any,
+        end: str,
+        exclude_match: bool,
         kind: str,
-        no_escape: Any,
-        no_line_break: Any,
-        no_word_break: Any,
+        ignore_case: bool,
+        no_escape: bool,
+        no_line_break: bool,
+        no_word_break: bool,
     ) -> int:
         """Remain in this state until 'end' is seen."""
         self.matcher_name = 'restart:' + self.matcher_name.replace('restart:', '')
         i = 0
-        j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
+        j = self.match_span_helper(s, i, end,
+            # Must be keyword arguments.
+            ignore_case=ignore_case,
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break,
+        )
         if j == -1:
             j2 = len(s) + 1
         elif j > len(s):
@@ -2260,15 +2281,28 @@ class JEditColorizer(BaseColorizer):
         if j > len(s):
 
             def span(s: str) -> int:
-                return self.restart_match_span(s,  # Positional args, in alpha order
-                    delegate, end, exclude_match, kind,
-                    no_escape, no_line_break, no_word_break)
+                return self.restart_match_span(s,
+                    # Must be kword arguments.
+                    delegate=delegate,
+                    end=end,
+                    exclude_match=exclude_match,
+                    kind=kind,
+                    ignore_case=ignore_case,
+                    no_escape=no_escape,
+                    no_line_break=no_line_break,
+                    no_word_break=no_word_break,
+                )
 
-            self.setRestart(span,  # These must be keywords args.
-                delegate=delegate, end=end, kind=kind,
+            self.setRestart(span,
+                # Must be kword arguments.
+                delegate=delegate,
+                end=end,
+                ignore_case=ignore_case,
+                kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
-                no_word_break=no_word_break)
+                no_word_break=no_word_break,
+            )
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.

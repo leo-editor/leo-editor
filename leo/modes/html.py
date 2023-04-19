@@ -105,22 +105,12 @@ def html_rule1(colorer, s, i):
         delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
-def html_rule1a(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
 def html_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="html::css", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
-def html_rule2a(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<script", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        no_escape=False, no_line_break=False, no_word_break=False,
+        ignore_case=True)
 
 def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
@@ -153,8 +143,12 @@ rulesDict1 = {
     "&": [html_rule5],
     "<": [
         html_rule0,
-        html_rule1a, html_rule2a,  #3281
-        html_rule3, html_rule4,
+        html_rule1,
+        # html_rule1a,  # experimental
+        html_rule2,
+        # html_rule2a,  # experimental
+        html_rule3,
+        html_rule4,
         ],
     "{": [html_rule_handlebar],
 }
