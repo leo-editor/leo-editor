@@ -195,136 +195,72 @@ keywordsDictDict = {
 # Rules for javascript_main ruleset.
 
 def javascript_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+    return colorer.match_span(s, i, "comment1", begin="/*", end="*/")
 def javascript_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
+    return colorer.match_span(s, i, "literal1", begin="\"", end="\"",
+        no_line_break=True)
 def javascript_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
+    return colorer.match_span(s, i, "literal1", begin="'", end="'",
+        no_line_break=True)
 def javascript_rule3(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
-
+    return colorer.match_mark_previous(s, i, "function", pattern="(",
+        exclude_match=True)
 def javascript_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
-
+    return colorer.match_eol_span(s, i, "comment2", seq="//",
+        exclude_match=False)
 def javascript_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="<!--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "comment1", seq="<!--")
 def javascript_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="=")
 def javascript_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="!")
 def javascript_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq=">=")
 def javascript_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="<=")
 def javascript_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="+")
 def javascript_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="-")
 def javascript_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="/")
 def javascript_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="*")
 def javascript_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq=">")
 def javascript_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="<")
 def javascript_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="%")
 def javascript_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="&")
 def javascript_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="|")
 def javascript_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="^")
 def javascript_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, kind="operator", seq="~")
 def javascript_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, kind="operator", seq=".")
 def javascript_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="}")
 def javascript_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, kind="operator", seq="{")
 def javascript_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq=",")
 def javascript_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq=";")
 def javascript_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="]")
 def javascript_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="[")
 def javascript_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq="?")
 def javascript_rule29(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=True)
-
+    return colorer.match_mark_previous(s, i, "label", pattern=":",
+        at_whitespace_end=True, exclude_match=True)
 def javascript_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
+    return colorer.match_seq(s, i, "operator", seq=":")
 def javascript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
 

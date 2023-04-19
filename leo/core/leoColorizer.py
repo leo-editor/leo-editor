@@ -1018,12 +1018,14 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        if 'coloring' in g.app.debug:
+        if False and 'coloring' in g.app.debug:  ###
             g.trace(
-                f"name: {name} "
-                f"language: {language!r} "
-                f"rulesetName: {rulesetName!r}")
-            print('')
+                f"name: {name:20} "
+                f"language: {language:10} "
+                f"rulesetName: {rulesetName:20}",
+                # g.callers(6),
+            )
+            # print('')
         bunch = self.modes.get(rulesetName)
         if bunch:
             ### g.trace('===== USE', bunch.language, g.callers())  ###
@@ -1341,9 +1343,6 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
-    #@+node:ekr.20230418070938.1: *3* jedit.begin_delegate (new, not used)
-    def begin_delegate(self, s: str, i: int, j: int, delegate_name: str) -> None:
-        g.trace(i, j, s[i:j], delegate_name, g.callers(1))  ###
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -2098,72 +2097,62 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
+        kind: str,
         *,
-        kind: str = '',
-        begin: str = '',
-        end: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
         at_word_start: bool = False,
+        begin: str = '',
         delegate: str = '',
+        end: str = '',
         exclude_match: bool = False,
         no_escape: bool = False,
         no_line_break: bool = False,
         no_word_break: bool = False,
-        ignore_case: bool = False,  # New in Leo 6.7.3.
     ) -> int:
         """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
-        dots = False  # A flag that we are using dots as a continuation.
         if i >= len(s):
             return 0
         if at_line_start and i != 0 and s[i - 1] != '\n':
-            j = i
-        elif at_whitespace_end and i != g.skip_ws(s, 0):
-            j = i
-        elif at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            j = i
-        elif at_word_start and i + len(
-            begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
-            j = i
-        elif not ignore_case and not g.match(s, i, begin):
-            j = i
-        elif ignore_case and not g.match(s.lower(), i, begin.lower()):
-            j = i
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
+            return 0
+        if not g.match(s, i, begin):
+            return 0
+        # We have matched the start of the span.
+        j = self.match_span_helper(s, i + len(begin), end,
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break,
+        )
+        if j == -1:
+            return 0  # A real failure.
+        # A hack to handle continued strings. Should work for most languages.
+        # Prepend "dots" to the kind, as a flag to setTag.
+        dots = j > len(
+            s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+        dots = dots and self.language not in ('lisp', 'elisp', 'rust')
+        if dots:
+            kind = 'dots' + kind
+        # A match
+        i2 = i + len(begin)
+        j2 = j + len(end)
+        if delegate:
+            self.colorRangeWithTag(
+                s, i, i2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, j, j2, kind, delegate=None, exclude_match=exclude_match)
         else:
-            # We have matched the start of the span.
-            j = self.match_span_helper(s, i + len(begin), end,
-                ignore_case=ignore_case,
-                no_escape=no_escape,
-                no_line_break=no_line_break,
-                no_word_break=no_word_break,
-            )
-            if False and 'end' == '</script>':
-                g.trace(f"{g.callers(1):11} {delegate:18} {i:3}:{j:<3} {s[i:j]}")
-            if j == -1:
-                j = i  # A real failure.
-            else:
-                # A hack to handle continued strings. Should work for most languages.
-                # Prepend "dots" to the kind, as a flag to setTag.
-                dots = j > len(
-                    s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
-                dots = dots and self.language not in ('lisp', 'elisp', 'rust')
-                if dots:
-                    kind = 'dots' + kind
-                # A match
-                i2 = i + len(begin)
-                j2 = j + len(end)
-                if delegate:
-                    self.colorRangeWithTag(
-                        s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                    self.colorRangeWithTag(
-                        s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                    self.colorRangeWithTag(
-                        s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-                else:
-                    self.colorRangeWithTag(
-                        s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-                j = j2
-                self.prev = (i, j, kind)
+            self.colorRangeWithTag(
+                s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+        j = j2
+        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         # New in Leo 5.5: don't recolor everything after continued strings.
         if j > len(s) and not dots:
@@ -2177,7 +2166,6 @@ class JEditColorizer(BaseColorizer):
                     end=end,
                     exclude_match=exclude_match,
                     kind=kind,
-                    ignore_case=ignore_case,
                     no_escape=no_escape,
                     no_line_break=no_line_break,
                     no_word_break=no_word_break,
@@ -2199,7 +2187,6 @@ class JEditColorizer(BaseColorizer):
         i: int,
         pattern: str,
         *,
-        ignore_case: bool,
         no_escape: bool,
         no_line_break: bool,
         no_word_break: bool,
@@ -2207,11 +2194,8 @@ class JEditColorizer(BaseColorizer):
         """
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
-        if ignore_case:
-            s = s.lower()
-            pattern = pattern.lower()
         esc = self.escape
-        # pylint: disable=inconsistent-return-statements
+        # py==lint: disable=inconsistent-return-statements
         while 1:
             j = s.find(pattern, i)
             if j == -1:
@@ -2248,7 +2232,6 @@ class JEditColorizer(BaseColorizer):
         end: str,
         exclude_match: bool,
         kind: str,
-        ignore_case: bool,
         no_escape: bool,
         no_line_break: bool,
         no_word_break: bool,
@@ -2258,7 +2241,6 @@ class JEditColorizer(BaseColorizer):
         i = 0
         j = self.match_span_helper(s, i, end,
             # Must be keyword arguments.
-            ignore_case=ignore_case,
             no_escape=no_escape,
             no_line_break=no_line_break,
             no_word_break=no_word_break,
@@ -2288,7 +2270,6 @@ class JEditColorizer(BaseColorizer):
                     end=end,
                     exclude_match=exclude_match,
                     kind=kind,
-                    ignore_case=ignore_case,
                     no_escape=no_escape,
                     no_line_break=no_line_break,
                     no_word_break=no_word_break,
@@ -2298,7 +2279,6 @@ class JEditColorizer(BaseColorizer):
                 # Must be kword arguments.
                 delegate=delegate,
                 end=end,
-                ignore_case=ignore_case,
                 kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,

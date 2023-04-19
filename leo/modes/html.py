@@ -1,6 +1,7 @@
 # Leo colorizer control file for html mode.
 # This file is in the public domain.
-# July 2, 2014: modifications for
+
+from typing import Any
 
 # Properties for html mode.
 properties = {
@@ -94,54 +95,61 @@ keywordsDictDict = {
 # Rules for html_main ruleset.
 
 def html_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "comment1", begin="<!--", end="-->")
+        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        # delegate="", exclude_match=False,
+        # no_escape=False, no_line_break=False, no_word_break=False)
 
-def html_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+def match(s: str, i: int, pattern: str) -> bool:
+    """Same as g.match."""
+    return s and s.find(pattern, i, i + len(pattern)) == i
 
+def html_rule1(colorer: Any, s: str, i: int) -> int:
+    
+    # Do quick check first.
+    if not match(s, i, '<script') and not match(s, i, '<SCRIPT'):
+        return 0
+   
+    return colorer.match_span(s, i, "markup", begin="<script", end="</script>",
+        delegate='javascript')  # "html::javascript"
 def html_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<style", end="</style>",
-        at_line_start=False,
-        at_whitespace_end=False,
-        at_word_start=False,
-        delegate="html::css",
-        exclude_match=False,
-        ignore_case=True,
-        no_escape=False,
-        no_line_break=False,
-        no_word_break=False,
-        )
+    return colorer.match_span(s, i, "markup", begin="<style", end="</style>",
+        delegate="html::css")
+        # at_line_start=False,
+        # at_whitespace_end=False,
+        # at_word_start=False,
+        # exclude_match=False,
+        # no_escape=False,
+        # no_line_break=False,
+        # no_word_break=False,
+        # )
 
 def html_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "keyword2", begin="<!", end=">")
+        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        # delegate="xml::dtd-tags", exclude_match=False,
+        # no_escape=False, no_line_break=False, no_word_break=False)
 
 def html_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "markup", begin="<", end=">",
+        delegate="html::tags")
+        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        # exclude_match=False,
+        # no_escape=False, no_line_break=False, no_word_break=False)
 
 def html_rule5(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+    return colorer.match_span(s, i, "literal2", begin="&", end=";",
+        no_word_break=True)
+        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        # delegate="", exclude_match=False,
+        # no_escape=False, no_line_break=False,
 
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "literal3", begin="{{", end="}}")
+        # at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        # delegate="", exclude_match=False,
+        # no_escape=False, no_line_break=False, no_word_break=False)
 
 
 # Rules dict for html_main ruleset.
@@ -154,20 +162,13 @@ rulesDict1 = {
 # Rules for html_tags ruleset.
 
 def html_rule6(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "literal1", begin="\"", end="\"")
 
 def html_rule7(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, "literal1", begin="'", end="'")
 
 def html_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq(s, i, "operator", seq="=")
 
 # Rules dict for html_tags ruleset.
 rulesDict2 = {
@@ -179,13 +180,11 @@ rulesDict2 = {
 # Rules for html_javascript ruleset.
 
 def html_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+    return colorer.match_seq(s, i, "markup", seq=">",
         delegate="javascript::main")
 
 def html_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="SRC=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+    return colorer.match_seq(s, i, "markup", seq="SRC=",
         delegate="html::back_to_html")
 
 # Rules dict for html_javascript ruleset.
@@ -197,8 +196,7 @@ rulesDict3 = {
 # Rules for html_back_to_html ruleset.
 
 def html_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+    return colorer.match_seq(s, i, "markup", seq=">",
         delegate="html::main")
 
 # Rules dict for html_back_to_html ruleset.
@@ -209,8 +207,7 @@ rulesDict4 = {
 # Rules for html_css ruleset.
 
 def html_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+    return colorer.match_seq(s, i, "markup", seq=">",
         delegate="css::main")
 
 # Rules dict for html_css ruleset.
