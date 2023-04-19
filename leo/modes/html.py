@@ -188,11 +188,13 @@ rulesDict2 = {
 
 def html_rule9(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="javascript::main")
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="javascript::main")
 
 def html_rule10(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="SRC=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="html::back_to_html")
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="html::back_to_html")
 
 # Rules dict for html_javascript ruleset.
 rulesDict3 = {
@@ -204,7 +206,8 @@ rulesDict3 = {
 
 def html_rule11(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="html::main")
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="html::main")
 
 # Rules dict for html_back_to_html ruleset.
 rulesDict4 = {
@@ -215,7 +218,8 @@ rulesDict4 = {
 
 def html_rule12(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="css::main")
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="css::main")
 
 # Rules dict for html_css ruleset.
 rulesDict5 = {
