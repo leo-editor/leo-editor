@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20210219115553.109: * @file ../modes/python.py
+#@@language python
 # Leo colorizer control file for python mode.
 # This file is in the public domain.
 
@@ -507,3 +510,4 @@ rulesDictDict = {
 
 # Import dict for python mode.
 importDict = {}
+#@-leo
