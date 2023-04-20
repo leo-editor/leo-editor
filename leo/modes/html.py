@@ -166,7 +166,7 @@ def html_rule7(colorer, s, i):
     return colorer.match_span(s, i, "literal1", begin="'", end="'")
 
 def html_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="=")
+    return colorer.match_plain_seq(s, i, "operator", seq="=")
 
 # Rules dict for html_tags ruleset.
 rulesDict2 = {

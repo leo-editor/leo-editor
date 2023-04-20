@@ -112,31 +112,31 @@ keywordsDictDict = {
 #@+others
 #@+node:ekr.20221129095311.1: ** batch_rule0
 def batch_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="@")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="@")
 #@+node:ekr.20221129095311.2: ** batch_rule1
 def batch_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 #@+node:ekr.20221129095311.3: ** batch_rule2
 def batch_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 #@+node:ekr.20221129095311.4: ** batch_rule3
 def batch_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 
 #@+node:ekr.20221129095311.5: ** batch_rule4
 def batch_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 
 #@+node:ekr.20221129095311.6: ** batch_rule5
 def batch_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 #@+node:ekr.20221129095311.7: ** batch_rule6
 def batch_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 
 #@+node:ekr.20221129095311.8: ** batch_rule7
@@ -162,52 +162,52 @@ def batch_rule9(colorer, s, i):
 
 #@+node:ekr.20221129095311.11: ** batch_rule10
 def batch_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%0")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%0")
 
 
 #@+node:ekr.20221129095311.12: ** batch_rule11
 def batch_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%1")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%1")
 
 
 #@+node:ekr.20221129095311.13: ** batch_rule12
 def batch_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%2")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%2")
 
 
 #@+node:ekr.20221129095311.14: ** batch_rule13
 def batch_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%3")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%3")
 
 
 #@+node:ekr.20221129095311.15: ** batch_rule14
 def batch_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%4")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%4")
 
 
 #@+node:ekr.20221129095311.16: ** batch_rule15
 def batch_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%5")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%5")
 
 
 #@+node:ekr.20221129095311.17: ** batch_rule16
 def batch_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%6")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%6")
 
 
 #@+node:ekr.20221129095311.18: ** batch_rule17
 def batch_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%7")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%7")
 
 
 #@+node:ekr.20221129095311.19: ** batch_rule18
 def batch_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%8")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%8")
 
 
 #@+node:ekr.20221129095311.20: ** batch_rule19
 def batch_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%9")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="%9")
 
 
 #@+node:ekr.20221129095311.21: ** batch_rule20

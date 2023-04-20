@@ -322,77 +322,77 @@ def python_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20230419163819.6: *3* python_rule5
 def python_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 
 #@+node:ekr.20230419163819.7: *3* python_rule6
 def python_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 
 #@+node:ekr.20230419163819.8: *3* python_rule7
 def python_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 
 #@+node:ekr.20230419163819.9: *3* python_rule8
 def python_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 
 #@+node:ekr.20230419163819.10: *3* python_rule9
 def python_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 
 #@+node:ekr.20230419163819.11: *3* python_rule10
 def python_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 
 #@+node:ekr.20230419163819.12: *3* python_rule11
 def python_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 
 #@+node:ekr.20230419163819.13: *3* python_rule12
 def python_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 
 #@+node:ekr.20230419163819.14: *3* python_rule13
 def python_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 
 #@+node:ekr.20230419163819.15: *3* python_rule14
 def python_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 
 #@+node:ekr.20230419163819.16: *3* python_rule15
 def python_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 
 #@+node:ekr.20230419163819.17: *3* python_rule16
 def python_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 
 #@+node:ekr.20230419163819.18: *3* python_rule17
 def python_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 
 #@+node:ekr.20230419163819.19: *3* python_rule18
 def python_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 
 #@+node:ekr.20230419163819.20: *3* python_rule19
 def python_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 
 #@+node:ekr.20230419163819.21: *3* python_rule20 (not used)

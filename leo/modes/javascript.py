@@ -229,104 +229,103 @@ def javascript_rule3(colorer, s, i):
 
 #@+node:ekr.20230419052250.5: *3* javascript_rule4
 def javascript_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, "comment2", seq="//",
-        exclude_match=False)
+    return colorer.match_eol_span(s, i, "comment2", seq="//")
 
 #@+node:ekr.20230419052250.6: *3* javascript_rule5
 def javascript_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, "comment1", seq="<!--")
+    return colorer.match_plain_seq(s, i, "comment1", seq="<!--")
 
 #@+node:ekr.20230419052250.7: *3* javascript_rule6
 def javascript_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="=")
+    return colorer.match_plain_seq(s, i, "operator", seq="=")
 
 #@+node:ekr.20230419052250.8: *3* javascript_rule7
 def javascript_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="!")
+    return colorer.match_plain_seq(s, i, "operator", seq="!")
 
 #@+node:ekr.20230419052250.9: *3* javascript_rule8
 def javascript_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq=">=")
+    return colorer.match_plain_seq(s, i, "operator", seq=">=")
 
 #@+node:ekr.20230419052250.10: *3* javascript_rule9
 def javascript_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="<=")
+    return colorer.match_plain_seq(s, i, "operator", seq="<=")
 
 #@+node:ekr.20230419052250.11: *3* javascript_rule10
 def javascript_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="+")
+    return colorer.match_plain_seq(s, i, "operator", seq="+")
 
 #@+node:ekr.20230419052250.12: *3* javascript_rule11
 def javascript_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="-")
+    return colorer.match_plain_seq(s, i, "operator", seq="-")
 
 #@+node:ekr.20230419052250.13: *3* javascript_rule12
 def javascript_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="/")
+    return colorer.match_plain_seq(s, i, "operator", seq="/")
 
 #@+node:ekr.20230419052250.14: *3* javascript_rule13
 def javascript_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="*")
+    return colorer.match_plain_seq(s, i, "operator", seq="*")
 
 #@+node:ekr.20230419052250.15: *3* javascript_rule14
 def javascript_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq=">")
+    return colorer.match_plain_seq(s, i, "operator", seq=">")
 
 #@+node:ekr.20230419052250.16: *3* javascript_rule15
 def javascript_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="<")
+    return colorer.match_plain_seq(s, i, "operator", seq="<")
 
 #@+node:ekr.20230419052250.17: *3* javascript_rule16
 def javascript_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="%")
+    return colorer.match_plain_seq(s, i, "operator", seq="%")
 
 #@+node:ekr.20230419052250.18: *3* javascript_rule17
 def javascript_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="&")
+    return colorer.match_plain_seq(s, i, "operator", seq="&")
 
 #@+node:ekr.20230419052250.19: *3* javascript_rule18
 def javascript_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="|")
+    return colorer.match_plain_seq(s, i, "operator", seq="|")
 
 #@+node:ekr.20230419052250.20: *3* javascript_rule19
 def javascript_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="^")
+    return colorer.match_plain_seq(s, i, "operator", seq="^")
 
 #@+node:ekr.20230419052250.21: *3* javascript_rule20
 def javascript_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 #@+node:ekr.20230419052250.22: *3* javascript_rule21
 def javascript_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 #@+node:ekr.20230419052250.23: *3* javascript_rule22
 def javascript_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="}")
+    return colorer.match_plain_seq(s, i, "operator", seq="}")
 
 #@+node:ekr.20230419052250.24: *3* javascript_rule23
 def javascript_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 #@+node:ekr.20230419052250.25: *3* javascript_rule24
 def javascript_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq=",")
+    return colorer.match_plain_seq(s, i, "operator", seq=",")
 
 #@+node:ekr.20230419052250.26: *3* javascript_rule25
 def javascript_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq=";")
+    return colorer.match_plain_seq(s, i, "operator", seq=";")
 
 #@+node:ekr.20230419052250.27: *3* javascript_rule26
 def javascript_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="]")
+    return colorer.match_plain_seq(s, i, "operator", seq="]")
 
 #@+node:ekr.20230419052250.28: *3* javascript_rule27
 def javascript_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="[")
+    return colorer.match_plain_seq(s, i, "operator", seq="[")
 
 #@+node:ekr.20230419052250.29: *3* javascript_rule28
 def javascript_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq="?")
+    return colorer.match_plain_seq(s, i, "operator", seq="?")
 
 #@+node:ekr.20230419052250.30: *3* javascript_rule29
 def javascript_rule29(colorer, s, i):
@@ -335,7 +334,7 @@ def javascript_rule29(colorer, s, i):
 
 #@+node:ekr.20230419052250.31: *3* javascript_rule30
 def javascript_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, "operator", seq=":")
+    return colorer.match_plain_seq(s, i, "operator", seq=":")
 
 #@+node:ekr.20230419052250.32: *3* javascript_rule31
 def javascript_rule31(colorer, s, i):

@@ -484,487 +484,382 @@ keywordsDictDict = {
 # Rules for julia_main ruleset.
 
 def julia_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment4", seq="####",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment4", seq="####")
 
 def julia_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment3", seq="###",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment3", seq="###")
 
 def julia_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="##",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="##")
 
 def julia_rule3(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def julia_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def julia_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral2", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::stringliteral2")
 
 def julia_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="I\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral2", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::stringliteral2")
 
 def julia_rule7(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="E\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal2", begin="E\"", end="\"")
 
 def julia_rule8(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="L\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal2", begin="L\"", end="\"")
 
 def julia_rule9(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="literal4", begin="r[ims]*\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal4", begin="r[ims]*\"", end="\"")
 
 def julia_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal4", begin="b\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral4", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::stringliteral4")
 
 def julia_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="`", end="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral3", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::stringliteral3")
 
 def julia_rule12(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="::",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="::")
 
 def julia_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::typedescription", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::typedescription")
 
 def julia_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<:")
 
 def julia_rule15(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_previous(s, i, kind="function", pattern="(")
 
 def julia_rule16(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="markup", pattern="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="markup", pattern="@")
 
 def julia_rule17(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="markup", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="markup", pattern="$")
 
 def julia_rule18(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp=":[a-zA-Z_][a-zA-Z_0-9]*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=":[a-zA-Z_][a-zA-Z_0-9]*")
 
 def julia_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def julia_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&&")
 
 def julia_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def julia_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def julia_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def julia_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&=")
 
 def julia_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|=")
 
 def julia_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$=")
 
 def julia_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>>=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>>=")
 
 def julia_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>=")
 
 def julia_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<=")
 
 def julia_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def julia_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def julia_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$")
 
 def julia_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>>")
 
 def julia_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def julia_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def julia_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def julia_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def julia_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def julia_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def julia_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def julia_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def julia_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="//")
 
 def julia_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+=")
 
 def julia_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-=")
 
 def julia_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*=")
 
 def julia_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def julia_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^=")
 
 def julia_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%=")
 
 def julia_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def julia_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def julia_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def julia_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def julia_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def julia_rule54(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def julia_rule55(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="...",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="...")
 
 def julia_rule56(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def julia_rule57(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def julia_rule58(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def julia_rule59(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def julia_rule60(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def julia_rule61(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::")
 
 def julia_rule62(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def julia_rule63(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def julia_rule64(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def julia_rule65(colorer, s, i):
     return colorer.match_keywords(s, i)
 
 # Rules dict for julia_main ruleset.
 rulesDict1 = {
-        "!": [julia_rule22, julia_rule37,],
-        "\"": [julia_rule5,],
-        "#": [julia_rule0, julia_rule1, julia_rule2, julia_rule3,],
-        "$": [julia_rule17, julia_rule26, julia_rule32,],
-        "%": [julia_rule48, julia_rule54,],
-        "&": [julia_rule20, julia_rule24, julia_rule30,],
-        "'": [julia_rule4,],
-        "(": [julia_rule15,],
-        "*": [julia_rule45, julia_rule51,],
-        "+": [julia_rule43, julia_rule49,],
-        "-": [julia_rule19, julia_rule44, julia_rule50,],
-        ".": [julia_rule55,],
-        "/": [julia_rule42, julia_rule46, julia_rule52,],
-        "0": [julia_rule65,],
-        "1": [julia_rule65,],
-        "2": [julia_rule65,],
-        "3": [julia_rule65,],
-        "4": [julia_rule65,],
-        "5": [julia_rule65,],
-        "6": [julia_rule65,],
-        "7": [julia_rule65,],
-        "8": [julia_rule65,],
-        "9": [julia_rule65,],
-        ":": [julia_rule12, julia_rule18, julia_rule61, julia_rule63,],
-        ";": [julia_rule64,],
-        "<": [julia_rule14, julia_rule29, julia_rule35, julia_rule39, julia_rule41,],
-        "=": [julia_rule36, julia_rule60,],
-        ">": [julia_rule27, julia_rule28, julia_rule33, julia_rule34, julia_rule38, julia_rule40,],
-        "?": [julia_rule62,],
-        "@": [julia_rule16, julia_rule65,],
-        "A": [julia_rule65,],
-        "B": [julia_rule65,],
-        "C": [julia_rule65,],
-        "D": [julia_rule65,],
-        "E": [julia_rule7, julia_rule65,],
-        "F": [julia_rule65,],
-        "G": [julia_rule65,],
-        "H": [julia_rule65,],
-        "I": [julia_rule6, julia_rule65,],
-        "J": [julia_rule65,],
-        "K": [julia_rule65,],
-        "L": [julia_rule8, julia_rule65,],
-        "M": [julia_rule65,],
-        "N": [julia_rule65,],
-        "O": [julia_rule65,],
-        "P": [julia_rule65,],
-        "Q": [julia_rule65,],
-        "R": [julia_rule65,],
-        "S": [julia_rule65,],
-        "T": [julia_rule65,],
-        "U": [julia_rule65,],
-        "V": [julia_rule65,],
-        "W": [julia_rule65,],
-        "X": [julia_rule65,],
-        "Y": [julia_rule65,],
-        "Z": [julia_rule65,],
-        "[": [julia_rule57,],
-        "]": [julia_rule56,],
-        "^": [julia_rule47, julia_rule53,],
-        "_": [julia_rule65,],
-        "`": [julia_rule11,],
-        "a": [julia_rule65,],
-        "b": [julia_rule10, julia_rule65,],
-        "c": [julia_rule65,],
-        "d": [julia_rule65,],
-        "e": [julia_rule65,],
-        "f": [julia_rule65,],
-        "g": [julia_rule65,],
-        "h": [julia_rule65,],
-        "i": [julia_rule65,],
-        "j": [julia_rule65,],
-        "k": [julia_rule65,],
-        "l": [julia_rule65,],
-        "m": [julia_rule65,],
-        "n": [julia_rule65,],
-        "o": [julia_rule65,],
-        "p": [julia_rule65,],
-        "q": [julia_rule65,],
-        "r": [julia_rule9, julia_rule65,],
-        "s": [julia_rule65,],
-        "t": [julia_rule65,],
-        "u": [julia_rule65,],
-        "v": [julia_rule65,],
-        "w": [julia_rule65,],
-        "x": [julia_rule65,],
-        "y": [julia_rule65,],
-        "z": [julia_rule65,],
-        "{": [julia_rule13, julia_rule58,],
-        "|": [julia_rule21, julia_rule25, julia_rule31,],
-        "}": [julia_rule59,],
-        "~": [julia_rule23,],
+    "!": [julia_rule22, julia_rule37,],
+    "\"": [julia_rule5,],
+    "#": [julia_rule0, julia_rule1, julia_rule2, julia_rule3,],
+    "$": [julia_rule17, julia_rule26, julia_rule32,],
+    "%": [julia_rule48, julia_rule54,],
+    "&": [julia_rule20, julia_rule24, julia_rule30,],
+    "'": [julia_rule4,],
+    "(": [julia_rule15,],
+    "*": [julia_rule45, julia_rule51,],
+    "+": [julia_rule43, julia_rule49,],
+    "-": [julia_rule19, julia_rule44, julia_rule50,],
+    ".": [julia_rule55,],
+    "/": [julia_rule42, julia_rule46, julia_rule52,],
+    "0": [julia_rule65,],
+    "1": [julia_rule65,],
+    "2": [julia_rule65,],
+    "3": [julia_rule65,],
+    "4": [julia_rule65,],
+    "5": [julia_rule65,],
+    "6": [julia_rule65,],
+    "7": [julia_rule65,],
+    "8": [julia_rule65,],
+    "9": [julia_rule65,],
+    ":": [julia_rule12, julia_rule18, julia_rule61, julia_rule63,],
+    ";": [julia_rule64,],
+    "<": [julia_rule14, julia_rule29, julia_rule35, julia_rule39, julia_rule41,],
+    "=": [julia_rule36, julia_rule60,],
+    ">": [julia_rule27, julia_rule28, julia_rule33, julia_rule34, julia_rule38, julia_rule40,],
+    "?": [julia_rule62,],
+    "@": [julia_rule16, julia_rule65,],
+    "A": [julia_rule65,],
+    "B": [julia_rule65,],
+    "C": [julia_rule65,],
+    "D": [julia_rule65,],
+    "E": [julia_rule7, julia_rule65,],
+    "F": [julia_rule65,],
+    "G": [julia_rule65,],
+    "H": [julia_rule65,],
+    "I": [julia_rule6, julia_rule65,],
+    "J": [julia_rule65,],
+    "K": [julia_rule65,],
+    "L": [julia_rule8, julia_rule65,],
+    "M": [julia_rule65,],
+    "N": [julia_rule65,],
+    "O": [julia_rule65,],
+    "P": [julia_rule65,],
+    "Q": [julia_rule65,],
+    "R": [julia_rule65,],
+    "S": [julia_rule65,],
+    "T": [julia_rule65,],
+    "U": [julia_rule65,],
+    "V": [julia_rule65,],
+    "W": [julia_rule65,],
+    "X": [julia_rule65,],
+    "Y": [julia_rule65,],
+    "Z": [julia_rule65,],
+    "[": [julia_rule57,],
+    "]": [julia_rule56,],
+    "^": [julia_rule47, julia_rule53,],
+    "_": [julia_rule65,],
+    "`": [julia_rule11,],
+    "a": [julia_rule65,],
+    "b": [julia_rule10, julia_rule65,],
+    "c": [julia_rule65,],
+    "d": [julia_rule65,],
+    "e": [julia_rule65,],
+    "f": [julia_rule65,],
+    "g": [julia_rule65,],
+    "h": [julia_rule65,],
+    "i": [julia_rule65,],
+    "j": [julia_rule65,],
+    "k": [julia_rule65,],
+    "l": [julia_rule65,],
+    "m": [julia_rule65,],
+    "n": [julia_rule65,],
+    "o": [julia_rule65,],
+    "p": [julia_rule65,],
+    "q": [julia_rule65,],
+    "r": [julia_rule9, julia_rule65,],
+    "s": [julia_rule65,],
+    "t": [julia_rule65,],
+    "u": [julia_rule65,],
+    "v": [julia_rule65,],
+    "w": [julia_rule65,],
+    "x": [julia_rule65,],
+    "y": [julia_rule65,],
+    "z": [julia_rule65,],
+    "{": [julia_rule13, julia_rule58,],
+    "|": [julia_rule21, julia_rule25, julia_rule31,],
+    "}": [julia_rule59,],
+    "~": [julia_rule23,],
 }
 
 # Rules for julia_stringliteral2 ruleset.
 
 def julia_rule66(colorer, s, i):
-    return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="operator", begin="$(", end=")")
 
 def julia_rule67(colorer, s, i):
-    return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="operator", begin="$[", end="]")
 
 def julia_rule68(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="null", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="null", pattern="$")
 
 # Rules dict for julia_stringliteral2 ruleset.
 rulesDict2 = {
-        "$": [julia_rule66, julia_rule67, julia_rule68,],
+    "$": [julia_rule66, julia_rule67, julia_rule68,],
 }
 
 # Rules for julia_stringliteral3 ruleset.
 
 def julia_rule69(colorer, s, i):
-    return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="operator", begin="$(", end=")")
 
 def julia_rule70(colorer, s, i):
-    return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="operator", begin="$[", end="]")
 
 def julia_rule71(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="null", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="null", pattern="$")
 
 # Rules dict for julia_stringliteral3 ruleset.
 rulesDict3 = {
-        "$": [julia_rule69, julia_rule70, julia_rule71,],
+    "$": [julia_rule69, julia_rule70, julia_rule71,],
 }
 
 # Rules for julia_stringliteral4 ruleset.
 
 def julia_rule72(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::main")
 
 def julia_rule73(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        delegate="julia::main")
 
 def julia_rule74(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="null", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="null", pattern="$")
 
 # Rules dict for julia_stringliteral4 ruleset.
 rulesDict4 = {
-        "$": [julia_rule72, julia_rule73, julia_rule74,],
+    "$": [julia_rule72, julia_rule73, julia_rule74,],
 }
 
 # Rules for julia_typedescription ruleset.
 
 def julia_rule75(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<:")
 
 def julia_rule76(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def julia_rule77(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def julia_rule78(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 # Rules dict for julia_typedescription ruleset.
 rulesDict5 = {
-        ",": [julia_rule78,],
-        "<": [julia_rule75,],
-        "{": [julia_rule76,],
-        "}": [julia_rule77,],
+    ",": [julia_rule78,],
+    "<": [julia_rule75,],
+    "{": [julia_rule76,],
+    "}": [julia_rule77,],
 }
 
 # x.rulesDictDict for julia mode.
 rulesDictDict = {
-        "julia_main": rulesDict1,
-        "julia_stringliteral2": rulesDict2,
-        "julia_stringliteral3": rulesDict3,
-        "julia_stringliteral4": rulesDict4,
-        "julia_typedescription": rulesDict5,
+    "julia_main": rulesDict1,
+    "julia_stringliteral2": rulesDict2,
+    "julia_stringliteral3": rulesDict3,
+    "julia_stringliteral4": rulesDict4,
+    "julia_typedescription": rulesDict5,
 }
 
 # Import dict for julia mode.
