@@ -2196,7 +2196,6 @@ class JEditColorizer(BaseColorizer):
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
         esc = self.escape
-        # py==lint: disable=inconsistent-return-statements
         while 1:
             j = s.find(pattern, i)
             if j == -1:
@@ -2430,9 +2429,7 @@ class JEditColorizer(BaseColorizer):
         return k - i
     #@+node:ekr.20230420052804.1: *4* jedit.match_plain_seq
     def match_plain_seq(self, s: str, i: int, kind: str, *, seq: str) -> int:
-        """
-        Handle successful sequence match at at s[i:].
-        """
+        """Matcher for plain sequence match at at s[i:]."""
         if not g.match(s, i, seq):
             return 0
         j = i + len(seq)
@@ -2442,7 +2439,7 @@ class JEditColorizer(BaseColorizer):
         return len(seq)
     #@+node:ekr.20230420052841.1: *4* jedit.match_plain_span
     def match_plain_span(self, s: str, i: int, kind: str, *, begin: str, end: str) -> int:
-        """Handle succees for simple span at s[i:] with no delegate."""
+        """Matcher for simple span at s[i:] with no delegate."""
         if not g.match(s, i, begin):
             return 0
         j = self.match_plain_span_helper(s, i + len(begin), end)
