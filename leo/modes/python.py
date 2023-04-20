@@ -402,112 +402,113 @@ if 0:  # #1821.
 #@+node:ekr.20230419163819.22: *3* python_rule21
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
-#@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url
-url = False
+#@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
+if 0:
+    url = False
 
-if url:
-    h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
-    f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
+    if url:
+        h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
+        f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
-    def python_rule_h_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex)
+        def python_rule_h_url(colorer, s, i):
+            return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex)
 
-    def python_rule_f_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex)
+        def python_rule_f_url(colorer, s, i):
+            return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex)
 
-else:
-    # Always fail.
-    def python_rule_h_url(colorer, s, i):
-        return 0
+    else:
+        # Always fail.
+        def python_rule_h_url(colorer, s, i):
+            return 0
 
-    def python_rule_f_url(colorer, s, i):
-        return 0
+        def python_rule_f_url(colorer, s, i):
+            return 0
 #@-others
 #@+<< Rules Dicts >>
 #@+node:ekr.20230419164059.1: ** << Rules Dicts >>
 # Rules dict for python_main ruleset.
 rulesDict1 = {
-    "!": [python_rule6,],
-    "\"": [python_rule1, python_rule3,],
-    "#": [python_rule0,],
-    "%": [python_rule15,],
-    "&": [python_rule16,],
-    "'": [python_rule2, python_rule4,],
-    # "(": [python_rule20,],
-    "*": [python_rule12,],
-    "+": [python_rule9,],
-    "-": [python_rule10,],
-    "/": [python_rule11,],
-    "0": [python_rule21,],
-    "1": [python_rule21,],
-    "2": [python_rule21,],
-    "3": [python_rule21,],
-    "4": [python_rule21,],
-    "5": [python_rule21,],
-    "6": [python_rule21,],
-    "7": [python_rule21,],
-    "8": [python_rule21,],
-    "9": [python_rule21,],
-    "<": [python_rule8, python_rule14,],
-    "=": [python_rule5,],
-    ">": [python_rule7, python_rule13,],
-    "@": [python_rule21,],
-    "A": [python_rule21,],
-    "B": [python_rule21,],
-    "C": [python_rule21,],
-    "D": [python_rule21,],
-    "E": [python_rule21,],
-    "F": [python_rule_f_url, python_rule21,],
-    "G": [python_rule21,],
-    "H": [python_rule_h_url, python_rule21,],
-    "I": [python_rule21,],
-    "J": [python_rule21,],
-    "K": [python_rule21,],
-    "L": [python_rule21,],
-    "M": [python_rule21,],
-    "N": [python_rule21,],
-    "O": [python_rule21,],
-    "P": [python_rule21,],
-    "Q": [python_rule21,],
-    "R": [python_rule21,],
-    "S": [python_rule21,],
-    "T": [python_rule21,],
-    "U": [python_rule21,],
-    "V": [python_rule21,],
-    "W": [python_rule21,],
-    "X": [python_rule21,],
-    "Y": [python_rule21,],
-    "Z": [python_rule21,],
-    "^": [python_rule18,],
-    "_": [python_rule21,],
-    "a": [python_rule21,],
-    "b": [python_rule21,],
-    "c": [python_rule21,],
-    "d": [python_rule21,],
-    "e": [python_rule21,],
-    "f": [python_rule_f_url, python_rule21,],
-    "g": [python_rule21,],
-    "h": [python_rule_h_url, python_rule21,],
-    "i": [python_rule21,],
-    "j": [python_rule21,],
-    "k": [python_rule21,],
-    "l": [python_rule21,],
-    "m": [python_rule21,],
-    "n": [python_rule21,],
-    "o": [python_rule21,],
-    "p": [python_rule21,],
-    "q": [python_rule21,],
-    "r": [python_rule21,],
-    "s": [python_rule21,],
-    "t": [python_rule21,],
-    "u": [python_rule21,],
-    "v": [python_rule21,],
-    "w": [python_rule21,],
-    "x": [python_rule21,],
-    "y": [python_rule21,],
-    "z": [python_rule21,],
-    "|": [python_rule17,],
-    "~": [python_rule19,],
+    "!": [python_rule6],
+    "\"": [python_rule1, python_rule3],
+    "#": [python_rule0],
+    "%": [python_rule15],
+    "&": [python_rule16],
+    "'": [python_rule2, python_rule4],
+    # "(": [python_rule20],
+    "*": [python_rule12],
+    "+": [python_rule9],
+    "-": [python_rule10],
+    "/": [python_rule11],
+    "0": [python_rule21],
+    "1": [python_rule21],
+    "2": [python_rule21],
+    "3": [python_rule21],
+    "4": [python_rule21],
+    "5": [python_rule21],
+    "6": [python_rule21],
+    "7": [python_rule21],
+    "8": [python_rule21],
+    "9": [python_rule21],
+    "<": [python_rule8, python_rule14],
+    "=": [python_rule5],
+    ">": [python_rule7, python_rule13],
+    "@": [python_rule21],
+    "A": [python_rule21],
+    "B": [python_rule21],
+    "C": [python_rule21],
+    "D": [python_rule21],
+    "E": [python_rule21],
+    "F": [python_rule21],  # python_rule_f_url,
+    "G": [python_rule21],
+    "H": [python_rule21],  # python_rule_h_url,
+    "I": [python_rule21],
+    "J": [python_rule21],
+    "K": [python_rule21],
+    "L": [python_rule21],
+    "M": [python_rule21],
+    "N": [python_rule21],
+    "O": [python_rule21],
+    "P": [python_rule21],
+    "Q": [python_rule21],
+    "R": [python_rule21],
+    "S": [python_rule21],
+    "T": [python_rule21],
+    "U": [python_rule21],
+    "V": [python_rule21],
+    "W": [python_rule21],
+    "X": [python_rule21],
+    "Y": [python_rule21],
+    "Z": [python_rule21],
+    "^": [python_rule18],
+    "_": [python_rule21],
+    "a": [python_rule21],
+    "b": [python_rule21],
+    "c": [python_rule21],
+    "d": [python_rule21],
+    "e": [python_rule21],
+    "f": [python_rule21],  # python_rule_f_url
+    "g": [python_rule21],
+    "h": [python_rule21],  # python_rule_h_url
+    "i": [python_rule21],
+    "j": [python_rule21],
+    "k": [python_rule21],
+    "l": [python_rule21],
+    "m": [python_rule21],
+    "n": [python_rule21],
+    "o": [python_rule21],
+    "p": [python_rule21],
+    "q": [python_rule21],
+    "r": [python_rule21],
+    "s": [python_rule21],
+    "t": [python_rule21],
+    "u": [python_rule21],
+    "v": [python_rule21],
+    "w": [python_rule21],
+    "x": [python_rule21],
+    "y": [python_rule21],
+    "z": [python_rule21],
+    "|": [python_rule17],
+    "~": [python_rule19],
 }
 
 # x.rulesDictDict for python mode.
