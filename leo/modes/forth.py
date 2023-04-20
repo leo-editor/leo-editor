@@ -191,7 +191,7 @@ class extendForth:
     def init(self):
         """Set our ivars from settings."""
         c = self.c
-        assert(c)
+        assert c
         table = (
             (self.definingwords, "forth-defwords"),
             (self.brackets, "forth-delimiter-pairs"),
@@ -228,7 +228,7 @@ class extendForth:
         """Process lines containing pairs of entries
         in a list whose *name* is ivar.
         Put the results in ivars whose names are ivar1 and ivar2."""
-        result1 = []; result2 = []
+        result1, result2 = [], []
         aList = getattr(self, ivar)
         # Look for pairs.  Comments have already been removed.
         for s in aList:
@@ -256,9 +256,7 @@ class extendForth:
 
         def forth_bracket_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-                at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-                delegate="", exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=True)  # Require word.
+                at_word_start=True, no_word_break=True)
 
         return forth_bracket_rule
 
@@ -276,9 +274,7 @@ class extendForth:
                 kind1="keyword2",  # defining word
                 word=word,
                 kind2="keyword3",  # bold
-                pattern=r'(\s)*(\S)+',
-                at_line_start=False, at_whitespace_end=False, at_word_start=False,
-                exclude_match=False)
+                pattern=r'(\s)*(\S)+')
 
         return forth_defining_word_rule
 
@@ -321,9 +317,7 @@ class extendForth:
 
         def forth_string_word_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-                at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-                delegate="", exclude_match=False,
-                )  # Don't require ending word.
+                at_word_start=True)
 
         return forth_string_word_rule
 
