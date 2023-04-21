@@ -162,169 +162,127 @@ keywordsDictDict = {
 # Rules for erlang_main ruleset.
 
 def erlang_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="%")
 
 def erlang_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def erlang_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def erlang_rule3(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def erlang_rule4(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="literal2", pattern=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def erlang_rule5(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\$.\\w*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\$.\\w*")
 
 def erlang_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="badarg",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="badarg")
 
 def erlang_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="nocookie",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="nocookie")
 
 def erlang_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="false",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="false")
 
 def erlang_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="true",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="true")
 
 def erlang_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def erlang_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<-")
 
 def erlang_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def erlang_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def erlang_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def erlang_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def erlang_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def erlang_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def erlang_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def erlang_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def erlang_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def erlang_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def erlang_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def erlang_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def erlang_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def erlang_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def erlang_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def erlang_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def erlang_rule28(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bdiv\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bdiv\\b")
 
 def erlang_rule29(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\brem\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\brem\\b")
 
 def erlang_rule30(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bor\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bor\\b")
 
 def erlang_rule31(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bxor\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bxor\\b")
 
 def erlang_rule32(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbor\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbor\\b")
 
 def erlang_rule33(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbxor\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbxor\\b")
 
 def erlang_rule34(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbsl\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbsl\\b")
 
 def erlang_rule35(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbsr\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbsr\\b")
 
 def erlang_rule36(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\band\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\band\\b")
 
 def erlang_rule37(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bband\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bband\\b")
 
 def erlang_rule38(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bnot\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bnot\\b")
 
 def erlang_rule39(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbnot\\b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bbnot\\b")
 
 def erlang_rule40(colorer, s, i):
     return colorer.match_keywords(s, i)

@@ -295,86 +295,65 @@ keywordsDictDict = {
 # Rules for bbj_main ruleset.
 
 def bbj_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def bbj_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def bbj_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def bbj_rule3(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="REM",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="REM")
 
 def bbj_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bbj_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def bbj_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def bbj_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def bbj_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def bbj_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def bbj_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def bbj_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def bbj_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def bbj_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def bbj_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def bbj_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="and",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="and")
 
 def bbj_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="or",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="or")
 
 def bbj_rule17(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          at_line_start=True,
+          exclude_match=True)
 
 def bbj_rule18(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def bbj_rule19(colorer, s, i):
     return colorer.match_keywords(s, i)

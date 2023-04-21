@@ -806,215 +806,146 @@ keywordsDictDict = {
 
 def clojure_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword4", begin="*", end="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="#^(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="^(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="`(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="#_(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="#(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="#^[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="^[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword1", begin="[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="#^{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="^{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="#^#{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@#{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule21(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="^#{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'#{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule23(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="#{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::main")
 
 def clojure_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#'")
 
 def clojure_rule25(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal3", pattern="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal3", pattern="'")
 
 def clojure_rule26(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="label", pattern="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="label", pattern="^")
 
 def clojure_rule27(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="label", pattern="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="label", pattern="@")
 
 def clojure_rule28(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal3", pattern=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal3", pattern=".")
 
 def clojure_rule29(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="markup", pattern="#^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="markup", pattern="#^")
 
 def clojure_rule30(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment4", seq=";;;;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment4", seq=";;;;")
 
 def clojure_rule31(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment3", seq=";;;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment3", seq=";;;")
 
 def clojure_rule32(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";;")
 
 def clojure_rule33(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
 def clojure_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::regexps", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::regexps")
 
 def clojure_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="clojure::strings", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="clojure::strings")
 
 def clojure_rule36(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\\\(.|newline|space|tab)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\\\(.|newline|space|tab)")
 
 def clojure_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal4", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal4", seq=".")
 
 def clojure_rule38(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword4", pattern=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword4", pattern=":")
 
 def clojure_rule39(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -1112,8 +1043,7 @@ rulesDict1 = {
 # Rules for clojure_strings ruleset.
 
 def clojure_rule40(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\\\.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\\\.")
 
 def clojure_rule41(colorer, s, i):
     j = s.find('"', i)
@@ -1208,8 +1138,7 @@ rulesDict2 = {
 # Rules for clojure_regexps ruleset.
 
 def clojure_rule42(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\\\.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\\\.")
 
 def clojure_rule43(colorer, s, i):
     return colorer.match_keywords(s, i)

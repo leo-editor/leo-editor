@@ -194,113 +194,89 @@ keywordsDictDict = {
 # Rules for assembly_mcs51_main ruleset.
 
 def assembly_mcs51_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
 def assembly_mcs51_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def assembly_mcs51_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def assembly_mcs51_rule3(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="label", pattern="%%",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          at_line_start=True,
+          exclude_match=True)
 
 def assembly_mcs51_rule4(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+          at_line_start=True)
 
 def assembly_mcs51_rule5(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          at_line_start=True,
+          exclude_match=True)
 
 def assembly_mcs51_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def assembly_mcs51_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def assembly_mcs51_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="(")
 
 def assembly_mcs51_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=")")
 
 def assembly_mcs51_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="]")
 
 def assembly_mcs51_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="[")
 
 def assembly_mcs51_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="$")
 
 def assembly_mcs51_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def assembly_mcs51_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def assembly_mcs51_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def assembly_mcs51_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def assembly_mcs51_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def assembly_mcs51_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def assembly_mcs51_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def assembly_mcs51_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def assembly_mcs51_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def assembly_mcs51_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def assembly_mcs51_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def assembly_mcs51_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def assembly_mcs51_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def assembly_mcs51_rule26(colorer, s, i):
     return colorer.match_keywords(s, i)

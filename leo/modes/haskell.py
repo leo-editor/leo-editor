@@ -114,199 +114,148 @@ keywordsDictDict = {
 # Rules for haskell_main ruleset.
 
 def haskell_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="{-#", end="#-}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="{-#", end="#-}")
 
 def haskell_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="{-", end="-}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="{-", end="-}")
 
 def haskell_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="--")
 
 def haskell_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def haskell_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="' '",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="' '")
 
 def haskell_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'!'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'!'")
 
 def haskell_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'\"'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'\"'")
 
 def haskell_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'$'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'$'")
 
 def haskell_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'%'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'%'")
 
 def haskell_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'/'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'/'")
 
 def haskell_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'('",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'('")
 
 def haskell_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="')'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="')'")
 
 def haskell_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'['",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'['")
 
 def haskell_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="']'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="']'")
 
 def haskell_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'+'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'+'")
 
 def haskell_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'-'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'-'")
 
 def haskell_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'*'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'*'")
 
 def haskell_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'='",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'='")
 
 def haskell_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'/'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'/'")
 
 def haskell_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'^'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'^'")
 
 def haskell_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'.'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'.'")
 
 def haskell_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="','",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="','")
 
 def haskell_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="':'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="':'")
 
 def haskell_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="';'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="';'")
 
 def haskell_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'<'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'<'")
 
 def haskell_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'>'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'>'")
 
 def haskell_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'|'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'|'")
 
 def haskell_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="'@'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="'@'")
 
 def haskell_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False,
+
+
+
         ### no_word_break=True)
-        no_word_break=False)
+        )
 
 def haskell_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def haskell_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&&")
 
 def haskell_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::")
 
 def haskell_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def haskell_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def haskell_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def haskell_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def haskell_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def haskell_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def haskell_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def haskell_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def haskell_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def haskell_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def haskell_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def haskell_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def haskell_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def haskell_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$")
 
 def haskell_rule46(colorer, s, i):
     return colorer.match_keywords(s, i)

@@ -134,123 +134,92 @@ keywordsDictDict = {
 
 def c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="doxygen::doxygen")
 
 def c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="doxygen::doxygen")
 
 def c_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def c_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="##",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
 
 def c_rule6(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword2", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="c::cpp", exclude_match=False)
+          delegate="c::cpp")
 
 def c_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def c_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def c_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def c_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def c_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def c_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def c_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def c_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def c_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def c_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def c_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def c_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def c_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def c_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def c_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def c_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def c_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def c_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def c_rule25(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=True)
+          at_whitespace_end=True,
+          exclude_match=True)
 
 def c_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def c_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -346,15 +315,11 @@ rulesDict1 = {
 # Rules for c_cpp ruleset.
 
 def c_rule28(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def c_rule29(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="include",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="c::include", exclude_match=False)
+          delegate="c::include")
 
 def c_rule30(colorer, s, i):
     return colorer.match_keywords(s, i)

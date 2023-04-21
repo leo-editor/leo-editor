@@ -190,69 +190,52 @@ def fortran90_rule0(colorer, s, i):
     return colorer.match_terminate(s, i, kind="", at_char=132)
 
 def fortran90_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="!")
 
 def fortran90_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def fortran90_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def fortran90_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def fortran90_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def fortran90_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def fortran90_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def fortran90_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def fortran90_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".lt.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".lt.")
 
 def fortran90_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".gt.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".gt.")
 
 def fortran90_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".eq.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".eq.")
 
 def fortran90_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".ne.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".ne.")
 
 def fortran90_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".le.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".le.")
 
 def fortran90_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".ge.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".ge.")
 
 def fortran90_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".AND.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".AND.")
 
 def fortran90_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".OR.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".OR.")
 
 def fortran90_rule17(colorer, s, i):
     return colorer.match_keywords(s, i)

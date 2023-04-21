@@ -82,122 +82,88 @@ keywordsDictDict = {
 # Rules for shellscript_main ruleset.
 
 def shellscript_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="#!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="#!")
 
 def shellscript_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def shellscript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def shellscript_rule3(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$#")
 
 def shellscript_rule4(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$?")
 
 def shellscript_rule5(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$*")
 
 def shellscript_rule6(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$@")
 
 def shellscript_rule7(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$$")
 
 def shellscript_rule8(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$<")
 
 def shellscript_rule9(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$")
 
 def shellscript_rule10(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="keyword2", pattern="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def shellscript_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$((", end="))",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::exec")
 
 def shellscript_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::exec")
 
 def shellscript_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::exec")
 
 def shellscript_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="`", end="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::exec")
 
 def shellscript_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::literal", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::literal")
 
 def shellscript_rule16(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def shellscript_rule17(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="<<[[:space:]'\"]*([[:alnum:]_]+)[[:space:]'\"]*", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::literal", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="shellscript::literal")
 
 def shellscript_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def shellscript_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def shellscript_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def shellscript_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def shellscript_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def shellscript_rule23(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="%")
 
 def shellscript_rule24(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def shellscript_rule25(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -288,13 +254,10 @@ rulesDict1 = {
 
 def shellscript_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def shellscript_rule27(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$")
 
 # Rules dict for shellscript_literal ruleset.
 rulesDict2 = {
@@ -305,51 +268,34 @@ rulesDict2 = {
 
 def shellscript_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def shellscript_rule29(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword3", begin="$((", end="))",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="keyword3", begin="$((", end="))")
 
 def shellscript_rule30(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword3", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="keyword3", begin="$(", end=")")
 
 def shellscript_rule31(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword3", begin="$[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="keyword3", begin="$[", end="]")
 
 def shellscript_rule32(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$")
 
 def shellscript_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def shellscript_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def shellscript_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def shellscript_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def shellscript_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 # Rules dict for shellscript_exec ruleset.
 rulesDict3 = {

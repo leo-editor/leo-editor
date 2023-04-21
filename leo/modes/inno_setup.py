@@ -348,213 +348,181 @@ keywordsDictDict = {
 
 def inno_setup_rule0(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[code]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="pascal::main")
+          at_line_start=True,
+          delegate="pascal::main")
 
 def inno_setup_rule1(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Setup]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule2(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Types]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule3(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Components]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule4(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Tasks]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule5(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Dirs]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule6(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Files]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule7(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Icons]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule8(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[INI]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule9(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[InstallDelete]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule10(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Languages]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule11(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Messages]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule12(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[CustomMessages]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule13(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[LangOptions]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule14(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Registry]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule15(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[Run]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule16(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[UninstallRun]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule17(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword2", seq="[UninstallDelete]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def inno_setup_rule18(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#define",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule19(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#dim",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule20(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#undef",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule21(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#include",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule22(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#emit",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule23(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#expr",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule24(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#insert",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule25(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#append",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule26(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#if",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule27(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#elif",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule28(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#else",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule29(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#endif",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule30(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#ifexist",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule31(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#ifnexist",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule32(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#ifdef",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule33(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#for",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule34(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#sub",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule35(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#endsub",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule36(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#pragma",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule37(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="literal4", seq="#error",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::directive", exclude_match=False)
+          delegate="inno_setup::directive")
 
 def inno_setup_rule38(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal4", begin="{#", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal4", begin="{#", end="}")
 
 def inno_setup_rule39(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal2", pattern="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal2", pattern="%")
 
 def inno_setup_rule40(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::string", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="inno_setup::string")
 
 def inno_setup_rule41(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::string", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="inno_setup::string")
 
 def inno_setup_rule42(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword3", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="keyword3", begin="{", end="}")
 
 def inno_setup_rule43(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def inno_setup_rule44(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def inno_setup_rule45(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -636,16 +604,11 @@ rulesDict1 = {
 # Rules for inno_setup_string ruleset.
 
 def inno_setup_rule46(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal4", begin="{#", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal4", begin="{#", end="}")
 
 def inno_setup_rule47(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::constant", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="inno_setup::constant")
 
 # Rules dict for inno_setup_string ruleset.
 rulesDict2 = {
@@ -656,11 +619,10 @@ rulesDict2 = {
 
 def inno_setup_rule48(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="function", pattern="code:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def inno_setup_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 # Rules dict for inno_setup_constant ruleset.
 rulesDict3 = {
@@ -671,21 +633,13 @@ rulesDict3 = {
 # Rules for inno_setup_directive ruleset.
 
 def inno_setup_rule50(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
 def inno_setup_rule51(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="/*", end="*/")
 
 def inno_setup_rule52(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def inno_setup_rule53(colorer, s, i):
     return colorer.match_keywords(s, i)

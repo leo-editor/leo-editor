@@ -170,203 +170,149 @@ keywordsDictDict = {
 # Rules for interlis_main ruleset.
 
 def interlis_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def interlis_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="!!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="!!")
 
 def interlis_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def interlis_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="//", end="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="//", end="//")
 
 def interlis_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def interlis_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<-")
 
 def interlis_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def interlis_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def interlis_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def interlis_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def interlis_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def interlis_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def interlis_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def interlis_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def interlis_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def interlis_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def interlis_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def interlis_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def interlis_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def interlis_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def interlis_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def interlis_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def interlis_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def interlis_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def interlis_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def interlis_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="--")
 
 def interlis_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-<#>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-<#>")
 
 def interlis_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-<>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-<>")
 
 def interlis_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def interlis_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def interlis_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def interlis_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def interlis_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def interlis_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def interlis_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def interlis_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def interlis_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def interlis_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def interlis_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def interlis_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def interlis_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def interlis_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def interlis_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def interlis_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def interlis_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def interlis_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def interlis_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def interlis_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def interlis_rule48(colorer, s, i):
     return colorer.match_keywords(s, i)

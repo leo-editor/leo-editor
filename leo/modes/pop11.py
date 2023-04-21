@@ -192,146 +192,112 @@ keywordsDictDict = {
 
 def pop11_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::comment", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::comment")
 
 def pop11_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";;;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";;;")
 
 def pop11_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pop11::string",
+          no_line_break=True)
 
 def pop11_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pop11::string",
+          no_line_break=True)
 
 def pop11_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pop11::string",
+          no_line_break=True)
 
 def pop11_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="![", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule8(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def pop11_rule9(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+          at_line_start=True)
 
 def pop11_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="#_<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="#_<")
 
 def pop11_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=">_#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=">_#")
 
 def pop11_rule12(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="label", pattern="#_",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+          at_line_start=True)
 
 def pop11_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=")")
 
 def pop11_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="(")
 
 def pop11_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".")
 
 def pop11_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def pop11_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=";")
 
 def pop11_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="^")
 
 def pop11_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="@")
 
 def pop11_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def pop11_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="|")
 
 def pop11_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def pop11_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def pop11_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def pop11_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def pop11_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def pop11_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def pop11_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def pop11_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def pop11_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def pop11_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def pop11_rule32(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -430,66 +396,48 @@ rulesDict1 = {
 
 def pop11_rule33(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="![", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::list", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::list")
 
 def pop11_rule36(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pop11::string",
+          no_line_break=True)
 
 def pop11_rule37(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::string", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pop11::string",
+          no_line_break=True)
 
 def pop11_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="null", begin="%", end="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::main")
 
 def pop11_rule39(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pop11::comment", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pop11::comment")
 
 def pop11_rule40(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";;;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";;;")
 
 def pop11_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="=")
 
 def pop11_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="==")
 
 def pop11_rule43(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal2", pattern="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal2", pattern="^")
 
 def pop11_rule44(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal2", pattern="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal2", pattern="?")
 
 # Rules dict for pop11_list ruleset.
 rulesDict2 = {
@@ -514,12 +462,10 @@ rulesDict3 = {}
 # Rules for pop11_comment ruleset.
 
 def pop11_rule45(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_previous(s, i, kind="label", pattern=":")
 
 def pop11_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="*")
 
 # Rules dict for pop11_comment ruleset.
 rulesDict4 = {

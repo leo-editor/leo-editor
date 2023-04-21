@@ -37,106 +37,82 @@ keywordsDictDict = {
 
 def yaml_rule0(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment1", regexp="\\s*#.*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def yaml_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq="---",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="label", seq="---")
 
 def yaml_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq="...",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="label", seq="...")
 
 def yaml_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def yaml_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def yaml_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def yaml_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def yaml_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def yaml_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def yaml_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def yaml_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def yaml_rule11(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="&")
 
 def yaml_rule12(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="*")
 
 def yaml_rule13(colorer, s, i):
     # Fix #1082:
         # Old: regexp="\\s*(-|)?\\s*[^\\s]+\\s*:(\\s|$)"
         # Old: at_line_start=True.
-    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r"\s*-?\s*\w+:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r"\s*-?\s*\w+:")
 
 def yaml_rule14(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+~\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+~\\s*$")
 
 def yaml_rule15(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+null\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+null\\s*$")
 
 def yaml_rule16(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+true\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+true\\s*$")
 
 def yaml_rule17(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+false\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+false\\s*$")
 
 def yaml_rule18(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+yes\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+yes\\s*$")
 
 def yaml_rule19(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+no\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+no\\s*$")
 
 def yaml_rule20(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+on\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+on\\s*$")
 
 def yaml_rule21(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+off\\s*$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+off\\s*$")
 
 def yaml_rule22(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="!!(map|seq|str|set|omap|binary)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="!!(map|seq|str|set|omap|binary)")
 
 def yaml_rule23(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword3", regexp="!![^\\s]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword3", regexp="!![^\\s]+")
 
 def yaml_rule24(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="![^\\s]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="![^\\s]+")
 
 # Rules dict for yaml_main ruleset.
 rulesDict1 = {

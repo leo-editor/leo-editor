@@ -160,82 +160,66 @@ keywordsDictDict = {
 def pandoc_heading(colorer, s, i):
     # issue 386.
     # print('pandoc_heading',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+")
 
 def pandoc_link(colorer, s, i):
     # issue 386.
     # print('pandoc_link',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)")
 
 def pandoc_star_emphasis1(colorer, s, i):
     # issue 386.
     # print('pandoc_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*")
 
 def pandoc_star_emphasis2(colorer, s, i):
     # issue 386.
     # print('pandoc_star_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*")
 
 def pandoc_underscore_emphasis1(colorer, s, i):
     # issue 386.
     # print('pandoc_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_")
 
 def pandoc_underline_equals(colorer, s, i):
     # issue 386.
     # print('pandoc_underline_equals',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$")
 
 def pandoc_underline_minus(colorer, s, i):
     # issue 386.
     # print('pandoc_underline_minus',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$")
 
 def pandoc_underscore_emphasis2(colorer, s, i):
     # issue 386.
     # print('pandoc_underscore_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__")
 
 def pandoc_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def pandoc_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="html::javascript")
 
 def pandoc_rule2(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="markup", regexp="<hr\\b([^<>])*?/?>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def pandoc_rule3(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|noscript|form|fieldset|iframe|math|ins|del)\\b", end="</$1>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::block_html_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="pandoc::block_html_tags")
 
 def pandoc_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def pandoc_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::inline_markup", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pandoc::inline_markup")
 
 
 # Rules dict for pandoc_main ruleset.
@@ -262,35 +246,26 @@ if 0:  # Rules 6 & 7 will never match?
 
     def pandoc_rule6(colorer, s, i):
         return colorer.match_eol_span_regexp(s, i, kind="invalid", regexp="[\\S]+",
-            at_line_start=True, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+          at_line_start=True)
 
     def pandoc_rule7(colorer, s, i):
         return colorer.match_eol_span_regexp(s, i, kind="invalid", regexp="{1,3}[\\S]+",
-            at_line_start=True, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+          at_line_start=True)
 
 def pandoc_rule8(colorer, s, i):
     # leadin: [ \t]
     return colorer.match_eol_span_regexp(s, i, kind="", regexp="( {4}|\\t)",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="html::main", exclude_match=False)
+          at_line_start=True,
+          delegate="html::main")
 
 def pandoc_rule9(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def pandoc_rule10(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def pandoc_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for pandoc_block_html_tags ruleset.
 rulesDict3 = {
@@ -309,103 +284,84 @@ rulesDict3 = {
 def pandoc_rule12(colorer, s, i):
     # Leadins: [ \t>]
     return colorer.match_eol_span_regexp(s, i, kind="", regexp="[ \\t]*(>[ \\t]{1})+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::markdown_blockquote", exclude_match=False)
+          at_line_start=True,
+          delegate="pandoc::markdown_blockquote")
 
 def pandoc_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def pandoc_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def pandoc_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\][",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def pandoc_rule16(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="``` ruby", end="```",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="ruby::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="ruby::main")
 
 def pandoc_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="```", end="```",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def pandoc_rule19(colorer, s, i):
     # leadin: `
-    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1")
 
 def pandoc_rule20(colorer, s, i):
     # Leadins are [ \t]
     return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def pandoc_rule21(colorer, s, i):
     # Leadins are [=-]
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def pandoc_rule22(colorer, s, i):
     # Leadin is #
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def pandoc_rule23(colorer, s, i):
     # Leadins are [ \t -_*]
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def pandoc_rule24(colorer, s, i):
     # Leadins are [ \t*+-]
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def pandoc_rule25(colorer, s, i):
     # Leadins are [ \t0123456789]
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def pandoc_rule26(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False,
-        delegate="pandoc::link_label_definition", exclude_match=False)
+          at_whitespace_end=True,
+          delegate="pandoc::link_label_definition")
 
 def pandoc_rule27(colorer, s, i):
     # leadin: [
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::link_inline_url_title", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pandoc::link_inline_url_title",
+          no_line_break=True)
 
 def pandoc_rule28(colorer, s, i):
     # Leadins: [*_]
     return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def pandoc_rule29(colorer, s, i):
     # Leadins: [*_]
     return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 # Rules dict for pandoc_markdown ruleset.
 rulesDict4 = {
@@ -440,20 +396,16 @@ rulesDict4 = {
 # Rules for pandoc_link_label_definition ruleset.
 
 def pandoc_rule30(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\"")
 
 def pandoc_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def pandoc_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 # Rules dict for pandoc_link_label_definition ruleset.
 rulesDict5 = {
@@ -466,20 +418,17 @@ rulesDict5 = {
 # Rules for pandoc_link_inline_url_title ruleset.
 
 def pandoc_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def pandoc_rule35(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="\\[", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::link_inline_label_close", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pandoc::link_inline_label_close",
+          no_line_break=True)
 
 def pandoc_rule36(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="\\(", end="\\)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::link_inline_url_title_close", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pandoc::link_inline_url_title_close",
+          no_line_break=True)
 
 # Rules dict for pandoc_link_inline_url_title ruleset.
 rulesDict6 = {
@@ -492,8 +441,7 @@ rulesDict6 = {
 
 def pandoc_rule37(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="null", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::main", exclude_match=False)
+          delegate="pandoc::main")
 
 # Rules dict for pandoc_link_inline_url_title_close ruleset.
 rulesDict7 = {
@@ -504,8 +452,7 @@ rulesDict7 = {
 
 def pandoc_rule38(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="null", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::main", exclude_match=False)
+          delegate="pandoc::main")
 
 # Rules dict for pandoc_link_inline_label_close ruleset.
 rulesDict8 = {
@@ -515,100 +462,72 @@ rulesDict8 = {
 # Rules for pandoc_markdown_blockquote ruleset.
 
 def pandoc_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def pandoc_rule40(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::inline_markup", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pandoc::inline_markup")
 
 def pandoc_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def pandoc_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def pandoc_rule43(colorer, s, i):
     # leadin: backslash.
-    return colorer.match_seq(s, i, kind="null", seq="\\][",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def pandoc_rule44(colorer, s, i):
     # leadin: backslash.
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule45(colorer, s, i):
     # leadin: `
-    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1")
 
 def pandoc_rule46(colorer, s, i):
     # leadins: [ \t]
-    return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S")
 
 def pandoc_rule47(colorer, s, i):
     # leadins: [=-]
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+")
 
 def pandoc_rule48(colorer, s, i):
     # leadin: #
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)")
 
 def pandoc_rule49(colorer, s, i):
     # leadins: [ -_*]
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*")
 
 def pandoc_rule50(colorer, s, i):
     # leadins: [ \t*+-]
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+")
 
 def pandoc_rule51(colorer, s, i):
     # leadins: [ \t0123456789]
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+")
 
 def pandoc_rule52(colorer, s, i):
     # leadin: [
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::link_label_definition", exclude_match=False)
+          delegate="pandoc::link_label_definition")
 
 def pandoc_rule53(colorer, s, i):
     # leadin: [
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pandoc::link_inline_url_title", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="pandoc::link_inline_url_title",
+          no_line_break=True)
 
 def pandoc_rule54(colorer, s, i):
     # leadins: [*_]
-    return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1")
 
 def pandoc_rule55(colorer, s, i):
      # leadins: [*_]
-    return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1")
 
 # Rules dict for pandoc_markdown_blockquote ruleset.
 rulesDict9 = {

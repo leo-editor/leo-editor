@@ -1723,160 +1723,110 @@ keywordsDictDict = {
 
 def foxpro_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def foxpro_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def foxpro_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#if",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#if")
 
 def foxpro_rule3(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#else",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#else")
 
 def foxpro_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#end",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#end")
 
 def foxpro_rule5(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#define",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#define")
 
 def foxpro_rule6(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#include",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#include")
 
 def foxpro_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Elif",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Elif")
 
 def foxpro_rule8(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Else",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Else")
 
 def foxpro_rule9(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Endif",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Endif")
 
 def foxpro_rule10(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#If",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#If")
 
 def foxpro_rule11(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Itsexpression",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Itsexpression")
 
 def foxpro_rule12(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Readclauses",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Readclauses")
 
 def foxpro_rule13(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Region",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Region")
 
 def foxpro_rule14(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Section",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Section")
 
 def foxpro_rule15(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Undef",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Undef")
 
 def foxpro_rule16(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Wname",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#Wname")
 
 def foxpro_rule17(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="&&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="&&")
 
 def foxpro_rule18(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="*",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_whitespace_end=True)
 
 def foxpro_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def foxpro_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def foxpro_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def foxpro_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def foxpro_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def foxpro_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def foxpro_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def foxpro_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def foxpro_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def foxpro_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def foxpro_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def foxpro_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def foxpro_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def foxpro_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def foxpro_rule33(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          at_line_start=True,
+          exclude_match=True)
 
 def foxpro_rule34(colorer, s, i):
     return colorer.match_keywords(s, i)
