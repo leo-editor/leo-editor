@@ -503,6 +503,26 @@ class TestColorizer(LeoUnitTest):
             </project>
     """)
         self.color('html', text)
+    #@+node:ekr.20230421104052.1: *3* TestColorizer.test_colorizer_HTML_script_tag
+    def test_colorizer_HTML_script_tag(self):
+        text = textwrap.dedent("""\
+            <html>
+            <head>
+            <script>
+            // js comment
+            for (let i = 0; i < cars.length; i++) {
+              text += cars[i] + "<br>";
+            }
+            </script>
+            </head>
+            <body>
+            <p1>
+            <-- html comment -->
+            This is a test.
+            </body>
+            </html>
+    """)
+        self.color('html', text)
     #@+node:ekr.20210905170507.17: *3* TestColorizer.test_colorizer_Java
     def test_colorizer_Java(self):
         text = textwrap.dedent('''\
