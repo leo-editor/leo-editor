@@ -18298,6 +18298,81 @@ def spam():
 #@+node:ekr.20221105063835.6: *4* eggs
 def eggs(a=None):
     print('eggs')
+#@+node:ekr.20230421070847.1: ** script: replace kwargs in mode files
+"""Replace default kwargs in all leo/modes files"""
+
+g.cls()
+import glob
+import os
+import re
+
+bool_kwargs = (
+    'at_line_start', 'at_whitespace_end', 'at_word_start',
+    'exclude_match',
+    'no_escape', 'no_line_break', 'no_word_break',
+)
+
+patterns = []
+for bool_arg in bool_kwargs:
+    # Remove kwargs inited to False.
+    pattern1 = re.compile(fr"{bool_arg}=False,")
+    patterns.append((pattern1, ''))
+    pattern2 = re.compile(fr"{bool_arg}=False\)")
+    patterns.append((pattern2, ')'))
+
+delegate_patterns = (
+    # Remove kwargs inited to "".
+    (re.compile(r'delegate="",'), ''),
+    (re.compile(r'delegate=""\)'), ')'),
+)
+cleanup_patterns = [
+    # Remove blank lines between trailing comma and ')'.
+    (re.compile(r',[ ]*(\n[ ]*)*\)', re.MULTILINE), ')'),
+]
+for bool_arg in bool_kwargs:
+    # Remove blank lines between trailing comma and any bool kwarg.
+    pattern3 = re.compile(fr",[ ]*(\n[ ]*)*{bool_arg}")
+    cleanup_patterns.append((pattern3, fr",\n{' '*10}{bool_arg}"))   
+
+for aTuple in delegate_patterns:
+    patterns.append(aTuple)
+for aTuple in cleanup_patterns:
+    patterns.append(aTuple)
+    
+# Exclude these files: @file nodes define them.
+exclude = (
+    'batch.py', 'forth.py', 'html.py',
+    'javascript.py', 'julia.py', 'python.py',
+)
+modes = os.path.normpath(os.path.join(g.app.loadDir, '..', 'modes'))
+paths = glob.glob(f"{modes}{os.sep}*.py")
+paths = [z for z in paths if not any(z2 in z for z2 in exclude)]
+# g.printObj([g.shortFileName(z) for z in paths])
+
+paths = paths[:1]  ###
+for path in paths:  ###
+    with open(path, 'r') as f:
+        contents = f.read()
+    for pattern, repl in patterns:
+        contents =  re.sub(pattern, repl, contents)
+    lines = [z.rstrip() + '\n' for z in g.splitLines(contents)]
+    contents = ''.join(lines)
+    lines = g.splitLines(contents)
+    if 0:
+        g.printObj(lines, tag=path)
+    if 0:
+        g.printObj(list(f"{i+660:3} {z}" for i, z in enumerate(lines[660:])))
+    if 0:
+        contents = contents.replace('  ', ' ')
+        lines = [f"{i:3} {z}" for i, z in enumerate(g.splitLines(contents))
+            if ('colorer.match' in z
+                or ',\n\n' in z
+                or any(z2 in z for z2 in bool_kwargs)
+            )]
+        g.printObj(lines, tag=path)
+    with open(path, 'w') as f:
+        f.write(contents)
+g.es_print('Done!')
 #@-all
 #@@language python
 #@@tabwidth -4
