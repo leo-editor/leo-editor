@@ -1018,12 +1018,6 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        if False and 'coloring' in g.app.debug:
-            g.trace(
-                f"name: {name:20} "
-                f"language: {language:10} "
-                f"rulesetName: {rulesetName:20}",
-            )
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
