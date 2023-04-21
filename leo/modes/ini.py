@@ -33,23 +33,20 @@ keywordsDictDict = {
 
 def ini_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="[", end="]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def ini_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def ini_rule2(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def ini_rule3(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="keyword1", pattern="=",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          at_line_start=True,
+          exclude_match=True)
 
 # Rules dict for ini_main ruleset.
 rulesDict1 = {

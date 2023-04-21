@@ -135,40 +135,27 @@ keywordsDictDict = {
 # Rules for velocity_main ruleset.
 
 def velocity_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def velocity_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="velocity::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="velocity::javascript")
 
 def velocity_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="velocity::css", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="velocity::css")
 
 def velocity_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="xml::dtd-tags")
 
 def velocity_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="html::tags")
 
 def velocity_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 
 # Rules dict for velocity_main ruleset.
@@ -180,29 +167,20 @@ rulesDict1 = {
 # Rules for velocity_velocity ruleset.
 
 def velocity_rule6(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="#*", end="*#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="#*", end="*#")
 
 def velocity_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment3", seq="##",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment3", seq="##")
 
 def velocity_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def velocity_rule9(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$!")
 
 def velocity_rule10(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$")
 
 def velocity_rule11(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -280,11 +258,11 @@ rulesDict2 = {
 
 def velocity_rule12(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="velocity::javascript2")
+          delegate="velocity::javascript2")
 
 def velocity_rule13(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="SRC=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="velocity::back_to_html")
+          delegate="velocity::back_to_html")
 
 # Rules dict for velocity_javascript ruleset.
 rulesDict3 = {
@@ -303,7 +281,7 @@ rulesDict4 = {}
 
 def velocity_rule14(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="velocity::main")
+          delegate="velocity::main")
 
 # Rules dict for velocity_back_to_html ruleset.
 rulesDict5 = {
@@ -314,7 +292,7 @@ rulesDict5 = {
 
 def velocity_rule15(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="velocity::css2")
+          delegate="velocity::css2")
 
 # Rules dict for velocity_css ruleset.
 rulesDict6 = {

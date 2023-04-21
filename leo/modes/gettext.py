@@ -54,46 +54,32 @@ keywordsDictDict = {
 # Rules for gettext_main ruleset.
 
 def gettext_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="#:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="#:")
 
 def gettext_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def gettext_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="#.",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="#.")
 
 def gettext_rule3(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="#~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="#~")
 
 def gettext_rule4(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="comment2", pattern="#,",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="comment2", pattern="#,")
 
 def gettext_rule5(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="%")
 
 def gettext_rule6(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$")
 
 def gettext_rule7(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="@")
 
 def gettext_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="gettext::quoted", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="gettext::quoted")
 
 def gettext_rule9(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -175,21 +161,16 @@ rulesDict1 = {
 
 def gettext_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\\\"", end="\\\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def gettext_rule11(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="%")
 
 def gettext_rule12(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$")
 
 def gettext_rule13(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="@")
 
 # Rules dict for gettext_quoted ruleset.
 rulesDict2 = {

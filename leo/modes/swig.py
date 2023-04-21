@@ -40,14 +40,10 @@ keywordsDictDict = {
 # Rules for swig_main ruleset.
 
 def swig_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal3", begin="%{", end="%}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal3", begin="%{", end="%}")
 
 def swig_rule1(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword4", pattern="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword4", pattern="%")
 
 
 # Rules dict for swig_main ruleset.

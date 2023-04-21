@@ -33,7 +33,7 @@ keywordsDictDict = {
 if 1:
     def plain_rule0(colorer, s, i):
         # print('plain_rule0',s[i:i+10])
-        return colorer.match_eol_span(s, i, kind="null", delegate="")
+        return colorer.match_eol_span(s, i, kind="null")
 
     # Simulate a dict that returns [plain_rule0] by default.
     class RulesDict:

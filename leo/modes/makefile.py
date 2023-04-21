@@ -69,47 +69,35 @@ keywordsDictDict = {
 # Rules for makefile_main ruleset.
 
 def makefile_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def makefile_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="makefile::variable",
+          no_line_break=True)
 
 def makefile_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="makefile::variable",
+          no_line_break=True)
 
 def makefile_rule3(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$")
 
 def makefile_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def makefile_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def makefile_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def makefile_rule7(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_previous(s, i, kind="label", pattern=":")
 
 def makefile_rule8(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -191,21 +179,17 @@ rulesDict1 = {
 # Rules for makefile_variable ruleset.
 
 def makefile_rule9(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def makefile_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="$(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="makefile::variable",
+          no_line_break=True)
 
 def makefile_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="makefile::variable",
+          no_line_break=True)
 
 # Rules dict for makefile_variable ruleset.
 rulesDict2 = {
