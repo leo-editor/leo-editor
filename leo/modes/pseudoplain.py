@@ -43,9 +43,7 @@ keywordsDictDict = {
 
 def pseudoplain_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="[[", end="]]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="pseudoplain::interior", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="pseudoplain::interior")
 
 # Rules dict for pseudoplain_main ruleset.
 rulesDict1 = {

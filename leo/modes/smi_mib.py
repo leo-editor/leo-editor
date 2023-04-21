@@ -116,39 +116,28 @@ keywordsDictDict = {
 # Rules for smi_mib_main ruleset.
 
 def smi_mib_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="--")
 
 def smi_mib_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def smi_mib_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::=")
 
 def smi_mib_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def smi_mib_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def smi_mib_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="OBJECT IDENTIFIER",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="OBJECT IDENTIFIER")
 
 def smi_mib_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="SEQUENCE OF",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="SEQUENCE OF")
 
 def smi_mib_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="OCTET STRING",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="OCTET STRING")
 
 def smi_mib_rule8(colorer, s, i):
     return colorer.match_keywords(s, i)

@@ -67,69 +67,44 @@ keywordsDictDict = {
 
 def psp_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal4", begin="<%@", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="psp::directive", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="psp::directive")
 
 def psp_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>")
 
 def psp_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="python::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="python::main")
 
 def psp_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def psp_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def psp_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script>", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def psp_rule6(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->")
 
 def psp_rule7(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def psp_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE>", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="css::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="css::main")
 
 def psp_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="psp::tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="psp::tags")
 
 def psp_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for psp_main ruleset.
 rulesDict1 = {
@@ -140,32 +115,20 @@ rulesDict1 = {
 # Rules for psp_tags ruleset.
 
 def psp_rule11(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def psp_rule12(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def psp_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def psp_rule14(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>")
 
 def psp_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="python::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="python::main")
 
 # Rules dict for psp_tags ruleset.
 rulesDict2 = {
@@ -178,20 +141,13 @@ rulesDict2 = {
 # Rules for psp_directive ruleset.
 
 def psp_rule16(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def psp_rule17(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def psp_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def psp_rule19(colorer, s, i):
     return colorer.match_keywords(s, i)

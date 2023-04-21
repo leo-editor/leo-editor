@@ -235,49 +235,34 @@ keywordsDictDict = {
 # Rules for scheme_main ruleset.
 
 def scheme_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="#|", end="|#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="#|", end="|#")
 
 def scheme_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="'(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="'(")
 
 def scheme_rule2(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="'")
 
 def scheme_rule3(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="#\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="#\\")
 
 def scheme_rule4(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="#b",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="#b")
 
 def scheme_rule5(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="#d",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="#d")
 
 def scheme_rule6(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="#o",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="#o")
 
 def scheme_rule7(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="literal1", pattern="#x",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="literal1", pattern="#x")
 
 def scheme_rule8(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
 def scheme_rule9(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def scheme_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)

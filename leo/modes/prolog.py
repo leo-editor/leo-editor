@@ -129,189 +129,140 @@ keywordsDictDict = {
 # Rules for prolog_main ruleset.
 
 def prolog_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="%")
 
 def prolog_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def prolog_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def prolog_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def prolog_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="prolog::list", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="prolog::list",
+          no_line_break=True)
 
 def prolog_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-->")
 
 def prolog_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":-")
 
 def prolog_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?-")
 
 def prolog_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def prolog_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def prolog_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def prolog_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\+")
 
 def prolog_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def prolog_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\==")
 
 def prolog_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\=")
 
 def prolog_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@<")
 
 def prolog_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@=<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@=<")
 
 def prolog_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@>=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@>=")
 
 def prolog_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@>")
 
 def prolog_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=..",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=..")
 
 def prolog_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=:=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=:=")
 
 def prolog_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=\\=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=\\=")
 
 def prolog_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=<")
 
 def prolog_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def prolog_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def prolog_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def prolog_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/\\")
 
 def prolog_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\/")
 
 def prolog_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="//")
 
 def prolog_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def prolog_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def prolog_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def prolog_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def prolog_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="**",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="**")
 
 def prolog_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def prolog_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def prolog_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def prolog_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def prolog_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def prolog_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def prolog_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="(")
 
 def prolog_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=")")
 
 def prolog_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="{")
 
 def prolog_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="}")
 
 def prolog_rule44(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -411,9 +362,8 @@ rulesDict1 = {
 
 def prolog_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="prolog::list", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="prolog::list",
+          no_line_break=True)
 
 # Rules dict for prolog_list ruleset.
 rulesDict2 = {

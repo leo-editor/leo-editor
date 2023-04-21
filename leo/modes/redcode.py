@@ -68,158 +68,115 @@ keywordsDictDict = {
 # Rules for redcode_main ruleset.
 
 def redcode_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";redcode",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";redcode")
 
 def redcode_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";author",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";author")
 
 def redcode_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";name",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";name")
 
 def redcode_rule3(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";strategy",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";strategy")
 
 def redcode_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq=";password",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq=";password")
 
 def redcode_rule5(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
 def redcode_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".AB",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".AB")
 
 def redcode_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".BA",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".BA")
 
 def redcode_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".A",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".A")
 
 def redcode_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".B",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".B")
 
 def redcode_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".F",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".F")
 
 def redcode_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".X",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".X")
 
 def redcode_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq=".I",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq=".I")
 
 def redcode_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def redcode_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def redcode_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def redcode_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def redcode_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def redcode_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def redcode_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def redcode_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def redcode_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def redcode_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def redcode_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def redcode_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def redcode_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def redcode_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def redcode_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&&")
 
 def redcode_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def redcode_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def redcode_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def redcode_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="$")
 
 def redcode_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="@")
 
 def redcode_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="#")
 
 def redcode_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="*")
 
 def redcode_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="{")
 
 def redcode_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="}")
 
 def redcode_rule37(colorer, s, i):
     return colorer.match_keywords(s, i)

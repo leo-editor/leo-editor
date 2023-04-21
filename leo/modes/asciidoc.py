@@ -57,240 +57,179 @@ keywordsDictDict = {
 
 def asciidoc_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="=====",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="====",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule2(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="===",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule3(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="==",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="=",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule5(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="markup", regexp="^[=-]{4,}",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule6(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="~~~~",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule7(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="^^^^",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule8(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="++++",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule9(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment2", begin="^\\/\\/\\/\\/+\\s*$", end="\\/\\/\\/\\/\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule10(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment3", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment3", seq="//")
 
 def asciidoc_rule11(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="^----+\\s*$", end="----\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule12(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin="^\\+\\+\\+\\++\\s*$", end="\\+\\+\\+\\+\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule13(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal3", begin="^\\.\\.\\.\\.+\\s*$", end="\\.\\.\\.\\.\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule14(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal4", begin="^\\*\\*\\*\\*+\\s*$", end="\\*\\*\\*\\*\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule15(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment4", begin="^____+\\s*$", end="____\\s*$",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule16(colorer, s, i):
-    return colorer.match_eol_span_regexp(s, i, kind="label", regexp="^\\s*\\S+:.+\\[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="label", regexp="^\\s*\\S+:.+\\[")
 
 def asciidoc_rule17(colorer, s, i):
-    return colorer.match_eol_span_regexp(s, i, kind="label", regexp="^\\s*\\S+::.+\\[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="label", regexp="^\\s*\\S+::.+\\[")
 
 def asciidoc_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="[[", end="]]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule19(colorer, s, i):
-    return colorer.match_span(s, i, kind="label", begin="<<", end=">>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="label", begin="<<", end=">>")
 
 def asciidoc_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="[", end="]",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule21(colorer, s, i):
-    return colorer.match_eol_span_regexp(s, i, kind="literal1", regexp="^:.{1,20}:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="literal1", regexp="^:.{1,20}:")
 
 def asciidoc_rule22(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])_\\S", end="_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])_\\S", end="_")
 
 def asciidoc_rule23(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])'\\S", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])'\\S", end="'")
 
 def asciidoc_rule24(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="keyword1", begin="(^|[\\s\\.,\\(])\\*[^\\*\\s]", end="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="keyword1", begin="(^|[\\s\\.,\\(])\\*[^\\*\\s]", end="*")
 
 def asciidoc_rule25(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])`\\S", end="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])`\\S", end="`")
 
 def asciidoc_rule26(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])\\+\\S", end="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])\\+\\S", end="+")
 
 def asciidoc_rule27(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="-",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule28(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="*",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule29(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="**",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule30(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="***",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule31(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="****",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule32(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="*****",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule33(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=".",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule34(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="..",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule35(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="...",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule36(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="....",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule37(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=".....",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def asciidoc_rule38(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="comment4", pattern="::",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=False)
+          at_whitespace_end=True)
 
 def asciidoc_rule39(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="comment4", pattern=":::",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=False)
+          at_whitespace_end=True)
 
 def asciidoc_rule40(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="comment4", pattern="::::",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=False)
+          at_whitespace_end=True)
 
 def asciidoc_rule41(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="^\\.\\S",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule42(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="\\s*NOTE:", end=" ",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule43(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="operator", seq="|==",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def asciidoc_rule44(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="digit", pattern="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="digit", pattern="|")
 
 def asciidoc_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="NOTE:", end=" ",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def asciidoc_rule46(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="(((", end=")))",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="(((", end=")))")
 
 def asciidoc_rule47(colorer, s, i):
     return colorer.match_keywords(s, i)

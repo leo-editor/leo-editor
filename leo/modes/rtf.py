@@ -30,24 +30,19 @@ keywordsDictDict = {
 # Rules for rtf_main ruleset.
 
 def rtf_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def rtf_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def rtf_rule2(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\\\'\\w\\d",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\\\'\\w\\d")
 
 def rtf_rule3(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="\\*\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="\\*\\")
 
 def rtf_rule4(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword1", pattern="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword1", pattern="\\")
 
 # Rules dict for rtf_main ruleset.
 rulesDict1 = {

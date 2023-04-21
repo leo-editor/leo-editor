@@ -91,21 +91,15 @@ keywordsDictDict = {
 # Rules for eiffel_main ruleset.
 
 def eiffel_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="--")
 
 def eiffel_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def eiffel_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def eiffel_rule3(colorer, s, i):
     return colorer.match_keywords(s, i)
