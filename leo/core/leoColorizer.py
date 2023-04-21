@@ -1018,8 +1018,6 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        if 'coloring' in g.app.debug:
-            g.trace(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
@@ -1049,7 +1047,7 @@ class JEditColorizer(BaseColorizer):
                 mode.pre_init_mode(self.c)
         else:
             # Create a dummy bunch to limit recursion.
-            self.modes[rulesetName] = self.modeBunch = g.Bunch(
+            self.modes[language] = self.modeBunch = g.Bunch(
                 attributesDict={},
                 defaultColor=None,
                 keywordsDict={},
@@ -1111,20 +1109,18 @@ class JEditColorizer(BaseColorizer):
         name or a delegate name.
         """
         if not name:
-            # return ''
-            return 'unknown-language', None  # 2022/09/02: Bug fix.
+            return 'unknown-language', None
         # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
         i = name.find('::')
         if i == -1:
-            language = name
             # New in Leo 5.0: allow delegated language names.
-            language = g.app.delegate_language_dict.get(language, language)
+            language = g.app.delegate_language_dict.get(name, name)
             rulesetName = f"{language}_main"
         else:
             language = name[:i]
-            delegate = name[i + 2 :]
-            rulesetName = self.munge(f"{language}_{delegate}")
+            delegate_language = name[i + 2 :]
+            rulesetName = self.munge(f"{language}_{delegate_language}")
         return language, rulesetName
     #@+node:ekr.20110605121601.18583: *5* jedit.setKeywords
     def setKeywords(self) -> None:
@@ -2037,6 +2033,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         i: int,
         kind: str = '',
+        *,
         seq: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2087,14 +2084,15 @@ class JEditColorizer(BaseColorizer):
         self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         return j - i
-    #@+node:ekr.20110605121601.18622: *4* jedit.match_span & helper & restarter
+    #@+node:ekr.20110605121601.18622: *4* jedit.match_span & helpers
     def match_span(
         self,
         s: str,
         i: int,
-        kind: str = '',
-        begin: str = '',
-        end: str = '',
+        kind: str,
+        *,
+        begin: str,
+        end: str,
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
         at_word_start: bool = False,
@@ -2105,49 +2103,49 @@ class JEditColorizer(BaseColorizer):
         no_word_break: bool = False,
     ) -> int:
         """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
-        dots = False  # A flag that we are using dots as a continuation.
         if i >= len(s):
             return 0
         if at_line_start and i != 0 and s[i - 1] != '\n':
-            j = i
-        elif at_whitespace_end and i != g.skip_ws(s, 0):
-            j = i
-        elif at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            j = i
-        elif at_word_start and i + len(
-            begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
-            j = i
-        elif not g.match(s, i, begin):
-            j = i
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            return 0
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
+            return 0
+        if not g.match(s, i, begin):
+            return 0
+
+        # We have matched the start of the span.
+        j = self.match_span_helper(s, i + len(begin), end,
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break,
+        )
+        if j == -1:
+            return 0  # A real failure.
+        # A hack to handle continued strings. Should work for most languages.
+        # Prepend "dots" to the kind, as a flag to setTag.
+        dots = j > len(
+            s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+        dots = dots and self.language not in ('lisp', 'elisp', 'rust')
+        if dots:
+            kind = 'dots' + kind
+        # A match
+        i2 = i + len(begin)
+        j2 = j + len(end)
+        if delegate:
+            self.colorRangeWithTag(
+                s, i, i2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, j, j2, kind, delegate=None, exclude_match=exclude_match)
         else:
-            # We have matched the start of the span.
-            j = self.match_span_helper(s, i + len(begin), end,
-                no_escape, no_line_break, no_word_break=no_word_break)
-            if j == -1:
-                j = i  # A real failure.
-            else:
-                # A hack to handle continued strings. Should work for most languages.
-                # Prepend "dots" to the kind, as a flag to setTag.
-                dots = j > len(
-                    s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
-                dots = dots and self.language not in ('lisp', 'elisp', 'rust')
-                if dots:
-                    kind = 'dots' + kind
-                # A match
-                i2 = i + len(begin)
-                j2 = j + len(end)
-                if delegate:
-                    self.colorRangeWithTag(
-                        s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                    self.colorRangeWithTag(
-                        s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                    self.colorRangeWithTag(
-                        s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-                else:
-                    self.colorRangeWithTag(
-                        s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-                j = j2
-                self.prev = (i, j, kind)
+            self.colorRangeWithTag(
+                s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+        j = j2
+        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         # New in Leo 5.5: don't recolor everything after continued strings.
         if j > len(s) and not dots:
@@ -2155,12 +2153,20 @@ class JEditColorizer(BaseColorizer):
 
             def span(s: str) -> int:
                 # Note: bindings are frozen by this def.
-                return self.restart_match_span(s,  # Positional args, in alpha order
-                    delegate, end, exclude_match, kind,
-                    no_escape, no_line_break, no_word_break)
+                return self.restart_match_span(s, kind,
+                    # Keyword args...
+                    delegate=delegate,
+                    end=end,
+                    exclude_match=exclude_match,
+                    no_escape=no_escape,
+                    no_line_break=no_line_break,
+                    no_word_break=no_word_break,
+                )
 
-            self.setRestart(span,  # These must be keyword args.
-                delegate=delegate, end=end,
+            self.setRestart(span,
+                # These must be keyword args.
+                delegate=delegate,
+                end=end,
                 exclude_match=exclude_match,
                 kind=kind,
                 no_escape=no_escape,
@@ -2169,13 +2175,18 @@ class JEditColorizer(BaseColorizer):
         return j - i  # Correct, whatever j is.
     #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper
     def match_span_helper(self,
-        s: str, i: int, pattern: Any, no_escape: Any, no_line_break: Any, no_word_break: Any,
+        s: str,
+        i: int,
+        pattern: str,
+        *,
+        no_escape: bool,
+        no_line_break: bool,
+        no_word_break: bool,
     ) -> int:
         """
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
         esc = self.escape
-        # pylint: disable=inconsistent-return-statements
         while 1:
             j = s.find(pattern, i)
             if j == -1:
@@ -2196,7 +2207,8 @@ class JEditColorizer(BaseColorizer):
                     k += 1
                 if (escapes % 2) == 1:
                     assert s[j - 1] == esc
-                    i += 1  # 2013/08/26: just advance past the *one* escaped character.
+                    # Advance past *one* escaped character.
+                    i += 1
                 else:
                     return j
             else:
@@ -2207,18 +2219,24 @@ class JEditColorizer(BaseColorizer):
     def restart_match_span(
         self,
         s: str,
-        delegate: Any,
-        end: Any,
-        exclude_match: Any,
         kind: str,
-        no_escape: Any,
-        no_line_break: Any,
-        no_word_break: Any,
+        *,
+        end: str,
+        delegate: str = '',
+        exclude_match: bool = False,
+        no_escape: bool = False,
+        no_line_break: bool = False,
+        no_word_break: bool = False,
     ) -> int:
         """Remain in this state until 'end' is seen."""
         self.matcher_name = 'restart:' + self.matcher_name.replace('restart:', '')
         i = 0
-        j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
+        j = self.match_span_helper(s, i, end,
+            # Must be keyword arguments.
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break,
+        )
         if j == -1:
             j2 = len(s) + 1
         elif j > len(s):
@@ -2238,15 +2256,25 @@ class JEditColorizer(BaseColorizer):
         if j > len(s):
 
             def span(s: str) -> int:
-                return self.restart_match_span(s,  # Positional args, in alpha order
-                    delegate, end, exclude_match, kind,
-                    no_escape, no_line_break, no_word_break)
+                return self.restart_match_span(s, kind,
+                    # Must be kword arguments.
+                    delegate=delegate,
+                    end=end,
+                    exclude_match=exclude_match,
+                    no_escape=no_escape,
+                    no_line_break=no_line_break,
+                    no_word_break=no_word_break,
+                )
 
-            self.setRestart(span,  # These must be keywords args.
-                delegate=delegate, end=end, kind=kind,
+            self.setRestart(span,
+                # Must be kword arguments.
+                delegate=delegate,
+                end=end,
+                kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
-                no_word_break=no_word_break)
+                no_word_break=no_word_break,
+            )
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
@@ -2390,6 +2418,89 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(kind1, s, i, j)
         self.trace_match(kind2, s, j, k)
         return k - i
+    #@+node:ekr.20230420052804.1: *4* jedit.match_plain_seq
+    def match_plain_seq(self, s: str, i: int, kind: str, *, seq: str) -> int:
+        """Matcher for plain sequence match at at s[i:]."""
+        if not g.match(s, i, seq):
+            return 0
+        j = i + len(seq)
+        self.colorRangeWithTag(s, i, j, kind)
+        self.prev = (i, j, kind)
+        self.trace_match(kind, s, i, j)
+        return len(seq)
+    #@+node:ekr.20230420052841.1: *4* jedit.match_plain_span
+    def match_plain_span(self, s: str, i: int, kind: str, *, begin: str, end: str) -> int:
+        """Matcher for simple span at s[i:] with no delegate."""
+        if not g.match(s, i, begin):
+            return 0
+        j = self.match_plain_span_helper(s, i + len(begin), end)
+        if j == -1:
+            return 0  # A real failure.
+
+        # A hack to handle continued strings. Should work for most languages.
+        # Prepend "dots" to the kind, as a flag to setTag.
+        quotes = "'\""
+        dots = (
+            j > len(s)
+            and begin in quotes
+            and end in quotes
+            and kind.startswith('literal')
+            and self.language not in ('lisp', 'elisp', 'rust')
+        )
+        if dots:
+            kind = 'dots' + kind
+        j2 = j + len(end)
+        self.colorRangeWithTag(s, i, j2, kind)
+        j = j2
+        self.prev = (i, j, kind)
+        self.trace_match(kind, s, i, j)
+
+        # Don't recolor everything after continued strings.
+        if j > len(s) and not dots:
+            j = len(s) + 1
+
+            def span(s: str) -> int:
+                # Note: bindings are frozen by this def.
+                return self.restart_match_span(s, kind, end=end)
+
+            self.setRestart(span,
+                # These must be keyword args.
+                delegate='',
+                end=end,
+                exclude_match=False,
+                kind=kind,
+                no_escape=False,
+                no_line_break=False,
+                no_word_break=False)
+        return j - i  # Correct, whatever j is.
+    #@+node:ekr.20230420055058.1: *5* jedit.match_plain_span_helper
+    def match_plain_span_helper(self, s: str, i: int, pattern: str,
+    ) -> int:
+        """
+        Return n >= 0 if s[i] ends with the 'end' string.
+        """
+        esc = self.escape
+        while 1:
+            j = s.find(pattern, i)
+            if j == -1:
+                # Match to end of text if not found and no_line_break is False
+                return len(s) + 1
+            if esc:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0
+                k = 1
+                while j - k >= 0 and s[j - k] == esc:
+                    escapes += 1
+                    k += 1
+                if (escapes % 2) == 1:
+                    assert s[j - 1] == esc
+                    i += 1  # Advance past *one* escaped character.
+                else:
+                    return j
+            else:
+                return j
+        # For pylint.
+        return -1
     #@+node:ekr.20110605121601.18627: *4* jedit.skip_line
     def skip_line(self, s: str, i: int) -> int:
         if self.escape:

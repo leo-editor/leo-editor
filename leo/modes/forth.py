@@ -10,121 +10,86 @@ from leo.core import leoGlobals as g
 
 def forth_block_comment_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        at_word_start=True)
 
 def forth_comment_rule(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
-        delegate="", exclude_match=False)
+        at_word_start=True)
 
 def forth_keyword_rule(colorer, s, i):
     return colorer.match_keywords(s, i)
 
 def forth_string_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+        at_word_start=True)
+
 # ==========================
 
 if 0:
 
     def forth_rule0(colorer, s, i):
-        return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+        return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
     def forth_rule1(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
+        return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 
     def forth_rule2(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
+        return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
 
     def forth_rule3(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
+        return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
     def forth_rule4(colorer, s, i):
-        return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
+        return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
     def forth_rule5(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
     def forth_rule6(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="!",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
     def forth_rule7(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq=">=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
     def forth_rule8(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="<=",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
     def forth_rule9(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="+",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
     def forth_rule10(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="-",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
     def forth_rule11(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="/",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
     def forth_rule12(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="*",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
     def forth_rule13(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq=">",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq=">")
 
     def forth_rule14(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="<",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="<")
 
     def forth_rule15(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="%",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="%")
 
     def forth_rule16(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="&",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="&")
 
     def forth_rule17(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="|",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="|")
 
     def forth_rule18(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="^",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="^")
 
     def forth_rule19(colorer, s, i):
-        return colorer.match_seq(s, i, kind="operator", seq="~",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        return colorer.match_seq(s, i, kind="operator", seq="~")
 
     # #1821.
     def forth_rule20(colorer, s, i):
         return 0
-        # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-            # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
     def forth_rule21(colorer, s, i):
         return colorer.match_keywords(s, i)
@@ -169,8 +134,6 @@ rulesDictDict = {
 }
 # Import dict for forth mode.
 importDict = {}
-
-
 #@-<< define mode data >>
 #@+<< define extendForth class >>
 #@+node:ekr.20150326145530.4: ** << define extendForth class >> (forth.py)
@@ -228,7 +191,7 @@ class extendForth:
     def init(self):
         """Set our ivars from settings."""
         c = self.c
-        assert(c)
+        assert c
         table = (
             (self.definingwords, "forth-defwords"),
             (self.brackets, "forth-delimiter-pairs"),
@@ -265,7 +228,7 @@ class extendForth:
         """Process lines containing pairs of entries
         in a list whose *name* is ivar.
         Put the results in ivars whose names are ivar1 and ivar2."""
-        result1 = []; result2 = []
+        result1, result2 = [], []
         aList = getattr(self, ivar)
         # Look for pairs.  Comments have already been removed.
         for s in aList:
@@ -293,9 +256,7 @@ class extendForth:
 
         def forth_bracket_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-                at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-                delegate="", exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=True)  # Require word.
+                at_word_start=True, no_word_break=True)
 
         return forth_bracket_rule
 
@@ -313,9 +274,7 @@ class extendForth:
                 kind1="keyword2",  # defining word
                 word=word,
                 kind2="keyword3",  # bold
-                pattern=r'(\s)*(\S)+',
-                at_line_start=False, at_whitespace_end=False, at_word_start=False,
-                exclude_match=False)
+                pattern=r'(\s)*(\S)+')
 
         return forth_defining_word_rule
 
@@ -358,9 +317,7 @@ class extendForth:
 
         def forth_string_word_rule(colorer, s, i):
             return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-                at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
-                delegate="", exclude_match=False,
-                no_escape=False, no_line_break=False, no_word_break=False)  # Don't require ending word.
+                at_word_start=True)
 
         return forth_string_word_rule
 

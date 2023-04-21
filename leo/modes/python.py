@@ -1,3 +1,6 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20210219115553.109: * @file ../modes/python.py
+#@@language python
 # Leo colorizer control file for python mode.
 # This file is in the public domain.
 
@@ -6,6 +9,9 @@ properties = {
     "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
     "lineComment": "#",
 }
+
+#@+<< Attributes Dicts >>
+#@+node:ekr.20230419163615.1: ** << Attributes Dicts >>
 
 # Attributes dict for python_main ruleset.
 python_main_attributes_dict = {
@@ -21,7 +27,9 @@ python_main_attributes_dict = {
 attributesDictDict = {
     "python_main": python_main_attributes_dict,
 }
-
+#@-<< Attributes Dicts >>
+#@+<< Keywords Dicts >>
+#@+node:ekr.20230419163648.1: ** << Keywords Dicts >>
 # Keywords dict for python_main ruleset.
 python_main_keywords_dict = {
     "ArithmeticError": "keyword3",
@@ -294,216 +302,221 @@ python_main_keywords_dict = {
 keywordsDictDict = {
     "python_main": python_main_keywords_dict,
 }
-
-# Rules for python_main ruleset.
-
+#@-<< Keywords Dicts >>
+#@+others
+#@+node:ekr.20230419163736.1: ** Python rules
+#@+node:ekr.20230419163819.1: *3* python_rule0
 def python_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
-
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
+#@+node:ekr.20230419163819.2: *3* python_rule1
 def python_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
+#@+node:ekr.20230419163819.3: *3* python_rule2
 def python_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
+#@+node:ekr.20230419163819.4: *3* python_rule3
 def python_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
+#@+node:ekr.20230419163819.5: *3* python_rule4
 def python_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
-
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+#@+node:ekr.20230419163819.6: *3* python_rule5
 def python_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
+
+#@+node:ekr.20230419163819.7: *3* python_rule6
 def python_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
+
+#@+node:ekr.20230419163819.8: *3* python_rule7
 def python_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
+
+#@+node:ekr.20230419163819.9: *3* python_rule8
 def python_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
+
+#@+node:ekr.20230419163819.10: *3* python_rule9
 def python_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
+
+#@+node:ekr.20230419163819.11: *3* python_rule10
 def python_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
+
+#@+node:ekr.20230419163819.12: *3* python_rule11
 def python_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
+
+#@+node:ekr.20230419163819.13: *3* python_rule12
 def python_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
+
+#@+node:ekr.20230419163819.14: *3* python_rule13
 def python_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
+
+#@+node:ekr.20230419163819.15: *3* python_rule14
 def python_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
+
+#@+node:ekr.20230419163819.16: *3* python_rule15
 def python_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
+
+#@+node:ekr.20230419163819.17: *3* python_rule16
 def python_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
+
+#@+node:ekr.20230419163819.18: *3* python_rule17
 def python_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
+
+#@+node:ekr.20230419163819.19: *3* python_rule18
 def python_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
+
+#@+node:ekr.20230419163819.20: *3* python_rule19
 def python_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
-# #1821.
-# def python_rule20(colorer, s, i):
-    # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
+#@+node:ekr.20230419163819.21: *3* python_rule20 (not used)
+if 0:  # #1821.
+    def python_rule20(colorer, s, i):
+        return colorer.match_mark_previous(s, i, kind="function", pattern="(")
+#@+node:ekr.20230419163819.22: *3* python_rule21
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
+if 0:
+    url = False
 
-url = False
+    if url:
+        h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
+        f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
-if url:
-    h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
-    f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
+        def python_rule_h_url(colorer, s, i):
+            return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex)
 
-    def python_rule_h_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex,
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        def python_rule_f_url(colorer, s, i):
+            return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex)
 
-    def python_rule_f_url(colorer, s, i):
-        return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex,
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-else:
-    # Always fail.
-    def python_rule_h_url(colorer, s, i):
-        return 0
+    else:
+        # Always fail.
+        def python_rule_h_url(colorer, s, i):
+            return 0
 
-    def python_rule_f_url(colorer, s, i):
-        return 0
-
+        def python_rule_f_url(colorer, s, i):
+            return 0
+#@-others
+#@+<< Rules Dicts >>
+#@+node:ekr.20230419164059.1: ** << Rules Dicts >>
 # Rules dict for python_main ruleset.
 rulesDict1 = {
-    "!": [python_rule6,],
-    "\"": [python_rule1, python_rule3,],
-    "#": [python_rule0,],
-    "%": [python_rule15,],
-    "&": [python_rule16,],
-    "'": [python_rule2, python_rule4,],
-    # "(": [python_rule20,],
-    "*": [python_rule12,],
-    "+": [python_rule9,],
-    "-": [python_rule10,],
-    "/": [python_rule11,],
-    "0": [python_rule21,],
-    "1": [python_rule21,],
-    "2": [python_rule21,],
-    "3": [python_rule21,],
-    "4": [python_rule21,],
-    "5": [python_rule21,],
-    "6": [python_rule21,],
-    "7": [python_rule21,],
-    "8": [python_rule21,],
-    "9": [python_rule21,],
-    "<": [python_rule8, python_rule14,],
-    "=": [python_rule5,],
-    ">": [python_rule7, python_rule13,],
-    "@": [python_rule21,],
-    "A": [python_rule21,],
-    "B": [python_rule21,],
-    "C": [python_rule21,],
-    "D": [python_rule21,],
-    "E": [python_rule21,],
-    "F": [python_rule_f_url, python_rule21,],
-    "G": [python_rule21,],
-    "H": [python_rule_h_url, python_rule21,],
-    "I": [python_rule21,],
-    "J": [python_rule21,],
-    "K": [python_rule21,],
-    "L": [python_rule21,],
-    "M": [python_rule21,],
-    "N": [python_rule21,],
-    "O": [python_rule21,],
-    "P": [python_rule21,],
-    "Q": [python_rule21,],
-    "R": [python_rule21,],
-    "S": [python_rule21,],
-    "T": [python_rule21,],
-    "U": [python_rule21,],
-    "V": [python_rule21,],
-    "W": [python_rule21,],
-    "X": [python_rule21,],
-    "Y": [python_rule21,],
-    "Z": [python_rule21,],
-    "^": [python_rule18,],
-    "_": [python_rule21,],
-    "a": [python_rule21,],
-    "b": [python_rule21,],
-    "c": [python_rule21,],
-    "d": [python_rule21,],
-    "e": [python_rule21,],
-    "f": [python_rule_f_url, python_rule21,],
-    "g": [python_rule21,],
-    "h": [python_rule_h_url, python_rule21,],
-    "i": [python_rule21,],
-    "j": [python_rule21,],
-    "k": [python_rule21,],
-    "l": [python_rule21,],
-    "m": [python_rule21,],
-    "n": [python_rule21,],
-    "o": [python_rule21,],
-    "p": [python_rule21,],
-    "q": [python_rule21,],
-    "r": [python_rule21,],
-    "s": [python_rule21,],
-    "t": [python_rule21,],
-    "u": [python_rule21,],
-    "v": [python_rule21,],
-    "w": [python_rule21,],
-    "x": [python_rule21,],
-    "y": [python_rule21,],
-    "z": [python_rule21,],
-    "|": [python_rule17,],
-    "~": [python_rule19,],
+    "!": [python_rule6],
+    "\"": [python_rule1, python_rule3],
+    "#": [python_rule0],
+    "%": [python_rule15],
+    "&": [python_rule16],
+    "'": [python_rule2, python_rule4],
+    # "(": [python_rule20],
+    "*": [python_rule12],
+    "+": [python_rule9],
+    "-": [python_rule10],
+    "/": [python_rule11],
+    "0": [python_rule21],
+    "1": [python_rule21],
+    "2": [python_rule21],
+    "3": [python_rule21],
+    "4": [python_rule21],
+    "5": [python_rule21],
+    "6": [python_rule21],
+    "7": [python_rule21],
+    "8": [python_rule21],
+    "9": [python_rule21],
+    "<": [python_rule8, python_rule14],
+    "=": [python_rule5],
+    ">": [python_rule7, python_rule13],
+    "@": [python_rule21],
+    "A": [python_rule21],
+    "B": [python_rule21],
+    "C": [python_rule21],
+    "D": [python_rule21],
+    "E": [python_rule21],
+    "F": [python_rule21],  # python_rule_f_url,
+    "G": [python_rule21],
+    "H": [python_rule21],  # python_rule_h_url,
+    "I": [python_rule21],
+    "J": [python_rule21],
+    "K": [python_rule21],
+    "L": [python_rule21],
+    "M": [python_rule21],
+    "N": [python_rule21],
+    "O": [python_rule21],
+    "P": [python_rule21],
+    "Q": [python_rule21],
+    "R": [python_rule21],
+    "S": [python_rule21],
+    "T": [python_rule21],
+    "U": [python_rule21],
+    "V": [python_rule21],
+    "W": [python_rule21],
+    "X": [python_rule21],
+    "Y": [python_rule21],
+    "Z": [python_rule21],
+    "^": [python_rule18],
+    "_": [python_rule21],
+    "a": [python_rule21],
+    "b": [python_rule21],
+    "c": [python_rule21],
+    "d": [python_rule21],
+    "e": [python_rule21],
+    "f": [python_rule21],  # python_rule_f_url
+    "g": [python_rule21],
+    "h": [python_rule21],  # python_rule_h_url
+    "i": [python_rule21],
+    "j": [python_rule21],
+    "k": [python_rule21],
+    "l": [python_rule21],
+    "m": [python_rule21],
+    "n": [python_rule21],
+    "o": [python_rule21],
+    "p": [python_rule21],
+    "q": [python_rule21],
+    "r": [python_rule21],
+    "s": [python_rule21],
+    "t": [python_rule21],
+    "u": [python_rule21],
+    "v": [python_rule21],
+    "w": [python_rule21],
+    "x": [python_rule21],
+    "y": [python_rule21],
+    "z": [python_rule21],
+    "|": [python_rule17],
+    "~": [python_rule19],
 }
 
 # x.rulesDictDict for python mode.
 rulesDictDict = {
     "python_main": rulesDict1,
 }
+#@-<< Rules Dicts >>
 
 # Import dict for python mode.
 importDict = {}
+#@-leo
