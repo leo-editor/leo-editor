@@ -234,64 +234,64 @@ def occam_rule3(colorer, s, i):
           no_line_break=True)
 
 def occam_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def occam_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def occam_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def occam_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def occam_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def occam_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="><")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="><")
 
 def occam_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def occam_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def occam_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def occam_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def occam_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def occam_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def occam_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def occam_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def occam_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def occam_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def occam_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def occam_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/\\")
 
 def occam_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\/")
 
 def occam_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def occam_rule24(colorer, s, i):
     return colorer.match_keywords(s, i)

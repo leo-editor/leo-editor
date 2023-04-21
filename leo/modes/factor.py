@@ -198,7 +198,7 @@ rulesDict1 = {
 # Rules for factor_stack_effect ruleset.
 
 def factor_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="--")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="--")
 
 # Rules dict for factor_stack_effect ruleset.
 rulesDict2 = {

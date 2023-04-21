@@ -110,67 +110,67 @@ def chill_rule3(colorer, s, i):
           no_line_break=True)
 
 def chill_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def chill_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def chill_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def chill_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def chill_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def chill_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def chill_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def chill_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def chill_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def chill_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def chill_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def chill_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def chill_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def chill_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def chill_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def chill_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def chill_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def chill_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def chill_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def chill_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def chill_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def chill_rule25(colorer, s, i):
     return colorer.match_keywords(s, i)

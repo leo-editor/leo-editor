@@ -555,64 +555,64 @@ def assembly_macro32_rule5(colorer, s, i):
           exclude_match=True)
 
 def assembly_macro32_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="B^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="B^")
 
 def assembly_macro32_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="D^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="D^")
 
 def assembly_macro32_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="O^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="O^")
 
 def assembly_macro32_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="X^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="X^")
 
 def assembly_macro32_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="A^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="A^")
 
 def assembly_macro32_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="M^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="M^")
 
 def assembly_macro32_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="F^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="F^")
 
 def assembly_macro32_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="C^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="C^")
 
 def assembly_macro32_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="L^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="L^")
 
 def assembly_macro32_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="G^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="G^")
 
 def assembly_macro32_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def assembly_macro32_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def assembly_macro32_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def assembly_macro32_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def assembly_macro32_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def assembly_macro32_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def assembly_macro32_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def assembly_macro32_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def assembly_macro32_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def assembly_macro32_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def assembly_macro32_rule26(colorer, s, i):
     return colorer.match_keywords(s, i)

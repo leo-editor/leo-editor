@@ -390,13 +390,13 @@ def perl_rule11(colorer, s, i):
           delegate="perl::pod")
 
 def perl_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="$`")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="$`")
 
 def perl_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="$'")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="$'")
 
 def perl_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="$\"")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="$\"")
 
 def perl_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
@@ -472,61 +472,61 @@ def perl_rule34(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="markup", regexp="/[^[:blank:]]*?/")
 
 def perl_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def perl_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def perl_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def perl_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def perl_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def perl_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def perl_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def perl_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def perl_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def perl_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def perl_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def perl_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def perl_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def perl_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def perl_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def perl_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def perl_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def perl_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def perl_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def perl_rule54(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -643,76 +643,76 @@ def perl_rule57(colorer, s, i):
           no_line_break=True)
 
 def perl_rule58(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="|")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="|")
 
 def perl_rule59(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="&")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="&")
 
 def perl_rule60(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="!")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="!")
 
 def perl_rule61(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=">")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=">")
 
 def perl_rule62(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="<")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="<")
 
 def perl_rule63(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=")")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=")")
 
 def perl_rule64(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="(")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="(")
 
 def perl_rule65(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="=")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="=")
 
 def perl_rule66(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="!")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="!")
 
 def perl_rule67(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="+")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="+")
 
 def perl_rule68(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="-")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="-")
 
 def perl_rule69(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="/")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="/")
 
 def perl_rule70(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="*")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="*")
 
 def perl_rule71(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="^")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="^")
 
 def perl_rule72(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="~")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="~")
 
 def perl_rule73(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="}")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="}")
 
 def perl_rule74(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="{")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="{")
 
 def perl_rule75(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=".")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=".")
 
 def perl_rule76(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=",")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=",")
 
 def perl_rule77(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=";")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=";")
 
 def perl_rule78(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="]")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="]")
 
 def perl_rule79(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="[")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="[")
 
 def perl_rule80(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq="?")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq="?")
 
 def perl_rule81(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal1", seq=":")
+    return colorer.match_plain_seq(s, i, kind="literal1", seq=":")
 
 # Rules dict for perl_literal ruleset.
 rulesDict3 = {
@@ -777,7 +777,7 @@ def perl_rule86(colorer, s, i):
           no_line_break=True)
 
 def perl_rule87(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 # Rules dict for perl_variable ruleset.
 rulesDict5 = {
@@ -788,31 +788,31 @@ rulesDict5 = {
 # Rules for perl_regexp ruleset.
 
 def perl_rule88(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=")(")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=")(")
 
 def perl_rule89(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=")[")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=")[")
 
 def perl_rule90(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="){")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="){")
 
 def perl_rule91(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="](")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="](")
 
 def perl_rule92(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="][")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="][")
 
 def perl_rule93(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="]{")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="]{")
 
 def perl_rule94(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="}(")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="}(")
 
 def perl_rule95(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="}[")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="}[")
 
 def perl_rule96(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="}{")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="}{")
 
 def perl_rule97(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="(", end=")",

@@ -181,7 +181,7 @@ def pike_rule0(colorer, s, i):
           delegate="pike::comment")
 
 def pike_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="invalid", seq="*/")
+    return colorer.match_plain_seq(s, i, kind="invalid", seq="*/")
 
 def pike_rule2(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="//!",
@@ -209,70 +209,70 @@ def pike_rule7(colorer, s, i):
           at_line_start=True)
 
 def pike_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="({")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="({")
 
 def pike_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="})")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="})")
 
 def pike_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="([")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="([")
 
 def pike_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="])")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="])")
 
 def pike_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(<")
 
 def pike_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">)")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">)")
 
 def pike_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def pike_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def pike_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def pike_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def pike_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def pike_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def pike_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def pike_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def pike_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def pike_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def pike_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def pike_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def pike_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def pike_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def pike_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="`")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="`")
 
 def pike_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def pike_rule30(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",

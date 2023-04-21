@@ -216,43 +216,43 @@ def lua_rule5(colorer, s, i):
     return colorer.match_lua_literal(s, i, kind="literal1")
 
 def lua_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def lua_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def lua_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def lua_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def lua_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def lua_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def lua_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def lua_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def lua_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def lua_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def lua_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def lua_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~=")
 
 def lua_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def lua_rule19(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",

@@ -638,64 +638,64 @@ def i4gl_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="{", end="}")
 
 def i4gl_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")")
+    return colorer.match_plain_seq(s, i, kind="null", seq=")")
 
 def i4gl_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="]")
+    return colorer.match_plain_seq(s, i, kind="null", seq="]")
 
 def i4gl_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="[")
+    return colorer.match_plain_seq(s, i, kind="null", seq="[")
 
 def i4gl_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".")
 
 def i4gl_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def i4gl_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=";")
+    return colorer.match_plain_seq(s, i, kind="null", seq=";")
 
 def i4gl_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def i4gl_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def i4gl_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def i4gl_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def i4gl_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def i4gl_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def i4gl_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def i4gl_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def i4gl_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def i4gl_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def i4gl_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def i4gl_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def i4gl_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def i4gl_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def i4gl_rule25(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",

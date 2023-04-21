@@ -118,16 +118,16 @@ def postscript_rule6(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="label", pattern="/")
 
 def postscript_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def postscript_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def postscript_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def postscript_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def postscript_rule11(colorer, s, i):
     return colorer.match_keywords(s, i)

@@ -191,67 +191,67 @@ def sdl_pr_rule3(colorer, s, i):
           no_line_break=True)
 
 def sdl_pr_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def sdl_pr_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def sdl_pr_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def sdl_pr_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def sdl_pr_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def sdl_pr_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def sdl_pr_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def sdl_pr_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def sdl_pr_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def sdl_pr_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def sdl_pr_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def sdl_pr_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def sdl_pr_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def sdl_pr_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def sdl_pr_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="//")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="//")
 
 def sdl_pr_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="and")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="and")
 
 def sdl_pr_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="mod")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="mod")
 
 def sdl_pr_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="not")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="not")
 
 def sdl_pr_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="or")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="or")
 
 def sdl_pr_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="rem")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="rem")
 
 def sdl_pr_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="xor")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="xor")
 
 def sdl_pr_rule25(colorer, s, i):
     return colorer.match_keywords(s, i)

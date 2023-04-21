@@ -125,13 +125,13 @@ def rpmspec_rule0(colorer, s, i):
           at_line_start=True)
 
 def rpmspec_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def rpmspec_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def rpmspec_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def rpmspec_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="%attr(", end=")",
@@ -258,10 +258,10 @@ rulesDict1 = {
 # Rules for rpmspec_attr ruleset.
 
 def rpmspec_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def rpmspec_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 # Rules dict for rpmspec_attr ruleset.
 rulesDict2 = {

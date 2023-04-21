@@ -132,7 +132,7 @@ keywordsDictDict = {
 # Rules for d_main ruleset.
 
 def d_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def d_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
@@ -157,55 +157,55 @@ def d_rule6(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def d_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def d_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def d_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def d_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def d_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def d_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def d_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def d_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def d_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def d_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def d_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def d_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def d_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def d_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def d_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def d_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def d_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def d_rule24(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",

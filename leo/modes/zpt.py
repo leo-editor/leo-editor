@@ -193,7 +193,7 @@ def zpt_rule7(colorer, s, i):
           delegate="zpt::attribute")
 
 def zpt_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def zpt_rule9(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -272,19 +272,19 @@ rulesDict2 = {
 # Rules for zpt_attribute ruleset.
 
 def zpt_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def zpt_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def zpt_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def zpt_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def zpt_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="$$")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="$$")
 
 def zpt_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",

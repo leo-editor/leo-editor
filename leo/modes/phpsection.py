@@ -2614,7 +2614,7 @@ def phpsection_rule14(colorer, s, i):
           delegate="phpsection::tags_literal")
 
 def phpsection_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for phpsection_tags ruleset.
 rulesDict2 = {
@@ -2677,85 +2677,85 @@ def phpsection_rule27(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword3", pattern="$")
 
 def phpsection_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def phpsection_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def phpsection_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def phpsection_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def phpsection_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def phpsection_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def phpsection_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def phpsection_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def phpsection_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def phpsection_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def phpsection_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def phpsection_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def phpsection_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def phpsection_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def phpsection_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def phpsection_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def phpsection_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def phpsection_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def phpsection_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def phpsection_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def phpsection_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def phpsection_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def phpsection_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def phpsection_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def phpsection_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def phpsection_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def phpsection_rule54(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def phpsection_rule55(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
@@ -2910,22 +2910,22 @@ rulesDict7 = {
 # Rules for phpsection_phpdoc ruleset.
 
 def phpsection_rule63(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="{")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="{")
 
 def phpsection_rule64(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def phpsection_rule65(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<!--", end="-->")
 
 def phpsection_rule66(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def phpsection_rule67(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def phpsection_rule68(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def phpsection_rule69(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",

@@ -88,28 +88,28 @@ def mail_rule5(colorer, s, i):
           delegate="mail::signature")
 
 def mail_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":-)")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":-)")
 
 def mail_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":-(")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":-(")
 
 def mail_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":)")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":)")
 
 def mail_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":(")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":(")
 
 def mail_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";-)")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";-)")
 
 def mail_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";-(")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";-(")
 
 def mail_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";)")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";)")
 
 def mail_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";(")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";(")
 
 def mail_rule14(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",

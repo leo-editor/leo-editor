@@ -170,70 +170,70 @@ def assembly_6502_rule6(colorer, s, i):
           exclude_match=True)
 
 def assembly_6502_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def assembly_6502_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def assembly_6502_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def assembly_6502_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def assembly_6502_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def assembly_6502_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def assembly_6502_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def assembly_6502_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def assembly_6502_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def assembly_6502_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def assembly_6502_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def assembly_6502_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def assembly_6502_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def assembly_6502_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def assembly_6502_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def assembly_6502_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def assembly_6502_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def assembly_6502_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def assembly_6502_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def assembly_6502_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def assembly_6502_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&&")
 
 def assembly_6502_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def assembly_6502_rule29(colorer, s, i):
     return colorer.match_keywords(s, i)

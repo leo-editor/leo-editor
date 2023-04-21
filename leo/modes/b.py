@@ -174,82 +174,82 @@ def b_rule4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def b_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def b_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def b_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$0")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$0")
 
 def b_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def b_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def b_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def b_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def b_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def b_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def b_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def b_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def b_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def b_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def b_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def b_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def b_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def b_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def b_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def b_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def b_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def b_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def b_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def b_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def b_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def b_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def b_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def b_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)

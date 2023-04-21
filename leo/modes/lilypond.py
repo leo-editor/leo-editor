@@ -165,22 +165,22 @@ def lilypond_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="%")
 
 def lilypond_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\\"")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\\"")
 
 def lilypond_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\'")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\'")
 
 def lilypond_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\H")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\H")
 
 def lilypond_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="\\breve")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="\\breve")
 
 def lilypond_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="\\longa")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="\\longa")
 
 def lilypond_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="\\maxima")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="\\maxima")
 
 def lilypond_rule8(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="=",
@@ -195,31 +195,31 @@ def lilypond_rule10(colorer, s, i):
           delegate="scheme::main")
 
 def lilypond_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="{")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="{")
 
 def lilypond_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="}")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="}")
 
 def lilypond_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="[")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="[")
 
 def lilypond_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="]")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="]")
 
 def lilypond_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="<<")
 
 def lilypond_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=">>")
 
 def lilypond_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="-<")
+    return colorer.match_plain_seq(s, i, kind="null", seq="-<")
 
 def lilypond_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="->")
+    return colorer.match_plain_seq(s, i, kind="null", seq="->")
 
 def lilypond_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def lilypond_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
@@ -228,10 +228,10 @@ def lilypond_rule21(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="digit", regexp="-[[:digit:]]+>")
 
 def lilypond_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="'")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="'")
 
 def lilypond_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=",")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=",")
 
 def lilypond_rule24(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment2", regexp="r([[:digit:]]*)\\>")

@@ -1056,10 +1056,10 @@ def bibtex_rule32(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule35(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1173,10 +1173,10 @@ def bibtex_rule46(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule49(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1290,10 +1290,10 @@ def bibtex_rule60(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule61(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule62(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule63(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1407,10 +1407,10 @@ def bibtex_rule74(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule75(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule76(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule77(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1524,10 +1524,10 @@ def bibtex_rule88(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule89(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule90(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule91(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1641,10 +1641,10 @@ def bibtex_rule102(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule103(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule104(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule105(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1758,10 +1758,10 @@ def bibtex_rule116(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule117(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule118(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule119(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1875,10 +1875,10 @@ def bibtex_rule130(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule131(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule132(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule133(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -1992,10 +1992,10 @@ def bibtex_rule144(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule145(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule146(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule147(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2109,10 +2109,10 @@ def bibtex_rule158(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule159(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule160(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule161(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2226,10 +2226,10 @@ def bibtex_rule172(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule173(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule174(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule175(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2343,10 +2343,10 @@ def bibtex_rule186(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule187(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule188(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule189(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2460,10 +2460,10 @@ def bibtex_rule200(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule201(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule202(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule203(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2577,10 +2577,10 @@ def bibtex_rule214(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule215(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule216(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule217(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal1", regexp="1[0-9]*")
@@ -2697,7 +2697,7 @@ def bibtex_rule229(colorer, s, i):
           delegate="bibtex::textquoted")
 
 def bibtex_rule230(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="\\\"")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="\\\"")
 
 # Rules dict for bibtex_textbraced ruleset.
 rulesDict16 = {
@@ -2717,7 +2717,7 @@ def bibtex_rule232(colorer, s, i):
           delegate="bibtex::textbraced")
 
 def bibtex_rule233(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="\\\"")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="\\\"")
 
 # Rules dict for bibtex_textquoted ruleset.
 rulesDict17 = {
@@ -2739,13 +2739,13 @@ def bibtex_rule236(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="\\{", end="\\}")
 
 def bibtex_rule237(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def bibtex_rule238(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def bibtex_rule239(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="\\\"")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="\\\"")
 
 # Rules dict for bibtex_string ruleset.
 rulesDict18 = {

@@ -561,7 +561,7 @@ def coldfusion_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def coldfusion_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def coldfusion_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<CF", end=">",
@@ -598,40 +598,40 @@ def coldfusion_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="'", end="'")
 
 def coldfusion_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="(")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="(")
 
 def coldfusion_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq=")")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq=")")
 
 def coldfusion_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def coldfusion_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def coldfusion_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def coldfusion_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def coldfusion_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def coldfusion_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def coldfusion_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="><")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="><")
 
 def coldfusion_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def coldfusion_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!!")
 
 def coldfusion_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&&")
 
 def coldfusion_rule33(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -727,10 +727,10 @@ def coldfusion_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def coldfusion_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def coldfusion_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="##")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="##")
 
 def coldfusion_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#", end="#")

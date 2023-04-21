@@ -220,14 +220,14 @@ def jsp_rule20(colorer, s, i):
           delegate="jsp::attrvalue")
 
 def jsp_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="/")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="/")
 
 def jsp_rule22(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
           exclude_match=True)
 
 def jsp_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def jsp_rule24(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -322,14 +322,14 @@ def jsp_rule28(colorer, s, i):
           delegate="jsp::attrvalue")
 
 def jsp_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="/")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="/")
 
 def jsp_rule30(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="function", pattern=":",
           exclude_match=True)
 
 def jsp_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 # Rules dict for jsp_tags ruleset.
 rulesDict4 = {

@@ -185,83 +185,83 @@ def dart_rule11(colorer, s, i):
           no_line_break=True)
 
 def dart_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def dart_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def dart_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def dart_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def dart_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def dart_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def dart_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def dart_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def dart_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def dart_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def dart_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def dart_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def dart_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def dart_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def dart_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def dart_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>>")
 
 def dart_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def dart_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~/")
 
 def dart_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def dart_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def dart_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def dart_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def dart_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def dart_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 # def dart_rule36(colorer, s, i):
     # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
         #    )
 
 def dart_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def dart_rule38(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -269,7 +269,7 @@ def dart_rule38(colorer, s, i):
 # Rules formerly in expression ruleset.
 
 def dart_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment2", seq="//-->")
+    return colorer.match_plain_seq(s, i, kind="comment2", seq="//-->")
 
 def dart_rule40(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
@@ -278,16 +278,16 @@ def dart_rule41(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword2", seq="#!")
 
 def dart_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#library")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#library")
 
 def dart_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#import")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#import")
 
 def dart_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#source")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#source")
 
 def dart_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#resource")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#resource")
 
 def dart_rule46(colorer, s, i):
     return colorer.match_keywords(s, i)

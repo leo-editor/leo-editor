@@ -86,70 +86,70 @@ def io_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 
 def io_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="`")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="`")
 
 def io_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def io_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def io_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@@")
 
 def io_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$")
 
 def io_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def io_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def io_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def io_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def io_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def io_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def io_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def io_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def io_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def io_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def io_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def io_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def io_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def io_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def io_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def io_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def io_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def io_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)

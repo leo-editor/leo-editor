@@ -41,10 +41,10 @@ def texinfo_rule2(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword1", pattern="@")
 
 def texinfo_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def texinfo_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 # Rules dict for texinfo_main ruleset.
 rulesDict1 = {

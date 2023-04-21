@@ -202,7 +202,7 @@ keywordsDictDict = {
 # Rules for groovy_main ruleset.
 
 def groovy_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def groovy_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
@@ -223,43 +223,43 @@ def groovy_rule5(colorer, s, i):
           delegate="groovy::literal")
 
 def groovy_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=~")
 
 def groovy_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def groovy_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def groovy_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def groovy_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=>")
 
 def groovy_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def groovy_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def groovy_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def groovy_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def groovy_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def groovy_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def groovy_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def groovy_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".*")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".*")
 
 def groovy_rule19(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="//")
@@ -369,22 +369,22 @@ rulesDict2 = {
 # Rules for groovy_groovydoc ruleset.
 
 def groovy_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="{")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="{")
 
 def groovy_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def groovy_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def groovy_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def groovy_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def groovy_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def groovy_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",

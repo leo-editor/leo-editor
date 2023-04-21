@@ -40,34 +40,34 @@ def yaml_rule0(colorer, s, i):
           at_line_start=True)
 
 def yaml_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq="---")
+    return colorer.match_plain_seq(s, i, kind="label", seq="---")
 
 def yaml_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq="...")
+    return colorer.match_plain_seq(s, i, kind="label", seq="...")
 
 def yaml_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def yaml_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def yaml_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def yaml_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def yaml_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def yaml_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def yaml_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def yaml_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def yaml_rule11(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword2", pattern="&")

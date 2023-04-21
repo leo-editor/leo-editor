@@ -106,7 +106,7 @@ def tpl_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="'", end="'")
 
 def tpl_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def tpl_rule9(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -191,7 +191,7 @@ def tpl_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def tpl_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for tpl_tags ruleset.
 rulesDict3 = {

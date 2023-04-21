@@ -214,7 +214,7 @@ def md_rule3(colorer, s, i):
           delegate="md::block_html_tags")
 
 def md_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def md_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
@@ -264,7 +264,7 @@ def md_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def md_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for md_block_html_tags ruleset.
 rulesDict3 = {
@@ -287,13 +287,13 @@ def md_rule12(colorer, s, i):
           delegate="md::markdown_blockquote")
 
 def md_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def md_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def md_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\][")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def md_rule16(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
@@ -398,13 +398,13 @@ def md_rule30(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\"")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\"")
 
 def md_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def md_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 # Rules dict for md_link_label_definition ruleset.
 rulesDict5 = {
@@ -417,7 +417,7 @@ rulesDict5 = {
 # Rules for md_link_inline_url_title ruleset.
 
 def md_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def md_rule35(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="\\[", end="\\]",
@@ -461,21 +461,21 @@ rulesDict8 = {
 # Rules for md_markdown_blockquote ruleset.
 
 def md_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def md_rule40(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
           delegate="md::inline_markup")
 
 def md_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def md_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def md_rule43(colorer, s, i):
     # leadin: backslash.
-    return colorer.match_seq(s, i, kind="null", seq="\\][")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def md_rule44(colorer, s, i):
     # leadin: backslash.

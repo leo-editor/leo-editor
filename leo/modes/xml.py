@@ -149,14 +149,14 @@ def xml_rule9(colorer, s, i):
           no_line_break=True)
 
 def xml_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="/")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="/")
 
 def xml_rule11(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
           exclude_match=True)
 
 def xml_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 # Rules dict for xml_tags ruleset.
 rulesDict2 = {
@@ -192,25 +192,25 @@ def xml_rule18(colorer, s, i):
           delegate="xml::main")
 
 def xml_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def xml_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def xml_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def xml_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def xml_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def xml_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def xml_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def xml_rule26(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -313,10 +313,10 @@ def xml_rule30(colorer, s, i):
           no_line_break=True)
 
 def xml_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def xml_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def xml_rule33(colorer, s, i):
     return colorer.match_keywords(s, i)

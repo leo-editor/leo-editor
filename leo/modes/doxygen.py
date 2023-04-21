@@ -413,19 +413,19 @@ rulesDict1 = {
 # Rules for doxygen_doxygen ruleset.
 
 def doxygen_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def doxygen_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def doxygen_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def doxygen_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def doxygen_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def doxygen_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",

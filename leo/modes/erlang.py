@@ -183,70 +183,70 @@ def erlang_rule5(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\$.\\w*")
 
 def erlang_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="badarg")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="badarg")
 
 def erlang_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="nocookie")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="nocookie")
 
 def erlang_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="false")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="false")
 
 def erlang_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="true")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="true")
 
 def erlang_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def erlang_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<-")
 
 def erlang_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def erlang_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def erlang_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def erlang_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def erlang_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def erlang_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def erlang_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def erlang_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def erlang_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def erlang_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def erlang_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def erlang_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def erlang_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def erlang_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def erlang_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def erlang_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def erlang_rule28(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bdiv\\b")

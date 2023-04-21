@@ -397,52 +397,52 @@ def sql_rule6(colorer, s, i):
           at_line_start=True)
 
 def sql_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def sql_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def sql_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def sql_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def sql_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def sql_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def sql_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def sql_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def sql_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def sql_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def sql_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def sql_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def sql_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def sql_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!>")
 
 def sql_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!<")
 
 def sql_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def sql_rule23(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",

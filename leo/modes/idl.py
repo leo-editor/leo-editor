@@ -90,13 +90,13 @@ def idl_rule3(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def idl_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def idl_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def idl_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def idl_rule7(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",

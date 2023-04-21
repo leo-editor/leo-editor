@@ -238,7 +238,7 @@ def scheme_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="#|", end="|#")
 
 def scheme_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="'(")
+    return colorer.match_plain_seq(s, i, kind="null", seq="'(")
 
 def scheme_rule2(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal1", pattern="'")

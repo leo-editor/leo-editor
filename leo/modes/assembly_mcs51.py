@@ -219,64 +219,64 @@ def assembly_mcs51_rule5(colorer, s, i):
           exclude_match=True)
 
 def assembly_mcs51_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def assembly_mcs51_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def assembly_mcs51_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="(")
+    return colorer.match_plain_seq(s, i, kind="null", seq="(")
 
 def assembly_mcs51_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")")
+    return colorer.match_plain_seq(s, i, kind="null", seq=")")
 
 def assembly_mcs51_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="]")
+    return colorer.match_plain_seq(s, i, kind="null", seq="]")
 
 def assembly_mcs51_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="[")
+    return colorer.match_plain_seq(s, i, kind="null", seq="[")
 
 def assembly_mcs51_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="$")
+    return colorer.match_plain_seq(s, i, kind="null", seq="$")
 
 def assembly_mcs51_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def assembly_mcs51_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def assembly_mcs51_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def assembly_mcs51_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def assembly_mcs51_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def assembly_mcs51_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def assembly_mcs51_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def assembly_mcs51_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def assembly_mcs51_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def assembly_mcs51_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def assembly_mcs51_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def assembly_mcs51_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def assembly_mcs51_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def assembly_mcs51_rule26(colorer, s, i):
     return colorer.match_keywords(s, i)

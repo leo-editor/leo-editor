@@ -356,10 +356,10 @@ def xsl_rule10(colorer, s, i):
           delegate="xsl::avt")
 
 def xsl_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="xmlns:")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="xmlns:")
 
 def xsl_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="xmlns")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="xmlns")
 
 def xsl_rule13(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":")
@@ -375,10 +375,10 @@ rulesDict3 = {
 # Rules for xsl_avt ruleset.
 
 def xsl_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="", seq="{{")
+    return colorer.match_plain_seq(s, i, kind="", seq="{{")
 
 def xsl_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="", seq="}}")
+    return colorer.match_plain_seq(s, i, kind="", seq="}}")
 
 def xsl_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="{", end="}",
@@ -486,10 +486,10 @@ def xsl_rule39(colorer, s, i):
           delegate="xsl::xpath")
 
 def xsl_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="xmlns:")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="xmlns:")
 
 def xsl_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="xmlns")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="xmlns")
 
 def xsl_rule42(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":")
@@ -585,40 +585,40 @@ def xsl_rule47(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="keyword4", pattern="::")
 
 def xsl_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword4", seq="@")
+    return colorer.match_plain_seq(s, i, kind="keyword4", seq="@")
 
 def xsl_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def xsl_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def xsl_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def xsl_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&gt;")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&gt;")
 
 def xsl_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&lt;")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&lt;")
 
 def xsl_rule54(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def xsl_rule55(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def xsl_rule56(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def xsl_rule57(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def xsl_rule58(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def xsl_rule59(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def xsl_rule60(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="[", end="]",

@@ -148,121 +148,121 @@ def prolog_rule4(colorer, s, i):
           no_line_break=True)
 
 def prolog_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-->")
 
 def prolog_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":-")
 
 def prolog_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?-")
 
 def prolog_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def prolog_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def prolog_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def prolog_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\+")
 
 def prolog_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def prolog_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\==")
 
 def prolog_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\=")
 
 def prolog_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@<")
 
 def prolog_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@=<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@=<")
 
 def prolog_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@>=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@>=")
 
 def prolog_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@>")
 
 def prolog_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=..")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=..")
 
 def prolog_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=:=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=:=")
 
 def prolog_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=\\=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=\\=")
 
 def prolog_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=<")
 
 def prolog_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def prolog_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def prolog_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def prolog_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/\\")
 
 def prolog_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\/")
 
 def prolog_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="//")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="//")
 
 def prolog_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def prolog_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def prolog_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def prolog_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def prolog_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="**")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="**")
 
 def prolog_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def prolog_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\")
 
 def prolog_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def prolog_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def prolog_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def prolog_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def prolog_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="(")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="(")
 
 def prolog_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=")")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=")")
 
 def prolog_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="{")
+    return colorer.match_plain_seq(s, i, kind="null", seq="{")
 
 def prolog_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="}")
+    return colorer.match_plain_seq(s, i, kind="null", seq="}")
 
 def prolog_rule44(colorer, s, i):
     return colorer.match_keywords(s, i)

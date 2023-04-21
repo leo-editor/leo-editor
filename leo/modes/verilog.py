@@ -188,65 +188,65 @@ def verilog_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def verilog_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="'d")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="'d")
 
 def verilog_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="'h")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="'h")
 
 def verilog_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="'b")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="'b")
 
 def verilog_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="digit", seq="'o")
+    return colorer.match_plain_seq(s, i, kind="digit", seq="'o")
 
 def verilog_rule7(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
 
 def verilog_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def verilog_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def verilog_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def verilog_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def verilog_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def verilog_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def verilog_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def verilog_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def verilog_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def verilog_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def verilog_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def verilog_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def verilog_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def verilog_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def verilog_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def verilog_rule23(colorer, s, i):
     return colorer.match_keywords(s, i)

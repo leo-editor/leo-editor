@@ -266,7 +266,7 @@ keywordsDictDict = {
 # Rules for bcel_main ruleset.
 
 def bcel_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def bcel_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
@@ -298,10 +298,10 @@ def bcel_rule8(colorer, s, i):
           exclude_match=True)
 
 def bcel_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def bcel_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def bcel_rule11(colorer, s, i):
     return colorer.match_keywords(s, i)

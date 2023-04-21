@@ -1231,88 +1231,88 @@ def ocaml_rule7(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal4", pattern="`")
 
 def ocaml_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="}")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="}")
 
 def ocaml_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="|]")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="|]")
 
 def ocaml_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def ocaml_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="|")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="|")
 
 def ocaml_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="{<")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="{<")
 
 def ocaml_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="{")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="{")
 
 def ocaml_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal4", seq="_")
+    return colorer.match_plain_seq(s, i, kind="literal4", seq="_")
 
 def ocaml_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="]")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="]")
 
 def ocaml_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="[]")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="[]")
 
 def ocaml_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="[|")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="[|")
 
 def ocaml_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="[>")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="[>")
 
 def ocaml_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="[<")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="[<")
 
 def ocaml_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="[")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="[")
 
 def ocaml_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">}")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=">}")
 
 def ocaml_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=">]")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=">]")
 
 def ocaml_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="<-")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="<-")
 
 def ocaml_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=";;")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=";;")
 
 def ocaml_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=";")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=";")
 
 def ocaml_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=":>")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=":>")
 
 def ocaml_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def ocaml_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="::")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="::")
 
 def ocaml_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=":")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=":")
 
 def ocaml_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="..")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="..")
 
 def ocaml_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="->")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="->")
 
 def ocaml_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=",")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=",")
 
 def ocaml_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq=")")
+    return colorer.match_plain_seq(s, i, kind="markup", seq=")")
 
 def ocaml_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="()")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="()")
 
 def ocaml_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="markup", seq="(")
+    return colorer.match_plain_seq(s, i, kind="markup", seq="(")
 
 def ocaml_rule36(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="operator", regexp="=[-!$%&*+./:<=>?@^|~]*")

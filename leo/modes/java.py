@@ -150,7 +150,7 @@ keywordsDictDict = {
 # Rules for java_main ruleset.
 
 def java_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def java_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
@@ -171,58 +171,58 @@ def java_rule5(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def java_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def java_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def java_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def java_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def java_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def java_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def java_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def java_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".*")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".*")
 
 def java_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def java_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def java_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def java_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def java_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def java_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def java_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def java_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def java_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def java_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def java_rule24(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
@@ -329,22 +329,22 @@ rulesDict1 = {
 # Rules for java_javadoc ruleset.
 
 def java_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="{")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="{")
 
 def java_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def java_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def java_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def java_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def java_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def java_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",

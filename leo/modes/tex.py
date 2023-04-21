@@ -83,13 +83,13 @@ def tex_rule2(colorer, s, i):
           delegate="tex::math")
 
 def tex_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq="\\$")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq="\\$")
 
 def tex_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq="\\\\")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq="\\\\")
 
 def tex_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq="\\%")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq="\\%")
 
 def tex_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="\\iffalse", end="\\fi")
@@ -112,16 +112,16 @@ def tex_rule10(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="%")
 
 def tex_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def tex_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def tex_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def tex_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 # Rules dict for tex_main ruleset.
 rulesDict1 = {
@@ -142,94 +142,94 @@ rulesDict1 = {
 # Rules for tex_math ruleset.
 
 def tex_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="\\$")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="\\$")
 
 def tex_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="\\\\")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="\\\\")
 
 def tex_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="\\%")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="\\%")
 
 def tex_rule18(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword3", pattern="\\")
 
 def tex_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=")")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=")")
 
 def tex_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="(")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="(")
 
 def tex_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="{")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="{")
 
 def tex_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="}")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="}")
 
 def tex_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="[")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="[")
 
 def tex_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="]")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="]")
 
 def tex_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="=")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="=")
 
 def tex_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="!")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="!")
 
 def tex_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="+")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="+")
 
 def tex_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="-")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="-")
 
 def tex_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="/")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="/")
 
 def tex_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="*")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="*")
 
 def tex_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=">")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=">")
 
 def tex_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="<")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="<")
 
 def tex_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="&")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="&")
 
 def tex_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="|")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="|")
 
 def tex_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="^")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="^")
 
 def tex_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="~")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="~")
 
 def tex_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=".")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=".")
 
 def tex_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=",")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=",")
 
 def tex_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=";")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=";")
 
 def tex_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="?")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="?")
 
 def tex_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq=":")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq=":")
 
 def tex_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="'")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="'")
 
 def tex_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="\"")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="\"")
 
 def tex_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="`")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="`")
 
 def tex_rule45(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="%")

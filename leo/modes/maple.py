@@ -717,64 +717,64 @@ def maple_rule3(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def maple_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def maple_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def maple_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def maple_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def maple_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def maple_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def maple_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def maple_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def maple_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def maple_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def maple_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def maple_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$")
 
 def maple_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@@")
 
 def maple_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def maple_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def maple_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def maple_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::")
 
 def maple_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":-")
 
 def maple_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def maple_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def maple_rule24(colorer, s, i):
     return colorer.match_keywords(s, i)

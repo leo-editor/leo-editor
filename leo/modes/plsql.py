@@ -397,52 +397,52 @@ def plsql_rule6(colorer, s, i):
           at_line_start=True)
 
 def plsql_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def plsql_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def plsql_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def plsql_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def plsql_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def plsql_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def plsql_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def plsql_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def plsql_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def plsql_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def plsql_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def plsql_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def plsql_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!=")
 
 def plsql_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!>")
 
 def plsql_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!<")
 
 def plsql_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def plsql_rule23(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",

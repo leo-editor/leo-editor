@@ -185,70 +185,70 @@ def elixir_rule5(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\$.\\w*")
 
 def elixir_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="badarg")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="badarg")
 
 def elixir_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="nocookie")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="nocookie")
 
 def elixir_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="false")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="false")
 
 def elixir_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal3", seq="true")
+    return colorer.match_plain_seq(s, i, kind="literal3", seq="true")
 
 def elixir_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="->")
 
 def elixir_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<-")
 
 def elixir_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
 def elixir_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def elixir_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def elixir_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def elixir_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def elixir_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def elixir_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def elixir_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def elixir_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def elixir_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def elixir_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def elixir_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def elixir_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def elixir_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def elixir_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def elixir_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def elixir_rule28(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="operator", regexp="\\bdiv\\b")

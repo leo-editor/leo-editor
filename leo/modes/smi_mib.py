@@ -122,22 +122,22 @@ def smi_mib_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def smi_mib_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::=")
 
 def smi_mib_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def smi_mib_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def smi_mib_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="OBJECT IDENTIFIER")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="OBJECT IDENTIFIER")
 
 def smi_mib_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="SEQUENCE OF")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="SEQUENCE OF")
 
 def smi_mib_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="OCTET STRING")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="OCTET STRING")
 
 def smi_mib_rule8(colorer, s, i):
     return colorer.match_keywords(s, i)

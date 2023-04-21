@@ -121,7 +121,7 @@ def psp_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def psp_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def psp_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<%--", end="--%>")
@@ -147,7 +147,7 @@ def psp_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def psp_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def psp_rule19(colorer, s, i):
     return colorer.match_keywords(s, i)

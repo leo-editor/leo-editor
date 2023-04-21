@@ -115,88 +115,88 @@ def ruby_rule4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def ruby_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def ruby_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def ruby_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def ruby_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def ruby_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="::")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="::")
 
 def ruby_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="===")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="===")
 
 def ruby_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def ruby_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def ruby_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<<")
 
 def ruby_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def ruby_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def ruby_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def ruby_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def ruby_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="**")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="**")
 
 def ruby_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def ruby_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def ruby_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def ruby_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def ruby_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def ruby_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def ruby_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def ruby_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def ruby_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def ruby_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="...")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="...")
 
 def ruby_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def ruby_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def ruby_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
 def ruby_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def ruby_rule33(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
@@ -204,7 +204,7 @@ def ruby_rule33(colorer, s, i):
           exclude_match=True)
 
 def ruby_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def ruby_rule35(colorer, s, i):
     return colorer.match_keywords(s, i)

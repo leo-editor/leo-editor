@@ -119,325 +119,325 @@ def ada95_rule1(colorer, s, i):
           no_line_break=True)
 
 def ada95_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def ada95_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def ada95_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="..")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="..")
 
 def ada95_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".all")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".all")
 
 def ada95_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":=")
 
 def ada95_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def ada95_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=>")
 
 def ada95_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def ada95_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="null", seq="<>")
 
 def ada95_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="label", seq="<<")
 
 def ada95_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="label", seq=">>")
+    return colorer.match_plain_seq(s, i, kind="label", seq=">>")
 
 def ada95_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def ada95_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def ada95_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def ada95_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def ada95_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def ada95_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def ada95_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def ada95_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def ada95_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="**")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="**")
 
 def ada95_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def ada95_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'access")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'access")
 
 def ada95_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'address")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'address")
 
 def ada95_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'adjacent")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'adjacent")
 
 def ada95_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'aft")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'aft")
 
 def ada95_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'alignment")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'alignment")
 
 def ada95_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'base")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'base")
 
 def ada95_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'bit_order")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'bit_order")
 
 def ada95_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'body_version")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'body_version")
 
 def ada95_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'callable")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'callable")
 
 def ada95_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'caller")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'caller")
 
 def ada95_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'ceiling")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'ceiling")
 
 def ada95_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'class")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'class")
 
 def ada95_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'component_size")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'component_size")
 
 def ada95_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'composed")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'composed")
 
 def ada95_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'constrained")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'constrained")
 
 def ada95_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'copy_size")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'copy_size")
 
 def ada95_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'count")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'count")
 
 def ada95_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'definite")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'definite")
 
 def ada95_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'delta")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'delta")
 
 def ada95_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'denorm")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'denorm")
 
 def ada95_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'digits")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'digits")
 
 def ada95_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'exponent")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'exponent")
 
 def ada95_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'external_tag")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'external_tag")
 
 def ada95_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'first")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'first")
 
 def ada95_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'first_bit")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'first_bit")
 
 def ada95_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'floor")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'floor")
 
 def ada95_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'fore")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'fore")
 
 def ada95_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'fraction")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'fraction")
 
 def ada95_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'genetic")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'genetic")
 
 def ada95_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'identity")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'identity")
 
 def ada95_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'image")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'image")
 
 def ada95_rule54(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'input")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'input")
 
 def ada95_rule55(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'last")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'last")
 
 def ada95_rule56(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'last_bit")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'last_bit")
 
 def ada95_rule57(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'leading_part")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'leading_part")
 
 def ada95_rule58(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'length")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'length")
 
 def ada95_rule59(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine")
 
 def ada95_rule60(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_emax")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_emax")
 
 def ada95_rule61(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_emin")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_emin")
 
 def ada95_rule62(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_mantissa")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_mantissa")
 
 def ada95_rule63(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_overflows")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_overflows")
 
 def ada95_rule64(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_radix")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_radix")
 
 def ada95_rule65(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'machine_rounds")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'machine_rounds")
 
 def ada95_rule66(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'max")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'max")
 
 def ada95_rule67(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'max_size_in_storage_elements")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'max_size_in_storage_elements")
 
 def ada95_rule68(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'min")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'min")
 
 def ada95_rule69(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'model")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'model")
 
 def ada95_rule70(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'model_emin")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'model_emin")
 
 def ada95_rule71(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'model_epsilon")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'model_epsilon")
 
 def ada95_rule72(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'model_mantissa")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'model_mantissa")
 
 def ada95_rule73(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'model_small")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'model_small")
 
 def ada95_rule74(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'modulus")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'modulus")
 
 def ada95_rule75(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'output")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'output")
 
 def ada95_rule76(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'partition_id")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'partition_id")
 
 def ada95_rule77(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'pos")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'pos")
 
 def ada95_rule78(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'position")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'position")
 
 def ada95_rule79(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'pred")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'pred")
 
 def ada95_rule80(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'range")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'range")
 
 def ada95_rule81(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'read")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'read")
 
 def ada95_rule82(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'remainder")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'remainder")
 
 def ada95_rule83(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'round")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'round")
 
 def ada95_rule84(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'rounding")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'rounding")
 
 def ada95_rule85(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'safe_first")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'safe_first")
 
 def ada95_rule86(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'safe_last")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'safe_last")
 
 def ada95_rule87(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'scale")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'scale")
 
 def ada95_rule88(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'scaling")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'scaling")
 
 def ada95_rule89(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'signed_zeros")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'signed_zeros")
 
 def ada95_rule90(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'size")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'size")
 
 def ada95_rule91(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'small")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'small")
 
 def ada95_rule92(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'storage_pool")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'storage_pool")
 
 def ada95_rule93(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'storage_size")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'storage_size")
 
 def ada95_rule94(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'succ")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'succ")
 
 def ada95_rule95(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'tag")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'tag")
 
 def ada95_rule96(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'terminated")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'terminated")
 
 def ada95_rule97(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'truncation")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'truncation")
 
 def ada95_rule98(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'unbiased_rounding")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'unbiased_rounding")
 
 def ada95_rule99(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'unchecked_access")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'unchecked_access")
 
 def ada95_rule100(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'val")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'val")
 
 def ada95_rule101(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'valid")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'valid")
 
 def ada95_rule102(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'value")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'value")
 
 def ada95_rule103(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'version")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'version")
 
 def ada95_rule104(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'wide_image")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'wide_image")
 
 def ada95_rule105(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'wide_value")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'wide_value")
 
 def ada95_rule106(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'wide_width")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'wide_width")
 
 def ada95_rule107(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'width")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'width")
 
 def ada95_rule108(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="'write")
+    return colorer.match_plain_seq(s, i, kind="keyword3", seq="'write")
 
 def ada95_rule109(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",

@@ -901,7 +901,7 @@ def clojure_rule23(colorer, s, i):
           delegate="clojure::main")
 
 def clojure_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="#'")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="#'")
 
 def clojure_rule25(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal3", pattern="'")
@@ -942,7 +942,7 @@ def clojure_rule36(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\\\(.|newline|space|tab)")
 
 def clojure_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal4", seq=".")
+    return colorer.match_plain_seq(s, i, kind="literal4", seq=".")
 
 def clojure_rule38(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="keyword4", pattern=":")

@@ -193,49 +193,49 @@ def fortran90_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="!")
 
 def fortran90_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def fortran90_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def fortran90_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def fortran90_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def fortran90_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def fortran90_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/=")
 
 def fortran90_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="==")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="==")
 
 def fortran90_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".lt.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".lt.")
 
 def fortran90_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".gt.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".gt.")
 
 def fortran90_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".eq.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".eq.")
 
 def fortran90_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".ne.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".ne.")
 
 def fortran90_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".le.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".le.")
 
 def fortran90_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".ge.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".ge.")
 
 def fortran90_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".AND.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".AND.")
 
 def fortran90_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".OR.")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".OR.")
 
 def fortran90_rule17(colorer, s, i):
     return colorer.match_keywords(s, i)

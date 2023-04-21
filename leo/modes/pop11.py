@@ -233,71 +233,71 @@ def pop11_rule9(colorer, s, i):
           at_line_start=True)
 
 def pop11_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="#_<")
+    return colorer.match_plain_seq(s, i, kind="null", seq="#_<")
 
 def pop11_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=">_#")
+    return colorer.match_plain_seq(s, i, kind="null", seq=">_#")
 
 def pop11_rule12(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="label", pattern="#_",
           at_line_start=True)
 
 def pop11_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=")")
+    return colorer.match_plain_seq(s, i, kind="null", seq=")")
 
 def pop11_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="(")
+    return colorer.match_plain_seq(s, i, kind="null", seq="(")
 
 def pop11_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".")
 
 def pop11_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def pop11_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=";")
+    return colorer.match_plain_seq(s, i, kind="null", seq=";")
 
 def pop11_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="^")
+    return colorer.match_plain_seq(s, i, kind="null", seq="^")
 
 def pop11_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="@")
+    return colorer.match_plain_seq(s, i, kind="null", seq="@")
 
 def pop11_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def pop11_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="|")
+    return colorer.match_plain_seq(s, i, kind="null", seq="|")
 
 def pop11_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def pop11_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def pop11_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def pop11_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<>")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<>")
 
 def pop11_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def pop11_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def pop11_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def pop11_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def pop11_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def pop11_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def pop11_rule32(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -428,10 +428,10 @@ def pop11_rule40(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=";;;")
 
 def pop11_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="=")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="=")
 
 def pop11_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="==")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="==")
 
 def pop11_rule43(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="^")
@@ -465,7 +465,7 @@ def pop11_rule45(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":")
 
 def pop11_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="*")
 
 # Rules dict for pop11_comment ruleset.
 rulesDict4 = {

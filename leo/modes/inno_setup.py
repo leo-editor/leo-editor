@@ -622,7 +622,7 @@ def inno_setup_rule48(colorer, s, i):
           exclude_match=True)
 
 def inno_setup_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 # Rules dict for inno_setup_constant ruleset.
 rulesDict3 = {

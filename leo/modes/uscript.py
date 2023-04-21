@@ -123,7 +123,7 @@ keywordsDictDict = {
 # Rules for uscript_main ruleset.
 
 def uscript_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def uscript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
@@ -140,61 +140,61 @@ def uscript_rule4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="//")
 
 def uscript_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def uscript_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def uscript_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def uscript_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="#")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="#")
 
 def uscript_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="$")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="$")
 
 def uscript_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def uscript_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def uscript_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def uscript_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def uscript_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def uscript_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def uscript_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def uscript_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\\\\")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\\\\")
 
 def uscript_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def uscript_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def uscript_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def uscript_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def uscript_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def uscript_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="`")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="`")
 
 def uscript_rule24(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",

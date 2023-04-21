@@ -148,7 +148,7 @@ def assembly_parrot_rule2(colorer, s, i):
           exclude_match=True)
 
 def assembly_parrot_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
 def assembly_parrot_rule4(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp="I\\d{1,2}")

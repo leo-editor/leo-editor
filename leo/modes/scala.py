@@ -331,7 +331,7 @@ rulesDict1 = {
 # Rules for scala_primary ruleset.
 
 def scala_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def scala_rule2(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
@@ -376,88 +376,88 @@ def scala_rule13(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp=">:\\s*\\w+(\\.\\w+)*(#\\w+)?")
 
 def scala_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def scala_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def scala_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def scala_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def scala_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">:")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">:")
 
 def scala_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def scala_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<:")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<:")
 
 def scala_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def scala_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def scala_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def scala_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def scala_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def scala_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def scala_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def scala_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def scala_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def scala_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def scala_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="`")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="`")
 
 def scala_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def scala_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def scala_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def scala_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".")
 
 def scala_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def scala_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=";")
+    return colorer.match_plain_seq(s, i, kind="null", seq=";")
 
 def scala_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="]")
+    return colorer.match_plain_seq(s, i, kind="null", seq="]")
 
 def scala_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="[")
+    return colorer.match_plain_seq(s, i, kind="null", seq="[")
 
 def scala_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="?")
+    return colorer.match_plain_seq(s, i, kind="null", seq="?")
 
 def scala_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def scala_rule42(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp=":\\s*\\w+(\\.\\w+)*(#\\w+)?")
@@ -571,7 +571,7 @@ rulesDict2 = {
 
 
 def scala_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 # Rules dict for scala_pattern ruleset.
 rulesDict3 = {
@@ -581,10 +581,10 @@ rulesDict3 = {
 # Rules for scala_scaladoc ruleset.
 
 def scala_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="{")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="{")
 
 def scala_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def scala_rule49(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<pre>", end="</pre>",
@@ -594,13 +594,13 @@ def scala_rule50(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def scala_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def scala_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def scala_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def scala_rule54(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
