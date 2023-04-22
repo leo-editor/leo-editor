@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -26,10 +26,10 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20220306092217.1"><vh>@button test-one</vh></v>
 <v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
-<v t="ekr.20220306092217.1"><vh>@command test-one</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
 <v t="ekr.20150413091056.1"><vh>@@button check-clones</vh></v>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
@@ -205,8 +205,6 @@
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
-<v t="tom.20230319122643.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
-<v t="tom.20230321222112.1"><vh>@clean ../scripts/find-reindent.py</vh></v>
 <v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
 <v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
 <v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
@@ -215,11 +213,12 @@
 <v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
 <v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
 <v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
+<v t="ekr.20230322121316.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20140902032918.18591"><vh> About this file</vh>
+<v t="ekr.20140902032918.18591"><vh>About this file</vh>
 <v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
@@ -398,40 +397,18 @@
 </v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
-<v t="ekr.20221129095254.1"><vh>@clean ../modes/batch.py</vh>
-<v t="ekr.20221129095311.1"><vh>batch_rule0</vh></v>
-<v t="ekr.20221129095311.2"><vh>batch_rule1</vh></v>
-<v t="ekr.20221129095311.3"><vh>batch_rule2</vh></v>
-<v t="ekr.20221129095311.4"><vh>batch_rule3</vh></v>
-<v t="ekr.20221129095311.5"><vh>batch_rule4</vh></v>
-<v t="ekr.20221129095311.6"><vh>batch_rule5</vh></v>
-<v t="ekr.20221129095311.7"><vh>batch_rule6</vh></v>
-<v t="ekr.20221129095311.8"><vh>batch_rule7</vh></v>
-<v t="ekr.20221129095311.9"><vh>batch_rule8</vh></v>
-<v t="ekr.20221129095311.10"><vh>batch_rule9</vh></v>
-<v t="ekr.20221129095311.11"><vh>batch_rule10</vh></v>
-<v t="ekr.20221129095311.12"><vh>batch_rule11</vh></v>
-<v t="ekr.20221129095311.13"><vh>batch_rule12</vh></v>
-<v t="ekr.20221129095311.14"><vh>batch_rule13</vh></v>
-<v t="ekr.20221129095311.15"><vh>batch_rule14</vh></v>
-<v t="ekr.20221129095311.16"><vh>batch_rule15</vh></v>
-<v t="ekr.20221129095311.17"><vh>batch_rule16</vh></v>
-<v t="ekr.20221129095311.18"><vh>batch_rule17</vh></v>
-<v t="ekr.20221129095311.19"><vh>batch_rule18</vh></v>
-<v t="ekr.20221129095311.20"><vh>batch_rule19</vh></v>
-<v t="ekr.20221129095311.21"><vh>batch_rule20</vh></v>
-<v t="ekr.20221129095311.22"><vh>batch_rule21</vh></v>
-<v t="ekr.20221129095311.23"><vh>batch_rule22</vh></v>
-</v>
-<v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
+<v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
+<v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
+<v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
+<v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
-<v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh>  Templates</vh>
+<v t="EKR.20040517090508"><vh>Enable plugins using @enabled-plugins nodes</vh></v>
+<v t="ekr.20050303051035"><vh>Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
 <v t="ekr.20050306071629"><vh>Template for plugins that override commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -639,7 +616,7 @@
 <v t="ekr.20121126095734.12418"><vh>@file ../plugins/threadutil.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>User interface</vh>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453"><vh>Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319"><vh>@file ../plugins/attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file ../plugins/colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file ../plugins/contextmenu.py</vh></v>
@@ -759,6 +736,7 @@
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
+<v t="ekr.20161021090740.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1277,7 +1255,8 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">beautify-files
+<t tx="ekr.20150425145248.1">test-one
+beautify-files
 expand-all-subheads
 pylint
 backup
@@ -1666,8 +1645,7 @@ if 0:
     import importlib
     import leo.core.leoImport as leoImport
     importlib.reload(leoImport)
-# dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
-# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+
 dir_ = r'C:\Users\Edward Ream\Python\python39\Lib\site-packages\mypy'
 assert g.os_path_exists(dir_), repr(dir_)
 c.recursiveImport(
@@ -1817,7 +1795,7 @@ else:
 assert g.os_path_exists(new_dir), repr(new_dir)
 assert g.os_path_exists(path), repr(path)
 stamp = time.strftime("%Y%m%d-%H%M%S")
-fn = g.os_path_finalize_join(path, f"leo-bundle-all-{stamp}")
+fn = g.finalize_join(path, f"leo-bundle-all-{stamp}")
 bundle_command = 'git bundle create %s --all' % fn
 print(bundle_command)
 os.chdir(new_dir)
@@ -1968,7 +1946,7 @@ precede the node's line that have not already been returned.
 <t tx="ekr.20180816105258.1">g.cls()
 import os
 import leo.commands.editFileCommands as efc
-path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+path = g.finalize_join(g.app.loadDir, '..', '..')
 print('path:', path)
 os.chdir(path)
 
@@ -2382,7 +2360,7 @@ main(node_list = ['Startup', 'Notes', 'Script files', 'Code'])
     if not 'leoPy.leo' in c.shortFileName():
         oops('Run this script only from leoPy.leo')
         return None
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoPyRef.leo')
+    fileName = g.finalize_join(g.app.loadDir, '..', 'core', 'leoPyRef.leo')
     if not os.path.exists(fileName):
         oops(f"Not found: {fileName}")
         return None
@@ -3020,10 +2998,37 @@ gnx: ekr.20210911191226.9
 unl: eggs (at-auto-test.py)
 </t>
 <t tx="ekr.20220306092217.1">g.cls()
-import os
-leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-g.execute_shell_commands('test-one-leo')
+
+core = ' leo.unittests.core'
+gui = ' leo.unittests.test_gui'
+syntax = ' leo.unittests.test_syntax'
+
+testAtFile = 'test_leoAtFile.TestAtFile'
+testColorizer = 'test_leoColorizer.TestColorizer'
+testCommands = 'test_leoCommands.TestCommands'
+testGlobals = 'test_leoGlobals.TestGlobals'
+
+if 1:
+    commands = (
+        'python -m unittest '
+        # f"{core}.{testCommands}.test_c_expand_path_expression"
+        # f"{core}.{testAtFile}.test_bug_3270_at_path"
+        # f"{core}.{testAtFile}.test_bug_3272_at_path"
+        # f"{core}.{testAtFile}.test_bug_1889_tilde_in_at_path"
+        # f"{core}.{testGlobals}.test_g_finalize"
+        # f"{core}.{testGlobals}.test_g_finalize_join"
+        # f"{gui}.TestQtGui.test_put_html_links"
+        f"{core}.{testColorizer}.test_colorizer_HTML_script_tag"
+    )
+else:
+    # This still requires changes to the outline,
+    # because this outline defines test-one-leo.cmd!
+    commands = [
+        '@echo off',
+        'test-one-leo.cmd',
+    ]
+
+g.execute_shell_commands(commands)
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3398,7 +3403,7 @@ plugin_files = make_list(f"{plugins_dir}{sep}*.py")
 
 # Compute paths from @&lt;file&gt; nodes.
 at_file_paths = sorted([
-    norm(g.fullPath(c, z))
+    norm(c.fullPath(z))
         for z in c.all_unique_positions()
             if z.isAnyAtFileNode()
 ])
@@ -3622,6 +3627,7 @@ unl: procedure statObj.differentiate
 
 plugins_menu.py     # Adds 'Plugins' menu.
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
+mod_autosave.py
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
@@ -3630,334 +3636,8 @@ todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
-<t tx="ekr.20221129095254.1">@language python
-
-# Leo colorizer control file for batch mode.
-# This file is in the public domain.
-
-# Properties for batch mode.
-properties = {
-    "lineComment": "rem",
-}
-
-# Attributes dict for batch_main ruleset.
-batch_main_attributes_dict = {
-    "default": "null",
-    "digit_re": "",
-    "escape": "",
-    "highlight_digits": "false",
-    "ignore_case": "true",
-    "no_word_sep": "",
-}
-
-# Dictionary of attributes dictionaries for batch mode.
-attributesDictDict = {
-    "batch_main": batch_main_attributes_dict,
-}
-
-# Keywords dict for batch_main ruleset.
-batch_main_keywords_dict = {
-    "append": "function",
-    "attrib": "function",
-    "aux": "keyword2",
-    "call": "keyword1",
-    "cd": "keyword1",
-    "chdir": "keyword1",
-    "chkdsk": "function",
-    "choice": "function",
-    "cls": "keyword1",
-    "copy": "keyword1",
-    "debug": "function",
-    "defined": "keyword2",
-    "defrag": "function",
-    "del": "keyword1",
-    "deltree": "function",
-    "diskcomp": "function",
-    "diskcopy": "function",
-    "do": "keyword2",
-    "doskey": "function",
-    "drvspace": "function",
-    "echo": "keyword1",
-    "echo.": "keyword1",
-    "else": "keyword2",
-    "emm386": "function",
-    "endlocal": "keyword1",
-    "errorlevel": "keyword2",
-    "exist": "keyword2",
-    "exit": "keyword1",
-    "expand": "function",
-    "fastopen": "function",
-    "fc": "function",
-    "fdisk": "function",
-    "find": "function",
-    "for": "keyword1",
-    "format": "function",
-    "goto": "keyword3",
-    "graphics": "function",
-    "if": "keyword1",
-    "in": "keyword2",
-    "keyb": "function",
-    "label": "function",
-    "loadfix": "function",
-    "md": "keyword1",
-    "mem": "function",
-    "mkdir": "keyword1",
-    "mode": "function",
-    "more": "function",
-    "move": "function",
-    "mscdex": "function",
-    "nlsfunc": "function",
-    "not": "keyword1",
-    "nul": "keyword2",
-    "pause": "keyword1",
-    "power": "function",
-    "print": "function",
-    "prn": "keyword2",
-    "rd": "function",
-    "ren": "keyword1",
-    "replace": "function",
-    "restore": "function",
-    "set": "keyword1",
-    "setlocal": "keyword1",
-    "setver": "function",
-    "share": "function",
-    "shift": "keyword1",
-    "sort": "function",
-    "subst": "function",
-    "sys": "function",
-    "tree": "function",
-    "undelete": "function",
-    "unformat": "function",
-    "vsafe": "function",
-    "xcopy": "function",
-}
-
-# Dictionary of keywords dictionaries for batch mode.
-keywordsDictDict = {
-    "batch_main": batch_main_keywords_dict,
-}
-
-# Rules for batch_main ruleset.
-
-@others
-# Rules dict for batch_main ruleset.
-rulesDict1 = {
-    "!": [batch_rule4],
-    "\"": [batch_rule9],
-    "%": [
-        batch_rule10, batch_rule11, batch_rule12, batch_rule13, batch_rule14,
-        batch_rule15, batch_rule16, batch_rule17, batch_rule18, batch_rule19,
-        batch_rule20, batch_rule21
-    ],
-    "&amp;": [batch_rule3],
-    "+": [batch_rule1],
-    ".": [batch_rule22],
-    "0": [batch_rule22],
-    "1": [batch_rule22],
-    "2": [batch_rule22],
-    "3": [batch_rule22],
-    "4": [batch_rule22],
-    "5": [batch_rule22],
-    "6": [batch_rule22],
-    "7": [batch_rule22],
-    "8": [batch_rule22],
-    "9": [batch_rule22],
-    ":": [batch_rule7],
-    "&lt;": [batch_rule6],
-    "&gt;": [batch_rule5],
-    "@": [batch_rule0, batch_rule22],
-    "A": [batch_rule22],
-    "B": [batch_rule22],
-    "C": [batch_rule22],
-    "D": [batch_rule22],
-    "E": [batch_rule22],
-    "F": [batch_rule22],
-    "G": [batch_rule22],
-    "H": [batch_rule22],
-    "I": [batch_rule22],
-    "J": [batch_rule22],
-    "K": [batch_rule22],
-    "L": [batch_rule22],
-    "M": [batch_rule22],
-    "N": [batch_rule22],
-    "O": [batch_rule22],
-    "P": [batch_rule22],
-    "Q": [batch_rule22],
-    "R": [batch_rule8, batch_rule22],
-    "S": [batch_rule22],
-    "T": [batch_rule22],
-    "U": [batch_rule22],
-    "V": [batch_rule22],
-    "W": [batch_rule22],
-    "X": [batch_rule22],
-    "Y": [batch_rule22],
-    "Z": [batch_rule22],
-    "a": [batch_rule22],
-    "b": [batch_rule22],
-    "c": [batch_rule22],
-    "d": [batch_rule22],
-    "e": [batch_rule22],
-    "f": [batch_rule22],
-    "g": [batch_rule22],
-    "h": [batch_rule22],
-    "i": [batch_rule22],
-    "j": [batch_rule22],
-    "k": [batch_rule22],
-    "l": [batch_rule22],
-    "m": [batch_rule22],
-    "n": [batch_rule22],
-    "o": [batch_rule22],
-    "p": [batch_rule22],
-    "q": [batch_rule22],
-    "r": [batch_rule8a, batch_rule22],
-    "s": [batch_rule22],
-    "t": [batch_rule22],
-    "u": [batch_rule22],
-    "v": [batch_rule22],
-    "w": [batch_rule22],
-    "x": [batch_rule22],
-    "y": [batch_rule22],
-    "z": [batch_rule22],
-    "|": [batch_rule2],
-}
-
-# x.rulesDictDict for batch mode.
-rulesDictDict = {
-    "batch_main": rulesDict1,
-}
-
-# Import dict for batch mode.
-importDict = {}
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20221129095311.1">def batch_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.10">def batch_rule9(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
-</t>
-<t tx="ekr.20221129095311.11">def batch_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%0",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.12">def batch_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.13">def batch_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%2",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.14">def batch_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%3",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.15">def batch_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%4",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.16">def batch_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%5",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.17">def batch_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%6",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.18">def batch_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%7",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.19">def batch_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%8",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.2">def batch_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.20">def batch_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%9",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.21">def batch_rule20(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword2", begin="%[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.22">def batch_rule21(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword2", begin="%", end="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
-</t>
-<t tx="ekr.20221129095311.23">def batch_rule22(colorer, s, i):
-    return colorer.match_keywords(s, i)
-
-</t>
-<t tx="ekr.20221129095311.3">def batch_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.4">def batch_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&amp;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.5">def batch_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.6">def batch_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&gt;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.7">def batch_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&lt;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.8">def batch_rule7(colorer, s, i):
-    # Labels.
-    return colorer.match_eol_span(s, i, kind="label", seq=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
-
-</t>
-<t tx="ekr.20221129095311.9">def batch_rule8(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="REM",
-        at_line_start=True, at_whitespace_end=True, at_word_start=True,
-        delegate="", exclude_match=False)
-
-def batch_rule8a(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="rem",
-        at_line_start=True, at_whitespace_end=True, at_word_start=True,
-        delegate="", exclude_match=False)
-
-</t>
 <t tx="ekr.20221201043917.1">@language batch
-echo off
+@echo off
 call %~dp0\set-repo-dir
 
 echo test-leo
@@ -3987,7 +3667,7 @@ black.main()
 </t>
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
-echo off
+@echo off
 call %~dp0\set-repo-dir
 
 echo pylint-leo
@@ -3996,7 +3676,7 @@ call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.
 time /T
 </t>
 <t tx="ekr.20221204071146.1">@language batch
-echo off
+@echo off
 call %~dp0\set-repo-dir
 
 rem See leo-editor/.mypy.ini for exclusions!
@@ -4006,16 +3686,15 @@ echo mypy-leo
 py -m mypy --debug-cache leo %*
 </t>
 <t tx="ekr.20221204071220.1">@language batch
-echo off
+@echo off
 cls
-::cd c:\Repos\leo-editor
 call %~dp0\set-repo-dir
 
 echo test-one-leo: test_leoFind.TestFind
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
 </t>
 <t tx="ekr.20221204071554.1">@language batch
-echo off
+@echo off
 cls
 call %~dp0\set-repo-dir
 
@@ -4031,26 +3710,33 @@ call pylint-leo.cmd
 echo.
 echo Done!
 </t>
-<t tx="ekr.20221204072154.1">@echo off
+<t tx="ekr.20221204072154.1">@language batch
+@echo off
+call %~dp0\set-repo-dir
+
 :: Save path to reindent.py to a file .leo\reindent-path.txt
-py %~dp0\find-reindent.py
+call py %~dp0\find-reindent.py
 
 set PATH_FILE=%USERPROFILE%\.leo\reindent-path.txt
 set /P "REINDENT_PATH="&lt; %PATH_FILE%
 
+:: echo %REINDENT_PATH%
+
 if "%REINDENT_PATH%"=="" goto no_reindent
-echo re-indenting
-py %REINDENT_PATH% -r leo
+
+echo reindent leo\core
+call py %REINDENT_PATH% -r leo\core
+echo reindent leo\commands
+call py %REINDENT_PATH% -r leo\commands
 goto done
 
 :no_reindent
 echo Cannot find reindent.py, skipping reindentation
 
 :done
-
 </t>
 <t tx="ekr.20221204072456.1">@language batch
-echo off
+@echo off
 call %~dp0\set-repo-dir
 
 echo beautify-leo
@@ -4060,8 +3746,7 @@ call py -m leo.core.leoAst --orange --recursive leo\plugins\importers
 call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
 </t>
 <t tx="ekr.20221204074235.1">@language batch
-echo off
-::cd c:\Repos\leo-editor
+@echo off
 call %~dp0\set-repo-dir
 
 rem: See leo-editor/setup.cfg for defaults.
@@ -4070,8 +3755,7 @@ echo flake8-leo
 py -m flake8 %*
 </t>
 <t tx="ekr.20230115020533.1">@language batch
-echo off
-::cd c:\Repos\leo-editor
+@echo off
 call %~dp0\set-repo-dir
 
 echo black leo.core
@@ -4079,9 +3763,10 @@ call py -m black --skip-string-normalization leo\core
 
 rem echo.
 rem echo black leo.commands
-rem call python -m black --skip-string-normalization leo\commands</t>
+rem call python -m black --skip-string-normalization leo\commands
+</t>
 <t tx="ekr.20230206004301.1">@language batch
-echo off
+@echo off
 cls
 rem -a: write all files  (make clean)
 call %~dp0\set-repo-dir
@@ -4092,30 +3777,10 @@ echo sphinx-build -a (make clean)
 echo.
 sphinx-build -M html . _build -a
 </t>
-<t tx="tom.20230319122643.1">:: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
+<t tx="ekr.20230322121316.1">@language batch
+:: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
 @echo off
 cd %~dp0..\..
 </t>
-<t tx="tom.20230321222112.1">"""Find reindent.py script.
-
-Writes the path to a file named "reindent-dir.txt" in the user's .leo directory.
-"""
-
-import sys, os, os.path
-
-SUFFIX = r'Tools\Scripts\reindent.py'
-LEO_HOME_DIR = os.environ['USERPROFILE'] + r'\.leo'
-PATH_FILE = LEO_HOME_DIR + r'\reindent-path.txt'
-
-path = None
-for p in sys.path:
-    candidate = os.path.join(p, SUFFIX)
-    if os.path.exists(candidate):
-        path = candidate
-        break
-
-if path:
-     with open(PATH_FILE, 'w', encoding = 'utf-8') as f:
-         f.write(path)</t>
 </tnodes>
 </leo_file>
