@@ -2895,7 +2895,8 @@ class LeoQtLog(leoFrame.LeoLog):
         if i is None:
             return
         w.removeTab(i)
-        del self.contentsDict[tabName]
+        if tabName in self.contentsDict:
+            del self.contentsDict[tabName]
         self.selectTab('Log')
         c.invalidateFocus()
         c.bodyWantsFocus()
