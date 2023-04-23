@@ -920,7 +920,6 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         self.insertWidget(index - 1, self.widget(index))
     #@+node:ekr.20110605121601.17987: *3* ns.swap_with_marked
     def swap_with_marked(self, index, side):
-        # pylint: disable=unpacking-non-sequence
         osplitter, oidx, oside, ow = self.root.marked
         idx = index + side - 1
         # convert from handle index to widget index
