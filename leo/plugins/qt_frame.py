@@ -2330,11 +2330,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Set the splitter sizes."""
         sizes = splitter.sizes()
         if len(sizes) != 2:
-            g.trace(f"{len(sizes)} widget(s) in {id(splitter)}")
+            # This is not an error: QSplitters may contain more than 2 widgets.
             return
         if frac > 1 or frac < 0:
-            g.trace(f"split ratio [{frac}] out of range 0 <= frac <= 1")
-            return
+            # g.trace(f"split ratio [{frac}] out of range 0 <= frac <= 1")
+            frac = 0.5
         s1, s2 = sizes
         s = s1 + s2
         s1 = int(s * frac + 0.5)
