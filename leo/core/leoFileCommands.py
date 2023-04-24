@@ -1639,6 +1639,8 @@ class FileCommands:
             fc.exportGeomToSqlite(conn)
             fc.exportHashesToSqlite(conn)
             conn.commit()
+            conn.close()
+            c.sqlite_connection = None
             ok = True
         except sqlite3.Error as e:
             g.internalError(e)
