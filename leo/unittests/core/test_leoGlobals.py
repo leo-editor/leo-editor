@@ -152,10 +152,10 @@ class TestGlobals(LeoUnitTest):
         def add_tree(c):
             pass
         #@+node:ekr.20230330042647.1: *4* function: make_tree
-        def make_tree(c):
+        def make_tree(c, root_h):
             """Make a test tree for other tests"""
             root = c.rootPosition()
-            root.h = '@file test.py'
+            root.h = root_h  ### '@file test.py'
             root.b = "def root():\n    pass\n"
             last = root
 
@@ -192,9 +192,10 @@ class TestGlobals(LeoUnitTest):
             c.selectPosition(c.rootPosition())
         #@-others
         
-        make_tree(c)
+        h = '@file ../plugins/writers/__init__.py'
+        make_tree(c, h)
         
-        h = '@file test.py'
+        # h = '@file test.py'
         test_p = g.findNodeAnywhere(c, h)
         assert(test_p)
         leo_dir = g.finalize_join(g.app.loadDir, '..')
@@ -203,19 +204,16 @@ class TestGlobals(LeoUnitTest):
         assert os.path.exists(writers_init), writers_init
         
         table = (
-            f"{h}",
-            'test.py',
-            writers_init,
+            # (f"{h}", None),
+            # ('test.py', None), 
+            (writers_init, h), ###'@file ../plugins/writers/__init__.py'),
         )
-        for i, s in enumerate(table):
+        for i, data in enumerate(table):
+            s, expected = data
             unl = g.computeFileUrl(s, c)
             result = g.findUNL([unl], c)
-            if 1:
-                # print(f"{s:50} unl{':'} {unl!s:60} ==> {result!r}")
-                # print(f"{s:>60} ==> {result!r}")
-                print(f"exists: {int(os.path.exists(s))} unl{':'} {unl!s:>60} ==> {result!r}")
-        
-            ### self.assertEqual(result, expected)
+            print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
+            self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
