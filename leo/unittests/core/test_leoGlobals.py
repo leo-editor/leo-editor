@@ -197,16 +197,23 @@ class TestGlobals(LeoUnitTest):
         h = '@file test.py'
         test_p = g.findNodeAnywhere(c, h)
         assert(test_p)
+        leo_dir = g.finalize_join(g.app.loadDir, '..')
+        assert os.path.exists(leo_dir), leo_dir
+        writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
+        assert os.path.exists(writers_init), writers_init
         
         table = (
             f"{h}",
             'test.py',
+            writers_init,
         )
         for i, s in enumerate(table):
             unl = g.computeFileUrl(s, c)
             result = g.findUNL([unl], c)
-            if 0:
-                print(i, s, unl, repr(result))
+            if 1:
+                # print(f"{s:50} unl{':'} {unl!s:60} ==> {result!r}")
+                # print(f"{s:>60} ==> {result!r}")
+                print(f"exists: {int(os.path.exists(s))} unl{':'} {unl!s:>60} ==> {result!r}")
         
             ### self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
