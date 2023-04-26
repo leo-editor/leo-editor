@@ -703,7 +703,6 @@ if QtWidgets:
             if not self.files_list:
                 print(f"No slides found in {path!r}")
                 return False
-            print(f"Found {len(self.files_list)} files")
             self.starting_directory = path
             os.chdir(path)
             n = len(self.files_list)
