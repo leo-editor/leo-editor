@@ -1,0 +1,10 @@
+rpCalc Installation Notes
+
+Extract the source files from the rpcalc tar file, then change to the
+'rpCalc' directory in a terminal.  For a basic installation, simply
+execute the following command as root:  'python install.py'
+
+To see all install options, use: 'python install.py -h'
+
+To install rpCalc with a different prefix (the default is
+'/usr/local'), use:  'python install.py -p /prefix/path'
