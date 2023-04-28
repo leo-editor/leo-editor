@@ -392,7 +392,7 @@ if QtWidgets:
             self.starting_directory = path
             os.chdir(path)
             self.files_list = self.get_files(path)
-            print(f"Found {len(self.files_list)} files")
+            # print(f"Found {len(self.files_list)} files")
             self.slide_number = -1
             self.sort(self.sort_kind)
             self.next_slide()  # show_slide resets the timer.
@@ -447,14 +447,11 @@ if QtWidgets:
             self.db_path = os.path.join(os.path.expanduser("~"), '.leo', 'picture_viewer.json')
             try:
                 if os.path.exists(self.db_path):
-                    if self.verbose:
-                        print(f"Loading {self.db_path}")
                     with open(self.db_path, 'r') as f:
                         self.db = json.load(f)
                     if self.verbose:
                         n = len(self.db.keys())
-                        sfn = g.shortFileName(self.db_path)
-                        print(f"{sfn} contains entries for {n} files")
+                        print(f"{n} entries in {self.db_path}")
                 else:
                     self.db = {}
             except Exception:
@@ -462,10 +459,12 @@ if QtWidgets:
         #@+node:ekr.20230220041332.1: *4* Slides.dump_data
         def dump_data(self):
             d = self.db
-            print(f"dump of {self.db_path}...")
+            # print(f"{self.db_path}...")
             for key in sorted(d.keys()):
                 sfn = g.truncate(g.shortFileName(key), 20)
                 print(f"{sfn:20} {d [key]}")
+
+            
         #@+node:ekr.20230219054034.1: *4* Slides.load_data
         def load_data(self) -> None:
 
@@ -492,7 +491,6 @@ if QtWidgets:
             if 0 <= self.slide_number < len(self.files_list):
                 # Don't remove this trace.
                 if self.trace and g.caller() != 'scrollContentsBy':
-
                     print(
                         f"save_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} "
                         f"x: {self.dx} y: {self.dy}")
@@ -639,12 +637,12 @@ if QtWidgets:
             self.save_data()
             # Update the db.
             if self.use_db:
-                if self.verbose:
-                    print(f"Writing {self.db_path}")
                 if self.debug:
                     self.dump_data()
                 with open(self.db_path, 'w') as f:
                     json.dump(self.db, f, indent=2)
+                if self.verbose:
+                    print(f"wrote {len(self.db.keys())} entries to {g.shortFileName(self.db_path)}")
             self.destroy()
             if gApp:  # Running externally.
                 gApp.exit()
@@ -705,7 +703,6 @@ if QtWidgets:
             if not self.files_list:
                 print(f"No slides found in {path!r}")
                 return False
-            print(f"Found {len(self.files_list)} files")
             self.starting_directory = path
             os.chdir(path)
             n = len(self.files_list)
