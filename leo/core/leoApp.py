@@ -1525,6 +1525,7 @@ class LeoApp:
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
     """A class to manage loading .leo files, including configuration files."""
+    LM_NOTHEME_FLAG = 'lm_theme_use_none'
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
     def __init__(self) -> None:
@@ -1809,8 +1810,11 @@ class LoadManager:
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn: str, tag: str) -> Optional[str]:
         """Search theme directories for the given .leo file."""
-        if not fn or fn.lower().strip() == 'none':
+        if not fn:
             return None
+        # Make --theme and theme-name setting do the same thing for "None"
+        if fn.lower().strip() == 'none':
+            return LoadManager.LM_NOTHEME_FLAG
         if not fn.endswith('.leo'):
             fn += '.leo'
         for directory in self.computeThemeDirectories():
@@ -2138,7 +2142,7 @@ class LoadManager:
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
         lm.theme_path = lm.computeThemeFilePath()
-        if lm.theme_path:
+        if lm.theme_path and lm.theme_path != LoadManager.LM_NOTHEME_FLAG:
             lm.theme_c = lm.openSettingsFile(lm.theme_path)
             if lm.theme_c:
                 # Merge theme_c's settings into globalSettingsDict.
