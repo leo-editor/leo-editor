@@ -54,7 +54,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.killBufferCommands import KillBufferCommandsClass
     from leo.commands.rectangleCommands import RectangleCommandsClass
     from leo.commands.spellCommands import SpellCommandsClass
-    from leo.core.rstCommands import RstCommands
+    from leo.core.leoRst import RstCommands
     # Other objects...
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
