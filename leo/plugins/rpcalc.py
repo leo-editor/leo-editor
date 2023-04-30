@@ -19,9 +19,11 @@ from leo.core.leoQt import QtCore, MouseButton
 from leo.core.leoQt import QtGui, FocusPolicy
 from leo.core.leoQt import QtWidgets, QAction
 from leo.core.leoQt import Shape, Shadow, KeyboardModifier
+from leo.core.leoQt import  Qt as Qt1
 
 import leo.core.leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
+from leo.plugins import qt_events
 #@+node:tom.20230428182001.1: *3* Qt Name Assignments
 
 Qt = QtCore.Qt
@@ -65,6 +67,17 @@ QWidget = QtWidgets.QWidget
 QVBoxLayout = QtWidgets.QVBoxLayout
 QMainWindow = QtWidgets.QMainWindow
 qApp = QtWidgets.QApplication
+
+try:
+    WindowTitleHint = Qt.WindowType.WindowTitleHint
+    WindowSystemMenuHint = Qt.WindowType.WindowSystemMenuHint
+    Accepted = QDialog.DialogCode.Accepted
+except Exception as e:
+    print(e)
+    WindowTitleHint = Qt1.WindowTitleHint
+    WindowSystemMenuHint = Qt1.WindowSystemMenuHint
+    Accepted = QDialog.Accepted
+
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
 
@@ -186,6 +199,7 @@ def toggle_tab(event) -> None:
     toggle_app_tab(log, TABNAME, widget = CalcDlg)
 #@+node:tom.20230428180647.1: ** onCreate
 def onCreate(tag: str, keys: Any) -> None:
+    global CMDR
     c = keys.get('c')
     if c:
         sc = scriptingController(c)
@@ -1126,7 +1140,7 @@ class CalcDlg(QWidget):
         OptionDlgInt(self.optDlg, 'MaxHistLength',
                                'Saved history steps', CalcCore.minMaxHist,
                                CalcCore.maxMaxHist, True, 10)
-        if self.optDlg.exec_() == QDialog.Accepted:
+        if self.optDlg.exec_() == QDialog.DialogCode.Accepted:
             self.calc.option.writeChanges()
             newViewReg = self.calc.option.boolData('ViewRegisters')
             if newViewReg != oldViewReg:
@@ -2208,8 +2222,8 @@ class OptionDlg(QDialog):
     #@+node:tom.20230424130102.158: *4* __init__
     def __init__(self, option, parent=None):
         QDialog.__init__(self, parent)
-        self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint |
-                            Qt.WindowSystemMenuHint)
+        self.setWindowFlags(Accepted | WindowTitleHint |
+                            WindowSystemMenuHint)
         self.option = option
 
         topLayout = QVBoxLayout(self)
