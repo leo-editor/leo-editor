@@ -68,15 +68,20 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QMainWindow = QtWidgets.QMainWindow
 qApp = QtWidgets.QApplication
 
-try:
+try:  # Adapt for Qt5 or Qt6
     WindowTitleHint = Qt.WindowType.WindowTitleHint
     WindowSystemMenuHint = Qt.WindowType.WindowSystemMenuHint
     Accepted = QDialog.DialogCode.Accepted
-except Exception as e:
-    print(e)
+    Flat = QLCDNumber.SegmentStyle.Flat
+    Filled = QLCDNumber.SegmentStyle.Filled
+    Outline = QLCDNumber.SegmentStyle.Outline
+except AttributeError:
     WindowTitleHint = Qt1.WindowTitleHint
     WindowSystemMenuHint = Qt1.WindowSystemMenuHint
     Accepted = QDialog.Accepted
+    Flat = QLCDNumber.Flat
+    Filled = QLCDNumber.Filled
+    Outline = QLCDNumber.Outline
 
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
@@ -1163,7 +1168,7 @@ class CalcDlg(QWidget):
         """Set lcd highlight based on option.
         """
         opt = self.calc.option.boolData('HideLcdHighlight') and \
-              QLCDNumber.Flat or QLCDNumber.SegmentStyle.Filled
+              Flat or Filled
         self.lcd.setSegmentStyle(opt)
         for lcd in self.extraLcds:
             lcd.setSegmentStyle(opt)
