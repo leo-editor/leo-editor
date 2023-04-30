@@ -68,21 +68,14 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QMainWindow = QtWidgets.QMainWindow
 qApp = QtWidgets.QApplication
 
-try:  # Adapt for Qt5 or Qt6
-    WindowTitleHint = Qt.WindowType.WindowTitleHint
-    WindowSystemMenuHint = Qt.WindowType.WindowSystemMenuHint
-    Accepted = QDialog.DialogCode.Accepted
-    Flat = QLCDNumber.SegmentStyle.Flat
-    Filled = QLCDNumber.SegmentStyle.Filled
-    Outline = QLCDNumber.SegmentStyle.Outline
-except AttributeError:
-    WindowTitleHint = Qt1.WindowTitleHint
-    WindowSystemMenuHint = Qt1.WindowSystemMenuHint
-    Accepted = QDialog.Accepted
-    Flat = QLCDNumber.Flat
-    Filled = QLCDNumber.Filled
-    Outline = QLCDNumber.Outline
-
+try:
+    WindowType = Qt.WindowType
+    DialogCode = QDialog.DialogCode
+    SegmentStyle = QLCDNumber.SegmentStyle
+except AttributeError as e:
+    WindowType = Qt1
+    DialogCode = Qt1
+    SegmentStyle = Qt1
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
 
@@ -1168,7 +1161,7 @@ class CalcDlg(QWidget):
         """Set lcd highlight based on option.
         """
         opt = self.calc.option.boolData('HideLcdHighlight') and \
-              Flat or Filled
+              SegmentStyle.Flat or SegmentStyle.Filled
         self.lcd.setSegmentStyle(opt)
         for lcd in self.extraLcds:
             lcd.setSegmentStyle(opt)
@@ -2227,8 +2220,9 @@ class OptionDlg(QDialog):
     #@+node:tom.20230424130102.158: *4* __init__
     def __init__(self, option, parent=None):
         QDialog.__init__(self, parent)
-        self.setWindowFlags(Accepted | WindowTitleHint |
-                            WindowSystemMenuHint)
+        self.setWindowFlags(DialogCode.Accepted
+                            | WindowType.WindowTitleHint
+                            | WindowType.WindowSystemMenuHint)
         self.option = option
 
         topLayout = QVBoxLayout(self)
