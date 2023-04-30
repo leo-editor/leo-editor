@@ -19,13 +19,14 @@ from leo.core.leoQt import QtCore, MouseButton
 from leo.core.leoQt import QtGui, FocusPolicy
 from leo.core.leoQt import QtWidgets, QAction
 from leo.core.leoQt import Shape, Shadow, KeyboardModifier
-from leo.core.leoQt import  Qt as Qt1
+from leo.core.leoQt import Qt as Qt1
+
+from leo.core.leoQt import WindowType, DialogCode
 
 import leo.core.leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 from leo.plugins import qt_events
 #@+node:tom.20230428182001.1: *3* Qt Name Assignments
-
 Qt = QtCore.Qt
 QApplication, QButtonGroup = QtWidgets.QApplication, QtWidgets.QButtonGroup
 QButtonGroup, QCheckBox = QtWidgets.QButtonGroup, QtWidgets.QCheckBox
@@ -69,12 +70,12 @@ QMainWindow = QtWidgets.QMainWindow
 qApp = QtWidgets.QApplication
 
 try:
-    WindowType = Qt.WindowType
-    DialogCode = QDialog.DialogCode
+    # WindowType = Qt.WindowType
+    # DialogCode = QDialog.DialogCode
     SegmentStyle = QLCDNumber.SegmentStyle
 except AttributeError as e:
-    WindowType = Qt1
-    DialogCode = Qt1
+    # WindowType = Qt1
+    # DialogCode = Qt1
     SegmentStyle = Qt1
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
