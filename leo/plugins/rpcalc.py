@@ -25,33 +25,37 @@ from leo.core.leoQt import WindowType, DialogCode
 
 import leo.core.leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
-from leo.plugins import qt_events
 #@+node:tom.20230428182001.1: *3* Qt Name Assignments
 Qt = QtCore.Qt
-QApplication, QButtonGroup = QtWidgets.QApplication, QtWidgets.QButtonGroup
-QButtonGroup, QCheckBox = QtWidgets.QButtonGroup, QtWidgets.QCheckBox
 
+QApplication = QtWidgets.QApplication
+QButtonGroup  = QtWidgets.QButtonGroup
+QCheckBox = QtWidgets.QCheckBox
 QClipboard = QtGui.QClipboard
 QColor = QtGui.QColor
 QDialog = QtWidgets.QDialog
-QDoubleValidator, QValidator = QtGui.QDoubleValidator, QtGui.QValidator
+
+QDoubleValidator = QtGui.QDoubleValidator
 QFrame = QtWidgets.QFrame
-QGridLayout, QHBoxLayout = QtWidgets.QGridLayout, QtWidgets.QHBoxLayout
+QGridLayout = QtWidgets.QGridLayout
+QHBoxLayout = QtWidgets.QHBoxLayout
 QGroupBox = QtWidgets.QGroupBox
 
 QIcon = QtGui.QIcon
-QLabel, QPushButton = QtWidgets.QLabel, QtWidgets.QPushButton
+QLabel = QtWidgets.QLabel
 QLineEdit = QtWidgets.QLineEdit
 QListView = QtWidgets.QListView
 QMenu = QtWidgets.QMenu
 QLCDNumber = QtWidgets.QLCDNumber
+QMainWindow = QtWidgets.QMainWindow
 QMessageBox = QtWidgets.QMessageBox
 
 QPalette = QtGui.QPalette
 QPixmap = QtGui.QPixmap
 QPoint = QtCore.QPoint
+QPushButton = QtWidgets.QPushButton
 QRadioButton = QtWidgets.QRadioButton
-QSizePolicy, QVBoxLayout = QtWidgets.QSizePolicy, QtWidgets.QVBoxLayout
+QSizePolicy = QtWidgets.QSizePolicy
 QSpinBox = QtWidgets.QSpinBox
 
 QSize = QtCore.QSize
@@ -59,24 +63,21 @@ QStatusBar = QtWidgets.QStatusBar
 QTabWidget = QtWidgets.QTabWidget
 QTextBrowser = QtWidgets.QTextBrowser
 QTextDocument = QtGui.QTextDocument
-QTimer, pyqtSignal = QtCore.QTimer, QtCore.pyqtSignal
+QTimer = QtCore.QTimer
 QTreeWidget = QtWidgets.QTreeWidget
+
 QTreeWidgetItem = QtWidgets.QTreeWidgetItem
 QUrl = QtCore.QUrl
-
-QWidget = QtWidgets.QWidget
 QVBoxLayout = QtWidgets.QVBoxLayout
-QMainWindow = QtWidgets.QMainWindow
-qApp = QtWidgets.QApplication
+QValidator = QtGui.QValidator
+QWidget = QtWidgets.QWidget
 
 try:
-    # WindowType = Qt.WindowType
-    # DialogCode = QDialog.DialogCode
     SegmentStyle = QLCDNumber.SegmentStyle
 except AttributeError as e:
-    # WindowType = Qt1
-    # DialogCode = Qt1
     SegmentStyle = Qt1
+
+pyqtSignal = QtCore.pyqtSignal
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
 
@@ -210,7 +211,7 @@ def onCreate(tag: str, keys: Any) -> None:
 #@+node:tom.20230424130102.2: **  altbasedialog
 #@+others
 #@+node:tom.20230424130102.3: *3* class AltBaseDialog
-class AltBaseDialog(QWidget):
+class AltBaseDialog(QWidget): # type: ignore
     """Displays edit boxes for other number bases.
     """
     baseCode = {'X':16, 'O':8, 'B':2, 'D':10}
@@ -351,7 +352,7 @@ class AltBaseDialog(QWidget):
 
     #@-others
 #@+node:tom.20230424130102.13: *3* class AltBaseBox
-class AltBaseBox(QLabel):
+class AltBaseBox(QLabel): # type: ignore
     """Displays an edit box at a particular base.
     """
     #@+others
@@ -387,7 +388,7 @@ class AltBaseBox(QLabel):
 #@+node:tom.20230424130102.18: **  calcbutton
 #@+others
 #@+node:tom.20230424130102.19: *3* class CalcButton
-class CalcButton(QPushButton):
+class CalcButton(QPushButton): # type: ignore
     """Calculator button class - size change & emits clicked text signal.
     """
     activated = pyqtSignal(str)
@@ -821,9 +822,9 @@ class CalcCore:
                 new = orig == 'deg' and 'rad' or 'deg'
                 self.option.changeData('AngleUnit', new, 1)
                 self.option.writeChanges()
-            elif cmdStr == 'R<':           # roll stack back
+            elif cmdStr == 'R>':           # roll stack back
                 self.stack.rollBack()
-            elif cmdStr == 'R>':           # roll stack forward
+            elif cmdStr == 'R^':           # roll stack forward
                 self.stack.rollUp()
             elif cmdStr == 'PI':           # pi constant
                 self.stack.enterX()
@@ -909,7 +910,7 @@ class CalcCore:
 #@@language python
 #@@tabwidth -4
 #@+node:tom.20230424130102.50: ** class CalcDlg
-class CalcDlg(QWidget):
+class CalcDlg(QWidget): # type: ignore
     """Main dialog for calculator program.
     """
     #@+others
@@ -1006,7 +1007,7 @@ class CalcDlg(QWidget):
         self.addCmdButton('tn^X', 2, 4)
         self.addCmdButton('STO', 3, 0)
         self.addCmdButton('RCL', 3, 1)
-        self.addCmdButton('R<', 3, 2)
+        self.addCmdButton('R^', 3, 2)
         self.addCmdButton('R>', 3, 3)
         self.addCmdButton('x<>y', 3, 4)
         self.addCmdButton('SHOW', 4, 0)
@@ -1022,7 +1023,7 @@ class CalcDlg(QWidget):
 
         self.mainLay = QGridLayout()
         topLay.addLayout(self.mainLay)
-        self.mainDict = {}
+        self.mainDict: Dict[int, Any] = {}
         self.addMainButton(0, 'OPT', 0, 0)
         self.addMainButton(Qt.Key.Key_Slash, '/', 0, 1)
         self.addMainButton(Qt.Key.Key_Slash, '/', 0, 1)
@@ -1149,7 +1150,7 @@ class CalcDlg(QWidget):
                 else:
                     for w in self.extraLabels + self.extraLcds:
                         w.hide()
-                qApp.processEvents()
+                QApplication.processEvents()
                 self.adjustSize()
             if self.altBaseView:
                 self.altBaseView.updateOptions()
@@ -1464,7 +1465,7 @@ class CalcDlg(QWidget):
 
 #@+others
 #@+node:tom.20230424130102.76: *3* class Lcd
-class Lcd(QLCDNumber):
+class Lcd(QLCDNumber): # type: ignore
     """Main LCD Display.
     """
     #@+others
@@ -1498,7 +1499,7 @@ class Lcd(QLCDNumber):
 
     #@-others
 #@+node:tom.20230424130102.80: *3* class LcdBox
-class LcdBox(QFrame):
+class LcdBox(QFrame): # type: ignore
     """Frame for LCD display.
     """
     #@+others
@@ -1574,7 +1575,7 @@ class CalcStack(list):
 
 #@+others
 #@+node:tom.20230424130102.94: *3* class ExtraViewWidget
-class ExtraViewWidget(QTreeWidget):
+class ExtraViewWidget(QTreeWidget): # type: ignore
     """Base class of list views for ExtraDisplay.
     """
     #@+others
@@ -1708,7 +1709,7 @@ class MemViewWidget(ExtraViewWidget):
 
     #@-others
 #@+node:tom.20230424130102.109: *3* class ExtraDisplay
-class ExtraDisplay(QWidget):
+class ExtraDisplay(QWidget): # type: ignore
     """Displays registers, history or memory values, allows copies.
     """
     #@+others
@@ -1835,7 +1836,7 @@ class ExtraDisplay(QWidget):
 #@+node:tom.20230424130102.121: **  helpview
 #@+others
 #@+node:tom.20230424130102.122: *3* class HelpView
-class HelpView(QMainWindow):
+class HelpView(QMainWindow): # type: ignore
     """Main window for viewing an html help file.
     """
     #@+others
@@ -1938,7 +1939,7 @@ class HelpView(QMainWindow):
 
     #@-others
 #@+node:tom.20230424130102.128: *3* class HelpViewer
-class HelpViewer(QTextBrowser):
+class HelpViewer(QTextBrowser):  # type: ignore
     """Shows an html help file.
     """
     #@+others
@@ -2061,8 +2062,8 @@ class Option:
                             print('Error - could not write to config dir')
                             self.path = ''
         self.keySpaces = keySpaces
-        self.dfltDict = {}
-        self.userDict = {}
+        self.dfltDict = {} # type: ignore
+        self.userDict = {} # type: ignore
         self.dictList = (self.userDict, self.dfltDict)
         self.chgList = []
 
@@ -2214,7 +2215,7 @@ class Option:
 #@+node:tom.20230424130102.156: **  optiondlg
 #@+others
 #@+node:tom.20230424130102.157: *3* class OptionDlg
-class OptionDlg(QDialog):
+class OptionDlg(QDialog): # type: ignore
     """Works with Option class to provide a dialog for pref/options.
     """
     #@+others
