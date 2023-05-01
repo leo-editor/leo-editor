@@ -1026,7 +1026,7 @@ class CalcDlg(QWidget): # type: ignore
         self.addCmdButton('PLCS', 4, 2)
         self.addCmdButton('SCI', 4, 3)
         self.addCmdButton('DEG', 4, 4)
-        self.addCmdButton('TOCLIP', 5, 0)
+        self.addCmdButton('>CLIP', 5, 0)
         self.addCmdButton('Pi', 5, 1)
         self.addCmdButton('EXP', 5, 2)
         self.addCmdButton('CHS', 5, 3)
@@ -1340,7 +1340,7 @@ class CalcDlg(QWidget): # type: ignore
                 self.lcd.display(valueStr)
                 self.showMode = True
                 return
-        elif text == 'TOCLIP':
+        elif text == '>CLIP':
             copyToClip(self.calc.sciFormatX(11).replace('e', ' E', 1))
             return
         else:
@@ -1375,7 +1375,7 @@ class CalcDlg(QWidget): # type: ignore
         else:
             newStr = (self.entryStr + ch).upper()
             if newStr == ':Q':    # vim-like shortcut
-                newStr = 'TOCLIP'
+                newStr = '>CLIP'
             button = self.cmdDict.get(newStr.lstrip(':'))
             if button:
                 button.clickEvent()
@@ -2656,7 +2656,7 @@ is 1/X, "tn^X" is 10^X, "R&lt;" rolls the stack back (or down),
 zero through nine.  This number will be the memory register number or
 the number of decimal places for the display.</p>
 
-<p>The "TOCLIP" key copies the stack bottom (the "X" register) to the system clipboard.</p>
+<p>The ">CLIP" key copies the stack bottom (the "X" register) to the system clipboard.</p>
 
 <h3><a name="info-win"></a>Information Windows</h3>
 
