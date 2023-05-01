@@ -521,6 +521,7 @@
 <v t="ekr.20170419092835.1"><vh>@file ../plugins/cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file ../plugins/leoflexx.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file ../plugins/python_terminal.py</vh></v>
+<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
@@ -3630,9 +3631,9 @@ contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 mod_autosave.py
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
-nodetags.py
+#nodetags.py
 quicksearch.py      # Nav pane.
-todo.py             # Task pane.
+#todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
