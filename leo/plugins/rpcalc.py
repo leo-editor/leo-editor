@@ -199,6 +199,15 @@ def toggle_tab(event) -> None:
     log = c.frame.log
 
     toggle_app_tab(log, TABNAME, widget = CalcDlg)
+#@+node:tom.20230501083631.1: ** copyToClip
+def copyToClip(text):
+    """Copy text to the clipboard.
+    """
+    clip = QApplication.clipboard()
+    if clip.supportsSelection():
+        clip.setText(text, QClipboard.Selection)
+    clip.setText(text)
+
 #@+node:tom.20230428180647.1: ** onCreate
 def onCreate(tag: str, keys: Any) -> None:
     global CMDR
@@ -1017,7 +1026,7 @@ class CalcDlg(QWidget): # type: ignore
         self.addCmdButton('PLCS', 4, 2)
         self.addCmdButton('SCI', 4, 3)
         self.addCmdButton('DEG', 4, 4)
-        self.addCmdButton('EXIT', 5, 0)
+        self.addCmdButton('TOCLIP', 5, 0)
         self.addCmdButton('Pi', 5, 1)
         self.addCmdButton('EXP', 5, 2)
         self.addCmdButton('CHS', 5, 3)
@@ -1331,8 +1340,8 @@ class CalcDlg(QWidget): # type: ignore
                 self.lcd.display(valueStr)
                 self.showMode = True
                 return
-        elif text == 'EXIT':
-            self.close()
+        elif text == 'TOCLIP':
+            copyToClip(self.calc.sciFormatX(11).replace('e', ' E', 1))
             return
         else:
             self.calc.cmd(text)
@@ -1366,7 +1375,7 @@ class CalcDlg(QWidget): # type: ignore
         else:
             newStr = (self.entryStr + ch).upper()
             if newStr == ':Q':    # vim-like shortcut
-                newStr = 'EXIT'
+                newStr = 'TOCLIP'
             button = self.cmdDict.get(newStr.lstrip(':'))
             if button:
                 button.clickEvent()
@@ -2551,6 +2560,9 @@ feel free to let others know about it.  And let me know what you think
 
   <li>Options can be set to control the display of numbers and the
   initial window configuration.</li>
+  
+  <li>The calculation result (the number on the bottom of the stack, 
+  also called the "X" position) can be copied to the clipboard.</li>
 
 </ul>
 
@@ -2644,6 +2656,8 @@ is 1/X, "tn^X" is 10^X, "R&lt;" rolls the stack back (or down),
 zero through nine.  This number will be the memory register number or
 the number of decimal places for the display.</p>
 
+<p>The "TOCLIP" key copies the stack bottom (the "X" register) to the system clipboard.</p>
+
 <h3><a name="info-win"></a>Information Windows</h3>
 
 <p>A menu can be displayed by hitting the Esc key or by clicking on the
@@ -2724,6 +2738,8 @@ window, the alternate base window, and this readme file.  The number of
 saved equations in the history list can also be set.</p>
 
 <h2><a name="revs"></a>Revision History</h2>
+
+<h3>May 1, 2023 - Release 0.9 of the Leo plugin version</h3>
 
 <h3>April 8, 2018 - Release 0.8.2</h3>
 
