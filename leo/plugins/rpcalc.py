@@ -78,6 +78,8 @@ except AttributeError as e:
     SegmentStyle = Qt1
 
 pyqtSignal = QtCore.pyqtSignal
+
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:tom.20230428181007.1: ** annotations
 from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
 
