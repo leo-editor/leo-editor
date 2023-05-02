@@ -2484,7 +2484,9 @@ class OptionDlgPush(OptionDlgItem):
 #@@language python
 #@@tabwidth -4
 #@+node:tom.20230426112545.1: ** helpfile
-HELPDOC = """\
+HELPDOC = """
+#@+<< help text >>
+#@+node:tom.20230502081206.1: *3* << help text >>
 <html>
 <head>
 <title>rpCalc ReadMe</title>
@@ -3034,6 +3036,7 @@ Issues:
 </div>
 </body>
 </html>
+#@-<< help text >>
 """
 #@+node:tom.20230424140347.3: ** toggle_app_tab
 def toggle_app_tab(log, tabname, widget = CalcDlg):
