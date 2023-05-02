@@ -79,8 +79,14 @@ try:
 except Exception:
     send2trash = None  # Optional
 # Leo
-import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+try:
+    import leo.core.leoGlobals as g
+    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+except Exception:
+    pass
+
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports (remove_duplicate_pictures.py) >>
 
 # Globals to retain references to objects.
