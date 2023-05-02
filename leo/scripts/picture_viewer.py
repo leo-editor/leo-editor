@@ -1,11 +1,11 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20211021200745.1: * @file ../plugins/picture_viewer.py
+#@+node:ekr.20211021200745.1: * @file ../scripts/picture_viewer.py
 #@+<< docstring (picture_viewer.py) >>
 #@+node:ekr.20211021202710.1: ** << docstring (picture_viewer.py) >>
 """
 Display image files in a directory tree as a slide show.
 
-This plugin will display all files in a directory tree that have image
+This script will display all files in a directory tree that have image
 extensions. By default the recognized extensions are '.jpeg', '.jpg', and
 '.png'. Other types of image files can be displayed as long as the they are
 types known by the Qt PixMap class, including '.gif' and '.bmp'. See, for
@@ -15,11 +15,11 @@ https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
 
 This file may be run externally as follows::
 
-    python -m leo.plugins.picture_viewer
+    python -m leo.scripts.picture_viewer
 
-This plugin may be called from a script (or @command or @button node) as follows:
+This script may be called from another script (or @command or @button node) as follows:
 
-    from leo.plugins.picture_viewer import Slides
+    from leo.scripts.picture_viewer import Slides
     Slides().run()  # See below for defaults.
 
 *Note*: do not enable this plugin. It will be loaded by the calling script.
@@ -66,16 +66,17 @@ import sys
 import random
 import textwrap
 from typing import Dict, List
-# Leo imports
-from leo.core import leoGlobals as g
+# Leo imports: This is not a plugin.
+try:
+    import leo.core.leoGlobals as g
+except Exception:
+    print('picture_viewer.py: can not import leo.core.leoGlobals as g')
 try:
     from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import ButtonRole, Information
-except ImportError:
-    QtWidgets = None
-
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+except Exception:
+    print('picture_viewer.py: Qt required')
+    print('pip install pyqt6')
 #@-<< imports (picture_viewer.py) >>
 
 # Globals to retain references to objects.
@@ -83,10 +84,6 @@ gApp = None
 gWidget = None
 
 #@+others
-#@+node:ekr.20211021202802.1: ** init (picture_viewer.py)
-def init():
-    """Return True if the plugin has loaded successfully."""
-    return g.app.gui.guiName().lower().startswith('qt')
 #@+node:tom.20211023221408.1: ** get_args & checkers
 def get_args():
 
@@ -464,8 +461,6 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         for key in sorted(d.keys()):
             sfn = g.truncate(g.shortFileName(key), 20)
             print(f"{sfn:20} {d [key]}")
-
-        
     #@+node:ekr.20230219054034.1: *4* Slides.load_data
     def load_data(self) -> None:
 
