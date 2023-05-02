@@ -1,25 +1,23 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20220126054240.1: * @file ../plugins/remove_duplicate_pictures.py
+#@+node:ekr.20220126054240.1: * @file ../scripts/remove_duplicate_pictures.py
 #@+<< docstring (remove_duplicate_pictures.py) >>
 #@+node:ekr.20220126054240.2: ** << docstring (remove_duplicate_pictures.py) >>
 """
 Remove duplicate files.
 
-This plugin will display all duplicate files in a tree that have image
+This script will display all duplicate files in a tree that have image
 extensions. By default the recognized extensions are '.jpeg', '.jpg', and
 '.png'. Other types of image files can be displayed as long as the they are
 types known by the Qt PixMap class, including '.gif' and '.bmp'.
 
-This file may be run externally as follows::
+This script may be run externally as follows::
 
-    python -m leo.plugins.remove_duplicate_pictures
+    python -m leo.script.remove_duplicate_pictures
 
-This plugin may be called from a script (or @command or @button node) as follows::
+This script may be called from another script (or @command or @button node) as follows::
 
-    from leo.plugins.remove_duplicate_pictures import RemoveDuplicates
+    from leo.scripts.remove_duplicate_pictures import RemoveDuplicates
     RemoveDuplicates().run()  # See below for defaults.
-
-*Note*: There is no need to enable this plugin. It will be loaded by the calling script.
 
 **Defaults**
 
@@ -59,34 +57,35 @@ from typing import Any, Dict, List
 try:
     from PIL import Image
 except Exception:
-    print('remove_duplicate_pictures: PIL required')
+    print('remove_duplicate_pictures.py: PIL required')
     print('pip install pillow')
     Image = None
 try:
     import imagehash
 except Exception:
     imagehash = None
-    print('remove_duplicate_pictures: imagehash required')
+    print('remove_duplicate_pictures.py: imagehash required')
     print('pip install imagehash')
 try:
     import numpy as np
 except Exception:
     np = None
-    print('remove_duplicate_pictures: numpy required')
+    print('remove_duplicate_pictures.py: numpy required')
     print('pip install numpy')
 try:
     from send2trash import send2trash
 except Exception:
     send2trash = None  # Optional
-# Leo
+# Leo: This is not a plugin.
 try:
     import leo.core.leoGlobals as g
+except Exception:
+    print('remove_duplicate_picture.py: can not import leo.core.leoGlobals as g')
+try:
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 except Exception:
-    pass
-
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+    print('remove_duplicate_pictures.py: Qt required')
+    print('pip install pyqt6')
 #@-<< imports (remove_duplicate_pictures.py) >>
 
 # Globals to retain references to objects.
@@ -94,10 +93,6 @@ gApp = None
 gWindow = None
 
 #@+others
-#@+node:ekr.20220126054240.4: ** init (remove_duplicate_pictures.py)
-def init():
-    """Return True if the plugin has loaded successfully."""
-    return Image and imagehash and np and g.app.gui.guiName().lower().startswith('qt')
 #@+node:ekr.20220126054240.5: ** get_args & checkers
 def get_args():
     # Automatically implements the --help option.
