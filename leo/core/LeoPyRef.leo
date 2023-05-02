@@ -216,6 +216,8 @@
 <v t="ekr.20230322121316.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
+<v t="ekr.20211021200745.1"><vh>@file ../scripts/picture_viewer.py</vh></v>
+<v t="ekr.20220126054240.1"><vh>@file ../scripts/remove_duplicate_pictures.py</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
@@ -521,7 +523,6 @@
 <v t="ekr.20170419092835.1"><vh>@file ../plugins/cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file ../plugins/leoflexx.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file ../plugins/python_terminal.py</vh></v>
-<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
@@ -590,8 +591,8 @@
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
-<v t="ekr.20211021200745.1"><vh>@file ../plugins/picture_viewer.py</vh></v>
-<v t="ekr.20220126054240.1"><vh>@file ../plugins/remove_duplicate_pictures.py</vh></v>
+<v t="ekr.20211021200745.1"></v>
+<v t="ekr.20220126054240.1"></v>
 <v t="ekr.20120913110135.10579"><vh>@file ../plugins/screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file ../plugins/screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file ../plugins/slideshow.py</vh></v>
@@ -3000,36 +3001,24 @@ unl: eggs (at-auto-test.py)
 </t>
 <t tx="ekr.20220306092217.1">g.cls()
 
-core = ' leo.unittests.core'
-gui = ' leo.unittests.test_gui'
-syntax = ' leo.unittests.test_syntax'
-
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+syntax = 'leo.unittests.test_syntax'
 testAtFile = 'test_leoAtFile.TestAtFile'
 testColorizer = 'test_leoColorizer.TestColorizer'
 testCommands = 'test_leoCommands.TestCommands'
 testGlobals = 'test_leoGlobals.TestGlobals'
 
-if 1:
-    commands = (
-        'python -m unittest '
-        # f"{core}.{testCommands}.test_c_expand_path_expression"
-        # f"{core}.{testAtFile}.test_bug_3270_at_path"
-        # f"{core}.{testAtFile}.test_bug_3272_at_path"
-        # f"{core}.{testAtFile}.test_bug_1889_tilde_in_at_path"
-        # f"{core}.{testGlobals}.test_g_finalize"
-        # f"{core}.{testGlobals}.test_g_finalize_join"
-        # f"{gui}.TestQtGui.test_put_html_links"
-        f"{core}.{testColorizer}.test_colorizer_HTML_script_tag"
-    )
-else:
-    # This still requires changes to the outline,
-    # because this outline defines test-one-leo.cmd!
-    commands = [
-        '@echo off',
-        'test-one-leo.cmd',
-    ]
-
-g.execute_shell_commands(commands)
+commands = (
+    # f" {core}.{testCommands}.test_c_expand_path_expression"
+    # f" {core}.{testAtFile}.test_bug_1889_tilde_in_at_path"
+    # f" {core}.{testGlobals}.test_g_finalize"
+    # f" {core}.{testColorizer}.test_colorizer_HTML_script_tag"
+    f" {core}.{testGlobals}.test_g_findUnl",
+    # f" {gui}.TestQtGui.test_put_html_links",
+)
+commands_s = f"python -m unittest {' '.join(commands)}"
+g.execute_shell_commands(commands_s)
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3631,9 +3620,9 @@ contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 mod_autosave.py
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
-#nodetags.py
+nodetags.py
 quicksearch.py      # Nav pane.
-#todo.py             # Task pane.
+todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>

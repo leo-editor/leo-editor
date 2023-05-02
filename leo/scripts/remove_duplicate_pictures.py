@@ -93,10 +93,6 @@ gApp = None
 gWindow = None
 
 #@+others
-#@+node:ekr.20220126054240.4: ** init (remove_duplicate_pictures.py)
-def init():
-    """Return True if the plugin has loaded successfully."""
-    return Image and imagehash and np and g.app.gui.guiName().lower().startswith('qt')
 #@+node:ekr.20220126054240.5: ** get_args & checkers
 def get_args():
     # Automatically implements the --help option.
