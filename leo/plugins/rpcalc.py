@@ -2537,7 +2537,7 @@ feel free to let others know about it.  And let me know what you think
 - my e-mail address is doug101 AT bellz DOT org.<br><br>
 
 <strong>Do not use the above address for matters related to the Leo
-plugin.</strong>. See the <a href="#contact">contact links</a>at the end.</p>
+plugin.</strong>. See the <a href="#contact">contact links</a> at the end.</p>
 
 <p>The same GPL2 license applies to the modifications to work as
 a Leo plugin.</p>
