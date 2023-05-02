@@ -1026,7 +1026,7 @@ class CalcDlg(QWidget): # type: ignore
         self.addCmdButton('PLCS', 4, 2)
         self.addCmdButton('SCI', 4, 3)
         self.addCmdButton('DEG', 4, 4)
-        self.addCmdButton('TOCLIP', 5, 0)
+        self.addCmdButton('>CLIP', 5, 0)
         self.addCmdButton('Pi', 5, 1)
         self.addCmdButton('EXP', 5, 2)
         self.addCmdButton('CHS', 5, 3)
@@ -1340,7 +1340,7 @@ class CalcDlg(QWidget): # type: ignore
                 self.lcd.display(valueStr)
                 self.showMode = True
                 return
-        elif text == 'TOCLIP':
+        elif text == '>CLIP':
             copyToClip(self.calc.sciFormatX(11).replace('e', ' E', 1))
             return
         else:
@@ -1375,7 +1375,7 @@ class CalcDlg(QWidget): # type: ignore
         else:
             newStr = (self.entryStr + ch).upper()
             if newStr == ':Q':    # vim-like shortcut
-                newStr = 'TOCLIP'
+                newStr = '>CLIP'
             button = self.cmdDict.get(newStr.lstrip(':'))
             if button:
                 button.clickEvent()
@@ -1863,7 +1863,7 @@ class HelpView(QMainWindow): # type: ignore
         self.setCentralWidget(self.textView)
 
         self.textView.setHtml(HELPDOC)
-        self.resize(520, 440)
+        self.resize(520, 500)
         self.setWindowTitle(caption)
         tools = self.addToolBar('Tools')
         self.menu = QMenu(self.textView)
@@ -2488,6 +2488,9 @@ HELPDOC = """\
 <html>
 <head>
 <title>rpCalc ReadMe</title>
+<style type='text/css'>
+    a {color: darkorchid;}
+</style>
 </head>
 <body>
 <center>
@@ -2507,12 +2510,7 @@ Modified For The Leo Editor by T. B. Passin April 26, 2023
 <li><a href="#background">Background</a></li>
 <li><a href="#features">Features</a></li>
 <li><a href="#legal">Legal Issues</a></li>
-<li><a href="#sysreq">System Requirements</a>
-  <ul><li><a href="#linux-sys">Linux</a></li>
-  <li><a href="#win-sys">Windows</a></li></ul></li>
 <li><a href="#install">Installation</a>
-  <ul><li><a href="#linux-inst">Linux</a></li>
-  <li><a href="#win-inst">Windows</a></li></ul></li>
 <li><a href="#using">Using rpCalc</a>
   <ul><li><a href="#basics">Basics</a></li>
   <li><a href="#info-win">Information Windows</a></li>
@@ -2534,7 +2532,13 @@ available to others who also like RPN calculators.</p>
 free for anyone to use, distribute and modify, as long as it is not
 incorporated into any proprietary programs.  If you like the software,
 feel free to let others know about it.  And let me know what you think
-- my e-mail address is doug101 AT bellz DOT org</p>
+- my e-mail address is doug101 AT bellz DOT org.<br><br>
+
+<strong>Do not use the above address for matters related to the Leo
+plugin.</strong>. See the <a href="#contact">contact links</a>at the end.</p>
+
+<p>The same GPL2 license applies to the modifications to work as
+a Leo plugin.</p>
 
 <h2><a name="features"></a>Features</h2>
 
@@ -2577,61 +2581,20 @@ option) any later version.</p>
 WITHOUT ANY WARRANTY.  See the <tt>LICENSE</tt> file provided with
 this program for more information.</p>
 
-<h2><a name="sysreq"></a>System Requirements</h2>
-
-<h3><a name="linux-sys"></a>Linux</h3>
-
-<p>rpCalc requires the following libraries:
-<ul>
-  <li>Python (Version 3.4 or higher)</li>
-  <li>Qt (Version 5.4 or higher - see <a
-    href="http://qt-project.org">Qt Project</a> for more
-  information)</li>
-  <li>PyQt (Version 5.4 or higher - see <a
-    href="http://www.riverbankcomputing.co.uk">Riverbank</a>
-    for more information)</li>
-</ul></p>
-
-<p>If these libraries are not be available for your distribution, an
-earlier version of rpCalc (0.6.0) that depends on older libraries is
-still available.</p>
-
-<h3><a name="win-sys"></a>Windows</h3>
-
-<p>Using the files provided in the binary distribution, rpCalc should
-run on any computer running Windows XP, Vista, 7, 8 or 10.</p>
-
 <h2><a name="install"></a>Installation</h2>
+The Leo Plugin requires no installation.  It must be enabled in the
+<i>@enabled-plugins</i> node of your <i>myLeoSettings</i> outline.  Add
+a line "rpcalc.py" to the node.
 
-<h3><a name="linux-inst"></a>Linux</h3>
+<h2><a name="using"></a>Using The RPCalc</h2>
 
-<p>Extract the source files from the rpcalc tar file, and then change to
-the <tt>rpCalc</tt> directory in a terminal.  For a basic installation,
-simply execute the following command as root:  <tt>python
-  install.py</tt></p>
+<h3>Toggling The RPCalc Tab On And Off</h3>
+After the plugin has been enabled and Leo has been restarted, a new button
+will be present in the icon bar.  It is labeled "RPCalc". Clicking it will
+add or remove a RPCalc tab in Leo's log frame.<br><br>
 
-<p>If your distribution defaults to Python 2.x, you may need to substitute
-<tt>python3</tt> for <tt>python</tt> in these commands.</p>
-
-<p>To see all install options, use: <tt>python install.py -h</tt>.  To
-install rpCalc with a different prefix (the default is
-<tt>/usr/local</tt>), use:  <tt>python install.py -p
-  /prefix/path</tt></p>
-
-<h3><a name="win-inst"></a>Windows</h3>
-
-<p>To install for all users, execute the
-<tt>rpCalc-x.x.x-install-all.exe</tt> file.  Administrator permissions
-are required.</p>
-
-<p>To install for a single user (administrator rights are not required),
-execute the <tt>rpCalc-x.x.x-install-user.exe</tt> file.</p>
-
-<p>For a portable install, execute the
-<tt>rpCalc-x.x.x-install-user.exe</tt> file, uncheck the shortcuts
-and uninstaller tasks, and check the portable config task.</p>
-
-<h2><a name="using"></a>Using rpCalc</h2>
+In addition, the tab can be toggled using the minibuffer command
+<i>rpcalc-toggle</i>, or by using the <i>Plugins/rpcalc</i> menu item.
 
 <h3><a name="basics"></a>Basics</h3>
 
@@ -2656,7 +2619,7 @@ is 1/X, "tn^X" is 10^X, "R&lt;" rolls the stack back (or down),
 zero through nine.  This number will be the memory register number or
 the number of decimal places for the display.</p>
 
-<p>The "TOCLIP" key copies the stack bottom (the "X" register) to the system clipboard.</p>
+<p>The ">CLIP" key copies the stack bottom (the "X" register) to the system clipboard.</p>
 
 <h3><a name="info-win"></a>Information Windows</h3>
 
@@ -3056,12 +3019,19 @@ saved equations in the history list can also be set.</p>
 </ul>
 
 <h2><a name="contact"></a>Questions, Comments, Criticisms?</h2>
-
+<div><h3>The original contact notice (not for Leo plugin issues)</h3>
 <p>I can be contacted by email at: doug101 AT bellz DOT org<br> I
 welcome any feedback, including reports of any bugs you find.  Also, you
 can periodically check back to <a
   href="http://www.bellz.org">www.bellz.org</a> for any updates.</p>
+<div>
 
+<div><h3>For issues with the Leo plugin</h3>
+Questions: 
+<a href='https://groups.google.com/g/leo-editor'>Leo-Editor Group site</a><br>
+Issues:
+<a href='https://github.com/leo-editor/leo-editor/issues'>Leo-Editor GitHub site</a>.
+</div>
 </body>
 </html>
 """
