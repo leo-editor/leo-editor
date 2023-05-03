@@ -1011,7 +1011,7 @@ class JEditColorizer(BaseColorizer):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers (trace)
+    #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name: str) -> bool:
         """Name may be a language name or a delegate name."""
         if not name:
@@ -1035,7 +1035,7 @@ class JEditColorizer(BaseColorizer):
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
-    #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module (trace)
+    #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
     def init_mode_from_module(self, name: str, mode: Mode) -> bool:
         """
         Name may be a language name or a delegate name.
@@ -1049,7 +1049,6 @@ class JEditColorizer(BaseColorizer):
                 mode.pre_init_mode(self.c)
         else:
             # Create a dummy bunch to limit recursion.
-            ### g.trace('===== Dummy', name, rulesetName)
             self.modes[language] = self.modeBunch = g.Bunch(
                 attributesDict={},
                 defaultColor=None,
@@ -1107,7 +1106,6 @@ class JEditColorizer(BaseColorizer):
         # Complete the late replacements.
         self.modeBunch.language = self.language
         self.modes[rulesetName] = self.modeBunch
-        ### g.trace(f"{name:>8} {rulesetName:12} language: {self.language:8} {self.mode}")
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
     def nameToRulesetName(self, name: str) -> Tuple[str, str]:
@@ -1517,8 +1515,6 @@ class JEditColorizer(BaseColorizer):
             k = g.skip_c_id(s, j)
             name = s[j:k]
             ok = self.init_mode(name)
-            if not ok:
-                g.trace('FAIL', name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
                 if name != old_name:
