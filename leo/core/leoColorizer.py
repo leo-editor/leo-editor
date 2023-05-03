@@ -1021,7 +1021,6 @@ class JEditColorizer(BaseColorizer):
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
-                g.trace('unknown-language', name, rulesetName)
                 return False
             self.initModeFromBunch(bunch)
             self.language = language  # 2011/05/30
