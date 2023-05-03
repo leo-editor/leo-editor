@@ -2087,8 +2087,8 @@ class JEditColorizer(BaseColorizer):
         self,
         s: str,
         i: int,
-        kind: str,
         *,
+        kind: str,
         begin: str,
         end: str,
         at_line_start: bool = False,
@@ -2417,7 +2417,7 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(kind2, s, j, k)
         return k - i
     #@+node:ekr.20230420052804.1: *4* jedit.match_plain_seq
-    def match_plain_seq(self, s: str, i: int, kind: str, *, seq: str) -> int:
+    def match_plain_seq(self, s: str, i: int, *, kind: str, seq: str) -> int:
         """Matcher for plain sequence match at at s[i:]."""
         if not g.match(s, i, seq):
             return 0
