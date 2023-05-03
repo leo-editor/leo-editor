@@ -732,9 +732,10 @@ class BaseColorizer:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
+            matcher_name = g.caller(3)
             print(
-                f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:14} {s2:>22} "
-                f"{self.rulesetName}:{delegate_s}{self.matcher_name}"
+                f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:<14} {s2:>22} "
+                f"{self.rulesetName}:{delegate_s}{matcher_name}"
             )
             if extra:
                 print(f"{' ':48} {extra}")
@@ -1258,7 +1259,6 @@ class JEditColorizer(BaseColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    self.matcher_name = f.__name__  # For traces.
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1380,15 +1380,6 @@ class JEditColorizer(BaseColorizer):
             return
         self.delegate_name = delegate
         if delegate:
-            if trace:
-                if len(repr(s[i:j])) <= 20:
-                    s2 = repr(s[i:j])
-                else:
-                    s2 = repr(s[i : i + 17 - 2] + '...')
-                kind_s = f"{delegate}:{tag}"
-                print(
-                    f"\ncolorRangeWithTag: {kind_s:25} {i:3} {j:3} "
-                    f"{s2:>20} {self.matcher_name}\n")
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -1399,7 +1390,6 @@ class JEditColorizer(BaseColorizer):
                     if n is None:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
-                        self.matcher_name = f.__name__
                         i += n
                         break
                 else:
@@ -2232,7 +2222,6 @@ class JEditColorizer(BaseColorizer):
         no_word_break: bool = False,
     ) -> int:
         """Remain in this state until 'end' is seen."""
-        self.matcher_name = 'restart:' + self.matcher_name.replace('restart:', '')
         i = 0
         j = self.match_span_helper(s, i, end,
             # Must be keyword arguments.
