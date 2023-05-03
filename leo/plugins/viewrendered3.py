@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.0
+About Viewrendered3 V4.01
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -2935,10 +2935,27 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         If the VR3 variable "freeze" is True, do not update.
         """
-
-        if self.freeze: return
         pc = self
         p = pc.c.p
+
+        if tag in ('show-scrolled-message',):
+            # If we are called as a "scrolled message" - usually for display of
+            # docstrings.  keywords will contain the RsT to be displayed.
+            _kind = keywords.get('flags', 'rst')
+            s = keywords.get('s', '')
+            f = pc.dispatch_dict.get(_kind)
+            f([s,], keywords)
+
+            # Prevent VR3 from showing the selected node at
+            # the next idle-time callback,
+            # Which would over-write the scrolled message.
+            pc.node_changed = False
+            pc.gnx = p.v.gnx
+            pc.length = len(p.b)  # not s
+            pc.last_text = p.b
+            return
+
+        if self.freeze: return
         if pc.lock_to_tree:
             _root = pc.current_tree_root or p
         else:
@@ -2947,18 +2964,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.controlling_code_lang = None
         self.params = []
 
-        if tag in ('show-scrolled-message',):
-            # If we are called as a "scrolled message" - usually for display of
-            # docstrings.  keywords will contain the RsT to be displayed.
-            _kind = keywords.get('flags', 'rst')
-            keywords['tag'] = tag
-        else:
-            _kind = pc.get_kind(p) or self.default_kind
-            if _kind in ('edit', 'file', 'clean', 'auto'):
-                _kind = RST
-            if _kind == RST and p.h.startswith('@jupyter'):
-                _kind = 'jupyter'
-            f = pc.dispatch_dict.get(_kind)
+        _kind = pc.get_kind(p) or self.default_kind
+        if _kind in ('edit', 'file', 'clean', 'auto'):
+            _kind = RST
+        if _kind == RST and p.h.startswith('@jupyter'):
+            _kind = 'jupyter'
+        f = pc.dispatch_dict.get(_kind)
         # if f in (pc.update_rst, pc.update_md, pc.update_text):
             # self.show_toolbar()
         # else:
@@ -2994,6 +3005,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # This branch is for rendering docstrings, help-for-command messages,
                 # etc.  Called from qt_gui.py.
                 # In case Leo node elements get mixed into the message, remove them:
+                pc.node_changed = False
                 txt = keywords.get('s', '')
                 lines = txt.split('\n')
                 keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
@@ -3366,6 +3378,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             attrs.append(f'imagesdir={self.asciidoctor_imagesdir}')
         att_str = ''
         for att in attrs:
+            # pylint: disable = consider-using-join
             att_str += f'-a {att} '
 
         # Call the external program to write the output file.
@@ -3870,7 +3883,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
-
         if not keywords:  # EKR
             keywords = {}
         # Do this regardless of whether we show the widget or not.
@@ -3882,12 +3894,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if got_docutils:
             if not node_list or isinstance(node_list[0], str):  # EKR.
                 # We were called as a "scrolled message"
-                s = keywords.get('s', '')
+                s = node_list[0]
+                node_list = None
             else:
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
     #@+at
+    #         # In case we bring back QtSvg again)
     #         if s.startswith('<svg'):
     #             if QtSvg is None:
     #                 g.es(NO_SVG_WIDGET_MSG, color = 'red')
