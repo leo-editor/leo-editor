@@ -732,7 +732,6 @@ class BaseColorizer:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
-            g.trace(g.callers())  ###
             print(
                 f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:14} {s2:>22} "
                 f"{self.rulesetName}:{delegate_s}{self.matcher_name}"
