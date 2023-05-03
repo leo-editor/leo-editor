@@ -169,12 +169,12 @@ def md_link(colorer, s, i):
 def md_star_emphasis1(colorer, s, i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*[^\s*][^*]*\*")
 
 def md_star_emphasis2(colorer, s, i):
     # issue 386.
     # print('md_star_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*\*[^*]+\*\*")
 
 def md_underscore_emphasis1(colorer, s, i):
     # issue 386.
