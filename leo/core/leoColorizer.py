@@ -732,6 +732,7 @@ class BaseColorizer:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
+            g.trace(g.callers())  ###
             print(
                 f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:14} {s2:>22} "
                 f"{self.rulesetName}:{delegate_s}{self.matcher_name}"
@@ -1010,7 +1011,7 @@ class JEditColorizer(BaseColorizer):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
+    #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers (trace)
     def init_mode(self, name: str) -> bool:
         """Name may be a language name or a delegate name."""
         if not name:
@@ -1021,6 +1022,7 @@ class JEditColorizer(BaseColorizer):
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
+                g.trace('unknown-language', name, rulesetName)
                 return False
             self.initModeFromBunch(bunch)
             self.language = language  # 2011/05/30
@@ -1033,7 +1035,7 @@ class JEditColorizer(BaseColorizer):
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
-    #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
+    #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module (trace)
     def init_mode_from_module(self, name: str, mode: Mode) -> bool:
         """
         Name may be a language name or a delegate name.
@@ -1047,6 +1049,7 @@ class JEditColorizer(BaseColorizer):
                 mode.pre_init_mode(self.c)
         else:
             # Create a dummy bunch to limit recursion.
+            ### g.trace('===== Dummy', name, rulesetName)
             self.modes[language] = self.modeBunch = g.Bunch(
                 attributesDict={},
                 defaultColor=None,
@@ -1101,6 +1104,10 @@ class JEditColorizer(BaseColorizer):
             self.language = language2  # 2017/01/31
         else:
             self.language = language  # 2017/01/31
+        # Complete the late replacements.
+        self.modeBunch.language = self.language
+        self.modes[rulesetName] = self.modeBunch
+        ### g.trace(f"{name:>8} {rulesetName:12} language: {self.language:8} {self.mode}")
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
     def nameToRulesetName(self, name: str) -> Tuple[str, str]:
@@ -1510,6 +1517,8 @@ class JEditColorizer(BaseColorizer):
             k = g.skip_c_id(s, j)
             name = s[j:k]
             ok = self.init_mode(name)
+            if not ok:
+                g.trace('FAIL', name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
                 if name != old_name:
