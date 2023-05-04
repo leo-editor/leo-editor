@@ -107,7 +107,7 @@ keywordsDictDict = {
 #@+others
 #@+node:ekr.20230419050050.1: *3* html_rule0
 def html_rule0(colorer, s, i):
-    return colorer.match_span(s, i, "comment1", begin="<!--", end="-->")
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 #@+node:ekr.20230419050050.2: *3* html_rule1 <script..</script>
 def match(s: str, i: int, pattern: str) -> bool:
@@ -120,32 +120,32 @@ def html_rule1(colorer: Any, s: str, i: int) -> int:
     if not match(s, i, '<script') and not match(s, i, '<SCRIPT'):
         return 0
 
-    return colorer.match_span(s, i, "markup", begin="<script", end="</script>",
+    return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
         delegate='javascript')  # "html::javascript"
 
 #@+node:ekr.20230419050050.4: *3* html_rule2 <style..</style>
 def html_rule2(colorer, s, i):
-    return colorer.match_span(s, i, "markup", begin="<style", end="</style>",
+    return colorer.match_span(s, i, kind="markup", begin="<style", end="</style>",
         delegate="html::css")
 
 #@+node:ekr.20230419050050.6: *3* html_rule3 <!..>
 def html_rule3(colorer, s, i):
-    return colorer.match_span(s, i, "keyword2", begin="<!", end=">")
+    return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">")
 
 #@+node:ekr.20230419050050.7: *3* html_rule4 <..>
 def html_rule4(colorer, s, i):
-    return colorer.match_span(s, i, "markup", begin="<", end=">",
+    return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         delegate="html::tags")
 
 #@+node:ekr.20230419050050.8: *3* html_rule5 &..;
 def html_rule5(colorer, s, i):
-    return colorer.match_span(s, i, "literal2", begin="&", end=";",
+    return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         no_word_break=True)
 
 #@+node:ekr.20230419050050.9: *3* html_rule_handlebar {{..}}
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
-    return colorer.match_span(s, i, "literal3", begin="{{", end="}}")
+    return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
 
 #@-others
 
@@ -160,13 +160,13 @@ rulesDict1 = {
 # Rules for html_tags ruleset.
 
 def html_rule6(colorer, s, i):
-    return colorer.match_span(s, i, "literal1", begin="\"", end="\"")
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def html_rule7(colorer, s, i):
-    return colorer.match_span(s, i, "literal1", begin="'", end="'")
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def html_rule8(colorer, s, i):
-    return colorer.match_plain_seq(s, i, "operator", seq="=")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for html_tags ruleset.
 rulesDict2 = {
