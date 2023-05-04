@@ -465,7 +465,7 @@ def perl_rule32(colorer, s, i):
 
 def perl_rule33(colorer, s, i):
     return 0  # too complicated
-    #return colorer.match_seq_regexp(s, i, kind="markup", regexp="s([[:punct:]])(?:.*?[^\\\\])*?\\1(?:.*?[^\\\\])*?\\1[sgiexom]*",
+    # return colorer.match_seq_regexp(s, i, kind="markup", regexp="s([[:punct:]])(?:.*?[^\\\\])*?\\1(?:.*?[^\\\\])*?\\1[sgiexom]*",
     #       )
 
 def perl_rule34(colorer, s, i):
