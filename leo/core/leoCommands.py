@@ -41,7 +41,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoUndo import Undoer
     from leo.core.leoVim import VimCommands
     # 14 command handlers...
-    from leo.commands.abbrevCommands import AbbrevCommands
+    from leo.commands.abbrevCommands import AbbrevCommandsClass
     from leo.commands.bufferCommands import BufferCommandsClass
     from leo.commands.controlCommands import ControlCommandsClass
     from leo.commands.convertCommands import ConvertCommandsClass
@@ -53,7 +53,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.keyCommands import KeyHandlerCommandsClass
     from leo.commands.killBufferCommands import KillBufferCommandsClass
     from leo.commands.rectangleCommands import RectangleCommandsClass
-    from leo.commands.rstCommands import RstCommands
+    from leo.core.leoRst import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
     from leo.core.leoGui import LeoGui
@@ -118,7 +118,7 @@ class Commands:
         self.undoer: Undoer = None
         self.vimCommands: VimCommands = None
         # Declare command handlers (created later).
-        self.abbrevCommands: AbbrevCommands = None
+        self.abbrevCommands: AbbrevCommandsClass = None
         self.bufferCommands: BufferCommandsClass = None
         self.controlCommands: ControlCommandsClass = None
         self.convertCommands: ConvertCommandsClass = None
@@ -825,7 +825,7 @@ class Commands:
             """Return the executable kind of the external file.
 
             If there is a language directive in effect, return it,
-            otherwise use the file exension.
+            otherwise use the file extension.
 
             Returns a language.
             """

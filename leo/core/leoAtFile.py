@@ -556,7 +556,7 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
-    def dump(self, lines: Any, tag: Any) -> None:  # pragma: no cover
+    def dump(self, lines: List[str], tag: Any) -> None:  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
@@ -639,7 +639,7 @@ class AtFile:
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
-    def createImportedNode(self, root: Position, headline: Any) -> Position:  # pragma: no cover
+    def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
         at = self
         if at.importRootSeen:
             p = root.insertAsLastChild()
@@ -800,7 +800,7 @@ class AtFile:
         # Not an error.
         return ''  # pragma: no cover
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
-    def scanHeader(self, fileName: str, giveErrors: bool = True) -> Tuple[Any, Any, Any]:
+    def scanHeader(self, fileName: str, giveErrors: bool = True) -> Tuple[List[str], bool, bool]:
         """
         Scan the @+leo sentinel, using the old readLine interface.
 
@@ -826,7 +826,7 @@ class AtFile:
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
-    def scanFirstLines(self, firstLines: Any) -> str:  # pragma: no cover
+    def scanFirstLines(self, firstLines: List[str]) -> str:  # pragma: no cover
         """
         Append all lines before the @+leo line to firstLines.
 
@@ -853,7 +853,7 @@ class AtFile:
         at.readFileToUnicode(fileName)
         # scanHeader uses at.readline instead of its args.
         # scanHeader also sets at.encoding.
-        junk, junk, isThin = at.scanHeader(None)
+        junk1, junk2, isThin = at.scanHeader(None)
         return isThin
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
@@ -1245,7 +1245,7 @@ class AtFile:
             else:
                 p.moveToThreadNext()
         if not g.unitTesting:
-            if writtenFiles > 0:
+            if writtenFiles:
                 g.es("finished")
             else:
                 g.es("no @file node in the selected tree")
@@ -1302,7 +1302,7 @@ class AtFile:
             at.writeException(fileName, root)
             return False
     #@+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
-    def dispatch(self, ext: Any, p: Position) -> Optional[Callable]:  # pragma: no cover
+    def dispatch(self, ext: str, p: Position) -> Optional[Callable]:  # pragma: no cover
         """Return the correct writer function for p, an @auto node."""
         at = self
         # Match @auto type before matching extension.
@@ -1485,7 +1485,7 @@ class AtFile:
             #
             # Write the public and private files to strings.
 
-            def put(sentinels: Any) -> str:
+            def put(sentinels: bool) -> str:
                 at.outputList = []
                 at.sentinels = sentinels
                 at.putFile(root, sentinels=sentinels)
@@ -1676,7 +1676,7 @@ class AtFile:
             at.putEndDocLine()
         return status.has_at_others
     #@+node:ekr.20041005105605.163: *6* at.putLine
-    def putLine(self, i: int, kind: Any, p: Position, s: str, status: Any) -> None:
+    def putLine(self, i: int, kind: int, p: Position, s: str, status: Any) -> None:
         """Put the line at s[i:] of the given kind, updating the status."""
         at = self
         if kind == at.noDirective:
@@ -1913,7 +1913,7 @@ class AtFile:
         else:
             g.trace('Can not happen: completely empty line')  # pragma: no cover
     #@+node:ekr.20041005105605.176: *6* at.putRefLine
-    def putRefLine(self, s: str, i: int, n1: int, n2: int, name: Any, p: Position) -> None:
+    def putRefLine(self, s: str, i: int, n1: int, n2: int, name: str, p: Position) -> None:
         """
         Put a line containing one or more references.
 
