@@ -86,11 +86,10 @@ class AnnotationsTraverser(NodeVisitor):
                     f"     got: {annotation_s}"))
     #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
-
         arguments = node.args
         for arg in arguments.args:
-            assert isinstance(arg, ast.arg)
             # arg = (identifier arg, expr? annotation, string? type_comment)
+            assert isinstance(arg, ast.arg)
             annotation = getattr(arg, 'annotation', None)
             if annotation:
                 id_s = arg.arg
