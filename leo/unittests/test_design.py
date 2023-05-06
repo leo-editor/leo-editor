@@ -33,9 +33,10 @@ all_files = core_files + commands_files + qt_files
 #@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser
 class AnnotationsTraverser(NodeVisitor):
 
-    def __init__(self, tester, path):
+    annotations_set = set()
+
+    def __init__(self, tester):
         super().__init__()
-        self.path = path
         self.tester = tester
 
     #@+others
@@ -51,23 +52,24 @@ class AnnotationsTraverser(NodeVisitor):
         """Test the annotation of identifier."""
         for pattern, expected_annotation in self.annotation_table:
             m = pattern.match(identifier)
-            if m:
-                self.tester.assertTrue(identifier, ast.unparse(annotation))
+            if not m:
+                continue
+            annotation_s = ast.unparse(annotation)
+            self.annotations_set.add(f"{identifier:>20}: {annotation_s}")
+            self.tester.assertTrue(
+                annotation_s in (annotation_s, f"Optional[{annotation_s}]"),
+                msg=identifier)
+
     #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
     def visit_AnnAssign(self, node):
-        ### path = self.path
         # AnnAssign(expr target, expr annotation, expr? value, int simple)
         if isinstance(node.target, ast.Name):
             if node.annotation:
                 id_s = node.target.id
                 self.test_annotation(id_s, node.annotation)
-            ###
-                # id_s = node.target.id
-                # if var_patterns.match(id_s):
-                    # self.d [path] [id_s] = node.annotation
     #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
-        ### path = self.path
+
         arguments = node.args
         for arg in arguments.args:
             assert isinstance(arg, ast.arg)
@@ -76,32 +78,13 @@ class AnnotationsTraverser(NodeVisitor):
             if annotation:
                 id_s = arg.arg
                 self.test_annotation(id_s, annotation)
-            ###
-            # if annotation and var_patterns.match(id_s):
-                # ### dump_annotation???
-                # if isinstance(annotation, ast.Name):
-                    # ann_s = annotation.id
-                # elif isinstance(annotation, ast.Constant):
-                    # ann_s = annotation.value
-                # elif isinstance(annotation, ast.Subscript):
-                    # # Subscript(expr value, expr slice, expr_context ctx)
-                    # if isinstance(annotation.value, ast.Name):
-                         # ann_s = f"Subscript: [{annotation.value.id}]"
-                    # else:
-                        # ### dump_subscript???
-                        # ann_s = f"Subscript: [{annotation.value!r}]"
-                # else:
-                    # ann_s = repr(annotation)
-                # aList = self.d [path].get(id_s, [])
-                # aList.append(ann_s)
-                # self.d [path] [id_s] = aList
     #@-others
 #@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor)
 class ChainsTraverser(NodeVisitor):
 
-    def __init__(self, tester, path):
+    def __init__(self, tester):
         super().__init__()
-        self.path = path
+        self.tester = tester
 
     #@+others
     #@-others
@@ -110,13 +93,16 @@ class TestAnnotations(unittest.TestCase):
     """Test that annotations of c, g, p, s, v are as expected."""
 
     def test_all_paths(self):
+        traverser = AnnotationsTraverser(tester=self)
         for path in all_files:
             self.assertTrue(os.path.exists(path))
             with open(path, 'rb') as f:
                 source = g.toUnicode(f.read())
             tree = ast.parse(source, filename=path)
-            traverser = AnnotationsTraverser(self, path)
             traverser.visit(tree)
+        if 0:
+            for s in sorted(list(traverser.annotations_set)):
+                print(s)
 
     #@+others
     #@-others
@@ -125,12 +111,12 @@ class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
 
     def test_all_paths(self):
+        traverser = ChainsTraverser(tester=self)
         for path in all_files:
             self.assertTrue(os.path.exists(path))
             with open(path, 'rb') as f:
                 source = g.toUnicode(f.read())
             tree = ast.parse(source, filename=path)
-            traverser = ChainsTraverser(self, path)
             traverser.visit(tree)
 #@-others
 #@-leo
