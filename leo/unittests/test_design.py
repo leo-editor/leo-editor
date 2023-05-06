@@ -42,7 +42,8 @@ all_files = core_files + commands_files + qt_files
 #@-<< define test files >>
 
 #@+others
-#@+node:ekr.20230506111649.1: ** class AnnotationsTraverser
+#@+node:ekr.20230506111929.1: ** Traverser classes
+#@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser
 class AnnotationsTraverser(NodeVisitor):
 
     d: Dict[Node, Dict] = defaultdict(dict)
@@ -52,7 +53,7 @@ class AnnotationsTraverser(NodeVisitor):
         self.path = path
     
     #@+others
-    #@+node:ekr.20230506111649.3: *3* visit_AnnAssign
+    #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
     def visit_AnnAssign(self, node):
         path = self.path
         # AnnAssign(expr target, expr annotation, expr? value, int simple)
@@ -61,7 +62,7 @@ class AnnotationsTraverser(NodeVisitor):
             if var_patterns.match(id_s):
                 self.d [path] [id_s] = node.annotation
             
-    #@+node:ekr.20230506111649.4: *3* visit_FunctionDef
+    #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
         path = self.path
         arguments = node.args
@@ -89,6 +90,15 @@ class AnnotationsTraverser(NodeVisitor):
                 aList.append(ann_s)
                 self.d [path] [id_s] = aList
     #@-others
+#@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor) To do
+class ChainsTraverser(NodeVisitor):
+    
+    def __init__(self, path):
+        super().__init__()
+        self.path = path
+        
+    #@+others
+    #@-others
 #@+node:ekr.20230506095516.1: ** class TestAnnotations(unittest.TestCase)
 class TestAnnotations(unittest.TestCase):
     """Test that annotations of c, g, p, s, v are as expected."""
@@ -107,5 +117,14 @@ class TestAnnotations(unittest.TestCase):
 #@+node:ekr.20230506095648.1: ** class TestChains(unittest.TestCase)
 class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
+
+    def test_all_paths(self):
+        for path in all_files:
+            self.assertTrue(os.path.exists(path))
+            with open(path, 'rb') as f:
+                source = g.toUnicode(f.read())
+            tree = ast.parse(source, filename=path)
+            traverser = ChainsTraverser(path)
+            traverser.visit(tree)
 #@-others
 #@-leo
