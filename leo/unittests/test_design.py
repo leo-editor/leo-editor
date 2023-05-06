@@ -71,19 +71,41 @@ class AnnotationsTraverser(NodeVisitor):
 
     def test_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
         """Test the annotation of identifier."""
+        exceptions = (
+            # Problem annotating Cmdr in leoCommands.py...
+            'bringToFront',
+            'universalCallback',
+            # These methods should always be annotated Any.
+            '__eq__', '__ne__',
+            'resolveArchivedPosition',
+            'setBodyString', 'setHeadString',
+            'to_encoded_string', 'to_unicode', 'toUnicode',
+        )
         for pattern, expected_annotation in self.annotation_table:
             m = pattern.match(identifier)
             if not m:
                 continue
             node_s = g.splitLines(ast.unparse(node))[0].strip()
+            if any(node_s.startswith(f"def {z}") for z in exceptions):
+                continue
             annotation_s = ast.unparse(annotation)
             self.annotations_set.add(f"{identifier:>20}: {annotation_s}")
-            self.tester.assertTrue(
-                annotation_s in (expected_annotation, f"Optional[{expected_annotation}]"),
-                msg=('\n'
-                    f"      in: {node_s}\n"
-                    f"expected: {expected_annotation}\n"
-                    f"     got: {annotation_s}"))
+            expected = (
+                expected_annotation,
+                f"'{expected_annotation}'",
+                f"Optional[{expected_annotation}]",
+                f"Optional['{expected_annotation}']")
+            msg = (
+                'test_annotation\n'
+                f"    path: {self.tester.path}\n"
+                f"    node: {node_s}\n"
+                f"expected: {expected_annotation}\n"
+                f"     got: {annotation_s}")
+            if 1:  # Production.
+                self.tester.assertTrue(annotation_s in expected, msg=msg)
+            else:  # Allow multiple failures.
+                if annotation_s not in expected:
+                    print(msg)
     #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
         arguments = node.args
@@ -112,6 +134,7 @@ class TestAnnotations(unittest.TestCase):
         load_files()
         traverser = AnnotationsTraverser(tester=self)
         for path in files_dict:
+            self.path = path
             source = files_dict [path]
             tree = ast.parse(source, filename=path)
             traverser.visit(tree)
