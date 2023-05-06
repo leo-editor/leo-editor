@@ -19,7 +19,7 @@ def load_files():
     global files_dict
     if files_dict is not None:
         return
-
+        
     def compute_files(pattern, root_dir):
         return [g.finalize_join(root_dir, z)
             for z in glob.glob(pattern, root_dir=root_dir)]
@@ -54,6 +54,13 @@ class AnnotationsTraverser(NodeVisitor):
         self.tester = tester
 
     #@+others
+    #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
+    def visit_AnnAssign(self, node):
+        # AnnAssign(expr target, expr annotation, expr? value, int simple)
+        if isinstance(node.target, ast.Name):
+            if node.annotation:
+                id_s = node.target.id
+                self.test_annotation(node, id_s, node.annotation)
     #@+node:ekr.20230506123402.1: *4* test_annotation
     annotation_table = (
         (re.compile(r'\b(c[0-9]?|[\w_]+_c)\b'), 'Cmdr'),
@@ -62,24 +69,21 @@ class AnnotationsTraverser(NodeVisitor):
         (re.compile(r'\b(v[0-9]?|[\w_]+_v)\b'), 'VNode'),
     )
 
-    def test_annotation(self, identifier: str, annotation: ast.Expr) -> None:
+    def test_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
         """Test the annotation of identifier."""
         for pattern, expected_annotation in self.annotation_table:
             m = pattern.match(identifier)
             if not m:
                 continue
+            node_s = g.splitLines(ast.unparse(node))[0].strip()
             annotation_s = ast.unparse(annotation)
             self.annotations_set.add(f"{identifier:>20}: {annotation_s}")
             self.tester.assertTrue(
-                annotation_s in (annotation_s, f"Optional[{annotation_s}]"),
-                msg=identifier)
-    #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
-    def visit_AnnAssign(self, node):
-        # AnnAssign(expr target, expr annotation, expr? value, int simple)
-        if isinstance(node.target, ast.Name):
-            if node.annotation:
-                id_s = node.target.id
-                self.test_annotation(id_s, node.annotation)
+                annotation_s in (expected_annotation, f"Optional[{expected_annotation}]"),
+                msg=('\n'
+                    f"      in: {node_s}\n"
+                    f"expected: {expected_annotation}\n"
+                    f"     got: {annotation_s}"))
     #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
 
@@ -90,7 +94,7 @@ class AnnotationsTraverser(NodeVisitor):
             annotation = getattr(arg, 'annotation', None)
             if annotation:
                 id_s = arg.arg
-                self.test_annotation(id_s, annotation)
+                self.test_annotation(node, id_s, annotation)
     #@-others
 #@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor)
 class ChainsTraverser(NodeVisitor):
