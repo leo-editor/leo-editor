@@ -6,29 +6,43 @@ from ast import NodeVisitor
 import glob
 import os
 import re
+from typing import Dict
 import unittest
 from leo.core import leoGlobals as g
-#@+<< define test files >>
-#@+node:ekr.20230506103755.1: ** << define test files >>
-def compute_files(pattern, root_dir):
-    return [g.finalize_join(root_dir, z)
-        for z in glob.glob(pattern, root_dir=root_dir)]
 
-# Compute directories.
-unittests_dir = os.path.dirname(__file__)
-leo_dir = g.finalize_join(unittests_dir, '..')
-core_dir = g.finalize_join(leo_dir, 'core')
-commands_dir = g.finalize_join(leo_dir, 'commands')
-plugins_dir = g.finalize_join(leo_dir, 'plugins')
-
-# Compute relevant .piy files.
-core_files = compute_files('*.py', core_dir)
-commands_files = compute_files('*.py', commands_dir)
-qt_files = compute_files('qt_*.py', plugins_dir)
-all_files = core_files + commands_files + qt_files
-#@-<< define test files >>
+files_dict: Dict = None  # Keys are paths, values are contents of file.
 
 #@+others
+#@+node:ekr.20230506154039.1: ** function: load_files
+def load_files():
+
+    global files_dict
+    if files_dict is not None:
+        return
+
+    def compute_files(pattern, root_dir):
+        return [g.finalize_join(root_dir, z)
+            for z in glob.glob(pattern, root_dir=root_dir)]
+
+    # Compute directories.
+    unittests_dir = os.path.dirname(__file__)
+    leo_dir = g.finalize_join(unittests_dir, '..')
+    core_dir = g.finalize_join(leo_dir, 'core')
+    commands_dir = g.finalize_join(leo_dir, 'commands')
+    plugins_dir = g.finalize_join(leo_dir, 'plugins')
+
+    # Compute lists of files.
+    core_files = compute_files('*.py', core_dir)
+    commands_files = compute_files('*.py', commands_dir)
+    qt_files = compute_files('qt_*.py', plugins_dir)
+    all_files = core_files + commands_files + qt_files
+
+    # Compute the files dict.
+    files_dict = {}
+    for path in all_files:
+        assert os.path.exists(path), repr(path)
+        with open(path, 'rb') as f:
+            files_dict[path] = g.toUnicode(f.read())
 #@+node:ekr.20230506111929.1: ** Traverser classes
 #@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser
 class AnnotationsTraverser(NodeVisitor):
@@ -59,7 +73,6 @@ class AnnotationsTraverser(NodeVisitor):
             self.tester.assertTrue(
                 annotation_s in (annotation_s, f"Optional[{annotation_s}]"),
                 msg=identifier)
-
     #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
     def visit_AnnAssign(self, node):
         # AnnAssign(expr target, expr annotation, expr? value, int simple)
@@ -93,11 +106,10 @@ class TestAnnotations(unittest.TestCase):
     """Test that annotations of c, g, p, s, v are as expected."""
 
     def test_all_paths(self):
+        load_files()
         traverser = AnnotationsTraverser(tester=self)
-        for path in all_files:
-            self.assertTrue(os.path.exists(path))
-            with open(path, 'rb') as f:
-                source = g.toUnicode(f.read())
+        for path in files_dict:
+            source = files_dict [path]
             tree = ast.parse(source, filename=path)
             traverser.visit(tree)
         if 0:
@@ -111,11 +123,10 @@ class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
 
     def test_all_paths(self):
+        load_files()
         traverser = ChainsTraverser(tester=self)
-        for path in all_files:
-            self.assertTrue(os.path.exists(path))
-            with open(path, 'rb') as f:
-                source = g.toUnicode(f.read())
+        for path in files_dict:
+            source = files_dict [path]
             tree = ast.parse(source, filename=path)
             traverser.visit(tree)
 #@-others
