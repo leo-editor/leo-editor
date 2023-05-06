@@ -32657,6 +32657,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
             Leo supports Python's standard os.path expansions.
             Leo no longer supports {{python-expression}} in headlines.
+            
+- Several large code cleanups: 460+ files changed.
 
 **Commands**
 
