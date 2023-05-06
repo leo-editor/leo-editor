@@ -1829,6 +1829,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20230110152214.1"><vh>Leo 6.x release notes</vh>
@@ -2521,8 +2522,7 @@
 </v>
 <v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
-<v t="ekr.20230110152131.1"></v>
-<v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
+<v t="ekr.20230409052507.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -32648,9 +32648,7 @@ find-bad-links</t>
     ])
     
 </t>
-<t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/).
+<t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
@@ -32662,6 +32660,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Commands**
 
+- PR #4192: Add show-color-settings and the show-font-settings commands.
 - PR #3266: Add write-zip-archive command.
 - PR #3227: Add commands to add/remove numbers from headlines.
 
@@ -32670,6 +32669,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3208: Add 'reload-settings' hook.
 - PR #3214: Optionally expand headlines on mouseover.
 - PR #3224: Improve mod_autosave plugin.
+- PR #3241: Simplify Leo's path wrappers.
+- PRs #3264 and #3277: Simplify Leo's path-related code.
 - Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
 
 **Links**
