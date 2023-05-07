@@ -9,7 +9,7 @@ import glob
 import os
 import re
 import textwrap
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 import unittest
 from leo.core import leoGlobals as g
 #@-<< test_design imports >>
@@ -133,6 +133,7 @@ class AnnotationsTraverser(NodeVisitor):
 class ChainsTraverser(NodeVisitor):
     
     chains_set = set()
+    chain: List = None
 
     def __init__(self, tester):
         super().__init__()
@@ -140,8 +141,28 @@ class ChainsTraverser(NodeVisitor):
         
     def visit_Attribute(self, node):
         # Attribute(expr value, identifier attr, expr_context ctx)
-        # g.trace(node, node.attr, node.value)
-        self.generic_visit(node) # Visit all children.
+        # g.trace(id(node), ast.unparse(node.value), node.attr)
+        if self.chain is None:
+            self.chain = [node.attr]
+            self.generic_visit(node)
+            self.chains_set.add('.'.join(list(reversed(self.chain))))
+            self.chain = None
+        else:
+            self.chain.append(node.attr)
+            self.generic_visit(node)
+            
+    def visit_Name(self, node):
+        if self.chain:
+            self.chain.append(node.id)
+        self.generic_visit(node)
+        
+    # def visit_Assign(self, node):
+        # # Assign(expr* targets, expr value, string? type_comment)
+        # g.trace(ast.unparse(node))
+        # targets = getattr(node, 'targets', None)
+        # g.trace(targets, node.value)
+        # self.generic_visit(node)
+        
 
     #@+others
     #@-others
@@ -171,39 +192,31 @@ class TestChains(unittest.TestCase):
     def test_all_paths(self):
         load_files()
         traverser = ChainsTraverser(tester=self)
+        traverser.chains_set = set()
         for path in files_dict:
             contents, tree = files_dict [path]
             traverser.visit(tree)
+        chains_list = sorted(list(traverser.chains_set))
+        long_chains_list = [z for z in chains_list if z.count('.') > 2]
+        self.assertTrue(len(long_chains_list) > 500)
         if 0:
-            for s in sorted(list(traverser.chains_set)):
-                print(s)
-            
+            if 0:
+                for s in long_chains_list:
+                    print(s)
+            g.trace(f"{len(chains_list)} chains:")
+            g.trace(f"{len(long_chains_list)} long chains:")
     #@+node:ekr.20230507122925.1: *3* TestChains.test_one_chain
     def test_one_chain(self):
         contents = textwrap.dedent('''\
             w = c.frame.body.wrapper.widget
     ''')
-        # Module(body=[
-            # Assign(
-                # targets=[Name(id='w')], 
-                # value=Attribute(
-                    # value=Attribute(
-                        # value=Attribute(
-                            # value=Attribute(value=Name(id='c'), attr='frame'), 
-                        # attr='body'),
-                    # attr='wrapper'),
-                # attr='widget')))
-            # ]
         tree = ast.parse(contents, filename='test_one_chain')
-        if 0:
-            import pprint
-            print(pprint.pprint(ast.dump(tree, annotate_fields=True)))
         traverser = ChainsTraverser(tester=self)
+        traverser.chains_set = set()
         traverser.visit(tree)
-        if 1:
-            print('Chains...')
-            for s in sorted(list(traverser.chains_set)):
-                print(s)
+        chains_list = list(traverser.chains_set)
+        self.assertEqual(chains_list[0], 'c.frame.body.wrapper.widget')
+        # g.trace(list(traverser.chains_set))
     #@-others
 #@-others
 #@-leo
