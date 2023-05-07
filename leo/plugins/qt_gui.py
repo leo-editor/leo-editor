@@ -1358,12 +1358,16 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self) -> Widget:
         """Put up a splash screen with Leo's logo."""
-        QApplication = QtWidgets.QApplication
-        QPixmap = QtGui.QPixmap
-        QSvgRenderer = QtSvg.QSvgRenderer
-        QPainter = QtGui.QPainter
-        QImage = QtGui.QImage
-        QScreen = QtGui.QScreen
+        try:
+            QApplication = QtWidgets.QApplication
+            QPixmap = QtGui.QPixmap
+            QSvgRenderer = QtSvg.QSvgRenderer
+            QPainter = QtGui.QPainter
+            QImage = QtGui.QImage
+            QScreen = QtGui.QScreen
+        except Exception:
+            return None
+
         Format_RGB32 = 4  # a Qt enumeration value
 
         splash = None
