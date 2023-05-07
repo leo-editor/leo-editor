@@ -49,8 +49,8 @@ project = 'Leo'
 copyright = '1997-2023, Edward K. Ream'
 
 # The version info for this project.
-version = '6.7.2'
-release = '6.7.2'
+version = '6.7.3'
+release = '6.7.3'
 
 # List of directories, relative to source directory,
 # that shouldn't be searched for source files.

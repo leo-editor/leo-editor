@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -201,7 +201,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.2
+Version: 6.7.3
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -220,41 +220,39 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.2**
+**The highlights of Leo 6.7.3**
 
-- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+- PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+            Leo supports Python's standard os.path expansions.
+            Leo no longer supports {{python-expression}} in headlines.
+            
+- Several large code cleanups: 460+ files changed.
 
-Commands:
+**Commands**
 
-- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
-- PR #3056: Leo's beautify command is now PEP8 compliant.
-- PR #3140: Run pylint on node.
-- PR #3166: Add the `execute-external-file` command.
+- PR #3227: Add commands to add/remove numbers from headlines.
+- PR #3255: Add write-zip-archive command.
+- PR #3192: Add show-color-settings and the show-font-settings commands.
 
-Settings and features:
+**Other changes**
 
-- PR #2979: Add `@bool run-flake8-on-write` setting.
-- PR #2983: Add `--black-sentinels` command-line option.
-- PR #3038: Add `@string rst3-action` setting.
-- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
-- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
-
-Other changes:
-
-- 80+ issues and 100+ pull requests.
+- PR #3208: Add 'reload-settings' hook.
+- PR #3214: Optionally expand headlines on mouse-over.
+- PR #3224: Improve mod_autosave plugin.
+- PR #3241: Simplify Leo's path wrappers.
+- PRs #3264 and #3277: Simplify Leo's path-related code.
+- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
-- [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
+- [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
+- [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -1469,7 +1467,7 @@ About merges:
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
 - git merge 6.7.3
 - Run the `make-sphinx` from LeoDocs.leo
-- Copy files from leo/doc/html/_build/html to leo-editor/docs
+  This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
 - Check the GitHub Pages actions page:
   https://github.com/leo-editor/leo-editor/actions

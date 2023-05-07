@@ -216,8 +216,6 @@
 <v t="ekr.20230322121316.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
-<v t="ekr.20211021200745.1"><vh>@file ../scripts/picture_viewer.py</vh></v>
-<v t="ekr.20220126054240.1"><vh>@file ../scripts/remove_duplicate_pictures.py</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
@@ -591,8 +589,8 @@
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
-<v t="ekr.20211021200745.1"></v>
-<v t="ekr.20220126054240.1"></v>
+<v t="ekr.20211021200745.1"><vh>@file ../scripts/picture_viewer.py</vh></v>
+<v t="ekr.20220126054240.1"><vh>@file ../scripts/remove_duplicate_pictures.py</vh></v>
 <v t="ekr.20120913110135.10579"><vh>@file ../plugins/screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file ../plugins/screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file ../plugins/slideshow.py</vh></v>
@@ -738,7 +736,6 @@
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
-<v t="ekr.20161021090740.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3002,20 +2999,23 @@ unl: eggs (at-auto-test.py)
 <t tx="ekr.20220306092217.1">g.cls()
 
 core = 'leo.unittests.core'
+design = 'leo.unittests.test_design'
 gui = 'leo.unittests.test_gui'
 syntax = 'leo.unittests.test_syntax'
 testAtFile = 'test_leoAtFile.TestAtFile'
 testColorizer = 'test_leoColorizer.TestColorizer'
 testCommands = 'test_leoCommands.TestCommands'
+testDesign = 'test_design'  # not used yet.
 testGlobals = 'test_leoGlobals.TestGlobals'
 
 commands = (
-    # f" {core}.{testCommands}.test_c_expand_path_expression"
-    # f" {core}.{testAtFile}.test_bug_1889_tilde_in_at_path"
-    # f" {core}.{testGlobals}.test_g_finalize"
-    # f" {core}.{testColorizer}.test_colorizer_HTML_script_tag"
-    f" {core}.{testGlobals}.test_g_findUnl",
+    # f" {core}.{testCommands}.test_c_expand_path_expression",
+    # f" {core}.{testAtFile}.test_bug_1889_tilde_in_at_path",
+    # f" {core}.{testGlobals}.test_g_finalize",
+    # f" {core}.{testColorizer}.test_colorizer_HTML_script_tag",
+    # f" {core}.{testGlobals}.test_g_findUnl",
     # f" {gui}.TestQtGui.test_put_html_links",
+    # f" {design}",
 )
 commands_s = f"python -m unittest {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
