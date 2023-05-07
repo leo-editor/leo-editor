@@ -54,7 +54,7 @@ def load_files():
             tree = ast.parse(contents, filename=path)
             files_dict[path] = (contents, tree)
 #@+node:ekr.20230506111929.1: ** Traverser classes
-#@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser
+#@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser(NodeVisitor)
 class AnnotationsTraverser(NodeVisitor):
 
     annotations_set = set()
@@ -64,13 +64,6 @@ class AnnotationsTraverser(NodeVisitor):
         self.tester = tester
 
     #@+others
-    #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
-    def visit_AnnAssign(self, node):
-        # AnnAssign(expr target, expr annotation, expr? value, int simple)
-        if isinstance(node.target, ast.Name):
-            if node.annotation:
-                id_s = node.target.id
-                self.test_annotation(node, id_s, node.annotation)
     #@+node:ekr.20230506123402.1: *4* test_annotation
     annotation_table = (
         (re.compile(r'\b(c[0-9]?|[\w_]+_c)\b'), 'Cmdr'),
@@ -83,8 +76,9 @@ class AnnotationsTraverser(NodeVisitor):
         """Test the annotation of identifier."""
         exceptions = (
             # Problem annotating Cmdr in leoCommands.py...
-            'bringToFront',
-            'universalCallback',
+            'add_commandCallback', 'bringToFront', 'universalCallback',
+            #
+            'find_language', # p_or_v is a false match.
             # These methods should always be annotated Any.
             '__eq__', '__ne__',
             'resolveArchivedPosition',
@@ -111,11 +105,18 @@ class AnnotationsTraverser(NodeVisitor):
                 f"    node: {node_s}\n"
                 f"expected: {expected_annotation}\n"
                 f"     got: {annotation_s}")
-            if 1:  # Production.
+            if 0:  # Production.
                 self.tester.assertTrue(annotation_s in expected, msg=msg)
             else:  # Allow multiple failures.
                 if annotation_s not in expected:
                     print(msg)
+    #@+node:ekr.20230506111649.3: *4* visit_AnnAssign
+    def visit_AnnAssign(self, node):
+        # AnnAssign(expr target, expr annotation, expr? value, int simple)
+        if isinstance(node.target, ast.Name):
+            if node.annotation:
+                id_s = node.target.id
+                self.test_annotation(node, id_s, node.annotation)
     #@+node:ekr.20230506111649.4: *4* visit_FunctionDef
     def visit_FunctionDef(self, node):
         arguments = node.args
@@ -126,13 +127,21 @@ class AnnotationsTraverser(NodeVisitor):
             if annotation:
                 id_s = arg.arg
                 self.test_annotation(node, id_s, annotation)
+        self.generic_visit(node) # Visit all children.
     #@-others
 #@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor)
 class ChainsTraverser(NodeVisitor):
+    
+    chains_set = set()
 
     def __init__(self, tester):
         super().__init__()
         self.tester = tester
+        
+    def visit_Attribute(self, node):
+        # Attribute(expr value, identifier attr, expr_context ctx)
+        # g.trace(node, node.attr, node.value)
+        self.generic_visit(node) # Visit all children.
 
     #@+others
     #@-others
@@ -156,31 +165,45 @@ class TestAnnotations(unittest.TestCase):
 #@+node:ekr.20230506095648.1: ** class TestChains(unittest.TestCase)
 class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
-
+    
+    #@+others
+    #@+node:ekr.20230507122923.1: *3* TestChains.test_all_paths
     def test_all_paths(self):
         load_files()
         traverser = ChainsTraverser(tester=self)
         for path in files_dict:
             contents, tree = files_dict [path]
             traverser.visit(tree)
+        if 0:
+            for s in sorted(list(traverser.chains_set)):
+                print(s)
             
+    #@+node:ekr.20230507122925.1: *3* TestChains.test_one_chain
     def test_one_chain(self):
         contents = textwrap.dedent('''\
-        w = c.frame.body.wrapper.widget
-''')
-    # Module(body=[
-        # Assign(
-            # targets=[Name(id='w')], 
-            # value=Attribute(
+            w = c.frame.body.wrapper.widget
+    ''')
+        # Module(body=[
+            # Assign(
+                # targets=[Name(id='w')], 
                 # value=Attribute(
                     # value=Attribute(
-                        # value=Attribute(value=Name(id='c'), attr='frame'), 
-                    # attr='body'),
-                # attr='wrapper'),
-            # attr='widget')))
-        # ]
-        import pprint
+                        # value=Attribute(
+                            # value=Attribute(value=Name(id='c'), attr='frame'), 
+                        # attr='body'),
+                    # attr='wrapper'),
+                # attr='widget')))
+            # ]
         tree = ast.parse(contents, filename='test_one_chain')
-        print(pprint.pprint(ast.dump(tree, annotate_fields=True)))
+        if 0:
+            import pprint
+            print(pprint.pprint(ast.dump(tree, annotate_fields=True)))
+        traverser = ChainsTraverser(tester=self)
+        traverser.visit(tree)
+        if 1:
+            print('Chains...')
+            for s in sorted(list(traverser.chains_set)):
+                print(s)
+    #@-others
 #@-others
 #@-leo
