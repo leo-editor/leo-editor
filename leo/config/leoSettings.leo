@@ -650,7 +650,6 @@
 <v t="ekr.20181018113730.1"><vh>@string external-editor = None</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
@@ -1902,6 +1901,7 @@
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod-autosave-active = True</vh></v>
+<v t="ekr.20230507080533.1"><vh>@bool mod-autosave-verbose = False</vh></v>
 <v t="vitalije.20100306144625.8946"><vh>@int mod-autosave-interval = 300</vh></v>
 </v>
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
@@ -3703,10 +3703,6 @@ changes your personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
-<t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
-      as specified by the @string relative_path_base_directory setting.
-      
-False: Do not call os.chdir(base) when handing a relative path.</t>
 <t tx="ekr.20070115134125">True: (Recommended) The execute script command writes the script to be executed
       to a file, then executes the script using Python's execFile function. The
       script_file_path setting specifies the path to this file.
@@ -11755,6 +11751,7 @@ screencaset_style = normal
     &lt;SHIFT-hover&gt;: contract.
     
 False: do nothing when the mouse hovers over nodes.</t>
+<t tx="ekr.20230507080533.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
