@@ -8,17 +8,7 @@
 <vnodes>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
-<v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
-<v t="ekr.20230113050849.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
-<v t="ekr.20230113050849.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20230113050849.2"><vh>@data:@auto-md ../doc/colorizer.md</vh>
-<v t="ekr.20230113050849.3"><vh>@gnxs</vh></v>
-</v>
-</v>
+<v t="rkeeney.20190823135126.4"><vh>@persistence</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
@@ -1829,6 +1819,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 <v t="ekr.20230110152214.1"><vh>Leo 6.x release notes</vh>
@@ -2519,10 +2510,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20230111160833.1"></v>
 <v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
-<v t="ekr.20230110152131.1"></v>
-<v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
+<v t="ekr.20230409052507.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -29537,8 +29526,6 @@ To summarize token syncing:
 - This token-syncing machinery is the *simplest* thing that could possibly
   work. It is also the *fastest* thing that could possibly work.
 </t>
-<t tx="ekr.20191216061528.1">gnx: ekr.20170130080532.1
-</t>
 <t tx="ekr.20200107105607.1">**Simplicity**:
 
 - The distinction between significant and insignificant tokens makes
@@ -30120,8 +30107,6 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
 
 **Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
 See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
-<t tx="ekr.20201013034546.1">gnx: ekr.20161120073038.1
-</t>
 <t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -31321,97 +31306,6 @@ Bugs
             if not ref.startswith(('mailto:',)):
                 links.add(ref)
     return sorted(list(links))
-</t>
-<t tx="ekr.20230113050849.1">gnx: ekr.20191216061356.4
-unl: Leo's demo.py plugin
-gnx: ekr.20191216061356.5
-unl: Overview
-gnx: ekr.20191216061356.6
-unl: A simpler work flow
-gnx: ekr.20191216061356.7
-unl: Graphics classes &amp; helpers
-gnx: ekr.20191216061356.8
-unl: Using demo scripts
-gnx: ekr.20191216061356.9
-unl: Using demo scripts--&gt;Script trees and lists
-gnx: ekr.20191216061356.10
-unl: Using demo scripts--&gt;Predefined symbols
-gnx: ekr.20191216061356.11
-unl: Using demo scripts--&gt;Positioning graphics
-gnx: ekr.20191216061356.12
-unl: Using demo scripts--&gt;Deleting graphics
-gnx: ekr.20191216061356.13
-unl: Using demo scripts--&gt;Details
-gnx: ekr.20191216061356.14
-unl: Example scripts
-gnx: ekr.20191216061356.15
-unl: Example scripts--&gt;Top-level script
-gnx: ekr.20191216061356.16
-unl: Example scripts--&gt;Simulate typing
-gnx: ekr.20191216061356.17
-unl: Example scripts--&gt;Change the demo namespace
-gnx: ekr.20191216061356.18
-unl: Example scripts--&gt;Add graphics
-gnx: ekr.20191216061356.19
-unl: Example scripts--&gt;Switch focus
-gnx: ekr.20191216061356.20
-unl: Helper methods
-gnx: ekr.20191216061356.21
-unl: Helper methods--&gt;Ivars
-gnx: ekr.20191216061356.22
-unl: Helper methods--&gt;Menus
-gnx: ekr.20191216061356.23
-unl: Helper methods--&gt;Magnification and styling
-gnx: ekr.20191216061356.24
-unl: Helper methods--&gt;Simulated typing
-gnx: ekr.20191216061356.25
-unl: Helper methods--&gt;Startup, setup and teardown
-gnx: ekr.20191216061356.26
-unl: Helper methods--&gt;Window position and ratios
-gnx: ekr.20191216061356.27
-unl: Summary
-gnx: ekr.20191216061356.28
-unl: History and change log
-</t>
-<t tx="ekr.20230113050849.2">gnx: ekr.20170202125807.1
-</t>
-<t tx="ekr.20230113050849.3">gnx: ekr.20230113050844.29
-unl: About Leo's colorizer code
-</t>
-<t tx="ekr.20230113050849.4">gnx: ekr.20201013033341.30
-unl: Table of contents
-gnx: ekr.20201013033341.31
-unl: The grand overview
-gnx: ekr.20201013033341.32
-unl: The new importers vs. the old
-gnx: ekr.20201013033341.33
-unl: The Importer class
-gnx: ekr.20201013033341.34
-unl: The Importer class--&gt;i.gen lines &amp; helpers
-gnx: ekr.20201013033341.35
-unl: The Importer class--&gt;The line-oriented API
-gnx: ekr.20201013033341.36
-unl: The Importer class--&gt;Indentation
-gnx: ekr.20201013033341.37
-unl: The ScanState classes
-gnx: ekr.20201013033341.38
-unl: The ScanState classes--&gt;ScanState.context
-gnx: ekr.20201013033341.39
-unl: The ScanState classes--&gt;ScanState.level()
-gnx: ekr.20201013033341.40
-unl: The ScanState classes--&gt;ScanState protocols
-gnx: ekr.20201013033341.41
-unl: Using @button make-importer
-gnx: ekr.20201013033341.42
-unl: Notes
-gnx: ekr.20201013033341.43
-unl: Notes--&gt;Recognizing multi-line patterns
-gnx: ekr.20201013033341.44
-unl: Notes--&gt;The python importer must count brackets
-gnx: ekr.20201013033341.45
-unl: Notes--&gt;Scanning strings and comments
-gnx: ekr.20201013033341.46
-unl: Conclusion
 </t>
 <t tx="ekr.20230119101059.1">From the movie, My Cousin Vinny::
 
@@ -32648,9 +32542,7 @@ find-bad-links</t>
     ])
     
 </t>
-<t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/).
+<t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
@@ -32659,17 +32551,22 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
             Leo supports Python's standard os.path expansions.
             Leo no longer supports {{python-expression}} in headlines.
+            
+- Several large code cleanups: 460+ files changed.
 
 **Commands**
 
-- PR #3266: Add write-zip-archive command.
 - PR #3227: Add commands to add/remove numbers from headlines.
+- PR #3255: Add write-zip-archive command.
+- PR #3192: Add show-color-settings and the show-font-settings commands.
 
 **Other changes**
 
 - PR #3208: Add 'reload-settings' hook.
-- PR #3214: Optionally expand headlines on mouseover.
+- PR #3214: Optionally expand headlines on mouse-over.
 - PR #3224: Improve mod_autosave plugin.
+- PR #3241: Simplify Leo's path wrappers.
+- PRs #3264 and #3277: Simplify Leo's path-related code.
 - Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
 
 **Links**
@@ -32692,7 +32589,41 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 @nowrap
 @language rest
 </t>
-<t tx="ekr.20230409053106.1"></t>
+<t tx="ekr.20230409053106.1">.. _`PR #3260`: https://github.com/leo-editor/leo-editor/pull/3260
+
+- `PR #3260`_:  Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+  Leo supports Python's standard os.path expansions.
+  Leo no longer supports {{python-expression}} in headlines.
+            
+- Several large code cleanups: 460+ files changed.
+
+**Commands**
+
+.. _`PR #3227`: https://github.com/leo-editor/leo-editor/pull/3227
+.. _`PR #3255`: https://github.com/leo-editor/leo-editor/pull/3255
+.. _`PR #3192`: https://github.com/leo-editor/leo-editor/pull/3192
+
+- `PR #3227`_: Add commands to add/remove numbers from headlines.
+- `PR #3255`_: Add write-zip-archive command.
+- `PR #3192`_: Add show-color-settings and the show-font-settings commands.
+
+**Other changes**
+
+.. _`PR #3208`: https://github.com/leo-editor/leo-editor/pull/3208
+.. _`PR #3214`: https://github.com/leo-editor/leo-editor/pull/3214
+.. _`PR #3224`: https://github.com/leo-editor/leo-editor/pull/3224
+.. _`PR #3241`: https://github.com/leo-editor/leo-editor/pull/3241
+.. _`PR #3264`: https://github.com/leo-editor/leo-editor/pull/3264
+.. _`PR #3277`: https://github.com/leo-editor/leo-editor/pull/3277
+
+- `PR #3208`_: Add 'reload-settings' hook.
+- `PR #3214`_: Optionally expand headlines on mouse-over.
+- `PR #3224`_: Improve mod_autosave plugin.
+- `PR #3241`_: Simplify Leo's path wrappers.
+- `PR #3264`_ and `PR #3277`_: Simplify Leo's path-related code.
+
+- 20+ issues and 30+ pull requests.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
