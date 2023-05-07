@@ -1,20 +1,28 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230506095312.1: * @file ../unittests/test_design.py
 """Global design tests."""
+#@+<< test_design imports >>
+#@+node:ekr.20230507094414.1: ** << test_design imports >>
 import ast
 from ast import NodeVisitor
 import glob
 import os
 import re
-from typing import Dict
+import textwrap
+from typing import Dict, Tuple
 import unittest
 from leo.core import leoGlobals as g
+#@-<< test_design imports >>
 
-files_dict: Dict = None  # Keys are paths, values are contents of file.
+# Keys are paths, values are contents of file.
+files_dict: Dict[str, Tuple[str, ast.AST]] = None
 
 #@+others
 #@+node:ekr.20230506154039.1: ** function: load_files
 def load_files():
+    """
+    Create the files_dict if necessary.
+    """
 
     global files_dict
     if files_dict is not None:
@@ -42,7 +50,9 @@ def load_files():
     for path in all_files:
         assert os.path.exists(path), repr(path)
         with open(path, 'rb') as f:
-            files_dict[path] = g.toUnicode(f.read())
+            contents = g.toUnicode(f.read())
+            tree = ast.parse(contents, filename=path)
+            files_dict[path] = (contents, tree)
 #@+node:ekr.20230506111929.1: ** Traverser classes
 #@+node:ekr.20230506111649.1: *3* class AnnotationsTraverser
 class AnnotationsTraverser(NodeVisitor):
@@ -135,8 +145,7 @@ class TestAnnotations(unittest.TestCase):
         traverser = AnnotationsTraverser(tester=self)
         for path in files_dict:
             self.path = path
-            source = files_dict [path]
-            tree = ast.parse(source, filename=path)
+            contents, tree = files_dict [path]
             traverser.visit(tree)
         if 0:
             for s in sorted(list(traverser.annotations_set)):
@@ -152,8 +161,26 @@ class TestChains(unittest.TestCase):
         load_files()
         traverser = ChainsTraverser(tester=self)
         for path in files_dict:
-            source = files_dict [path]
-            tree = ast.parse(source, filename=path)
+            contents, tree = files_dict [path]
             traverser.visit(tree)
+            
+    def test_one_chain(self):
+        contents = textwrap.dedent('''\
+        w = c.frame.body.wrapper.widget
+''')
+    # Module(body=[
+        # Assign(
+            # targets=[Name(id='w')], 
+            # value=Attribute(
+                # value=Attribute(
+                    # value=Attribute(
+                        # value=Attribute(value=Name(id='c'), attr='frame'), 
+                    # attr='body'),
+                # attr='wrapper'),
+            # attr='widget')))
+        # ]
+        import pprint
+        tree = ast.parse(contents, filename='test_one_chain')
+        print(pprint.pprint(ast.dump(tree, annotate_fields=True)))
 #@-others
 #@-leo
