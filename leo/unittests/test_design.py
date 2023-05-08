@@ -166,7 +166,7 @@ class ChainsTraverser(NodeVisitor):
     def visit_Attribute(self, node):
         """
         Add only top-level Attribute chains to chains_set.
-        Do *not* call generic visit!
+        Do *not* call generic_visit!
         """
         chain = ast.unparse(node)
         self.chains_set.add(chain)
