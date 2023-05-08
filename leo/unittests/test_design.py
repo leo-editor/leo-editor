@@ -174,7 +174,9 @@ class ChainsTraverser(NodeVisitor):
 class TestAnnotations(unittest.TestCase):
     """Test that annotations of c, g, p, s, v are as expected."""
 
-    def test_all_paths(self):
+    #@+others
+    #@+node:ekr.20230508150535.1: *3* TestAnnotations.slow_test_all_paths
+    def slow_test_all_paths(self):
         load_files()
         traverser = AnnotationsTraverser(tester=self)
         for path in files_dict:
@@ -184,8 +186,6 @@ class TestAnnotations(unittest.TestCase):
         if 0:
             for s in sorted(list(traverser.annotations_set)):
                 print(s)
-
-    #@+others
     #@-others
 #@+node:ekr.20230506095648.1: ** class TestChains(unittest.TestCase)
 class TestChains(unittest.TestCase):
@@ -205,8 +205,8 @@ class TestChains(unittest.TestCase):
         for s in long_chains_list:
             if any(pat.match(s) for pat in pats):
                 print(s)
-    #@+node:ekr.20230507122923.1: *3* TestChains.test_all_paths
-    def test_all_paths(self):
+    #@+node:ekr.20230507122923.1: *3* TestChains.slow_test_all_paths
+    def slow_test_all_paths(self):
         
         load_files()
         traverser = ChainsTraverser()
