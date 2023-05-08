@@ -18,7 +18,36 @@ from leo.core import leoGlobals as g
 files_dict: Dict[str, Tuple[str, ast.AST]] = None
 
 #@+others
-#@+node:ekr.20230506154039.1: ** function: load_files
+#@+node:ekr.20230508065238.1: ** functions...
+#@+node:ekr.20230507170833.1: *3* function: dump_chains
+def dump_chains(chains_list, long_chains_list):
+    
+    c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
+    p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
+    # s_pat = re.compile(r'\b(s[0-9]?|[\w_]+_s)\b')
+    v_pat = re.compile(r'\b(v[0-9]?|[\w_]+_v)\b')
+    pats = (c_pat, p_pat, v_pat)
+    
+    print(g.callers(1))
+    for s in long_chains_list:
+        if any(pat.match(s) for pat in pats):
+            print(s)
+#@+node:ekr.20230508064034.1: *3* function: filter_chain
+array_pat = re.compile(r'(\[).*?(\])')
+call_pat = re.compile(r'(\().*?(\))')
+string_pat1 = re.compile(r"(\').*?(\')")
+string_pat2 = re.compile(r'(\").*?(\")')
+patterns = (array_pat, call_pat, string_pat1, string_pat2)
+
+def filter_chain(s: str) -> str:
+        
+    def repl(m):
+        return m.group(1) + m.group(2)
+
+    for pattern in patterns:
+        s = re.sub(pattern, repl, s)
+    return s
+#@+node:ekr.20230506154039.1: *3* function: load_files
 def load_files():
     """
     Create the files_dict if necessary.
@@ -133,30 +162,14 @@ class AnnotationsTraverser(NodeVisitor):
 class ChainsTraverser(NodeVisitor):
     
     chains_set = set()
-    
-    array_pat = re.compile(r'(\[).*?(\])')
-    call_pat = re.compile(r'(\().*?(\))')
-    string_pat1 = re.compile(r"(\').*?(\')")
-    string_pat2 = re.compile(r'(\").*?(\")')
-    filter_patterns = (array_pat, call_pat, string_pat1, string_pat2)
 
     def visit_Attribute(self, node):
         """
         Add only top-level Attribute chains to chains_set.
         Do *not* call generic visit!
         """
-        # Attribute(expr value, identifier attr, expr_context ctx)
         chain = ast.unparse(node)
-        self.chains_set.add(self.filter_chain(chain))
-        
-    def filter_chain(self, s: str) -> str:
-        
-        def repl(m):
-            return m.group(1) + m.group(2)
-
-        for pattern in self.filter_patterns:
-            s = re.sub(pattern, repl, s)
-        return s
+        self.chains_set.add(chain)
 #@+node:ekr.20230506095516.1: ** class TestAnnotations(unittest.TestCase)
 class TestAnnotations(unittest.TestCase):
     """Test that annotations of c, g, p, s, v are as expected."""
@@ -179,8 +192,8 @@ class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
     
     #@+others
-    #@+node:ekr.20230507170833.1: *3* TestChains.dump_chains
-    def dump_chains(self, chains_list, long_chains_list):
+    #@+node:ekr.20230507170833.1: *3* function: dump_chains
+    def dump_chains(chains_list, long_chains_list):
         
         c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
         p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
@@ -194,15 +207,15 @@ class TestChains(unittest.TestCase):
                 print(s)
     #@+node:ekr.20230507122923.1: *3* TestChains.test_all_paths
     def test_all_paths(self):
+        
         load_files()
-        traverser = ChainsTraverser() ### tester=self)
+        traverser = ChainsTraverser()
         traverser.chains_set = set()
         for path in files_dict:
             contents, tree = files_dict [path]
             traverser.visit(tree)
-        chains_list = sorted(list(traverser.chains_set))
+        chains_list = [filter_chain(z) for z in sorted(list(traverser.chains_set))]
         long_chains_list = [z for z in chains_list if z.count('.') > 2]
-        # g.printObj(long_chains_list)
         if 0:
             print(f"{len(chains_list)} chains:")
             print(f"{len(long_chains_list)} long chains:")
@@ -210,28 +223,30 @@ class TestChains(unittest.TestCase):
             for z in long_chains_list:
                 print(z)
         if 0:
-            self.dump_chains(chains_list, long_chains_list)
+            dump_chains(chains_list, long_chains_list)
         self.assertTrue(len(long_chains_list) > 400)
     #@+node:ekr.20230507171657.1: *3* TestChains.test_bare_chain
     def test_bare_chain(self):
         contents = 'leoImport.MORE_Importer(c).import_file(fn)'
         tree = ast.parse(contents, filename='test_one_chain')
-        traverser = ChainsTraverser() ### tester=self)
+        traverser = ChainsTraverser()
         traverser.chains_set = set()
         traverser.visit(tree)
         chains_list = list(traverser.chains_set)
-        self.assertEqual(chains_list[0], 'leoImport.MORE_Importer().import_file')
+        chain = filter_chain(chains_list[0])
+        self.assertEqual(chain, 'leoImport.MORE_Importer().import_file')
     #@+node:ekr.20230507122925.1: *3* TestChains.test_one_chain
     def test_one_chain(self):
         contents = textwrap.dedent('''\
             w = c.frame.body.wrapper.widget
     ''')
         tree = ast.parse(contents, filename='test_one_chain')
-        traverser = ChainsTraverser()  ###tester=self)
+        traverser = ChainsTraverser()
         traverser.chains_set = set()
         traverser.visit(tree)
         chains_list = list(traverser.chains_set)
-        self.assertEqual(chains_list[0], 'c.frame.body.wrapper.widget')
+        chain = filter_chain(chains_list[0])
+        self.assertEqual(chain, 'c.frame.body.wrapper.widget')
     #@-others
 #@-others
 #@-leo
