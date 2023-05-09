@@ -216,6 +216,11 @@ class TestChains(unittest.TestCase):
             traverser.visit(tree)
         chains_list = [filter_chain(z) for z in sorted(list(traverser.chains_set))]
         long_chains_list = [z for z in chains_list if z.count('.') > 2]
+        if 0:  # Print prefixes.
+            prefixes = ['.'.join(z.split('.')[0:2]) for z in long_chains_list]
+            for z in sorted(list(set(prefixes))):
+                if z.startswith(('c.', 'p.', 'v.')):
+                    print(z) 
         if 0:
             print(f"{len(chains_list)} chains:")
             print(f"{len(long_chains_list)} long chains:")
