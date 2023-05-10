@@ -43,15 +43,15 @@ class C_Importer(Importer):
     #@+node:ekr.20230510150942.1: *3* c_i.delete_parenthesized_expressions (to do)
     def delete_parenthesized_expressions(self, lines: List[str]) -> None:
         """Delete everything between matched parentheses from the given lines."""
-    #@+node:ekr.20230510150743.1: *3* c_i.delete_comments_and_strings (test)
+    #@+node:ekr.20230510150743.1: *3* c_i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
-        """Delete all comments in strings from the given lines."""
+        """Delete all comments and strings from the given lines."""
         string_delims = self.string_list
         line_comment, start_comment, end_comment = self.single_comment, self.block1, self.block2
-        assert string_delims == ['"'], repr(string_delims)
-        assert line_comment == '//', repr(line_comment)
-        assert start_comment == '/*', repr(start_comment)
-        assert end_comment == '*/', repr(end_comment)
+        # assert string_delims == ['"'], repr(string_delims)
+        # assert line_comment == '//', repr(line_comment)
+        # assert start_comment == '/*', repr(start_comment)
+        # assert end_comment == '*/', repr(end_comment)
         target = ''  # The string ending this multi-line comment or string.
         escape = '\\'
         result = []
