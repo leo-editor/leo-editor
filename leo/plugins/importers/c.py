@@ -62,24 +62,23 @@ class C_Importer(Importer):
         # Create helper lines.
         self.helper_lines: List[str] = self.preprocess_lines(lines)
         ok = self.check_lines(self.helper_lines)
-        if not ok:
-            parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
-            parent.b += ''.join(lines)
-            return
-            
-        # Find the outer blocks.
-        blocks: List[Block] = self.find_blocks(self.helper_lines)
-        
-        # Generate all blocks recursively.
-        for block in blocks:
-            self.gen_block(block, level=0, parent=parent)
-
+        if ok:
+            # Find the outer blocks.
+            blocks: List[Block] = self.find_blocks(self.helper_lines)
+            if blocks:
+                # Generate all blocks recursively.
+                for block in blocks:
+                    self.gen_block(block, level=0, parent=parent)
+            else:
+                parent.b = ''.join(lines)
+        else:
+            parent.b = ''.join(lines)
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230510072848.1: *3* c_i.preprocess_lines (new)
     def preprocess_lines(self, lines: List[str]) -> List[str]:
         
-        result: List[str] = []
+        result: List[str] = lines  ###
         
         return result
     #@+node:ekr.20230510072857.1: *3* c_i.check_lines (new)
@@ -99,31 +98,6 @@ class C_Importer(Importer):
        
         """
         return []  ###
-
-        # i0, lines, line_states = i, self.lines, self.line_states
-        # line = lines[i]
-        # if (
-            # line.isspace()
-            # or line_states[i].context
-            # or line.find(';') > -1  # One-line declaration.
-            # or self.c_keywords_pattern.match(line)  # A statement.
-            # or not self.match_start_patterns(line)
-        # ):
-            # return None
-        # # Try to set self.headline.
-        # if not self.headline and i0 + 1 < len(lines):
-            # self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
-        # # Now clean the headline.
-        # if self.headline:
-            # self.headline = self.compute_headline(self.headline)
-        # # Scan ahead at most 10 lines until an open { is seen.
-        # while i < len(lines) and i <= i0 + 10:
-            # prev_state = line_states[i - 1] if i > 0 else self.state_class()
-            # this_state = line_states[i]
-            # if this_state.level > prev_state.level:
-                # return i + 1
-            # i += 1
-        # return None  # pragma: no cover
     #@+node:ekr.20230510080255.1: *3* c_i.gen_block (new)
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
         """Generate the given block and recursively all inner blocks."""
