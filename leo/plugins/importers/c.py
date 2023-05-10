@@ -128,7 +128,7 @@ class C_Importer(Importer):
             # Create helper lines.
             self.helper_lines: List[str] = self.make_helper_lines(lines)
 
-            # Raise TypeError if the checks fail.
+            # Raise ImporterError if the checks fail.
             self.check_lines(self.helper_lines)
 
             # Find the outer blocks.
