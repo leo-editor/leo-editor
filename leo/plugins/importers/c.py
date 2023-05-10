@@ -1,11 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 """The @auto importer for the C language and other related languages."""
+from __future__ import annotations
 import re
-from typing import Optional
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import List, Tuple, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+from leo.core import leoGlobals as g
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+    Block = Tuple[int, int, int]  # start, start_body, end.
+
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -26,88 +31,120 @@ class C_Importer(Importer):
         # Init the base class.
         super().__init__(c, language='c')
 
-        # These must be defined here because they use configuration data..
-        aSet = set(self.type_keywords + (c.config.getData('c_import_typedefs') or []))
-        self.c_type_names = f"({'|'.join(list(aSet))})"
-        self.c_types_pattern = re.compile(self.c_type_names)
-        self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
-        self.c_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
+        ###
+            # These must be defined here because they use configuration data..
+            # aSet = set(self.type_keywords + (c.config.getData('c_import_typedefs') or []))
+            # self.c_type_names = f"({'|'.join(list(aSet))})"
+            # self.c_types_pattern = re.compile(self.c_type_names)
+            # self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
+            # self.c_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
+        
+        # Keywords that may be followed by '{':
         self.c_keywords = '(%s)' % '|'.join([
-            'break', 'case', 'continue', 'default', 'do', 'else', 'enum',
-            'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
+            'case', 'default', 'do', 'else', 'enum', 'for', 'goto',
+            'if', 'return', 'sizeof', 'struct', 'switch', 'while',
+            # 'break', 'continue',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block & helper
-    def new_starts_block(self, i: int) -> Optional[int]:
+    #@+node:ekr.20230510071622.1: *3* c_i.gen_lines (new)
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
-        Return None if lines[i] does not start a class, function or method.
+        C_Importer.gen_lines: a rewrite of Importer.gen_lines.
+        
+        Allocate lines to parent.b and descendant nodes.
+        """
+        assert self.root == parent, (self.root, parent)
+        self.lines = lines
 
-        Otherwise, return the index of the first line of the body.
-        """
-        i0, lines, line_states = i, self.lines, self.line_states
-        line = lines[i]
-        if (
-            line.isspace()
-            or line_states[i].context
-            or line.find(';') > -1  # One-line declaration.
-            or self.c_keywords_pattern.match(line)  # A statement.
-            or not self.match_start_patterns(line)
-        ):
-            return None
-        # Try to set self.headline.
-        if not self.headline and i0 + 1 < len(lines):
-            self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
-        # Now clean the headline.
-        if self.headline:
-            self.headline = self.compute_headline(self.headline)
-        # Scan ahead at most 10 lines until an open { is seen.
-        while i < len(lines) and i <= i0 + 10:
-            prev_state = line_states[i - 1] if i > 0 else self.state_class()
-            this_state = line_states[i]
-            if this_state.level > prev_state.level:
-                return i + 1
-            i += 1
-        return None  # pragma: no cover
-    #@+node:ekr.20161204165700.1: *4* c_i.match_start_patterns
-    # Patterns that can start a block
-    c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
-    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
-    c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
+        # Delete all children.
+        parent.deleteAllChildren()
 
-    def match_start_patterns(self, line: str) -> bool:
+        # Create helper lines.
+        self.helper_lines: List[str] = self.preprocess_lines(lines)
+        ok = self.check_lines(self.helper_lines)
+        if not ok:
+            parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+            parent.b += ''.join(lines)
+            return
+            
+        # Find the outer blocks.
+        blocks: List[Block] = self.find_blocks(self.helper_lines)
+        
+        # Generate all blocks recursively.
+        for block in blocks:
+            self.gen_block(block, level=0, parent=parent)
+
+        # Add trailing lines.
+        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20230510072848.1: *3* c_i.preprocess_lines (new)
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        
+        result: List[str] = []
+        
+        return result
+    #@+node:ekr.20230510072857.1: *3* c_i.check_lines (new)
+    def check_lines(self, lines: List[str]) -> bool:
+        
+        ok = True
+        
+        return ok
+    #@+node:ekr.20230510081812.1: *3* c_i.compute_name (new)
+    def compute_name(self, lines: List[str]) -> str:
+        """Compute the function name from the given list of lines."""
+        return ''.join(lines)  ### Temp.
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (new)
+    def find_blocks(self, lines: List[str]) -> List[Block]:
         """
-        True if line matches any block-starting pattern.
-        If true, set self.headline.
+        Return a list of Tuples describing each block in the given list of lines.
+       
         """
-        m = self.c_extern_pattern.match(line)
-        if m:
-            self.headline = line.strip()
-            return True
-        # #1626
-        m = self.c_template_pattern.match(line)
-        if m:
-            self.headline = line.strip()
-            return True
-        m = self.c_class_pattern.match(line)
-        if m:
-            prefix = f"{m.group(1).strip()} " if m.group(1) else ''
-            name = m.group(3)
-            self.headline = f"{prefix}class {name}"
-            return True
-        m = self.c_func_pattern.match(line)
-        if m:
-            if self.c_types_pattern.match(m.group(3)):
-                return True
-            name = m.group(3)
-            prefix = f"{m.group(1).strip()} " if m.group(1) else ''
-            self.headline = f"{prefix}{name}"
-            return True
-        m = self.c_typedef_pattern.match(line)
-        if m:
-            # Does not set self.headline.
-            return True
-        m = self.c_types_pattern.match(line)
-        return bool(m)
+        return []  ###
+
+        # i0, lines, line_states = i, self.lines, self.line_states
+        # line = lines[i]
+        # if (
+            # line.isspace()
+            # or line_states[i].context
+            # or line.find(';') > -1  # One-line declaration.
+            # or self.c_keywords_pattern.match(line)  # A statement.
+            # or not self.match_start_patterns(line)
+        # ):
+            # return None
+        # # Try to set self.headline.
+        # if not self.headline and i0 + 1 < len(lines):
+            # self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
+        # # Now clean the headline.
+        # if self.headline:
+            # self.headline = self.compute_headline(self.headline)
+        # # Scan ahead at most 10 lines until an open { is seen.
+        # while i < len(lines) and i <= i0 + 10:
+            # prev_state = line_states[i - 1] if i > 0 else self.state_class()
+            # this_state = line_states[i]
+            # if this_state.level > prev_state.level:
+                # return i + 1
+            # i += 1
+        # return None  # pragma: no cover
+    #@+node:ekr.20230510080255.1: *3* c_i.gen_block (new)
+    def gen_block(self, block: Block, level: int, parent: Position) -> None:
+        """Generate the given block and recursively all inner blocks."""
+        trace = True
+        start, start_body, end = block
+        name = self.compute_name(self.helper_lines[start:start_body])
+        if trace:
+             g.printObj(self.lines[start:end], tag=f"{name} {start}:{end}")
+        # Find inner blocks.
+        inner_blocks = self.find_blocks(self.helper_lines[start:end])
+        # Generate the child containing the new block.
+        child = parent.insertAsLastChild()
+        child.h = name
+        if inner_blocks:
+            # Generate an @others.
+            parent.b = '@others\n'
+            # Recursively generate the inner nodes.
+            for inner_block in inner_blocks:
+                self.gen_block(inner_block, level + 1, parent=child)
+        else:
+            child.b = ''.join(self.lines[start : end])
     #@-others
 #@-others
 
