@@ -11,6 +11,9 @@ if TYPE_CHECKING:
     from leo.core.leoNodes import Position
     Block = Tuple[int, int, int]  # start, start_body, end.
 
+class ImporterError(Exception):
+    pass
+
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -97,7 +100,7 @@ class C_Importer(Importer):
             print('Result...')
             for z in result:
                 print(repr(z))
-        assert len(result) == len(lines)
+        assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230510150943.1: *3* c_i.delete_structure_brackets (to do)
     def delete_structure_brackets(self, lines: List[str]) -> None:
@@ -109,7 +112,7 @@ class C_Importer(Importer):
             'enum', 'namespace', 'struct',
         ]
         assert compound_keywords  ###
-    #@+node:ekr.20230510071622.1: *3* c_i.gen_lines (test)
+    #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         C_Importer.gen_lines: a rewrite of Importer.gen_lines.
@@ -121,11 +124,13 @@ class C_Importer(Importer):
 
         # Delete all children.
         parent.deleteAllChildren()
+        try:
+            # Create helper lines.
+            self.helper_lines: List[str] = self.make_helper_lines(lines)
 
-        # Create helper lines.
-        self.helper_lines: List[str] = self.make_helper_lines(lines)
-        ok = self.check_lines(self.helper_lines)
-        if ok:
+            # Raise TypeError if the checks fail.
+            self.check_lines(self.helper_lines)
+
             # Find the outer blocks.
             blocks: List[Block] = self.find_blocks(self.helper_lines)
             if blocks:
@@ -134,8 +139,14 @@ class C_Importer(Importer):
                     self.gen_block(block, level=0, parent=parent)
             else:
                 parent.b = ''.join(lines)
-        else:
+        except ImporterError:
+            parent.deleteAllChildren()
             parent.b = ''.join(lines)
+        except Exception:
+            g.es_exception()
+            parent.deleteAllChildren()
+            parent.b = ''.join(lines)
+
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230510072848.1: *3* c_i.make_helper_lines (test)
@@ -147,11 +158,8 @@ class C_Importer(Importer):
         aList = self.delete_structure_brackets(aList)
         return aList
     #@+node:ekr.20230510072857.1: *3* c_i.check_lines (to do)
-    def check_lines(self, lines: List[str]) -> bool:
-
-        ok = True
-
-        return ok
+    def check_lines(self, lines: List[str]) -> None:
+        """Check all lines. Raise ImporterError if there is a problem."""
     #@+node:ekr.20230510081812.1: *3* c_i.compute_name (to do)
     def compute_name(self, lines: List[str]) -> str:
         """Compute the function name from the given list of lines."""
