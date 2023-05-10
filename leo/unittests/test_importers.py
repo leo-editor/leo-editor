@@ -467,6 +467,34 @@ class TestC(BaseTestImporter):
                     '\n'
             ),
         ))
+    #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
+    def test_delete_comments_and_strings(self):
+        
+        from leo.plugins.importers.c import C_Importer
+        importer = C_Importer(self.c)
+
+        lines = [
+            'i = 1 // comment.\n',
+            's = "string"\n',
+            'if (/* a */1)\n',
+            '    ;\n',
+            '/*\n',
+            '    if (1): a = 2\n',
+            '*/\n',
+            'i = 2\n'
+        ]
+        expected_lines = [
+            'i = 1 \n',
+            's = \n',
+            'if (1)\n',
+            '    ;\n',
+            '\n',
+            '\n',
+            '\n',
+            'i = 2\n'
+        ]
+        result = importer.delete_comments_and_strings(lines)
+        self.assertEqual(result, expected_lines)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
