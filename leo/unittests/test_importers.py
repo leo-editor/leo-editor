@@ -494,6 +494,7 @@ class TestC(BaseTestImporter):
             'i = 2\n'
         ]
         result = importer.delete_comments_and_strings(lines)
+        self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
