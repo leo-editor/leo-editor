@@ -60,7 +60,7 @@ class C_Importer(Importer):
         parent.deleteAllChildren()
 
         # Create helper lines.
-        self.helper_lines: List[str] = self.preprocess_lines(lines)
+        self.helper_lines: List[str] = self.make_helper_lines(lines)
         ok = self.check_lines(self.helper_lines)
         if ok:
             # Find the outer blocks.
@@ -75,8 +75,8 @@ class C_Importer(Importer):
             parent.b = ''.join(lines)
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
-    #@+node:ekr.20230510072848.1: *3* c_i.preprocess_lines (new)
-    def preprocess_lines(self, lines: List[str]) -> List[str]:
+    #@+node:ekr.20230510072848.1: *3* c_i.make_helper_lines (new)
+    def make_helper_lines(self, lines: List[str]) -> List[str]:
         
         result: List[str] = lines  ###
         
