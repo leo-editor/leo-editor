@@ -30,9 +30,9 @@ class C_Importer(Importer):
 
         # Init the base class.
         super().__init__(c, language='c')
-        
+
         self.string_list = ['"']  # Not single quotes.
-        
+
         # Keywords that may be followed by '{':
         self.c_keywords = '(%s)' % '|'.join([
             'case', 'default', 'do', 'else', 'enum', 'for', 'goto',
@@ -71,7 +71,7 @@ class C_Importer(Importer):
                     if line.startswith(target, i):
                         if len(target) > 1:
                             # Skip the remaining characters of the target.
-                            skip_count = len(target) -1
+                            skip_count = len(target) - 1
                         target = ''  # Begin accumulating characters.
                 elif ch == escape:
                     skip_count = 1
@@ -92,14 +92,14 @@ class C_Importer(Importer):
                     target = end_comment
                     if len(start_comment) > 1:
                         # Skip the remaining characters of the starting comment delim.
-                        skip_count = len(start_comment) -1
+                        skip_count = len(start_comment) - 1
                 else:
                     result_line.append(ch)
             # End the line and append it to the result.
             if line.endswith('\n'):
                 result_line.append('\n')
             result.append(''.join(result_line))
-        if 0:   ###
+        if 0:  ###
             print('Result...')
             for z in result:
                 print(repr(z))
@@ -108,7 +108,7 @@ class C_Importer(Importer):
     #@+node:ekr.20230510150943.1: *3* c_i.delete_structure_brackets (to do)
     def delete_structure_brackets(self, lines: List[str]) -> None:
         """Delete all opening structure brackets and their matching closing brackets."""
-        compound_keywords =  [
+        compound_keywords = [
             # Compound statements.
             'case', 'catch', 'class', 'do', 'else', 'for', 'if', 'switch', 'try', 'while',
             # Other constructions that can be followed by '{'
@@ -146,7 +146,7 @@ class C_Importer(Importer):
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230510072848.1: *3* c_i.make_helper_lines (test)
     def make_helper_lines(self, lines: List[str]) -> List[str]:
-        
+
         aList = lines[:]
         aList = self.delete_comments_and_strings(aList)
         aList = self.delete_parenthesized_expressions(aList)
@@ -154,9 +154,9 @@ class C_Importer(Importer):
         return aList
     #@+node:ekr.20230510072857.1: *3* c_i.check_lines (to do)
     def check_lines(self, lines: List[str]) -> bool:
-        
+
         ok = True
-        
+
         return ok
     #@+node:ekr.20230510081812.1: *3* c_i.compute_name (to do)
     def compute_name(self, lines: List[str]) -> str:
@@ -187,7 +187,7 @@ class C_Importer(Importer):
             for inner_block in inner_blocks:
                 self.gen_block(inner_block, level + 1, parent=child)
         else:
-            child.b = ''.join(self.lines[start : end])
+            child.b = ''.join(self.lines[start:end])
     #@-others
 #@-others
 
