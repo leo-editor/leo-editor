@@ -48,11 +48,7 @@ class C_Importer(Importer):
         """Delete all comments and strings from the given lines."""
         string_delims = self.string_list
         line_comment, start_comment, end_comment = self.single_comment, self.block1, self.block2
-        # assert string_delims == ['"'], repr(string_delims)
-        # assert line_comment == '//', repr(line_comment)
-        # assert start_comment == '/*', repr(start_comment)
-        # assert end_comment == '*/', repr(end_comment)
-        target = ''  # The string ending this multi-line comment or string.
+        target = ''  # The string ending a multi-line comment or string.
         escape = '\\'
         result = []
         if 0:  ###
@@ -84,10 +80,8 @@ class C_Importer(Importer):
                         if line.startswith(z, i):
                             target = z
                             if len(z) > 1:
-                                skip_count = len(z)
+                                skip_count = len(z) - 1
                             break
-                    else:
-                        assert False  # Can't happen.
                 elif line.startswith(start_comment, i):
                     target = end_comment
                     if len(start_comment) > 1:
