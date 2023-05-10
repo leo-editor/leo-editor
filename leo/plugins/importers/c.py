@@ -78,8 +78,16 @@ class C_Importer(Importer):
                     continue
                 elif line.startswith(line_comment, i):
                     break  # Skip the rest of the line.
-                elif ch in string_delims:
-                    target = ch  # Start skipping the string.
+                elif any(line.startswith(z, i) for z in string_delims):
+                    # Allow multi-character string delimiters.
+                    for z in string_delims:
+                        if line.startswith(z, i):
+                            target = z
+                            if len(z) > 1:
+                                skip_count = len(z)
+                            break
+                    else:
+                        assert False  # Can't happen.
                 elif line.startswith(start_comment, i):
                     target = end_comment
                     if len(start_comment) > 1:
