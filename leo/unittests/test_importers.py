@@ -496,6 +496,28 @@ class TestC(BaseTestImporter):
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
+    #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
+    def test_find_blocks(self):
+        
+        from leo.plugins.importers.c import C_Importer
+        importer = C_Importer(self.c)
+        lines = g.splitLines(textwrap.dedent("""\
+        
+        class class1 {};
+        
+        class class2 {
+            int foo {
+                a = 1;
+            }
+        }
+        """))
+        ### g.printObj(lines, tag='Lines')
+        guide_lines = importer.make_guide_lines(lines)
+        ### g.printObj(guide_lines, tag='Guide Lines')
+        result = importer.find_blocks(guide_lines)
+        g.printObj(result, tag='Result')
+        # self.assertEqual(len(result), len(expected_lines))
+        # self.assertEqual(result, expected_lines)
     #@+node:ekr.20230510181241.1: *3* TestC.xx_test_check_lines (not needed?)
     def xx_test_check_lines(self):  ###
         

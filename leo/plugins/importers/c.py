@@ -49,19 +49,37 @@ class C_Importer(Importer):
         """Compute the function name from the given list of lines."""
         return ''.join(lines)  ### Temp.
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (to do)
+    class_pat = re.compile(r'(.*?)class\s+(\w+)\s*\{')  ###, re.MULTILINE)
+    block_patterns = (class_pat,)
+
     def find_blocks(self, lines: List[str]) -> List[Block]:
         """
-        Return a list of Blocks (name, start, start_body, end) describing each
-        block in the given list of guide lines.
-        """
+        lines is a list of *guide* lines from which comments and strings have been removed.
         
-        ### name = self.compute_name(self.helper_lines[start:start_body])
-        return []  ###
+        Return a list of tuples(name, start, start_body, end) describing all the
+        classes, enums, namespaces, functions and methods in the guide lines.
+        """
+        i, prev_i, result = 0, 0, []
+        while i < len(lines):
+            progress = i
+            s = lines[i]
+            i += 1
+            for pattern in self.block_patterns:
+                m = pattern.match(s)
+                if m:
+                    name = m.group(2)
+                    # g.trace(name, m)
+                    end = i + 1  ###self.find_matching_bracket()
+                    result.append((name, prev_i, i + 1, end))
+                    i = prev_i = end
+                    break
+            assert i > progress, s
+        return result
     #@+node:ekr.20230510080255.1: *3* c_i.gen_block (test)
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
         """Generate the given block and recursively all inner blocks."""
         name, start, start_body, end = block
-        g.printObj(self.lines[start:end], tag=f"level: {level} {name} {start}:{end}")  ###
+        ### g.printObj(self.lines[start:end], tag=f"level: {level} {name} {start}:{end}")  ###
         # Find inner blocks.
         inner_blocks = self.find_blocks(self.helper_lines[start:end])
         # Generate the child containing the new block.
