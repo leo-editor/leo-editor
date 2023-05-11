@@ -45,15 +45,30 @@ class C_Importer(Importer):
         """Compute the function name from the given list of lines."""
         return ''.join(lines)  ### Temp.
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper
-    class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')  ###, re.MULTILINE)
+    #@+<< define block patterns >>
+    #@+node:ekr.20230511083510.1: *4* << define block patterns >>
+    # Pattern that matches the start of any block.
+    class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
     function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*{')
     namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
+    struct_pat = re.compile(r'(.*?)\bstruct\s*(\w+)?\s*\{')
     block_patterns = (
         ('class', class_pat),
         ('func', function_pat),
         ('namespace', namespace_pat),
+        ('struct', struct_pat),
     )
 
+    # Pattern that matches any compound statement.
+    compound_statements_s = '|'.join([
+        rf"\b{z}\b" for z in (
+            'case', 'catch', 'class', 'do', 'else', 'for', 'if', 'switch', 'try', 'while',
+        )
+    ])
+    compound_statements_pat = re.compile(compound_statements_s)
+    #@-<< define block patterns >>
+
+    # Compound statements.
     find_blocks_count = 0
 
     def find_blocks(self, lines: List[str]) -> List[Block]:
@@ -63,9 +78,8 @@ class C_Importer(Importer):
         Return a list of tuples(name, start, start_body, end) describing all the
         classes, enums, namespaces, functions and methods in the guide lines.
         """
-        ### This method is *very* slow. ###
         # trace = any('# enable-trace' in z for z in lines)  # A useful hack for now.
-        if 1:
+        if 0:
             self.find_blocks_count += 1
             g.trace(self.find_blocks_count, g.callers(8))
         i, prev_i, result = 0, 0, []
@@ -77,22 +91,22 @@ class C_Importer(Importer):
                 m = pattern.match(s)
                 if m:
                     name = m.group(2) or ''
-                    end = self.find_end_of_block(lines, i)
-                    result.append((kind, name, prev_i, i + 1, end))
-                    i = prev_i = end
-                    break
+                    # Make *sure* we never match compound statements.
+                    if not self.compound_statements_pat.match(name):
+                        end = self.find_end_of_block(lines, i)
+                        result.append((kind, name, prev_i, i + 1, end))
+                        i = prev_i = end
+                        break
             assert i > progress, s
         return result
     #@+node:ekr.20230511054807.1: *4* c_i.find_end_of_block
     def find_end_of_block(self, lines: List[str], i: int) -> int:
         """
         Find the end of the block that starts at lines[i].
+        i is the index of the line *following* the start of the block.
         Return the index into lines of that line.
         """
         level = 1  # All blocks start with '{'
-        if '}' in lines[i]:
-            return i + 1  # Maybe not completely correct.
-        i += 1
         while i < len(lines):
             line = lines[i]
             i += 1

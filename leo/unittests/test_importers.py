@@ -534,30 +534,45 @@ class TestC(BaseTestImporter):
         guide_lines = importer.make_guide_lines(lines)
         result = importer.find_blocks(guide_lines)
         if 1:
-            g.printObj(result, tag='Result')
+            print('')
+            g.trace()
+            for z in result:
+                kind, name, start, start_body, end = z
+                print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
         # The result lines must tile (cover) the original lines.
         result_lines = []
         for z in result:
             kind, name, start, start_body, end = z
             result_lines.extend(lines[start : end])
         self.assertEqual(lines, result_lines)
-    #@+node:ekr.20230510181241.1: *3* TestC.xx_test_check_lines (not needed?)
-    def xx_test_check_lines(self):  ###
-        
-        from leo.plugins.importers.c import C_Importer, ImporterError
+    #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
+    def test_codon_file(self):
+        # Test codon/codon/app/main.cpp.
+        import os
+        from leo.plugins.importers.c import C_Importer
         importer = C_Importer(self.c)
-        bad_lines = [
-            'a = [(])\n',
-            'b = ([)]\n',
-        ]
-        for line in bad_lines:
-            with self.assertRaises(ImporterError, msg=repr(line)):
-                importer.check_lines([line])
-        good_lines = [
-            'a = b(2){}',
-        ]
-        for line in good_lines:
-            importer.check_lines([line])
+
+        path = 'C:/Repos/codon/codon/app/main.cpp'
+        if not os.path.exists(path):
+            self.skipTest(f"Not found: {path!r}")
+        with open(path, 'r') as f:
+            source = f.read()
+        lines = g.splitLines(source)
+        guide_lines = importer.make_guide_lines(lines)
+        result = importer.find_blocks(guide_lines)
+        if 1:
+            print('')
+            g.trace()
+            for z in result:
+                kind, name, start, start_body, end = z
+                print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+
+        # The result lines must tile (cover) the original lines.
+        result_lines = []
+        for z in result:
+            kind, name, start, start_body, end = z
+            result_lines.extend(lines[start : end])
+        self.assertEqual(lines, result_lines)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
