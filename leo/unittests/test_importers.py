@@ -513,7 +513,7 @@ class TestC(BaseTestImporter):
             n2;
         }
         
-        int foo {
+        int foo () {
             foo1;
             foo2;
         }
@@ -524,18 +524,23 @@ class TestC(BaseTestImporter):
         
         class class2 {
             x = 2;
-            int foo {
-                a = 1;
+            int bar (a, b) {
+                if (0) {
+                    a = 1;
+                }
             }
         }
         """))
         guide_lines = importer.make_guide_lines(lines)
         result = importer.find_blocks(guide_lines)
         if 1:
-            g.trace('Result')
-            for z in result:
-                print(z)
-       
+            g.printObj(result, tag='Result')
+        # The result lines must tile (cover) the original lines.
+        result_lines = []
+        for z in result:
+            kind, name, start, start_body, end = z
+            result_lines.extend(lines[start : end])
+        self.assertEqual(lines, result_lines)
     #@+node:ekr.20230510181241.1: *3* TestC.xx_test_check_lines (not needed?)
     def xx_test_check_lines(self):  ###
         

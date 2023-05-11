@@ -9,6 +9,10 @@ from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 StringIO = io.StringIO
+
+class ImporterError(Exception):
+    pass
+
 #@+<< define block_tuple >>
 #@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
 # This named tuple contains all data relating to one block (class, method or function).

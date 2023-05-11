@@ -2,18 +2,14 @@
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 """The @auto importer for the C language and other related languages."""
 from __future__ import annotations
-### from collections import defaultdict
 import re
 from typing import List, Tuple, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.linescanner import Importer, ImporterError
 from leo.core import leoGlobals as g
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-    Block = Tuple[str, int, int, int]  # name, start, start_body, end.
-
-class ImporterError(Exception):
-    pass
+    Block = Tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
 
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
@@ -50,9 +46,13 @@ class C_Importer(Importer):
         return ''.join(lines)  ### Temp.
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper
     class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')  ###, re.MULTILINE)
-    function_pat = re.compile(r'(.*?)\b(\w+)\s*\{')
+    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*{')
     namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
-    block_patterns = (class_pat, namespace_pat)
+    block_patterns = (
+        ('class', class_pat),
+        ('func', function_pat),
+        ('namespace', namespace_pat),
+    )
 
     find_blocks_count = 0
 
@@ -73,13 +73,12 @@ class C_Importer(Importer):
             progress = i
             s = lines[i]
             i += 1
-            for pattern in self.block_patterns:
+            for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    name = m.group(2) or '<namespace>'
+                    name = m.group(2) or ''
                     end = self.find_end_of_block(lines, i)
-                    # g.printObj(lines[i-1:end], tag=f"{i-1}:{end}")
-                    result.append((name, prev_i, i + 1, end))
+                    result.append((kind, name, prev_i, i + 1, end))
                     i = prev_i = end
                     break
             assert i > progress, s
@@ -108,8 +107,8 @@ class C_Importer(Importer):
     #@+node:ekr.20230510080255.1: *3* c_i.gen_block (test)
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
         """Generate the given block and recursively all inner blocks."""
-        name, start, start_body, end = block
-        ### g.printObj(self.lines[start:end], tag=f"level: {level} {name} {start}:{end}")  ###
+        kind, name, start, start_body, end = block
+
         # Find inner blocks.
         inner_blocks = self.find_blocks(self.helper_lines[start:end])
         # Generate the child containing the new block.
@@ -118,6 +117,7 @@ class C_Importer(Importer):
         if inner_blocks:
             # Generate an @others.
             parent.b = '@others\n'
+
             # Recursively generate the inner nodes.
             for inner_block in inner_blocks:
                 self.gen_block(inner_block, level + 1, parent=child)
