@@ -503,6 +503,13 @@ class TestC(BaseTestImporter):
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
         
+        # trace
+        
+        namespace {};
+        namespace outer {};
+        
+        int foo {};
+        
         class class1 {};
         
         class class2 {
@@ -511,13 +518,13 @@ class TestC(BaseTestImporter):
             }
         }
         """))
-        ### g.printObj(lines, tag='Lines')
         guide_lines = importer.make_guide_lines(lines)
-        ### g.printObj(guide_lines, tag='Guide Lines')
         result = importer.find_blocks(guide_lines)
-        g.printObj(result, tag='Result')
-        # self.assertEqual(len(result), len(expected_lines))
-        # self.assertEqual(result, expected_lines)
+        if 1:
+            g.trace('Result')
+            for z in result:
+                print(z)
+       
     #@+node:ekr.20230510181241.1: *3* TestC.xx_test_check_lines (not needed?)
     def xx_test_check_lines(self):  ###
         

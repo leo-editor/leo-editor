@@ -48,9 +48,11 @@ class C_Importer(Importer):
     def compute_name(self, lines: List[str]) -> str:
         """Compute the function name from the given list of lines."""
         return ''.join(lines)  ### Temp.
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (to do)
-    class_pat = re.compile(r'(.*?)class\s+(\w+)\s*\{')  ###, re.MULTILINE)
-    block_patterns = (class_pat,)
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (test)
+    class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')  ###, re.MULTILINE)
+    function_pat = re.compile(r'(.*?)\b(\w+)\s*\{')
+    namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
+    block_patterns = (class_pat, namespace_pat)
 
     def find_blocks(self, lines: List[str]) -> List[Block]:
         """
@@ -59,6 +61,8 @@ class C_Importer(Importer):
         Return a list of tuples(name, start, start_body, end) describing all the
         classes, enums, namespaces, functions and methods in the guide lines.
         """
+        ### This method is *very* slow. ###
+        trace = any('# trace' in z for z in lines)  # A useful hack for now.
         i, prev_i, result = 0, 0, []
         while i < len(lines):
             progress = i
@@ -67,8 +71,8 @@ class C_Importer(Importer):
             for pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    name = m.group(2)
-                    # g.trace(name, m)
+                    name = m.group(2) or '<namespace>'
+                    if trace: g.trace(f"{name:>20} {m}")
                     end = i + 1  ###self.find_matching_bracket()
                     result.append((name, prev_i, i + 1, end))
                     i = prev_i = end
