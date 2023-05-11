@@ -503,16 +503,27 @@ class TestC(BaseTestImporter):
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
         
-        # trace
+        # enable-trace
         
-        namespace {};
-        namespace outer {};
+        namespace {
+            n1;
+        }
         
-        int foo {};
+        namespace outer {
+            n2;
+        }
         
-        class class1 {};
+        int foo {
+            foo1;
+            foo2;
+        }
+        
+        class class1 {
+            class1;
+        }
         
         class class2 {
+            x = 2;
             int foo {
                 a = 1;
             }
