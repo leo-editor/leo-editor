@@ -208,7 +208,63 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
+    #@+node:ekr.20230510150743.1: *3* i.delete_comments_and_strings (New)
+    def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
+        """Delete all comments and strings from the given lines."""
+        string_delims = self.string_list
+        line_comment, start_comment, end_comment = self.single_comment, self.block1, self.block2
+        target = ''  # The string ending a multi-line comment or string.
+        escape = '\\'
+        result = []
+        if 0:  ###
+            print('Lines...')
+            for z in lines:
+                print(repr(z))
+        for line in lines:
+            result_line, skip_count = [], 0
+            for i, ch in enumerate(line):
+                if ch == '\n':
+                    break  # Avoid appending the newline twice.
+                if skip_count > 0:
+                    skip_count -= 1  # Skip the character.
+                    continue
+                if target:
+                    if line.startswith(target, i):
+                        if len(target) > 1:
+                            # Skip the remaining characters of the target.
+                            skip_count = len(target) - 1
+                        target = ''  # Begin accumulating characters.
+                elif ch == escape:
+                    skip_count = 1
+                    continue
+                elif line.startswith(line_comment, i):
+                    break  # Skip the rest of the line.
+                elif any(line.startswith(z, i) for z in string_delims):
+                    # Allow multi-character string delimiters.
+                    for z in string_delims:
+                        if line.startswith(z, i):
+                            target = z
+                            if len(z) > 1:
+                                skip_count = len(z) - 1
+                            break
+                elif line.startswith(start_comment, i):
+                    target = end_comment
+                    if len(start_comment) > 1:
+                        # Skip the remaining characters of the starting comment delim.
+                        skip_count = len(start_comment) - 1
+                else:
+                    result_line.append(ch)
+            # End the line and append it to the result.
+            if line.endswith('\n'):
+                result_line.append('\n')
+            result.append(''.join(result_line))
+        if 0:  ###
+            print('Result...')
+            for z in result:
+                print(repr(z))
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
+    #@+node:ekr.20220727073906.1: *3* i.gen_lines & helpers (OLD: to be deleted)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -252,7 +308,7 @@ class Importer:
         )
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
-    #@+node:ekr.20220807083207.1: *5* i.append_directives
+    #@+node:ekr.20220807083207.1: *4* i.append_directives
     def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str = None) -> None:
         """
         Append directive lines to lines_dict.
@@ -267,7 +323,7 @@ class Importer:
             f"@language {language or self.name}\n",
             f"@tabwidth {self.tab_width}\n",
         ])
-    #@+node:ekr.20220727085532.1: *5* i.body_string
+    #@+node:ekr.20220727085532.1: *4* i.body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
@@ -279,7 +335,7 @@ class Importer:
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
         return ''.join(self.massaged_line(s, i) for s in self.lines[a:b])
-    #@+node:ekr.20161108131153.9: *5* i.compute_headline
+    #@+node:ekr.20161108131153.9: *4* i.compute_headline
     def compute_headline(self, s: str) -> str:
         """
         Return the cleaned version headline s.
@@ -290,7 +346,7 @@ class Importer:
             if i > -1:
                 s = s[:i]
         return s.strip()
-    #@+node:ekr.20220807043759.1: *5* i.create_placeholders
+    #@+node:ekr.20220807043759.1: *4* i.create_placeholders
     def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
@@ -309,7 +365,7 @@ class Importer:
             child.h = f"placeholder level {len(parents)}"
             parents.append(child)
             lines_dict[child.v] = []
-    #@+node:ekr.20220727085911.1: *5* i.declaration_headline
+    #@+node:ekr.20220727085911.1: *4* i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
         """
         Return an informative headline for s, a group of declarations.
@@ -327,11 +383,11 @@ class Importer:
                     return self.compute_headline(strip_s)
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover (missing test)
-    #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
+    #@+node:ekr.20220804120240.1: *4* i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
         """A hook for pascal and lua. Called by i.gen_lines()."""
         pass
-    #@+node:ekr.20220727074602.1: *5* i.get_block
+    #@+node:ekr.20220727074602.1: *4* i.get_block
     def get_block(self, i: int) -> block_tuple:
         """
         Importer.get_block, based on Vitalije's getdefn function.
@@ -380,7 +436,7 @@ class Importer:
             decl_level=decl_level,
             name=self.compute_headline(self.headline or lines[decl_line])
         )
-    #@+node:ekr.20220727074602.2: *5* i.get_intro
+    #@+node:ekr.20220727074602.2: *4* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
         Return the number of preceeding "intro lines" that should be added to this class or def.
@@ -405,7 +461,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220729070924.1: *5* i.is_intro_line
+    #@+node:ekr.20220729070924.1: *4* i.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
         """
         Return True if line n is a comment line that starts at the give column.
@@ -415,7 +471,7 @@ class Importer:
             line.strip().startswith(self.single_comment)
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@+node:ekr.20220727075027.1: *5* i.make_node (trace)
+    #@+node:ekr.20220727075027.1: *4* i.make_node (trace)
     def make_node(self,
         p: Position,  # The starting (local root) position.
         start: int,  # The first line to allocate.
@@ -517,7 +573,7 @@ class Importer:
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
+    #@+node:ekr.20220728130445.1: *4* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
         trace = False
@@ -547,7 +603,7 @@ class Importer:
                 return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
 
-    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
+    #@+node:ekr.20220728130253.1: *4* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -563,7 +619,7 @@ class Importer:
         if this_state.level > prev_state.level:
             return i + 1
         return None
-    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper
+    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper (OLD: to be deleted)
     def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.
@@ -624,6 +680,14 @@ class Importer:
             level = max(0, level - 1)
         i += 1
         return i, level
+    #@+node:ekr.20230510072848.1: *3* i.make_guide_lines
+    def make_guide_lines(self, lines: List[str]) -> List[str]:
+        """
+        Return a list if **guide lines** that simplify the detection of blocks.
+
+        This default method removes all comments and strings from the original lines.
+        """
+        return self.delete_comments_and_strings(lines[:])
     #@+node:ekr.20161108131153.18: *3* i: Messages
     def error(self, s: str) -> None:  # pragma: no cover
         """Issue an error and cause a unit test to fail."""

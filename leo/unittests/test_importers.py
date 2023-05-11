@@ -496,6 +496,23 @@ class TestC(BaseTestImporter):
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
+    #@+node:ekr.20230510181241.1: *3* TestC.xx_test_check_lines (not needed?)
+    def xx_test_check_lines(self):  ###
+        
+        from leo.plugins.importers.c import C_Importer, ImporterError
+        importer = C_Importer(self.c)
+        bad_lines = [
+            'a = [(])\n',
+            'b = ([)]\n',
+        ]
+        for line in bad_lines:
+            with self.assertRaises(ImporterError, msg=repr(line)):
+                importer.check_lines([line])
+        good_lines = [
+            'a = b(2){}',
+        ]
+        for line in good_lines:
+            importer.check_lines([line])
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
