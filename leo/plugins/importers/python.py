@@ -507,7 +507,7 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
         Python_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
+    'extensions': ['.py', '.pyw', '.pyi', '.codon'],  # mypy uses .pyi extension.
     'func': do_import,
 }
 #@@language python
