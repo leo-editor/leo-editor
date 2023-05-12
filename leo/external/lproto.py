@@ -185,7 +185,7 @@ class LProtoClient:
                 return True
             except Exception:
                 g.es_print('lproto.py: failed to connect!', fname)
-                g.es_exception(full=False, c=None)
+                g.es_exception()
                 return False
         else:
             try:
@@ -198,7 +198,7 @@ class LProtoClient:
             except Exception:
                 g.es_print('lproto.py: failed to connect! host: %s, port: %s' % (
                     host, port))
-                g.es_exception(full=False, c=None)
+                g.es_exception()
                 return False
     #@+node:ekr.20111012070545.7211: *3* send
     def send(self, msg):

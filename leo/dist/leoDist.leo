@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -1442,14 +1442,14 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: `6.7.3`.
+Create the **release branch**: `6.7.4`.
 - Change version in this checklist to match.
-- Do all release work in `6.7.3` or `gh-pages`.
+- Do all release work in `6.7.4` or `gh-pages`.
 
 About merges:
-- Merge bug fix branches into `devel` and `6.7.3`
-- Merge `6.7.3` into `devel` any time.
-- Do *not* merge devel into 6.7.3.
+- Do *not* merge devel into 6.7.4.
+- Merge bug fix branches into `devel` and `6.7.4`
+- Merge `6.7.4` into `devel` any time.
 
 @language rest
 </t>
@@ -1465,7 +1465,7 @@ About merges:
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.7.3
+- git merge 6.7.4
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1492,20 +1492,20 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.7.3
+- git merge 6.7.4
 - update version in leoVersion.py.
 
 Create a branch for the *new* version:
 
-git tag -a v6.7.4-devel -m "Added v6.7.4-devel tag"
+git tag -a v6.7.5-devel -m "Added v6.7.5-devel tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.3 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.4 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.3</t>
+- git merge 6.7.4</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1575,6 +1575,8 @@ prune leo/docs</t>
 
 **upload**
 
+- ***Disable VPN***
+
 python -m twine upload -r pypi dist/*
 
 username:  __token__
@@ -1583,12 +1585,14 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.7.3-2-py3-none-any.whl
-    leo-6.7.3-2.tar.gz
+    leo-6.7.4-2-py3-none-any.whl
+    leo-6.7.4-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.3
+- Remove leo-editor from sitecustomize.py if it exists.
+
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.4
 
 **test**
 
@@ -1597,11 +1601,12 @@ python -m leo.core.runLeo
 
 **uninstall after testing**
 
-python -m pip uninstall leo</t>
+python -m pip uninstall leo
+</t>
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.3, not 6.7.3-final.
+  The final version in PKG-INFO.TXT must be called 6.7.4, not 6.7.4-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1617,7 +1622,7 @@ python -m pip uninstall leo</t>
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.7.3 (the old version) to 6.7.4.
+<t tx="ekr.20230301084201.1">- Change 6.7.4 (the old version) to 6.7.5.
   Be careful about the new version in the `Update version in devel` item.
 </t>
 <t tx="maphew.20180128212042.1">@language md
