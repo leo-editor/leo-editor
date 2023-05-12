@@ -500,7 +500,7 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
         
         from leo.plugins.importers.c import C_Importer
-        trace = True
+        trace = False
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
         
@@ -554,6 +554,7 @@ class TestC(BaseTestImporter):
         import os
         from leo.plugins.importers.c import C_Importer
         
+        trace = False
         c = self.c
         importer = C_Importer(c)
 
@@ -566,13 +567,13 @@ class TestC(BaseTestImporter):
         if 1:  # Test gen_lines.
             importer.root = c.p
             importer.gen_lines(lines, c.p)
-            if 1:
+            if trace:
                 for p in c.p.self_and_subtree():
                     g.printObj(p.b, tag=p.h)
         else: # Test find_blocks.
             guide_lines = importer.make_guide_lines(lines)
             result = importer.find_blocks(guide_lines)
-            if 1:
+            if trace:
                 print('')
                 g.trace()
                 for z in result:

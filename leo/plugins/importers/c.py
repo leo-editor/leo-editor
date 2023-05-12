@@ -123,14 +123,16 @@ class C_Importer(Importer):
 
         # Find all blocks in the body of this block.
         blocks = self.find_blocks(start_body, end, level)
-        if 1:
+        if 0:
             #@+<< trace blocks >>
             #@+node:ekr.20230511121416.1: *4* << trace blocks >>
             n = len(blocks)
-            g.trace(f"{n}{g.plural(n)} blocks in [{start_body}:{end}] parent: {parent.h}")
-            for z in blocks:
-                kind2, name2, start2, start_body2, end2 = z
-                print(f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}")
+            if n > 0:
+                print('')
+                g.trace(f"{n} block{g.plural(n)} in [{start_body}:{end}] parent: {parent.h}")
+                for z in blocks:
+                    kind2, name2, start2, start_body2, end2 = z
+                    print(f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}")
             #@-<< trace blocks >>
         if blocks:
             # Add any head lines.
@@ -146,7 +148,7 @@ class C_Importer(Importer):
                 last_end = end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = name
+                child.h = name or '<no name>'
                 self.gen_block(block, level + 1, child)
             
             # Add any tail lines.
