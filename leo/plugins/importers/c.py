@@ -136,8 +136,8 @@ class C_Importer(Importer):
             #@-<< trace blocks >>
         if blocks:
             # Add any head lines.
-            parent_body = lines[start : start_body]
-            
+            parent_body = lines[start:start_body]
+
             # Add @others.
             parent_body.extend(['@others\n'])
 
@@ -150,12 +150,12 @@ class C_Importer(Importer):
                 child = parent.insertAsLastChild()
                 child.h = name or f"unnamed {kind}"
                 self.gen_block(block, level + 1, child)
-            
+
             # Add any tail lines.
-            parent_body.extend(lines[last_end : end])
+            parent_body.extend(lines[last_end:end])
             parent.b = ''.join(parent_body)
         else:
-            parent.b = ''.join(self.lines[start : end])
+            parent.b = ''.join(self.lines[start:end])
     #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
