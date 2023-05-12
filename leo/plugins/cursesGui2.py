@@ -1870,7 +1870,7 @@ class LeoCursesGui(leoGui.LeoGui):
         widget = getattr(w, 'widget', None)
         if trace:
             g.trace('widget', widget.__class__.__name__)
-            g.trace(g.callers(verbose=verbose))
+            g.trace(g.callers())
         if not widget:
             g.trace('no widget', repr(w))
             return
@@ -1958,7 +1958,7 @@ class LeoCursesGui(leoGui.LeoGui):
         widget = getattr(w, 'widget', None)
         if trace:
             g.trace('widget', widget.__class__.__name__)
-            g.trace(g.callers(verbose=verbose))
+            g.trace(g.callers())
         if not widget:
             if trace or not w:
                 g.trace('no widget', repr(w))

@@ -114,7 +114,6 @@ class IdleTime:
         if self.starting_time is None:
             self.starting_time = time.time()
         # Wait at least self.delay msec, then wait for idle time.
-        self.last_delay = self.delay
         self.timer.start(self.delay)
 
     def stop(self):
