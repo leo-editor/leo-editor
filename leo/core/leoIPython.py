@@ -180,17 +180,17 @@ class InternalIPKernel:
         sys.__stdout__.write(s.rstrip() + '\n')
         sys.__stdout__.flush()
     #@+node:ekr.20160308101536.1: *3* ileo.put_warning
-    def put_warning(self, s: Any, raw: bool = False) -> None:
+    def put_warning(self, message: Any, raw: bool = False) -> None:
         """
         Put an warning message to the IPython kernel log.
         This will be seen, regardless of Leo's --debug option.
         """
         if not raw:
-            s = f"[leoIpython.py] {s}"
+            message = f"[leoIpython.py] {message}"
         if self.kernelApp:
-            self.kernelApp.log.warning(s)
+            self.kernelApp.log.warning(message)
         else:
-            self.put_stdout(s)
+            self.put_stdout(message)
     #@+node:ekr.20130930062914.15992: *3* ileo.pylab_kernel
     def pylab_kernel(self, gui: Any) -> Any:  # 'gui' arg not used.
         """Launch an IPython kernel with pylab support for the gui."""

@@ -1328,13 +1328,13 @@ class Commands:
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
-        def allinds(v: VNode, target_v: Any) -> Generator:
+        def allinds(v: VNode, target_v: VNode) -> Generator:
             """Yield all indices i such that v.children[i] == target_v."""
             for i, x in enumerate(v.children):
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: Any) -> Position:
+        def stack2pos(stack: List[Tuple]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
