@@ -84,7 +84,9 @@ class C_Importer(Importer):
                     # *Never* match compound statements.
                     if not self.compound_statements_pat.match(name):
                         end = self.find_end_of_block(i, i2)
-                        assert end <= i2, (end, i2)
+                        # Ensure end is strictly within bounds.
+                        end = max(i+1, min(end, i2-1))
+                        assert i < end < i2, (end, i1, i2)
                         result.append((kind, name, prev_i, i + 1, end))
                         i = prev_i = end
                         break
@@ -168,7 +170,7 @@ class C_Importer(Importer):
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
             # Start the recursion.
-            block = ('', '', 0, 0, len(lines))
+            block = ('outer', parent.h, 0, 0, len(lines))
             self.gen_block(block, level=0, parent=parent)
         except ImporterError:
             parent.deleteAllChildren()

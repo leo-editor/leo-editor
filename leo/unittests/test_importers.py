@@ -29,20 +29,20 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
-    def check_outline(self, p, expected):
+    def check_outline(self, p, expected, trace_results=True):
         """
         BaseTestImporter.check_outline.
         """
-        if 0: # Dump expected results.
+        if trace_results: # Dump expected results.
             print('')
             g.trace('Expected results...')
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump headlines of actual results.
+        if trace_results: # Dump headlines of actual results.
             self.dump_headlines(p, tag='Actual headlines...')
 
-        if 0: # Dump actual results, including bodies.
+        if trace_results: # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.
