@@ -3571,7 +3571,7 @@ def getBaseDirectory(c: Cmdr) -> str:
     """
     return ''
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
-def getEncodingAt(p: Position, s: bytes = None) -> str:
+def getEncodingAt(p: Position, b: bytes = None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3579,13 +3579,13 @@ def getEncodingAt(p: Position, s: bytes = None) -> str:
     Write logic: s is None.
     """
     # A BOM overrides everything.
-    if s:
-        e, junk_s = g.stripBOM(s)
+    if b:
+        e, junk_s = g.stripBOM(b)
         if e:
             return e
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
-    if s and s.strip() and not e:
+    if b and b.strip() and not e:
         e = 'utf-8'
     return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
