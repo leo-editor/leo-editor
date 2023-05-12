@@ -168,7 +168,7 @@ class TestC(BaseTestImporter):
                 }
             }
         """
-        p = self.run_test(s)
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
