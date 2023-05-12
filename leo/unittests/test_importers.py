@@ -500,6 +500,7 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
         
         from leo.plugins.importers.c import C_Importer
+        trace = True
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
         
@@ -531,17 +532,19 @@ class TestC(BaseTestImporter):
             }
         }
         """))
-        guide_lines = importer.make_guide_lines(lines)
-        result = importer.find_blocks(guide_lines)
-        if 1:
+        importer.lines = lines
+        importer.guide_lines = importer.make_guide_lines(lines)
+        blocks = importer.find_blocks(i1=0, i2=len(lines), level=0)
+        if trace:
             print('')
-            g.trace()
-            for z in result:
+            g.trace('Blocks...')
+            for z in blocks:
                 kind, name, start, start_body, end = z
                 print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+
         # The result lines must tile (cover) the original lines.
         result_lines = []
-        for z in result:
+        for z in blocks:
             kind, name, start, start_body, end = z
             result_lines.extend(lines[start : end])
         self.assertEqual(lines, result_lines)
@@ -550,7 +553,9 @@ class TestC(BaseTestImporter):
         # Test codon/codon/app/main.cpp.
         import os
         from leo.plugins.importers.c import C_Importer
-        importer = C_Importer(self.c)
+        
+        c = self.c
+        importer = C_Importer(c)
 
         path = 'C:/Repos/codon/codon/app/main.cpp'
         if not os.path.exists(path):
@@ -558,21 +563,28 @@ class TestC(BaseTestImporter):
         with open(path, 'r') as f:
             source = f.read()
         lines = g.splitLines(source)
-        guide_lines = importer.make_guide_lines(lines)
-        result = importer.find_blocks(guide_lines)
-        if 1:
-            print('')
-            g.trace()
+        if 1:  # Test gen_lines.
+            importer.root = c.p
+            importer.gen_lines(lines, c.p)
+            if 1:
+                for p in c.p.self_and_subtree():
+                    g.printObj(p.b, tag=p.h)
+        else: # Test find_blocks.
+            guide_lines = importer.make_guide_lines(lines)
+            result = importer.find_blocks(guide_lines)
+            if 1:
+                print('')
+                g.trace()
+                for z in result:
+                    kind, name, start, start_body, end = z
+                    print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+
+            # The result lines must tile (cover) the original lines.
+            result_lines = []
             for z in result:
                 kind, name, start, start_body, end = z
-                print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
-
-        # The result lines must tile (cover) the original lines.
-        result_lines = []
-        for z in result:
-            kind, name, start, start_body, end = z
-            result_lines.extend(lines[start : end])
-        self.assertEqual(lines, result_lines)
+                result_lines.extend(lines[start : end])
+            self.assertEqual(lines, result_lines)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):

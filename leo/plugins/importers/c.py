@@ -40,10 +40,6 @@ class C_Importer(Importer):
             # 'break', 'continue',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20230510081812.1: *3* c_i.compute_name (to do)
-    def compute_name(self, lines: List[str]) -> str:
-        """Compute the function name from the given list of lines."""
-        return ''.join(lines)  ### Temp.
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper
     #@+<< define block patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block patterns >>
@@ -71,44 +67,42 @@ class C_Importer(Importer):
     # Compound statements.
     find_blocks_count = 0
 
-    def find_blocks(self, lines: List[str]) -> List[Block]:
+    def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
         """
-        lines is a list of *guide* lines from which comments and strings have been removed.
+        Find all blocks in the given range of lines.
         
-        Return a list of tuples(name, start, start_body, end) describing all the
-        classes, enums, namespaces, functions and methods in the guide lines.
+        Return a list of tuples(name, start, start_body, end) for each block.
         """
+        lines = self.lines
         # trace = any('# enable-trace' in z for z in lines)  # A useful hack for now.
-        if 0:
-            self.find_blocks_count += 1
-            g.trace(self.find_blocks_count, g.callers(8))
-        i, prev_i, result = 0, 0, []
-        while i < len(lines):
-            progress = i
+        self.find_blocks_count += 1  ###
+        if level > 3:  ###
+            g.trace(self.find_blocks_count, g.callers(20))
+        i, prev_i, result = i1, i1, []
+        while i < i2:
             s = lines[i]
             i += 1
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
                     name = m.group(2) or ''
-                    # Make *sure* we never match compound statements.
+                    # *Never* match compound statements.
                     if not self.compound_statements_pat.match(name):
-                        end = self.find_end_of_block(lines, i)
+                        end = self.find_end_of_block(i, i2)
+                        assert end <= i2, (end, i2)
                         result.append((kind, name, prev_i, i + 1, end))
                         i = prev_i = end
                         break
-            assert i > progress, s
         return result
     #@+node:ekr.20230511054807.1: *4* c_i.find_end_of_block
-    def find_end_of_block(self, lines: List[str], i: int) -> int:
+    def find_end_of_block(self, i: int, i2: int) -> int:
         """
-        Find the end of the block that starts at lines[i].
-        i is the index of the line *following* the start of the block.
-        Return the index into lines of that line.
+        i is the index (within lines) of the line *following* the start of the block.
+        Return the index (within lines) of end of the block that starts at guide_lines[i].
         """
         level = 1  # All blocks start with '{'
-        while i < len(lines):
-            line = lines[i]
+        while i < i2:
+            line = self.lines[i]
             i += 1
             for ch in line:
                 if ch == '{':
@@ -117,26 +111,49 @@ class C_Importer(Importer):
                     level -= 1
                     if level == 0:
                         return i
-        return len(lines)
+        return i2
     #@+node:ekr.20230510080255.1: *3* c_i.gen_block (test)
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
-        """Generate the given block and recursively all inner blocks."""
+        """
+        Generate parent.b from the given block.
+        Recursively create all descendant blocks, after first creating their parent nodes.
+        """
+        lines = self.lines
         kind, name, start, start_body, end = block
 
-        # Find inner blocks.
-        inner_blocks = self.find_blocks(self.helper_lines[start:end])
-        # Generate the child containing the new block.
-        child = parent.insertAsLastChild()
-        child.h = name
-        if inner_blocks:
-            # Generate an @others.
-            parent.b = '@others\n'
+        # Find all blocks in the body of this block.
+        blocks = self.find_blocks(start_body, end, level)
+        if 1:
+            #@+<< trace blocks >>
+            #@+node:ekr.20230511121416.1: *4* << trace blocks >>
+            n = len(blocks)
+            g.trace(f"{n}{g.plural(n)} blocks in [{start_body}:{end}] parent: {parent.h}")
+            for z in blocks:
+                kind2, name2, start2, start_body2, end2 = z
+                print(f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}")
+            #@-<< trace blocks >>
+        if blocks:
+            # Add any head lines.
+            parent_body = lines[start : start_body]
+            
+            # Add @others.
+            parent_body.extend(['@others\n'])
 
-            # Recursively generate the inner nodes.
-            for inner_block in inner_blocks:
-                self.gen_block(inner_block, level + 1, parent=child)
+            # Recursively generate the inner nodes/blocks.
+            last_end = end
+            for block in blocks:
+                kind, name, start, start_body, end = block
+                last_end = end
+                # Generate the child containing the new block.
+                child = parent.insertAsLastChild()
+                child.h = name
+                self.gen_block(block, level + 1, child)
+            
+            # Add any tail lines.
+            parent_body.extend(lines[last_end : end])
+            parent.b = ''.join(parent_body)
         else:
-            child.b = ''.join(self.lines[start:end])
+            parent.b = ''.join(self.lines[start : end])
     #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
@@ -144,27 +161,18 @@ class C_Importer(Importer):
 
         Allocate lines to parent.b and descendant nodes.
         """
-        assert self.root == parent, (self.root, parent)
-        self.lines = lines
-
-        # Delete all children.
-        parent.deleteAllChildren()
         try:
-            # Create helper lines.
-            self.helper_lines: List[str] = self.make_guide_lines(lines)
-
-            # Raise ImporterError if the checks fail.
-            # self.check_lines(self.helper_lines)
-
-            # Find the outer blocks.
-            blocks: List[Block] = self.find_blocks(self.helper_lines)
-            if False:  ### blocks:
-                ### Something is wrong.
-                # Generate all blocks recursively.
-                for block in blocks:
-                    self.gen_block(block, level=0, parent=parent)
-            else:
-                parent.b = ''.join(lines)
+            assert self.root == parent, (self.root, parent)
+            self.lines = lines
+            # Delete all children.
+            parent.deleteAllChildren()
+            # Create the guide lines.
+            self.guide_lines = self.make_guide_lines(lines)
+            n1, n2 = len(self.lines), len(self.guide_lines)
+            assert n1 == n2, (n1, n2)
+            # Start the recursion.
+            block = ('', '', 0, 0, len(lines))
+            self.gen_block(block, level=0, parent=parent)
         except ImporterError:
             parent.deleteAllChildren()
             parent.b = ''.join(lines)
