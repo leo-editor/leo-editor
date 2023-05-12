@@ -112,7 +112,7 @@ class C_Importer(Importer):
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230510080255.1: *3* c_i.gen_block (test)
+    #@+node:ekr.20230510080255.1: *3* c_i.gen_block
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
         """
         Generate parent.b from the given block.
@@ -123,7 +123,7 @@ class C_Importer(Importer):
 
         # Find all blocks in the body of this block.
         blocks = self.find_blocks(start_body, end, level)
-        if 0:
+        if 1:
             #@+<< trace blocks >>
             #@+node:ekr.20230511121416.1: *4* << trace blocks >>
             n = len(blocks)
@@ -148,7 +148,7 @@ class C_Importer(Importer):
                 last_end = end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = name or '<no name>'
+                child.h = name or f"unnamed {kind}"
                 self.gen_block(block, level + 1, child)
             
             # Add any tail lines.
