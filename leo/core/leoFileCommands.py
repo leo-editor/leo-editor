@@ -132,13 +132,13 @@ class FastRead:
         return v
 
     #@+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
-    def readFileFromClipboard(self, s: Union[bytes, str]) -> Optional[VNode]:
+    def readFileFromClipboard(self, s_or_b: Union[bytes, str]) -> Optional[VNode]:
         """
-        Recreate a file from a string s, and return its hidden vnode.
+        Recreate a file from a string s_or_b, and return its hidden vnode.
 
         Unlike readFile above, this does not affect splitter sizes.
         """
-        v, g_element = self.readWithElementTree(path=None, s=s)
+        v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
         if not v:  # #1510.
             return None
         #
@@ -152,9 +152,9 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path: str, s: Union[str, bytes]) -> Tuple[VNode, Any]:
+    def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> Tuple[VNode, Any]:
 
-        contents = g.toUnicode(s)
+        contents = g.toUnicode(s_or_b)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
         contents = contents.translate(table)  # #1036, #1046.
         try:

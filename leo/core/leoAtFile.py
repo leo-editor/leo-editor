@@ -2589,20 +2589,16 @@ class AtFile:
         at.checkPythonCode(contents, fileName, root)
         return ok
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
-    def compareIgnoringBlankLines(self, s1: Any, s2: Any) -> bool:  # pragma: no cover
+    def compareIgnoringBlankLines(self, s1: str, s2: str) -> bool:  # pragma: no cover
         """Compare two strings, ignoring blank lines."""
-        assert isinstance(s1, str), g.callers()
-        assert isinstance(s2, str), g.callers()
         if s1 == s2:
             return True
         s1 = g.removeBlankLines(s1)
         s2 = g.removeBlankLines(s2)
         return s1 == s2
     #@+node:ekr.20190114061452.28: *6* at.compareIgnoringLineEndings
-    def compareIgnoringLineEndings(self, s1: Any, s2: Any) -> bool:  # pragma: no cover
+    def compareIgnoringLineEndings(self, s1: str, s2: str) -> bool:  # pragma: no cover
         """Compare two strings, ignoring line endings."""
-        assert isinstance(s1, str), (repr(s1), g.callers())
-        assert isinstance(s2, str), (repr(s2), g.callers())
         if s1 == s2:
             return True
         # Wrong: equivalent to ignoreBlankLines!

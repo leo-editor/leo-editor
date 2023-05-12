@@ -281,6 +281,7 @@ class LeoApp:
         self.delegate_language_dict: Dict[str, str] = {
             # Keys are new language names.
             # Values are existing languages in leo/modes.
+            "codon": "python",
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
@@ -318,6 +319,7 @@ class LeoApp:
             "cljs":     "clojure",
             "cljc":     "clojure",
             "cmd":      "batch",
+            "codon":    "codon",
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
@@ -510,6 +512,7 @@ class LeoApp:
             "chill"              : "/* */",
             "clojure"            : ";", # 2013/09/25: Fix bug 879338.
             "cobol"              : "*",
+            "codon"              : "#",
             "coldfusion"         : "<!-- -->",
             "coffeescript"       : "#", # 2016/02/26.
             "config"             : "#", # Leo 4.5.1
@@ -697,6 +700,7 @@ class LeoApp:
             "chill"         : "ch",  # Only one extension is valid: .c186, .c286
             "clojure"       : "clj", # 2013/09/25: Fix bug 879338.
             "cobol"         : "cbl", # Only one extension is valid: .cob
+            "codon"         : "codon",
             "coldfusion"    : "cfm",
             "coffeescript"  : "coffee",
             "config"        : "cfg",
