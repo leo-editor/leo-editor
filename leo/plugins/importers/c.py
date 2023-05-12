@@ -15,14 +15,6 @@ if TYPE_CHECKING:
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
 
-    # #545: Support @data c_import_typedefs.
-    type_keywords = [
-        'auto', 'bool', 'char', 'const', 'double',
-        'extern', 'float', 'int', 'register',
-        'signed', 'short', 'static', 'typedef',
-        'union', 'unsigned', 'void', 'volatile',
-    ]
-
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.__init__
     def __init__(self, c: Cmdr) -> None:
@@ -40,9 +32,9 @@ class C_Importer(Importer):
             # 'break', 'continue',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper
-    #@+<< define block patterns >>
-    #@+node:ekr.20230511083510.1: *4* << define block patterns >>
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks
+    #@+<< define block_patterns >>
+    #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
     class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
     function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*{')
@@ -55,6 +47,9 @@ class C_Importer(Importer):
         ('struct', struct_pat),
     )
 
+    #@-<< define block_patterns >>
+    #@+<< define compound_statements_pat >>
+    #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >>
     # Pattern that matches any compound statement.
     compound_statements_s = '|'.join([
         rf"\b{z}\b" for z in (
@@ -62,15 +57,15 @@ class C_Importer(Importer):
         )
     ])
     compound_statements_pat = re.compile(compound_statements_s)
-    #@-<< define block patterns >>
+    #@-<< define compound_statements_pat >>
 
     # Compound statements.
-    find_blocks_count = 0
+    find_blocks_count = 0  ###
 
     def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
         """
         Find all blocks in the given range of lines.
-        
+
         Return a list of tuples(name, start, start_body, end) for each block.
         """
         lines = self.lines
@@ -94,7 +89,7 @@ class C_Importer(Importer):
                         i = prev_i = end
                         break
         return result
-    #@+node:ekr.20230511054807.1: *4* c_i.find_end_of_block
+    #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index (within lines) of the line *following* the start of the block.
