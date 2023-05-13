@@ -43,11 +43,11 @@ class C_Importer(Importer):
         lws_list: List[int] = []
         for block in blocks:
             kind, name, start, start_body, end = block
-            lines = self.lines [start : end]
+            lines = self.lines[start:end]
             for line in lines:
                 stripped_line = line.lstrip()
                 if stripped_line:  # Skip empty lines
-                    lws_list.append(len(line[:-len(stripped_line)]))
+                    lws_list.append(len(line[: -len(stripped_line)]))
         return min(lws_list) if lws_list else 0
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks
     #@+<< define block_patterns >>
