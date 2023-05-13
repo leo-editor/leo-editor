@@ -220,10 +220,6 @@ class Importer:
         target = ''  # The string ending a multi-line comment or string.
         escape = '\\'
         result = []
-        if 0:  ###
-            print('Lines...')
-            for z in lines:
-                print(repr(z))
         for line in lines:
             result_line, skip_count = [], 0
             for i, ch in enumerate(line):
@@ -262,10 +258,6 @@ class Importer:
             if line.endswith('\n'):
                 result_line.append('\n')
             result.append(''.join(result_line))
-        if 0:  ###
-            print('Result...')
-            for z in result:
-                print(repr(z))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20220727073906.1: *3* i.gen_lines & helpers (OLD: to be deleted)

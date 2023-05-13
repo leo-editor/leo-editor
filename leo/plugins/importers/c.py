@@ -91,7 +91,6 @@ class C_Importer(Importer):
         Return the index (within lines) of end of the block that starts at guide_lines[i].
         """
         level = 1  # All blocks start with '{'
-        ### g.trace(i, i2)
         while i < i2:
             line = self.lines[i]
             i += 1
@@ -101,9 +100,7 @@ class C_Importer(Importer):
                 if ch == '}':
                     level -= 1
                     if level == 0:
-                        ### g.trace('Found', i)
                         return i
-        ### g.trace('Not found', i2)
         return i2
     #@+node:ekr.20230510080255.1: *3* c_i.gen_block
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
@@ -146,7 +143,6 @@ class C_Importer(Importer):
                 self.gen_block(block, level + 1, child)
 
             # Add any tail lines.
-            ### g.trace('TAIL', lines[last_end : end])
             parent_body.extend(lines[last_end : end])
             parent.b = ''.join(parent_body).lstrip('\n').rstrip() + '\n'
         else:
