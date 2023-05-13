@@ -136,8 +136,12 @@ class Importer:
         # A hook for xml importer: preprocess lines.
         lines = self.preprocess_lines(lines)
 
-        # New: just call gen_lines.
-        self.gen_lines(lines, parent)
+        # Call gen_lines or new_gen_lines, depending on language.
+        # Eventually, new_gen_lines will replace gen_lines for *all* languages.
+        if self.language in ('c',):
+            self.new_gen_lines(lines, parent)
+        else:
+            self.gen_lines(lines, parent)
 
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.
@@ -229,7 +233,7 @@ class Importer:
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20230513091837.1: *3* i: New helpers
+    #@+node:ekr.20230513091837.1: *3* i: New methods
     #@+node:ekr.20230513080610.1: *4* i.compute_common_lws
     def compute_common_lws(self, blocks: List[Block]) -> int:
         """
@@ -295,6 +299,9 @@ class Importer:
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
+    #@+node:ekr.20230513134327.1: *4* i.find_blocks (must be overridden)
+    def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
+        raise ImporterError(f"Importer for language {self.language} must override Importer.find_blocks")
     #@+node:ekr.20230510072848.1: *4* i.make_guide_lines
     def make_guide_lines(self, lines: List[str]) -> List[str]:
         """
@@ -303,6 +310,83 @@ class Importer:
         This default method removes all comments and strings from the original lines.
         """
         return self.delete_comments_and_strings(lines[:])
+    #@+node:ekr.20230510080255.1: *4* i.new_gen_block
+    def new_gen_block(self, block: Block, level: int, parent: Position) -> None:
+        """
+        Generate parent.b from the given block.
+        Recursively create all descendant blocks, after first creating their parent nodes.
+        """
+        lines = self.lines
+        kind, name, start, start_body, end = block
+        assert start <= start_body <= end, (start, start_body, end)
+
+        # Find all blocks in the body of this block.
+        blocks = self.find_blocks(start_body, end, level)
+        if 0:
+            #@+<< trace blocks >>
+            #@+node:ekr.20230511121416.1: *5* << trace blocks >>
+            n = len(blocks)
+            if n > 0:
+                print('')
+                g.trace(f"{n} block{g.plural(n)} in [{start_body}:{end}] parent: {parent.h}")
+                for z in blocks:
+                    kind2, name2, start2, start_body2, end2 = z
+                    tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
+                    g.printObj(lines[start2:end2], tag=tag)
+            #@-<< trace blocks >>
+        if blocks:
+            # Start with the head: lines[start : start_start_body].
+            result_list = lines[start:start_body]
+            # Add indented @others.
+            common_lws_s = ' ' * self.compute_common_lws(blocks)
+            result_list.extend([f"{common_lws_s}@others\n"])
+
+            # Recursively generate the inner nodes/blocks.
+            last_end = end
+            for block in blocks:
+                child_kind, child_name, child_start, child_start_body, child_end = block
+                last_end = child_end
+                # Generate the child containing the new block.
+                child = parent.insertAsLastChild()
+                child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+                self.new_gen_block(block, level + 1, child)
+                # Remove common_lws.
+                self.remove_common_lws(common_lws_s, child)
+            # Add any tail lines.
+            result_list.extend(lines[last_end:end])
+        else:
+            result_list = lines[start:end]
+        # Delete extra leading and trailing whitespace.
+        parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
+    #@+node:ekr.20230510071622.1: *4* i.new_gen_lines
+    def new_gen_lines(self, lines: List[str], parent: Position) -> None:
+        """
+        C_Importer.gen_lines: a rewrite of Importer.gen_lines.
+
+        Allocate lines to parent.b and descendant nodes.
+        """
+        try:
+            assert self.root == parent, (self.root, parent)
+            self.lines = lines
+            # Delete all children.
+            parent.deleteAllChildren()
+            # Create the guide lines.
+            self.guide_lines = self.make_guide_lines(lines)
+            n1, n2 = len(self.lines), len(self.guide_lines)
+            assert n1 == n2, (n1, n2)
+            # Start the recursion.
+            block = ('outer', 'parent', 0, 0, len(lines))
+            self.new_gen_block(block, level=0, parent=parent)
+        except ImporterError:
+            parent.deleteAllChildren()
+            parent.b = ''.join(lines)
+        except Exception:
+            g.es_exception()
+            parent.deleteAllChildren()
+            parent.b = ''.join(lines)
+
+        # Add trailing lines.
+        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230513085654.1: *4* i.remove_common_lws
     def remove_common_lws(self, lws: str, p: Position) -> None:
         """Remove the given leading whitespace from all lines of p.b."""
