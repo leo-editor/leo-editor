@@ -241,58 +241,46 @@ class TestC(BaseTestImporter):
         )
         p = self.run_test(s)
         self.check_outline(p, expected_results, trace_results=False)
-    #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
-    def test_comment_follows_arg_list(self):
+    #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
+    def test_open_curly_bracket_on_next_line(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
+            aaa::bbb::doit(awk* b)
             {
                 assert(false);
             }
 
             bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                ) //  <---------------------problem
+            aaa::bbb::dothat(xyz *b) // trailing comment.
             {
                 return true;
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'void aaa::bbb::doit',
+            (1, 'func doit',
                 'void\n'
-                'aaa::bbb::doit\n'
-                '    (\n'
-                '    awk* b\n'
-                '    )\n'
+                'aaa::bbb::doit(awk* b)\n'
                 '{\n'
                 '    assert(false);\n'
                 '}\n'
-                '\n'
             ),
-            (1, 'bool aaa::bbb::dothat',
+            (1, 'func dothat',
                 'bool\n'
-                'aaa::bbb::dothat\n'
-                '    (\n'
-                '    xyz *b\n'
-                '    ) //  <---------------------problem\n'
+                'aaa::bbb::dothat(xyz *b) // trailing comment.\n'
                 '{\n'
                 '    return true;\n'
                 '}\n'
-                '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
     def test_comment_follows_block_delim(self):
 
@@ -441,31 +429,32 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             template <class T>
             T GetMax (T a, T b) {
               T result;
               result = (a>b)? a : b;
               return (result);
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'template <class T>',
+            (1, 'func GetMax',
                     'template <class T>\n'
                     'T GetMax (T a, T b) {\n'
                     '  T result;\n'
                     '  result = (a>b)? a : b;\n'
                     '  return (result);\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
         

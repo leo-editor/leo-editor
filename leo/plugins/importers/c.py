@@ -46,6 +46,8 @@ class C_Importer(Importer):
         ('struct', struct_pat),
     )
 
+    # Pattern that *might* be continued on the next line.
+    multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*(\\[\w ]*)?')
     #@-<< define block_patterns >>
     #@+<< define compound_statements_pat >>
     #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >>
@@ -73,6 +75,7 @@ class C_Importer(Importer):
             i += 1
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
+                m2 = self.multi_line_func_pat.match(s)
                 if m:
                     name = m.group(1) or ''
                     if (
@@ -84,6 +87,16 @@ class C_Importer(Importer):
                         end = self.find_end_of_block(i, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
                         result.append((kind, name, prev_i, i, end))
+                        i = prev_i = end
+                        break
+                elif m2 and i + 1 < i2:
+                    i = i + 1
+                    # Don't match compound statements.
+                    name = m2.group(1) or ''
+                    if not self.compound_statements_pat.match(name):
+                        end = self.find_end_of_block(i, i2)
+                        assert i1 + 1 <= end <= i2, (i1, end, i2)
+                        result.append(('func', name, prev_i, i, end))
                         i = prev_i = end
                         break
         return result
