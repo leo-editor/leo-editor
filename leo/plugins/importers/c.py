@@ -39,7 +39,7 @@ class C_Importer(Importer):
     class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
     function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
     namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
-    struct_pat = re.compile(r'(.*?)\bstruct\s*([\w: ]+)?\s*\{')
+    struct_pat = re.compile(r'(.*?)\bstruct\s*(\w+)?\s*\{')
     block_patterns = (
         ('class', class_pat),
         ('func', function_pat),
