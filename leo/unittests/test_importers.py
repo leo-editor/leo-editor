@@ -29,7 +29,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
-    def check_outline(self, p, expected, trace_results=True):
+    def check_outline(self, p, expected, trace_results=False):
         """
         BaseTestImporter.check_outline.
         """

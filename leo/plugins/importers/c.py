@@ -85,11 +85,11 @@ class C_Importer(Importer):
                     # *Never* match compound statements.
                     if not self.compound_statements_pat.match(name):
                         end = self.find_end_of_block(i, i2)
-                        assert i1 + 1 <= end < i2, (end, i1, i2)
+                        assert i1 + 1 <= end <= i2, (i1, end, i2)
                         result.append((kind, name, prev_i, i + 1, end))
                         i = prev_i = end
                         break
-        g.printObj(result, tag='Result')
+        ### g.printObj(result, tag='Result')
         return result
     #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -146,14 +146,15 @@ class C_Importer(Importer):
             # Recursively generate the inner nodes/blocks.
             last_end = end
             for block in blocks:
-                last_end = block [4]
+                child_kind, child_name, child_start, child_start_body, child_end = block
+                last_end = child_end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = name or f"unnamed {kind}"
+                child.h = child_name or f"unnamed {child_kind}"
                 self.gen_block(block, level + 1, child)
 
             # Add any tail lines.
-            g.trace('TAIL', lines[last_end : end])
+            ### g.trace('TAIL', lines[last_end : end])
             parent_body.extend(lines[last_end : end])
             parent.b = ''.join(parent_body)
         else:
@@ -175,7 +176,7 @@ class C_Importer(Importer):
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
             # Start the recursion.
-            block = ('outer', parent.h, 0, 0, len(lines))
+            block = ('outer', 'parent', 0, 0, len(lines))
             self.gen_block(block, level=0, parent=parent)
         except ImporterError:
             parent.deleteAllChildren()
