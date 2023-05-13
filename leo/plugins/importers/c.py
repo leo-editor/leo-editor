@@ -3,7 +3,7 @@
 """The @auto importer for the C language and other related languages."""
 from __future__ import annotations
 import re
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Block, Importer, ImporterError
 from leo.core import leoGlobals as g
 if TYPE_CHECKING:
@@ -105,7 +105,7 @@ class C_Importer(Importer):
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230510080255.1: *3* c_i.gen_block
+    #@+node:ekr.20230510080255.1: *3* c_i.gen_block (can't be in Importer yet)
     def gen_block(self, block: Block, level: int, parent: Position) -> None:
         """
         Generate parent.b from the given block.
@@ -153,7 +153,7 @@ class C_Importer(Importer):
             result_list = lines[start:end]
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
-    #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
+    #@+node:ekr.20230510071622.1: *3* c_i.gen_lines (can't be in Importer yet)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         C_Importer.gen_lines: a rewrite of Importer.gen_lines.
