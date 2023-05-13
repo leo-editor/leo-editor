@@ -132,9 +132,9 @@ class C_Importer(Importer):
             #@-<< trace blocks >>
         if blocks:
             # Start with the head: lines[start : start_start_body].
-            parent_body = lines[start:start_body]
+            result_list = lines[start:start_body]
             # Add @others.
-            parent_body.extend(['@others\n'])
+            result_list.extend(['@others\n'])
 
             # Recursively generate the inner nodes/blocks.
             last_end = end
@@ -147,10 +147,11 @@ class C_Importer(Importer):
                 self.gen_block(block, level + 1, child)
 
             # Add any tail lines.
-            parent_body.extend(lines[last_end:end])
-            parent.b = ''.join(parent_body).lstrip('\n').rstrip() + '\n'
+            result_list.extend(lines[last_end:end])
         else:
-            parent.b = ''.join(lines[start:end]).lstrip('\n').rstrip() + '\n'
+            result_list = lines[start:end]
+        # Delete extra leading and trailing whitespace.
+        parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
