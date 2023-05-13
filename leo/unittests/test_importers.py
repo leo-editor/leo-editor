@@ -256,7 +256,7 @@ class TestC(BaseTestImporter):
             aaa::bbb::dothat(xyz *b) // trailing comment.
             {
                 return true;
-            }
+            } // comment
         """).strip() + '\n'
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -276,96 +276,43 @@ class TestC(BaseTestImporter):
                 'aaa::bbb::dothat(xyz *b) // trailing comment.\n'
                 '{\n'
                 '    return true;\n'
-                '}\n'
+                '} // comment\n'
             ),
         )
         p = self.run_test(s, check_flag=True)
         self.check_outline(p, expected_results, trace_results=False)
-    #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
-    def test_comment_follows_block_delim(self):
-
-        s = """
-            void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
-            {
-                assert(false);
-            }
-
-            bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                )
-            {
-                return true;
-            } //  <--------------------- problem
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'void aaa::bbb::doit',
-                'void\n'
-                'aaa::bbb::doit\n'
-                '    (\n'
-                '    awk* b\n'
-                '    )\n'
-                '{\n'
-                '    assert(false);\n'
-                '}\n'
-                '\n'
-
-            ),
-            (1, 'bool aaa::bbb::dothat',
-                'bool\n'
-                'aaa::bbb::dothat\n'
-                '    (\n'
-                '    xyz *b\n'
-                '    )\n'
-                '{\n'
-                '    return true;\n'
-                '} //  <--------------------- problem\n'
-                '\n'
-            ),
-        ))
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'extern "C"',
                 'extern "C"\n'
                 '{\n'
                 '#include "stuff.h"\n'
                 'void    init(void);\n'
                 '#include "that.h"\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -375,15 +322,9 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'static void ReleaseCharSet',
                 'static void\n'
                 'ReleaseCharSet(cset)\n'
                 '    CharSet *cset;\n'
@@ -393,13 +334,18 @@ class TestC(BaseTestImporter):
                 '    ckfree((char *)cset->ranges);\n'
                 '    }\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
@@ -407,15 +353,9 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'Tcl_Obj * Tcl_NewLongObj',
                 'Tcl_Obj *\n'
                 'Tcl_NewLongObj(longValue)\n'
                 '    register long longValue; /* Long integer used to initialize the\n'
@@ -423,9 +363,12 @@ class TestC(BaseTestImporter):
                 '{\n'
                 '    return Tcl_DbNewLongObj(longValue, "unknown", 0);\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
