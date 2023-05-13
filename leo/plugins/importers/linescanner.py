@@ -8,6 +8,8 @@ from typing import Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
+
+Block = Tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
 StringIO = io.StringIO
 
 class ImporterError(Exception):
@@ -212,7 +214,40 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20230510150743.1: *3* i.delete_comments_and_strings (New)
+    #@+node:ekr.20161108131153.18: *3* i: Messages
+    def error(self, s: str) -> None:  # pragma: no cover
+        """Issue an error and cause a unit test to fail."""
+        self.errors += 1
+        self.importCommands.errors += 1
+
+    def report(self, message: str) -> None:  # pragma: no cover
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
+
+    def warning(self, s: str) -> None:  # pragma: no cover
+        if not g.unitTesting:
+            g.warning('Warning:', s)
+    #@+node:ekr.20230513091837.1: *3* i: New helpers
+    #@+node:ekr.20230513080610.1: *4* i.compute_common_lws
+    def compute_common_lws(self, blocks: List[Block]) -> int:
+        """
+        Return the length of the common leading indentation of
+        all non-blank lines in all blocks.
+        """
+        if not blocks:
+            return 0
+        lws_list: List[int] = []
+        for block in blocks:
+            kind, name, start, start_body, end = block
+            lines = self.lines[start:end]
+            for line in lines:
+                stripped_line = line.lstrip()
+                if stripped_line:  # Skip empty lines
+                    lws_list.append(len(line[: -len(stripped_line)]))
+        return min(lws_list) if lws_list else 0
+    #@+node:ekr.20230510150743.1: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
         """Delete all comments and strings from the given lines."""
         string_delims = self.string_list
@@ -260,7 +295,30 @@ class Importer:
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20220727073906.1: *3* i.gen_lines & helpers (OLD: to be deleted)
+    #@+node:ekr.20230510072848.1: *4* i.make_guide_lines
+    def make_guide_lines(self, lines: List[str]) -> List[str]:
+        """
+        Return a list if **guide lines** that simplify the detection of blocks.
+
+        This default method removes all comments and strings from the original lines.
+        """
+        return self.delete_comments_and_strings(lines[:])
+    #@+node:ekr.20230513085654.1: *4* i.remove_common_lws
+    def remove_common_lws(self, lws: str, p: Position) -> None:
+        """Remove the given leading whitespace from all lines of p.b."""
+        if len(lws) == 0:
+            return
+        assert lws.isspace(), repr(lws)
+        n = len(lws)
+        lines = g.splitLines(p.b)
+        result: List[str] = []
+        for line in lines:
+            stripped_line = line.strip()
+            assert not stripped_line or line.startswith(lws), repr(line)
+            result.append(line[n:] if stripped_line else line)
+        p.b = ''.join(result)
+    #@+node:ekr.20230513091923.1: *3* i: Old methods: to be deleted
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (OLD: to be deleted)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -304,7 +362,7 @@ class Importer:
         )
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
-    #@+node:ekr.20220807083207.1: *4* i.append_directives
+    #@+node:ekr.20220807083207.1: *5* i.append_directives
     def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str = None) -> None:
         """
         Append directive lines to lines_dict.
@@ -319,7 +377,7 @@ class Importer:
             f"@language {language or self.name}\n",
             f"@tabwidth {self.tab_width}\n",
         ])
-    #@+node:ekr.20220727085532.1: *4* i.body_string
+    #@+node:ekr.20220727085532.1: *5* i.body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
@@ -331,7 +389,7 @@ class Importer:
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
         return ''.join(self.massaged_line(s, i) for s in self.lines[a:b])
-    #@+node:ekr.20161108131153.9: *4* i.compute_headline
+    #@+node:ekr.20161108131153.9: *5* i.compute_headline
     def compute_headline(self, s: str) -> str:
         """
         Return the cleaned version headline s.
@@ -342,7 +400,7 @@ class Importer:
             if i > -1:
                 s = s[:i]
         return s.strip()
-    #@+node:ekr.20220807043759.1: *4* i.create_placeholders
+    #@+node:ekr.20220807043759.1: *5* i.create_placeholders
     def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
@@ -361,7 +419,7 @@ class Importer:
             child.h = f"placeholder level {len(parents)}"
             parents.append(child)
             lines_dict[child.v] = []
-    #@+node:ekr.20220727085911.1: *4* i.declaration_headline
+    #@+node:ekr.20220727085911.1: *5* i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
         """
         Return an informative headline for s, a group of declarations.
@@ -379,11 +437,11 @@ class Importer:
                     return self.compute_headline(strip_s)
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover (missing test)
-    #@+node:ekr.20220804120240.1: *4* i.gen_lines_prepass
+    #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
         """A hook for pascal and lua. Called by i.gen_lines()."""
         pass
-    #@+node:ekr.20220727074602.1: *4* i.get_block
+    #@+node:ekr.20220727074602.1: *5* i.get_block
     def get_block(self, i: int) -> block_tuple:
         """
         Importer.get_block, based on Vitalije's getdefn function.
@@ -432,7 +490,7 @@ class Importer:
             decl_level=decl_level,
             name=self.compute_headline(self.headline or lines[decl_line])
         )
-    #@+node:ekr.20220727074602.2: *4* i.get_intro
+    #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
         Return the number of preceeding "intro lines" that should be added to this class or def.
@@ -457,7 +515,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220729070924.1: *4* i.is_intro_line
+    #@+node:ekr.20220729070924.1: *5* i.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
         """
         Return True if line n is a comment line that starts at the give column.
@@ -467,7 +525,7 @@ class Importer:
             line.strip().startswith(self.single_comment)
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@+node:ekr.20220727075027.1: *4* i.make_node (trace)
+    #@+node:ekr.20220727075027.1: *5* i.make_node (trace)
     def make_node(self,
         p: Position,  # The starting (local root) position.
         start: int,  # The first line to allocate.
@@ -569,7 +627,7 @@ class Importer:
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
-    #@+node:ekr.20220728130445.1: *4* i.new_skip_block (trace)
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
         trace = False
@@ -599,7 +657,7 @@ class Importer:
                 return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
 
-    #@+node:ekr.20220728130253.1: *4* i.new_starts_block
+    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -615,7 +673,7 @@ class Importer:
         if this_state.level > prev_state.level:
             return i + 1
         return None
-    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper (OLD: to be deleted)
+    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines & helper (OLD: to be deleted)
     def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.
@@ -628,7 +686,7 @@ class Importer:
             context, level = self.scan_one_line(context, level, line)
             states.append(NewScanState(context, level))
         return states
-    #@+node:ekr.20220814213148.1: *4* i.scan_one_line & helper
+    #@+node:ekr.20220814213148.1: *5* i.scan_one_line & helper
     def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
         """Fully scan one line. Return the context and level at the end of the line."""
         i = 0
@@ -662,7 +720,7 @@ class Importer:
                     i, level = self.update_level(i, level, line)
             assert progress < i, (repr(context), repr(line))
         return context, level
-    #@+node:ekr.20220815111151.1: *5* i.update_level
+    #@+node:ekr.20220815111151.1: *6* i.update_level
     def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:
         """
         Importer.update_level.  xml importer overrides this method.
@@ -676,29 +734,6 @@ class Importer:
             level = max(0, level - 1)
         i += 1
         return i, level
-    #@+node:ekr.20230510072848.1: *3* i.make_guide_lines
-    def make_guide_lines(self, lines: List[str]) -> List[str]:
-        """
-        Return a list if **guide lines** that simplify the detection of blocks.
-
-        This default method removes all comments and strings from the original lines.
-        """
-        return self.delete_comments_and_strings(lines[:])
-    #@+node:ekr.20161108131153.18: *3* i: Messages
-    def error(self, s: str) -> None:  # pragma: no cover
-        """Issue an error and cause a unit test to fail."""
-        self.errors += 1
-        self.importCommands.errors += 1
-
-    def report(self, message: str) -> None:  # pragma: no cover
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
-
-    def warning(self, s: str) -> None:  # pragma: no cover
-        if not g.unitTesting:
-            g.warning('Warning:', s)
     #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s: str) -> int:
