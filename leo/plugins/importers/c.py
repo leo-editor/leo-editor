@@ -47,7 +47,7 @@ class C_Importer(Importer):
     )
 
     # Pattern that *might* be continued on the next line.
-    multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*(\\[\w ]*)?')
+    multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
     #@-<< define block_patterns >>
     #@+<< define compound_statements_pat >>
     #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >>
