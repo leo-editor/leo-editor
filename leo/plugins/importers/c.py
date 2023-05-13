@@ -32,7 +32,7 @@ class C_Importer(Importer):
             # 'break', 'continue',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper (override)
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
@@ -65,6 +65,8 @@ class C_Importer(Importer):
 
     def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
         """
+        C_Importer.find_blocks: override Importer.find_blocks.
+
         Find all blocks in the given range of lines.
 
         Return a list of tuples(name, start, start_body, end) for each block.
@@ -105,7 +107,7 @@ class C_Importer(Importer):
                         i = prev_i = end
                         break
         return result
-    #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
+    #@+node:ekr.20230511054807.1: *4* c_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index (within lines) of the line *following* the start of the block.
