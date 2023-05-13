@@ -151,8 +151,7 @@ class C_Importer(Importer):
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
             # Add indented @others.
-            common_lws = self.common_indent(blocks)
-            common_lws_s = ' ' * common_lws
+            common_lws_s = ' ' * self.common_indent(blocks)
             result_list.extend([f"{common_lws_s}@others\n"])
 
             # Recursively generate the inner nodes/blocks.
