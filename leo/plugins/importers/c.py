@@ -93,7 +93,7 @@ class C_Importer(Importer):
                     # Don't match compound statements.
                     name = m2.group(1) or ''
                     if (
-                        # The next lilne must start with '{'
+                        # The next line must start with '{'
                         lines[i].strip().startswith('{')
                         # Don't match compound statements.
                         and not self.compound_statements_pat.match(name)
