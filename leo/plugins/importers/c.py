@@ -37,7 +37,7 @@ class C_Importer(Importer):
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
     class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
-    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*(const)\s*{')
+    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
     namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
     struct_pat = re.compile(r'(.*?)\bstruct\s*([\w: ]+)?\s*\{')
     block_patterns = (
