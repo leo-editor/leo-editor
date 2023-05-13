@@ -78,7 +78,7 @@ class C_Importer(Importer):
                     name = m.group(2) or ''
                     if (
                         # Don't match if the line contains a trailing '}'.
-                        '}' not in s[m.end(2):]
+                        '}' not in s[m.end(2) :]
                         # Don't match compound statements.
                         and not self.compound_statements_pat.match(name)
                     ):
@@ -128,11 +128,11 @@ class C_Importer(Importer):
                 for z in blocks:
                     kind2, name2, start2, start_body2, end2 = z
                     tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
-                    g.printObj(lines[start2: end2], tag=tag)
+                    g.printObj(lines[start2:end2], tag=tag)
             #@-<< trace blocks >>
         if blocks:
             # Start with the head: lines[start : start_start_body].
-            parent_body = lines[start : start_body]
+            parent_body = lines[start:start_body]
             # Add @others.
             parent_body.extend(['@others\n'])
 
@@ -147,7 +147,7 @@ class C_Importer(Importer):
                 self.gen_block(block, level + 1, child)
 
             # Add any tail lines.
-            parent_body.extend(lines[last_end : end])
+            parent_body.extend(lines[last_end:end])
             parent.b = ''.join(parent_body).lstrip('\n').rstrip() + '\n'
         else:
             parent.b = ''.join(lines[start:end]).lstrip('\n').rstrip() + '\n'
