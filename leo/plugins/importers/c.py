@@ -89,14 +89,18 @@ class C_Importer(Importer):
                         result.append((kind, name, prev_i, i, end))
                         i = prev_i = end
                         break
-                elif m2 and i + 1 < i2:
-                    i = i + 1
+                elif m2 and i < i2:
                     # Don't match compound statements.
                     name = m2.group(1) or ''
-                    if not self.compound_statements_pat.match(name):
-                        end = self.find_end_of_block(i, i2)
+                    if (
+                        # The next lilne must start with '{'
+                        lines[i].strip().startswith('{')
+                        # Don't match compound statements.
+                        and not self.compound_statements_pat.match(name)
+                    ):
+                        end = self.find_end_of_block(i + 1, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        result.append(('func', name, prev_i, i, end))
+                        result.append(('func', name, prev_i, i + 1, end))
                         i = prev_i = end
                         break
         return result
