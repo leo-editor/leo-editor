@@ -169,6 +169,8 @@ class TestC(BaseTestImporter):
                 }
             }
         """).strip() + '\n'
+
+        ### To do: indent @others. undent inner bodies.
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -177,23 +179,21 @@ class TestC(BaseTestImporter):
             ),
             (1, 'class cTestClass1',
                 'class cTestClass1 {\n'
-                # '    @others\n'
-                '@others\n'
+                '    @others\n'
                 '}\n'
             ),
             (2, 'func foo',
-                '    int foo (int a) {\n'
-                '        a = 2 ;\n'
-                '    }\n'
+                'int foo (int a) {\n'
+                '    a = 2 ;\n'
+                '}\n'
             ),
             (2, 'func bar',
-                '    char bar (float c) {\n'
-                '        ;\n'
-                '    }\n'
+                'char bar (float c) {\n'
+                '    ;\n'
+                '}\n'
             ),
         )
         p = self.run_test(s, check_flag=True)
-        ### To do: indent @others and undent inner bodies.
         self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):

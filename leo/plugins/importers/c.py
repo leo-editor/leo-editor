@@ -32,6 +32,23 @@ class C_Importer(Importer):
             # 'break', 'continue',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
+    #@+node:ekr.20230513080610.1: *3* c_i.common_indent (move to base class)
+    def common_indent(self, blocks: List[Block]) -> int:
+        """
+        Return the length of the common leading indentation of
+        all non-blank lines in all blocks.
+        """
+        if not blocks:
+            return 0
+        lws_list: List[int] = []
+        for block in blocks:
+            kind, name, start, start_body, end = block
+            lines = self.lines [start : end]
+            for line in lines:
+                stripped_line = line.lstrip()
+                if stripped_line:  # Skip empty lines
+                    lws_list.append(len(line[:-len(stripped_line)]))
+        return min(lws_list) if lws_list else 0
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
@@ -133,8 +150,10 @@ class C_Importer(Importer):
         if blocks:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
-            # Add @others.
-            result_list.extend(['@others\n'])
+            # Add indented @others.
+            common_lws = self.common_indent(blocks)
+            common_lws_s = ' ' * common_lws
+            result_list.extend([f"{common_lws_s}@others\n"])
 
             # Recursively generate the inner nodes/blocks.
             last_end = end
@@ -145,7 +164,8 @@ class C_Importer(Importer):
                 child = parent.insertAsLastChild()
                 child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
                 self.gen_block(block, level + 1, child)
-
+                # Remove common_lws.
+                self.remove_common_lws(common_lws_s, child)
             # Add any tail lines.
             result_list.extend(lines[last_end:end])
         else:
@@ -181,6 +201,20 @@ class C_Importer(Importer):
 
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20230513085654.1: *3* c_i.remove_common_lws (move to base class)
+    def remove_common_lws(self, lws: str, p: Position) -> None:
+        """Remove the given leading whitespace from all lines of p.b."""
+        if len(lws) == 0:
+            return
+        assert lws.isspace(), repr(lws)
+        n = len(lws)
+        lines = g.splitLines(p.b)
+        result: List[str] = []
+        for line in lines:
+            stripped_line = line.strip()
+            assert not stripped_line or line.startswith(lws), repr(line)
+            result.append(line[n:] if stripped_line else line)
+        p.b = ''.join(result)
     #@-others
 #@-others
 
