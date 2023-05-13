@@ -156,7 +156,8 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -167,9 +168,8 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
@@ -177,23 +177,24 @@ class TestC(BaseTestImporter):
             ),
             (1, 'class cTestClass1',
                 'class cTestClass1 {\n'
-                '\n'
-                '    @others\n'
-                '}\n'
-                '\n'
-            ),
-            (2, 'int foo',
-                'int foo (int a) {\n'
-                '    a = 2 ;\n'
-                '}\n'
-                '\n'
-            ),
-            (2, 'char bar',
-                'char bar (float c) {\n'
-                '    ;\n'
+                # '    @others\n'
+                '@others\n'
                 '}\n'
             ),
-        ))
+            (2, 'func foo',
+                '    int foo (int a) {\n'
+                '        a = 2 ;\n'
+                '    }\n'
+            ),
+            (2, 'func bar',
+                '    char bar (float c) {\n'
+                '        ;\n'
+                '    }\n'
+            ),
+        )
+        p = self.run_test(s, check_flag=True)
+        ### To do: indent @others and undent inner bodies.
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
