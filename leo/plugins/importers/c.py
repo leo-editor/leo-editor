@@ -22,16 +22,7 @@ class C_Importer(Importer):
 
         # Init the base class.
         super().__init__(c, language='c')
-
         self.string_list = ['"']  # Not single quotes.
-
-        # Keywords that may be followed by '{':
-        self.c_keywords = '(%s)' % '|'.join([
-            'case', 'default', 'do', 'else', 'enum', 'for', 'goto',
-            'if', 'return', 'sizeof', 'struct', 'switch', 'while',
-            # 'break', 'continue',
-        ])
-        self.c_keywords_pattern = re.compile(self.c_keywords)
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper (override)
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
