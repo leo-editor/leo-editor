@@ -76,8 +76,12 @@ class C_Importer(Importer):
                 m = pattern.match(s)
                 if m:
                     name = m.group(2) or ''
-                    # *Never* match compound statements.
-                    if not self.compound_statements_pat.match(name):
+                    if (
+                        # Don't match if the line contains a trailing '}'.
+                        '}' not in s[m.end(2):]
+                        # Don't match compound statements.
+                        and not self.compound_statements_pat.match(name)
+                    ):
                         end = self.find_end_of_block(i, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
                         result.append((kind, name, prev_i, i, end))
