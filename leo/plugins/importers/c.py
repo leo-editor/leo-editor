@@ -36,10 +36,10 @@ class C_Importer(Importer):
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
-    class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
-    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
-    namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
-    struct_pat = re.compile(r'(.*?)\bstruct\s*(\w+)?\s*\{')
+    class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
+    function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
+    namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')
+    struct_pat = re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')
     block_patterns = (
         ('class', class_pat),
         ('func', function_pat),
@@ -75,10 +75,10 @@ class C_Importer(Importer):
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    name = m.group(2) or ''
+                    name = m.group(1) or ''
                     if (
                         # Don't match if the line contains a trailing '}'.
-                        '}' not in s[m.end(2) :]
+                        '}' not in s[m.end(1) :]
                         # Don't match compound statements.
                         and not self.compound_statements_pat.match(name)
                     ):
