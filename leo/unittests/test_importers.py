@@ -198,7 +198,8 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -212,9 +213,8 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
@@ -222,27 +222,25 @@ class TestC(BaseTestImporter):
             ),
             (1, 'class cTestClass1',
                 'class cTestClass1 {\n'
-                '\n'
-                '    @others\n'
+                '@others\n'
                 '}\n'
-                '\n'
             ),
-            (2, 'int foo',
-                'int foo (int a) {\n'
+            (2, 'func foo',
+                '    int foo (int a) {\n'
                 '// an underindented line.\n'
-                '    a = 2 ;\n'
-                '}\n'
-                '\n'
+                '        a = 2 ;\n'
+                '    }\n'
             ),
-            (2, 'char bar',
-                '// This should go with the next function.\n'
+            (2, 'func bar',
+                '    // This should go with the next function.\n'
                 '\n'
-                'char bar (float c) {\n'
-                '    ;\n'
-                '}\n'
+                '    char bar (float c) {\n'
+                '        ;\n'
+                '    }\n'
             ),
-        ))
-
+        )
+        p = self.run_test(s)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
     def test_comment_follows_arg_list(self):
 
