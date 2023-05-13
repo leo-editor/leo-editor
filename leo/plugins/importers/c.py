@@ -37,9 +37,9 @@ class C_Importer(Importer):
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
     class_pat = re.compile(r'(.*?)\bclass\s+(\w+)\s*\{')
-    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*{')
+    function_pat = re.compile(r'(.*?)\b(\w+)\s*\(.*?\)\s*(const)\s*{')
     namespace_pat = re.compile(r'(.*?)\bnamespace\s*(\w+)?\s*\{')
-    struct_pat = re.compile(r'(.*?)\bstruct\s*(\w+)?\s*\{')
+    struct_pat = re.compile(r'(.*?)\bstruct\s*([\w: ]+)?\s*\{')
     block_patterns = (
         ('class', class_pat),
         ('func', function_pat),
@@ -60,7 +60,6 @@ class C_Importer(Importer):
     #@-<< define compound_statements_pat >>
 
     # Compound statements.
-    find_blocks_count = 0  ###
 
     def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
         """
@@ -68,12 +67,7 @@ class C_Importer(Importer):
 
         Return a list of tuples(name, start, start_body, end) for each block.
         """
-        ### g.trace(f"Entry: {i1}:{i2} level: {level}")
         lines = self.lines
-        # trace = any('# enable-trace' in z for z in lines)  # A useful hack for now.
-        self.find_blocks_count += 1  ###
-        if level > 3:  ###
-            g.trace(self.find_blocks_count, g.callers(20))
         i, prev_i, result = i1, i1, []
         while i < i2:
             s = lines[i]
@@ -86,10 +80,9 @@ class C_Importer(Importer):
                     if not self.compound_statements_pat.match(name):
                         end = self.find_end_of_block(i, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        result.append((kind, name, prev_i, i + 1, end))
+                        result.append((kind, name, prev_i, i, end))
                         i = prev_i = end
                         break
-        ### g.printObj(result, tag='Result')
         return result
     #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -137,9 +130,8 @@ class C_Importer(Importer):
                     g.printObj(lines[start2: end2], tag=tag)
             #@-<< trace blocks >>
         if blocks:
-            # Add any head lines.
+            # Start with the head: lines[start : start_start_body].
             parent_body = lines[start : start_body]
-
             # Add @others.
             parent_body.extend(['@others\n'])
 
@@ -150,15 +142,15 @@ class C_Importer(Importer):
                 last_end = child_end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = child_name or f"unnamed {child_kind}"
+                child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
                 self.gen_block(block, level + 1, child)
 
             # Add any tail lines.
             ### g.trace('TAIL', lines[last_end : end])
             parent_body.extend(lines[last_end : end])
-            parent.b = ''.join(parent_body)
+            parent.b = ''.join(parent_body).lstrip('\n').rstrip() + '\n'
         else:
-            parent.b = ''.join(self.lines[start:end])
+            parent.b = ''.join(lines[start:end]).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230510071622.1: *3* c_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
