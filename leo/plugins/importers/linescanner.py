@@ -134,10 +134,12 @@ class Importer:
     #@+node:ekr.20230513080610.1: *4* i.compute_common_lws
     def compute_common_lws(self, blocks: List[Block]) -> str:
         """
-        Return the length of the common leading indentation of
-        all non-blank lines in all blocks.
+        Return the length of the common leading indentation of all non-blank
+        lines in all blocks.
 
-        This method assumes that no leading whitespace contains intermixed tabs and spaces.
+        This method assumes that no leading whitespace contains intermixed tabs and spaces:
+        
+        The returned string should consist of all blanks or all tabs.
         """
         if not blocks:
             return ''
