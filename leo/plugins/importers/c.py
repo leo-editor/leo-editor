@@ -54,7 +54,7 @@ class C_Importer(Importer):
 
     # Compound statements.
 
-    def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
+    def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
         C_Importer.find_blocks: override Importer.find_blocks.
 

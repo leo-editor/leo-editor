@@ -136,7 +136,7 @@ class Importer:
         """
         Return the length of the common leading indentation of
         all non-blank lines in all blocks.
-        
+
         This method assumes that no leading whitespace contains intermixed tabs and spaces.
         """
         if not blocks:
@@ -199,7 +199,7 @@ class Importer:
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230513134327.1: *4* i.find_blocks (must be overridden)
-    def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
+    def find_blocks(self, i1: int, i2: int) -> List[Block]:
         raise ImporterError(f"Importer for language {self.language} must override Importer.find_blocks")
     #@+node:ekr.20230510072848.1: *4* i.make_guide_lines
     def make_guide_lines(self, lines: List[str]) -> List[str]:
@@ -210,7 +210,7 @@ class Importer:
         """
         return self.delete_comments_and_strings(lines[:])
     #@+node:ekr.20230510080255.1: *4* i.new_gen_block
-    def new_gen_block(self, block: Block, level: int, parent: Position) -> None:
+    def new_gen_block(self, block: Block, parent: Position) -> None:
         """
         Generate parent.b from the given block.
         Recursively create all descendant blocks, after first creating their parent nodes.
@@ -220,7 +220,7 @@ class Importer:
         assert start <= start_body <= end, (start, start_body, end)
 
         # Find all blocks in the body of this block.
-        blocks = self.find_blocks(start_body, end, level)
+        blocks = self.find_blocks(start_body, end)
         if 0:
             #@+<< trace blocks >>
             #@+node:ekr.20230511121416.1: *5* << trace blocks >>
@@ -249,7 +249,7 @@ class Importer:
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
                 child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
-                self.new_gen_block(block, level + 1, child)
+                self.new_gen_block(block, child)
                 # Remove common_lws.
                 self.remove_common_lws(common_lws_s, child)
             # Add any tail lines.
@@ -276,7 +276,7 @@ class Importer:
             assert n1 == n2, (n1, n2)
             # Start the recursion.
             block = ('outer', 'parent', 0, 0, len(lines))
-            self.new_gen_block(block, level=0, parent=parent)
+            self.new_gen_block(block, parent=parent)
         except ImporterError:
             parent.deleteAllChildren()
             parent.b = ''.join(lines)

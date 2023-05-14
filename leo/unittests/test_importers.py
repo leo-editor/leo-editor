@@ -400,7 +400,7 @@ class TestC(BaseTestImporter):
         self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
-        
+
         from leo.plugins.importers.c import C_Importer
         importer = C_Importer(self.c)
 
@@ -429,7 +429,7 @@ class TestC(BaseTestImporter):
         self.assertEqual(result, expected_lines)
     #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
     def test_find_blocks(self):
-        
+
         from leo.plugins.importers.c import C_Importer
         trace = False
         importer = C_Importer(self.c)
@@ -465,7 +465,7 @@ class TestC(BaseTestImporter):
         """))
         importer.lines = lines
         importer.guide_lines = importer.make_guide_lines(lines)
-        blocks = importer.find_blocks(i1=0, i2=len(lines), level=0)
+        blocks = importer.find_blocks(i1=0, i2=len(lines))
         if trace:
             print('')
             g.trace('Blocks...')
@@ -484,7 +484,7 @@ class TestC(BaseTestImporter):
         # Test codon/codon/app/main.cpp.
         import os
         from leo.plugins.importers.c import C_Importer
-        
+
         trace = False
         c = self.c
         importer = C_Importer(c)
@@ -502,8 +502,8 @@ class TestC(BaseTestImporter):
                 for p in c.p.self_and_subtree():
                     g.printObj(p.b, tag=p.h)
         else: # Test find_blocks.
-            guide_lines = importer.make_guide_lines(lines)
-            result = importer.find_blocks(guide_lines)
+            importer.guide_lines = importer.make_guide_lines(lines)
+            result = importer.find_blocks(0, len(importer.guide_lines))
             if trace:
                 print('')
                 g.trace()
