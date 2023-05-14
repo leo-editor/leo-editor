@@ -678,7 +678,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # pylint: disable = too-many-statements
         global TAB2SPACES
         super().__init__()
-        QWidget().__init__()
+        QtWidgets.QWidget().__init__(self)
 
         self.c = c
         self.p = c.p
