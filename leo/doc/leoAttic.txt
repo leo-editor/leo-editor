@@ -9146,6 +9146,143 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
+#@+node:ekr.20230514125046.1: ** Experimental code
+#@+node:ekr.20230514124825.1: *3* New C_Importer code (experimental, buggy)
+@language rest
+
+This code attempts to use multi-line regex searches in the new C importer.
+
+See the post: ENB: Leo's new c++ importer: brags, improvements, and acknowledgments
+https://groups.google.com/g/leo-editor/c/dIFlhPl1KQ0/m/jbD-neSYAwAJ
+
+However, I suspect a line-oriented approch is more robust.
+
+@language python
+#@+node:ekr.20230514084310.1: *4* NEW: c_i.make_guide_lines (override)
+def make_guide_lines(self, lines: List[str]) -> List[str]:
+    """
+    C_Importer.make_guide_lines.
+    
+    Return a list if **guide lines** that simplify the detection of blocks.
+
+    Also compute self.guide_string and self.index_list.
+    """
+    guide_lines = self.delete_comments_and_strings(lines[:])
+
+    # Compute c_i.guide_string for c_i.find_blocks.
+    self.guide_string = ''.join(guide_lines)
+
+    # Compute c_i.index_list, a list of tuples (starting_index, ending_index)
+    # for each of the guide string's lines.
+    i, self.index_list = 0, []
+    for line in guide_lines:
+        self.index_list.append((i, i + len(line)))
+        i += len(line)
+    # Add an extra entry to avoid IndexErrors.
+    n = len(self.guide_string)
+    self.index_list.append((n, n))
+
+    return guide_lines
+#@+node:ekr.20230514124004.1: *4* NEW (buggy): c_i.find_blocks & helper (override)
+<< define block_patterns >>
+<< define compound_statements_pat >>
+
+# Compound statements.
+
+def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
+    """
+    C_Importer.find_blocks: override Importer.find_blocks.
+
+    Find all blocks in the given range of lines.
+    
+    Search the *guide* string from first index of line i1 to the last index of line i2.
+
+    Return a list of tuples(kind, name, start, start_body, end) for each block.
+    """
+    # Search the *guide* string.
+    s = self.guide_string
+    # Compute the first and last *character* indices withing the guide string.
+    g.trace(i1, i2, len(self.index_list))
+    i: int = self.index_list[i1][0]
+    end_i: int = self.index_list[i2][1]
+    g.printObj(s[i:end_i], tag=f"guide_string: {i}:{end_i}")
+    prev_i = i
+    result: List[Block] = []
+    while i < end_i:
+        progress = i
+        for kind, pattern in self.block_patterns:
+            m = pattern.match(s, i, end_i)
+            if m:
+                g.trace(m)
+                assert m.group(0).endswith('{'), m.group(0)
+                name = m.group(1) or ''
+                if (
+                    # Don't match if the line contains a trailing '}'.
+                    ### '}' not in s[m.end(1) :]
+                    # Don't match compound statements.
+                    not self.compound_statements_pat.match(name)
+                ):
+                    i2 = i + len(m.group(0))
+                    end = self.find_end_of_block(i, i2)
+                    assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    result.append((kind, name, prev_i, i, end))
+                    i = prev_i = end
+                    break
+        else:
+            # No patterns match. Skip one line.
+            i += 1
+            while i < len(self.guide_string) and self.guide_string[i] != '\n':
+                i += 1
+            g.printObj(s[i:end_i], tag=f"Advance to {i}")
+        assert progress < i, i
+    return result
+#@+node:ekr.20230514124004.2: *5* << define block_patterns >>
+# Pattern that matches the start of any block.
+class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
+function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{', re.MULTILINE)
+namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')
+struct_pat = re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')
+block_patterns = (
+    ('class', class_pat),
+    ('func', function_pat),
+    ('namespace', namespace_pat),
+    ('struct', struct_pat),
+)
+
+# Pattern that *might* be continued on the next line.
+### multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
+#@+node:ekr.20230514124004.3: *5* << define compound_statements_pat >>
+# Pattern that matches any compound statement.
+compound_statements_s = '|'.join([
+    rf"\b{z}\b" for z in (
+        'case', 'catch', 'class', 'do', 'else', 'for', 'if', 'switch', 'try', 'while',
+    )
+])
+compound_statements_pat = re.compile(compound_statements_s)
+#@+node:ekr.20230514124004.4: *5* c_i.find_end_of_block
+def find_end_of_block(self, i: int, i2: int) -> int:
+    """
+    Return the character index within the guide *string* of the end of the block.
+    """
+    # i is the index (within lines) of the line *following* the start of the block.
+    # Return the index (within lines) of end of the block that starts at guide_lines[i].
+    # """
+
+    level = 1  # All blocks start with '{'
+    while i < i2:
+        ch = self.guide_string[i]
+        i += 1
+        ###
+            # line = self.lines[i]
+            # i += 1
+            # for ch in line:
+        if ch == '{':
+            level += 1
+        if ch == '}':
+            level -= 1
+            if level == 0:
+                return i
+    return i2
 #@+node:ekr.20220917052530.1: ** Old code
 #@+node:ekr.20220825080908.1: *3* Old scripts
 #@+node:ekr.20210309083845.1: *4* script: old check-leoPy.leo
