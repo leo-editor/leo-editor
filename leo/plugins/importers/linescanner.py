@@ -239,6 +239,8 @@ class Importer:
         """
         Return the length of the common leading indentation of
         all non-blank lines in all blocks.
+        
+        This method assumes that no leading whitespace contains intermixed tabs and spaces.
         """
         if not blocks:
             return 0
@@ -338,7 +340,8 @@ class Importer:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
             # Add indented @others.
-            common_lws_s = ' ' * self.compute_common_lws(blocks)
+            ws = ' ' if self.tab_width < 1 else '\t'
+            common_lws_s = ws * self.compute_common_lws(blocks)
             result_list.extend([f"{common_lws_s}@others\n"])
 
             # Recursively generate the inner nodes/blocks.
