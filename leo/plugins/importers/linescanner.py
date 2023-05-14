@@ -132,7 +132,7 @@ class Importer:
             g.warning('Warning:', s)
     #@+node:ekr.20230513091837.1: *3* i: New methods
     #@+node:ekr.20230513080610.1: *4* i.compute_common_lws
-    def compute_common_lws(self, blocks: List[Block]) -> int:
+    def compute_common_lws(self, blocks: List[Block]) -> str:
         """
         Return the length of the common leading indentation of
         all non-blank lines in all blocks.
@@ -140,7 +140,7 @@ class Importer:
         This method assumes that no leading whitespace contains intermixed tabs and spaces.
         """
         if not blocks:
-            return 0
+            return ''
         lws_list: List[int] = []
         for block in blocks:
             kind, name, start, start_body, end = block
@@ -149,7 +149,9 @@ class Importer:
                 stripped_line = line.lstrip()
                 if stripped_line:  # Skip empty lines
                     lws_list.append(len(line[: -len(stripped_line)]))
-        return min(lws_list) if lws_list else 0
+        n = min(lws_list) if lws_list else 0
+        ws_char = ' ' if self.tab_width < 1 else '\t'
+        return ws_char * n
     #@+node:ekr.20230510150743.1: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
         """Delete all comments and strings from the given lines."""
@@ -237,9 +239,8 @@ class Importer:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
             # Add indented @others.
-            ws = ' ' if self.tab_width < 1 else '\t'
-            common_lws_s = ws * self.compute_common_lws(blocks)
-            result_list.extend([f"{common_lws_s}@others\n"])
+            common_lws = self.compute_common_lws(blocks)
+            result_list.extend([f"{common_lws}@others\n"])
 
             # Recursively generate the inner nodes/blocks.
             last_end = end
@@ -251,7 +252,7 @@ class Importer:
                 child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
                 self.new_gen_block(block, child)
                 # Remove common_lws.
-                self.remove_common_lws(common_lws_s, child)
+                self.remove_common_lws(common_lws, child)
             # Add any tail lines.
             result_list.extend(lines[last_end:end])
         else:
