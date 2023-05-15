@@ -22,6 +22,7 @@ class Python_Importer(Importer):
 
     #@+others
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks & helper (override)
+    # The default patterns. Overridden in the Cython_Importer class.
     async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
     def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
     class_pat = re.compile(r'\s*class\s*(\w+)')
@@ -54,7 +55,7 @@ class Python_Importer(Importer):
                     result.append((kind, name, prev_i, i, end))
                     i = prev_i = end
                     break
-        # g.printObj(result, tag=f"{i1}:{i2}")
+        # g.printObj(result, tag=f"python_i.findblocks: {i1}:{i2}")
         return result
     #@+node:ekr.20230514140918.4: *4* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -75,7 +76,7 @@ class Python_Importer(Importer):
                 s = self.guide_lines[i]
                 i += 1
                 if s.strip() and lws_n(s) <= lws1:
-                    return i
+                    return i - 1
         return i2
     #@-others
 #@-others

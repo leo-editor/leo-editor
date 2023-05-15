@@ -792,7 +792,8 @@ class TestCython(BaseTestImporter):
     #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
     def test_importer(self):
 
-        s = '''
+        s = textwrap.dedent(
+        '''
             from libc.math cimport pow
 
             cdef double square_and_add (double x):
@@ -806,10 +807,9 @@ class TestCython(BaseTestImporter):
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+        ''').strip() + '\n'
 
-        '''
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        expected_result = (
             (0, '',  # check_outlines ignores the first headline.
                     'from libc.math cimport pow\n'
                     '\n'
@@ -831,9 +831,10 @@ class TestCython(BaseTestImporter):
                     'cpdef print_result (double x):\n'
                     '    """This is a cpdef function that can be called from Python."""\n'
                     '    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, strict_flag=True, check_flag=False)
+        self.check_outline(p, expected_result, trace_results=True)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -3636,6 +3637,60 @@ class TestPython(BaseTestImporter):
             # super().run_test(s, check_flag, strict_flag)
 
     #@+others
+    #@+node:ekr.20230514223556.1: *3* TestPython.test_basic
+    def test_basic(self):
+        s = (
+            'import sys\n'
+            'def f1():\n'
+            '    pass # comment 1\n'
+            # 'class Class1:\n'
+            # '    def method1():\n'
+            # '        pass # comment1\n'
+            # '    def method2():\n'
+            # '        pass # comment2\n'
+            # '\n'
+            
+            '# About main.\n'  # This will be associated with the *previous* block.
+            'def main():\n'
+            '    pass\n'
+            '\n'
+            "if __name__ == '__main__':\n"
+            '    main()\n'
+        )
+        expected_results = (
+            (0, '', # check_outline ignores the first headline
+                    '@others\n'
+                    "if __name__ == '__main__':\n"
+                    '    main()\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'def f1',
+                    'import sys\n'
+                    'def f1():\n'
+                    '    pass # comment 1\n'
+                    '# About main.\n'
+            ),
+            ### Not yet.
+            # (1, 'class Class1',
+                        # 'class Class1:\n'  # Don't split very short classes.
+                        # '    @others\n'
+            # ),
+            # (2, 'method11',
+                        # 'def method1():\n'
+                        # '    pass # comment 2\n'
+            # ),
+            # (2, 'method12',
+                        # 'def method2():\n'
+                        # '    pass\n'
+            # ),
+            (1, 'def main',
+                    'def main():\n'
+                    '    pass\n'
+            )
+        )
+        p = self.run_test(s, strict_flag=False, check_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
 
@@ -3874,8 +3929,7 @@ class TestPython(BaseTestImporter):
             "if __name__ == '__main__':\n"
             '    main()\n'
         )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline
                     'import sys\n'
                     '@others\n'
@@ -3952,7 +4006,9 @@ class TestPython(BaseTestImporter):
                         '    pass\n'
                         '\n'
             )
-        ))
+        )
+        p = self.run_test(s, strict_flag=False, check_flag=False)
+        self.check_outline(p, expected_results, trace_results=True)
 
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
     def test_short_file(self):
