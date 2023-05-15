@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 class Coffeescript_Importer(Python_Importer):
 
     block_patterns: Tuple = (
-        ('class', re.compile(r'^\s*class')),
-        ('def', re.compile(r'^\s*(.+):(.*)->')),
-        ('def', re.compile(r'^\s*(.+)=(.*)->')),
+        ('class', re.compile(r'^\s*class\s+([\w]+)')),
+        ('def', re.compile(r'^\s*(.+?):.*?->')),
+        ('def', re.compile(r'^\s*(.+?)=.*?->')),
     )
 
     def __init__(self, c: Cmdr) -> None:

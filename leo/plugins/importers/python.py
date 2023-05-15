@@ -50,7 +50,8 @@ class Python_Importer(Importer):
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    name = m.group(1).strip()  # cython may include trailing whitespace.
+                    # cython may include trailing whitespace.
+                    name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     results.append((kind, name, prev_i, i, end))
@@ -71,7 +72,8 @@ class Python_Importer(Importer):
             return len(s) - len(s.lstrip())
 
         prev_line = self.guide_lines[i - 1]
-        assert any(z in prev_line for z in ('class', 'def')), (i, repr(prev_line))
+        kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
+        assert any(z in prev_line for z in kinds), (i, repr(prev_line))
         tail_lines = 0
         if i < i2:
             lws1 = lws_n(prev_line)

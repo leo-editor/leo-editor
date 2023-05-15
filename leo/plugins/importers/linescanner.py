@@ -777,7 +777,7 @@ class Importer:
 
         # Call gen_lines or new_gen_lines, depending on language.
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
-        if self.language in ('c', 'cython', 'python'):
+        if self.language in ('c', 'coffeescript', 'cython', 'python'):
             self.new_gen_lines(lines, parent)
         else:
             self.gen_lines(lines, parent)

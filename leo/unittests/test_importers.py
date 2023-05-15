@@ -525,10 +525,12 @@ class TestCoffeescript(BaseTestImporter):
 
     #@+others
     #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
+    #@@tabwidth -2 # Required
+
     def test_1(self):
 
-        s = r'''
-
+        s = textwrap.dedent(
+        r"""
         # Js2coffee relies on Narcissus's parser.
 
         {parser} = @Narcissus or require('./narcissus_packed')
@@ -541,19 +543,19 @@ class TestCoffeescript(BaseTestImporter):
 
           builder    = new Builder
           scriptNode = parser.parse str
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    "# Js2coffee relies on Narcissus's parser.\n"
-                    '\n'
-                    "{parser} = @Narcissus or require('./narcissus_packed')\n"
-                    '\n'
                     '@others\n'
                     '@language coffeescript\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'buildCoffee = (str) ->',
+            (1, 'def buildCoffee',
+                    "# Js2coffee relies on Narcissus's parser.\n"
+                    '\n'
+                    "{parser} = @Narcissus or require('./narcissus_packed')\n"
+                    '\n'
                     '# Main entry point\n'
                     '\n'
                     'buildCoffee = (str) ->\n'
@@ -562,9 +564,10 @@ class TestCoffeescript(BaseTestImporter):
                     '\n'
                     '  builder    = new Builder\n'
                     '  scriptNode = parser.parse str\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
@@ -612,11 +615,11 @@ class TestCoffeescript(BaseTestImporter):
                 'class Builder\n'
                 '  @others\n'
           ),
-          (2, 'constructor: ->',
+          (2, 'def constructor',
               'constructor: ->\n'
               '  @transformer = new Transformer\n'
           ),
-          (2, 'build: (args...) ->',
+          (2, 'def build',
                 '# `build()`\n'
                 '\n'
                 'build: (args...) ->\n'
@@ -631,14 +634,13 @@ class TestCoffeescript(BaseTestImporter):
                 '\n'
                 '  if node.parenthesized then paren(out) else out\n'
           ),
-          (2, 'transform: (args...) ->',
+          (2, 'def transform',
               '# `transform()`\n'
               '\n'
               'transform: (args...) ->\n'
               '  @transformer.transform.apply(@transformer, args)\n'
-              '\n'
           ),
-          (2, 'body: (node, opts={}) ->',
+          (2, 'def body',
               '# `body()`\n'
               '\n'
               'body: (node, opts={}) ->\n'
@@ -646,13 +648,10 @@ class TestCoffeescript(BaseTestImporter):
               '  str = blockTrim(str)\n'
               '  str = unshift(str)\n'
               '  if str.length > 0 then str else ""\n'
-              '\n'
           ),
         )
         p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=True)
-
-
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
