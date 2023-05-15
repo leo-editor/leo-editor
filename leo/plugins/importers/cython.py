@@ -15,6 +15,7 @@ class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
 
     # Override the Python patterns.
+    # Group 1 matches the name of the class/cdef/cpdef/def.
     async_class_pat = re.compile(r'\s*async\s+class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
     class_pat = re.compile(r'\s*class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
 

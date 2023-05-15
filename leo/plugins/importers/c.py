@@ -27,6 +27,7 @@ class C_Importer(Importer):
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
+    # Group 1 matches the name of the class/func/namespace/struct.
     class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
     function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
     namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')

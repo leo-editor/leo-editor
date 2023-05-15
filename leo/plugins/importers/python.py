@@ -18,6 +18,7 @@ class Python_Importer(Importer):
     string_list = ['"""', "'''", '"', "'"]  # longest first.
 
     # The default patterns. Overridden in the Cython_Importer class.
+    # Group 1 matches the name of the class/def.
     async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
     def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
     class_pat = re.compile(r'\s*class\s*(\w+)')
@@ -33,7 +34,7 @@ class Python_Importer(Importer):
         super().__init__(c, language=language, strict=True)
 
     #@+others
-    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks & helper (override)
+    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks (override)
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
@@ -58,7 +59,7 @@ class Python_Importer(Importer):
                     i = prev_i = end
                     break
         return results
-    #@+node:ekr.20230514140918.4: *4* python_i.find_end_of_block
+    #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index of the class/def line (within the *guide* lines).
