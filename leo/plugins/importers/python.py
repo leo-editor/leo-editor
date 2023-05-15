@@ -64,6 +64,8 @@ class Python_Importer(Importer):
         i is the index of the class/def line (within the *guide* lines).
 
         Return the index of the line *following* the entire class/def
+        
+        Note: All following blank/comment lines are *excluded* from the block.
         """
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
@@ -71,13 +73,22 @@ class Python_Importer(Importer):
 
         prev_line = self.guide_lines[i-1]
         assert any(z in prev_line for z in ('class', 'def')), (i, repr(prev_line))
+        tail_lines = 0
         if i < i2:
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
                 i += 1
-                if s.strip() and lws_n(s) <= lws1:
-                    return i - 1
+                if s.strip():
+                    if lws_n(s) <= lws1:
+                        # A non-comment line that ends the block.
+                        # Exclude all tail lines.
+                        return i - tail_lines - 1
+                    # A non-comment line that does not end the block.
+                    tail_lines = 0
+                else:
+                    # A comment line.
+                    tail_lines += 1
         return i2
     #@-others
 #@-others

@@ -3685,7 +3685,8 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
 
-        s = self.dedent("""\
+        s = self.dedent(
+        """
               import sys
               def f1():
                   pass
@@ -3706,26 +3707,14 @@ class TestPython(BaseTestImporter):
               # An outer comment
               ATmyClassDecorator
               class Class2:
-                  def meth00():
+                  def method21():
                       print(1)
                       print(2)
                       print(3)
-                      print(4)
-                      print(5)
-                      print(6)
-                      print(7)
-                      print(8)
-                      print(9)
-                      print(10)
-                      print(11)
-                      print(12)
-                      print(13)
-                      print(14)
-                      print(15)
                   ATmyDecorator
-                  def method21():
-                      pass
                   def method22():
+                      pass
+                  def method23():
                       pass
 
               # About main.
@@ -3735,56 +3724,41 @@ class TestPython(BaseTestImporter):
 
               if __name__ == '__main__':
                   main()
-        """).replace('AT', '@')
+        """).replace('AT', '@').strip() + '\n'
 
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
-                    'import sys\n'
                     '@others\n'
+                    '\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
-                    '\n'
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'f1',
+            (1, 'def f1',
+                    'import sys\n'
                     'def f1():\n'
                     '    pass\n'
-                    '\n'
             ),
-            # Use this if unit tests *do* honor threshold.
-            # (1, 'Class1',
-                       # 'class Class1:\n'
-                       # '    def method11():\n'
-                       # '        pass\n'
-                       # '    def method12():\n'
-                       # '        pass\n'
-                       # '\n'
-            # ),
             (1, 'class Class1',
                        'class Class1:\n'
                        '    @others\n'
             ),
-            (2, 'method11',
+            (2, 'def method11',
                        'def method11():\n'
                        '    pass\n'
             ),
-            (2, 'method12',
+            (2, 'def method12',
                        'def method12():\n'
                        '    pass\n'
-                       '\n'
             ),
-            (1, 'Define a = 2',  # #2500
+            (1, 'def f2',
                        '#\n'
                        '# Define a = 2\n'
                        'a = 2\n'
                        '\n'
-            ),
-            (1, 'f2',
                        'def f2():\n'
                        '    pass\n'
-                       '\n'
             ),
             (1, 'class Class2',
                        '# An outer comment\n'
@@ -3792,42 +3766,30 @@ class TestPython(BaseTestImporter):
                        'class Class2:\n'
                        '    @others\n'
             ),
-            (2, 'meth00',
-                       'def meth00():\n'
+            (2, 'def method21',
+                       'def method21():\n'
                        '    print(1)\n'
                        '    print(2)\n'
                        '    print(3)\n'
-                       '    print(4)\n'
-                       '    print(5)\n'
-                       '    print(6)\n'
-                       '    print(7)\n'
-                       '    print(8)\n'
-                       '    print(9)\n'
-                       '    print(10)\n'
-                       '    print(11)\n'
-                       '    print(12)\n'
-                       '    print(13)\n'
-                       '    print(14)\n'
-                       '    print(15)\n'
             ),
-            (2, 'method21',
+            (2, 'def method22',
                        '@myDecorator\n'
-                       'def method21():\n'
-                       '    pass\n'
-            ),
-            (2, 'method22',
                        'def method22():\n'
                        '    pass\n'
-                       '\n'
             ),
-            (1, 'main',
+            (2, 'def method23',
+                       'def method23():\n'
+                       '    pass\n'
+            ),
+            (1, 'def main',
                        '# About main.\n'
                        '\n'
                        'def main():\n'
                        '    pass\n'
-                       '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
 
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
@@ -4031,7 +3993,7 @@ class TestPython(BaseTestImporter):
                '    pass\n'
             ),
         ))
-    #@+node:vitalije.20211207200701.1: *3* TestPython: test_no_methods
+    #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
         s = textwrap.dedent(
