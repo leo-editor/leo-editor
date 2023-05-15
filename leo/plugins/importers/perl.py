@@ -6,7 +6,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161027094537.13: ** class Perl_Importer
+#@+node:ekr.20161027094537.13: ** class Perl_Importer(Importer)
 class Perl_Importer(Importer):
     """A scanner for the perl language."""
 

@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161126161824.2: ** class Java_Importer
+#@+node:ekr.20161126161824.2: ** class Java_Importer(Importer)
 class Java_Importer(Importer):
     """The importer for the java lanuage."""
 

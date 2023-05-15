@@ -8,7 +8,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20140723122936.18049: ** class JS_Importer
+#@+node:ekr.20140723122936.18049: ** class JS_Importer(Importer)
 class JS_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:

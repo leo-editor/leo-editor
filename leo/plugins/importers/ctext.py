@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:tbrown.20140801105909.47551: ** class CText_Importer
+#@+node:tbrown.20140801105909.47551: ** class CText_Importer(Importer)
 class CText_Importer(Importer):
     #@+<< ctext docstring >>
     #@+node:ekr.20161130053507.1: *3* << ctext docstring >>

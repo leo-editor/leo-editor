@@ -5,7 +5,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161121200106.3: ** class Csharp_Importer
+#@+node:ekr.20161121200106.3: ** class Csharp_Importer(Importer)
 class Csharp_Importer(Importer):
     """The importer for the csharp lanuage."""
 

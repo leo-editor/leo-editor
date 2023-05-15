@@ -6,7 +6,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20200316101240.2: ** class Rust_Importer
+#@+node:ekr.20200316101240.2: ** class Rust_Importer(Importer)
 class Rust_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:

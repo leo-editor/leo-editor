@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161129213243.2: ** class Php_Importer
+#@+node:ekr.20161129213243.2: ** class Php_Importer(Importer)
 class Php_Importer(Importer):
     """The importer for the php lanuage."""
 
