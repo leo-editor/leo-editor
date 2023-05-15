@@ -14,26 +14,26 @@ if TYPE_CHECKING:
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
 
+    # Override the Python patterns.
+    async_class_pat = re.compile(r'\s*async\s+class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
+    class_pat = re.compile(r'\s*class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
+
+    cdef_pat = re.compile(r'\s*cdef\s+([\w_ ]+)')
+    cpdef_pat = re.compile(r'\s*cpdef\s+([\w_ ]+)')
+    def_pat = re.compile(r'\s*def\s+([\w_ ]+)')
+
+    block_patterns = (
+        ('async class', async_class_pat),
+        ('class', class_pat),
+        ('cdef', cdef_pat),
+        ('cpdef', cpdef_pat),
+        ('def', def_pat),
+    )
+
     def __init__(self, c: Cmdr) -> None:
         """Cython_Importer.ctor."""
         super().__init__(c, language='cython')
-
-        # Override the Python class patterns.
-        # m.group(1) must be the class/def name.
-        self.async_class_pat = re.compile(r'\s*async\s+class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
-        self.class_pat = re.compile(r'\s*class\s+([\w_]+)\s*(\(.*?\))?(.*?):')
-
-        self.cdef_pat = re.compile(r'\s*cdef\s+([\w_ ]+)')
-        self.cpdef_pat = re.compile(r'\s*cpdef\s+([\w_ ]+)')
-        self.def_pat = re.compile(r'\s*def\s+([\w_ ]+)')
-
-        self.block_patterns = (
-            ('async class', self.async_class_pat),
-            ('class', self.class_pat),
-            ('cdef', self.cdef_pat),
-            ('cpdef', self.cpdef_pat),
-            ('def', self.def_pat),
-        )
+        assert len(self.block_patterns) == 5, self.block_patterns
 
     #@+others
     #@-others

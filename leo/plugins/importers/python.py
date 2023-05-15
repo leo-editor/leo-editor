@@ -14,14 +14,9 @@ if TYPE_CHECKING:
 #@+node:ekr.20220720043557.1: ** class Python_Importer
 class Python_Importer(Importer):
     """Leo's Python importer"""
-
-    def __init__(self, c: Cmdr, language: str = 'python') -> None:
-        """Py_Importer.ctor."""
-        super().__init__(c, language=language, strict=True)
-        self.string_list = ['"""', "'''", '"', "'"]  # longest first.
-
-    #@+others
-    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks & helper (override)
+    
+    string_list = ['"""', "'''", '"', "'"]  # longest first.
+    
     # The default patterns. Overridden in the Cython_Importer class.
     async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
     def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
@@ -32,6 +27,12 @@ class Python_Importer(Importer):
         ('def', def_pat),
     )
 
+    def __init__(self, c: Cmdr, language: str = 'python') -> None:
+        """Py_Importer.ctor."""
+        super().__init__(c, language=language, strict=True)
+
+    #@+others
+    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks & helper (override)
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
