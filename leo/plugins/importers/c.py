@@ -14,16 +14,16 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-
-    #@+others
-    #@+node:ekr.20200819144754.1: *3* c_i.__init__
+    
     def __init__(self, c: Cmdr) -> None:
         """C_Importer.__init__"""
 
         # Init the base class.
         super().__init__(c, language='c')
         self.string_list = ['"']  # Not single quotes.
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks & helper (override)
+
+    #@+others
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)
     #@+<< define block_patterns >>
     #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
     # Pattern that matches the start of any block.
@@ -58,11 +58,12 @@ class C_Importer(Importer):
         """
         C_Importer.find_blocks: override Importer.find_blocks.
 
-        Find all blocks in the given range of lines.
+        Find all blocks in the given range of *guide* lines from which blanks
+        and tabs have been deleted.
 
-        Return a list of tuples(name, start, start_body, end) for each block.
+        Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
-        lines = self.lines
+        lines = self.guide_lines
         i, prev_i, result = i1, i1, []
         while i < i2:
             s = lines[i]
@@ -98,15 +99,15 @@ class C_Importer(Importer):
                         i = prev_i = end
                         break
         return result
-    #@+node:ekr.20230511054807.1: *4* c_i.find_end_of_block
+    #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
-        i is the index (within lines) of the line *following* the start of the block.
-        Return the index (within lines) of end of the block that starts at guide_lines[i].
+        i is the index (within the *guide* lines) of the line *following* the start of the block.
+        Return the index of end of the block that starts at guide_lines[i].
         """
         level = 1  # All blocks start with '{'
         while i < i2:
-            line = self.lines[i]
+            line = self.guide_lines[i]
             i += 1
             for ch in line:
                 if ch == '{':

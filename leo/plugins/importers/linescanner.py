@@ -179,7 +179,7 @@ class Importer:
                 elif ch == escape:
                     skip_count = 1
                     continue
-                elif line.startswith(line_comment, i):
+                elif line_comment and line.startswith(line_comment, i):
                     break  # Skip the rest of the line.
                 elif any(line.startswith(z, i) for z in string_delims):
                     # Allow multi-character string delimiters.
@@ -189,7 +189,7 @@ class Importer:
                             if len(z) > 1:
                                 skip_count = len(z) - 1
                             break
-                elif line.startswith(start_comment, i):
+                elif start_comment and line.startswith(start_comment, i):
                     target = end_comment
                     if len(start_comment) > 1:
                         # Skip the remaining characters of the starting comment delim.
@@ -275,6 +275,7 @@ class Importer:
             parent.deleteAllChildren()
             # Create the guide lines.
             self.guide_lines = self.make_guide_lines(lines)
+            ### g.printObj(self.guide_lines, tag='new_gen_lines')
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
             # Start the recursion.
@@ -772,7 +773,7 @@ class Importer:
 
         # Call gen_lines or new_gen_lines, depending on language.
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
-        if self.language in ('c',):
+        if self.language in ('c', 'python'):
             self.new_gen_lines(lines, parent)
         else:
             self.gen_lines(lines, parent)

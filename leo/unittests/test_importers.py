@@ -3625,22 +3625,15 @@ class TestPhp(BaseTestImporter):
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython(BaseTestImporter):
 
-    check_tree = False
     ext = '.py'
-    treeType = '@file'
 
-    def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
-        """Run tests with both values of python.USE_PYTHON_TOKENS."""
-        import leo.plugins.importers.python as python
-        try:
-            p = None
-            self.assertTrue(python.USE_PYTHON_TOKENS)
-            super().run_test(s, check_flag, strict_flag)
-            python.USE_PYTHON_TOKENS = False
-            p = super().run_test(s, check_flag, strict_flag)
-        finally:
-            python.USE_PYTHON_TOKENS = True
-        return p
+    ###
+        # check_tree = False
+        # treeType = '@file'
+
+        # def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
+            # import leo.plugins.importers.python as python
+            # super().run_test(s, check_flag, strict_flag)
 
     #@+others
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
@@ -4616,6 +4609,43 @@ class TestPython(BaseTestImporter):
                        '  pass\n\n'
             )
         ))
+    #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
+    def test_delete_comments_and_strings(self):
+
+        from leo.plugins.importers.python import Python_Importer
+        importer = Python_Importer(self.c)
+
+        lines = [
+            'i = 1 # comment.\n',
+            's = "string"\n',
+            "s2 = 'string'\n",
+            'if 1:\n',
+            '    pass \n',
+            '"""\n',
+            '    if 1: a = 2\n',
+            '"""\n',
+            "'''\n",
+            '    if 2: a = 2\n',
+            "'''\n",
+            'i = 2\n'
+        ]
+        expected_lines = [
+            'i = 1 \n',
+            's = \n',
+            's2 = \n',
+            'if 1:\n',
+            '    pass \n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            'i = 2\n'
+        ]
+        result = importer.delete_comments_and_strings(lines)
+        self.assertEqual(len(result), len(expected_lines))
+        self.assertEqual(result, expected_lines)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
