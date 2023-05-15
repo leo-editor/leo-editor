@@ -275,7 +275,6 @@ class Importer:
             parent.deleteAllChildren()
             # Create the guide lines.
             self.guide_lines = self.make_guide_lines(lines)
-            ### g.printObj(self.guide_lines, tag='new_gen_lines')
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
             # Start the recursion.

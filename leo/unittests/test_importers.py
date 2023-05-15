@@ -170,7 +170,6 @@ class TestC(BaseTestImporter):
             }
         """).strip() + '\n'
 
-        ### To do: indent @others. undent inner bodies.
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -3626,14 +3625,6 @@ class TestPhp(BaseTestImporter):
 class TestPython(BaseTestImporter):
 
     ext = '.py'
-
-    ###
-        # check_tree = False
-        # treeType = '@file'
-
-        # def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
-            # import leo.plugins.importers.python as python
-            # super().run_test(s, check_flag, strict_flag)
 
     #@+others
     #@+node:ekr.20230514223556.1: *3* TestPython.test_basic
