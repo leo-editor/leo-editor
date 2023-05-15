@@ -570,7 +570,8 @@ class TestCoffeescript(BaseTestImporter):
 
     def test_2(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
           class Builder
             constructor: ->
               @transformer = new Transformer
@@ -599,9 +600,9 @@ class TestCoffeescript(BaseTestImporter):
               str = blockTrim(str)
               str = unshift(str)
               if str.length > 0 then str else ""
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+              
+          """).strip() + '\n'
+        expected_results = (
           (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language coffeescript\n'
@@ -647,7 +648,11 @@ class TestCoffeescript(BaseTestImporter):
               '  if str.length > 0 then str else ""\n'
               '\n'
           ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=True)
+
+
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
