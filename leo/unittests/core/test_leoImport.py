@@ -45,36 +45,38 @@ class TestLeoImport(BaseTestImporter):
         x = c.importCommands
         target = c.p.insertAfter()
         target.h = 'target'
-        target.b = textwrap.dedent("""\
+        target.b = textwrap.dedent(
+        """
             import os
 
             def macro(func):
                 def new_func(*args, **kwds):
                     raise RuntimeError('blah blah blah')
             return new_func
-        """)
+        """).strip() + '\n'
         x.parse_body(target)
 
-        # self.dump_tree(target, tag='Actual results...')
-
-        self.check_outline(target, (
+        expected_results = (
             (0, '',  # check_outline ignores the top-level headline.
-                'import os\n'
-                '\n'
                 '@others\n'
                 'return new_func\n'
                 '@language python\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'macro',
+            (1, 'def macro',
+                'import os\n'
+                '\n'
                 'def macro(func):\n'
                 '    @others\n'
             ),
-            (2, 'new_func',
+            (2, 'def new_func',
                 'def new_func(*args, **kwds):\n'
                 "    raise RuntimeError('blah blah blah')\n"
             ),
-        ))
+        )
+        # Don't call run_test.
+        self.check_outline(target, expected_results, trace_results=False)
+
     #@-others
 #@-others
 #@-leo

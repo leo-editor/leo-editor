@@ -16,8 +16,6 @@ class Coffeescript_Importer(Python_Importer):
         super().__init__(c, language='coffeescript')
 
     #@+others
-    #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
-
     #@+node:ekr.20220729104712.1: *3* coffee_i.compute_headline
     def compute_headline(self, s: str) -> str:
         """

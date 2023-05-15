@@ -46,7 +46,6 @@ class Python_Importer(Importer):
         i, prev_i, results = i1, i1, []
         while i < i2:
             s = self.guide_lines[i]
-            # g.trace(repr(s))
             i += 1
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
@@ -57,9 +56,6 @@ class Python_Importer(Importer):
                     results.append((kind, name, prev_i, i, end))
                     i = prev_i = end
                     break
-        if 0:  ###
-            g.trace(f"python_i.findblocks: {i1}:{i2}")
-            self.trace_blocks(results)
         return results
     #@+node:ekr.20230514140918.4: *4* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
