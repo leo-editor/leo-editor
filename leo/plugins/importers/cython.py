@@ -3,8 +3,7 @@
 """@auto importer for cython."""
 from __future__ import annotations
 import re
-from typing import List, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Block
+from typing import TYPE_CHECKING
 from leo.plugins.importers.python import Python_Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -37,58 +36,6 @@ class Cython_Importer(Python_Importer):
         )
 
     #@+others
-    #@+node:ekr.20230514220727.1: *3* cython_i.find_blocks & helper (override)
-    async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
-    def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
-    class_pat = re.compile(r'\s*class\s*(\w+)')
-
-
-    def find_blocks(self, i1: int, i2: int) -> List[Block]:
-        """
-        Python_Importer.find_blocks: override Importer.find_blocks.
-
-        Find all blocks in the given range of *guide* lines from which blanks
-        and tabs have been deleted.
-
-        Return a list of Blocks, that is, tuples(name, start, start_body, end).
-        """
-        i, prev_i, result = i1, i1, []
-        while i < i2:
-            s = self.guide_lines[i]
-            # g.trace(repr(s))
-            i += 1
-            for kind, pattern in self.block_patterns:
-                m = pattern.match(s)
-                if m:
-                    name = m.group(1)
-                    end = self.find_end_of_block(i, i2)
-                    assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    result.append((kind, name, prev_i, i, end))
-                    i = prev_i = end
-                    break
-        # g.printObj(result, tag=f"{i1}:{i2}")
-        return result
-    #@+node:ekr.20230514220727.2: *4* python_i.find_end_of_block
-    def find_end_of_block(self, i: int, i2: int) -> int:
-        """
-        i is the index of the class/def line (within the *guide* lines).
-
-        Return the index of the line *following* the entire class/def
-        """
-        def lws_n(s: str) -> int:
-            """Return the length of the leading whitespace for s."""
-            return len(s) - len(s.lstrip())
-
-        prev_line = self.guide_lines[i-1]
-        assert any(z in prev_line for z in ('class', 'def')), (i, repr(prev_line))
-        if i < i2:
-            lws1 = lws_n(prev_line)
-            while i < i2:
-                s = self.guide_lines[i]
-                i += 1
-                if s.strip() and lws_n(s) <= lws1:
-                    return i
-        return i2
     #@-others
 #@-others
 

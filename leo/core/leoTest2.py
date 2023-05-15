@@ -188,7 +188,7 @@ class LeoUnitTest(unittest.TestCase):
             print(tag)
         _iter = root.self_and_subtree if root else self.c.all_positions
         for p in _iter():
-            print('level:', p.level(), p.h)
+            print('level:', p.level(), repr(p.h))
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
         """

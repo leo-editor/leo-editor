@@ -811,13 +811,13 @@ class TestCython(BaseTestImporter):
 
         expected_result = (
             (0, '',  # check_outlines ignores the first headline.
-                    'from libc.math cimport pow\n'
-                    '\n'
                     '@others\n'
                     '@language cython\n'
                     '@tabwidth -4\n'
             ),
             (1, 'cdef double square_and_add',
+                    'from libc.math cimport pow\n'
+                    '\n'
                     'cdef double square_and_add (double x):\n'
                     '    """Compute x^2 + x as double.\n'
                     '\n'
@@ -825,7 +825,6 @@ class TestCython(BaseTestImporter):
                     '    a Cython program, but not from Python.\n'
                     '    """\n'
                     '    return pow(x, 2.0) + x\n'
-                    '\n'
             ),
             (1, 'cpdef print_result',
                     'cpdef print_result (double x):\n'

@@ -49,7 +49,7 @@ class Python_Importer(Importer):
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    name = m.group(1)
+                    name = m.group(1).strip()  # cython may include trailing whitespace.
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     result.append((kind, name, prev_i, i, end))
