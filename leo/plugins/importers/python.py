@@ -3,7 +3,7 @@
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
 import re
-from typing import List, TYPE_CHECKING
+from typing import List, Tuple, TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Block, Importer
 if TYPE_CHECKING:
@@ -14,14 +14,15 @@ if TYPE_CHECKING:
 #@+node:ekr.20220720043557.1: ** class Python_Importer
 class Python_Importer(Importer):
     """Leo's Python importer"""
-    
+
     string_list = ['"""', "'''", '"', "'"]  # longest first.
-    
+
     # The default patterns. Overridden in the Cython_Importer class.
     async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
     def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
     class_pat = re.compile(r'\s*class\s*(\w+)')
-    block_patterns = (
+
+    block_patterns: Tuple = (
         ('class', class_pat),
         ('async def', async_def_pat),
         ('def', def_pat),
@@ -42,7 +43,7 @@ class Python_Importer(Importer):
 
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
-        i, prev_i, result = i1, i1, []
+        i, prev_i, results = i1, i1, []
         while i < i2:
             s = self.guide_lines[i]
             # g.trace(repr(s))
@@ -53,11 +54,13 @@ class Python_Importer(Importer):
                     name = m.group(1).strip()  # cython may include trailing whitespace.
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    result.append((kind, name, prev_i, i, end))
+                    results.append((kind, name, prev_i, i, end))
                     i = prev_i = end
                     break
-        # g.printObj(result, tag=f"python_i.findblocks: {i1}:{i2}")
-        return result
+        if 0:  ###
+            g.trace(f"python_i.findblocks: {i1}:{i2}")
+            self.trace_blocks(results)
+        return results
     #@+node:ekr.20230514140918.4: *4* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
@@ -71,7 +74,7 @@ class Python_Importer(Importer):
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
 
-        prev_line = self.guide_lines[i-1]
+        prev_line = self.guide_lines[i - 1]
         assert any(z in prev_line for z in ('class', 'def')), (i, repr(prev_line))
         tail_lines = 0
         if i < i2:
@@ -89,7 +92,7 @@ class Python_Importer(Importer):
                 else:
                     # A comment line.
                     tail_lines += 1
-        return i2
+        return i2 - tail_lines
     #@-others
 #@-others
 

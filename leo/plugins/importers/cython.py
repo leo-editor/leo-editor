@@ -3,7 +3,7 @@
 """@auto importer for cython."""
 from __future__ import annotations
 import re
-from typing import TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 from leo.plugins.importers.python import Python_Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -22,7 +22,7 @@ class Cython_Importer(Python_Importer):
     cpdef_pat = re.compile(r'\s*cpdef\s+([\w_ ]+)')
     def_pat = re.compile(r'\s*def\s+([\w_ ]+)')
 
-    block_patterns = (
+    block_patterns: Tuple = (
         ('async class', async_class_pat),
         ('class', class_pat),
         ('cdef', cdef_pat),

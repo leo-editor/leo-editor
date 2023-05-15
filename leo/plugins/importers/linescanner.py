@@ -226,17 +226,7 @@ class Importer:
         # Find all blocks in the body of this block.
         blocks = self.find_blocks(start_body, end)
         if 0:
-            #@+<< trace blocks >>
-            #@+node:ekr.20230511121416.1: *5* << trace blocks >>
-            n = len(blocks)
-            if n > 0:
-                print('')
-                g.trace(f"{n} block{g.plural(n)} in [{start_body}:{end}] parent: {parent.h}")
-                for z in blocks:
-                    kind2, name2, start2, start_body2, end2 = z
-                    tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
-                    g.printObj(lines[start2:end2], tag=tag)
-            #@-<< trace blocks >>
+            self.trace_blocks(blocks)
         if blocks:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
@@ -304,6 +294,21 @@ class Importer:
             assert not stripped_line or line.startswith(lws), repr(line)
             result.append(line[n:] if stripped_line else line)
         p.b = ''.join(result)
+    #@+node:ekr.20230515082848.1: *4* i.trace_blocks
+    def trace_blocks(self, blocks: List[Block]) -> None:
+
+        if not blocks:
+            g.trace('No blocks')
+            return
+        print('')
+        print('Blocks...')
+        lines = self.lines
+        for z in blocks:
+            kind2, name2, start2, start_body2, end2 = z
+            tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
+            g.printObj(lines[start2:end2], tag=tag)
+        print('End of Blocks')
+        print('')
     #@+node:ekr.20230513091923.1: *3* i: Old methods (to be deleted)
     #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (OLD: to be deleted)
     def gen_lines(self, lines: List[str], parent: Position) -> None:

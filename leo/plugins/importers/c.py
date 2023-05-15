@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-    
+
     def __init__(self, c: Cmdr) -> None:
         """C_Importer.__init__"""
 
