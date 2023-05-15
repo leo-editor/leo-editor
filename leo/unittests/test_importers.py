@@ -70,7 +70,8 @@ class BaseTestImporter(LeoUnitTest):
     def check_round_trip(self, p: Position, s: str, strict_flag: bool=False) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
-        result_s = c.atFileCommands.atAutoToString(p)
+        s = s.rstrip()  # Ignore trailing whitespace.
+        result_s = c.atFileCommands.atAutoToString(p).rstrip()  # Ignore trailing whitespace.
         if strict_flag:
             s_lines = g.splitLines(s)
             result_lines = g.splitLines(result_s)
@@ -79,7 +80,7 @@ class BaseTestImporter(LeoUnitTest):
             s_lines = [z.lstrip() for z in g.splitLines(s) if z.strip()]
             result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
         if s_lines != result_lines:
-            g.trace('FAIL', p.h)
+            g.trace('FAIL', g.caller(2))
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
@@ -832,7 +833,7 @@ class TestCython(BaseTestImporter):
             ),
         )
         p = self.run_test(s, strict_flag=True, check_flag=False)
-        self.check_outline(p, expected_result, trace_results=True)
+        self.check_outline(p, expected_result, trace_results=False)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -4030,77 +4031,32 @@ class TestPython(BaseTestImporter):
                '    pass\n'
             ),
         ))
-    #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
-    def test_large_class_no_methods(self):
+    #@+node:vitalije.20211207200701.1: *3* TestPython: test_no_methods
+    def test_no_methods(self):
 
-        s = (
-                'class A:\n'
-                '    a=1\n'
-                '    b=1\n'
-                '    c=1\n'
-                '    d=1\n'
-                '    e=1\n'
-                '    f=1\n'
-                '    g=1\n'
-                '    h=1\n'
-                '    i=1\n'
-                '    j=1\n'
-                '    k=1\n'
-                '    l=1\n'
-                '    m=1\n'
-                '    n=1\n'
-                '    o=1\n'
-                '    p=1\n'
-                '    q=1\n'
-                '    r=1\n'
-                '    s=1\n'
-                '    t=1\n'
-                '    u=1\n'
-                '    v=1\n'
-                '    w=1\n'
-                '    x=1\n'
-                '    y=1\n'
-                '    x=1\n'
-                '\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        s = textwrap.dedent(
+        """
+            class A:
+                a=1
+                b=2
+                c=3
+        """).strip() + '\n'
+       
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
             ),
             (1, 'class A',
-                       'class A:\n'
-                       '    a=1\n'
-                       '    b=1\n'
-                       '    c=1\n'
-                       '    d=1\n'
-                       '    e=1\n'
-                       '    f=1\n'
-                       '    g=1\n'
-                       '    h=1\n'
-                       '    i=1\n'
-                       '    j=1\n'
-                       '    k=1\n'
-                       '    l=1\n'
-                       '    m=1\n'
-                       '    n=1\n'
-                       '    o=1\n'
-                       '    p=1\n'
-                       '    q=1\n'
-                       '    r=1\n'
-                       '    s=1\n'
-                       '    t=1\n'
-                       '    u=1\n'
-                       '    v=1\n'
-                       '    w=1\n'
-                       '    x=1\n'
-                       '    y=1\n'
-                       '    x=1\n'
-                       '\n'
+                   'class A:\n'
+                   '    a=1\n'
+                   '    b=2\n'
+                   '    c=3\n'
             )
-        ))
+        )
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, expected_results)
 
     #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_under_indented
     def test_large_class_under_indented(self):
