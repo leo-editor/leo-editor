@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Python_Importer)
 class Coffeescript_Importer(Python_Importer):
-    
+
     block_patterns: Tuple = (
         ('class', re.compile(r'^\s*class')),
         ('def', re.compile(r'^\s*(.+):(.*)->')),
