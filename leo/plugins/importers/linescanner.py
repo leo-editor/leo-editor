@@ -251,7 +251,7 @@ class Importer:
             result_list = lines[start:end]
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
-    #@+node:ekr.20230510071622.1: *4* i.new_gen_lines
+    #@+node:ekr.20230510071622.1: *4* i.new_gen_lines (top level)
     def new_gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         C_Importer.gen_lines: a rewrite of Importer.gen_lines.
@@ -754,7 +754,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20161108131153.10: *4* i.import_from_string (driver) & helpers
+    #@+node:ekr.20161108131153.10: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:
         """The common top-level code for all scanners."""
         c = self.c
