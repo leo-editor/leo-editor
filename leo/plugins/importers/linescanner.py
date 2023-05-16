@@ -65,13 +65,9 @@ class Importer:
 
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
-    def __init__(self,
-        c: Cmdr,
-        strict: bool = False,
-    ) -> None:
-        """
-        Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
-        """
+    def __init__(self, c: Cmdr, strict: bool = False) -> None:
+        """Importer.__init__"""
+
         # All Importers must define importer.language.
         assert self.language, g.callers()
 
@@ -81,32 +77,20 @@ class Importer:
 
         # Other ivars.
         self.importCommands = ic = c.importCommands
-        self.encoding = ic and ic.encoding or 'utf-8'
         self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
 
-        # Set from ivars...
-        self.has_decls = self.language not in ('xml', 'org-mode', 'vimoutliner')
-        self.is_rst = self.language in ('rest', 'rst')
-        self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
-
-        # Constants...
+        # Configuration constants...
         self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
-        if self.single_comment:
-            self.ws_pattern = re.compile(fr"^\s*$|^\s*{self.single_comment}")
-        else:
-            self.ws_pattern = re.compile(r'^\s*$')
         self.tab_width = 0  # Must be set in run, using self.root.
-
-        # Settings...
-        self.reloadSettings()
 
         # State vars.
         self.errors = 0
         if ic:
             ic.errors = 0  # Required.
-        self.refs_dict: Dict[str, int] = {}  # Keys: headlines. Values: disambiguating number.
         self.root: Position = None
-        self.ws_error = False
+
+        # Settings...
+        self.reloadSettings()
 
     def reloadSettings(self) -> None:
         c = self.c
