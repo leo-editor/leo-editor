@@ -99,7 +99,7 @@ class Importer:
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-    #@+node:ekr.20161108131153.18: *3* i: Messages (to be deleted)
+    #@+node:ekr.20161108131153.18: *3* i: Messages
     def error(self, s: str) -> None:  # pragma: no cover
         """Issue an error and cause a unit test to fail."""
         self.errors += 1
@@ -809,7 +809,7 @@ class Importer:
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
         if self.language in (
             'c', 'coffeescript', 'cython', 'python',
-            'javascript',
+            'javascript', 'ini',
         ):
             self.new_gen_lines(lines, parent)
         else:

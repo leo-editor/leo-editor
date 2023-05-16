@@ -1,46 +1,39 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 """The @auto importer for .ini files."""
+from __future__ import annotations
 import re
-from typing import Dict, List, Optional
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer(Importer)
 class Ini_Importer(Importer):
 
     language = 'ini'
 
-    #@+others
-    #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
-    def gen_lines(self, lines: List[str], parent: Position) -> None:
-        """Ini_Importer.gen_lines. Allocate nodes to lines."""
-        assert parent == self.root
-        p = self.root
-        # Use a dict instead of creating a new VNode slot.
-        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
-        for line in lines:
-            headline = self.starts_block(line)
-            if headline:
-                p = self.root.insertAsLastChild()
-                p.h = headline
-                lines_dict[p.v] = []
-            lines_dict[p.v].append(line)
-        # Add the top-level directives.
-        self.append_directives(lines_dict)
-        # Set p.b from the lines_dict.
-        for p in self.root.self_and_subtree():
-            p.b = ''.join(lines_dict[p.v])
-    #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
-    ini_pattern = re.compile(r'^\s*(\[.*\])')
+    section_pat = re.compile(r'^\s*(\[.*\])')
+    block_patterns = (('section', section_pat),)
 
-    def starts_block(self, line: str) -> Optional[str]:
-        """Return the name of the section or None"""
-        m = self.ini_pattern.match(line)  # Won't match a comment.
-        if m:
-            return m.group(1).strip()
-        return None
+    #@+others
+    #@+node:ekr.20230516142345.1: *3* ini_i.find_end_of_block
+    def find_end_of_block(self, i: int, i2: int) -> int:
+        """
+        Ini_Importer.find_end_of_block.
+
+        i is the index of the line *following* the start of the block.
+        
+        Return the index of the start of next section.
+        """
+        while i < i2:
+            line = self.guide_lines[i]
+            if self.section_pat.match(line):
+                return i
+            i += 1
+        return i2
     #@-others
 #@-others
 
