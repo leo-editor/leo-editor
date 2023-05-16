@@ -65,29 +65,26 @@ class Importer:
 
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, strict: bool = False) -> None:
+    def __init__(self, c: Cmdr) -> None:
         """Importer.__init__"""
 
-        # All Importers must define importer.language.
-        assert self.language, g.callers()
+        assert self.language, g.callers()  # Do not remove.
 
-        # Copies of args...
-        self.c = c
-        self.strict = strict  # True: leading whitespace is significant.
+        self.c = c  # May be None.
+        self.importCommands = ic = c.importCommands  # May be None.
 
-        # Other ivars.
-        self.importCommands = ic = c.importCommands
-        self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
+        ### To be removed once all the old code is gone.
+        self.state_class = NewScanState
 
-        # Configuration constants...
+        # Per-language configuration constants...
         self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
-        self.tab_width = 0  # Must be set in run, using self.root.
 
         # State vars.
         self.errors = 0
         if ic:
             ic.errors = 0  # Required.
         self.root: Position = None
+        self.tab_width = 0  # Must be set in run, using self.root.
 
         # Settings...
         self.reloadSettings()
@@ -109,10 +106,7 @@ class Importer:
         self.importCommands.errors += 1
 
     def report(self, message: str) -> None:  # pragma: no cover
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
+        self.warning(message)
 
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
