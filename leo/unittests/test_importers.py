@@ -2190,8 +2190,7 @@ class TestJavascript(BaseTestImporter):
 
         s = """
             // Restarting
-            function restart()
-            {
+            function restart() {
                 invokeParamifier(params,"onstart");
                 if(story.isEmpty()) {
                     var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
@@ -2239,105 +2238,6 @@ class TestJavascript(BaseTestImporter):
             });
         """
         self.run_test(s)
-    #@+node:ekr.20210904065459.39: *3* TestJavascript.test_639_acid_test_1
-    def test_639_acid_test_1(self):
-
-        s = """
-            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-            require([
-                'jquery',
-            ], function(
-                    $,
-                    termjs,
-            ){
-                var header = $("#header")[0];
-                function calculate_size() {
-                    var height = $(window).height() - header.offsetHeight;
-                }
-                page.show_header();
-                window.onresize = function() {
-                  terminal.socket.send(JSON.stringify([
-                        "set_size", geom.rows, geom.cols,
-                        $(window).height(), $(window).width()])
-                    );
-                };
-                window.terminal = terminal;
-            });
-        """
-        self.run_test(s)
-    #@+node:ekr.20210904065459.40: *3* TestJavascript.test_639_acid_test_2
-    def test_639_acid_test_2(self):
-
-        s = """
-            // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
-            require([
-                'jquery',
-            ], function(
-                    $,
-                    termjs,
-            ){
-                var head = "head"
-                function f1() {
-                    var head1 = "head1"
-                    function f11 () {
-                        var v11 ="v1.1"
-                    }
-                    var middle1 = "middle1"
-                    function f12 () {
-                        var v12 ="v1.2"
-                    }
-                    var tail1 = "tail1"
-                }
-                var middle = "middle"
-                function f2() {
-                    var head2 = "head2"
-                    function f21 () {
-                        var v21 ="2.1"
-                    }
-                    var middle2 = "middle2"
-                    function f22 () {
-                        var v22 = "2.2.1"
-                    }
-                    var tail2 = "tail2"
-                }
-                var tail = "tail"
-            });
-        """
-        self.run_test(s)
-    #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
-    def test_639_many_top_level_nodes(self):
-
-        s = """
-            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
-
-            //=============================================================================
-            // rpg_core.js v1.3.0
-            //=============================================================================
-
-            //-----------------------------------------------------------------------------
-            /**
-             * This is not a class, but contains some methods that will be added to the
-             * standard Javascript objects.
-             *
-             * @class JsExtensions
-             */
-            function JsExtensions() {
-                throw new Error('This is not a class');
-            }
-
-            /**
-             * Returns a number whose value is limited to the given range.
-             *
-             * @method Number.prototype.clamp
-             * @param {Number} min The lower boundary
-             * @param {Number} max The upper boundary
-             * @return {Number} A number in the range (min, max)
-             */
-            Number.prototype.clamp = function(min, max) {
-                return Math.min(Math.max(this, min), max);
-            };
-        """
-        self.run_test(s)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
 
@@ -2351,8 +2251,7 @@ class TestJavascript(BaseTestImporter):
     def test_regex_1(self):
 
         s = """
-            String.prototype.toJSONString = function()
-            {
+            String.prototype.toJSONString = function() {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
                     return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
 

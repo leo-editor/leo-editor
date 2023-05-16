@@ -219,6 +219,7 @@ class Importer:
         while i < i2:
             s = self.guide_lines[i]
             i += 1
+            # Assume that no pattern matches a compound statement.
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
@@ -827,7 +828,7 @@ class Importer:
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
         if self.language in (
             'c', 'coffeescript', 'cython', 'python',
-            # 'javascript',
+            'javascript',
         ):
             self.new_gen_lines(lines, parent)
         else:
