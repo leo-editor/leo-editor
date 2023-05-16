@@ -74,7 +74,6 @@ class Importer:
         """
         # All Importers must define importer.language.
         assert self.language, g.callers()
-        self.name = self.language  ### To be removed.
 
         # Copies of args...
         self.c = c
@@ -86,12 +85,12 @@ class Importer:
         self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
 
         # Set from ivars...
-        self.has_decls = self.name not in ('xml', 'org-mode', 'vimoutliner')
-        self.is_rst = self.name in ('rst',)
+        self.has_decls = self.language not in ('xml', 'org-mode', 'vimoutliner')
+        self.is_rst = self.language in ('rest', 'rst')
         self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
 
         # Constants...
-        self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.name)
+        self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
         if self.single_comment:
             self.ws_pattern = re.compile(fr"^\s*$|^\s*{self.single_comment}")
         else:
@@ -332,7 +331,7 @@ class Importer:
             parent.b = ''.join(lines)
 
         # Add trailing lines.
-        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230513085654.1: *4* i.remove_common_lws
     def remove_common_lws(self, lws: str, p: Position) -> None:
         """Remove the given leading whitespace from all lines of p.b."""
@@ -406,7 +405,7 @@ class Importer:
             definitions=all_definitions,
         )
         # Add trailing lines.
-        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220807083207.1: *5* i.append_directives
     def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str = None) -> None:
         """
@@ -419,7 +418,7 @@ class Importer:
 
         # Insert the directive lines.
         root_lines.extend([
-            f"@language {language or self.name}\n",
+            f"@language {language or self.language}\n",
             f"@tabwidth {self.tab_width}\n",
         ])
     #@+node:ekr.20220727085532.1: *5* i.body_string
