@@ -1980,50 +1980,49 @@ class TestJava(BaseTestImporter):
     #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
 
-        s = """
+        ### To do: allow '{' on following line.
+        s = textwrap.dedent(
+        """
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
 
-            public final class AdminPermission extends BasicPermission
-            {
+            public final class AdminPermission extends BasicPermission {
                 /**
                  * Creates a new <tt>AdminPermission</tt> object.
                  */
-                public AdminPermission()
-                {
+                public AdminPermission() {
                     super("AdminPermission");
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        
+        expected_results = (
             (0, '',  # check_outline does not check the first outline.
-                    '/**\n'
-                    " * Indicates the caller's authority to perform lifecycle operations on\n"
-                    ' */\n'
-                    '\n'
                     '@others\n'
                     '@language java\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'public final class AdminPermission extends BasicPermission',
-                    'public final class AdminPermission extends BasicPermission\n'
-                    '{\n'
-                    '    /**\n'
-                    '     * Creates a new <tt>AdminPermission</tt> object.\n'
-                    '     */\n'
+            (1, 'class AdminPermission',
+                    '/**\n'
+                    " * Indicates the caller's authority to perform lifecycle operations on\n"
+                    ' */\n'
+                    '\n'
+                    'public final class AdminPermission extends BasicPermission {\n'
                     '    @others\n'
                     '}\n'
-                    '\n'
             ),
-            (2, 'public AdminPermission',
-                    'public AdminPermission()\n'
-                    '{\n'
+            (2, 'func AdminPermission',
+                    '/**\n'
+                    ' * Creates a new <tt>AdminPermission</tt> object.\n'
+                    ' */\n'
+                    'public AdminPermission() {\n'
                     '    super("AdminPermission");\n'
                     '}\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
 

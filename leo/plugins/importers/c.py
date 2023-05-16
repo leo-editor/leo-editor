@@ -13,34 +13,21 @@ if TYPE_CHECKING:
     from leo.core.leoNodes import Position
 
 #@+others
-#@+node:ekr.20140723122936.17928: ** class C_Importer
+#@+node:ekr.20140723122936.17928: ** class C_Importer(Importer)
 class C_Importer(Importer):
 
     language = 'c'
     string_list = ['"']  # Not single quotes.
 
-    #@+others
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)
-    #@+<< define block_patterns >>
-    #@+node:ekr.20230511083510.1: *4* << define block_patterns >> (C_Importer)
-    # Pattern that matches the start of any block.
-    # Group 1 matches the name of the class/func/namespace/struct.
-    class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
-    function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')
-    namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')
-    struct_pat = re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')
     block_patterns = (
-        ('class', class_pat),
-        ('func', function_pat),
-        ('namespace', namespace_pat),
-        ('struct', struct_pat),
+        ('class', re.compile(r'.*?\bclass\s+(\w+)\s*\{')),
+        ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')),
+        ('namespace', re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')),
+        ('struct', re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')),
     )
 
-    # Pattern that *might* be continued on the next line.
-    multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
-    #@-<< define block_patterns >>
-    #@+<< define compound_statements_pat >>
-    #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >> (C_Importer)
+    #@+others
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)
     # Pattern that matches any compound statement.
     compound_statements_s = '|'.join([
         rf"\b{z}\b" for z in (
@@ -48,9 +35,9 @@ class C_Importer(Importer):
         )
     ])
     compound_statements_pat = re.compile(compound_statements_s)
-    #@-<< define compound_statements_pat >>
 
-    # Compound statements.
+    # Pattern that *might* be continued on the next line.
+    multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
 
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
