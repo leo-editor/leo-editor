@@ -202,9 +202,57 @@ class Importer:
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20230513134327.1: *4* i.find_blocks (must be overridden)
+    #@+node:ekr.20230516045959.1: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
-        raise ImporterError(f"Importer for language {self.language} must override Importer.find_blocks")
+        """
+        Importer.find_blocks: override Importer.find_blocks.
+        
+        Find all blocks in the given range of *guide* lines from which blanks
+        and tabs have been deleted.
+        
+        This is a *generic* block finder. May be overridden in subclasses.
+        Use the patterns in self.block_patterns to find the start the start of a block.
+        
+        Return a list of Blocks, that is, tuples(name, start, start_body, end).
+        """
+        i, prev_i, results = i1, i1, []
+        while i < i2:
+            s = self.guide_lines[i]
+            i += 1
+            for kind, pattern in self.block_patterns:
+                m = pattern.match(s)
+                if m:
+                    # cython may include trailing whitespace.
+                    name = m.group(1).strip()
+                    end = self.find_end_of_block(i, i2)
+                    assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    results.append((kind, name, prev_i, i, end))
+                    i = prev_i = end
+                    break
+        return results
+    #@+node:ekr.20230516050402.1: *4* i.find_end_of_block
+    def find_end_of_block(self, i: int, i2: int) -> int:
+        """
+        Importer.find_end_of_block.
+        
+        This is a *generic* end-of-block finder. May be overridden in subclasses.
+        This method assumes that that '{' and '}' delimit blocks.
+
+        i is the index (within the *guide* lines) of the line *following* the start of the block.
+        Return the index of end of the block that starts at guide_lines[i].
+        """
+        level = 1  # All blocks start with '{'
+        while i < i2:
+            line = self.guide_lines[i]
+            i += 1
+            for ch in line:
+                if ch == '{':
+                    level += 1
+                if ch == '}':
+                    level -= 1
+                    if level == 0:
+                        return i
+        return i2
     #@+node:ekr.20230510072848.1: *4* i.make_guide_lines
     def make_guide_lines(self, lines: List[str]) -> List[str]:
         """
@@ -754,7 +802,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20161108131153.10: *4* i.import_from_string (driver)
+    #@+node:ekr.20161108131153.10: *4* i.import_from_string (driver) (language switch)
     def import_from_string(self, parent: Position, s: str) -> None:
         """The common top-level code for all scanners."""
         c = self.c
@@ -777,7 +825,10 @@ class Importer:
 
         # Call gen_lines or new_gen_lines, depending on language.
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
-        if self.language in ('c', 'coffeescript', 'cython', 'python'):
+        if self.language in (
+            'c', 'coffeescript', 'cython', 'python',
+            # 'javascript',
+        ):
             self.new_gen_lines(lines, parent)
         else:
             self.gen_lines(lines, parent)

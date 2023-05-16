@@ -25,7 +25,7 @@ class C_Importer(Importer):
     #@+others
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)
     #@+<< define block_patterns >>
-    #@+node:ekr.20230511083510.1: *4* << define block_patterns >>
+    #@+node:ekr.20230511083510.1: *4* << define block_patterns >> (C_Importer)
     # Pattern that matches the start of any block.
     # Group 1 matches the name of the class/func/namespace/struct.
     class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
@@ -43,7 +43,7 @@ class C_Importer(Importer):
     multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
     #@-<< define block_patterns >>
     #@+<< define compound_statements_pat >>
-    #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >>
+    #@+node:ekr.20230512084824.1: *4* << define compound_statements_pat >> (C_Importer)
     # Pattern that matches any compound statement.
     compound_statements_s = '|'.join([
         rf"\b{z}\b" for z in (
@@ -100,24 +100,6 @@ class C_Importer(Importer):
                         i = prev_i = end
                         break
         return result
-    #@+node:ekr.20230511054807.1: *3* c_i.find_end_of_block
-    def find_end_of_block(self, i: int, i2: int) -> int:
-        """
-        i is the index (within the *guide* lines) of the line *following* the start of the block.
-        Return the index of end of the block that starts at guide_lines[i].
-        """
-        level = 1  # All blocks start with '{'
-        while i < i2:
-            line = self.guide_lines[i]
-            i += 1
-            for ch in line:
-                if ch == '{':
-                    level += 1
-                if ch == '}':
-                    level -= 1
-                    if level == 0:
-                        return i
-        return i2
     #@-others
 #@-others
 
