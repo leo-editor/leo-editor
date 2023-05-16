@@ -336,7 +336,7 @@ gnx_id = fr"{gnx_char}{{3,}}"  # id's must have at least three characters.
 gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
 
 # Unls end with quotes.
-unl_regex = re.compile(r"""\bunl:[^`'")]+""")
+unl_regex = re.compile(r"""\bunl:[^`'"]+""")
 
 # Urls end at space or quotes.
 url_leadins = 'fghmnptw'
