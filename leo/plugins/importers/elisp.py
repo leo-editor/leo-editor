@@ -1,43 +1,55 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
 """The @auto importer for the elisp language."""
+from __future__ import annotations
 import re
-from typing import Optional
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+from leo.core import leoGlobals as g
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
 class Elisp_Importer(Importer):
     """The importer for the elisp lanuage."""
 
     language = 'lisp'
-    elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
     level_up_ch = '('
     level_down_ch = ')'
 
-    #@+others
-    #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline
-    def compute_headline(self, s: str) -> str:
-        """Return a cleaned up headline s."""
-        m = self.elisp_defun_pattern.match(s)
-        if m and m.group(1):
-            return 'defun %s' % m.group(1)
-        return s.strip()  # pragma: no cover (defensive)
-    #@+node:ekr.20220804055254.1: *3* elisp_i.new_starts_block
-    def new_starts_block(self, i: int) -> Optional[int]:
-        """
-        Return None if lines[i] does not start a class, function or method.
+    block_patterns = (
+        # ( defun name
+        ('defun', re.compile(r'\s*\(\s*\bdefun\s+([\w_-]+)')),
+    )
 
-        Otherwise, return the index of the first line of the body.
+    #@+others
+    #@+node:ekr.20230516145728.1: *3* elisp_i.find_end_of_block
+    def find_end_of_block(self, i: int, i2: int) -> int:
         """
-        lines, line_states = self.lines, self.line_states
-        line = lines[i]
-        if line.isspace() or line_states[i].context:
-            return None
-        if self.elisp_defun_pattern.match(line):
-            return i + 1
-        return None
+        Elisp_Importer.find_end_of_block.
+
+        i is the index (within the *guide* lines) of the line *following* the start of the block.
+
+        Return the index of the last line of the block.
+        """
+        # Rescan the previous line to get an accurate count of parents.
+        assert i > 0, g.callers()
+        i -= 1
+        level = 0
+        while i < i2:
+            line = self.guide_lines[i]
+            i += 1
+            for ch in line:
+                if ch == '(':
+                    level += 1
+                if ch == ')':
+                    level -= 1
+                    if level == 0:
+                        return i
+        return i2
     #@-others
 #@-others
 
@@ -46,7 +58,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Elisp_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ## 'func': Elisp_Importer.do_import(),  # Also clojure, clojurescript
     'extensions': ['.el', '.clj', '.cljs', '.cljc',],
     'func': do_import,  # Also clojure, clojurescript
 }

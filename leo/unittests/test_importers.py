@@ -919,7 +919,8 @@ class TestElisp(BaseTestImporter):
     def test_1(self):
 
         # Add weird assignments for coverage.
-        s = """
+        s = textwrap.dedent(
+        """
             ;;; comment
             ;;; continue
             ;;;
@@ -932,9 +933,9 @@ class TestElisp(BaseTestImporter):
             ; comment re cde
             (defun cde (a b)
                (+ 1 2 3))
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '', # check_outline ignores the first headline.
                     '@others\n'
                     '@language lisp\n'
@@ -949,16 +950,15 @@ class TestElisp(BaseTestImporter):
                     '   (assn a "abc")\n'
                     '   (assn b \\x)\n'
                     '   (+ 1 2 3))\n'
-                    '\n'
             ),
             (1, 'defun cde',
                     '; comment re cde\n'
                     '(defun cde (a b)\n'
                     '   (+ 1 2 3))\n'
-                    '\n'
             ),
-        ))
-
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml(BaseTestImporter):

@@ -221,7 +221,7 @@ class Importer:
         This method assumes that that '{' and '}' delimit blocks.
 
         i is the index (within the *guide* lines) of the line *following* the start of the block.
-        Return the index of end of the block that starts at guide_lines[i].
+        Return the index of end of the block.
         """
         level = 1  # All blocks start with '{'
         while i < i2:
@@ -679,7 +679,7 @@ class Importer:
                 return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
 
-    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
+    #@+node:ekr.20220728130253.1: *5* i.new_starts_block (legacy)
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -809,7 +809,7 @@ class Importer:
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
         if self.language in (
             'c', 'coffeescript', 'cython', 'python',
-            'javascript', 'ini',
+            'lisp', 'javascript', 'ini',
         ):
             self.new_gen_lines(lines, parent)
         else:
