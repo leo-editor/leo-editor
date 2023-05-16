@@ -9,7 +9,6 @@ from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
-from leo.plugins.importers.javascript import JsLexer
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
@@ -2348,22 +2347,6 @@ class TestJavascript(BaseTestImporter):
              */
         """
         self.run_test(s)
-    #@+node:ekr.20200202104932.1: *3* TestJavascript.test_JsLex
-    def test_JsLex(self):
-
-        table = (
-            ('id', ('f_', '$', 'A1', 'abc')),
-            ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
-            ('keyword', ('async', 'await', 'if')),
-            ('punct', ('(', ')', '{', '}', ',', ':', ';')),
-            # ('num', ('9', '2')),  # This test doesn't matter at present.
-        )
-        for kind, data in table:
-            for contents in data:
-                for name, tok in JsLexer().lex(contents):
-                    assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
-                    # print(f"{kind!s:10} {tok!r:10}")
-
     #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
     def test_regex_1(self):
 
