@@ -672,13 +672,15 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             namespace {
                 class cTestClass1 {
                     ;
                 }
             }
-        """
+        """).strip() + '\n'
+
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
