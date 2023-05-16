@@ -11,12 +11,6 @@ class Rust_Importer(Importer):
 
     language = 'rust'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """rust_Importer.__init__"""
-            # Init the base class.
-            super().__init__(c, language='rust')
-
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.compute_headline
     func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')

@@ -16,14 +16,6 @@ class Elisp_Importer(Importer):
     level_up_ch = '('
     level_down_ch = ')'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Elisp_Importer.__init__"""
-            # Init the base class.
-            super().__init__(c, language='lisp')
-            self.level_up_ch = '('
-            self.level_down_ch = ')'
-
     #@+others
     #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline
     def compute_headline(self, s: str) -> str:

@@ -49,12 +49,6 @@ class TS_Importer(Importer):
     )
     #@-<< define function patterns >>
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """The ctor for the TS_ImportController class."""
-            # Init the base class.
-            super().__init__(c, language='typescript')
-
     #@+others
     #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
     def add_class_names(self, p: Position) -> None:

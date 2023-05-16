@@ -12,11 +12,6 @@ class Ini_Importer(Importer):
 
     language = 'ini'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Ini_Importer.__init__"""
-            super().__init__(c, language='ini')
-
     #@+others
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
     def gen_lines(self, lines: List[str], parent: Position) -> None:

@@ -17,12 +17,6 @@ class Lua_Importer(Importer):
 
     language = 'lua'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Lua_Importer.__init__"""
-            super().__init__(c, language='lua')
-            # Contains entries for all constructs that end with 'end'.
-
     #@+others
     #@+node:ekr.20170530024520.5: *3* lua_i.compute_headline
     def compute_headline(self, s: str) -> str:

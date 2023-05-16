@@ -33,12 +33,6 @@ class JS_Importer(Importer):
         # ('const', re.compile(r'\s*\bconst\s*(\w+)\s*=.*?=>')),
         # ('let', re.compile(r'\s*\blet\s*(\w+)\s*=.*?=>')),
     )
-
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """The ctor for the JS_ImportController class."""
-            # Init the base class.
-            super().__init__(c, language='javascript')
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

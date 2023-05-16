@@ -12,11 +12,6 @@ class Perl_Importer(Importer):
 
     language = 'perl'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """The ctor for the Perl_ImportController class."""
-            super().__init__(c, language='perl')
-
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.compute_headline
     def compute_headline(self, s: str) -> str:

@@ -33,12 +33,6 @@ class Cython_Importer(Python_Importer):
         ('def', def_pat),
     )
 
-    if 0:  ###
-        def __init__(self, c: Cmdr) -> None:
-            """Cython_Importer.ctor."""
-            super().__init__(c, language='cython')
-            assert len(self.block_patterns) == 5, self.block_patterns
-
     #@+others
     #@-others
 #@-others

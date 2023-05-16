@@ -12,11 +12,6 @@ class Dart_Importer(Importer):
 
     language = 'dart'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Dart_Importer.__init__"""
-            super().__init__(c, language='dart')
-
     #@+others
     #@+node:ekr.20161123121021.1: *3* dart_i.compute_headline
     dart_pattern = re.compile(r'^\s*([\w_][\w_\s]*)\(')

@@ -20,11 +20,6 @@ class Rst_Importer(Importer):
 
     language = 'rest'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Rst_Importer.__init__"""
-            super().__init__(c, language='rest')
-
     #@+others
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, lines: List[str], parent: Position) -> None:

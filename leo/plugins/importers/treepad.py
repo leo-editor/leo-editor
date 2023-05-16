@@ -14,14 +14,6 @@ class Treepad_Importer(Importer):
 
     language = 'plain'  # A reasonable default.
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Org_Importer.__init__"""
-            super().__init__(
-                c,
-                language='plain',  # A reasonable default.
-            )
-
     #@+others
     #@+node:ekr.20220810193157.3: *3* treepad_i.gen_lines
     # #1037: eat only one space.

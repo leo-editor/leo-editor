@@ -13,11 +13,6 @@ class Java_Importer(Importer):
 
     language = 'java'
 
-    if 0:
-        def __init__(self, c: Cmdr) -> None:
-            """Java_Importer.__init__"""
-            super().__init__(c, language='java')
-
     # Used in multiple methods.
     java_keywords = (
         '(break|case|catch|continue|default|do|else|enum|' +
