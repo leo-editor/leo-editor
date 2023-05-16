@@ -74,9 +74,7 @@ class Importer:
         """
         # All Importers must define importer.language.
         assert self.language, g.callers()
-
-        # Set self.name for @language directive.
-        self.name = getattr(self, 'name', self.language)
+        self.name = self.language  ### To be removed.
 
         # Copies of args...
         self.c = c

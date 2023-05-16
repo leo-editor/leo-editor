@@ -16,7 +16,6 @@ class Xml_Importer(Importer):
 
     def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""
-        # super().__init__(c, language='xml')
         super().__init__(c)
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()

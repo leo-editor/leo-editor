@@ -9,7 +9,6 @@ from leo.plugins.importers.xml import Xml_Importer
 class Html_Importer(Xml_Importer):
 
     language = 'html'
-    name = 'html'  # Required.
 
     def __init__(self, c: Cmdr) -> None:
         """Html_Importer.__init__"""
