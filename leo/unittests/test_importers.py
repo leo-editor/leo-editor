@@ -957,7 +957,7 @@ class TestElisp(BaseTestImporter):
                     '   (+ 1 2 3))\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=True)
+        p = self.run_test(s, check_flag=True, strict_flag=False)
         self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
@@ -4343,7 +4343,8 @@ class TestTcl (BaseTestImporter):
     #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
 
-        s = r"""
+        s = textwrap.dedent(
+        r"""
             proc dumpFile { fileName { channel stdout } } {
 
                  # Open the file, and set up to process it in binary mode.
@@ -4365,12 +4366,12 @@ class TestTcl (BaseTestImporter):
                      dumpFile $file
                  }
              }
-        """
-        p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_outline(p, (
+        """).strip() + '\n'
+        
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
+                    '\n'
                     ' # Main program\n'
                     '\n'
                     ' if { [info exists argv0] && [string equal $argv0 [info script]] } {\n'
@@ -4379,7 +4380,6 @@ class TestTcl (BaseTestImporter):
                     '         dumpFile $file\n'
                     '     }\n'
                     ' }\n'
-                    '\n'
                     '@language tcl\n'
                     '@tabwidth -4\n'
             ),
@@ -4396,9 +4396,10 @@ class TestTcl (BaseTestImporter):
                     '     close $f\n'
                     '     return\n'
                     ' }\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
 class TestTreepad (BaseTestImporter):

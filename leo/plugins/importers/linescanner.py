@@ -809,7 +809,7 @@ class Importer:
         # Eventually, new_gen_lines will replace gen_lines for *all* languages.
         if self.language in (
             'c', 'coffeescript', 'cython', 'python',
-            'lisp', 'javascript', 'ini',
+            'lisp', 'javascript', 'ini', 'tcl',
         ):
             self.new_gen_lines(lines, parent)
         else:
