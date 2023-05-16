@@ -12,15 +12,18 @@ if TYPE_CHECKING:
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Python_Importer)
 class Coffeescript_Importer(Python_Importer):
 
+    language = 'coffeescript'
+
     block_patterns: Tuple = (
         ('class', re.compile(r'^\s*class\s+([\w]+)')),
         ('def', re.compile(r'^\s*(.+?):.*?->')),
         ('def', re.compile(r'^\s*(.+?)=.*?->')),
     )
 
-    def __init__(self, c: Cmdr) -> None:
-        """Ctor for CoffeeScriptScanner class."""
-        super().__init__(c, language='coffeescript')
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Ctor for CoffeeScriptScanner class."""
+            super().__init__(c, language='coffeescript')
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

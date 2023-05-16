@@ -11,12 +11,15 @@ from leo.plugins.importers.linescanner import Importer
 class Markdown_Importer(Importer):
     """The importer for the markdown lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Markdown_Importer.__init__"""
-        super().__init__(
-            c,
-            language='md',
-        )
+    language = 'md'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Markdown_Importer.__init__"""
+            super().__init__(
+                c,
+                language='md',
+            )
 
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers

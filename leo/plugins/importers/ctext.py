@@ -38,12 +38,15 @@ class CText_Importer(Importer):
     """
     #@-<< ctext docstring >>
 
-    def __init__(self, c: Cmdr) -> None:
-        """Ctor for CoffeeScriptScanner class."""
-        super().__init__(
-            c,
-            language='plain',  # A reasonable default.
-        )
+    language = 'plain'  # A reasonable default.
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Ctor for CoffeeScriptScanner class."""
+            super().__init__(
+                c,
+                language='plain',  # A reasonable default.
+            )
 
     #@+others
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string

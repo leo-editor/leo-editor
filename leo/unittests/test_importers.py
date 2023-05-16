@@ -9,7 +9,8 @@ from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
-import leo.plugins.importers.linescanner as linescanner
+#import leo.plugins.importers.linescanner as linescanner
+import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
@@ -654,7 +655,7 @@ class TestCoffeescript(BaseTestImporter):
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
-        importer = linescanner.Importer(c, language='coffeescript')
+        importer = coffeescript.Coffeescript_Importer(c)
         self.assertEqual(importer.single_comment, '#')
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
@@ -2185,10 +2186,11 @@ class TestJavascript(BaseTestImporter):
     ext = '.js'
 
     #@+others
-    #@+node:ekr.20210904065459.35: *3* TestJavascript.test_3
-    def test_3(self):
+    #@+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
+    def test_plain_function(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             // Restarting
             function restart() {
                 invokeParamifier(params,"onstart");
@@ -2200,12 +2202,25 @@ class TestJavascript(BaseTestImporter):
                 }
                 window.scrollTo(0,0);
             }
-        """
-        self.run_test(s)
-    #@+node:ekr.20210904065459.36: *3* TestJavascript.test_4
-    def test_4(self):
+        """).strip() + '\n'
+        
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language javascript\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'function restart',
+                s
+            ),
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+    #@+node:ekr.20210904065459.36: *3* TestJavascript.test var_equal_function
+    def var_equal_function(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             var c3 = (function () {
                 "use strict";
 
@@ -2218,46 +2233,45 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """
-        self.run_test(s)
-    #@+node:ekr.20210904065459.37: *3* TestJavascript.test_5
-    def test_5(self):
+        """).strip() + '\n'
 
-        s = """
-            var express = require('express');
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language javascript\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'function restart',
+                s
+            ),
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=True)
 
-            var app = express.createServer(express.logger());
 
-            app.get('/', function(request, response) {
-            response.send('Hello World!');
-            });
 
-            var port = process.env.PORT || 5000;
-            app.listen(port, function() {
-            console.log("Listening on " + port);
-            });
-        """
-        self.run_test(s)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             /* Test of multi-line comments.
              * line 2.
              */
-        """
+        """).strip() + '\n'
         self.run_test(s)
-    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
-    def test_regex_1(self):
+    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
+    def test_regex(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             String.prototype.toJSONString = function() {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
                     return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
 
                 return '"' + this + '"';
             };
-        """
+        """).strip() + '\n'
         self.run_test(s)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)

@@ -10,9 +10,12 @@ from leo.plugins.importers.linescanner import Importer
 class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Dart_Importer.__init__"""
-        super().__init__(c, language='dart')
+    language = 'dart'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Dart_Importer.__init__"""
+            super().__init__(c, language='dart')
 
     #@+others
     #@+node:ekr.20161123121021.1: *3* dart_i.compute_headline

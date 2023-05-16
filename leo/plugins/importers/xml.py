@@ -12,16 +12,14 @@ from leo.plugins.importers.linescanner import Importer
 class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
+    language = 'xml'
+
     def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""
-        # Init the base class.
-        super().__init__(c, language='xml')
+        # super().__init__(c, language='xml')
+        super().__init__(c)
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()
-        # A closing tag decrements state.tag_level only if the top is an opening tag.
-        # self.stack: List[str] = []  # Stack of tags.
-        # self.void_tags = ['<?xml', '!doctype']
-        # self.tag_warning_given = False  # True: a structure error has been detected.
 
     #@+others
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags

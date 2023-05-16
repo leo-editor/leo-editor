@@ -10,9 +10,12 @@ from leo.plugins.importers.linescanner import Importer
 class Pascal_Importer(Importer):
     """The importer for the pascal lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Pascal_Importer.__init__"""
-        super().__init__(c, language='pascal')
+    language = 'pascal'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Pascal_Importer.__init__"""
+            super().__init__(c, language='pascal')
 
     #@+others
     #@+node:ekr.20161126171035.4: *3* pascal_i.compute_headline

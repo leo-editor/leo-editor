@@ -18,9 +18,12 @@ underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 class Rst_Importer(Importer):
     """The importer for the rst lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Rst_Importer.__init__"""
-        super().__init__(c, language='rest')
+    language = 'rest'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Rst_Importer.__init__"""
+            super().__init__(c, language='rest')
 
     #@+others
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers

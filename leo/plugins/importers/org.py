@@ -12,12 +12,15 @@ from leo.plugins.nodetags import TagController
 class Org_Importer(Importer):
     """The importer for the org lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Org_Importer.__init__"""
-        super().__init__(
-            c,
-            language='plain',  # A reasonable @language
-        )
+    language = 'plain'  # A reasonable @language
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Org_Importer.__init__"""
+            super().__init__(
+                c,
+                language='plain',  # A reasonable @language
+            )
 
     #@+others
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines

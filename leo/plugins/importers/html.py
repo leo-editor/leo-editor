@@ -8,18 +8,12 @@ from leo.plugins.importers.xml import Xml_Importer
 #@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)
 class Html_Importer(Xml_Importer):
 
+    language = 'html'
+    name = 'html'  # Required.
+
     def __init__(self, c: Cmdr) -> None:
         """Html_Importer.__init__"""
         super().__init__(c, tags_setting='import_html_tags')
-        self.name = 'html'
-        # self.void_tags = [
-            # # A small kludge: add !DOCTYPE.
-            # '!doctype',
-            # # void elements in HTML 4.01/XHTML 1.0 Strict:
-            # 'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'param',
-            # # void elements in HTML5:
-            # 'command', 'keygen', 'source',
-        # ]
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

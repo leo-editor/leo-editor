@@ -10,9 +10,12 @@ from leo.plugins.importers.linescanner import Importer
 class Perl_Importer(Importer):
     """A scanner for the perl language."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """The ctor for the Perl_ImportController class."""
-        super().__init__(c, language='perl')
+    language = 'perl'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """The ctor for the Perl_ImportController class."""
+            super().__init__(c, language='perl')
 
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.compute_headline

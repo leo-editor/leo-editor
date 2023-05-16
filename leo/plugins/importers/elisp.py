@@ -11,14 +11,18 @@ from leo.plugins.importers.linescanner import Importer
 class Elisp_Importer(Importer):
     """The importer for the elisp lanuage."""
 
+    language = 'lisp'
     elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
+    level_up_ch = '('
+    level_down_ch = ')'
 
-    def __init__(self, c: Cmdr) -> None:
-        """Elisp_Importer.__init__"""
-        # Init the base class.
-        super().__init__(c, language='lisp')
-        self.level_up_ch = '('
-        self.level_down_ch = ')'
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Elisp_Importer.__init__"""
+            # Init the base class.
+            super().__init__(c, language='lisp')
+            self.level_up_ch = '('
+            self.level_down_ch = ')'
 
     #@+others
     #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline

@@ -9,10 +9,13 @@ from leo.plugins.importers.linescanner import Importer
 #@+node:ekr.20200316101240.2: ** class Rust_Importer(Importer)
 class Rust_Importer(Importer):
 
-    def __init__(self, c: Cmdr) -> None:
-        """rust_Importer.__init__"""
-        # Init the base class.
-        super().__init__(c, language='rust')
+    language = 'rust'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """rust_Importer.__init__"""
+            # Init the base class.
+            super().__init__(c, language='rust')
 
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.compute_headline

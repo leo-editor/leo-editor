@@ -11,12 +11,15 @@ from leo.plugins.importers.linescanner import Importer
 class Php_Importer(Importer):
     """The importer for the php lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Php_Importer.__init__"""
-        super().__init__(c, language='php')
+    language = 'php'
 
-        # self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
-        # self.here_doc_target: str = None
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Php_Importer.__init__"""
+            super().__init__(c, language='php')
+
+            # self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
+            # self.here_doc_target: str = None
 
     #@+others
     #@+node:ekr.20161129213243.4: *3* php_i.compute_headline

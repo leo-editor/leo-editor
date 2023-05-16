@@ -12,20 +12,33 @@ if TYPE_CHECKING:
 #@+node:ekr.20140723122936.18049: ** class JS_Importer(Importer)
 class JS_Importer(Importer):
 
-    # These patterns won't find all functions, but they are a reasonable start.
-    # Group 1 must be the block name.
-    block_patterns: Tuple = (        
-        # .*? (? function name ( .*? {
-        ('function', re.compile(r'.*?\(?function\b\s*([\w]*)\s*\(.*?\{')),
+    language = 'javascript'
 
-        # .*? name: ( function ( .*? {
-        ('function', re.compile(r'\s*(\w+)\s*\:\s*\(*\s*function\s*\(.*?{')),
+    # These patterns won't find all functions, but they are a reasonable start.
+
+    # Group 1 must be the block name.
+    block_patterns: Tuple = (
+        # (? function name ( .*? {
+        ('function', re.compile(r'\s*?\(?function\b\s*([\w\.]*)\s*\(.*?\{')),
+
+        # name: ( function ( .*? {
+        ('function', re.compile(r'\s*([\w.]+)\s*\:\s*\(*\s*function\s*\(.*?{')),
+
+        # var name = ( function ( .*? {
+        ('function', re.compile(r'\s*\bvar\s+([\w\.]+)\s*=\s*\(*\s*function\s*\(.*?{')),
+
+        # name = ( function ( .*? {
+        ('function', re.compile(r'\s*([\w\.]+)\s*=\s*\(*\s*function\s*\(.*?{')),
+
+        # ('const', re.compile(r'\s*\bconst\s*(\w+)\s*=.*?=>')),
+        # ('let', re.compile(r'\s*\blet\s*(\w+)\s*=.*?=>')),
     )
 
-    def __init__(self, c: Cmdr) -> None:
-        """The ctor for the JS_ImportController class."""
-        # Init the base class.
-        super().__init__(c, language='javascript')
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """The ctor for the JS_ImportController class."""
+            # Init the base class.
+            super().__init__(c, language='javascript')
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

@@ -11,9 +11,12 @@ from leo.plugins.importers.linescanner import Importer
 class Java_Importer(Importer):
     """The importer for the java lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Java_Importer.__init__"""
-        super().__init__(c, language='java')
+    language = 'java'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Java_Importer.__init__"""
+            super().__init__(c, language='java')
 
     # Used in multiple methods.
     java_keywords = (

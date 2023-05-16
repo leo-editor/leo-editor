@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class Python_Importer(Importer):
     """Leo's Python importer"""
 
+    language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
 
     # The default patterns. Overridden in the Cython_Importer class.
@@ -29,9 +30,10 @@ class Python_Importer(Importer):
         ('def', def_pat),
     )
 
-    def __init__(self, c: Cmdr, language: str = 'python') -> None:
-        """Py_Importer.ctor."""
-        super().__init__(c, language=language, strict=True)
+    if 0:
+        def __init__(self, c: Cmdr, language: str = 'python') -> None:
+            """Py_Importer.ctor."""
+            super().__init__(c, language=language, strict=True)
 
     #@+others
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks

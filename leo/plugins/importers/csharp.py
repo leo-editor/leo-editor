@@ -9,9 +9,12 @@ from leo.plugins.importers.linescanner import Importer
 class Csharp_Importer(Importer):
     """The importer for the csharp lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Csharp_Importer.__init__"""
-        super().__init__(c, language='csharp')
+    language = 'csharp'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Csharp_Importer.__init__"""
+            super().__init__(c, language='csharp')
 
     #@+others
     #@+node:ekr.20161121200106.5: *3* csharp.compute_headline

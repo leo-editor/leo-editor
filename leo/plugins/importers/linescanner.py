@@ -50,36 +50,46 @@ class Importer:
     The base class for many of Leo's importers.
     """
 
+    # To be removed...
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
+
+    # Must be overridden in subclasses.
+    language: str = None
+    block_patterns: Tuple = tuple()
+
+    # May be overridden in subclasses.
+    level_up_ch = '{'
+    level_down_ch = '}'
+    string_list: List[str] = ['"', "'"]
 
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
         c: Cmdr,
-        language: str = None,  # For @language directive.
-        name: str = None,  # The kind of importer, usually the same as language
         strict: bool = False,
     ) -> None:
         """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
         """
+        # All Importers must define importer.language.
+        assert self.language, g.callers()
+
+        # Set self.name for @language directive.
+        self.name = getattr(self, 'name', self.language)
+
         # Copies of args...
         self.c = c
-        self.importCommands = ic = c.importCommands
-        self.encoding = ic and ic.encoding or 'utf-8'
-        self.language = language or name  # For the @language directive.
-        self.name = name or language
-        language = self.language
-        name = self.name
-        assert language and name
-        assert self.language and self.name
-        self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
         self.strict = strict  # True: leading whitespace is significant.
 
+        # Other ivars.
+        self.importCommands = ic = c.importCommands
+        self.encoding = ic and ic.encoding or 'utf-8'
+        self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
+
         # Set from ivars...
-        self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
-        self.is_rst = name in ('rst',)
+        self.has_decls = self.name not in ('xml', 'org-mode', 'vimoutliner')
+        self.is_rst = self.name in ('rst',)
         self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
 
         # Constants...
@@ -88,10 +98,6 @@ class Importer:
             self.ws_pattern = re.compile(fr"^\s*$|^\s*{self.single_comment}")
         else:
             self.ws_pattern = re.compile(r'^\s*$')
-        # Default customizing values for i.scan_one_line...
-        self.level_up_ch = '{'
-        self.level_down_ch = '}'
-        self.string_list: List[str] = ['"', "'"]
         self.tab_width = 0  # Must be set in run, using self.root.
 
         # Settings...
@@ -138,7 +144,7 @@ class Importer:
         lines in all blocks.
 
         This method assumes that no leading whitespace contains intermixed tabs and spaces:
-        
+
         The returned string should consist of all blanks or all tabs.
         """
         if not blocks:
@@ -206,13 +212,13 @@ class Importer:
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
         Importer.find_blocks: override Importer.find_blocks.
-        
+
         Find all blocks in the given range of *guide* lines from which blanks
         and tabs have been deleted.
-        
+
         This is a *generic* block finder. May be overridden in subclasses.
         Use the patterns in self.block_patterns to find the start the start of a block.
-        
+
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
         i, prev_i, results = i1, i1, []
@@ -235,7 +241,7 @@ class Importer:
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         Importer.find_end_of_block.
-        
+
         This is a *generic* end-of-block finder. May be overridden in subclasses.
         This method assumes that that '{' and '}' delimit blocks.
 

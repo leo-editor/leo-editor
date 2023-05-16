@@ -11,12 +11,15 @@ from leo.plugins.importers.linescanner import Importer
 class Otl_Importer(Importer):
     """The importer for the otl lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Otl_Importer.__init__"""
-        super().__init__(
-            c,
-            language='plain',
-        )
+    language = 'plain'  # A reasonable @language
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Otl_Importer.__init__"""
+            super().__init__(
+                c,
+                language='plain',
+            )
 
     #@+others
     #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines

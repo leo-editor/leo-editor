@@ -15,9 +15,12 @@ from leo.plugins.importers.linescanner import Importer
 class Tcl_Importer(Importer):
     """The importer for the tcl lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Tcl_Importer.__init__"""
-        super().__init__(c, language='tcl')
+    language = 'tcl'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Tcl_Importer.__init__"""
+            super().__init__(c, language='tcl')
 
     #@+others
     #@+node:ekr.20220813175036.1: *3* tcl.new_starts_block

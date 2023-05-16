@@ -10,6 +10,8 @@ from leo.plugins.importers.linescanner import Importer
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
 
+    language = 'typescript'
+
     #@+<< define non-function patterns >>
     #@+node:ekr.20200817090227.1: *3* << define non-function patterns >>
     non_function_patterns = (
@@ -47,10 +49,11 @@ class TS_Importer(Importer):
     )
     #@-<< define function patterns >>
 
-    def __init__(self, c: Cmdr) -> None:
-        """The ctor for the TS_ImportController class."""
-        # Init the base class.
-        super().__init__(c, language='typescript')
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """The ctor for the TS_ImportController class."""
+            # Init the base class.
+            super().__init__(c, language='typescript')
 
     #@+others
     #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names

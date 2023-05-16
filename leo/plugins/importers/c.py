@@ -15,12 +15,16 @@ if TYPE_CHECKING:
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
 
-    def __init__(self, c: Cmdr) -> None:
-        """C_Importer.__init__"""
+    language = 'c'
+    string_list = ['"']  # Not single quotes.
 
-        # Init the base class.
-        super().__init__(c, language='c')
-        self.string_list = ['"']  # Not single quotes.
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """C_Importer.__init__"""
+
+            # Init the base class.
+            super().__init__(c, language='c')
+            self.string_list = ['"']  # Not single quotes.
 
     #@+others
     #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)

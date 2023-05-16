@@ -10,9 +10,12 @@ from leo.plugins.importers.linescanner import Importer
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer(Importer)
 class Ini_Importer(Importer):
 
-    def __init__(self, c: Cmdr) -> None:
-        """Ini_Importer.__init__"""
-        super().__init__(c, language='ini')
+    language = 'ini'
+
+    if 0:
+        def __init__(self, c: Cmdr) -> None:
+            """Ini_Importer.__init__"""
+            super().__init__(c, language='ini')
 
     #@+others
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
