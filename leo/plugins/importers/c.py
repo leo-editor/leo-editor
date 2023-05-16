@@ -6,6 +6,7 @@ import re
 from typing import List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Block, Importer
 from leo.core import leoGlobals as g
+
 if TYPE_CHECKING:
     assert g
     from leo.core.leoCommands import Commands as Cmdr

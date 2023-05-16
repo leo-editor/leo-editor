@@ -3,23 +3,13 @@
 """The @auto importer for the csharp language."""
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.c import C_Importer
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer(Importer)
-class Csharp_Importer(Importer):
+class Csharp_Importer(C_Importer):
     """The importer for the csharp lanuage."""
 
     language = 'csharp'
-
-    #@+others
-    #@+node:ekr.20161121200106.5: *3* csharp.compute_headline
-    def compute_headline(self, s: str) -> str:
-        """Return a cleaned up headline s."""
-        s = s.strip()
-        if s.endswith('{'):
-            s = s[:-1].strip()
-        return s
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

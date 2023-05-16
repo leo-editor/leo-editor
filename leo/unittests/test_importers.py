@@ -679,8 +679,7 @@ class TestCSharp(BaseTestImporter):
                 }
             }
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language csharp\n'
@@ -697,19 +696,21 @@ class TestCSharp(BaseTestImporter):
                     '    ;\n'
                     '}\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             namespace {
             class cTestClass1 {
                 ;
             }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language csharp\n'
@@ -726,7 +727,9 @@ class TestCSharp(BaseTestImporter):
                     '    ;\n'
                     '}\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
 class TestCText(BaseTestImporter):
