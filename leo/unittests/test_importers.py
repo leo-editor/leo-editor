@@ -2028,30 +2028,9 @@ class TestJava(BaseTestImporter):
             /*
              * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
              *
-             * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
-             *
-             * This program and the accompanying materials are made available under the
-             * terms of the Eclipse Public License v1.0 which accompanies this
-             * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
              */
 
             package org.osgi.framework;
-
-            /**
-             * A Framework exception used to indicate that a bundle lifecycle problem
-             * occurred.
-             *
-             * <p>
-             * <code>BundleException</code> object is created by the Framework to denote
-             * an exception condition in the lifecycle of a bundle.
-             * <code>BundleException</code>s should not be created by bundle developers.
-             *
-             * <p>
-             * This exception is updated to conform to the general purpose exception
-             * chaining mechanism.
-             *
-             * @version $Revision: 1.247 $
-             */
 
             public class BundleException extends Exception {
                 static final long serialVersionUID = 3571095144220455665L;
@@ -2060,12 +2039,6 @@ class TestJava(BaseTestImporter):
                  */
                 private Throwable cause;
 
-                /**
-                 * Creates a <code>BundleException</code> that wraps another exception.
-                 *
-                 * @param msg The associated message.
-                 * @param cause The cause of this exception.
-                 */
                 public BundleException(String msg, Throwable cause) {
                     super(msg);
                     this.cause = cause;
@@ -2073,114 +2046,87 @@ class TestJava(BaseTestImporter):
             }
 
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline does not check the first outline.
-                    '/*\n'
-                    ' * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $\n'
-                    ' *\n'
-                    ' * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.\n'
-                    ' *\n'
-                    ' * This program and the accompanying materials are made available under the\n'
-                    ' * terms of the Eclipse Public License v1.0 which accompanies this\n'
-                    ' * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.\n'
-                    ' */\n'
-                    '\n'
-                    'package org.osgi.framework;\n'
-                    '\n'
-                    '/**\n'
-                    ' * A Framework exception used to indicate that a bundle lifecycle problem\n'
-                    ' * occurred.\n'
-                    ' *\n'
-                    ' * <p>\n'
-                    ' * <code>BundleException</code> object is created by the Framework to denote\n'
-                    ' * an exception condition in the lifecycle of a bundle.\n'
-                    ' * <code>BundleException</code>s should not be created by bundle developers.\n'
-                    ' *\n'
-                    ' * <p>\n'
-                    ' * This exception is updated to conform to the general purpose exception\n'
-                    ' * chaining mechanism.\n'
-                    ' *\n'
-                    ' * @version $Revision: 1.247 $\n'
-                    ' */\n'
-                    '\n'
-                    '@others\n'
-                    '@language java\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'public class BundleException extends Exception',
-                    'public class BundleException extends Exception {\n'
-                    '    static final long serialVersionUID = 3571095144220455665L;\n'
-                    '    /**\n'
-                    '     * Nested exception.\n'
-                    '     */\n'
-                    '    private Throwable cause;\n'
-                    '\n'
-                    '    /**\n'
-                    '     * Creates a <code>BundleException</code> that wraps another exception.\n'
-                    '     *\n'
-                    '     * @param msg The associated message.\n'
-                    '     * @param cause The cause of this exception.\n'
-                    '     */\n'
-                    '    @others\n'
-                    '}\n'
-                    '\n'
-            ),
-            (2, 'public BundleException',
-                    'public BundleException(String msg, Throwable cause) {\n'
-                    '    super(msg);\n'
-                    '    this.cause = cause;\n'
-                    '}\n'
-            ),
-        ))
-    #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
-    def test_interface_test1(self):
-
-        s = """
-            interface Bicycle {
-                void changeCadence(int newValue);
-                void changeGear(int newValue);
-            }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline does not check the first outline.
                 '@others\n'
                 '@language java\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'interface Bicycle',
+            (1, 'class BundleException',
+                    '/*\n'
+                    ' * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $\n'
+                    ' *\n'
+                    ' */\n'
+                    '\n'
+                    'package org.osgi.framework;\n'
+                    '\n'
+                    'public class BundleException extends Exception {\n'
+                    '    @others\n'
+                    '}\n'
+            ),
+            (2, 'func BundleException',
+                    'static final long serialVersionUID = 3571095144220455665L;\n'
+                    '/**\n'
+                    ' * Nested exception.\n'
+                    ' */\n'
+                    'private Throwable cause;\n'
+                    '\n'
+                    'public BundleException(String msg, Throwable cause) {\n'
+                    '    super(msg);\n'
+                    '    this.cause = cause;\n'
+                    '}\n'
+            ),
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
+
+    #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
+    def test_interface_test1(self):
+
+        s = textwrap.dedent(
+        """
+            interface Bicycle {
+                void changeCadence(int newValue);
+                void changeGear(int newValue);
+            }
+        """).strip() + '\n'
+
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
                 'interface Bicycle {\n'
                 '    void changeCadence(int newValue);\n'
                 '    void changeGear(int newValue);\n'
                 '}\n'
-                '\n'
+                '@language java\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
+
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '@others\n'
-                    '@language java\n'
-                    '@tabwidth -4\n'
+                'interface Bicycle {\n'
+                'void changeCadence(int newValue);\n'
+                'void changeGear(int newValue);\n'
+                '}\n'
+                '@language java\n'
+                '@tabwidth -4\n'
             ),
-            (1, 'interface Bicycle',
-                    'interface Bicycle {\n'
-                    'void changeCadence(int newValue);\n'
-                    'void changeGear(int newValue);\n'
-                    '}\n'
-                    '\n'
-            ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript(BaseTestImporter):
