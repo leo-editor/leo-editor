@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="bob05.20130405124111.1504"><vh>Libraries</vh>
+<v t="bob.20170311140807.1"><vh>@file babel.py</vh></v>
 <v t="bob.20170726143458.1"><vh>@file babel_lib.py</vh></v>
 <v t="bob.20170716140541.1"><vh>@file babel_api.py</vh></v>
 </v>
