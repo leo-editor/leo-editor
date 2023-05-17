@@ -803,7 +803,7 @@ class Importer:
         if self.language in (
             'c', 'coffeescript', 'csharp', 'cython', 'python',
             'lisp', 'javascript', 'ini', 'tcl',
-            'java',
+            'java', 'pascal',
         ):
             self.new_gen_lines(lines, parent)
         else:
