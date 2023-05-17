@@ -11,7 +11,7 @@ class Pascal_Importer(Importer):
     """The importer for the pascal lanuage."""
 
     language = 'pascal'
-    
+
     block_patterns = (
         ('constructor', re.compile(r'^\s*\bconstructor\s+([\w_.]+)')),
         ('destructor', re.compile(r'^\s*\bdestructor\s+([\w_.]+)')),
