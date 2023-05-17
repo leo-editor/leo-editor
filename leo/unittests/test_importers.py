@@ -4564,7 +4564,6 @@ class TestXML(BaseTestImporter):
             </html>
         """
         p = self.run_test(s)
-        ### self.dump_tree(p, tag='Actual results...')
         self.check_outline(p, (
             (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
                     '@others\n'
