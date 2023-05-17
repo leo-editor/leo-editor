@@ -67,24 +67,14 @@ class Importer:
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self, c: Cmdr) -> None:
         """Importer.__init__"""
-
         assert self.language, g.callers()  # Do not remove.
-
         self.c = c  # May be None.
-        self.importCommands = ic = c.importCommands  # May be None.
 
-        ### To be removed once all the old code is gone.
-        self.state_class = NewScanState
-
-        # Per-language configuration constants...
-        self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
-
-        # State vars.
-        self.errors = 0
-        if ic:
-            ic.errors = 0  # Required.
-        self.root: Position = None
-        self.tab_width = 0  # Must be set in run, using self.root.
+        if 1:  ### To be removed once all the old code is gone.
+            self.state_class = NewScanState
+            self.root: Position = None
+            self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
+            self.tab_width = 0  # Must be set later.
 
         # Settings...
         self.reloadSettings()
@@ -102,8 +92,11 @@ class Importer:
     #@+node:ekr.20161108131153.18: *3* i: Messages
     def error(self, s: str) -> None:  # pragma: no cover
         """Issue an error and cause a unit test to fail."""
-        self.errors += 1
-        self.importCommands.errors += 1
+        if g.unitTesting:
+            print(s)
+            assert False, s
+        else:
+            g.error(s)
 
     def report(self, message: str) -> None:  # pragma: no cover
         self.warning(message)
@@ -139,7 +132,7 @@ class Importer:
     def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
         """Delete all comments and strings from the given lines."""
         string_delims = self.string_list
-        line_comment, start_comment, end_comment = self.single_comment, self.block1, self.block2
+        line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
         target = ''  # The string ending a multi-line comment or string.
         escape = '\\'
         result = []
