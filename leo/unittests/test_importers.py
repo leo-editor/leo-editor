@@ -687,11 +687,10 @@ class TestCSharp(BaseTestImporter):
                     '@language csharp\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'namespace',
+            (1, 'unnamed namespace',
                     'namespace {\n'
                     '    @others\n'
                     '}\n'
-                    '\n'
             ),
             (2, 'class cTestClass1',
                     'class cTestClass1 {\n'
@@ -718,11 +717,10 @@ class TestCSharp(BaseTestImporter):
                     '@language csharp\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'namespace',
+            (1, 'unnamed namespace',
                     'namespace {\n'
                     '@others\n'
                     '}\n'
-                    '\n'
             ),
             (2, 'class cTestClass1',
                     'class cTestClass1 {\n'
