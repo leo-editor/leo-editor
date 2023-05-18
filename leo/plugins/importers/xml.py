@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required.
-from leo.plugins.importers.linescanner import Importer, ImporterError
+from leo.plugins.importers.linescanner import Importer  ###, ImporterError
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -17,7 +17,7 @@ class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
     language = 'xml'
-    
+
     # xml_i.add_tags defines all patterns.
     block_patterns: Tuple = None
     end_patterns: Tuple = None
@@ -30,25 +30,26 @@ class Xml_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
-    def add_tags(self, setting) -> List[str]:
+    def add_tags(self, setting: str) -> List[str]:
         """Add items to self.class/functionTags and from settings."""
 
         # Get the tags from the settings.
         tags = self.c.config.getData(setting) or []
-        
+
         # Allow both upper and lower case tags.
         tags = [z.lower() for z in tags] + [z.upper() for z in tags]
-        
+
         # m.group(1) must be the tag name.
         self.block_patterns = tuple([
             (tag, re.compile(fr"<({tag})")) for tag in tags
         ])
         self.start_patterns = tuple(re.compile(fr"<({tag})") for tag in tags)
         self.end_patterns = tuple(re.compile(fr".*?</({tag})>") for tag in tags)
-            
+
+        ### g.printObj(self.end_patterns, tag='add_tags: end_patterns')
         ### g.printObj(self.block_patterns, tag='add_tags: block_patterns')
-        g.printObj(self.start_patterns, tag='add_tags: start_patterns')
-        g.printObj(self.end_patterns, tag='add_tags: end_patterns')
+        ### g.printObj(self.start_patterns, tag='add_tags: start_patterns')
+
         return tags
     #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
     tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
@@ -61,7 +62,7 @@ class Xml_Importer(Importer):
         Xml_Importer.preprocess_lines.
 
         Ensure that closing tags are followed by a newline.
-        
+
         Importer.import_from_string calls this method before generating lines.
         """
 
@@ -98,67 +99,33 @@ class Xml_Importer(Importer):
         """
         i = i1
         tag_stack: List[str] = []
-        g.trace('ENTRY', i -1, self.lines[i-1].rstrip())  ###
-        assert i1 > 0
-        # Push the opening pattern from the previous line.
-        line = self.guide_lines[i-1]
-        for pattern in self.start_patterns:
-            m = pattern.match(line)
-            if m:
-                tag = m.group(1)
-                g.trace('PUSH', tag)
-                tag_stack.append(tag)
-                break
-            else:
-                message = 'Can not happen: no open tag'
-                g.trace(message)
-                raise ImporterError(message)
         while i < i2:
-            ignore_flag = False
             line = self.guide_lines[i]
             i += 1
-            # Push start patterns that are *not* closed on the same line.
+            # Push start patterns.
             for pattern in self.start_patterns:
                 m = pattern.match(line)
                 if m:
                     tag = m.group(1)
-                    # Do nothing if the line also contains the same end pattern.
-                    ### if tag == 'div':  g.pdb()  ###
-                    for end_pattern in self.end_patterns:
-                        m2 = end_pattern.match(line)
-                        if m2:
-                            tag2 = m2.group(1)
-                            if tag2 == tag:
-                                g.trace('--- ignore', tag, tag2)
-                                ignore_flag = True
-                                break
-                    if not ignore_flag:
-                        g.trace('PUSH', tag)
-                        tag_stack.append(tag)
-                    break
-            if ignore_flag:
-                continue
+                    g.trace('PUSH', tag)
+                    tag_stack.append(tag)
             for pattern in self.end_patterns:
                 m = pattern.match(line)
                 if m:
                     tag = m.group(1)
                     g.trace(' POP', tag)
-                    if not tag_stack:
-                        message = 'Tag_stack underflow. Input error?'
-                        g.trace(message)
-                        raise ImporterError(message)
-                    start_tag = tag_stack.pop()
-                    if start_tag != tag:
-                        message =  f"Tag stack mismatch: expected {tag!r}, got {start_tag!r}"
-                        g.trace(message)
-                        raise ImporterError(message + '\nInput error?')
-                    if not tag_stack:
-                        g.trace('FOUND', i1, i)
-                        g.printObj(self.lines[i1:i])
-                        return i  # Found matching tag.
-                    break  # Continue scanning for matching tag.   
-        g.printObj(tag_stack, tag='FAIL! find_end_of_block. tag_stack')
+                    while tag_stack:
+                        start_tag = tag_stack.pop()
+                        if start_tag == tag:
+                            g.trace('Found', tag)
+                        if tag_stack:
+                            break
+                        return i  # Found outer matching tag.
+                    g.trace('Empty stack')
+                    return i1  # Return an empty block.
+        g.trace('FAIL')
         return i2
+        # g.printObj(tag_stack, tag='FAIL! find_end_of_block. tag_stack')
     #@-others
 #@-others
 
