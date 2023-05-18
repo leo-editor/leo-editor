@@ -33,7 +33,7 @@ class BaseTestImporter(LeoUnitTest):
         """
         BaseTestImporter.check_outline.
         """
-        if trace_results: # Dump expected results.
+        if False and trace_results: # Dump expected results.
             print('')
             g.trace('Expected results...')
             for (level, h, s) in expected:
@@ -2900,6 +2900,8 @@ class TestPascal(BaseTestImporter):
     #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
 
+        #@+<< define s >>
+        #@+node:ekr.20230518071612.1: *4* << define s >>
         s = textwrap.dedent(
         """
             unit Unit1;
@@ -2938,6 +2940,7 @@ class TestPascal(BaseTestImporter):
 
             end. // interface
         """).strip() + '\n'
+        #@-<< define s >>
         
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -2945,7 +2948,7 @@ class TestPascal(BaseTestImporter):
                 '@language pascal\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'procedure FormCreate',
+            (1, 'unit Unit1',
                     'unit Unit1;\n'
                     '\n'
                     'interface\n'
@@ -2957,11 +2960,9 @@ class TestPascal(BaseTestImporter):
                     '\n'
                     'type\n'
                     'TForm1 = class(TForm)\n'
-                    'procedure FormCreate(Sender: TObject);\n'
-                    '@others\n'
-                    
             ),
-            (2, 'procedure TForm1.FormCreate',
+            (1, 'procedure FormCreate',
+                    'procedure FormCreate(Sender: TObject);\n'
                     'private\n'
                     '{ Private declarations }\n'
                     'public\n'
@@ -2974,7 +2975,8 @@ class TestPascal(BaseTestImporter):
                     'implementation\n'
                     '\n'
                     '{$R *.dfm}\n'
-                    '\n'
+                ),
+            (1, 'procedure TForm1.FormCreate',
                     'procedure TForm1.FormCreate(Sender: TObject);\n'
                     'var\n'
                     'x,y: double;\n'
@@ -2986,7 +2988,6 @@ class TestPascal(BaseTestImporter):
                     '\n'
                     'end. // interface\n'
             ),
-
         )
         p = self.run_test(s, check_flag=True, strict_flag=False)
         self.check_outline(p, expected_results, trace_results=False)
@@ -3073,7 +3074,7 @@ class TestPascal(BaseTestImporter):
                     '@language pascal\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'procedure statObj.scale',
+            (1, 'unit gstatobj',
                     'unit gstatobj;\n'
                     '\n'
                     '{$F+,R-,S+}\n'
@@ -3083,21 +3084,18 @@ class TestPascal(BaseTestImporter):
                     'uses gf2obj1;\n'
                     '\n'
                     'implementation\n'
-                    '\n'
-                    'procedure statObj.scale(factor: float);\n'
-                    '@others\n'
             ),
-            (2, 'procedure statObj.multiplyGraph',
+            (1, 'procedure statObj.scale',
+                    'procedure statObj.scale(factor: float);\n'
                     'var i: integer;\n'
                     'begin\n'
                     '   for i := 1 to num do\n'
                     '      with data^[i] do y := factor * y;\n'
                     'end;\n'
-                    '\n'
-                    'procedure statObj.multiplyGraph(var source: pGraphObj);\n'
-                    '@others\n'
+                  
             ),
-            (4, ' function statObj.divideGraph',
+            (1, 'procedure statObj.multiplyGraph',
+                    'procedure statObj.multiplyGraph(var source: pGraphObj);\n'
                     'var i, max: integer;\n'
                     'begin\n'
                     'max := source^.getNum;\n'
@@ -3105,12 +3103,9 @@ class TestPascal(BaseTestImporter):
                     'for i := 1 to max do\n'
                     '    data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;\n'
                     'end;\n'
-                    '\n'
-                    'function statObj.divideGraph(var numerator: pGraphObj): boolean;\n'
-                    '@others\n'
             ),
-            (6, 'function statObj.divideGraph',
-
+            (1, 'function statObj.divideGraph',
+                    'function statObj.divideGraph(var numerator: pGraphObj): boolean;\n'
                     'var zerodata: boolean;\n'
                     'i, j, max: integer;\n'
                     'yy: float;\n'
@@ -3142,22 +3137,20 @@ class TestPascal(BaseTestImporter):
                     'dispose(pg, byebye);\n'
                     'divideGraph := not zeroData;\n'
                     'end;\n'
-                    '\n'
             ),
-            # (1, 'procedure statObj.addGraph',
-                    # 'procedure statObj.addGraph(var source: pgraphObj);\n'
-                    # 'var i, max: integer;\n'
-                    # 'begin\n'
-                    # 'max := source^.getNum;\n'
-                    # 'if max < num then num := max;\n'
-                    # 'for i := 1 to max do\n'
-                    # '    data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;\n'
-                    # 'end;\n'
-                    # '\n'
-            # ),
+            (1, 'procedure statObj.addGraph',
+                    'procedure statObj.addGraph(var source: pgraphObj);\n'
+                    'var i, max: integer;\n'
+                    'begin\n'
+                    'max := source^.getNum;\n'
+                    'if max < num then num := max;\n'
+                    'for i := 1 to max do\n'
+                    '    data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;\n'
+                    'end;\n'
+            ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=True)
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
 
 
     #@-others
