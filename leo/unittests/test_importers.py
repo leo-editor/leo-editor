@@ -29,20 +29,20 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
-    def check_outline(self, p, expected):
+    def check_outline(self, p, expected, trace_results=False):
         """
         BaseTestImporter.check_outline.
         """
-        if 0: # Dump expected results.
+        if trace_results: # Dump expected results.
             print('')
             g.trace('Expected results...')
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump headlines of actual results.
+        if trace_results: # Dump headlines of actual results.
             self.dump_headlines(p, tag='Actual headlines...')
 
-        if 0: # Dump actual results, including bodies.
+        if trace_results: # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.
@@ -70,7 +70,8 @@ class BaseTestImporter(LeoUnitTest):
     def check_round_trip(self, p: Position, s: str, strict_flag: bool=False) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
-        result_s = c.atFileCommands.atAutoToString(p)
+        s = s.rstrip()  # Ignore trailing whitespace.
+        result_s = c.atFileCommands.atAutoToString(p).rstrip()  # Ignore trailing whitespace.
         if strict_flag:
             s_lines = g.splitLines(s)
             result_lines = g.splitLines(result_s)
@@ -79,7 +80,7 @@ class BaseTestImporter(LeoUnitTest):
             s_lines = [z.lstrip() for z in g.splitLines(s) if z.strip()]
             result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
         if s_lines != result_lines:
-            g.trace('FAIL', p.h)
+            g.trace('FAIL', g.caller(2))
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
@@ -156,7 +157,8 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -167,9 +169,9 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
@@ -177,27 +179,27 @@ class TestC(BaseTestImporter):
             ),
             (1, 'class cTestClass1',
                 'class cTestClass1 {\n'
-                '\n'
                 '    @others\n'
                 '}\n'
-                '\n'
             ),
-            (2, 'int foo',
+            (2, 'func foo',
                 'int foo (int a) {\n'
                 '    a = 2 ;\n'
                 '}\n'
-                '\n'
             ),
-            (2, 'char bar',
+            (2, 'func bar',
                 'char bar (float c) {\n'
                 '    ;\n'
                 '}\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -211,9 +213,8 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
@@ -221,164 +222,97 @@ class TestC(BaseTestImporter):
             ),
             (1, 'class cTestClass1',
                 'class cTestClass1 {\n'
-                '\n'
-                '    @others\n'
+                '@others\n'
                 '}\n'
-                '\n'
             ),
-            (2, 'int foo',
-                'int foo (int a) {\n'
+            (2, 'func foo',
+                '    int foo (int a) {\n'
                 '// an underindented line.\n'
-                '    a = 2 ;\n'
-                '}\n'
-                '\n'
+                '        a = 2 ;\n'
+                '    }\n'
             ),
-            (2, 'char bar',
-                '// This should go with the next function.\n'
+            (2, 'func bar',
+                '    // This should go with the next function.\n'
                 '\n'
-                'char bar (float c) {\n'
-                '    ;\n'
-                '}\n'
+                '    char bar (float c) {\n'
+                '        ;\n'
+                '    }\n'
             ),
-        ))
+        )
+        p = self.run_test(s)
+        self.check_outline(p, expected_results, trace_results=False)
+    #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
+    def test_open_curly_bracket_on_next_line(self):
 
-    #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
-    def test_comment_follows_arg_list(self):
-
-        s = """
+        s = textwrap.dedent(
+        """
             void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
+            aaa::bbb::doit(awk* b)
             {
                 assert(false);
             }
 
             bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                ) //  <---------------------problem
+            aaa::bbb::dothat(xyz *b) // trailing comment.
             {
                 return true;
-            }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+            } // comment
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'void aaa::bbb::doit',
+            (1, 'func doit',
                 'void\n'
-                'aaa::bbb::doit\n'
-                '    (\n'
-                '    awk* b\n'
-                '    )\n'
+                'aaa::bbb::doit(awk* b)\n'
                 '{\n'
                 '    assert(false);\n'
                 '}\n'
-                '\n'
             ),
-            (1, 'bool aaa::bbb::dothat',
+            (1, 'func dothat',
                 'bool\n'
-                'aaa::bbb::dothat\n'
-                '    (\n'
-                '    xyz *b\n'
-                '    ) //  <---------------------problem\n'
+                'aaa::bbb::dothat(xyz *b) // trailing comment.\n'
                 '{\n'
                 '    return true;\n'
-                '}\n'
-                '\n'
+                '} // comment\n'
             ),
-        ))
-    #@+node:ekr.20210904065459.6: *3* TestC.test_comment_follows_block_delim
-    def test_comment_follows_block_delim(self):
-
-        s = """
-            void
-            aaa::bbb::doit
-                (
-                awk* b
-                )
-            {
-                assert(false);
-            }
-
-            bool
-            aaa::bbb::dothat
-                (
-                xyz *b
-                )
-            {
-                return true;
-            } //  <--------------------- problem
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'void aaa::bbb::doit',
-                'void\n'
-                'aaa::bbb::doit\n'
-                '    (\n'
-                '    awk* b\n'
-                '    )\n'
-                '{\n'
-                '    assert(false);\n'
-                '}\n'
-                '\n'
-
-            ),
-            (1, 'bool aaa::bbb::dothat',
-                'bool\n'
-                'aaa::bbb::dothat\n'
-                '    (\n'
-                '    xyz *b\n'
-                '    )\n'
-                '{\n'
-                '    return true;\n'
-                '} //  <--------------------- problem\n'
-                '\n'
-            ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'extern "C"',
                 'extern "C"\n'
                 '{\n'
                 '#include "stuff.h"\n'
                 'void    init(void);\n'
                 '#include "that.h"\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -388,15 +322,9 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'static void ReleaseCharSet',
                 'static void\n'
                 'ReleaseCharSet(cset)\n'
                 '    CharSet *cset;\n'
@@ -406,13 +334,18 @@ class TestC(BaseTestImporter):
                 '    ckfree((char *)cset->ranges);\n'
                 '    }\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
@@ -420,15 +353,9 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language c\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'Tcl_Obj * Tcl_NewLongObj',
                 'Tcl_Obj *\n'
                 'Tcl_NewLongObj(longValue)\n'
                 '    register long longValue; /* Long integer used to initialize the\n'
@@ -436,37 +363,160 @@ class TestC(BaseTestImporter):
                 '{\n'
                 '    return Tcl_DbNewLongObj(longValue, "unknown", 0);\n'
                 '}\n'
-                '\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             template <class T>
             T GetMax (T a, T b) {
               T result;
               result = (a>b)? a : b;
               return (result);
             }
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'template <class T>',
+            (1, 'func GetMax',
                     'template <class T>\n'
                     'T GetMax (T a, T b) {\n'
                     '  T result;\n'
                     '  result = (a>b)? a : b;\n'
                     '  return (result);\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+    #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
+    def test_delete_comments_and_strings(self):
+
+        from leo.plugins.importers.c import C_Importer
+        importer = C_Importer(self.c)
+
+        lines = [
+            'i = 1 // comment.\n',
+            's = "string"\n',
+            'if (/* a */1)\n',
+            '    ;\n',
+            '/*\n',
+            '    if (1): a = 2\n',
+            '*/\n',
+            'i = 2\n'
+        ]
+        expected_lines = [
+            'i = 1 \n',
+            's = \n',
+            'if (1)\n',
+            '    ;\n',
+            '\n',
+            '\n',
+            '\n',
+            'i = 2\n'
+        ]
+        result = importer.delete_comments_and_strings(lines)
+        self.assertEqual(len(result), len(expected_lines))
+        self.assertEqual(result, expected_lines)
+    #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
+    def test_find_blocks(self):
+
+        from leo.plugins.importers.c import C_Importer
+        trace = False
+        importer = C_Importer(self.c)
+        lines = g.splitLines(textwrap.dedent("""\
+        
+        # enable-trace
+        
+        namespace {
+            n1;
+        }
+        
+        namespace outer {
+            n2;
+        }
+        
+        int foo () {
+            foo1;
+            foo2;
+        }
+        
+        class class1 {
+            class1;
+        }
+        
+        class class2 {
+            x = 2;
+            int bar (a, b) {
+                if (0) {
+                    a = 1;
+                }
+            }
+        }
+        """))
+        importer.lines = lines
+        importer.guide_lines = importer.make_guide_lines(lines)
+        blocks = importer.find_blocks(i1=0, i2=len(lines))
+        if trace:
+            print('')
+            g.trace('Blocks...')
+            for z in blocks:
+                kind, name, start, start_body, end = z
+                print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+
+        # The result lines must tile (cover) the original lines.
+        result_lines = []
+        for z in blocks:
+            kind, name, start, start_body, end = z
+            result_lines.extend(lines[start : end])
+        self.assertEqual(lines, result_lines)
+    #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
+    def test_codon_file(self):
+        # Test codon/codon/app/main.cpp.
+        import os
+        from leo.plugins.importers.c import C_Importer
+
+        trace = False
+        c = self.c
+        importer = C_Importer(c)
+
+        path = 'C:/Repos/codon/codon/app/main.cpp'
+        if not os.path.exists(path):
+            self.skipTest(f"Not found: {path!r}")
+        with open(path, 'r') as f:
+            source = f.read()
+        lines = g.splitLines(source)
+        if 1:  # Test gen_lines.
+            importer.root = c.p
+            importer.gen_lines(lines, c.p)
+            if trace:
+                for p in c.p.self_and_subtree():
+                    g.printObj(p.b, tag=p.h)
+        else: # Test find_blocks.
+            importer.guide_lines = importer.make_guide_lines(lines)
+            result = importer.find_blocks(0, len(importer.guide_lines))
+            if trace:
+                print('')
+                g.trace()
+                for z in result:
+                    kind, name, start, start_body, end = z
+                    print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+
+            # The result lines must tile (cover) the original lines.
+            result_lines = []
+            for z in result:
+                kind, name, start, start_body, end = z
+                result_lines.extend(lines[start : end])
+            self.assertEqual(lines, result_lines)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
@@ -475,10 +525,12 @@ class TestCoffeescript(BaseTestImporter):
 
     #@+others
     #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
+    #@@tabwidth -2 # Required
+
     def test_1(self):
 
-        s = r'''
-
+        s = textwrap.dedent(
+        r"""
         # Js2coffee relies on Narcissus's parser.
 
         {parser} = @Narcissus or require('./narcissus_packed')
@@ -491,19 +543,19 @@ class TestCoffeescript(BaseTestImporter):
 
           builder    = new Builder
           scriptNode = parser.parse str
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    "# Js2coffee relies on Narcissus's parser.\n"
-                    '\n'
-                    "{parser} = @Narcissus or require('./narcissus_packed')\n"
-                    '\n'
                     '@others\n'
                     '@language coffeescript\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'buildCoffee = (str) ->',
+            (1, 'def buildCoffee',
+                    "# Js2coffee relies on Narcissus's parser.\n"
+                    '\n'
+                    "{parser} = @Narcissus or require('./narcissus_packed')\n"
+                    '\n'
                     '# Main entry point\n'
                     '\n'
                     'buildCoffee = (str) ->\n'
@@ -512,15 +564,17 @@ class TestCoffeescript(BaseTestImporter):
                     '\n'
                     '  builder    = new Builder\n'
                     '  scriptNode = parser.parse str\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
     def test_2(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
           class Builder
             constructor: ->
               @transformer = new Transformer
@@ -549,9 +603,9 @@ class TestCoffeescript(BaseTestImporter):
               str = blockTrim(str)
               str = unshift(str)
               if str.length > 0 then str else ""
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+              
+          """).strip() + '\n'
+        expected_results = (
           (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language coffeescript\n'
@@ -561,11 +615,11 @@ class TestCoffeescript(BaseTestImporter):
                 'class Builder\n'
                 '  @others\n'
           ),
-          (2, 'constructor: ->',
+          (2, 'def constructor',
               'constructor: ->\n'
               '  @transformer = new Transformer\n'
           ),
-          (2, 'build: (args...) ->',
+          (2, 'def build',
                 '# `build()`\n'
                 '\n'
                 'build: (args...) ->\n'
@@ -580,14 +634,13 @@ class TestCoffeescript(BaseTestImporter):
                 '\n'
                 '  if node.parenthesized then paren(out) else out\n'
           ),
-          (2, 'transform: (args...) ->',
+          (2, 'def transform',
               '# `transform()`\n'
               '\n'
               'transform: (args...) ->\n'
               '  @transformer.transform.apply(@transformer, args)\n'
-              '\n'
           ),
-          (2, 'body: (node, opts={}) ->',
+          (2, 'def body',
               '# `body()`\n'
               '\n'
               'body: (node, opts={}) ->\n'
@@ -595,9 +648,10 @@ class TestCoffeescript(BaseTestImporter):
               '  str = blockTrim(str)\n'
               '  str = unshift(str)\n'
               '  if str.length > 0 then str else ""\n'
-              '\n'
           ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -742,7 +796,8 @@ class TestCython(BaseTestImporter):
     #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
     def test_importer(self):
 
-        s = '''
+        s = textwrap.dedent(
+        '''
             from libc.math cimport pow
 
             cdef double square_and_add (double x):
@@ -756,18 +811,17 @@ class TestCython(BaseTestImporter):
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+        ''').strip() + '\n'
 
-        '''
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        expected_result = (
             (0, '',  # check_outlines ignores the first headline.
-                    'from libc.math cimport pow\n'
-                    '\n'
                     '@others\n'
                     '@language cython\n'
                     '@tabwidth -4\n'
             ),
             (1, 'cdef double square_and_add',
+                    'from libc.math cimport pow\n'
+                    '\n'
                     'cdef double square_and_add (double x):\n'
                     '    """Compute x^2 + x as double.\n'
                     '\n'
@@ -775,15 +829,15 @@ class TestCython(BaseTestImporter):
                     '    a Cython program, but not from Python.\n'
                     '    """\n'
                     '    return pow(x, 2.0) + x\n'
-                    '\n'
             ),
             (1, 'cpdef print_result',
                     'cpdef print_result (double x):\n'
                     '    """This is a cpdef function that can be called from Python."""\n'
                     '    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
-                    '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, strict_flag=True, check_flag=False)
+        self.check_outline(p, expected_result, trace_results=False)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -3575,127 +3629,129 @@ class TestPhp(BaseTestImporter):
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython(BaseTestImporter):
 
-    check_tree = False
     ext = '.py'
-    treeType = '@file'
-
-    def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
-        """Run tests with both values of python.USE_PYTHON_TOKENS."""
-        import leo.plugins.importers.python as python
-        try:
-            p = None
-            self.assertTrue(python.USE_PYTHON_TOKENS)
-            super().run_test(s, check_flag, strict_flag)
-            python.USE_PYTHON_TOKENS = False
-            p = super().run_test(s, check_flag, strict_flag)
-        finally:
-            python.USE_PYTHON_TOKENS = True
-        return p
 
     #@+others
-    #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
-    def test_longer_classes(self):
+    #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
+    def test_delete_comments_and_strings(self):
 
-        s = self.dedent("""\
-              import sys
-              def f1():
-                  pass
+        from leo.plugins.importers.python import Python_Importer
+        importer = Python_Importer(self.c)
 
-              class Class1:
-                  def method11():
-                      pass
-                  def method12():
-                      pass
+        lines = [
+            'i = 1 # comment.\n',
+            's = "string"\n',
+            "s2 = 'string'\n",
+            'if 1:\n',
+            '    pass \n',
+            '"""\n',
+            '    if 1: a = 2\n',
+            '"""\n',
+            "'''\n",
+            '    if 2: a = 2\n',
+            "'''\n",
+            'i = 2\n'
+        ]
+        expected_lines = [
+            'i = 1 \n',
+            's = \n',
+            's2 = \n',
+            'if 1:\n',
+            '    pass \n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            '\n',
+            'i = 2\n'
+        ]
+        result = importer.delete_comments_and_strings(lines)
+        self.assertEqual(len(result), len(expected_lines))
+        self.assertEqual(result, expected_lines)
+    #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
+    def test_general_test_1(self):
 
-              #
-              # Define a = 2
-              a = 2
+        s = self.dedent(
+        """
+            import sys
+            def f1():
+                pass
 
-              def f2():
-                  pass
+            class Class1:
+                def method11():
+                    pass
+                def method12():
+                    pass
 
-              # An outer comment
-              ATmyClassDecorator
-              class Class2:
-                  def meth00():
-                      print(1)
-                      print(2)
-                      print(3)
-                      print(4)
-                      print(5)
-                      print(6)
-                      print(7)
-                      print(8)
-                      print(9)
-                      print(10)
-                      print(11)
-                      print(12)
-                      print(13)
-                      print(14)
-                      print(15)
-                  ATmyDecorator
-                  def method21():
-                      pass
-                  def method22():
-                      pass
+            #
+            # Define a = 2
+            a = 2
 
-              # About main.
+            def f2():
+                pass
 
-              def main():
-                  pass
+            # An outer comment
+            ATmyClassDecorator
+            class Class2:
+                def method21():
+                    print(1)
+                    print(2)
+                    print(3)
+                ATmyDecorator
+                def method22():
+                    pass
+                def method23():
+                    pass
 
-              if __name__ == '__main__':
-                  main()
-        """).replace('AT', '@')
+            class UnderindentedComment:
+            # Outer underindented comment
+                def u1():
+                # Underindented comment in u1.
+                    pass
 
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+            # About main.
+
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
+        """).replace('AT', '@').strip() + '\n'
+
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
-                    'import sys\n'
                     '@others\n'
+                    '\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
-                    '\n'
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'f1',
+            (1, 'def f1',
+                    'import sys\n'
                     'def f1():\n'
                     '    pass\n'
-                    '\n'
             ),
-            # Use this if unit tests *do* honor threshold.
-            # (1, 'Class1',
-                       # 'class Class1:\n'
-                       # '    def method11():\n'
-                       # '        pass\n'
-                       # '    def method12():\n'
-                       # '        pass\n'
-                       # '\n'
-            # ),
             (1, 'class Class1',
                        'class Class1:\n'
                        '    @others\n'
             ),
-            (2, 'method11',
+            (2, 'def method11',
                        'def method11():\n'
                        '    pass\n'
             ),
-            (2, 'method12',
+            (2, 'def method12',
                        'def method12():\n'
                        '    pass\n'
-                       '\n'
             ),
-            (1, 'Define a = 2',  # #2500
+            (1, 'def f2',
                        '#\n'
                        '# Define a = 2\n'
                        'a = 2\n'
                        '\n'
-            ),
-            (1, 'f2',
                        'def f2():\n'
                        '    pass\n'
-                       '\n'
             ),
             (1, 'class Class2',
                        '# An outer comment\n'
@@ -3703,587 +3759,191 @@ class TestPython(BaseTestImporter):
                        'class Class2:\n'
                        '    @others\n'
             ),
-            (2, 'meth00',
-                       'def meth00():\n'
+            (2, 'def method21',
+                       'def method21():\n'
                        '    print(1)\n'
                        '    print(2)\n'
                        '    print(3)\n'
-                       '    print(4)\n'
-                       '    print(5)\n'
-                       '    print(6)\n'
-                       '    print(7)\n'
-                       '    print(8)\n'
-                       '    print(9)\n'
-                       '    print(10)\n'
-                       '    print(11)\n'
-                       '    print(12)\n'
-                       '    print(13)\n'
-                       '    print(14)\n'
-                       '    print(15)\n'
             ),
-            (2, 'method21',
+            (2, 'def method22',
                        '@myDecorator\n'
-                       'def method21():\n'
-                       '    pass\n'
-            ),
-            (2, 'method22',
                        'def method22():\n'
                        '    pass\n'
-                       '\n'
             ),
-            (1, 'main',
+            (2, 'def method23',
+                       'def method23():\n'
+                       '    pass\n'
+            ),
+            (1, 'class UnderindentedComment',
+                'class UnderindentedComment:\n'
+                '@others\n'  # The underindented comments prevents indentaion
+            ),
+            (2, 'def u1',
+                    '# Outer underindented comment\n'
+                    '    def u1():\n'
+                    '    # Underindented comment in u1.\n'
+                    '        pass\n'
+            ),
+            (1, 'def main',
                        '# About main.\n'
                        '\n'
                        'def main():\n'
                        '    pass\n'
-                       '\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+
+    #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
+    def test_no_methods(self):
+
+        s = textwrap.dedent(
+        """
+            class A:
+                a=1
+                b=2
+                c=3
+        """).strip() + '\n'
+       
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
+            ),
+            (1, 'class A',
+                   'class A:\n'
+                   '    a=1\n'
+                   '    b=2\n'
+                   '    c=3\n'
+            )
+        )
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
 
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
-        s = ('import sys\n'
-              'def f1():\n'
-              '    pass\n'
-              '\n'
-              'class Class1:pass\n'
-              'a = 2\n'
-              '@dec_for_f2\n'
-              'def f2(): pass\n'
-              '\n'
-              '\n'
-              'class A: pass\n'
-              '# About main.\n'
-              'def main():\n'
-              '    pass\n'
-              '\n'
-              "if __name__ == '__main__':\n"
-              '    main()\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        s = textwrap.dedent(
+        """
+            import sys
+            def f1():
+                pass
+            
+            class Class1:pass
+            a = 2
+            @dec_for_f2
+            def f2(): pass
+            
+            
+            class A: pass
+            # About main.
+            def main():
+                pass
+            
+            if __name__ == '__main__':
+                main()
+        """).strip() + '\n'
+        
+        # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                       'import sys\n'
-                       '@others\n'
-                       "if __name__ == '__main__':\n"
-                       '    main()\n\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
+                    '@others\n'
+                    '\n'
+                    "if __name__ == '__main__':\n"
+                    '    main()\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
             ),
-            (1, 'f1',
-                       'def f1():\n'
-                       '    pass\n'
-                       '\n'
+            (1, 'def f1',
+                    'import sys\n'
+                    'def f1():\n'
+                    '    pass\n'
             ),
             (1, 'class Class1',
-                       'class Class1:pass\n'
+                    'class Class1:pass\n'
             ),
-            (1, 'a = 2',
-                       'a = 2\n'
-            ),
-            (1, 'f2',
-                       '@dec_for_f2\n'
-                       'def f2(): pass\n'
-                       '\n'
-                       '\n'
+            (1, 'def f2',
+                    'a = 2\n'
+                    '@dec_for_f2\n'
+                    'def f2(): pass\n'
             ),
             (1, 'class A',
-                       'class A: pass\n'
+                    'class A: pass\n'
             ),
-            (1, 'main',
+            (1, 'def main',
                        '# About main.\n'
                        'def main():\n'
                        '    pass\n'
-                       '\n'
             ),
-        ))
-    #@+node:ekr.20210904065459.63: *3* TestPython.test_short_classes
-    def test_short_classes(self):
-        s = (
-            'import sys\n'
-            'def f1():\n'
-            '    pass\n'
-            '\n'
-            'class Class1:\n'
-            '    def method11():\n'
-            '        pass\n'
-            '    def method12():\n'
-            '        pass\n'
-            '        \n'
-            'a = 2\n'
-            '\n'
-            'def f2():\n'
-            '    pass\n'
-            '\n'
-            '# An outer comment\n'
-            '@myClassDecorator\n'
-            'class Class2:\n'
-            '    @myDecorator\n'
-            '    def method21():\n'
-            '        pass\n'
-            '    def method22():\n'
-            '        pass\n'
-            '        \n'
-            '# About main.\n'
-            'def main():\n'
-            '    pass\n'
-            '\n'
-            "if __name__ == '__main__':\n"
-            '    main()\n'
         )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '', # check_outline ignores the first headline
-                    'import sys\n'
-                    '@others\n'
-                    "if __name__ == '__main__':\n"
-                    '    main()\n'
-                    '\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'f1',
-                    'def f1():\n'
-                    '    pass\n'
-                    '\n'
-            ),
-            # Use this if unit tests *do* honor threshold.
-            # (1, 'Class1', 'class Class1:\n'  # Don't split very short classes.
-                          # '    def method11():\n'
-                          # '        pass\n'
-                          # '    def method12():\n'
-                          # '        pass\n'
-                          # '\n'
-            # ),
-            (1, 'class Class1',
-                        'class Class1:\n'  # Don't split very short classes.
-                        '    @others\n'
-            ),
-            (2, 'method11',
-                        'def method11():\n'
-                        '    pass\n'
-            ),
-            (2, 'method12',
-                        'def method12():\n'
-                        '    pass\n'
-                        '\n'
-            ),
-            (1, 'a = 2',
-                        'a = 2\n'
-                        '\n'
-            ),
-            (1, 'f2',
-                        'def f2():\n'
-                        '    pass\n'
-                        '\n'
-            ),
-            # Use this if unit tests *do* honor threshold.
-            # (1, 'Class2', '# An outer comment\n'
-                          # '@myClassDecorator\n'
-                          # 'class Class2:\n'
-                          # '    @myDecorator\n'
-                          # '    def method21():\n'
-                          # '        pass\n'
-                          # '    def method22():\n'
-                          # '        pass\n'
-                          # '\n'
-            # ),
-            (1, 'class Class2',
-                        '# An outer comment\n'
-                        '@myClassDecorator\n'
-                        'class Class2:\n'
-                        '    @others\n'
-            ),
-            (2, 'method21',
-                        '@myDecorator\n'
-                        'def method21():\n'
-                        '    pass\n'
-            ),
-            (2, 'method22',
-                          'def method22():\n'
-                          '    pass\n'
-                          '\n'
-            ),
-            (1, 'main', '# About main.\n'
-                        'def main():\n'
-                        '    pass\n'
-                        '\n'
-            )
-        ))
-
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
-    def test_short_file(self):
-
-        input_s = self.dedent('''\
-            """A docstring"""
-            switch = 1
-            print(3)
-            print(6)
-            def a():
-                pass
-            print(7)
-        ''')
-        p = self.run_test(input_s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '"""A docstring"""\n'
-                    'switch = 1\n'
-                    'print(3)\n'
-                    'print(6)\n'
-                    '@others\n'
-                    'print(7)\n'
-                    '\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'a',  # Unit tests ignore size threshold.
-               'def a():\n'
-               '    pass\n'
-            ),
-        ))
-    #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
-    def test_large_class_no_methods(self):
-
-        s = (
-                'class A:\n'
-                '    a=1\n'
-                '    b=1\n'
-                '    c=1\n'
-                '    d=1\n'
-                '    e=1\n'
-                '    f=1\n'
-                '    g=1\n'
-                '    h=1\n'
-                '    i=1\n'
-                '    j=1\n'
-                '    k=1\n'
-                '    l=1\n'
-                '    m=1\n'
-                '    n=1\n'
-                '    o=1\n'
-                '    p=1\n'
-                '    q=1\n'
-                '    r=1\n'
-                '    s=1\n'
-                '    t=1\n'
-                '    u=1\n'
-                '    v=1\n'
-                '    w=1\n'
-                '    x=1\n'
-                '    y=1\n'
-                '    x=1\n'
-                '\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class A',
-                       'class A:\n'
-                       '    a=1\n'
-                       '    b=1\n'
-                       '    c=1\n'
-                       '    d=1\n'
-                       '    e=1\n'
-                       '    f=1\n'
-                       '    g=1\n'
-                       '    h=1\n'
-                       '    i=1\n'
-                       '    j=1\n'
-                       '    k=1\n'
-                       '    l=1\n'
-                       '    m=1\n'
-                       '    n=1\n'
-                       '    o=1\n'
-                       '    p=1\n'
-                       '    q=1\n'
-                       '    r=1\n'
-                       '    s=1\n'
-                       '    t=1\n'
-                       '    u=1\n'
-                       '    v=1\n'
-                       '    w=1\n'
-                       '    x=1\n'
-                       '    y=1\n'
-                       '    x=1\n'
-                       '\n'
-            )
-        ))
-
-    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_under_indented
-    def test_large_class_under_indented(self):
-        s = (
-                'class A:\n'
-                '    a=1\n'
-                '    b=1\n'
-                '    c=1\n'
-                '    d=1\n'
-                '    e=1\n'
-                '    def f(self):\n'
-                '        self._f = """dummy\n'
-                'dummy2\n'
-                'dummy3"""\n'
-                '    g=1\n'
-                '    h=1\n'
-                '    i=1\n'
-                '    j=1\n'
-                '    k=1\n'
-                '    l=1\n'
-                '    m=1\n'
-                '    n=1\n'
-                '    o=1\n'
-                '    p=1\n'
-                '    q=1\n'
-                '    r=1\n'
-                '    s=1\n'
-                '    t=1\n'
-                '    u=1\n'
-                '    v=1\n'
-                '    w=1\n'
-                '    x=1\n'
-                '    y=1\n'
-                '    x=1\n'
-                '\n'
-            )
-        p = self.run_test(s, strict_flag=False)  # We expect perfect import to fail.
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class A',
-                       'class A:\n'
-                       '    a=1\n'
-                       '    b=1\n'
-                       '    c=1\n'
-                       '    d=1\n'
-                       '    e=1\n'
-                       '    @others\n'
-                       '    g=1\n'
-                       '    h=1\n'
-                       '    i=1\n'
-                       '    j=1\n'
-                       '    k=1\n'
-                       '    l=1\n'
-                       '    m=1\n'
-                       '    n=1\n'
-                       '    o=1\n'
-                       '    p=1\n'
-                       '    q=1\n'
-                       '    r=1\n'
-                       '    s=1\n'
-                       '    t=1\n'
-                       '    u=1\n'
-                       '    v=1\n'
-                       '    w=1\n'
-                       '    x=1\n'
-                       '    y=1\n'
-                       '    x=1\n'
-                       '\n'
-            ),
-            (2, 'f',
-                       'def f(self):\n'
-                       '    self._f = """dummy\n'
-                       # '\\\\-4.dummy2\n'
-                       # '\\\\-4.dummy3"""\n'
-                       'dummy2\n'
-                       'dummy3"""\n'
-            )
-        ))
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        s = """\
+        s = textwrap.dedent(
+            """
             class TestCopyFile(unittest.TestCase):
-
                 _delete = False
                 a00 = 1
-                a01 = 1
-                a02 = 1
-                a03 = 1
-                a04 = 1
-                a05 = 1
-                a06 = 1
-                a07 = 1
-                a08 = 1
-                a09 = 1
-                a10 = 1
-                a11 = 1
-                a12 = 1
-                a13 = 1
-                a14 = 1
-                a15 = 1
-                a16 = 1
-                a17 = 1
-                a18 = 1
-                a19 = 1
-                a20 = 1
-                a21 = 1
                 class Faux(object):
                     _entered = False
                     _exited_with = None # type: tuple
                     _raised = False
-            """
+            """).strip() + '\n'
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
             ),
-            (1, 'class TestCopyFile', self.dedent("""\
-                        class TestCopyFile(unittest.TestCase):
-
-                            _delete = False
-                            a00 = 1
-                            a01 = 1
-                            a02 = 1
-                            a03 = 1
-                            a04 = 1
-                            a05 = 1
-                            a06 = 1
-                            a07 = 1
-                            a08 = 1
-                            a09 = 1
-                            a10 = 1
-                            a11 = 1
-                            a12 = 1
-                            a13 = 1
-                            a14 = 1
-                            a15 = 1
-                            a16 = 1
-                            a17 = 1
-                            a18 = 1
-                            a19 = 1
-                            a20 = 1
-                            a21 = 1
-                            ATothers
-                """).replace('AT', '@')
+            (1, 'class TestCopyFile',
+                    'class TestCopyFile(unittest.TestCase):\n'
+                    '    ATothers\n'.replace('AT', '@')
             ),
             (2, 'class Faux',
+                        '_delete = False\n'
+                        'a00 = 1\n'
                         'class Faux(object):\n'
                         '    _entered = False\n'
                         '    _exited_with = None # type: tuple\n'
                         '    _raised = False\n'
-                        '\n'
             ),
-        ))
-    #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
-    def test_nested_classes_with_async(self):
-        s = (
-                'class TestCopyFile(unittest.TestCase):\n'
-                '\n'
-                '    _delete = False\n'
-                '    a00 = 1\n'
-                '    a01 = 1\n'
-                '    a02 = 1\n'
-                '    a03 = 1\n'
-                '    a04 = 1\n'
-                '    a05 = 1\n'
-                '    a06 = 1\n'
-                '    a07 = 1\n'
-                '    a08 = 1\n'
-                '    a09 = 1\n'
-                '    a10 = 1\n'
-                '    a11 = 1\n'
-                '    a12 = 1\n'
-                '    a13 = 1\n'
-                '    a14 = 1\n'
-                '    a15 = 1\n'
-                '    a16 = 1\n'
-                '    a17 = 1\n'
-                '    a18 = 1\n'
-                '    a19 = 1\n'
-                '    a20 = 1\n'
-                '    a21 = 1\n'
-                '    async def a(self):\n'
-                '        return await f(self)\n'
-                '    class Faux(object):\n'
-                '        _entered = False\n'
-                '        _exited_with = None # type: tuple\n'
-                '        _raised = False\n'
-              )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class TestCopyFile',
-                       'class TestCopyFile(unittest.TestCase):\n'
-                       '\n'
-                       '    _delete = False\n'
-                       '    a00 = 1\n'
-                       '    a01 = 1\n'
-                       '    a02 = 1\n'
-                       '    a03 = 1\n'
-                       '    a04 = 1\n'
-                       '    a05 = 1\n'
-                       '    a06 = 1\n'
-                       '    a07 = 1\n'
-                       '    a08 = 1\n'
-                       '    a09 = 1\n'
-                       '    a10 = 1\n'
-                       '    a11 = 1\n'
-                       '    a12 = 1\n'
-                       '    a13 = 1\n'
-                       '    a14 = 1\n'
-                       '    a15 = 1\n'
-                       '    a16 = 1\n'
-                       '    a17 = 1\n'
-                       '    a18 = 1\n'
-                       '    a19 = 1\n'
-                       '    a20 = 1\n'
-                       '    a21 = 1\n'
-                       '    @others\n'
-            ),
-            (2, 'a',
-                       'async def a(self):\n'
-                       '    return await f(self)\n'
-            ),
-            (2, 'class Faux',
-                       'class Faux(object):\n'
-                       '    _entered = False\n'
-                       '    _exited_with = None # type: tuple\n'
-                       '    _raised = False\n\n'
-            )
-       ))
-    #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
-    def test_no_defs(self):
-        s = (
-                'a = 1\n'
-                'if 1:\n'
-                " print('1')\n"
-                'if 2:\n'
-                "  print('2')\n"
-                'if 3:\n'
-                "   print('3')\n"
-                'if 4:\n'
-                "    print('4')\n"
-                'if 5:\n'
-                "    print('5')\n"
-                'if 6:\n'
-                "    print('6')\n"
-                'if 7:\n'
-                "    print('7')\n"
-                'if 8:\n'
-                "    print('8')\n"
-                'if 9:\n'
-                "    print('9')\n"
-                'if 10:\n'
-                "    print('10')\n"
-                'if 11:\n'
-                "    print('11')\n"
-                'if 12:\n'
-                "    print('12')\n"
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
+    #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
+    def test_strange_indentation(self):
+        s = textwrap.dedent(
+        """
+            a = 1
+            if 1:
+             print('1')
+            if 2:
+              print('2')
+            if 3:
+               print('3')
+            if 4:
+                print('4')
+            if 5:
+                print('5')
+            if 6:
+                print('6')
+            if 7:
+                print('7')
+            if 8:
+                print('8')
+            if 9:
+                print('9')
+            if 10:
+                print('10')
+            if 11:
+                print('11')
+            if 12:
+                print('12')
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                'a = 1\n'
                'if 1:\n'
@@ -4309,263 +3969,13 @@ class TestPython(BaseTestImporter):
                'if 11:\n'
                "    print('11')\n"
                'if 12:\n'
-               "    print('12')\n\n"
+               "    print('12')\n"
                '@language python\n'
                '@tabwidth -4\n'
             ),
-        ))
-    #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
-    def test_only_docs(self):
-        s = (
-                'class A:\n'
-                '    """\n'
-                '    dummy doc\n'
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                '    """\n'
-                '    def __init__(self):\n'
-                '        pass\n'
-                '\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class A',
-                       'class A:\n'
-                       '    """\n'
-                       '    dummy doc\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    """\n'
-                       '    @others\n'
-            ),
-            (2, '__init__',
-                       'def __init__(self):\n'
-                       '    pass\n'
-                       '\n'
-            )
-        ))
-    #@+node:ekr.20211202094115.1: *3* TestPython: test_strange_indentation
-    def test_strange_indentation(self):
-        s = (
-                'if 1:\n'
-                " print('1')\n"
-                'if 2:\n'
-                "  print('2')\n"
-                'if 3:\n'
-                "   print('3')\n"
-                '\n'
-                'class StrangeClass:\n'
-                ' a = 1\n'
-                ' if 1:\n'
-                "  print('1')\n"
-                ' if 2:\n'
-                "   print('2')\n"
-                ' if 3:\n'
-                "    print('3')\n"
-                ' if 4:\n'
-                "     print('4')\n"
-                ' if 5:\n'
-                "     print('5')\n"
-                ' if 6:\n'
-                "     print('6')\n"
-                ' if 7:\n'
-                "     print('7')\n"
-                ' if 8:\n'
-                "     print('8')\n"
-                ' if 9:\n'
-                "     print('9')\n"
-                ' if 10:\n'
-                "     print('10')\n"
-                ' if 11:\n'
-                "     print('11')\n"
-                ' if 12:\n'
-                "     print('12')\n"
-                ' def a(self):\n'
-                '   pass\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       'if 1:\n'
-                       " print('1')\n"
-                       'if 2:\n'
-                       "  print('2')\n"
-                       'if 3:\n'
-                       "   print('3')\n"
-                       '\n'
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class StrangeClass',
-                       'class StrangeClass:\n'
-                       ' a = 1\n'
-                       ' if 1:\n'
-                       "  print('1')\n"
-                       ' if 2:\n'
-                       "   print('2')\n"
-                       ' if 3:\n'
-                       "    print('3')\n"
-                       ' if 4:\n'
-                       "     print('4')\n"
-                       ' if 5:\n'
-                       "     print('5')\n"
-                       ' if 6:\n'
-                       "     print('6')\n"
-                       ' if 7:\n'
-                       "     print('7')\n"
-                       ' if 8:\n'
-                       "     print('8')\n"
-                       ' if 9:\n'
-                       "     print('9')\n"
-                       ' if 10:\n'
-                       "     print('10')\n"
-                       ' if 11:\n'
-                       "     print('11')\n"
-                       ' if 12:\n'
-                       "     print('12')\n"
-                       ' @others\n'
-            ),
-            (2, 'a',
-                       'def a(self):\n'
-                       '  pass\n\n'
-            )
-        ))
-    #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation_with...
-    def test_strange_indentation_with_added_class_in_the_headline(self):
-        self.c.config.set(None, 'bool', 'put-class-in-imported-headlines', True)
-        s = (
-                'if 1:\n'
-                " print('1')\n"
-                'if 2:\n'
-                "  print('2')\n"
-                'if 3:\n'
-                "   print('3')\n"
-                '\n'
-                'class StrangeClass:\n'
-                ' a = 1\n'
-                ' if 1:\n'
-                "  print('1')\n"
-                ' if 2:\n'
-                "   print('2')\n"
-                ' if 3:\n'
-                "    print('3')\n"
-                ' if 4:\n'
-                "     print('4')\n"
-                ' if 5:\n'
-                "     print('5')\n"
-                ' if 6:\n'
-                "     print('6')\n"
-                ' if 7:\n'
-                "     print('7')\n"
-                ' if 8:\n'
-                "     print('8')\n"
-                ' if 9:\n'
-                "     print('9')\n"
-                ' if 10:\n'
-                "     print('10')\n"
-                ' if 11:\n'
-                "     print('11')\n"
-                ' if 12:\n'
-                "     print('12')\n"
-                ' def a(self):\n'
-                '   pass\n'
-            )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                       'if 1:\n'
-                       " print('1')\n"
-                       'if 2:\n'
-                       "  print('2')\n"
-                       'if 3:\n'
-                       "   print('3')\n"
-                       '\n'
-                       '@others\n'
-                       '@language python\n'
-                       '@tabwidth -4\n'
-            ),
-            (1, 'class StrangeClass',
-                       'class StrangeClass:\n'
-                       ' a = 1\n'
-                       ' if 1:\n'
-                       "  print('1')\n"
-                       ' if 2:\n'
-                       "   print('2')\n"
-                       ' if 3:\n'
-                       "    print('3')\n"
-                       ' if 4:\n'
-                       "     print('4')\n"
-                       ' if 5:\n'
-                       "     print('5')\n"
-                       ' if 6:\n'
-                       "     print('6')\n"
-                       ' if 7:\n'
-                       "     print('7')\n"
-                       ' if 8:\n'
-                       "     print('8')\n"
-                       ' if 9:\n'
-                       "     print('9')\n"
-                       ' if 10:\n'
-                       "     print('10')\n"
-                       ' if 11:\n'
-                       "     print('11')\n"
-                       ' if 12:\n'
-                       "     print('12')\n"
-                       ' @others\n'
-            ),
-            (2, 'a',
-                       'def a(self):\n'
-                       '  pass\n\n'
-            )
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=True)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):

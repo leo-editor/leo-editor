@@ -1865,7 +1865,6 @@ class LeoCursesGui(leoGui.LeoGui):
         Given a Leo wrapper w, set focus to the underlying npyscreen widget.
         """
         trace = 'focus' in g.app.debug
-        verbose = True  # verbose trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
         if trace:

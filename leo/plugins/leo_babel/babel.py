@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 #@+leo-ver=5-thin
-#@+node:bob.20170311140807.1: * @file leo_babel/babel.py
+#@+node:bob.20170311140807.1: * @file babel.py
 #@@first
 #@@first
 #@@language python
@@ -23,7 +23,7 @@ try:
     from leo.plugins.leo_babel import babel_lib
 
 except ImportError as err:
-    raise ImportError('Python Package required by Leo-Babel is missing')
+    raise ImportError(f'Python Package required by Leo-Babel is missing\n{err}')
 #@-<< imports >>
 #@+<< documentation >>
 #@+node:bob.20170502131205.1: ** << documentation >>

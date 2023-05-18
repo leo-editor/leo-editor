@@ -678,7 +678,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # pylint: disable = too-many-statements
         global TAB2SPACES
         super().__init__()
-        QWidget().__init__()
 
         self.c = c
         self.p = c.p
@@ -700,12 +699,13 @@ class ZEditorWin(QtWidgets.QMainWindow):
         else:
             self.render_widget = QWebView
             self.render_pane_type = BROWSER_VIEW
+            QtWebEngineWidgets.QWebEngineView.__init__(self)
 
         self.editor = QTextEdit()
-        browser = self.browser = self.render_widget()
-
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
+
+        browser = self.browser = self.render_widget()
 
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
@@ -841,8 +841,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
             dummy = publish_string('dummy', writer_name='html').decode(ENCODING)
             self.browser.setHtml(dummy)
             central_widget.keyPressEvent = self.keyPressEvent
-
+        QApplication.processEvents()
         self.show()
+
     #@+node:tom.20210625205847.1: *3* reload settings
     def reloadSettings(self):
         c = self.c

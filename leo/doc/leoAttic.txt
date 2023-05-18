@@ -9146,315 +9146,144 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20220917052530.1: ** Old code
-#@+node:ekr.20220728055642.1: *3* Old importer code
-@nosearch
-@language plain
+#@+node:ekr.20230514125046.1: ** Experimental code
+#@+node:ekr.20230514124825.1: *3* New C_Importer code (experimental, buggy)
+@language rest
 
-Summary of deleted methods:
+This code attempts to use multi-line regex searches in the new C importer.
 
-- All cut_stack, adjust_parent, end_block, create_child_node, find_parent, start_block, start_new_block methods.
-- All promote_last_lines methods.
-- All get_new_dict methods.
-- All post_pass methods.
-- The Target class.
-- Importer: i.gen_lines, i.generate_nodes, i.undent*, i.indent*, i.finish (The old api), i.check.
+See the post: ENB: Leo's new c++ importer: brags, improvements, and acknowledgments
+https://groups.google.com/g/leo-editor/c/dIFlhPl1KQ0/m/jbD-neSYAwAJ
+
+However, I suspect a line-oriented approch is more robust.
 
 @language python
-#@+node:ekr.20161105140842.5: *4* js_i.scan_line
-def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
+#@+node:ekr.20230514084310.1: *4* NEW: c_i.make_guide_lines (override)
+def make_guide_lines(self, lines: List[str]) -> List[str]:
     """
-    Update the scan state at the *end* of the line.
-    Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
+    C_Importer.make_guide_lines.
+    
+    Return a list if **guide lines** that simplify the detection of blocks.
 
-    This code uses JsLex to scan the tokens, which scans strings and regexs properly.
-
-    This code also handles *partial* tokens: tokens continued from the
-    previous line or continued to the next line.
+    Also compute self.guide_string and self.index_list.
     """
-    context = prev_state.context
-    curlies, parens = prev_state.curlies, prev_state.parens
-    # Scan tokens, updating context and counts.
-    prev_val = None
-    for kind, val in JsLexer().lex(s):
-        if context:
-            if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                context = ''  # pragma: no cover (mysterious)
-            elif (
-                context == '/*'
-                and kind in ('other', 'punct')
-                and prev_val == '*'
-                and val == '/'
-            ):
-                context = ''
-        elif kind in ('other', 'punct') and val in ('"', "'"):
-            context = val
-        elif kind in ('other', 'punct') and val == '*' and prev_val == '/':
-            context = '/*'
-        elif kind in ('other', 'punct'):
-            if val == '*' and prev_val == '/':
-                # TestJavascript.test_comments casts doubt on whether this case is possible.
-                context = '/*'  # pragma: no cover (mysterious)
-            elif val == '{':
-                curlies += 1
-            elif val == '}':
-                curlies -= 1
-            elif val == '(':
-                parens += 1
-            elif val == ')':
-                parens -= 1
-        prev_val = val
-    d = {'context': context, 'curlies': curlies, 'parens': parens}
-    state = JS_ScanState(d)
-    return state
-#@+node:ekr.20171224145755.1: *4* js_i.starts_block
-func_patterns = [
-    re.compile(r'.*?\)\s*=>\s*\{'),
-    re.compile(r'\s*class\b'),
-    re.compile(r'\s*function\b'),
-    re.compile(r'.*?[(=,]\s*function\b'),
-]
+    guide_lines = self.delete_comments_and_strings(lines[:])
 
-def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-    """True if the new state starts a block."""
-    if new_state.level() <= prev_state.level():
-        return False
-    # Remove strings and regexs from the line before applying the patterns.
-    cleaned_line = []
-    for kind, val in JsLexer().lex(lines[i]):
-        if kind not in ('string', 'regex'):
-            cleaned_line.append(val)
-    # Search for any of the patterns.
-    line = ''.join(cleaned_line)
-    for pattern in self.func_patterns:
-        if pattern.match(line) is not None:
-            return True
-    return False
-#@+node:ekr.20170530035601.1: *4* lua_i.starts_block (not used)
-# The function must be an "outer" function, without indentation.
-function_pattern = re.compile(r'^(local\s+)?function')
-function_pattern2 = re.compile(r'(local\s+)?function')
+    # Compute c_i.guide_string for c_i.find_blocks.
+    self.guide_string = ''.join(guide_lines)
 
-def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-    """True if the new state starts a block."""
+    # Compute c_i.index_list, a list of tuples (starting_index, ending_index)
+    # for each of the guide string's lines.
+    i, self.index_list = 0, []
+    for line in guide_lines:
+        self.index_list.append((i, i + len(line)))
+        i += len(line)
+    # Add an extra entry to avoid IndexErrors.
+    n = len(self.guide_string)
+    self.index_list.append((n, n))
 
-    def end(line: str) -> int:
-        # Buggy: 'end' could appear in a string or comment.
-        # However, this code is much better than before.
-        i = line.find('end')
-        return i if i > -1 and g.match_word(line, i, 'end') else -1
+    return guide_lines
+#@+node:ekr.20230514124004.1: *4* NEW (buggy): c_i.find_blocks & helper (override)
+<< define block_patterns >>
+<< define compound_statements_pat >>
 
-    if prev_state.context:
-        return False
-    line = lines[i]
-    m = self.function_pattern.match(line)
-    if m and end(line) < m.start():
-        self.start_stack.append('function')
-        return True
-    # Don't create separate nodes for assigned functions,
-    # but *do* push 'function2' on the start_stack for the later 'end' statement.
-    m = self.function_pattern2.search(line)
-    if m and end(line) < m.start():
-        self.start_stack.append('function2')
-        return False
-    # Not a function. Handle constructs ending with 'end'.
-    line = line.strip()
-    if end(line) == -1:
-        for z in ('do', 'for', 'if', 'while',):
-            if g.match_word(line, 0, z):
-                self.start_stack.append(z)
-                break
-    return False
-#@+node:ekr.20161129213808.1: *4* php_i.get_new_dict
-@nobeautify
+# Compound statements.
 
-def get_new_dict(self, context: str) -> Dict:
+def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
     """
-    Return a *general* state dictionary for the given context.
-    Subclasses may override...
-    """
-    comment, block1, block2 = self.single_comment, self.block1, self.block2
-    assert (comment, block1, block2) == ('//', '/*', '*/'), f"php: {comment!r} {block1!r} {block2!r}"
+    C_Importer.find_blocks: override Importer.find_blocks.
 
-    d: Dict[str, List[Any]]
+    Find all blocks in the given range of lines.
+    
+    Search the *guide* string from first index of line i1 to the last index of line i2.
 
-    if context:
-        d = {
-            # key    kind   pattern  ends?
-            '\\':   [('len+1', '\\', None)],
-            '"':    [('len', '"',    context == '"')],
-            "'":    [('len', "'",    context == "'")],
-            '*':    [('len', '*/', True)],  # #1717.
-        }
-    else:
-        # Not in any context.
-        d = {
-            # key    kind pattern new-ctx  deltas
-            '/':    [
-                ('all', '//', context, None),
-                ('len', '/*', '/*', None),
-            ],
-            '\\':   [('len+1', '\\', context, None)],
-            '<':    [('<<<', '<<<', '<<<', None)],
-            '"':    [('len', '"', '"',     None)],
-            "'":    [('len', "'", "'",     None)],
-            '{':    [('len', '{', context, (1,0,0))],
-            '}':    [('len', '}', context, (-1,0,0))],
-            '(':    [('len', '(', context, (0,1,0))],
-            ')':    [('len', ')', context, (0,-1,0))],
-            '[':    [('len', '[', context, (0,0,1))],
-            ']':    [('len', ']', context, (0,0,-1))],
-        }
-    return d
-#@+node:ekr.20161129214803.1: *4* php_i.scan_dict (supports here docs)
-def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
+    Return a list of tuples(kind, name, start, start_body, end) for each block.
     """
-    i.scan_dict: Scan at position i of s with the give context and dict.
-    Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-    """
-    found = False
-    delta_c = delta_p = delta_s = 0
-    if self.here_doc_target:
-        assert i == 0, repr(i)
-        n = len(self.here_doc_target)
-        if self.here_doc_target.lower() == s[:n].lower():
-            self.here_doc_target = None
-            i = n
-            return scan_tuple('', i, 0, 0, 0, False)
-        # Skip the rest of the line
-        return scan_tuple('', len(s), 0, 0, 0, False)
-    ch = s[i]  # For traces.
-    aList = d.get(ch)
-    if aList and context:
-        # In context.
-        for data in aList:
-            kind, pattern, ends = data
-            if self.match(s, i, pattern):
-                if ends is None:
-                    found = True
-                    new_context = context
-                    break
-                elif ends:
-                    found = True
-                    new_context = ''
-                    break
-                else:
-                    pass  # Ignore this match.
-    elif aList:
-        # Not in context.
-        for data in aList:
-            kind, pattern, new_context, deltas = data
-            if self.match(s, i, pattern):
-                found = True
-                if deltas:
-                    delta_c, delta_p, delta_s = deltas
-                break
-    if found:
-        if kind == 'all':
-            i = len(s)
-        elif kind == 'len+1':
-            i += (len(pattern) + 1)
-        elif kind == '<<<':  # Special flag for here docs.
-            new_context = context  # here_doc_target is a another kind of context.
-            m = self.here_doc_pattern.match(s[i:])
+    # Search the *guide* string.
+    s = self.guide_string
+    # Compute the first and last *character* indices withing the guide string.
+    g.trace(i1, i2, len(self.index_list))
+    i: int = self.index_list[i1][0]
+    end_i: int = self.index_list[i2][1]
+    g.printObj(s[i:end_i], tag=f"guide_string: {i}:{end_i}")
+    prev_i = i
+    result: List[Block] = []
+    while i < end_i:
+        progress = i
+        for kind, pattern in self.block_patterns:
+            m = pattern.match(s, i, end_i)
             if m:
-                i = len(s)  # Skip the rest of the line.
-                self.here_doc_target = '%s;' % m.group(1)
-            else:
-                i += 3
+                g.trace(m)
+                assert m.group(0).endswith('{'), m.group(0)
+                name = m.group(1) or ''
+                if (
+                    # Don't match if the line contains a trailing '}'.
+                    ### '}' not in s[m.end(1) :]
+                    # Don't match compound statements.
+                    not self.compound_statements_pat.match(name)
+                ):
+                    i2 = i + len(m.group(0))
+                    end = self.find_end_of_block(i, i2)
+                    assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    result.append((kind, name, prev_i, i, end))
+                    i = prev_i = end
+                    break
         else:
-            assert kind == 'len', (kind, self.name)
-            i += len(pattern)
-        bs_nl = pattern == '\\\n'
-        return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
-    #
-    # No match: stay in present state. All deltas are zero.
-    new_context = context
-    return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-#@+node:ekr.20200203060718.1: *4* TestJavascript.test_scan_line
-def test_scan_line(self):
+            # No patterns match. Skip one line.
+            i += 1
+            while i < len(self.guide_string) and self.guide_string[i] != '\n':
+                i += 1
+            g.printObj(s[i:end_i], tag=f"Advance to {i}")
+        assert progress < i, i
+    return result
+#@+node:ekr.20230514124004.2: *5* << define block_patterns >>
+# Pattern that matches the start of any block.
+class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
+function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{', re.MULTILINE)
+namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')
+struct_pat = re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')
+block_patterns = (
+    ('class', class_pat),
+    ('func', function_pat),
+    ('namespace', namespace_pat),
+    ('struct', struct_pat),
+)
 
-    c = self.c
-    table = (
-        # result        prev_context    s
-        ((0, 0, '"'), "", r'"string'),
-        ((0, 0, '/*'), "", r'/* line 1'),
-        ((0, 0, '/*'), "/*", r'line 2'),  # New.
-        ((0, 0, ''), "/*", r'line 3 */'),  # New.
-        ((0, 0, ''), "", r'a + b // /*'),
-        ((0, 1, ''), "", r'(function'),
-        ((1, 1, ''), "", r'(function(a) {'),
-        ((0, 0, ''), "", r'var x = /abc/'),
-        ((0, 0, ''), "", r'var x = /a"c/'),
-        ((0, 0, ''), "", r'var x = /a\//'),
-        ((0, 0, ''), "", r'var x = /a\//'),
-        ((0, 1, ''), "", r'var x = (0,'),
+# Pattern that *might* be continued on the next line.
+### multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
+#@+node:ekr.20230514124004.3: *5* << define compound_statements_pat >>
+# Pattern that matches any compound statement.
+compound_statements_s = '|'.join([
+    rf"\b{z}\b" for z in (
+        'case', 'catch', 'class', 'do', 'else', 'for', 'if', 'switch', 'try', 'while',
     )
-    for result, prev_context, s in table:
-        importer = JS_Importer(c)
-        prev_state = JS_ScanState()
-        prev_state.context = prev_context
-        new_state = importer.scan_line(s, prev_state)
-        curlies, parens, context = result
-        ok = (
-            new_state.curlies == curlies and
-            new_state.parens == parens and
-            new_state.context == context)
-        assert ok, (
-                f"\n"
-                f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
-                f"new_state: {new_state}\n"
-                f"        s: {s!r}")
-#@+node:ekr.20210904065459.54: *4* TestPerl.test_regex_1
-def test_regex_1(self):
-
-    # ('len',   'tr///', '/',       context,  0,       0,       0),
-    # ('len',   's///',  '/',       context,  0,       0,       0),
-    # ('len',   'm//',   '/',       context,  0,       0,       0),
-    # ('len',   '/',     '/',       '',       0,       0,       0),
-    s = """
-        #!/usr/bin/perl
-
-        sub test1 {
-            s = /{/g;
-        }
-
-        sub test2 {
-            s = m//{/;
-        }
-
-        sub test3 {
-            s = s///{/;
-        }
-
-        sub test4 {
-            s = tr///{/;
-        }
+])
+compound_statements_pat = re.compile(compound_statements_s)
+#@+node:ekr.20230514124004.4: *5* c_i.find_end_of_block
+def find_end_of_block(self, i: int, i2: int) -> int:
     """
-    self.run_test(s)
+    Return the character index within the guide *string* of the end of the block.
+    """
+    # i is the index (within lines) of the line *following* the start of the block.
+    # Return the index (within lines) of end of the block that starts at guide_lines[i].
+    # """
 
-#@+node:ekr.20161118093751.2: *4* ts_i.skip_possible_regex
-def skip_possible_regex(self, s: str, i: int) -> int:
-    """look ahead for a regex /"""
-    assert s[i] in '=(', repr(s[i])
-    i += 1
-    while i < len(s) and s[i] in ' \t':
+    level = 1  # All blocks start with '{'
+    while i < i2:
+        ch = self.guide_string[i]
         i += 1
-    if i < len(s) and s[i] == '/':
-        i += 1
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            if ch == '\\':
-                i += 2
-            elif ch == '/':
-                i += 1
-                break
-            else:
-                i += 1
-            assert progress < i
-
-    return i - 1
+        ###
+            # line = self.lines[i]
+            # i += 1
+            # for ch in line:
+        if ch == '{':
+            level += 1
+        if ch == '}':
+            level -= 1
+            if level == 0:
+                return i
+    return i2
+#@+node:ekr.20220917052530.1: ** Old code
 #@+node:ekr.20220825080908.1: *3* Old scripts
 #@+node:ekr.20210309083845.1: *4* script: old check-leoPy.leo
 """

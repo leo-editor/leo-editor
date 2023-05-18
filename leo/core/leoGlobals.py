@@ -336,7 +336,7 @@ gnx_id = fr"{gnx_char}{{3,}}"  # id's must have at least three characters.
 gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
 
 # Unls end with quotes.
-unl_regex = re.compile(r"""\bunl:[^`'")]+""")
+unl_regex = re.compile(r"""\bunl:[^`'"]+""")
 
 # Urls end at space or quotes.
 url_leadins = 'fghmnptw'
@@ -2703,11 +2703,16 @@ def pdb(message: str = '') -> None:
     # pylint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
-def objToString(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
-    """
-    Pretty print any Python object to a string.
-    """
-    if not isinstance(obj, str):
+def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
+    """Pretty print any Python object to a string."""
+    if isinstance(obj, (list, tuple)) and obj and all(isinstance(z, str) for z in obj):
+        # Return the enumerated lines of the list.
+        result_list = ['[\n' if isinstance(obj, list) else '(\n']
+        for i, z in enumerate(obj):
+            result_list.append(f"  {i:4}: {z!r}\n")
+        result_list.append(']\n' if isinstance(obj, list) else ')\n')
+        result = ''.join(result_list)
+    elif not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
         if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':

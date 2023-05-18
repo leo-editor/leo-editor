@@ -8,7 +8,13 @@ from typing import Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
+
+Block = Tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
 StringIO = io.StringIO
+
+class ImporterError(Exception):
+    pass
+
 #@+<< define block_tuple >>
 #@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
 # This named tuple contains all data relating to one block (class, method or function).
@@ -109,106 +115,202 @@ class Importer:
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-    #@+node:ekr.20161108131153.10: *3* i.import_from_string (driver) & helpers
-    def import_from_string(self, parent: Position, s: str) -> None:
-        """The common top-level code for all scanners."""
-        c = self.c
-        # Fix #449: Cloned @auto nodes duplicates section references.
-        if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
-            return
-        self.root = root = parent.copy()
+    #@+node:ekr.20161108131153.18: *3* i: Messages (to be deleted)
+    def error(self, s: str) -> None:  # pragma: no cover
+        """Issue an error and cause a unit test to fail."""
+        self.errors += 1
+        self.importCommands.errors += 1
 
-        # Check for intermixed blanks and tabs.
-        self.tab_width = c.getTabWidth(p=root)
-        lines = g.splitLines(s)
-        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
+    def report(self, message: str) -> None:  # pragma: no cover
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
 
-        # Regularize leading whitespace
-        if not ws_ok:
-            lines = self.regularize_whitespace(lines)
-
-        # A hook for xml importer: preprocess lines.
-        lines = self.preprocess_lines(lines)
-
-        # New: just call gen_lines.
-        self.gen_lines(lines, parent)
-
-        # Importers should never dirty the outline.
-        # #1451: Do not change the outline's change status.
-        for p in root.self_and_subtree():
-            p.clearDirty()
-    #@+node:ekr.20230126034143.1: *4* i.preprocess_lines
-    def preprocess_lines(self, lines: List[str]) -> List[str]:
+    def warning(self, s: str) -> None:  # pragma: no cover
+        if not g.unitTesting:
+            g.warning('Warning:', s)
+    #@+node:ekr.20230513091837.1: *3* i: New methods
+    #@+node:ekr.20230513080610.1: *4* i.compute_common_lws
+    def compute_common_lws(self, blocks: List[Block]) -> str:
         """
-        A hook for the xml/html importers.
+        Return the length of the common leading indentation of all non-blank
+        lines in all blocks.
 
-        These importers ensure that closing tags are followed by a newline.
+        This method assumes that no leading whitespace contains intermixed tabs and spaces:
+        
+        The returned string should consist of all blanks or all tabs.
         """
-        return lines
-    #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
-        """
-        Regularize leading whitespace in s:
-        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        """
-        kind = 'tabs' if self.tab_width > 0 else 'blanks'
-        kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
-        fn = g.shortFileName(self.root.h)
-        count, result, tab_width = 0, [], self.tab_width
-        self.ws_error = False  # 2016/11/23
-        if tab_width < 0:  # Convert tabs to blanks.
-            for n, line in enumerate(lines):
-                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                # Use negative width.
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
-                if s != line:
-                    count += 1
-                result.append(s)
-        elif tab_width > 0:  # Convert blanks to tabs.
-            for n, line in enumerate(lines):
-                # Use positive width.
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width))
-                if s != line:
-                    count += 1
-                result.append(s)
-        if count:
-            self.ws_error = True  # A flag to check.
-            if not g.unitTesting:
-                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
-                # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es('changed leading %s to %s in %s line%s in %s' % (
-                    kind2, kind, count, g.plural(count), fn))
-            if g.unitTesting:  # Sets flag for unit tests.
-                self.report('changed %s lines' % count)
+        if not blocks:
+            return ''
+        lws_list: List[int] = []
+        for block in blocks:
+            kind, name, start, start_body, end = block
+            lines = self.lines[start:end]
+            for line in lines:
+                stripped_line = line.lstrip()
+                if stripped_line:  # Skip empty lines
+                    lws_list.append(len(line[: -len(stripped_line)]))
+        n = min(lws_list) if lws_list else 0
+        ws_char = ' ' if self.tab_width < 1 else '\t'
+        return ws_char * n
+    #@+node:ekr.20230510150743.1: *4* i.delete_comments_and_strings
+    def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
+        """Delete all comments and strings from the given lines."""
+        string_delims = self.string_list
+        line_comment, start_comment, end_comment = self.single_comment, self.block1, self.block2
+        target = ''  # The string ending a multi-line comment or string.
+        escape = '\\'
+        result = []
+        for line in lines:
+            result_line, skip_count = [], 0
+            for i, ch in enumerate(line):
+                if ch == '\n':
+                    break  # Avoid appending the newline twice.
+                if skip_count > 0:
+                    skip_count -= 1  # Skip the character.
+                    continue
+                if target:
+                    if line.startswith(target, i):
+                        if len(target) > 1:
+                            # Skip the remaining characters of the target.
+                            skip_count = len(target) - 1
+                        target = ''  # Begin accumulating characters.
+                elif ch == escape:
+                    skip_count = 1
+                    continue
+                elif line_comment and line.startswith(line_comment, i):
+                    break  # Skip the rest of the line.
+                elif any(line.startswith(z, i) for z in string_delims):
+                    # Allow multi-character string delimiters.
+                    for z in string_delims:
+                        if line.startswith(z, i):
+                            target = z
+                            if len(z) > 1:
+                                skip_count = len(z) - 1
+                            break
+                elif start_comment and line.startswith(start_comment, i):
+                    target = end_comment
+                    if len(start_comment) > 1:
+                        # Skip the remaining characters of the starting comment delim.
+                        skip_count = len(start_comment) - 1
+                else:
+                    result_line.append(ch)
+            # End the line and append it to the result.
+            if line.endswith('\n'):
+                result_line.append('\n')
+            result.append(''.join(result_line))
+        assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
-        """Check for intermixed blank & tabs."""
-        # Do a quick check for mixed leading tabs/blanks.
-        fn = g.shortFileName(self.root.h)
-        w = self.tab_width
-        blanks = tabs = 0
-        for s in lines:
-            lws = self.get_str_lws(s)
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        # Make sure whitespace matches @tabwidth directive.
-        if w < 0:
-            ok = tabs == 0
-            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
-        elif w > 0:
-            ok = blanks == 0
-            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
-        if ok:
-            ok = (blanks == 0 or tabs == 0)
-            message = 'intermixed blanks and tabs in: %s' % (fn)
-        if not ok:
-            if g.unitTesting:
-                self.report(message)
-            else:
-                g.es(message)
-        return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
+    #@+node:ekr.20230513134327.1: *4* i.find_blocks (must be overridden)
+    def find_blocks(self, i1: int, i2: int) -> List[Block]:
+        raise ImporterError(f"Importer for language {self.language} must override Importer.find_blocks")
+    #@+node:ekr.20230510072848.1: *4* i.make_guide_lines
+    def make_guide_lines(self, lines: List[str]) -> List[str]:
+        """
+        Return a list if **guide lines** that simplify the detection of blocks.
+
+        This default method removes all comments and strings from the original lines.
+        """
+        return self.delete_comments_and_strings(lines[:])
+    #@+node:ekr.20230510080255.1: *4* i.new_gen_block
+    def new_gen_block(self, block: Block, parent: Position) -> None:
+        """
+        Generate parent.b from the given block.
+        Recursively create all descendant blocks, after first creating their parent nodes.
+        """
+        lines = self.lines
+        kind, name, start, start_body, end = block
+        assert start <= start_body <= end, (start, start_body, end)
+
+        # Find all blocks in the body of this block.
+        blocks = self.find_blocks(start_body, end)
+        if 0:
+            self.trace_blocks(blocks)
+        if blocks:
+            # Start with the head: lines[start : start_start_body].
+            result_list = lines[start:start_body]
+            # Add indented @others.
+            common_lws = self.compute_common_lws(blocks)
+            result_list.extend([f"{common_lws}@others\n"])
+
+            # Recursively generate the inner nodes/blocks.
+            last_end = end
+            for block in blocks:
+                child_kind, child_name, child_start, child_start_body, child_end = block
+                last_end = child_end
+                # Generate the child containing the new block.
+                child = parent.insertAsLastChild()
+                child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+                self.new_gen_block(block, child)
+                # Remove common_lws.
+                self.remove_common_lws(common_lws, child)
+            # Add any tail lines.
+            result_list.extend(lines[last_end:end])
+        else:
+            result_list = lines[start:end]
+        # Delete extra leading and trailing whitespace.
+        parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
+    #@+node:ekr.20230510071622.1: *4* i.new_gen_lines
+    def new_gen_lines(self, lines: List[str], parent: Position) -> None:
+        """
+        C_Importer.gen_lines: a rewrite of Importer.gen_lines.
+
+        Allocate lines to parent.b and descendant nodes.
+        """
+        try:
+            assert self.root == parent, (self.root, parent)
+            self.lines = lines
+            # Delete all children.
+            parent.deleteAllChildren()
+            # Create the guide lines.
+            self.guide_lines = self.make_guide_lines(lines)
+            n1, n2 = len(self.lines), len(self.guide_lines)
+            assert n1 == n2, (n1, n2)
+            # Start the recursion.
+            block = ('outer', 'parent', 0, 0, len(lines))
+            self.new_gen_block(block, parent=parent)
+        except ImporterError:
+            parent.deleteAllChildren()
+            parent.b = ''.join(lines)
+        except Exception:
+            g.es_exception()
+            parent.deleteAllChildren()
+            parent.b = ''.join(lines)
+
+        # Add trailing lines.
+        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20230513085654.1: *4* i.remove_common_lws
+    def remove_common_lws(self, lws: str, p: Position) -> None:
+        """Remove the given leading whitespace from all lines of p.b."""
+        if len(lws) == 0:
+            return
+        assert lws.isspace(), repr(lws)
+        n = len(lws)
+        lines = g.splitLines(p.b)
+        result: List[str] = []
+        for line in lines:
+            stripped_line = line.strip()
+            assert not stripped_line or line.startswith(lws), repr(line)
+            result.append(line[n:] if stripped_line else line)
+        p.b = ''.join(result)
+    #@+node:ekr.20230515082848.1: *4* i.trace_blocks
+    def trace_blocks(self, blocks: List[Block]) -> None:
+
+        if not blocks:
+            g.trace('No blocks')
+            return
+        print('')
+        print('Blocks...')
+        lines = self.lines
+        for z in blocks:
+            kind2, name2, start2, start_body2, end2 = z
+            tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
+            g.printObj(lines[start2:end2], tag=tag)
+        print('End of Blocks')
+        print('')
+    #@+node:ekr.20230513091923.1: *3* i: Old methods (to be deleted)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (OLD: to be deleted)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -563,7 +665,7 @@ class Importer:
         if this_state.level > prev_state.level:
             return i + 1
         return None
-    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper
+    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines & helper (OLD: to be deleted)
     def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.
@@ -576,7 +678,7 @@ class Importer:
             context, level = self.scan_one_line(context, level, line)
             states.append(NewScanState(context, level))
         return states
-    #@+node:ekr.20220814213148.1: *4* i.scan_one_line & helper
+    #@+node:ekr.20220814213148.1: *5* i.scan_one_line & helper
     def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
         """Fully scan one line. Return the context and level at the end of the line."""
         i = 0
@@ -610,7 +712,7 @@ class Importer:
                     i, level = self.update_level(i, level, line)
             assert progress < i, (repr(context), repr(line))
         return context, level
-    #@+node:ekr.20220815111151.1: *5* i.update_level
+    #@+node:ekr.20220815111151.1: *6* i.update_level
     def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:
         """
         Importer.update_level.  xml importer overrides this method.
@@ -624,21 +726,108 @@ class Importer:
             level = max(0, level - 1)
         i += 1
         return i, level
-    #@+node:ekr.20161108131153.18: *3* i: Messages
-    def error(self, s: str) -> None:  # pragma: no cover
-        """Issue an error and cause a unit test to fail."""
-        self.errors += 1
-        self.importCommands.errors += 1
+    #@+node:ekr.20230514064949.1: *3* i: Top-level methods
+    #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
+    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
+        """Check for intermixed blank & tabs."""
+        # Do a quick check for mixed leading tabs/blanks.
+        fn = g.shortFileName(self.root.h)
+        w = self.tab_width
+        blanks = tabs = 0
+        for s in lines:
+            lws = self.get_str_lws(s)
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        # Make sure whitespace matches @tabwidth directive.
+        if w < 0:
+            ok = tabs == 0
+            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
+        elif w > 0:
+            ok = blanks == 0
+            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
+        if ok:
+            ok = (blanks == 0 or tabs == 0)
+            message = 'intermixed blanks and tabs in: %s' % (fn)
+        if not ok:
+            if g.unitTesting:
+                self.report(message)
+            else:
+                g.es(message)
+        return ok
+    #@+node:ekr.20161108131153.10: *4* i.import_from_string (driver) & helpers
+    def import_from_string(self, parent: Position, s: str) -> None:
+        """The common top-level code for all scanners."""
+        c = self.c
+        # Fix #449: Cloned @auto nodes duplicates section references.
+        if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
+            return
+        self.root = root = parent.copy()
 
-    def report(self, message: str) -> None:  # pragma: no cover
-        if self.strict:
-            self.error(message)
+        # Check for intermixed blanks and tabs.
+        self.tab_width = c.getTabWidth(p=root)
+        lines = g.splitLines(s)
+        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
+
+        # Regularize leading whitespace
+        if not ws_ok:
+            lines = self.regularize_whitespace(lines)
+
+        # A hook for xml importer: preprocess lines.
+        lines = self.preprocess_lines(lines)
+
+        # Call gen_lines or new_gen_lines, depending on language.
+        # Eventually, new_gen_lines will replace gen_lines for *all* languages.
+        if self.language in ('c', 'coffeescript', 'cython', 'python'):
+            self.new_gen_lines(lines, parent)
         else:
-            self.warning(message)
+            self.gen_lines(lines, parent)
 
-    def warning(self, s: str) -> None:  # pragma: no cover
-        if not g.unitTesting:
-            g.warning('Warning:', s)
+        # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
+        for p in root.self_and_subtree():
+            p.clearDirty()
+    #@+node:ekr.20230126034143.1: *4* i.preprocess_lines
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        """
+        A hook to enable preprocessing lines before calling x.find_blocks.
+        """
+        return lines
+    #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
+        """
+        Regularize leading whitespace in s:
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        """
+        kind = 'tabs' if self.tab_width > 0 else 'blanks'
+        kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
+        fn = g.shortFileName(self.root.h)
+        count, result, tab_width = 0, [], self.tab_width
+        self.ws_error = False  # 2016/11/23
+        if tab_width < 0:  # Convert tabs to blanks.
+            for n, line in enumerate(lines):
+                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                # Use negative width.
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
+                if s != line:
+                    count += 1
+                result.append(s)
+        elif tab_width > 0:  # Convert blanks to tabs.
+            for n, line in enumerate(lines):
+                # Use positive width.
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width))
+                if s != line:
+                    count += 1
+                result.append(s)
+        if count:
+            self.ws_error = True  # A flag to check.
+            if not g.unitTesting:
+                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
+                # g.es_print('Perfect import test will ignoring leading whitespace.')
+                g.es('changed leading %s to %s in %s line%s in %s' % (
+                    kind2, kind, count, g.plural(count), fn))
+            if g.unitTesting:  # Sets flag for unit tests.
+                self.report('changed %s lines' % count)
+        return result
     #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s: str) -> int:
