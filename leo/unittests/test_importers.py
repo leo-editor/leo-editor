@@ -4472,8 +4472,9 @@ class TestXML(BaseTestImporter):
     #@+others
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
-        c = self.c
-        s = """
+
+        s = textwrap.dedent(
+        """
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE note SYSTEM "Note.dtd">
             <html>
@@ -4484,28 +4485,40 @@ class TestXML(BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """
-        table = (
-            (1, "<html>"),
-            (2, "<head>"),
-            (2, "<body class='bodystring'>"),
+        """).strip() + '\n'
+        
+        expected_results = (
+            (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
+                    '@others\n'
+                    '@language xml\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'tag html',
+                    '<?xml version="1.0" encoding="UTF-8"?>\n'
+                    '<!DOCTYPE note SYSTEM "Note.dtd">\n'
+                    '<html>\n'
+                        '@others\n'
+                    '</html>\n'
+            ),
+            (2, 'tag head',
+                    '<head>\n'
+                    '    <title>Bodystring</title>\n'
+                    '</head>\n'
+            ),
+            (2, 'tag body',
+            
+                    "<body class='bodystring'>\n"
+                    "<div id='bodydisplay'></div>\n"
+                    '</body>\n'
+            ),
         )
-        p = c.p
-        self.run_test(s)
-        after = p.nodeAfterTree()
-        root = p.lastChild()
-        self.assertEqual(root.h, f"@file {self.short_id}")
-        p = root.firstChild()
-        for n, h in table:
-            n2 = p.level() - root.level()
-            self.assertEqual(h, p.h)
-            self.assertEqual(n, n2)
-            p.moveToThreadNext()
-        self.assertEqual(p, after)
+        p = self.run_test(s, check_flag=False, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=True)
     #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 
-        s = """
+        s = textwrap.dedent(
+        """
             <html>
             <head>
                 <title>Bodystring</title>
@@ -4514,9 +4527,9 @@ class TestXML(BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        """).strip() + '\n'
+
+        expected_results = (
             (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
                     '@others\n'
                     '@language xml\n'
@@ -4538,7 +4551,9 @@ class TestXML(BaseTestImporter):
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=False, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=True)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """

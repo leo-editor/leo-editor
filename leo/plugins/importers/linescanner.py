@@ -293,10 +293,12 @@ class Importer:
             # Start the recursion.
             block = ('outer', 'parent', 0, 0, len(lines))
             self.new_gen_block(block, parent=parent)
-        except ImporterError:
+        except ImporterError as e:
+            g.trace(f"Importer error: {e}")
             parent.deleteAllChildren()
             parent.b = ''.join(lines)
         except Exception:
+            g.trace('Unexpected exception!')
             g.es_exception()
             parent.deleteAllChildren()
             parent.b = ''.join(lines)
@@ -804,6 +806,7 @@ class Importer:
             'c', 'coffeescript', 'csharp', 'cython', 'python',
             'lisp', 'javascript', 'ini', 'tcl',
             'java', 'pascal',
+            'xml',
         ):
             self.new_gen_lines(lines, parent)
         else:
