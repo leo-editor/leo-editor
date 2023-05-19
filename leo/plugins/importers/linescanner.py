@@ -53,6 +53,7 @@ class Importer:
     # To be removed...
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
+    minimum_block_size = 0  # 0: create all blocks.
 
     # Must be overridden in subclasses.
     language: str = None
@@ -189,6 +190,7 @@ class Importer:
 
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
+        min_size = self.minimum_block_size
         i, prev_i, results = i1, i1, []
         while i < i2:
             s = self.guide_lines[i]
@@ -201,8 +203,12 @@ class Importer:
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    results.append((kind, name, prev_i, i, end))
-                    i = prev_i = end
+                    # Don't generate small blocks.
+                    if min_size == 0 or end - prev_i > min_size:
+                        results.append((kind, name, prev_i, i, end))
+                        i = prev_i = end
+                    else:
+                        i = end
                     break
         return results
     #@+node:ekr.20230516050402.1: *4* i.find_end_of_block

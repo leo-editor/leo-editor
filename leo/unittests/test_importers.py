@@ -4506,11 +4506,8 @@ class TestXML(BaseTestImporter):
             (2, "<body class='bodystring'>",
             
                     "<body class='bodystring'>\n"
-                    '@others\n'
-                    '</body>\n'
-            ),
-            (3, "<div id='bodydisplay'></div>",  ### To be removed.
                     "<div id='bodydisplay'></div>\n"
+                    '</body>\n'
             ),
         )
         p = self.run_test(s, check_flag=True, strict_flag=False)
@@ -4525,7 +4522,9 @@ class TestXML(BaseTestImporter):
                 <title>Bodystring</title>
             </head>
             <body class='bodystring'>
-            <div id='bodydisplay'></div>
+            <div id='bodydisplay'>
+            contents!
+            </div>
             </body>
             </html>
         """).strip() + '\n'
@@ -4551,8 +4550,10 @@ class TestXML(BaseTestImporter):
                     '@others\n'
                     '</body>\n'
             ),
-            (3, "<div id='bodydisplay'></div>",  ### To be removed.
-                    "<div id='bodydisplay'></div>\n"
+            (3, "<div id='bodydisplay'>",
+                    "<div id='bodydisplay'>\n"
+                    'contents!\n'
+                    '</div>\n'
             ),
         )
         p = self.run_test(s, check_flag=True, strict_flag=False)

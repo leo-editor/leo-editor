@@ -17,6 +17,7 @@ class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
     language = 'xml'
+    minimum_block_size = 2  # Helps handle one-line elements.
 
     # xml_i.add_tags defines all patterns.
     block_patterns: Tuple = None
