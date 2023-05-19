@@ -126,7 +126,7 @@ class BaseTestImporter(LeoUnitTest):
         parent.h = f"{kind} {self.short_id}"
 
         # createOutline calls Importer.gen_lines and Importer.check.
-        test_s = textwrap.dedent(s).strip() + '\n\n'
+        test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Some tests will never pass round-trip tests.
@@ -1877,8 +1877,7 @@ class TestHtml(BaseTestImporter):
             </BODY>
             </HTML>
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language html\n'
@@ -1888,7 +1887,6 @@ class TestHtml(BaseTestImporter):
                     '<HTML>\n'
                     '@others\n'
                     '</HTML>\n'
-                    '\n'
             ),
             (2, '<HEAD>',
                     '<HEAD>\n'
@@ -1900,7 +1898,9 @@ class TestHtml(BaseTestImporter):
                     "<DIV id='bodydisplay'></DIV>\n"
                     '</BODY>\n'
             ),
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
