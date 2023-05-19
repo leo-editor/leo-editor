@@ -4486,30 +4486,30 @@ class TestXML(BaseTestImporter):
         """).strip() + '\n'
         
         expected_results = (
-            (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
+            (0, '',  # Ignore level 0 headlines.
                     '@others\n'
                     '@language xml\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'html',
+            (1, '<html>',
                     '<?xml version="1.0" encoding="UTF-8"?>\n'
                     '<!DOCTYPE note SYSTEM "Note.dtd">\n'
                     '<html>\n'
                         '@others\n'
                     '</html>\n'
             ),
-            (2, 'head',
+            (2, '<head>',
                     '<head>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
-            (2, 'body',
+            (2, "<body class='bodystring'>",
             
                     "<body class='bodystring'>\n"
                     '@others\n'
                     '</body>\n'
             ),
-            (3, 'div',
+            (3, "<div id='bodydisplay'></div>",  ### To be removed.
                     "<div id='bodydisplay'></div>\n"
             ),
         )
@@ -4531,27 +4531,27 @@ class TestXML(BaseTestImporter):
         """).strip() + '\n'
 
         expected_results = (
-            (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
+            (0, '',  # Ignore level 0 headlines.
                     '@others\n'
                     '@language xml\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'html',
+            (1, '<html>',
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
             ),
-            (2, 'head',
+            (2, '<head>',
                     '<head>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
-            (2, 'body',
+            (2, "<body class='bodystring'>",
                     "<body class='bodystring'>\n"
                     '@others\n'
                     '</body>\n'
             ),
-            (3, 'div',
+            (3, "<div id='bodydisplay'></div>",  ### To be removed.
                     "<div id='bodydisplay'></div>\n"
             ),
         )
@@ -4559,12 +4559,23 @@ class TestXML(BaseTestImporter):
         self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
-        s = """
+        s = textwrap.dedent(
+        """
             <:À.Ç>
             <Ì>
             <_.ÌÑ>
-        """
-        self.run_test(s)
+        """).strip() + '\n'
+        expected_results = (
+            (0, '',  # Ignore level 0 headlines.
+                 '<:À.Ç>\n'
+                '<Ì>\n'
+                '<_.ÌÑ>\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@-others
 #@-others
 #@@language python

@@ -236,6 +236,12 @@ class Importer:
         This default method removes all comments and strings from the original lines.
         """
         return self.delete_comments_and_strings(lines[:])
+    #@+node:ekr.20230519053151.1: *4* i.new_compute_headline
+    def new_compute_headline(self, block: Block) -> str:
+
+        child_kind, child_name, child_start, child_start_body, child_end = block
+        assert child_kind
+        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
     #@+node:ekr.20230510080255.1: *4* i.new_gen_block
     def new_gen_block(self, block: Block, parent: Position) -> None:
         """
@@ -264,7 +270,7 @@ class Importer:
                 last_end = child_end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = f"{child_kind} {child_name}".strip() if child_name else f"unnamed {child_kind}"
+                child.h = self.new_compute_headline(block)
                 self.new_gen_block(block, child)
                 # Remove common_lws.
                 self.remove_common_lws(common_lws, child)

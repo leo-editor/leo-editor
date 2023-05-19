@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required.
-from leo.plugins.importers.linescanner import Importer  ###, ImporterError
+from leo.plugins.importers.linescanner import Block, Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -41,11 +41,18 @@ class Xml_Importer(Importer):
 
         # m.group(1) must be the tag name.
         self.block_patterns = tuple([
-            ('', re.compile(fr"<({tag})")) for tag in tags
+            (tag, re.compile(fr"<({tag})")) for tag in tags
         ])
         self.start_patterns = tuple(re.compile(fr"<({tag})") for tag in tags)
         self.end_patterns = tuple(re.compile(fr".*?</({tag})>") for tag in tags)
         return tags
+    #@+node:ekr.20230519053541.1: *3* xml_i.new_compute_headline
+    def new_compute_headline(self, block: Block) -> str:
+        """Xml_Importer.new_compute_headline."""
+
+        child_kind, child_name, child_start, child_start_body, child_end = block
+        n = max(child_start, child_start_body - 1)
+        return self.lines[n].strip()
     #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
     tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
 
