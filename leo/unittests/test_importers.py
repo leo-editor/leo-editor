@@ -984,7 +984,8 @@ class TestHtml(BaseTestImporter):
         # https://github.com/leo-editor/leo-editor/issues/479
         #@+<< define s >>
         #@+node:ekr.20230126081859.1: *4* << define s >>
-        s = '''
+        s = textwrap.dedent(
+        '''
             <!DOCTYPE html>
             <html>
             <head>
@@ -1121,23 +1122,21 @@ class TestHtml(BaseTestImporter):
             <body onload="brython({debug:1, cache:'none'})">
             </body>
             </html>
-        '''
+        ''').strip() + '\n'
         #@-<< define s >>
-        p = self.run_test(s)
-        self.check_outline(p, (
-            #@+<< define comparison tuples >>
-            #@+node:ekr.20230126082712.1: *4* << define comparison tuples >>
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '<!DOCTYPE html>\n'
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<html>',
+            (1, 'html',
+                    '<!DOCTYPE html>\n'
                     '<html>\n'
                     '@others\n'
+                    '</html>\n'
             ),
-            (2, '<head>',
+            (2, 'head',
                     '<head>\n'
                     '<script type="text/python3">\n'
                     '"""Code for the header menu"""\n'
@@ -1270,14 +1269,13 @@ class TestHtml(BaseTestImporter):
                     '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
                     '</head>\n'
             ),
-            (2, '<body onload="brython({debug:1, cache:\'none\'})">',
+            (2, 'body',
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
                     '</body>\n'
-                    '</html>\n'
-                    '\n'
             ),
-            #@-<< define comparison tuples >>
-        ))
+        )
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
 

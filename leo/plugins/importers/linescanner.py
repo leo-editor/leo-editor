@@ -805,7 +805,7 @@ class Importer:
         if self.language in (
             'c', 'coffeescript', 'csharp', 'cython', 'python',
             'lisp', 'javascript', 'ini', 'tcl',
-            'java', 'pascal', 'xml',
+            'java', 'pascal', 'xml', 'html',
         ):
             self.new_gen_lines(lines, parent)
         else:
