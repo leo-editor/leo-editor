@@ -4538,25 +4538,27 @@ class TestXML(BaseTestImporter):
                     '@language xml\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<html>',
+            (1, 'html',
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
-                    '\n'
             ),
-            (2, '<head>',
+            (2, 'head',
                     '<head>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
-            (2, "<body class='bodystring'>",
+            (2, 'body',
                     "<body class='bodystring'>\n"
-                    "<div id='bodydisplay'></div>\n"
+                    '@others\n'
                     '</body>\n'
             ),
+            (3, 'div',
+                    "<div id='bodydisplay'></div>\n"
+            ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=True)
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
