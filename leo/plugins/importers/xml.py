@@ -41,15 +41,10 @@ class Xml_Importer(Importer):
 
         # m.group(1) must be the tag name.
         self.block_patterns = tuple([
-            (tag, re.compile(fr"<({tag})")) for tag in tags
+            ('', re.compile(fr"<({tag})")) for tag in tags
         ])
         self.start_patterns = tuple(re.compile(fr"<({tag})") for tag in tags)
         self.end_patterns = tuple(re.compile(fr".*?</({tag})>") for tag in tags)
-
-        ### g.printObj(self.end_patterns, tag='add_tags: end_patterns')
-        ### g.printObj(self.block_patterns, tag='add_tags: block_patterns')
-        ### g.printObj(self.start_patterns, tag='add_tags: start_patterns')
-
         return tags
     #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
     tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
@@ -88,7 +83,6 @@ class Xml_Importer(Importer):
         for i, line in enumerate(lines):
             s = re.sub(self.adjacent_tags_pat, repl, line)
             result_lines.extend(g.splitLines(s))
-        g.printObj(result_lines, tag=g.caller())  ###
         return result_lines
     #@+node:ekr.20230518081757.1: *3* xml_i.find_end_of_block
     def find_end_of_block(self, i1: int, i2: int) -> int:
@@ -97,8 +91,20 @@ class Xml_Importer(Importer):
 
         Return the index of the start of next block.
         """
-        i = i1
+        # Get the tag that started the block
         tag_stack: List[str] = []
+        tag1: str = None
+        line = self.guide_lines[i1 - 1]
+        for kind, pattern in self.block_patterns:
+            m = pattern.match(line)
+            if m:
+                tag1 = m.group(1)
+                ### g.printObj(self.lines[i1:i2], tag=f"{i1}:{i2} {tag1}")
+                tag_stack.append(tag1)
+                break
+        else:
+            raise ImportError('No opening tag')
+        i = i1
         while i < i2:
             line = self.guide_lines[i]
             i += 1
@@ -107,25 +113,27 @@ class Xml_Importer(Importer):
                 m = pattern.match(line)
                 if m:
                     tag = m.group(1)
-                    g.trace('PUSH', tag)
+                    ### g.trace('PUSH', tag)
                     tag_stack.append(tag)
+                    break
             for pattern in self.end_patterns:
                 m = pattern.match(line)
                 if m:
-                    tag = m.group(1)
-                    g.trace(' POP', tag)
+                    end_tag = m.group(1)
+                    ### g.trace(' POP', end_tag)
                     while tag_stack:
-                        start_tag = tag_stack.pop()
-                        if start_tag == tag:
-                            g.trace('Found', tag)
-                        if tag_stack:
+                        tag = tag_stack.pop()
+                        if tag == end_tag:
+                            ### g.trace('Match', tag)
+                            if not tag_stack:
+                                ## g.trace('Done', i, tag)
+                                return i
                             break
-                        return i  # Found outer matching tag.
-                    g.trace('Empty stack')
-                    return i1  # Return an empty block.
-        g.trace('FAIL')
-        return i2
-        # g.printObj(tag_stack, tag='FAIL! find_end_of_block. tag_stack')
+                    else:
+                        ### g.trace('No Match', end_tag)
+                        return i1  # Don't create a block.
+        ### g.trace('FAIL')
+        return i1  # Don't create a block.
     #@-others
 #@-others
 

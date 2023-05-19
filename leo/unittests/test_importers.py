@@ -4493,27 +4493,30 @@ class TestXML(BaseTestImporter):
                     '@language xml\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'tag html',
+            (1, 'html',
                     '<?xml version="1.0" encoding="UTF-8"?>\n'
                     '<!DOCTYPE note SYSTEM "Note.dtd">\n'
                     '<html>\n'
                         '@others\n'
                     '</html>\n'
             ),
-            (2, 'tag head',
+            (2, 'head',
                     '<head>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
-            (2, 'tag body',
+            (2, 'body',
             
                     "<body class='bodystring'>\n"
-                    "<div id='bodydisplay'></div>\n"
+                    '@others\n'
                     '</body>\n'
             ),
+            (3, 'div',
+                    "<div id='bodydisplay'></div>\n"
+            ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=True)
+        p = self.run_test(s, check_flag=True, strict_flag=False)
+        self.check_outline(p, expected_results, trace_results=False)
     #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 

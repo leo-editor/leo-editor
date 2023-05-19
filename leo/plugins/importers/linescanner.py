@@ -264,7 +264,7 @@ class Importer:
                 last_end = child_end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+                child.h = f"{child_kind} {child_name}".strip() if child_name else f"unnamed {child_kind}"
                 self.new_gen_block(block, child)
                 # Remove common_lws.
                 self.remove_common_lws(common_lws, child)
@@ -805,8 +805,7 @@ class Importer:
         if self.language in (
             'c', 'coffeescript', 'csharp', 'cython', 'python',
             'lisp', 'javascript', 'ini', 'tcl',
-            'java', 'pascal',
-            'xml',
+            'java', 'pascal', 'xml',
         ):
             self.new_gen_lines(lines, parent)
         else:
