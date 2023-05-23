@@ -107,7 +107,6 @@ class FreeMindImporter:
         """Import a list of FreeMind (.mmap) files."""
         c = self.c
         if files:
-            self.tab_width = c.getTabWidth(c.p)
             for fileName in files:
                 g.setGlobalOpenDir(fileName)
                 p = self.create_outline(fileName)
@@ -222,7 +221,6 @@ class LeoImportCommands:
         self.fileType: str = None  # ".py", ".c", etc.
         self.methodName: str = None  # x, as in < < x methods > > =
         self.output_newline: str = g.getOutputNewline(c=c)  # Value of @bool output_newline
-        self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
         self.verbose = True  # Leo 6.6
         self.webType = "@noweb"  # "cweb" or "noweb"
@@ -783,7 +781,6 @@ class LeoImportCommands:
         """
         at, c, u = self.c.atFileCommands, self.c, self.c.undoer
         current = c.p or c.rootPosition()
-        self.tab_width = c.getTabWidth(current)
         if not paths:
             return None
         # Initial open from command line is not undoable.
@@ -826,7 +823,6 @@ class LeoImportCommands:
         c, u = self.c, self.c.undoer
         if not c or not c.p or not files:
             return
-        self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
         self.verbose = verbose
         if not parent:
@@ -874,7 +870,6 @@ class LeoImportCommands:
             return
         if not files:
             return
-        self.tab_width = c.getTabWidth(current)  # New in 4.3.
         self.webType = webType
         for fileName in files:
             g.setGlobalOpenDir(fileName)
@@ -1366,7 +1361,6 @@ class MindMapImporter:
         """Import a list of MindMap (.csv) files."""
         c = self.c
         if files:
-            self.tab_width = c.getTabWidth(c.p)
             for fileName in files:
                 g.setGlobalOpenDir(fileName)
                 p = self.create_outline(fileName)
@@ -1477,7 +1471,6 @@ class MORE_Importer:
         c = self.c
         if files:
             changed = False
-            self.tab_width = c.getTabWidth(c.p)
             for fileName in files:
                 g.setGlobalOpenDir(fileName)
                 p = self.import_file(fileName)
