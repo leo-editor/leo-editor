@@ -2168,8 +2168,6 @@ class ToDoTask:
         )
         for kind, pat, aList in table:
             for m in re.finditer(pat, s):
-                pat_s = repr(pat).replace("re.compile('", "").replace("')", "")
-                pat_s = pat_s.replace(r'\\', '\\')
                 # Check for false key:val match:
                 if pat == self.key_val_pat:
                     key, value = m.group(2), m.group(3)
