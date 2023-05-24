@@ -5,7 +5,6 @@
 from __future__ import annotations
 import csv
 import io
-import json
 import os
 import re
 import textwrap
@@ -26,11 +25,10 @@ try:
     import lxml
 except ImportError:
     lxml = None
-#
+
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.core import leoNodes
-#
+
 # Abbreviation.
 StringIO = io.StringIO
 #@-<< leoImport imports >>
@@ -39,7 +37,7 @@ StringIO = io.StringIO
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import Position
 #@-<< leoImport annotations >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
@@ -134,73 +132,6 @@ class FreeMindImporter:
         if names:
             g.chdir(names[0])
             self.import_files(names)
-    #@-others
-#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper
-class JSON_Import_Helper:
-    """
-    A class that helps client scripts import .json files.
-
-    Client scripts supply data describing how to create Leo outlines from
-    the .json data.
-    """
-
-    def __init__(self, c: Cmdr) -> None:
-        """ctor for the JSON_Import_Helper class."""
-        self.c = c
-        self.vnodes_dict: Dict[str, VNode] = {}  # Keys are gnxs.
-
-    #@+others
-    #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
-    def create_nodes(self, parent: Position, parent_d: Dict[str, str]) -> None:
-        """Create the tree of nodes rooted in parent."""
-        d = self.gnx_dict
-        for child_gnx in parent_d.get('children'):
-            d2 = d.get(child_gnx)
-            if child_gnx in self.vnodes_dict:
-                # It's a clone.
-                v = self.vnodes_dict.get(child_gnx)
-                n = parent.numberOfChildren()
-                child = leoNodes.Position(v)
-                child._linkAsNthChild(parent, n)
-                # Don't create children again.
-            else:
-                child = parent.insertAsLastChild()
-                child.h = d2.get('h') or '<**no h**>'
-                child.b = d2.get('b') or ''
-                if d2.get('gnx'):
-                    child.v.fileIndex = gnx = d2.get('gnx')  # 2021/06/23: found by mypy.
-                    self.vnodes_dict[gnx] = child.v
-                if d2.get('ua'):
-                    child.u = d2.get('ua')
-                self.create_nodes(child, d2)
-    #@+node:ekr.20160504144241.2: *3* json.create_outline (generalize)
-    def create_outline(self, path: str) -> Position:
-        c = self.c
-        junk, fileName = g.os_path_split(path)
-        undoData = c.undoer.beforeInsertNode(c.p)
-        # Create the top-level headline.
-        p = c.lastTopLevel().insertAfter()
-        fn = g.shortFileName(path).strip()
-        if fn.endswith('.json'):
-            fn = fn[:-5]
-        p.h = fn
-        self.scan(path, p)
-        c.undoer.afterInsertNode(p, 'Import', undoData)
-        return p
-    #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
-    def scan(self, s: str, parent: Position) -> bool:
-        """Create an outline from a MindMap (.csv) file."""
-        c, d, self.gnx_dict = self.c, json.loads(s), {}
-        for d2 in d.get('nodes', []):
-            gnx = d2.get('gnx')
-            self.gnx_dict[gnx] = d2
-        top_d = d.get('top')
-        if top_d:
-            # Don't set parent.h or parent.gnx or parent.v.u.
-            parent.b = top_d.get('b') or ''
-            self.create_nodes(parent, top_d)
-            c.redraw()
-        return bool(top_d)
     #@-others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
 class LeoImportCommands:
