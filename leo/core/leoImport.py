@@ -936,13 +936,13 @@ class LeoImportCommands:
                     i = g.skip_ws(s, i + 2)  # skip the @d or @f
                     if i < len(s) and g.is_c_id(s[i]):
                         j = i
-                        g.skip_c_id(s, i)
+                        i = g.skip_c_id(s, i)
                         return s[j:i]
                     return directive
                 if g.match(s, i, "@c") or g.match(s, i, "@p"):
                     # Look for a function def.
                     name = self.findFunctionDef(s, i + 2)
-                    return name if name else "outer function"
+                    return name or "outer function"
                 if g.match(s, i, "@<"):
                     # Look for a section def.
                     # A small bug: the section def must end on this line.
