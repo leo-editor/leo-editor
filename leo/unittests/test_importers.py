@@ -4,12 +4,12 @@
 import glob
 import importlib
 import textwrap
+from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
-#import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
@@ -107,6 +107,60 @@ class BaseTestImporter(LeoUnitTest):
     def dedent(self, s):
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
+    #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
+    def new_run_test(self, s: str, expected_results: Tuple) -> None:
+        """
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location p.
+        """
+        c, ext, p = self.c, self.ext, self.c.p
+        self.assertTrue(ext)
+
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+
+        # TestCase.id() has the form leo.unittests.core.file.class.test_name
+        id_parts = self.id().split('.')
+        self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
+        parent.h = f"{kind} {self.short_id}"
+
+        # createOutline calls Importer.gen_lines and Importer.check.
+        test_s = textwrap.dedent(s).strip() + '\n'
+        c.importCommands.createOutline(parent.copy(), ext, test_s)
+
+        try:
+            self.new_check_outline(parent, expected_results)
+        except AssertionError:
+            # Dump actual results, including bodies.
+            self.dump_tree(parent, tag='Actual results...')
+            raise
+    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.new_check_outline
+    def new_check_outline(self, p, expected) -> None:
+        """
+        BaseTestImporter.new_check_outline.
+        
+        Check that p's outline matches the expected results.
+        
+        Dump the actual outline if there is a mismatch.
+        """
+        p0_level = p.level()
+        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        ### ok = len(expected) == len(actual)
+        for i, actual in enumerate(actual):
+            try:
+                a_level, a_h, a_str = actual
+                e_level, e_h, e_str = expected[i]
+            except ValueError:
+                g.printObj(actual, tag=f"actual[{i}]")
+                g.printObj(expected[i], tag=f"expected[{i}]")
+                self.fail(f"Error unpacking tuple {i}")
+            msg = f"FAIL in node {i} {e_h}"
+            self.assertEqual(a_level - p0_level, e_level, msg=msg)
+            if i > 0:  # Don't test top-level headline.
+                self.assertEqual(e_h, a_h, msg=msg)
+            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
+
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
         """
@@ -1274,8 +1328,9 @@ class TestHtml(BaseTestImporter):
                     '</body>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        # p = self.run_test(s, check_flag=True, strict_flag=False)
+        # self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
 
@@ -4361,7 +4416,7 @@ class TestTreepad (BaseTestImporter):
     ext = '.hjt'
 
     #@+others
-    #@+node:ekr.20220810141234.1: *3* test_treepad_1
+    #@+node:ekr.20220810141234.1: *3* TestTreepad.test_treepad_1
     def test_treepad_1(self):
 
         # 5P9i0s8y19Z is a magic number.
@@ -4380,20 +4435,22 @@ class TestTreepad (BaseTestImporter):
             node 2, line 1
             <end node>
         """)
-        # For now, we don't guarantee round-tripping.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+       
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '<Treepad version 3.0>\n'
                 '@language plain\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'headline 1', ''),
+            (1, 'headline 1',
+                ''
+            ),
             (2, 'headline 2',
                     'node 2, line 1\n'
-                    '\n'
             ),
-        ))
+        )
+        # For now, we don't guarantee round-tripping.
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
 class TestTypescript(BaseTestImporter):
@@ -4471,7 +4528,7 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
 
-        s = textwrap.dedent(
+        s = (
         """
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE note SYSTEM "Note.dtd">
@@ -4483,7 +4540,7 @@ class TestXML(BaseTestImporter):
             <div id='bodydisplay'></div>
             </body>
             </html>
-        """).strip() + '\n'
+        """) ###.strip() + '\n'
         
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
