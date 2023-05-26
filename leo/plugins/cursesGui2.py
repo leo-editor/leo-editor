@@ -589,7 +589,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             p = vl.content
             assert p and isinstance(p, Position), repr(p)
             return p.h or ' '
-        return vl.content if vl else ''
+        return vl.content if vl else ''  # type:ignore
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self) -> None:
         """Allow the user to edit the widget: ie. start handling keypresses."""
