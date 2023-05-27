@@ -1,12 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
 """The @auto importer for the TreePad file format."""
+from __future__ import annotations
 import re
-from typing import Dict, List
+from typing import Dict, List, TYPE_CHECKING
 from leo.core import leoGlobals as g  # required.
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20180201203240.3: ** class Treepad_Importer(Importer)
 class Treepad_Importer(Importer):

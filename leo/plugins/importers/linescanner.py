@@ -1,13 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
 """linescanner.py: The base Importer class used by some importers."""
+from __future__ import annotations
 import io
 import re
 from collections import namedtuple
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
 
 Block = Tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
 StringIO = io.StringIO

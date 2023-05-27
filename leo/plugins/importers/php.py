@@ -1,11 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18148: * @file ../plugins/importers/php.py
 """The @auto importer for the php language."""
+from __future__ import annotations
 import re
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g  # required
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer(Importer)
 class Php_Importer(Importer):

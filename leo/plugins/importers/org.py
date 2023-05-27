@@ -1,12 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
+from __future__ import annotations
 import re
-from typing import Dict, List
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+from typing import Dict, List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
 from leo.plugins.nodetags import TagController
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer(Importer)
 class Org_Importer(Importer):

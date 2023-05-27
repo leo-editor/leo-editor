@@ -1,10 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 """The @auto importer for Perl."""
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer(Importer)
 class Perl_Importer(Importer):

@@ -1,10 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
 """The @auto importer for rust."""
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer(Importer)
 class Rust_Importer(Importer):

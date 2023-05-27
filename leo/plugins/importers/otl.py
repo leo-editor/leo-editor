@@ -1,11 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18150: * @file ../plugins/importers/otl.py
 """The @auto importer for vim-outline files."""
+from __future__ import annotations
 import re
-from typing import Dict, List
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+from typing import Dict, List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20161124034614.2: ** class Otl_Importer(Importer)
 class Otl_Importer(Importer):

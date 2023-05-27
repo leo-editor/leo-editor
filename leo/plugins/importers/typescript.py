@@ -1,11 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 """The @auto importer for TypeScript."""
+from __future__ import annotations
 import re
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required.
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):

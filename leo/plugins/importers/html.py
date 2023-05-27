@@ -1,9 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18138: * @file ../plugins/importers/html.py
 """The @auto importer for HTML."""
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from leo.plugins.importers.xml import Xml_Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)
 class Html_Importer(Xml_Importer):

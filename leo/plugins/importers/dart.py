@@ -1,10 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 """The @auto importer for the dart language."""
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer(Importer)
 class Dart_Importer(Importer):

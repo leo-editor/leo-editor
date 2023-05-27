@@ -5,10 +5,15 @@ The @auto importer for the lua language.
 
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from typing import TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 delete_blank_lines = True
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer(Importer)

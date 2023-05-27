@@ -5,9 +5,11 @@ from __future__ import annotations
 import re
 from typing import Tuple, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer(Importer)
 class JS_Importer(Importer):

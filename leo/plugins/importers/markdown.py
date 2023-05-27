@@ -1,11 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
 """The @auto importer for the markdown language."""
+from __future__ import annotations
 import re
-from typing import Dict, List, Tuple
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+from typing import Dict, List, Tuple, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
 class Markdown_Importer(Importer):

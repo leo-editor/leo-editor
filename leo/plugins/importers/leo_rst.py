@@ -5,10 +5,13 @@ The @auto importer for restructured text.
 
 This module must **not** be named rst, so as not to conflict with docutils.
 """
-from typing import Dict, List
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+from __future__ import annotations
+from typing import Dict, List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
 
 # Used by writers.leo_rst as well as in this file.
 # All valid rst underlines, with '#' *last*, so it is effectively reserved.
