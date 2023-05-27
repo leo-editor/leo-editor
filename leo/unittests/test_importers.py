@@ -2888,15 +2888,13 @@ class TestPerl(BaseTestImporter):
             # Function call
             Hello();
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '#!/usr/bin/perl\n'
                     '\n'
                     '@others\n'
                     '            # Function call\n'
                     '            Hello();\n'
-                    '\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
@@ -2930,7 +2928,8 @@ class TestPerl(BaseTestImporter):
                 '            }\n'
                 '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
 
@@ -2946,8 +2945,7 @@ class TestPerl(BaseTestImporter):
 
             world\n";
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '#!/usr/bin/perl\n'
                     '\n'
@@ -2960,11 +2958,11 @@ class TestPerl(BaseTestImporter):
                     '\n'
                     '            world\n'
                     '";\n'
-                    '\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
 
@@ -2986,8 +2984,7 @@ class TestPerl(BaseTestImporter):
                print "Hello, World!\n";
             }
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '#!/usr/bin/perl\n'
                     '\n'
@@ -3020,9 +3017,9 @@ class TestPerl(BaseTestImporter):
                     '               print "Hello, World!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex
     def test_regex(self):
 
@@ -3045,8 +3042,7 @@ class TestPerl(BaseTestImporter):
                 s = tr///}/;
             }
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language perl\n'
@@ -3076,9 +3072,9 @@ class TestPerl(BaseTestImporter):
                     'sub test4 {\n'
                     '    s = tr///}/;\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
 class TestPhp(BaseTestImporter):
