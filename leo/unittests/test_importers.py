@@ -1299,7 +1299,7 @@ class TestHtml(BaseTestImporter):
             <html><head>headline</head><body>body</body></html>
         """
 
-        # xml.preprocess_lines inserts several newlines.
+        # xml.preprocess_lines inserts a newline between </head> and <body>.
         
         expected_results = (
             (0, '',
@@ -1325,8 +1325,7 @@ class TestHtml(BaseTestImporter):
             <body>body</body>
             </html>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1337,9 +1336,9 @@ class TestHtml(BaseTestImporter):
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
                     '</html>\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
     def test_slideshow_slide(self):
 
@@ -1518,8 +1517,7 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1529,7 +1527,6 @@ class TestHtml(BaseTestImporter):
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
-                    '\n'
             ),
             (2, '<head>',
                     '<head>\n'
@@ -1547,12 +1544,12 @@ class TestHtml(BaseTestImporter):
                      '</div>\n'
             ),
             (4, '<div class="a-1">',
-
                      '<div class="a-1">\n'
                      '    some text\n'
                      '</div>\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
     def test_underindented_comment(self):
 
