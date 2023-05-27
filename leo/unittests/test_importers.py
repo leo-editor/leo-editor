@@ -28,44 +28,6 @@ class BaseTestImporter(LeoUnitTest):
         g.app.write_black_sentinels = False
 
     #@+others
-    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
-    def check_outline(self, p, expected, trace_results=False):
-        """
-        BaseTestImporter.check_outline.
-        """
-        if False and trace_results: # Dump expected results.
-            print('')
-            g.trace('Expected results...')
-            for (level, h, s) in expected:
-                g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
-
-        if trace_results: # Dump headlines of actual results.
-            self.dump_headlines(p, tag='Actual headlines...')
-
-        if trace_results: # Dump actual results, including bodies.
-            self.dump_tree(p, tag='Actual results...')
-
-        # Do the actual tests.
-        p0_level = p.level()
-        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        # g.printObj(expected, tag='expected')
-        # g.printObj(actual, tag='actual')
-        self.assertEqual(len(expected), len(actual))
-        for i, actual in enumerate(actual):
-            try:
-                a_level, a_h, a_str = actual
-                e_level, e_h, e_str = expected[i]
-            except ValueError:
-                g.printObj(actual, tag=f"actual[{i}]")
-                g.printObj(expected[i], tag=f"expected[{i}]")
-                self.fail(f"Error unpacking tuple {i}")
-            msg = f"FAIL in node {i} {e_h}"
-            self.assertEqual(a_level - p0_level, e_level, msg=msg)
-            if i > 0:  # Don't test top-level headline.
-                self.assertEqual(e_h, a_h, msg=msg)
-            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-        return True, 'ok'
-
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
@@ -126,15 +88,15 @@ class BaseTestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         try:
-            self.new_check_outline(parent, expected_results)
+            self.check_outline(parent, expected_results)
         except AssertionError:
             # Dump actual results, including bodies.
             self.dump_tree(parent, tag='Actual results...')
             raise
-    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.new_check_outline
-    def new_check_outline(self, p, expected) -> None:
+    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
+    def check_outline(self, p: Position, expected: Tuple) -> None:
         """
-        BaseTestImporter.new_check_outline.
+        BaseTestImporter.check_outline.
         
         Check that p's outline matches the expected results.
         
@@ -155,7 +117,6 @@ class BaseTestImporter(LeoUnitTest):
             if i > 0:  # Don't test top-level headline.
                 self.assertEqual(e_h, a_h, msg=msg)
             self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-
     #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
     def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
         p = self.run_test(s)
@@ -164,7 +125,8 @@ class BaseTestImporter(LeoUnitTest):
     def run_test(self, s: str) -> Position:
         """
         Run a unit test of an import scanner,
-        i.e., create a tree from string s at location p.
+        i.e., create a tree from string s at location c.p.
+        Return the created tree.
         """
         c, ext, p = self.c, self.ext, self.c.p
         self.assertTrue(ext)
