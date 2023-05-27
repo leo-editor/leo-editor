@@ -1036,8 +1036,7 @@ class TestHtml(BaseTestImporter):
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
-        s = textwrap.dedent(
-        '''
+        s = '''
             <!DOCTYPE html>
             <html>
             <head>
@@ -1051,9 +1050,10 @@ class TestHtml(BaseTestImporter):
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
             <body onload="brython({debug:1, cache:'none'})">
+            <!-- comment -->
             </body>
             </html>
-        ''').strip() + '\n'
+        '''
 
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -1069,23 +1069,25 @@ class TestHtml(BaseTestImporter):
             ),
             (2, '<head>',
                     '<head>\n'
+                    '@others\n'
+                    '<title>Brython</title>\n'
+                    '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
+                    '</head>\n'
+            ),
+            (3, '<script type="text/python3">',
                     '<script type="text/python3">\n'
                     '"""Code for the header menu"""\n'
                     'from browser import document as doc\n'
                     'from browser import html\n'
                     'import header\n'
                     '</script>\n'
-                    '<title>Brython</title>\n'
-                    '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
-                    '</head>\n'
             ),
-            (2, '<body onload="brython({debug:1, cache:\'none\'})">',
+            (2, """<body onload="brython({debug:1, cache:'none'})">""",
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
+                    '<!-- comment -->\n'
                     '</body>\n'
             ),
         )
-        # p = self.run_test(s, check_flag=True, strict_flag=False)
-        # self.check_outline(p, expected_results, trace_results=False)
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
