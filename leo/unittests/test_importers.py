@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
-import leo.plugins.importers.dart as dart
+### import leo.plugins.importers.dart as dart
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
@@ -849,26 +849,24 @@ class TestDart(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    "var name = 'Bob';\n"
-                    '\n'
                     '@others\n'
                     '@language dart\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'hello',
+            (1, 'function hello',
+                    "var name = 'Bob';\n"
+                    '\n'
                     'hello() {\n'
                     "  print('Hello, World!');\n"
                     '}\n'
-                    '\n'
             ),
-            (1, 'printNumber',
+            (1, 'function printNumber',
                     '// Define a function.\n'
                     'printNumber(num aNumber) {\n'
                     "  print('The number is $aNumber.'); // Print to console.\n"
                     '}\n'
-                    '\n'
             ),
-            (1, 'void main',
+            (1, 'function void main',
                     '// This is where the app starts executing.\n'
                     'void main() {\n'
                     '  var number = 42; // Declare and initialize a variable.\n'
@@ -877,17 +875,6 @@ class TestDart(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.127: *3* TestDart.test_compute_headline
-    def test_compute_headline(self):
-        c = self.c
-        x = dart.Dart_Importer(c)
-        table = (
-            ('func(abc) {', 'func'),
-            ('void foo() {', 'void foo'),
-        )
-        for s, expected in table:
-            got = x.compute_headline(s)
-            self.assertEqual(got, expected)
     #@-others
 #@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
 class TestElisp(BaseTestImporter):

@@ -16,16 +16,9 @@ class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
     language = 'dart'
-
-    #@+others
-    #@+node:ekr.20161123121021.1: *3* dart_i.compute_headline
-    dart_pattern = re.compile(r'^\s*([\w_][\w_\s]*)\(')
-
-    def compute_headline(self, s: str) -> str:
-
-        m = self.dart_pattern.match(s)
-        return m.group(0).strip('(').strip() if m else s.strip()
-    #@-others
+    block_patterns = (
+        ('function', re.compile(r'^\s*([\w\s]+)\s*\(.*?\)\s*\{')),
+    )
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
