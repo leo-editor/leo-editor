@@ -2541,13 +2541,9 @@ class TestOtl(BaseTestImporter):
             \tSection 3.1
             : Sec 3.1
         """
-        p = self.run_test(s)
-        # A hack, to simulate an unexpected line in the root node.
-        # Alas, this does not affect coverage testing.
-        p.b = 'line in root node\n' + p.b
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                'line in root node\n'
+                # 'line in root node\n'
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
@@ -2558,7 +2554,8 @@ class TestOtl(BaseTestImporter):
             (3, 'Section 2-1-1', 'Sec 2-1-1\n'),
             (1, 'Section 3', 'Sec 3\n'),
             (2, 'Section 3.1', 'Sec 3.1\n'),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
     def test_otl_placeholder(self):
 
@@ -2570,8 +2567,7 @@ class TestOtl(BaseTestImporter):
             \t\tSection 3
             : Sec 3.
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language otl\n'
                 '@tabwidth -4\n'
@@ -2580,7 +2576,8 @@ class TestOtl(BaseTestImporter):
             (1, 'Section 2', 'Sec 2.\n'),
             (2, 'placeholder level 2', ''),
             (3, 'Section 3', 'Sec 3.\n'),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 
