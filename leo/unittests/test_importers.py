@@ -919,8 +919,7 @@ class TestDart(BaseTestImporter):
           printNumber(number); // Call a function.
         }
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     "var name = 'Bob';\n"
                     '\n'
@@ -947,9 +946,9 @@ class TestDart(BaseTestImporter):
                     '  var number = 42; // Declare and initialize a variable.\n'
                     '  printNumber(number); // Call a function.\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.127: *3* TestDart.test_compute_headline
     def test_compute_headline(self):
         c = self.c
