@@ -246,8 +246,7 @@ class TestC(BaseTestImporter):
                 '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
@@ -292,8 +291,7 @@ class TestC(BaseTestImporter):
                 '    }\n'
             ),
         )
-        p = self.run_test(s)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
     def test_open_curly_bracket_on_next_line(self):
 
@@ -332,8 +330,7 @@ class TestC(BaseTestImporter):
                 '} // comment\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
@@ -358,8 +355,7 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
@@ -391,8 +387,7 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
@@ -420,8 +415,7 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
@@ -449,8 +443,7 @@ class TestC(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
@@ -619,8 +612,8 @@ class TestCoffeescript(BaseTestImporter):
                     '  scriptNode = parser.parse str\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
+
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
@@ -703,8 +696,7 @@ class TestCoffeescript(BaseTestImporter):
               '  if str.length > 0 then str else ""\n'
           ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -751,8 +743,7 @@ class TestCSharp(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
@@ -781,8 +772,7 @@ class TestCSharp(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
 class TestCText(BaseTestImporter):
@@ -866,7 +856,7 @@ class TestCython(BaseTestImporter):
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
         ''').strip() + '\n'
 
-        expected_result = (
+        expected_results = (
             (0, '',  # check_outlines ignores the first headline.
                     '@others\n'
                     '@language cython\n'
@@ -889,8 +879,7 @@ class TestCython(BaseTestImporter):
                     '    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
             ),
         )
-        p = self.run_test(s, strict_flag=True, check_flag=False)
-        self.check_outline(p, expected_result, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -1009,8 +998,7 @@ class TestElisp(BaseTestImporter):
                     '   (+ 1 2 3))\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml(BaseTestImporter):
@@ -1620,8 +1608,7 @@ class TestHtml(BaseTestImporter):
                     '</BODY>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
@@ -1738,8 +1725,7 @@ class TestJava(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
 
@@ -1796,8 +1782,7 @@ class TestJava(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
@@ -1820,9 +1805,7 @@ class TestJava(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
 
@@ -1844,8 +1827,7 @@ class TestJava(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript(BaseTestImporter):
@@ -1881,8 +1863,7 @@ class TestJavascript(BaseTestImporter):
                 s
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test var_equal_function
     def var_equal_function(self):
 
@@ -1912,11 +1893,7 @@ class TestJavascript(BaseTestImporter):
                 s
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=True)
-
-
-
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
 
@@ -2691,8 +2668,7 @@ class TestPascal(BaseTestImporter):
                     'end. // interface\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
 
@@ -2851,10 +2827,7 @@ class TestPascal(BaseTestImporter):
                     'end;\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
-
-
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):
@@ -3341,9 +3314,7 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
@@ -3368,9 +3339,7 @@ class TestPython(BaseTestImporter):
                    '    c=3\n'
             )
         )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
         s = textwrap.dedent(
@@ -3426,8 +3395,7 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
         s = textwrap.dedent(
@@ -3460,8 +3428,7 @@ class TestPython(BaseTestImporter):
                         '    _raised = False\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
         s = textwrap.dedent(
@@ -3524,8 +3491,7 @@ class TestPython(BaseTestImporter):
                '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
@@ -4035,8 +4001,7 @@ class TestTcl (BaseTestImporter):
                     ' }\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
 class TestTreepad (BaseTestImporter):
@@ -4239,8 +4204,7 @@ class TestXML(BaseTestImporter):
                     '</div>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = textwrap.dedent(
@@ -4258,8 +4222,7 @@ class TestXML(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@-others
 #@@language python
