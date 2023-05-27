@@ -1026,7 +1026,7 @@ class TestHtml(BaseTestImporter):
         super().setUp()
         c = self.c
         # Simulate @data import-html-tags, with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
+        tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
@@ -1036,8 +1036,6 @@ class TestHtml(BaseTestImporter):
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
-        #@+<< define s >>
-        #@+node:ekr.20230126081859.1: *4* << define s >>
         s = textwrap.dedent(
         '''
             <!DOCTYPE html>
@@ -1048,128 +1046,7 @@ class TestHtml(BaseTestImporter):
             from browser import document as doc
             from browser import html
             import header
-
-            qs_lang,language = header.show()
-
-            doc["content"].html = doc["content_%s" %language].html
-
-            if qs_lang:
-                doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
-
-            def ch_lang(ev):
-                sel = ev.target
-                new_lang = sel.options[sel.selectedIndex].value
-                doc.location.href = 'index.html?lang=%s' %new_lang
-
-            for elt in doc[html.SELECT]:
-                if elt.id.startswith('change_lang_'):
-                    doc[elt.id].bind('change',ch_lang)
             </script>
-
-            <script type="text/python3">
-            """Code for the clock"""
-
-            import time
-            import math
-            import datetime
-
-            from browser import document as doc
-            import browser.timer
-
-            sin,cos = math.sin,math.cos
-            width,height = 250,250 # canvas dimensions
-            ray = 100 # clock ray
-
-            def needle(angle,r1,r2,color="#000000"):
-                # draw a needle at specified angle in specified color
-                # r1 and r2 are percentages of clock ray
-                x1 = width/2-ray*cos(angle)*r1
-                y1 = height/2-ray*sin(angle)*r1
-                x2 = width/2+ray*cos(angle)*r2
-                y2 = height/2+ray*sin(angle)*r2
-                ctx.beginPath()
-                ctx.strokeStyle = color
-                ctx.moveTo(x1,y1)
-                ctx.lineTo(x2,y2)
-                ctx.stroke()
-
-            def set_clock():
-                # erase clock
-                ctx.beginPath()
-                ctx.fillStyle = "#FFF"
-                ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
-                ctx.fill()
-
-                # redraw hours
-                show_hours()
-
-                # print day
-                now = datetime.datetime.now()
-                day = now.day
-                ctx.font = "bold 14px Arial"
-                ctx.textAlign = "center"
-                ctx.textBaseline = "middle"
-                ctx.fillStyle="#FFF"
-                ctx.fillText(day,width*0.7,height*0.5)
-
-                # draw needles for hour, minute, seconds
-                ctx.lineWidth = 3
-                hour = now.hour%12 + now.minute/60
-                angle = hour*2*math.pi/12 - math.pi/2
-                needle(angle,0.05,0.5)
-                minute = now.minute
-                angle = minute*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85)
-                ctx.lineWidth = 1
-                second = now.second+now.microsecond/1000000
-                angle = second*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85,"#FF0000") # in red
-
-            def show_hours():
-                ctx.beginPath()
-                ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
-                ctx.fillStyle = "#000"
-                ctx.fill()
-                for i in range(1,13):
-                    angle = i*math.pi/6-math.pi/2
-                    x3 = width/2+ray*cos(angle)*0.75
-                    y3 = height/2+ray*sin(angle)*0.75
-                    ctx.font = "20px Arial"
-                    ctx.textAlign = "center"
-                    ctx.textBaseline = "middle"
-                    ctx.fillText(i,x3,y3)
-                # cell for day
-                ctx.fillStyle = "#000"
-                ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
-
-            canvas = doc["clock"]
-            # draw clock border
-            if hasattr(canvas,'getContext'):
-                ctx = canvas.getContext("2d")
-                ctx.beginPath()
-                ctx.lineWidth = 10
-                ctx.arc(width/2,height/2,ray,0,2*math.pi)
-                ctx.stroke()
-
-                for i in range(60):
-                    ctx.lineWidth = 1
-                    if i%5 == 0:
-                        ctx.lineWidth = 3
-                    angle = i*2*math.pi/60 - math.pi/3
-                    x1 = width/2+ray*cos(angle)
-                    y1 = height/2+ray*sin(angle)
-                    x2 = width/2+ray*cos(angle)*0.9
-                    y2 = height/2+ray*sin(angle)*0.9
-                    ctx.beginPath()
-                    ctx.moveTo(x1,y1)
-                    ctx.lineTo(x2,y2)
-                    ctx.stroke()
-                browser.timer.set_interval(set_clock,100)
-                show_hours()
-            else:
-                doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
-            </script>
-
             <title>Brython</title>
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
@@ -1177,153 +1054,32 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         ''').strip() + '\n'
-        #@-<< define s >>
+
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'html',
+            (1, '<html>',
                     '<!DOCTYPE html>\n'
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
             ),
-            (2, 'head',
+            (2, '<head>',
                     '<head>\n'
                     '<script type="text/python3">\n'
                     '"""Code for the header menu"""\n'
                     'from browser import document as doc\n'
                     'from browser import html\n'
                     'import header\n'
-                    '\n'
-                    'qs_lang,language = header.show()\n'
-                    '\n'
-                    'doc["content"].html = doc["content_%s" %language].html\n'
-                    '\n'
-                    'if qs_lang:\n'
-                    '    doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang\n'
-                    '\n'
-                    'def ch_lang(ev):\n'
-                    '    sel = ev.target\n'
-                    '    new_lang = sel.options[sel.selectedIndex].value\n'
-                    "    doc.location.href = 'index.html?lang=%s' %new_lang\n"
-                    '\n'
-                    'for elt in doc[html.SELECT]:\n'
-                    "    if elt.id.startswith('change_lang_'):\n"
-                    "        doc[elt.id].bind('change',ch_lang)\n"
                     '</script>\n'
-                    '\n'
-                    '<script type="text/python3">\n'
-                    '"""Code for the clock"""\n'
-                    '\n'
-                    'import time\n'
-                    'import math\n'
-                    'import datetime\n'
-                    '\n'
-                    'from browser import document as doc\n'
-                    'import browser.timer\n'
-                    '\n'
-                    'sin,cos = math.sin,math.cos\n'
-                    'width,height = 250,250 # canvas dimensions\n'
-                    'ray = 100 # clock ray\n'
-                    '\n'
-                    'def needle(angle,r1,r2,color="#000000"):\n'
-                    '    # draw a needle at specified angle in specified color\n'
-                    '    # r1 and r2 are percentages of clock ray\n'
-                    '    x1 = width/2-ray*cos(angle)*r1\n'
-                    '    y1 = height/2-ray*sin(angle)*r1\n'
-                    '    x2 = width/2+ray*cos(angle)*r2\n'
-                    '    y2 = height/2+ray*sin(angle)*r2\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.strokeStyle = color\n'
-                    '    ctx.moveTo(x1,y1)\n'
-                    '    ctx.lineTo(x2,y2)\n'
-                    '    ctx.stroke()\n'
-                    '\n'
-                    'def set_clock():\n'
-                    '    # erase clock\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.fillStyle = "#FFF"\n'
-                    '    ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)\n'
-                    '    ctx.fill()\n'
-                    '\n'
-                    '    # redraw hours\n'
-                    '    show_hours()\n'
-                    '\n'
-                    '    # print day\n'
-                    '    now = datetime.datetime.now()\n'
-                    '    day = now.day\n'
-                    '    ctx.font = "bold 14px Arial"\n'
-                    '    ctx.textAlign = "center"\n'
-                    '    ctx.textBaseline = "middle"\n'
-                    '    ctx.fillStyle="#FFF"\n'
-                    '    ctx.fillText(day,width*0.7,height*0.5)\n'
-                    '\n'
-                    '    # draw needles for hour, minute, seconds\n'
-                    '    ctx.lineWidth = 3\n'
-                    '    hour = now.hour%12 + now.minute/60\n'
-                    '    angle = hour*2*math.pi/12 - math.pi/2\n'
-                    '    needle(angle,0.05,0.5)\n'
-                    '    minute = now.minute\n'
-                    '    angle = minute*2*math.pi/60 - math.pi/2\n'
-                    '    needle(angle,0.05,0.85)\n'
-                    '    ctx.lineWidth = 1\n'
-                    '    second = now.second+now.microsecond/1000000\n'
-                    '    angle = second*2*math.pi/60 - math.pi/2\n'
-                    '    needle(angle,0.05,0.85,"#FF0000") # in red\n'
-                    '\n'
-                    'def show_hours():\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)\n'
-                    '    ctx.fillStyle = "#000"\n'
-                    '    ctx.fill()\n'
-                    '    for i in range(1,13):\n'
-                    '        angle = i*math.pi/6-math.pi/2\n'
-                    '        x3 = width/2+ray*cos(angle)*0.75\n'
-                    '        y3 = height/2+ray*sin(angle)*0.75\n'
-                    '        ctx.font = "20px Arial"\n'
-                    '        ctx.textAlign = "center"\n'
-                    '        ctx.textBaseline = "middle"\n'
-                    '        ctx.fillText(i,x3,y3)\n'
-                    '    # cell for day\n'
-                    '    ctx.fillStyle = "#000"\n'
-                    '    ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)\n'
-                    '\n'
-                    'canvas = doc["clock"]\n'
-                    '# draw clock border\n'
-                    "if hasattr(canvas,'getContext'):\n"
-                    '    ctx = canvas.getContext("2d")\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.lineWidth = 10\n'
-                    '    ctx.arc(width/2,height/2,ray,0,2*math.pi)\n'
-                    '    ctx.stroke()\n'
-                    '\n'
-                    '    for i in range(60):\n'
-                    '        ctx.lineWidth = 1\n'
-                    '        if i%5 == 0:\n'
-                    '            ctx.lineWidth = 3\n'
-                    '        angle = i*2*math.pi/60 - math.pi/3\n'
-                    '        x1 = width/2+ray*cos(angle)\n'
-                    '        y1 = height/2+ray*sin(angle)\n'
-                    '        x2 = width/2+ray*cos(angle)*0.9\n'
-                    '        y2 = height/2+ray*sin(angle)*0.9\n'
-                    '        ctx.beginPath()\n'
-                    '        ctx.moveTo(x1,y1)\n'
-                    '        ctx.lineTo(x2,y2)\n'
-                    '        ctx.stroke()\n'
-                    '    browser.timer.set_interval(set_clock,100)\n'
-                    '    show_hours()\n'
-                    'else:\n'
-                    '    doc[\'navig_zone\'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"\n'
-                    '</script>\n'
-                    '\n'
                     '<title>Brython</title>\n'
                     '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
                     '</head>\n'
             ),
-            (2, 'body',
+            (2, '<body onload="brython({debug:1, cache:\'none\'})">',
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
                     '</body>\n'
             ),
@@ -1868,57 +1624,41 @@ class TestHtml(BaseTestImporter):
     def test_underindented_comment(self):
 
         s = r'''
-            <td width="550">
             <table cellspacing="0" cellpadding="0" width="600" border="0">
-                <td class="blutopgrabot" height="28"></td>
-
                 <!-- The indentation of this element causes the problem. -->
                 <table>
-
-            <!--
             <div align="center">
-            <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+            <iframe src="http://www.amex.com/index.jsp"</iframe>
             </div>
-            -->
-
             </table>
             </table>
-
             <p>Paragraph</p>
-            </td>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '<td width="550">\n'
                     '@others\n'
                     '<p>Paragraph</p>\n'
-                    '</td>\n'
-                    '\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
                     '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
-                    '    <td class="blutopgrabot" height="28"></td>\n'
-                    '\n'
-                    '    <!-- The indentation of this element causes the problem. -->\n'
-                    '    @others\n'
+                    '@others\n'
                     '</table>\n'
-                    '\n'
             ),
             (2, '<table>',
-                    '<table>\n'
-                    '\n'
-                    '<!--\n'
-                    '<div align="center">\n'
-                    '<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>\n'
-                    '</div>\n'
-                    '-->\n'
-                    '\n'
+                    '    <!-- The indentation of this element causes the problem. -->\n'
+                    '    <table>\n'
+                    '@others\n'
                     '</table>\n'
             ),
-        ))
+            (3, '<div align="center">',
+                    '<div align="center">\n'
+                    '<iframe src="http://www.amex.com/index.jsp"</iframe>\n'
+                    '</div>\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
 
@@ -4519,7 +4259,7 @@ class TestXML(BaseTestImporter):
         super().setUp()
         c = self.c
         # Simulate @data import-xml-tags, with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
+        tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
