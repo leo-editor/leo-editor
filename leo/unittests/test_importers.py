@@ -156,6 +156,13 @@ class BaseTestImporter(LeoUnitTest):
                 self.assertEqual(e_h, a_h, msg=msg)
             self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
 
+    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
+    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
+        p = self.run_test(s)
+        self.check_round_trip(p, expected_s or s)
+
+        
+        
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -1254,9 +1261,6 @@ class TestHtml(BaseTestImporter):
         """
         #@-<< define s >>
 
-        # Don't run the standard round-trip test.
-        p = self.run_test(s)
-
         # xml.preprocess_lines inserts several newlines.
         # Modify the expected result accordingly.
         expected_s = (s
@@ -1266,7 +1270,7 @@ class TestHtml(BaseTestImporter):
             .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
             .replace('<noscript><img', '<noscript>\n<img')
         )
-        self.check_round_trip(p, expected_s)
+        self.new_round_trip_test(s, expected_s)
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
@@ -1469,8 +1473,7 @@ class TestHtml(BaseTestImporter):
             .replace('<p><strong>', '<p>\n<strong>')
             .replace('</a></p>', '</a>\n</p>')
         )
-        p = self.run_test(s)
-        self.check_round_trip(p, expected_s)
+        self.new_round_trip_test(s, expected_s)
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
@@ -1898,8 +1901,7 @@ class TestJavascript(BaseTestImporter):
              * line 2.
              */
         """
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
     def test_regex(self):
 
@@ -1911,8 +1913,7 @@ class TestJavascript(BaseTestImporter):
                 return '"' + this + '"';
             };
             """
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):
@@ -3087,8 +3088,7 @@ class TestPhp(BaseTestImporter):
 
             ?>
         """
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
     def test_import_classes__functions(self):
 
@@ -3130,8 +3130,7 @@ class TestPhp(BaseTestImporter):
             }
             ?>
         """
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
         
     #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
@@ -3146,8 +3145,7 @@ class TestPhp(BaseTestImporter):
             }
             ?>
         """
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython(BaseTestImporter):
@@ -4076,8 +4074,7 @@ class TestTypescript(BaseTestImporter):
             document.body.appendChild(button)
 
         '''
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
         s = '''
@@ -4102,8 +4099,7 @@ class TestTypescript(BaseTestImporter):
 
             document.body.appendChild(button)
         '''
-        p = self.run_test(s)
-        self.check_round_trip(p, s)
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
 class TestXML(BaseTestImporter):
