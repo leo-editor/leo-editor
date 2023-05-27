@@ -815,8 +815,7 @@ class TestCText(BaseTestImporter):
         See what we did there - one more '#' - this is a subnode.
         """
         # Round-tripping is not guaranteed.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline.
                     'Leading text in root node of subtree\n'
                     '\n'
@@ -838,11 +837,9 @@ class TestCText(BaseTestImporter):
             (2, 'A level 2 node',
                     '\n'
                     "See what we did there - one more '#' - this is a subnode.\n"
-                    '\n'
             ),
-        ))
-
-
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython(BaseTestImporter):
