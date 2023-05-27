@@ -1270,10 +1270,6 @@ class TestHtml(BaseTestImporter):
             .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
             .replace('<noscript><img', '<noscript>\n<img')
         )
-
-        # This dump now looks good!
-        # self.dump_tree(p)
-
         self.check_round_trip(p, expected_s)
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
@@ -1838,8 +1834,7 @@ class TestJavascript(BaseTestImporter):
     #@+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
     def test_plain_function(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             // Restarting
             function restart() {
                 invokeParamifier(params,"onstart");
@@ -1851,7 +1846,7 @@ class TestJavascript(BaseTestImporter):
                 }
                 window.scrollTo(0,0);
             }
-        """).strip() + '\n'
+        """
         
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -1860,7 +1855,17 @@ class TestJavascript(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'function restart',
-                s
+                    '// Restarting\n'
+                    'function restart() {\n'
+                    '    invokeParamifier(params,"onstart");\n'
+                    '    if(story.isEmpty()) {\n'
+                    '        var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));\n'
+                    '        for(var t=0; t<tiddlers.length; t++) {\n'
+                    '            story.displayTiddler("bottom",tiddlers[t].title);\n'
+                    '        }\n'
+                    '    }\n'
+                    '    window.scrollTo(0,0);\n'
+                    '}\n'
             ),
         )
         self.new_run_test(s, expected_results)
