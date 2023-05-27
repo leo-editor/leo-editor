@@ -1970,8 +1970,7 @@ class TestLua (BaseTestImporter):
              print("main", coroutine.resume(co, "x", "y"))
              print("main", coroutine.resume(co, "x", "y"))
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
                     'end)\n'
@@ -1980,7 +1979,6 @@ class TestLua (BaseTestImporter):
                     'print("main", coroutine.resume(co, "r"))\n'
                     'print("main", coroutine.resume(co, "x", "y"))\n'
                     'print("main", coroutine.resume(co, "x", "y"))\n'
-                    '\n'
                     '@language lua\n'
                     '@tabwidth -4\n'
             ),
@@ -2000,7 +1998,8 @@ class TestLua (BaseTestImporter):
                     '      print("co-body", r, s)\n'
                     '      return b, "end"\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
