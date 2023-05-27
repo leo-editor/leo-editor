@@ -1156,16 +1156,6 @@ class TestHtml(BaseTestImporter):
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '\n'
-                    '@others\n'
-            ),
-            (2, '<head>',
-                    '<head>\n'
                     '    <!-- oops: link elements terminated two different ways -->\n'
                     '    <link id="L1">\n'
                     '    <link id="L2">\n'
@@ -1175,7 +1165,13 @@ class TestHtml(BaseTestImporter):
                     '    <title>TITLE</title>\n'
                     '\n'
                     '<!-- oops: missing tags. -->\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<head>',
+                    '<html>\n'
                     '\n'
+                    '<head>\n'
             ),
         )
         self.new_run_test(s, expected_results)
