@@ -1175,50 +1175,6 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
-    def test_improperly_terminated_tags2(self):
-
-        s = '''
-            <html>
-            <head>
-                <!-- oops: link elements terminated two different ways -->
-                <link id="L1">
-                <link id="L2">
-                <link id="L3" />
-                <link id='L4' />
-
-                <title>TITLE</title>
-
-            </head>
-            </html>
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language html\n'
-                '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                '<html>\n'
-                '@others\n'
-                '</html>\n'
-                '\n'
-            ),
-            (2, '<head>',
-                '<head>\n'
-                '    <!-- oops: link elements terminated two different ways -->\n'
-                '    <link id="L1">\n'
-                '    <link id="L2">\n'
-                '    <link id="L3" />\n'
-                "    <link id='L4' />\n"
-                '\n'
-                '    <title>TITLE</title>\n'
-                '\n'
-                '</head>\n'
-            ),
-        ))
-
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
     def test_lowercase_tags(self):
 
@@ -1232,8 +1188,7 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1243,7 +1198,6 @@ class TestHtml(BaseTestImporter):
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
-                    '\n'
             ),
             (2, '<head>',
                     '<head>\n'
@@ -1255,7 +1209,8 @@ class TestHtml(BaseTestImporter):
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
@@ -1345,40 +1300,22 @@ class TestHtml(BaseTestImporter):
         """
 
         # xml.preprocess_lines inserts several newlines.
-        # Modify the expected result accordingly.
-        expected_s = textwrap.dedent("""\
-            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
-            <html>
-            <head>headline</head>
-            <body>body</body>
-            </html>
-        """)
-
-        # Don't run the standard round-trip test.
-        p = self.run_test(s, check_flag=False)
-
-        # xml.preprocess_lines should insert various newlines.
-        self.check_round_trip(p, expected_s)
-
-        # This dump now looks good!
-        # self.dump_tree(p)
-
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
+        
+        expected_results = (
+            (0, '',
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
+                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '<html>\n'
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
                     '</html>\n'
-                    '\n'
             ),
-        ))
-
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
 
