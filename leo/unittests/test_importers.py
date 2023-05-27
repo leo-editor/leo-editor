@@ -4201,19 +4201,18 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
 
-        s = (
+        s = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE note SYSTEM "Note.dtd">
+        <html>
+        <head>
+            <title>Bodystring</title>
+        </head>
+        <body class='bodystring'>
+        <div id='bodydisplay'></div>
+        </body>
+        </html>
         """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE note SYSTEM "Note.dtd">
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """) ###.strip() + '\n'
         
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
@@ -4240,8 +4239,7 @@ class TestXML(BaseTestImporter):
                     '</body>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 

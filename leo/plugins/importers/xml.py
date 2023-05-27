@@ -107,7 +107,7 @@ class Xml_Importer(Importer):
         for pattern in self.start_patterns:
             m = pattern.match(line)
             if m:
-                tag1 = m.group(1)
+                tag1 = m.group(1).lower()
                 if trace: g.printObj(self.lines[i1:i2], tag=f"{i1}:{i2} {tag1}")
                 tag_stack.append(tag1)
                 break
@@ -121,14 +121,14 @@ class Xml_Importer(Importer):
             for pattern in self.start_patterns:
                 m = pattern.match(line)
                 if m:
-                    tag = m.group(1)
+                    tag = m.group(1).lower()
                     tag_stack.append(tag)
                     if trace: g.trace('PUSH', i, tag, tag_stack)
                     break
             for pattern in self.end_patterns:
                 m = pattern.match(line)
                 if m:
-                    end_tag = m.group(1)
+                    end_tag = m.group(1).lower()
                     if trace: g.trace(' POP', i, end_tag, tag_stack)
                     while tag_stack:
                         tag = tag_stack.pop()
