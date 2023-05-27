@@ -160,9 +160,6 @@ class BaseTestImporter(LeoUnitTest):
     def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
-
-        
-        
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -184,10 +181,6 @@ class BaseTestImporter(LeoUnitTest):
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
-
-        # Some tests will never pass round-trip tests.
-        # if check_flag:
-            # self.check_round_trip(parent, test_s)
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
