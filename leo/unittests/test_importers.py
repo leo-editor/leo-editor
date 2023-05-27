@@ -43,7 +43,7 @@ class BaseTestImporter(LeoUnitTest):
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext):
+    def compute_unit_test_kind(self, ext: str) -> str:
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
         kind = {
@@ -62,7 +62,7 @@ class BaseTestImporter(LeoUnitTest):
                     return z  # pragma: no cover
         return '@file'
     #@+node:ekr.20220802054221.1: *3* BaseTestImporter.dedent
-    def dedent(self, s):
+    def dedent(self, s: str) -> str:
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
