@@ -1175,18 +1175,18 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
-    def test_lowercase_tags(self):
+    #@+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
+    def test_mixed_case_tags(self):
 
         s = """
             <html>
-            <head>
+            <HEAD>
                 <title>Bodystring</title>
             </head>
             <body class="bodystring">
             <div id='bodydisplay'></div>
             </body>
-            </html>
+            </HTML>
         """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -1197,10 +1197,10 @@ class TestHtml(BaseTestImporter):
             (1, '<html>',
                     '<html>\n'
                     '@others\n'
-                    '</html>\n'
+                    '</HTML>\n'
             ),
-            (2, '<head>',
-                    '<head>\n'
+            (2, '<HEAD>',  # We don't want to lowercase *all* headlines.
+                    '<HEAD>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
