@@ -2035,13 +2035,8 @@ class TestMarkdown(BaseTestImporter):
             ## Section 3
             Section 3, line 1
         """
-        p = self.run_test(s)
-        # A hack, to simulate an unexpected line in the root node.
-        # Alas, this does not affect coverage testing.
-        p.b = 'line in root node\n' + p.b
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outlines ignores the first headline.
-                    'line in root node\n'
                     '@language md\n'
                     '@tabwidth -4\n'
             ),
@@ -2069,9 +2064,9 @@ class TestMarkdown(BaseTestImporter):
             ),
             (2, 'Section 3',
                     'Section 3, line 1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
 
@@ -2109,8 +2104,7 @@ class TestMarkdown(BaseTestImporter):
 
             section 3, line 1
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import is impossible.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2149,9 +2143,9 @@ class TestMarkdown(BaseTestImporter):
             (2, 'Section 3',
                 '\n'
                 'section 3, line 1\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
 
@@ -2172,8 +2166,7 @@ class TestMarkdown(BaseTestImporter):
 
             # Last header: no text
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2196,9 +2189,10 @@ class TestMarkdown(BaseTestImporter):
                 '\n'
             ),
             (1, 'Last header: no text',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
 
@@ -2221,8 +2215,7 @@ class TestMarkdown(BaseTestImporter):
 
             #Last header: no text
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import is impossible.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2248,9 +2241,10 @@ class TestMarkdown(BaseTestImporter):
                 '\n'
             ),
             (1, 'Last header: no text',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
 
@@ -2267,8 +2261,7 @@ class TestMarkdown(BaseTestImporter):
             ```
             # Last header
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2286,9 +2279,10 @@ class TestMarkdown(BaseTestImporter):
                 '```\n'
             ),
             (1, 'Last header',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
         c = self.c
