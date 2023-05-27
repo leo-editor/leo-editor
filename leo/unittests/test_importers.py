@@ -146,7 +146,6 @@ class BaseTestImporter(LeoUnitTest):
         """
         p0_level = p.level()
         actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        ### ok = len(expected) == len(actual)
         for i, actual in enumerate(actual):
             try:
                 a_level, a_h, a_str = actual
@@ -1108,8 +1107,7 @@ class TestHtml(BaseTestImporter):
 
             </body>
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1117,26 +1115,27 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<body>',
                     '<body>\n'
-                    '\n'
-                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                    '<!-- OOPS: this table got generated twice. -->\n'
-                    '\n'
-                    '<p id="P1">\n'
                     '@others\n'
                     '</p> <!-- orphan -->\n'
                     '\n'
                     '</body>\n'
-                    '\n'
             ),
-            (2, '<div id="D666">',
+            (2, '<div id="D666">Paragraph</p> <!-- P1 -->',
+                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                    '<!-- OOPS: this table got generated twice. -->\n'
+                    '\n'
+                    '<p id="P1">\n'
                     '<div id="D666">Paragraph</p> <!-- P1 -->\n'
+                    '@others\n'
+                    '</div>\n'
+            ),
+            (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
                     '<p id="P2">\n'
                     '\n'
                     '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-                    '</div>\n'
-            ),
-        ))
-
+            ),    
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
 
@@ -1154,8 +1153,7 @@ class TestHtml(BaseTestImporter):
 
             <!-- oops: missing tags. -->
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1179,8 +1177,8 @@ class TestHtml(BaseTestImporter):
                     '<!-- oops: missing tags. -->\n'
                     '\n'
             ),
-        ))
-
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
     def test_improperly_terminated_tags2(self):
 
