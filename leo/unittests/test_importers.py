@@ -61,10 +61,6 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
-    #@+node:ekr.20220802054221.1: *3* BaseTestImporter.dedent
-    def dedent(self, s: str) -> str:
-        """Remove common leading whitespace from all lines of s."""
-        return textwrap.dedent(s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
     def new_run_test(self, s: str, expected_results: Tuple) -> None:
         """
@@ -168,8 +164,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -180,8 +175,7 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -208,8 +202,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -223,7 +216,7 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -253,8 +246,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
     def test_open_curly_bracket_on_next_line(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             void
             aaa::bbb::doit(awk* b)
             {
@@ -266,7 +258,7 @@ class TestC(BaseTestImporter):
             {
                 return true;
             } // comment
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -292,15 +284,14 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'extern "C"\n'
@@ -318,8 +309,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -329,7 +319,7 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'static void\n'
@@ -350,8 +340,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
@@ -359,7 +348,7 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'Tcl_Obj *\n'
@@ -377,15 +366,14 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             template <class T>
             T GetMax (T a, T b) {
               T result;
               result = (a>b)? a : b;
               return (result);
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -533,8 +521,7 @@ class TestCoffeescript(BaseTestImporter):
 
     def test_1(self):
 
-        s = textwrap.dedent(
-        r"""
+        s = r"""
         # Js2coffee relies on Narcissus's parser.
 
         {parser} = @Narcissus or require('./narcissus_packed')
@@ -547,7 +534,7 @@ class TestCoffeescript(BaseTestImporter):
 
           builder    = new Builder
           scriptNode = parser.parse str
-        """).strip() + '\n'
+        """
 
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -577,8 +564,7 @@ class TestCoffeescript(BaseTestImporter):
 
     def test_2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
           class Builder
             constructor: ->
               @transformer = new Transformer
@@ -608,7 +594,7 @@ class TestCoffeescript(BaseTestImporter):
               str = unshift(str)
               if str.length > 0 then str else ""
               
-          """).strip() + '\n'
+          """
         expected_results = (
           (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -675,15 +661,13 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             namespace {
                 class cTestClass1 {
                     ;
                 }
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
@@ -705,14 +689,13 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             namespace {
             class cTestClass1 {
                 ;
             }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
@@ -797,8 +780,7 @@ class TestCython(BaseTestImporter):
     #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
     def test_importer(self):
 
-        s = textwrap.dedent(
-        '''
+        s = '''
             from libc.math cimport pow
 
             cdef double square_and_add (double x):
@@ -812,8 +794,7 @@ class TestCython(BaseTestImporter):
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-        ''').strip() + '\n'
-
+        '''
         expected_results = (
             (0, '',  # check_outlines ignores the first headline.
                     '@others\n'
@@ -918,8 +899,7 @@ class TestElisp(BaseTestImporter):
     def test_1(self):
 
         # Add weird assignments for coverage.
-        s = textwrap.dedent(
-        """
+        s = """
             ;;; comment
             ;;; continue
             ;;;
@@ -932,8 +912,7 @@ class TestElisp(BaseTestImporter):
             ; comment re cde
             (defun cde (a b)
                (+ 1 2 3))
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '', # check_outline ignores the first headline.
                     '@others\n'
@@ -1630,8 +1609,7 @@ class TestJava(BaseTestImporter):
     def test_from_AdminPermission_java(self):
 
         ### To do: allow '{' on following line.
-        s = textwrap.dedent(
-        """
+        s = """
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
@@ -1644,8 +1622,7 @@ class TestJava(BaseTestImporter):
                     super("AdminPermission");
                 }
             }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '',  # check_outline does not check the first outline.
                     '@others\n'
@@ -1732,14 +1709,12 @@ class TestJava(BaseTestImporter):
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             interface Bicycle {
                 void changeCadence(int newValue);
                 void changeGear(int newValue);
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'interface Bicycle {\n'
@@ -1754,14 +1729,12 @@ class TestJava(BaseTestImporter):
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'interface Bicycle {\n'
@@ -1821,8 +1794,7 @@ class TestJavascript(BaseTestImporter):
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test var_equal_function
     def var_equal_function(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             var c3 = (function () {
                 "use strict";
 
@@ -1835,7 +1807,7 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """).strip() + '\n'
+        """
 
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -3148,7 +3120,7 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
 
-        s = self.dedent(
+        s = (
         """
             import sys
             def f1():
@@ -3193,7 +3165,7 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        """).replace('AT', '@').strip() + '\n'
+        """).replace('AT', '@')
 
         expected_results = (
             (0, '', # check_outline ignores the first headline'
@@ -3271,14 +3243,12 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class A:
                 a=1
                 b=2
                 c=3
-        """).strip() + '\n'
-       
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                    '@others\n'
@@ -3295,8 +3265,7 @@ class TestPython(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
-        s = textwrap.dedent(
-        """
+        s = """
             import sys
             def f1():
                 pass
@@ -3314,8 +3283,8 @@ class TestPython(BaseTestImporter):
             
             if __name__ == '__main__':
                 main()
-        """).strip() + '\n'
-        
+        """
+
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -3351,8 +3320,7 @@ class TestPython(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        s = textwrap.dedent(
-            """
+        s = """
             class TestCopyFile(unittest.TestCase):
                 _delete = False
                 a00 = 1
@@ -3360,7 +3328,7 @@ class TestPython(BaseTestImporter):
                     _entered = False
                     _exited_with = None # type: tuple
                     _raised = False
-            """).strip() + '\n'
+            """
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -3384,8 +3352,7 @@ class TestPython(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
-        s = textwrap.dedent(
-        """
+        s = """
             a = 1
             if 1:
              print('1')
@@ -3411,8 +3378,7 @@ class TestPython(BaseTestImporter):
                 print('11')
             if 12:
                 print('12')
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                'a = 1\n'
@@ -3899,8 +3865,7 @@ class TestTcl (BaseTestImporter):
     #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
 
-        s = textwrap.dedent(
-        r"""
+        s = r"""
             proc dumpFile { fileName { channel stdout } } {
 
                  # Open the file, and set up to process it in binary mode.
@@ -3922,8 +3887,7 @@ class TestTcl (BaseTestImporter):
                      dumpFile $file
                  }
              }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
@@ -3967,7 +3931,7 @@ class TestTreepad (BaseTestImporter):
 
         # 5P9i0s8y19Z is a magic number.
         # The treepad writer always writes '<Treepad version 3.0>', but any version should work.
-        s = self.dedent("""
+        s = """
             <Treepad version 2.7>
             dt=Text
             <node> 5P9i0s8y19Z
@@ -3980,7 +3944,7 @@ class TestTreepad (BaseTestImporter):
             1
             node 2, line 1
             <end node>
-        """)
+        """
        
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -4116,8 +4080,7 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             <html>
             <head>
                 <title>Bodystring</title>
@@ -4128,8 +4091,7 @@ class TestXML(BaseTestImporter):
             </div>
             </body>
             </html>
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
                     '@others\n'
@@ -4160,12 +4122,11 @@ class TestXML(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
-        s = textwrap.dedent(
-        """
+        s = """
             <:À.Ç>
             <Ì>
             <_.ÌÑ>
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
                  '<:À.Ç>\n'

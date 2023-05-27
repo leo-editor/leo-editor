@@ -8,7 +8,7 @@ from leo.plugins.importers.c import C_Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-    
+
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer(Importer)
 class Csharp_Importer(C_Importer):
