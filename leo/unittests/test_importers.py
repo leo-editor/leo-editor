@@ -3945,9 +3945,7 @@ class TestRust(BaseTestImporter):
                 width * height
             }
         """
-        p = self.run_test(s, strict_flag=True)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
                     '@language rust\n'
@@ -3969,9 +3967,9 @@ class TestRust(BaseTestImporter):
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
 class TestTcl (BaseTestImporter):
