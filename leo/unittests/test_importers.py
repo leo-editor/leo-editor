@@ -2335,8 +2335,7 @@ class TestOrg(BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2358,9 +2357,9 @@ class TestOrg(BaseTestImporter):
             ),
             (2, 'Section 3.1',
                     'Sec 3.1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
 
@@ -2368,17 +2367,16 @@ class TestOrg(BaseTestImporter):
             *  Test
             First line.
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
             (1, ' Test',
                     'First line.\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
 
@@ -2390,8 +2388,7 @@ class TestOrg(BaseTestImporter):
             ** 整理个人生活
             *** 每周惯例
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
@@ -2405,9 +2402,10 @@ class TestOrg(BaseTestImporter):
                     ''
             ),
             (3, '每周惯例',
-                    '\n'
+                    ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
 
@@ -2418,8 +2416,7 @@ class TestOrg(BaseTestImporter):
             * Section 2
             Sec 2.
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'Intro line.\n'
                 '@language org\n'
@@ -2430,9 +2427,9 @@ class TestOrg(BaseTestImporter):
             ),
             (1, 'Section 2',
                 'Sec 2.\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
     def test_pattern(self):
 
@@ -2465,8 +2462,7 @@ class TestOrg(BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
-        expected = (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2493,10 +2489,9 @@ class TestOrg(BaseTestImporter):
             ),
             (2, 'Section 3.1',
                 'Sec 3.1\n'
-                '\n'
             ),
         )
-        self.check_outline(p, expected)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
 
@@ -2510,18 +2505,16 @@ class TestOrg(BaseTestImporter):
         from leo.plugins.nodetags import TagController
         c.theTagController = TagController(c)
         # Run the test.
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
             (1, 'Section 1 :tag1:', ''),
             (1, 'Section 2 :tag2:', ''),
-            (1, 'Section 3 :tag3:tag4:',
-                    '\n'
-            ),
-        ))
+            (1, 'Section 3 :tag3:tag4:', ''),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl(BaseTestImporter):
