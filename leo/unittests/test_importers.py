@@ -3584,10 +3584,7 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3634,9 +3631,9 @@ class TestRst(BaseTestImporter):
             (3, 'section 3.1.1',
                 '\n'
                 'section 3.1.1, line 1\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
     def test_simple(self):
 
@@ -3657,9 +3654,7 @@ class TestRst(BaseTestImporter):
 
             The top chapter.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3673,9 +3668,9 @@ class TestRst(BaseTestImporter):
             (1, "Chapter",
                 '\n'
                 'The top chapter.\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
     def test_no_double_underlines(self):
 
@@ -3725,9 +3720,7 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -3774,9 +3767,9 @@ class TestRst(BaseTestImporter):
             (3, 'section 3.1.1',
                     '\n'
                     'section 3.1.1, line 1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
     def test_long_underlines(self):
 
@@ -3794,9 +3787,7 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -3808,9 +3799,9 @@ class TestRst(BaseTestImporter):
             (1, 'top',
                     '\n'
                     'The top section\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
     def test_test_long_overlines(self):
 
@@ -3829,9 +3820,7 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3843,9 +3832,9 @@ class TestRst(BaseTestImporter):
             (1, "top",
                 '\n'
                 'The top section\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
     def test_trailing_whitespace(self):
 
@@ -3866,9 +3855,7 @@ class TestRst(BaseTestImporter):
 
             The top section.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3882,9 +3869,9 @@ class TestRst(BaseTestImporter):
             (1, "top",
                 '\n'
                 'The top section.\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
     def test_leo_rst(self):
 
@@ -3912,9 +3899,7 @@ class TestRst(BaseTestImporter):
 
             Sec 2.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -3932,9 +3917,9 @@ class TestRst(BaseTestImporter):
             (2, 'section 2',
                     '\n'
                     'Sec 2.\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220814094900.1: ** class TestRust (BaseTestImporter)
 class TestRust(BaseTestImporter):
