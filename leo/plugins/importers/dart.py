@@ -16,6 +16,7 @@ class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
     language = 'dart'
+
     block_patterns = (
         ('function', re.compile(r'^\s*([\w\s]+)\s*\(.*?\)\s*\{')),
     )
