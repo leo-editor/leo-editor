@@ -1861,7 +1861,6 @@ class TestLua (BaseTestImporter):
         expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
-                    'end)\n'
                     '\n'
                     'print("main", coroutine.resume(co, 1, 10))\n'
                     'print("main", coroutine.resume(co, "r"))\n'
@@ -1870,14 +1869,13 @@ class TestLua (BaseTestImporter):
                     '@language lua\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'foo',
+            (1, 'function foo',
                     'function foo (a)\n'
                     '  print("foo", a)\n'
                     '  return coroutine.yield(2*a)\n'
                     'end\n'
-                    '\n'
             ),
-            (1, 'co = coroutine.create',
+            (1, 'function coroutine.create',
                     'co = coroutine.create(function (a,b)\n'
                     '      print("co-body", a, b)\n'
                     '      local r = foo(a+1)\n'
@@ -1885,6 +1883,7 @@ class TestLua (BaseTestImporter):
                     '      local r, s = coroutine.yield(a+b, a-b)\n'
                     '      print("co-body", r, s)\n'
                     '      return b, "end"\n'
+                    'end)\n'
             ),
         )
         self.new_run_test(s, expected_results)
