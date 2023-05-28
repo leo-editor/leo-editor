@@ -21,8 +21,7 @@ class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
     language = 'lua'
-    
-    # function_pat = re.compile(r'^(\s*function\b|.*?\(function\b)')
+
     end_pat = re.compile(r'.*?\bend\b')
     
     block_patterns = (
