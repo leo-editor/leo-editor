@@ -22,12 +22,6 @@ class Treepad_Importer(Importer):
 
     language = 'plain'  # A reasonable default.
 
-    ### treepad_level: int = 0  # Experimental.
-    ### block_patterns: Tupld = None  # Not used.
-
-    ### start_pat = re.compile(r'\s*dt\=(.*)\s*$')  # m.group(1) is usually 'text'.
-    ### end_pat = re.compile(r'\s*<end node>\s*5P9i0s8y19Z$')
-
     #@+others
     #@+node:ekr.20230528062654.1: *3* treepad_i.new_gen_block
     def new_gen_block(self, block: Block, parent: Position) -> None:
@@ -43,8 +37,8 @@ class Treepad_Importer(Importer):
         """
         header_pat = re.compile(r'<Treepad version.*?>\s*$')
         start1_pat = re.compile(r'^\s*dt\=\w+\s*$')  # type line.
-        start2_pat = re.compile(r'\s*<node> 5P9i0s8y19Z$')
-        end_pat = re.compile(r'\s*<end node> 5P9i0s8y19Z$')
+        start2_pat = re.compile(r'\s*<node>(\s*5P9i0s8y19Z)?$')
+        end_pat = re.compile(r'\s*<end node>\s*5P9i0s8y19Z$')
         lines = self.lines
         assert parent == self.root
         parents: List[Position] = [parent]
