@@ -23,7 +23,7 @@ class Lua_Importer(Importer):
     language = 'lua'
 
     end_pat = re.compile(r'.*?\bend\b')
-    
+
     block_patterns = (
         ('function', re.compile(r'\s*function\s+([\w\.]+)\s*\(')),
         ('function', re.compile(r'.*?([\w\.]+)\s*\(function\b\s*\(')),

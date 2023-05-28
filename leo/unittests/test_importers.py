@@ -3916,36 +3916,75 @@ class TestTreepad (BaseTestImporter):
     def test_treepad_1(self):
 
         # 5P9i0s8y19Z is a magic number.
-        # The treepad writer always writes '<Treepad version 3.0>', but any version should work.
+        # The treepad writer always writes '<Treepad version 3.0>',
+        # but any version should work.
         s = """
             <Treepad version 2.7>
             dt=Text
             <node> 5P9i0s8y19Z
             headline 1
             0
-            <end node>
+            node 1, line 1
+            node 1, line 2
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 1.1
+            1
+            node 1.1, line 1
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 1.2
+            1
+            node 1.2, line 1
+            node 1.2, line 2
+            <end node> 5P9i0s8y19Z
             dt=Text
             <node> 5P9i0s8y19Z
             headline 2
-            1
+            0
             node 2, line 1
-            <end node>
+            node 2, line 2
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 2.1.1
+            3
+            node 2.1.1, line 1
+            node 2.1.1, line 2
+            <end node> 5P9i0s8y19Z
         """
        
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
-                '<Treepad version 3.0>\n'
+            (0, '',  # Ignore the first headline.
+                '<Treepad version 2.7>\n'
+                '@others\n'
                 '@language plain\n'
                 '@tabwidth -4\n'
             ),
             (1, 'headline 1',
-                ''
+                'node 1, line 1\n'
+                'node 1, line 2\n'
             ),
-            (2, 'headline 2',
-                    'node 2, line 1\n'
+            (2, 'headline 1.1',
+                'node 1.1, line 1\n'
             ),
+            (2, 'headline 1.2',
+                'node 1.2, line 1\n'
+                'node 1.2, line 2\n'
+            ),
+            (1, 'headline 2',
+                'node 2, line 1\n'
+                'node 2, line 2\n'
+            ),
+            (2, 'placeholder level 2', ''),
+            (3, 'placeholder level 3', ''),
+            (4, 'headline 2.1.1',
+                'node 2.1.1, line 1\n'
+                'node 2.1.1, line 2\n'
+            ),  
         )
-        # For now, we don't guarantee round-tripping.
         self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)

@@ -249,8 +249,8 @@ class Importer:
     def new_compute_headline(self, block: Block) -> str:
 
         child_kind, child_name, child_start, child_start_body, child_end = block
-        assert child_kind
         return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+
     #@+node:ekr.20230510080255.1: *4* i.new_gen_block
     def new_gen_block(self, block: Block, parent: Position) -> None:
         """
