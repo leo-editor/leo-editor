@@ -37,6 +37,7 @@ class Treepad_Importer(Importer):
         """
         header_pat = re.compile(r'<Treepad version.*?>\s*$')
         start1_pat = re.compile(r'^\s*dt\=\w+\s*$')  # type line.
+        # It's unclear whether the magic number is required after <node>.
         start2_pat = re.compile(r'\s*<node>(\s*5P9i0s8y19Z)?$')
         end_pat = re.compile(r'\s*<end node>\s*5P9i0s8y19Z$')
         lines = self.lines
