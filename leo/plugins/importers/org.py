@@ -17,7 +17,7 @@ class Org_Importer(Importer):
     """The importer for the org lanuage."""
 
     language = 'org'
-    
+
     #@+others
     #@+node:ekr.20230529063312.1: *3* org_i.new_gen_block
     section_pat = re.compile(r'(\*+)\s(.*)')
@@ -43,7 +43,7 @@ class Org_Importer(Importer):
             m = self.section_pat.match(line)
             if m:
                 level = len(m.group(1))
-                headline = m.group(2) # Don't strip.
+                headline = m.group(2)  # Don't strip.
                 # Cut back the stack.
                 parents = parents[:level]
                 # Create any needed placeholders.
