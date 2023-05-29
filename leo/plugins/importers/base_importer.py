@@ -31,24 +31,21 @@ class Importer:
     Override `i.gen_block` for more control.
     Override `i.import_from_string` for complete control.
     
-    Sublcasses may override these metods to handle the incoming text:
+    Subclasses may override these methods to handle the incoming text:
         
     Override `i.check_blanks_and tabs` to suppress warnings.
     Override `i.preprocess_lines` to adjust incoming lines.
     Override `i.regularize_whitespace` to allow mixed tabs and spaces.
-    
     """
 
-    # To be removed...
     # Don't split classes, functions or methods smaller than this value.
-    SPLIT_THRESHOLD = 10
     minimum_block_size = 0  # 0: create all blocks.
 
     # Must be overridden in subclasses.
     language: str = None
-    block_patterns: Tuple = tuple()
 
     # May be overridden in subclasses.
+    block_patterns: Tuple = tuple()
     level_up_ch = '{'
     level_down_ch = '}'
     string_list: List[str] = ['"', "'"]
