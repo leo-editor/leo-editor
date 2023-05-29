@@ -25,7 +25,7 @@ class Markdown_Importer(Importer):
 
         Create all descendant blocks and their nodes from self.lines.
 
-        i.new_gen_lines adds the @language and @tabwidth directives.
+        i.gen_lines adds the @language and @tabwidth directives.
         """
         assert parent == self.root
         lines = self.lines

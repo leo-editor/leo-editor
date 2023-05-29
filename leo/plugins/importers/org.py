@@ -29,7 +29,7 @@ class Org_Importer(Importer):
 
         The org writer adds section lines, so *remove* those lines here.
 
-        i.new_gen_lines adds the @language and @tabwidth directives.
+        i.gen_lines adds the @language and @tabwidth directives.
         """
         lines = self.lines
         assert parent == self.root

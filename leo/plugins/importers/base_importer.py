@@ -139,7 +139,7 @@ class Importer:
         lines = self.preprocess_lines(lines)
 
         # Generate all nodes.
-        self.new_gen_lines(lines, parent)
+        self.gen_lines(lines, parent)
 
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.
@@ -187,8 +187,8 @@ class Importer:
             result_list = lines[start:end]
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
-    #@+node:ekr.20230529075138.15: *4* i.new_gen_lines (top level)
-    def new_gen_lines(self, lines: List[str], parent: Position) -> None:
+    #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Importer.gen_lines: a rewrite of Importer.gen_lines.
 
