@@ -21,7 +21,22 @@ class ImporterError(Exception):
 #@+node:ekr.20230529075138.4: ** class Importer
 class Importer:
     """
-    The base class for many of Leo's importers.
+    The base class for almost all of Leo's importers.
+    
+    Many importers only define `block_patterns` and `language` class ivars.
+    
+    Subclasses may override the following methods to recognize blocks:
+    
+    Override `i.find_blocks` or `i.find_end_of_block1` to tweak `i.gen_block`.
+    Override `i.gen_block` for more control.
+    Override `i.import_from_string` for complete control.
+    
+    Sublcasses may override these metods to handle the incoming text:
+        
+    Override `i.check_blanks_and tabs` to suppress warnings.
+    Override `i.preprocess_lines` to adjust incoming lines.
+    Override `i.regularize_whitespace` to allow mixed tabs and spaces.
+    
     """
 
     # To be removed...
@@ -90,6 +105,40 @@ class Importer:
             else:
                 g.es(message)
         return ok
+    #@+node:ekr.20230529075138.10: *4* i.find_blocks
+    def find_blocks(self, i1: int, i2: int) -> List[Block]:
+        """
+        Importer.find_blocks: override Importer.find_blocks.
+
+        Find all blocks in the given range of *guide* lines from which blanks
+        and tabs have been deleted.
+
+        This is a *generic* block finder. May be overridden in subclasses.
+        Use the patterns in self.block_patterns to find the start the start of a block.
+
+        Return a list of Blocks, that is, tuples(name, start, start_body, end).
+        """
+        min_size = self.minimum_block_size
+        i, prev_i, results = i1, i1, []
+        while i < i2:
+            s = self.guide_lines[i]
+            i += 1
+            # Assume that no pattern matches a compound statement.
+            for kind, pattern in self.block_patterns:
+                m = pattern.match(s)
+                if m:
+                    # cython may include trailing whitespace.
+                    name = m.group(1).strip()
+                    end = self.find_end_of_block(i, i2)
+                    assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    # Don't generate small blocks.
+                    if min_size == 0 or end - prev_i > min_size:
+                        results.append((kind, name, prev_i, i, end))
+                        i = prev_i = end
+                    else:
+                        i = end
+                    break
+        return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
@@ -202,7 +251,7 @@ class Importer:
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
         lines = g.splitLines(s)
-        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
+        ws_ok = self.check_blanks_and_tabs(lines)  # Issues warnings.
 
         # Regularize leading whitespace
         if not ws_ok:
@@ -372,40 +421,6 @@ class Importer:
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20230529075138.10: *4* i.find_blocks
-    def find_blocks(self, i1: int, i2: int) -> List[Block]:
-        """
-        Importer.find_blocks: override Importer.find_blocks.
-
-        Find all blocks in the given range of *guide* lines from which blanks
-        and tabs have been deleted.
-
-        This is a *generic* block finder. May be overridden in subclasses.
-        Use the patterns in self.block_patterns to find the start the start of a block.
-
-        Return a list of Blocks, that is, tuples(name, start, start_body, end).
-        """
-        min_size = self.minimum_block_size
-        i, prev_i, results = i1, i1, []
-        while i < i2:
-            s = self.guide_lines[i]
-            i += 1
-            # Assume that no pattern matches a compound statement.
-            for kind, pattern in self.block_patterns:
-                m = pattern.match(s)
-                if m:
-                    # cython may include trailing whitespace.
-                    name = m.group(1).strip()
-                    end = self.find_end_of_block(i, i2)
-                    assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    # Don't generate small blocks.
-                    if min_size == 0 or end - prev_i > min_size:
-                        results.append((kind, name, prev_i, i, end))
-                        i = prev_i = end
-                    else:
-                        i = end
-                    break
-        return results
     #@+node:ekr.20230529075138.42: *4* i.get_str_lws
     def get_str_lws(self, s: str) -> str:
         """Return the characters of the lws of s."""
