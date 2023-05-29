@@ -434,25 +434,6 @@ class Importer:
             if i > -1:
                 s = s[:i]
         return s.strip()
-    #@+node:ekr.20220807043759.1: *5* i.create_placeholders
-    def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
-        """
-        Create placeholder nodes so between the current level (len(parents)) and the desired level.
-
-        Used by the org and otl importers.
-        """
-        if level <= len(parents):
-            return
-        n = level - len(parents)
-        assert n > 0
-        assert level >= 0
-        while n > 0:
-            n -= 1
-            parent = parents[-1]
-            child = parent.insertAsLastChild()
-            child.h = f"placeholder level {len(parents)}"
-            parents.append(child)
-            lines_dict[child.v] = []
     #@+node:ekr.20220727085911.1: *5* i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
         """
@@ -768,6 +749,25 @@ class Importer:
             level = max(0, level - 1)
         i += 1
         return i, level
+    #@+node:ekr.20220807043759.1: *3* i.create_placeholders
+    def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
+        """
+        Create placeholder nodes so between the current level (len(parents)) and the desired level.
+
+        Used by the org and otl importers.
+        """
+        if level <= len(parents):
+            return
+        n = level - len(parents)
+        assert n > 0
+        assert level >= 0
+        while n > 0:
+            n -= 1
+            parent = parents[-1]
+            child = parent.insertAsLastChild()
+            child.h = f"placeholder level {len(parents)}"
+            parents.append(child)
+            lines_dict[child.v] = []
     #@+node:ekr.20230514064949.1: *3* i: Top-level methods
     #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
@@ -866,7 +866,7 @@ class Importer:
             if g.unitTesting:  # Sets flag for unit tests.
                 self.report('changed %s lines' % count)
         return result
-    #@+node:ekr.20161109045312.1: *3* i: Whitespace
+    #@+node:ekr.20161109045312.1: *3* i: Whitespace (delete?)
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s: str) -> int:
         """Return the the lws (a number) of line s."""

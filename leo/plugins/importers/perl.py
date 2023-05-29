@@ -3,7 +3,7 @@
 """The @auto importer for Perl."""
 from __future__ import annotations
 import re
-from typing import TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from leo.plugins.importers.linescanner import Importer
 
 if TYPE_CHECKING:
@@ -19,6 +19,31 @@ class Perl_Importer(Importer):
     block_patterns = (
         ('sub', re.compile(r'\s*sub\s+(\w+)')),
     )
+    
+    #@+others
+    #@+node:ekr.20230529055751.1: *3* perl_i.make_guide_lines
+    def make_guide_lines(self, lines: List[str]) -> List[str]:
+        """
+        Perl_Importer.make_guide_lines.
+
+        Return a list if **guide lines** that simplify the detection of blocks.
+        """
+        aList = self.delete_comments_and_strings(lines[:])
+        return self.delete_regexes(aList)
+    #@+node:ekr.20230529055848.1: *3* perl_i.delete_regexes
+    regex_pat = re.compile(r'(.*?=\s*(m|s|tr|)/)')
+
+    def delete_regexes(self, lines: List[str]) -> List[str]:
+        """Remove regexes."""
+        result = []
+        for line in lines:
+            m = self.regex_pat.match(line)
+            if m:
+                result.append(line[:len(m.group(0))])
+            else:
+                result.append(line) 
+        return result
+    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
