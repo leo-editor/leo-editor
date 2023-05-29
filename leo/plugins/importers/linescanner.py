@@ -352,7 +352,7 @@ class Importer:
         print('End of Blocks')
         print('')
     #@+node:ekr.20230513091923.1: *3* i: Old methods (to be deleted)
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (OLD: to be deleted)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (OLD: *some* to be deleted)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
