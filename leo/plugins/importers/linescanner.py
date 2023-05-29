@@ -74,7 +74,7 @@ class Importer:
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
         self.root: Position = None
-        delims  = g.set_delims_from_language(self.language)
+        delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
 
