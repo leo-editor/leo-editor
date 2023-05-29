@@ -27,14 +27,14 @@ class Otl_Importer(Importer):
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         """
         return lines
-    #@+node:ekr.20230529071351.1: *3* otl_i.new_gen_block
+    #@+node:ekr.20230529071351.1: *3* otl_i.gen_block
     # Must match body pattern first.
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_node_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
-    def new_gen_block(self, block: Block, parent: Position) -> None:
+    def gen_block(self, block: Block, parent: Position) -> None:
         """
-        Otl_Importer: new_gen_block. The `block` arg is unused.
+        Otl_Importer: gen_block. The `block` arg is unused.
 
         Node generator for otl (vim-outline) mode.
 

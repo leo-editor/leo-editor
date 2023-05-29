@@ -115,7 +115,11 @@ class Importer:
         return i2
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:
-        """The common top-level code for all scanners."""
+        """
+        The common top-level code for almost all importers.
+        
+        Overriding this method gives the importer completed control.
+        """
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
@@ -141,13 +145,15 @@ class Importer:
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
-    #@+node:ekr.20230529075138.14: *4* i.new_gen_block
-    def new_gen_block(self, block: Block, parent: Position) -> None:
+    #@+node:ekr.20230529075138.14: *4* i.gen_block
+    def gen_block(self, block: Block, parent: Position) -> None:
         """
-        Importer.new_gen_block.
+        Importer.gen_block.
+        
+        Subclasses may override this method to gain more control over how they
+        recognize the start and end of blocks.
 
-        Generate parent.b from the given block.
-        Recursively create all descendant blocks, after first creating their parent nodes.
+        Create all descendant blocks and their parent nodes.
         """
         lines = self.lines
         kind, name, start, start_body, end = block
@@ -172,7 +178,7 @@ class Importer:
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
                 child.h = self.compute_headline(block)
-                self.new_gen_block(block, child)
+                self.gen_block(block, child)
                 # Remove common_lws.
                 self.remove_common_lws(common_lws, child)
             # Add any tail lines.
@@ -199,7 +205,7 @@ class Importer:
             assert n1 == n2, (n1, n2)
             # Start the recursion.
             block = ('outer', 'parent', 0, 0, len(lines))
-            self.new_gen_block(block, parent=parent)
+            self.gen_block(block, parent=parent)
         except ImporterError as e:
             g.trace(f"Importer error: {e}")
             parent.deleteAllChildren()

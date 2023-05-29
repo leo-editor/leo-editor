@@ -18,12 +18,12 @@ class Org_Importer(Importer):
     language = 'org'
 
     #@+others
-    #@+node:ekr.20230529063312.1: *3* org_i.new_gen_block
+    #@+node:ekr.20230529063312.1: *3* org_i.gen_block
     section_pat = re.compile(r'(\*+)\s(.*)')
 
-    def new_gen_block(self, block: Block, parent: Position) -> None:
+    def gen_block(self, block: Block, parent: Position) -> None:
         """
-        Org_Importer: new_gen_block. The `block` arg is unused.
+        Org_Importer: gen_block. The `block` arg is unused.
 
         Create all descendant blocks and their nodes from self.lines.
 

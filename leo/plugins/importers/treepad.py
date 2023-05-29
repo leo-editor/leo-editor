@@ -23,10 +23,10 @@ class Treepad_Importer(Importer):
     language = 'plain'  # A reasonable default.
 
     #@+others
-    #@+node:ekr.20230528062654.1: *3* treepad_i.new_gen_block
-    def new_gen_block(self, block: Block, parent: Position) -> None:
+    #@+node:ekr.20230528062654.1: *3* treepad_i.gen_block
+    def gen_block(self, block: Block, parent: Position) -> None:
         """
-        Treepad_Importer: new_gen_block. The `block` arg is unused.
+        Treepad_Importer: gen_block. The `block` arg is unused.
 
         Create all descendant blocks and their nodes from self.lines.
 

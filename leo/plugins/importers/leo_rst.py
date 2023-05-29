@@ -24,10 +24,10 @@ class Rst_Importer(Importer):
     language = 'rest'
 
     #@+others
-    #@+node:ekr.20230529072922.1: *3* rst_i.new_gen_block & helpers
-    def new_gen_block(self, block: Block, parent: Position) -> None:
+    #@+node:ekr.20230529072922.1: *3* rst_i.gen_block & helpers
+    def gen_block(self, block: Block, parent: Position) -> None:
         """
-        Rst_Importer: new_gen_block. The `block` arg is unused.
+        Rst_Importer: gen_block. The `block` arg is unused.
 
         Node generator for reStructuredText.
 
