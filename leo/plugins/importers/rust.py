@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Rust_Importer(Importer):
 
     language = 'rust'
-    
+
     block_patterns = (
         ('fn', re.compile(r'\s*fn\s*(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s*(\w+)\s*\(')),

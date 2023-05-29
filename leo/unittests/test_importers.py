@@ -2773,43 +2773,37 @@ class TestPerl(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '#!/usr/bin/perl\n'
-                    '\n'
                     '@others\n'
+                    '            "ﬁ" =~ /fi/i;\n'
+                    '\n'
+                    '            $bar = "foo";\n'
+                    '            if ($bar =~ /foo/){\n'
+                    '               print "Second time is matching\n'
+                    '";\n'
+                    '            }else{\n'
+                    '               print "Second time is not matching\n'
+                    '";\n'
+                    '            }\n'
+                    '\n'
                     '            # Function call\n'
                     '            Hello();\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
             (1, 'sub Hello',
+                    '#!/usr/bin/perl\n'
+                    '\n'
                     '            # Function definition\n'
                     '            sub Hello{\n'
                     '               print "Hello, World!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
             ),
             (1, 'sub Test',
                     '            sub Test{\n'
                     '               print "Test!\n'
                     '";\n'
                     '            }\n'
-            ),
-            (1,  '"ﬁ" =~ /fi/i',
-                '            "ﬁ" =~ /fi/i;\n'
-                '\n'
-                '            $bar = "foo";\n'
-
-            ),
-            (1, 'if ($bar =~ /foo/)',
-                '            if ($bar =~ /foo/){\n'
-                '               print "Second time is matching\n'
-                '";\n'
-                '            }else{\n'
-                '               print "Second time is not matching\n'
-                '";\n'
-                '            }\n'
-                '\n'
             ),
         )
         self.new_run_test(s, expected_results)
@@ -2869,32 +2863,27 @@ class TestPerl(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '#!/usr/bin/perl\n'
-                    '\n'
                     '@others\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
             (1, 'sub Test',
+                    '#!/usr/bin/perl\n'
+                    '\n'
                     '            sub Test{\n'
                     '               print "Test!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
-            ),
-            (1, '=begin comment',
-                    '            =begin comment\n'
             ),
             (1, 'sub World',
+                    '            =begin comment\n'
                     '            sub World {\n'
                     '                print "This is not a funtion!"\n'
                     '            }\n'
             ),
-            (1, '=cut',
+            (1, 'sub Hello',
                     '            =cut\n'
                     '\n'
-            ),
-            (1, 'sub Hello',
                     '            # Function definition\n'
                     '            sub Hello{\n'
                     '               print "Hello, World!\n'
@@ -2937,19 +2926,16 @@ class TestPerl(BaseTestImporter):
                     'sub test1 {\n'
                     '    s = /}/g;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test2',
                     'sub test2 {\n'
                     '    s = m//}/;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test3',
                     'sub test3 {\n'
                     '    s = s///}/;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test4',
                     'sub test4 {\n'
