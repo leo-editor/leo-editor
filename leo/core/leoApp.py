@@ -2457,8 +2457,9 @@ class LoadManager:
                     d[ext] = scanner_func  #importer_d.get('func')#scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
-            'basescanner.py',
-            'linescanner.py',
+            # 'basescanner.py',
+            'linescanner.py',  ### To be removed.
+            'base_importer.py',
         ):
             g.warning(f"leo/plugins/importers/{sfn} has no importer_dict")
     #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper

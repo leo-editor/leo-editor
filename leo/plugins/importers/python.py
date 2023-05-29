@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import List, Tuple, TYPE_CHECKING
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Block, Importer
+from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
     assert g

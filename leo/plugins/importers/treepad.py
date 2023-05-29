@@ -4,8 +4,8 @@
 from __future__ import annotations
 import re
 from typing import Dict, List, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Block, Importer
 import leo.core.leoGlobals as g  # Required.
+from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr

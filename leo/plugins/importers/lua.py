@@ -8,7 +8,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.plugins.importers.linescanner import Importer  ### Block
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr

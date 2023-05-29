@@ -7,7 +7,7 @@ This module must **not** be named rst, so as not to conflict with docutils.
 """
 from __future__ import annotations
 from typing import Dict, List, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Block, Importer
+from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr

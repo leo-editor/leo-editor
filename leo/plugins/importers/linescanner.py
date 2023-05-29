@@ -640,7 +640,7 @@ class Importer:
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (legacy)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
         trace = False

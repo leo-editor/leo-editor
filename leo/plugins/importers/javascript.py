@@ -4,7 +4,7 @@
 from __future__ import annotations
 import re
 from typing import Tuple, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
