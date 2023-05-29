@@ -9,10 +9,8 @@ from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
-### import leo.plugins.importers.dart as dart
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
-import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
@@ -2317,19 +2315,6 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
-    def test_pattern(self):
-
-        c = self.c
-        x = org.Org_Importer(c)
-        pattern = x.org_pattern
-        table = (
-            '* line 1',
-            '** level 2',
-        )
-        for line in table:
-            m = pattern.match(line)
-            assert m, repr(line)
     #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
 
