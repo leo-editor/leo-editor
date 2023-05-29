@@ -254,6 +254,8 @@ class Importer:
     #@+node:ekr.20230510080255.1: *4* i.new_gen_block
     def new_gen_block(self, block: Block, parent: Position) -> None:
         """
+        Importer.new_gen_block.
+
         Generate parent.b from the given block.
         Recursively create all descendant blocks, after first creating their parent nodes.
         """
@@ -292,7 +294,7 @@ class Importer:
     #@+node:ekr.20230510071622.1: *4* i.new_gen_lines (top level)
     def new_gen_lines(self, lines: List[str], parent: Position) -> None:
         """
-        C_Importer.gen_lines: a rewrite of Importer.gen_lines.
+        Importer.gen_lines: a rewrite of Importer.gen_lines.
 
         Allocate lines to parent.b and descendant nodes.
         """
@@ -815,16 +817,8 @@ class Importer:
         # A hook for xml importer: preprocess lines.
         lines = self.preprocess_lines(lines)
 
-        # Call gen_lines or new_gen_lines, depending on language.
-        # Eventually, new_gen_lines will replace gen_lines for *all* languages.
-        if True:  ### self.language in (
-                # 'c', 'coffeescript', 'csharp', 'cython', 'python',
-                # 'lisp', 'javascript', 'ini', 'tcl',
-                # 'java', 'pascal', 'xml', 'html',
-            # ):
-            self.new_gen_lines(lines, parent)
-        else:
-            self.gen_lines(lines, parent)
+        # Generate all nodes.
+        self.new_gen_lines(lines, parent)
 
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.

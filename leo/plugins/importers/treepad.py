@@ -26,9 +26,9 @@ class Treepad_Importer(Importer):
     #@+node:ekr.20230528062654.1: *3* treepad_i.new_gen_block
     def new_gen_block(self, block: Block, parent: Position) -> None:
         """
-        Treepad_Importer: new_gen_block.
+        Treepad_Importer: new_gen_block. The `block` arg is unused.
 
-        Create all descendant blocks and their nodes.
+        Create all descendant blocks and their nodes from self.lines.
 
         The Treepad writer adds all structure-related lines,
         so *remove* those lines here.
@@ -87,7 +87,7 @@ class Treepad_Importer(Importer):
                 lines_dict[p.v].append(line)
 
         # Set p.b from the lines_dict.
-        for p in self.root.self_and_subtree():
+        for p in parent.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@-others
 #@-others
