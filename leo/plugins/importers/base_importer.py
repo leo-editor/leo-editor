@@ -171,7 +171,7 @@ class Importer:
                 last_end = child_end
                 # Generate the child containing the new block.
                 child = parent.insertAsLastChild()
-                child.h = self.new_compute_headline(block)
+                child.h = self.compute_headline(block)
                 self.new_gen_block(block, child)
                 # Remove common_lws.
                 self.remove_common_lws(common_lws, child)
@@ -278,6 +278,12 @@ class Importer:
         n = min(lws_list) if lws_list else 0
         ws_char = ' ' if self.tab_width < 1 else '\t'
         return ws_char * n
+    #@+node:ekr.20230529075138.13: *4* i.compute_headline
+    def compute_headline(self, block: Block) -> str:
+
+        child_kind, child_name, child_start, child_start_body, child_end = block
+        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+
     #@+node:ekr.20230529075138.34: *4* i.create_placeholders
     def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
         """
@@ -394,6 +400,11 @@ class Importer:
                         i = end
                     break
         return results
+    #@+node:ekr.20230529075138.42: *4* i.get_str_lws
+    def get_str_lws(self, s: str) -> str:
+        """Return the characters of the lws of s."""
+        m = re.match(r'([ \t]*)', s)
+        return m.group(0) if m else ''
     #@+node:ekr.20230529075138.12: *4* i.make_guide_lines
     def make_guide_lines(self, lines: List[str]) -> List[str]:
         """
@@ -402,12 +413,6 @@ class Importer:
         This default method removes all comments and strings from the original lines.
         """
         return self.delete_comments_and_strings(lines[:])
-    #@+node:ekr.20230529075138.13: *4* i.new_compute_headline
-    def new_compute_headline(self, block: Block) -> str:
-
-        child_kind, child_name, child_start, child_start_body, child_end = block
-        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
-
     #@+node:ekr.20230529075138.16: *4* i.remove_common_lws
     def remove_common_lws(self, lws: str, p: Position) -> None:
         """Remove the given leading whitespace from all lines of p.b."""
@@ -437,11 +442,6 @@ class Importer:
             g.printObj(lines[start2:end2], tag=tag)
         print('End of Blocks')
         print('')
-    #@+node:ekr.20230529075138.42: *4* i.get_str_lws
-    def get_str_lws(self, s: str) -> str:
-        """Return the characters of the lws of s."""
-        m = re.match(r'([ \t]*)', s)
-        return m.group(0) if m else ''
     #@-others
 #@-others
 #@@language python

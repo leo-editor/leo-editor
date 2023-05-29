@@ -47,51 +47,13 @@ class Xml_Importer(Importer):
         self.start_patterns = tuple(re.compile(fr"\s*<({tag})") for tag in tags)
         self.end_patterns = tuple(re.compile(fr"\s*</({tag})>") for tag in tags)
         return tags
-    #@+node:ekr.20230519053541.1: *3* xml_i.new_compute_headline
-    def new_compute_headline(self, block: Block) -> str:
-        """Xml_Importer.new_compute_headline."""
+    #@+node:ekr.20230519053541.1: *3* xml_i.compute_headline
+    def compute_headline(self, block: Block) -> str:
+        """Xml_Importer.compute_headline."""
 
         child_kind, child_name, child_start, child_start_body, child_end = block
         n = max(child_start, child_start_body - 1)
         return self.lines[n].strip()
-    #@+node:ekr.20230126034427.1: *3* xml.preprocess_lines
-    tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
-
-    # Match two adjacent elements. Don't match comments.
-    adjacent_tags_pat = re.compile(r'(.*?)(<[^!].*?>)\s*(<[^!].*?>)')
-
-    def preprocess_lines(self, lines: List[str]) -> List[str]:
-        """
-        Xml_Importer.preprocess_lines.
-
-        Ensure that closing tags are followed by a newline.
-
-        Importer.import_from_string calls this method before generating lines.
-        """
-
-        def repl(m: re.Match) -> str:
-            """
-                Split lines, adding leading whitespace to the second line.
-                *Don't* separate tags if the tags open and close the same element.
-            """
-            m2 = self.tag_name_pat.match(m.group(2))
-            m3 = self.tag_name_pat.match(m.group(3))
-            tag_name2 = m2 and m2.group(1) or ''
-            tag_name3 = m3 and m3.group(1) or ''
-            same_element = (
-                tag_name2 == tag_name3
-                and not m.group(2).startswith('</')
-                and m.group(3).startswith('</')
-            )
-            lws = g.get_leading_ws(m.group(1))
-            sep = '' if same_element else '\n' + lws
-            return m.group(1) + m.group(2).rstrip() + sep + m.group(3)
-
-        result_lines = []
-        for i, line in enumerate(lines):
-            s = re.sub(self.adjacent_tags_pat, repl, line)
-            result_lines.extend(g.splitLines(s))
-        return result_lines
     #@+node:ekr.20230518081757.1: *3* xml_i.find_end_of_block
     def find_end_of_block(self, i1: int, i2: int) -> int:
         """
@@ -135,6 +97,44 @@ class Xml_Importer(Importer):
                     else:
                         return i1  # Don't create a block.
         return i1  # Don't create a block.
+    #@+node:ekr.20230126034427.1: *3* xml_i.preprocess_lines
+    tag_name_pat = re.compile(r'</?([a-zA-Z]+)')
+
+    # Match two adjacent elements. Don't match comments.
+    adjacent_tags_pat = re.compile(r'(.*?)(<[^!].*?>)\s*(<[^!].*?>)')
+
+    def preprocess_lines(self, lines: List[str]) -> List[str]:
+        """
+        Xml_Importer.preprocess_lines.
+
+        Ensure that closing tags are followed by a newline.
+
+        Importer.import_from_string calls this method before generating lines.
+        """
+
+        def repl(m: re.Match) -> str:
+            """
+                Split lines, adding leading whitespace to the second line.
+                *Don't* separate tags if the tags open and close the same element.
+            """
+            m2 = self.tag_name_pat.match(m.group(2))
+            m3 = self.tag_name_pat.match(m.group(3))
+            tag_name2 = m2 and m2.group(1) or ''
+            tag_name3 = m3 and m3.group(1) or ''
+            same_element = (
+                tag_name2 == tag_name3
+                and not m.group(2).startswith('</')
+                and m.group(3).startswith('</')
+            )
+            lws = g.get_leading_ws(m.group(1))
+            sep = '' if same_element else '\n' + lws
+            return m.group(1) + m.group(2).rstrip() + sep + m.group(3)
+
+        result_lines = []
+        for i, line in enumerate(lines):
+            s = re.sub(self.adjacent_tags_pat, repl, line)
+            result_lines.extend(g.splitLines(s))
+        return result_lines
     #@-others
 #@-others
 

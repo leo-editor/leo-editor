@@ -4,7 +4,6 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
@@ -59,25 +58,6 @@ class TS_Importer(Importer):
     def add_class_names(self, p: Position) -> None:
         """Add class names to headlines for all descendant nodes."""
 
-    #@+node:ekr.20161118093751.5: *3* ts_i.compute_headline
-    def compute_headline(self, s: str) -> str:
-        """Return a cleaned up headline s."""
-        s = s.strip()
-        # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover (missing test)
-            return s
-        # Try to match patterns.
-        for group_n, pattern in self.function_patterns:
-            m = pattern.match(s)
-            if m:
-                return m.group(group_n)
-        # Final cleanups, if nothing matches.
-        for ch in '{(=':
-            if s.endswith(ch):
-                s = s[:-1].strip()
-        s = s.replace('  ', ' ')
-        s = s.replace(' (', '(')
-        return g.truncate(s, 100)
     #@-others
 #@-others
 
