@@ -15,7 +15,7 @@ class Perl_Importer(Importer):
     """A scanner for the perl language."""
 
     language = 'perl'
-    
+
     block_patterns = (
         ('sub', re.compile(r'\s*sub\s+(\w+)')),
     )
