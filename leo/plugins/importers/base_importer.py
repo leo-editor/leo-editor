@@ -113,38 +113,6 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
-    def import_from_string(self, parent: Position, s: str) -> None:
-        """
-        The common top-level code for almost all importers.
-        
-        Overriding this method gives the importer completed control.
-        """
-        c = self.c
-        # Fix #449: Cloned @auto nodes duplicates section references.
-        if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
-            return
-        self.root = root = parent.copy()
-
-        # Check for intermixed blanks and tabs.
-        self.tab_width = c.getTabWidth(p=root)
-        lines = g.splitLines(s)
-        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
-
-        # Regularize leading whitespace
-        if not ws_ok:
-            lines = self.regularize_whitespace(lines)
-
-        # A hook for xml importer: preprocess lines.
-        lines = self.preprocess_lines(lines)
-
-        # Generate all nodes.
-        self.gen_lines(lines, parent)
-
-        # Importers should never dirty the outline.
-        # #1451: Do not change the outline's change status.
-        for p in root.self_and_subtree():
-            p.clearDirty()
     #@+node:ekr.20230529075138.14: *4* i.gen_block
     def gen_block(self, block: Block, parent: Position) -> None:
         """
@@ -218,6 +186,38 @@ class Importer:
 
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
+    def import_from_string(self, parent: Position, s: str) -> None:
+        """
+        The common top-level code for almost all importers.
+        
+        Overriding this method gives the importer completed control.
+        """
+        c = self.c
+        # Fix #449: Cloned @auto nodes duplicates section references.
+        if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
+            return
+        self.root = root = parent.copy()
+
+        # Check for intermixed blanks and tabs.
+        self.tab_width = c.getTabWidth(p=root)
+        lines = g.splitLines(s)
+        ws_ok = self.check_blanks_and_tabs(lines)  # Only issues warnings.
+
+        # Regularize leading whitespace
+        if not ws_ok:
+            lines = self.regularize_whitespace(lines)
+
+        # A hook for xml importer: preprocess lines.
+        lines = self.preprocess_lines(lines)
+
+        # Generate all nodes.
+        self.gen_lines(lines, parent)
+
+        # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
+        for p in root.self_and_subtree():
+            p.clearDirty()
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: List[str]) -> List[str]:
         """
