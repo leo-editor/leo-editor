@@ -2892,8 +2892,8 @@ class TestPerl(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.55: *3* TestPerl.xxx_test_regex
-    def xxx_test_regex(self):
+    #@+node:ekr.20210904065459.55: *3* TestPerl.xxx_regex
+    def xxx_regex(self):
 
         s = """
             #!/usr/bin/perl
