@@ -56,6 +56,7 @@ class Markdown_Importer(Importer):
                 self.lines_dict[top.v].append(line)
 
         # Set p.b from the lines_dict.
+        assert parent == self.root
         for p in parent.self_and_subtree():
             p.b = ''.join(self.lines_dict[p.v])
     #@+node:ekr.20230528170618.2: *4* md_i.is_hash

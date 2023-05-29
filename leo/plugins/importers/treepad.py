@@ -76,17 +76,18 @@ class Treepad_Importer(Importer):
                 # Create any needed placeholders.
                 self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
-                parent = parents[-1]
-                child = parent.insertAsLastChild()
+                top = parents[-1]
+                child = top.insertAsLastChild()
                 parents.append(child)
                 child.h = headline
                 lines_dict[child.v] = []
             else:
                 # Append the body line.
-                p = parents[-1]
-                lines_dict[p.v].append(line)
+                top = parents[-1]
+                lines_dict[top.v].append(line)
 
         # Set p.b from the lines_dict.
+        assert parent == self.root
         for p in parent.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@-others
