@@ -3832,7 +3832,6 @@ class TestRust(BaseTestImporter):
                     '        area(width1, height1)\n'
                     '    );\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'fn area',
                     'fn area(width: u32, height: u32) -> u32 {\n'
