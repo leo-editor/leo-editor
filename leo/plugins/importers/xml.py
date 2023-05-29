@@ -100,7 +100,6 @@ class Xml_Importer(Importer):
         Return the index of the start of next block.
         """
         # Get the tag that started the block
-        trace = False  ###
         tag_stack: List[str] = []
         tag1: str = None
         line = self.guide_lines[i1 - 1]
@@ -108,7 +107,6 @@ class Xml_Importer(Importer):
             m = pattern.match(line)
             if m:
                 tag1 = m.group(1).lower()
-                if trace: g.printObj(self.lines[i1:i2], tag=f"{i1}:{i2} {tag1}")
                 tag_stack.append(tag1)
                 break
         else:
@@ -123,27 +121,19 @@ class Xml_Importer(Importer):
                 if m:
                     tag = m.group(1).lower()
                     tag_stack.append(tag)
-                    if trace: g.trace('PUSH', i, tag, tag_stack)
                     break
             for pattern in self.end_patterns:
                 m = pattern.match(line)
                 if m:
                     end_tag = m.group(1).lower()
-                    if trace: g.trace(' POP', i, end_tag, tag_stack)
                     while tag_stack:
                         tag = tag_stack.pop()
                         if tag == end_tag:
-                            if trace: g.trace('Match', tag, tag_stack)
                             if not tag_stack:
-                                if trace:
-                                    g.trace('Done', i, tag)
-                                    g.printObj(self.lines[i1:i], tag=f"{i1}:{i}")
                                 return i
                             break
                     else:
-                        if trace: g.trace('No Match', i, end_tag)
                         return i1  # Don't create a block.
-        if trace: g.trace('FAIL')
         return i1  # Don't create a block.
     #@-others
 #@-others

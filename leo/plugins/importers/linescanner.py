@@ -73,12 +73,10 @@ class Importer:
         """Importer.__init__"""
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
-
-        if 1:  ### To be removed once all the old code is gone.
-            self.state_class = NewScanState
-            self.root: Position = None
-            self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.language)
-            self.tab_width = 0  # Must be set later.
+        self.root: Position = None
+        delims  = g.set_delims_from_language(self.language)
+        self.single_comment, self.block1, self.block2 = delims
+        self.tab_width = 0  # Must be set later.
 
         # Settings...
         self.reloadSettings()
