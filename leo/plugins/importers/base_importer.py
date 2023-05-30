@@ -77,7 +77,13 @@ class Importer:
     #@+node:ekr.20230529075640.1: *3* i: Generic methods: may be overridden
     #@+node:ekr.20230529075138.36: *4* i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
-        """Check for intermixed blank & tabs."""
+        """
+        Importer.check_blanks_and_tabs.
+        
+        Check for intermixed blank & tabs.
+        
+        Subclasses may override this method to suppress this check.
+        """
         # Do a quick check for mixed leading tabs/blanks.
         fn = g.shortFileName(self.root.h)
         w = self.tab_width
@@ -102,18 +108,30 @@ class Importer:
             else:
                 g.es(message)
         return ok
+    #@+node:ekr.20230529075138.13: *4* i.compute_headline
+    def compute_headline(self, block: Block) -> str:
+        """
+        Importer.compute_headline.
+        
+        Return the headline for the given block.
+        
+        Subclasses may override this method as necessary.
+        """
+        child_kind, child_name, child_start, child_start_body, child_end = block
+        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
-        Importer.find_blocks: override Importer.find_blocks.
+        Importer.find_blocks.
 
-        Find all blocks in the given range of *guide* lines from which blanks
-        and tabs have been deleted.
-
-        This is a *generic* block finder. May be overridden in subclasses.
+        Find all blocks in the given range of *guide* lines.
+        
         Use the patterns in self.block_patterns to find the start the start of a block.
 
-        Return a list of Blocks, that is, tuples(name, start, start_body, end).
+        Subclasses may override this method for more control.
+
+        Return a list of Blocks, that is, tuples(kind, name, start, start_body, end).
         """
         min_size = self.minimum_block_size
         i, prev_i, results = i1, i1, []
@@ -141,11 +159,12 @@ class Importer:
         """
         Importer.find_end_of_block.
 
-        This is a *generic* end-of-block finder. May be overridden in subclasses.
-        This method assumes that that '{' and '}' delimit blocks.
-
-        i is the index (within the *guide* lines) of the line *following* the start of the block.
         Return the index of end of the block.
+        i: The index of the (guide) line *following* the start of the block.
+        i2: The inedex last (guide) line to be scanned.
+
+        This method assumes that that '{' and '}' delimit blocks.
+        Subclasses may override this method as necessary.
         """
         level = 1  # All blocks start with '{'
         while i < i2:
@@ -164,8 +183,7 @@ class Importer:
         """
         Importer.gen_block.
         
-        Subclasses may override this method to gain more control over how they
-        recognize the start and end of blocks.
+        Subclasses may override this method as necessary.
 
         Create all descendant blocks and their parent nodes.
         """
@@ -204,9 +222,9 @@ class Importer:
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
-        Importer.gen_lines: a rewrite of Importer.gen_lines.
-
-        Allocate lines to parent.b and descendant nodes.
+        Importer.gen_lines: Allocate lines to the parent and descendant nodes.
+        
+        Subclasses may override this method, but none do.
         """
         try:
             assert self.root == parent, (self.root, parent)
@@ -235,9 +253,11 @@ class Importer:
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:
         """
-        The common top-level code for almost all importers.
+        Importer.import_from_string.
         
-        Overriding this method gives the importer completed control.
+        The top-level code for almost all importers.
+        
+        Overriding this method gives the subclass completed control.
         """
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
@@ -264,17 +284,36 @@ class Importer:
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
+    #@+node:ekr.20230529075138.12: *4* i.make_guide_lines
+    def make_guide_lines(self, lines: List[str]) -> List[str]:
+        """
+        Importer.make_guide_lines.
+        
+        Return a list if **guide lines** that simplify the detection of blocks.
+
+        This default method removes all comments and strings from the original lines.
+        
+        The perl importer overrides this methods to delete regexes as well
+        as comments and strings.
+        """
+        return self.delete_comments_and_strings(lines[:])
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: List[str]) -> List[str]:
         """
         A hook to enable preprocessing lines before calling x.find_blocks.
+        
+        Xml_Importer uses this hook to split lines.
         """
         return lines
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
         """
+        Importer.regularize_whitespace.
+        
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        
+        Subclasses may override this method to suppress this processing.
         """
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
@@ -307,13 +346,14 @@ class Importer:
                 self.report('changed %s lines' % count)
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
+    # Subclasses are unlikely ever to need to override these methods.
     #@+node:ekr.20230529075138.8: *4* i.compute_common_lws
     def compute_common_lws(self, blocks: List[Block]) -> str:
         """
         Return the length of the common leading indentation of all non-blank
         lines in all blocks.
 
-        This method assumes that no leading whitespace contains intermixed tabs and spaces:
+        This method assumes that no leading whitespace contains intermixed tabs and spaces.
 
         The returned string should consist of all blanks or all tabs.
         """
@@ -330,18 +370,12 @@ class Importer:
         n = min(lws_list) if lws_list else 0
         ws_char = ' ' if self.tab_width < 1 else '\t'
         return ws_char * n
-    #@+node:ekr.20230529075138.13: *4* i.compute_headline
-    def compute_headline(self, block: Block) -> str:
-
-        child_kind, child_name, child_start, child_start_body, child_end = block
-        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
-
     #@+node:ekr.20230529075138.34: *4* i.create_placeholders
     def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
 
-        Used by the org and otl importers.
+        The org and otl importers use this method.
         """
         if level <= len(parents):
             return
@@ -357,7 +391,15 @@ class Importer:
             lines_dict[child.v] = []
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
-        """Delete all comments and strings from the given lines."""
+        """
+        Delete all comments and strings from the given lines.
+
+        The resulting lines form **guide lines**. The input and guide
+        lines are "parallel": they have the same number of lines.
+        
+        Analyzing the guide lines instead of the input lines is the
+        simplifying trick behind the new importers.
+        """
         string_delims = self.string_list
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
         target = ''  # The string ending a multi-line comment or string.
@@ -423,14 +465,6 @@ class Importer:
         """Return the characters of the lws of s."""
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
-    #@+node:ekr.20230529075138.12: *4* i.make_guide_lines
-    def make_guide_lines(self, lines: List[str]) -> List[str]:
-        """
-        Return a list if **guide lines** that simplify the detection of blocks.
-
-        This default method removes all comments and strings from the original lines.
-        """
-        return self.delete_comments_and_strings(lines[:])
     #@+node:ekr.20230529075138.16: *4* i.remove_common_lws
     def remove_common_lws(self, lws: str, p: Position) -> None:
         """Remove the given leading whitespace from all lines of p.b."""
@@ -447,7 +481,7 @@ class Importer:
         p.b = ''.join(result)
     #@+node:ekr.20230529075138.17: *4* i.trace_blocks
     def trace_blocks(self, blocks: List[Block]) -> None:
-
+        """For debugging: trace the list of blocks."""
         if not blocks:
             g.trace('No blocks')
             return
