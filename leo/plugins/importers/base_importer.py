@@ -186,9 +186,10 @@ class Importer:
         """
         Importer.gen_block.
         
-        Subclasses may override this method as necessary.
-
         Create all descendant blocks and their parent nodes.
+        
+        Five importers override this method to take full control over finding
+        blocks.
         """
         lines = self.lines
         kind, name, start, start_body, end = block
