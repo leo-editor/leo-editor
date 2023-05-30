@@ -25,6 +25,9 @@ class Importer:
     
     Many importers only define `block_patterns` and `language` class ivars.
     
+    Analyzing **guide lines** (lines without comments and strings)
+    grealtly simplifies this class and all of Leo's importers.
+    
     Subclasses may override the following methods to recognize blocks:
     
     Override `i.find_blocks` or `i.find_end_of_block1` to tweak `i.gen_block`.

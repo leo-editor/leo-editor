@@ -47,7 +47,7 @@ class CText_Importer(Importer):
     #@+others
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
     def import_from_string(self, parent: Position, s: str) -> None:
-        """CText_Importer.import_from_string()"""
+        """CText_Importer.import_from_string."""
         c = self.c
         root = parent.copy()
         ft = c.importCommands.fileType.lower()

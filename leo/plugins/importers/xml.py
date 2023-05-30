@@ -32,7 +32,9 @@ class Xml_Importer(Importer):
     #@+others
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self, setting: str) -> List[str]:
-        """Add items to self.class/functionTags and from settings."""
+        """
+        Add items to self.class/functionTags and from settings.
+        """
 
         # Get the tags from the settings.
         tags = self.c.config.getData(setting) or []

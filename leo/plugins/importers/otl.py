@@ -18,7 +18,7 @@ class Otl_Importer(Importer):
     language = 'otl'
 
     #@+others
-    #@+node:ekr.20230530052911.1: *3* otl.check_blanks_and_tabs
+    #@+node:ekr.20230530052911.1: *3* otl_i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
         """
         Otl_Importer.check_blanks_and_tabs.
@@ -28,16 +28,6 @@ class Otl_Importer(Importer):
         Tabs are part of the otl format. Never complain.
         """
         return True
-    #@+node:ekr.20220803162645.1: *3* otl.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:
-        """
-        Otl_Importer.regularize_whitespace.
-
-        Tabs are part of the otl format. Leave them alone.
-        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        """
-        # Should never be called: otl.check_blanks_and_tabs always returns True
-        return lines  # pragma: no cover
     #@+node:ekr.20230529071351.1: *3* otl_i.gen_block
     # Must match body pattern first.
     otl_body_pattern = re.compile(r'^: (.*)$')
@@ -86,6 +76,16 @@ class Otl_Importer(Importer):
         assert parent == self.root
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
+    #@+node:ekr.20220803162645.1: *3* otl_i.regularize_whitespace
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:
+        """
+        Otl_Importer.regularize_whitespace.
+
+        Tabs are part of the otl format. Leave them alone.
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        """
+        # Should never be called: otl.check_blanks_and_tabs always returns True
+        return lines  # pragma: no cover
     #@-others
 #@-others
 
