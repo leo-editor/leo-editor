@@ -103,9 +103,7 @@ class BaseTestImporter(LeoUnitTest):
                 a_level, a_h, a_str = actual
                 e_level, e_h, e_str = expected[i]
             except ValueError:
-                g.printObj(actual, tag=f"actual[{i}]")
-                g.printObj(expected[i], tag=f"expected[{i}]")
-                self.fail(f"Error unpacking tuple {i}")
+                assert False  # So we print the actual results.
             msg = f"FAIL in node {i} {e_h}"
             self.assertEqual(a_level - p0_level, e_level, msg=msg)
             if i > 0:  # Don't test top-level headline.
