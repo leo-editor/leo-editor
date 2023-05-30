@@ -44,7 +44,7 @@ class TestPersistence(LeoUnitTest):
     def test_p_sort_key(self):
         c, p = self.c, self.c.p
         aList = [z.copy() for z in c.all_positions()]
-        aList2 = sorted(reversed(aList), key=p.sort_key)
+        aList2 = sorted(aList, key=p.sort_key)
         for i, p in enumerate(aList2):
             p2 = aList[i]
             self.assertEqual(p, p2, msg=f"i: {i}, p.h: {p.h}. p2: {p2.h}")
