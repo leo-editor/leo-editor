@@ -19,14 +19,13 @@ class TS_Importer(Importer):
     #@+<< define non-function patterns >>
     #@+node:ekr.20200817090227.1: *3* << define non-function patterns >>
     non_function_patterns = (
-
         re.compile(r'catch\s*\(.*\)'),
     )
     #@-<< define non-function patterns >>
     #@+<< define function patterns >>
     #@+node:ekr.20180523172655.1: *3* << define function patterns >>
     kinds = r'(async|public|private|static)'
-    #
+
     # The pattern table. Order matters!
     function_patterns = (
         (1, re.compile(r'(interface\s+\w+)')),  # interface name
@@ -54,10 +53,6 @@ class TS_Importer(Importer):
     #@-<< define function patterns >>
 
     #@+others
-    #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
-    def add_class_names(self, p: Position) -> None:
-        """Add class names to headlines for all descendant nodes."""
-
     #@-others
 #@-others
 
