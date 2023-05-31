@@ -464,7 +464,7 @@ class TestAtFile(LeoUnitTest):
         at.initCommonIvars()
         at.scanAllDirectives(c.p)
         encoding = 'utf-8'
-        at.outputFileName = None  # The point of this test, but I'm not sure it matters.
+        at.targetFileName = None  # The point of this test, but I'm not sure it matters.
         try:
             # https://stackoverflow.com/questions/23212435
             f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
