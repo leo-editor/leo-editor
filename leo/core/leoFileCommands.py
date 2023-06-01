@@ -1367,22 +1367,22 @@ class FileCommands:
         """
 
         def oops(message: str) -> None:
-            """Give an error only if no file errors have been seen."""
-            # g.trace(message)
-
+            """Raise an exception during unit tests."""
+            if g.unitTesting:
+                raise AssertionError(message)
         try:
             aList = [int(z) for z in archivedPosition.split('.')]
             aList.reverse()
         except Exception:
-            oops(f'"{archivedPosition}"')
+            oops(f"Unexpected exception: {archivedPosition!r}")
             return None
         if not aList:
             oops('empty')
             return None
         last_v = root_v
         n = aList.pop()
-        if n != 0:
-            oops(f'root index="{n}"')
+        if n < 0:
+            oops(f"Negative root index: {n!r}: {archivedPosition}")
             return None
         while aList:
             n = aList.pop()
@@ -1390,7 +1390,7 @@ class FileCommands:
             if n < len(children):
                 last_v = children[n]
             else:
-                oops(f'bad index="{n}", len(children)="{len(children)}"')
+                oops(f"bad index={n!r}, len(children)={len(children)}")
                 return None
         return last_v
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
