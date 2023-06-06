@@ -30,12 +30,18 @@ class TestNodes(LeoUnitTest):
         c, fc = self.c, self.c.fileCommands
         root_p, root_v = c.rootPosition(), c.rootPosition().v
         for p in c.all_positions():
+            # ap1 and ap2 are lists of ints.
             ap1 = p.archivedPosition()
             ap2 = p.archivedPosition(root_p=root_p)
             self.assertTrue(bool(ap1), msg=p.h)
+            self.assertTrue(bool(ap2), msg=p.h)
             self.assertEqual(ap1, ap2, msg=p.h)
-            p1 = fc.resolveArchivedPosition(ap1, root_v)
-            p2 = fc.resolveArchivedPosition(ap2, root_v)
+            ap1_s = '.'.join([str(z) for z in ap1])
+            ap2_s = '.'.join([str(z) for z in ap2])
+            p1 = fc.resolveArchivedPosition(ap1_s, root_v)
+            self.assertTrue(p1, msg=root_v)
+            p2 = fc.resolveArchivedPosition(ap2_s, root_v)
+            self.assertTrue(p2, msg=root_v)
             self.assertEqual(p1, p2, msg=p.h)
     #@+node:ekr.20210830095545.21: *5* TestNodes.test_p__eq_
     def test_p__eq_(self):
