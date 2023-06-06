@@ -4,6 +4,7 @@
 from __future__ import annotations
 import re
 from typing import Dict, List, TYPE_CHECKING
+from leo.core import leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -70,7 +71,7 @@ class Otl_Importer(Importer):
                 parents.append(child)
                 lines_dict[child.v] = []
             else:  # pragma: no cover
-                self.error(f"Bad otl line: {line!r}")
+                g.error(f"Bad otl line: {line!r}")
 
         # Set p.b from the lines_dict.
         assert parent == self.root

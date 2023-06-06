@@ -447,21 +447,6 @@ class Importer:
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20230529075138.6: *4* i.error, report, warning
-    def error(self, s: str) -> None:  # pragma: no cover
-        """Issue an error and cause a unit test to fail."""
-        if g.unitTesting:
-            print(s)
-            assert False, s
-        else:
-            g.error(s)
-
-    def report(self, message: str) -> None:  # pragma: no cover
-        self.warning(message)
-
-    def warning(self, s: str) -> None:  # pragma: no cover
-        if not g.unitTesting:
-            g.warning('Warning:', s)
     #@+node:ekr.20230529075138.42: *4* i.get_str_lws
     def get_str_lws(self, s: str) -> str:
         """Return the characters of the lws of s."""
