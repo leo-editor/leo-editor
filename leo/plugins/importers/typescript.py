@@ -51,9 +51,6 @@ class TS_Importer(Importer):
             # name (...) {
     )
     #@-<< define function patterns >>
-
-    #@+others
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

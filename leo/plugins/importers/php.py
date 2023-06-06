@@ -15,9 +15,6 @@ class Php_Importer(Importer):
     """The importer for the php lanuage."""
 
     language = 'php'
-
-    #@+others
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

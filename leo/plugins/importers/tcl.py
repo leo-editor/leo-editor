@@ -22,9 +22,6 @@ class Tcl_Importer(Importer):
     block_patterns = (
         ('proc', re.compile(r'\s*\bproc\s+(\w+)')),
     )
-
-    #@+others
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

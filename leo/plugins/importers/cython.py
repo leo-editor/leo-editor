@@ -33,9 +33,6 @@ class Cython_Importer(Python_Importer):
         ('cpdef', cpdef_pat),
         ('def', def_pat),
     )
-
-    #@+others
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

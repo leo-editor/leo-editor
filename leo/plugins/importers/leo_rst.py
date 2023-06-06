@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 # Used by writers.leo_rst as well as in this file.
 # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
+
 #@+others
 #@+node:ekr.20161127192007.2: ** class Rst_Importer(Importer)
 class Rst_Importer(Importer):

@@ -9,6 +9,7 @@ from leo.plugins.importers.base_importer import Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer(Importer)
 class Perl_Importer(Importer):

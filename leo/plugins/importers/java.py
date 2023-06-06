@@ -9,6 +9,7 @@ from leo.plugins.importers.base_importer import Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer(Importer)
 class Java_Importer(Importer):

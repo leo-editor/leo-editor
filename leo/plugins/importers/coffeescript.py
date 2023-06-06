@@ -8,6 +8,7 @@ from leo.plugins.importers.python import Python_Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Python_Importer)
 class Coffeescript_Importer(Python_Importer):
