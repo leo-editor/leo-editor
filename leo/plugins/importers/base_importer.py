@@ -22,20 +22,20 @@ class ImporterError(Exception):
 class Importer:
     """
     The base class for almost all of Leo's importers.
-    
+
     Many importers only define `block_patterns` and `language` class ivars.
-    
+
     Analyzing **guide lines** (lines without comments and strings)
     grealtly simplifies this class and all of Leo's importers.
-    
+
     Subclasses may override the following methods to recognize blocks:
-    
+
     Override `i.find_blocks` or `i.find_end_of_block1` to tweak `i.gen_block`.
     Override `i.gen_block` for more control.
     Override `i.import_from_string` for complete control.
-    
+
     Subclasses may override these methods to handle the incoming text:
-        
+
     Override `i.check_blanks_and tabs` to suppress warnings.
     Override `i.preprocess_lines` to adjust incoming lines.
     Override `i.regularize_whitespace` to allow mixed tabs and spaces.
@@ -82,9 +82,9 @@ class Importer:
     def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
         """
         Importer.check_blanks_and_tabs.
-        
+
         Check for intermixed blank & tabs.
-        
+
         Subclasses may override this method to suppress this check.
         """
         # Do a quick check for mixed leading tabs/blanks.
@@ -107,7 +107,8 @@ class Importer:
             message = 'intermixed blanks and tabs in: %s' % (fn)
         if not ok:
             if g.unitTesting:
-                self.report(message)
+                ### self.report(message)
+                assert False, message
             else:
                 g.es(message)
         return ok
@@ -115,9 +116,9 @@ class Importer:
     def compute_headline(self, block: Block) -> str:
         """
         Importer.compute_headline.
-        
+
         Return the headline for the given block.
-        
+
         Subclasses may override this method as necessary.
         """
         child_kind, child_name, child_start, child_start_body, child_end = block
@@ -129,7 +130,7 @@ class Importer:
         Importer.find_blocks.
 
         Find all blocks in the given range of *guide* lines.
-        
+
         Use the patterns in self.block_patterns to find the start the start of a block.
 
         Subclasses may override this method for more control.
@@ -185,9 +186,9 @@ class Importer:
     def gen_block(self, block: Block, parent: Position) -> None:
         """
         Importer.gen_block.
-        
+
         Create all descendant blocks and their parent nodes.
-        
+
         Five importers override this method to take full control over finding
         blocks.
         """
@@ -227,7 +228,7 @@ class Importer:
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Importer.gen_lines: Allocate lines to the parent and descendant nodes.
-        
+
         Subclasses may override this method, but none do.
         """
         try:
@@ -258,9 +259,9 @@ class Importer:
     def import_from_string(self, parent: Position, s: str) -> None:
         """
         Importer.import_from_string.
-        
+
         The top-level code for almost all importers.
-        
+
         Overriding this method gives the subclass completed control.
         """
         c = self.c
@@ -292,11 +293,11 @@ class Importer:
     def make_guide_lines(self, lines: List[str]) -> List[str]:
         """
         Importer.make_guide_lines.
-        
+
         Return a list if **guide lines** that simplify the detection of blocks.
 
         This default method removes all comments and strings from the original lines.
-        
+
         The perl importer overrides this methods to delete regexes as well
         as comments and strings.
         """
@@ -305,7 +306,7 @@ class Importer:
     def preprocess_lines(self, lines: List[str]) -> List[str]:
         """
         A hook to enable preprocessing lines before calling x.find_blocks.
-        
+
         Xml_Importer uses this hook to split lines.
         """
         return lines
@@ -313,10 +314,10 @@ class Importer:
     def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
         """
         Importer.regularize_whitespace.
-        
+
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        
+
         Subclasses may override this method to suppress this processing.
         """
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
@@ -340,14 +341,11 @@ class Importer:
                     count += 1
                 result.append(s)
         if count:
-            self.ws_error = True  # A flag to check.
+            self.ws_error = True  ### A flag to check.
             if not g.unitTesting:
-                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
-                # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es('changed leading %s to %s in %s line%s in %s' % (
-                    kind2, kind, count, g.plural(count), fn))
-            if g.unitTesting:  # Sets flag for unit tests.
-                self.report('changed %s lines' % count)
+                ### g.es('changed leading %s to %s in %s line%s in %s' % (
+                ###     kind2, kind, count, g.plural(count), fn))
+                g.es(f"changed leading {kind2} to {kind} in {count} line{g.plural(count)} in {fn}")
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
@@ -400,7 +398,7 @@ class Importer:
 
         The resulting lines form **guide lines**. The input and guide
         lines are "parallel": they have the same number of lines.
-        
+
         Analyzing the guide lines instead of the input lines is the
         simplifying trick behind the new importers.
         """
