@@ -90,7 +90,7 @@ globalDirectiveList = [
     # 'raw',  # #2276.
     'section-delims',  # Leo 6.6. #2276.
     'silent',
-    'tabwidth', 'terse',
+    'tabwidth',
     'unit', 'verbose', 'wrap',
 ]
 
