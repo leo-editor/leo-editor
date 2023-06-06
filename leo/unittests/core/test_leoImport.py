@@ -75,7 +75,7 @@ class TestLeoImport(BaseTestImporter):
             ),
         )
         # Don't call run_test.
-        self.check_outline(target, expected_results, trace_results=False)
+        self.check_outline(target, expected_results)
 
     #@-others
 #@-others

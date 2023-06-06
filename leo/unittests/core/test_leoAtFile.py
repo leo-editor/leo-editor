@@ -99,7 +99,7 @@ class TestAtFile(LeoUnitTest):
         child.h = '@file at_file_test.py'
         path = c.fullPath(child)
         expected = 'c:/temp/leo/at_file_test.py'
-        self.assertTrue(path, expected)
+        self.assertEqual(path, expected)
     #@+node:ekr.20230411094250.1: *3* TestAtFile.test_bug_3272_at_path
     def test_bug_3272_at_path(self):
         #  @path bookmarks
@@ -111,7 +111,7 @@ class TestAtFile(LeoUnitTest):
         child.h = '@file at_file_test.py'
         path = c.fullPath(child)
         expected = 'bookmarks/at_file_test.py'
-        self.assertTrue(path, expected)
+        self.assertTrue(path.endswith(expected))
     #@+node:ekr.20210901140645.13: *3* TestAtFile.test_checkPythonSyntax
     def test_checkPythonSyntax(self):
 
@@ -464,7 +464,7 @@ class TestAtFile(LeoUnitTest):
         at.initCommonIvars()
         at.scanAllDirectives(c.p)
         encoding = 'utf-8'
-        at.outputFileName = None  # The point of this test, but I'm not sure it matters.
+        at.targetFileName = None  # The point of this test, but I'm not sure it matters.
         try:
             # https://stackoverflow.com/questions/23212435
             f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')

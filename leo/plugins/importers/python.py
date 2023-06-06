@@ -5,16 +5,19 @@ from __future__ import annotations
 import re
 from typing import List, Tuple, TYPE_CHECKING
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Block, Importer
+from leo.plugins.importers.base_importer import Block, Importer
+
 if TYPE_CHECKING:
     assert g
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer
 class Python_Importer(Importer):
     """Leo's Python importer"""
 
+    language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
 
     # The default patterns. Overridden in the Cython_Importer class.
@@ -29,12 +32,8 @@ class Python_Importer(Importer):
         ('def', def_pat),
     )
 
-    def __init__(self, c: Cmdr, language: str = 'python') -> None:
-        """Py_Importer.ctor."""
-        super().__init__(c, language=language, strict=True)
-
     #@+others
-    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks (override)
+    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> List[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.

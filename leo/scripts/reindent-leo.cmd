@@ -11,10 +11,11 @@ set /P "REINDENT_PATH="< %PATH_FILE%
 
 if "%REINDENT_PATH%"=="" goto no_reindent
 
-echo reindent leo\core
+echo reindent leo/core
 call py %REINDENT_PATH% -r leo\core
-echo reindent leo\commands
+echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
+echo reindent leo/plugins/importers
 goto done
 
 :no_reindent

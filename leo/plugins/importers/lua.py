@@ -5,57 +5,55 @@ The @auto importer for the lua language.
 
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer
-delete_blank_lines = True
+from typing import TYPE_CHECKING
+from leo.plugins.importers.base_importer import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer(Importer)
 class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Lua_Importer.__init__"""
-        super().__init__(c, language='lua')
-        # Contains entries for all constructs that end with 'end'.
+    language = 'lua'
 
-    # Define necessary overrides.
+    end_pat = re.compile(r'.*?\bend\b')
+
+    block_patterns = (
+        ('function', re.compile(r'\s*function\s+([\w\.]+)\s*\(')),
+        ('function', re.compile(r'.*?([\w\.]+)\s*\(function\b\s*\(')),
+    )
+
     #@+others
-    #@+node:ekr.20170530024520.5: *3* lua_i.compute_headline
-    def compute_headline(self, s: str) -> str:
-        """Return a cleaned up headline s."""
-        s = s.strip()
-        for tag in ('local', 'function'):
-            if s.startswith(tag):
-                s = s[len(tag) :]
-        i = s.find('(')
-        if i > -1:
-            s = s[:i]
-        return s.strip()
-    #@+node:ekr.20220816084846.1: *3* lua_i.gen_lines_prepass
-    function_pat = re.compile(r'^(\s*function\b)|^(.*?\(function\b)')
-    end_pat = re.compile(r'^.*end\b.*$')
-
-    def gen_lines_prepass(self) -> None:
+    #@+node:ekr.20230527120748.1: *3* lua_i.find_end_of_block
+    def find_end_of_block(self, i: int, i2: int) -> int:
         """
-        lua.gen_lines_prepass.
-        Set scan_state.level for all scan states.
+        Lua_Importer.find_end_of_block.
+        
+        i is the index (within the *guide* lines) of the line *following* the start of the block.
+        
+        Return the index of end of the block.
         """
-        lines, line_states = self.lines, self.line_states
-        level = 0
-        for i, line in enumerate(lines):
-            state = line_states[i]
-            if line.isspace() or state.context:
-                state.level = level
-                continue
-            m1 = self.function_pat.match(line)
-            m2 = self.end_pat.match(line)
-            if m1:
-                level += 1
-            elif m2:
-                level -= 1
-            state.level = level
+        level = 1  # The previous line starts the function.
+        while i < i2:
+            line = self.guide_lines[i]
+            i += 1
+            for (kind, pat) in self.block_patterns:
+                m1 = pat.match(line)
+                if m1:
+                    level += 1
+                    break
+            else:
+                m2 = self.end_pat.match(line)
+                if m2:
+                    level -= 1
+                    if level == 0:
+                        return i
+        return i2
     #@-others
 #@-others
 

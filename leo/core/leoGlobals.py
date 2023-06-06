@@ -90,7 +90,7 @@ globalDirectiveList = [
     # 'raw',  # #2276.
     'section-delims',  # Leo 6.6. #2276.
     'silent',
-    'tabwidth', 'terse',
+    'tabwidth',
     'unit', 'verbose', 'wrap',
 ]
 
@@ -6360,7 +6360,7 @@ def finalize(path: str) -> str:
     path = os.path.expanduser(path)
     path = os.path.expandvars(path)
 
-    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
+    # Convert to an absolute path, similar to os.path.normpath(os.getcwd(), path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
@@ -6389,7 +6389,7 @@ def finalize_join(*args: Any) -> str:
     # Join the paths.
     path = os.path.join(*uargs2)
 
-    # Convert to an abosolute path, similar to os.path.normpath(os.getcwd(), path)
+    # Convert to an absolute path, similar to os.path.normpath(os.getcwd(), path)
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
