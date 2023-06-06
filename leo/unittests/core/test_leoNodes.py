@@ -29,7 +29,6 @@ class TestNodes(LeoUnitTest):
     def test_archivedPosition(self):
         c, fc = self.c, self.c.fileCommands
         root_p, root_v = c.rootPosition(), c.rootPosition().v
-        g.trace(root_p._childIndex)
         for p in c.all_positions():
             # ap1 and ap2 are lists of ints.
             ap1 = p.archivedPosition()
