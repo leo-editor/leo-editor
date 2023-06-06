@@ -5,11 +5,13 @@ from __future__ import annotations
 import re
 from typing import List, Tuple, TYPE_CHECKING
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Block, Importer
+from leo.plugins.importers.base_importer import Block, Importer
+
 if TYPE_CHECKING:
     assert g
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer
 class Python_Importer(Importer):

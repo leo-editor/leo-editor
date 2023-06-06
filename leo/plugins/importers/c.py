@@ -4,7 +4,7 @@
 from __future__ import annotations
 import re
 from typing import List, TYPE_CHECKING
-from leo.plugins.importers.linescanner import Block, Importer
+from leo.plugins.importers.base_importer import Block, Importer
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ class C_Importer(Importer):
     )
 
     #@+others
-    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks (override)
+    #@+node:ekr.20220728055719.1: *3* c_i.find_blocks
     # Pattern that matches any compound statement.
     compound_statements_s = '|'.join([
         rf"\b{z}\b" for z in (

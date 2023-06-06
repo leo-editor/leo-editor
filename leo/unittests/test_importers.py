@@ -4,15 +4,13 @@
 import glob
 import importlib
 import textwrap
+from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
-import leo.plugins.importers.dart as dart
-#import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
-import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
@@ -28,64 +26,22 @@ class BaseTestImporter(LeoUnitTest):
         g.app.write_black_sentinels = False
 
     #@+others
-    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
-    def check_outline(self, p, expected, trace_results=False):
-        """
-        BaseTestImporter.check_outline.
-        """
-        if False and trace_results: # Dump expected results.
-            print('')
-            g.trace('Expected results...')
-            for (level, h, s) in expected:
-                g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
-
-        if trace_results: # Dump headlines of actual results.
-            self.dump_headlines(p, tag='Actual headlines...')
-
-        if trace_results: # Dump actual results, including bodies.
-            self.dump_tree(p, tag='Actual results...')
-
-        # Do the actual tests.
-        p0_level = p.level()
-        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        # g.printObj(expected, tag='expected')
-        # g.printObj(actual, tag='actual')
-        self.assertEqual(len(expected), len(actual))
-        for i, actual in enumerate(actual):
-            try:
-                a_level, a_h, a_str = actual
-                e_level, e_h, e_str = expected[i]
-            except ValueError:
-                g.printObj(actual, tag=f"actual[{i}]")
-                g.printObj(expected[i], tag=f"expected[{i}]")
-                self.fail(f"Error unpacking tuple {i}")
-            msg = f"FAIL in node {i} {e_h}"
-            self.assertEqual(a_level - p0_level, e_level, msg=msg)
-            if i > 0:  # Don't test top-level headline.
-                self.assertEqual(e_h, a_h, msg=msg)
-            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-        return True, 'ok'
-
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
-    def check_round_trip(self, p: Position, s: str, strict_flag: bool=False) -> None:
+    def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
         s = s.rstrip()  # Ignore trailing whitespace.
         result_s = c.atFileCommands.atAutoToString(p).rstrip()  # Ignore trailing whitespace.
-        if strict_flag:
-            s_lines = g.splitLines(s)
-            result_lines = g.splitLines(result_s)
-        else:
-            # Ignore leading whitespace and all blank lines.
-            s_lines = [z.lstrip() for z in g.splitLines(s) if z.strip()]
-            result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
+        # Ignore leading whitespace and all blank lines.
+        s_lines = [z.lstrip() for z in g.splitLines(s) if z.strip()]
+        result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
         if s_lines != result_lines:
             g.trace('FAIL', g.caller(2))
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
-    def compute_unit_test_kind(self, ext):
+    def compute_unit_test_kind(self, ext: str) -> str:
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
         kind = {
@@ -103,12 +59,8 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
-    #@+node:ekr.20220802054221.1: *3* BaseTestImporter.dedent
-    def dedent(self, s):
-        """Remove common leading whitespace from all lines of s."""
-        return textwrap.dedent(s)
-    #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
-    def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
+    #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
+    def new_run_test(self, s: str, expected_results: Tuple) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -129,9 +81,60 @@ class BaseTestImporter(LeoUnitTest):
         test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
-        # Some tests will never pass round-trip tests.
-        if check_flag:
-            self.check_round_trip(parent, test_s, strict_flag)
+        try:
+            self.check_outline(parent, expected_results)
+        except AssertionError:
+            # Dump actual results, including bodies.
+            self.dump_tree(parent, tag='Actual results...')
+            raise
+    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
+    def check_outline(self, p: Position, expected: Tuple) -> None:
+        """
+        BaseTestImporter.check_outline.
+        
+        Check that p's outline matches the expected results.
+        
+        Dump the actual outline if there is a mismatch.
+        """
+        p0_level = p.level()
+        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        for i, actual in enumerate(actual):
+            try:
+                a_level, a_h, a_str = actual
+                e_level, e_h, e_str = expected[i]
+            except ValueError:
+                assert False  # So we print the actual results.
+            msg = f"FAIL in node {i} {e_h}"
+            self.assertEqual(a_level - p0_level, e_level, msg=msg)
+            if i > 0:  # Don't test top-level headline.
+                self.assertEqual(e_h, a_h, msg=msg)
+            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
+    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
+    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
+        p = self.run_test(s)
+        self.check_round_trip(p, expected_s or s)
+    #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
+    def run_test(self, s: str) -> Position:
+        """
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location c.p.
+        Return the created tree.
+        """
+        c, ext, p = self.c, self.ext, self.c.p
+        self.assertTrue(ext)
+
+        # Run the test.
+        parent = p.insertAsLastChild()
+        kind = self.compute_unit_test_kind(ext)
+
+        # TestCase.id() has the form leo.unittests.core.file.class.test_name
+        id_parts = self.id().split('.')
+        self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
+        parent.h = f"{kind} {self.short_id}"
+
+        # createOutline calls Importer.gen_lines and Importer.check.
+        test_s = textwrap.dedent(s).strip() + '\n'
+        c.importCommands.createOutline(parent.copy(), ext, test_s)
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
@@ -157,8 +160,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -169,8 +171,7 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -193,13 +194,11 @@ class TestC(BaseTestImporter):
                 '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class cTestClass1 {
 
                 int foo (int a) {
@@ -213,7 +212,7 @@ class TestC(BaseTestImporter):
                     ;
                 }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -239,13 +238,11 @@ class TestC(BaseTestImporter):
                 '    }\n'
             ),
         )
-        p = self.run_test(s)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
     def test_open_curly_bracket_on_next_line(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             void
             aaa::bbb::doit(awk* b)
             {
@@ -257,7 +254,7 @@ class TestC(BaseTestImporter):
             {
                 return true;
             } // comment
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -279,20 +276,18 @@ class TestC(BaseTestImporter):
                 '} // comment\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             extern "C"
             {
             #include "stuff.h"
             void    init(void);
             #include "that.h"
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'extern "C"\n'
@@ -305,14 +300,12 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
@@ -322,7 +315,7 @@ class TestC(BaseTestImporter):
                 ckfree((char *)cset->ranges);
                 }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'static void\n'
@@ -338,14 +331,12 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
@@ -353,7 +344,7 @@ class TestC(BaseTestImporter):
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'Tcl_Obj *\n'
@@ -367,20 +358,18 @@ class TestC(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             template <class T>
             T GetMax (T a, T b) {
               T result;
               result = (a>b)? a : b;
               return (result);
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -396,8 +385,7 @@ class TestC(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
@@ -529,8 +517,7 @@ class TestCoffeescript(BaseTestImporter):
 
     def test_1(self):
 
-        s = textwrap.dedent(
-        r"""
+        s = r"""
         # Js2coffee relies on Narcissus's parser.
 
         {parser} = @Narcissus or require('./narcissus_packed')
@@ -543,7 +530,7 @@ class TestCoffeescript(BaseTestImporter):
 
           builder    = new Builder
           scriptNode = parser.parse str
-        """).strip() + '\n'
+        """
 
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -566,15 +553,14 @@ class TestCoffeescript(BaseTestImporter):
                     '  scriptNode = parser.parse str\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
+
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
 
     def test_2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
           class Builder
             constructor: ->
               @transformer = new Transformer
@@ -604,7 +590,7 @@ class TestCoffeescript(BaseTestImporter):
               str = unshift(str)
               if str.length > 0 then str else ""
               
-          """).strip() + '\n'
+          """
         expected_results = (
           (0, '',  # check_outline ignores the first headline.
                 '@others\n'
@@ -650,8 +636,7 @@ class TestCoffeescript(BaseTestImporter):
               '  if str.length > 0 then str else ""\n'
           ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -672,15 +657,13 @@ class TestCSharp(BaseTestImporter):
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             namespace {
                 class cTestClass1 {
                     ;
                 }
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
@@ -698,19 +681,17 @@ class TestCSharp(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             namespace {
             class cTestClass1 {
                 ;
             }
             }
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
@@ -728,8 +709,7 @@ class TestCSharp(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
 class TestCText(BaseTestImporter):
@@ -762,8 +742,7 @@ class TestCText(BaseTestImporter):
         See what we did there - one more '#' - this is a subnode.
         """
         # Round-tripping is not guaranteed.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline.
                     'Leading text in root node of subtree\n'
                     '\n'
@@ -785,11 +764,9 @@ class TestCText(BaseTestImporter):
             (2, 'A level 2 node',
                     '\n'
                     "See what we did there - one more '#' - this is a subnode.\n"
-                    '\n'
             ),
-        ))
-
-
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython(BaseTestImporter):
@@ -799,8 +776,7 @@ class TestCython(BaseTestImporter):
     #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
     def test_importer(self):
 
-        s = textwrap.dedent(
-        '''
+        s = '''
             from libc.math cimport pow
 
             cdef double square_and_add (double x):
@@ -814,9 +790,8 @@ class TestCython(BaseTestImporter):
             cpdef print_result (double x):
                 """This is a cpdef function that can be called from Python."""
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
-        ''').strip() + '\n'
-
-        expected_result = (
+        '''
+        expected_results = (
             (0, '',  # check_outlines ignores the first headline.
                     '@others\n'
                     '@language cython\n'
@@ -839,8 +814,7 @@ class TestCython(BaseTestImporter):
                     '    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
             ),
         )
-        p = self.run_test(s, strict_flag=True, check_flag=False)
-        self.check_outline(p, expected_result, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -869,48 +843,34 @@ class TestDart(BaseTestImporter):
           printNumber(number); // Call a function.
         }
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    "var name = 'Bob';\n"
-                    '\n'
                     '@others\n'
                     '@language dart\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'hello',
+            (1, 'function hello',
+                    "var name = 'Bob';\n"
+                    '\n'
                     'hello() {\n'
                     "  print('Hello, World!');\n"
                     '}\n'
-                    '\n'
             ),
-            (1, 'printNumber',
+            (1, 'function printNumber',
                     '// Define a function.\n'
                     'printNumber(num aNumber) {\n'
                     "  print('The number is $aNumber.'); // Print to console.\n"
                     '}\n'
-                    '\n'
             ),
-            (1, 'void main',
+            (1, 'function void main',
                     '// This is where the app starts executing.\n'
                     'void main() {\n'
                     '  var number = 42; // Declare and initialize a variable.\n'
                     '  printNumber(number); // Call a function.\n'
                     '}\n'
-                    '\n'
             ),
-        ))
-    #@+node:ekr.20210904065459.127: *3* TestDart.test_compute_headline
-    def test_compute_headline(self):
-        c = self.c
-        x = dart.Dart_Importer(c)
-        table = (
-            ('func(abc) {', 'func'),
-            ('void foo() {', 'void foo'),
         )
-        for s, expected in table:
-            got = x.compute_headline(s)
-            self.assertEqual(got, expected)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
 class TestElisp(BaseTestImporter):
@@ -922,8 +882,7 @@ class TestElisp(BaseTestImporter):
     def test_1(self):
 
         # Add weird assignments for coverage.
-        s = textwrap.dedent(
-        """
+        s = """
             ;;; comment
             ;;; continue
             ;;;
@@ -936,8 +895,7 @@ class TestElisp(BaseTestImporter):
             ; comment re cde
             (defun cde (a b)
                (+ 1 2 3))
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '', # check_outline ignores the first headline.
                     '@others\n'
@@ -960,8 +918,7 @@ class TestElisp(BaseTestImporter):
                     '   (+ 1 2 3))\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml(BaseTestImporter):
@@ -972,7 +929,7 @@ class TestHtml(BaseTestImporter):
         super().setUp()
         c = self.c
         # Simulate @data import-html-tags, with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
+        tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
@@ -982,10 +939,7 @@ class TestHtml(BaseTestImporter):
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
-        #@+<< define s >>
-        #@+node:ekr.20230126081859.1: *4* << define s >>
-        s = textwrap.dedent(
-        '''
+        s = '''
             <!DOCTYPE html>
             <html>
             <head>
@@ -994,288 +948,50 @@ class TestHtml(BaseTestImporter):
             from browser import document as doc
             from browser import html
             import header
-
-            qs_lang,language = header.show()
-
-            doc["content"].html = doc["content_%s" %language].html
-
-            if qs_lang:
-                doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang
-
-            def ch_lang(ev):
-                sel = ev.target
-                new_lang = sel.options[sel.selectedIndex].value
-                doc.location.href = 'index.html?lang=%s' %new_lang
-
-            for elt in doc[html.SELECT]:
-                if elt.id.startswith('change_lang_'):
-                    doc[elt.id].bind('change',ch_lang)
             </script>
-
-            <script type="text/python3">
-            """Code for the clock"""
-
-            import time
-            import math
-            import datetime
-
-            from browser import document as doc
-            import browser.timer
-
-            sin,cos = math.sin,math.cos
-            width,height = 250,250 # canvas dimensions
-            ray = 100 # clock ray
-
-            def needle(angle,r1,r2,color="#000000"):
-                # draw a needle at specified angle in specified color
-                # r1 and r2 are percentages of clock ray
-                x1 = width/2-ray*cos(angle)*r1
-                y1 = height/2-ray*sin(angle)*r1
-                x2 = width/2+ray*cos(angle)*r2
-                y2 = height/2+ray*sin(angle)*r2
-                ctx.beginPath()
-                ctx.strokeStyle = color
-                ctx.moveTo(x1,y1)
-                ctx.lineTo(x2,y2)
-                ctx.stroke()
-
-            def set_clock():
-                # erase clock
-                ctx.beginPath()
-                ctx.fillStyle = "#FFF"
-                ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)
-                ctx.fill()
-
-                # redraw hours
-                show_hours()
-
-                # print day
-                now = datetime.datetime.now()
-                day = now.day
-                ctx.font = "bold 14px Arial"
-                ctx.textAlign = "center"
-                ctx.textBaseline = "middle"
-                ctx.fillStyle="#FFF"
-                ctx.fillText(day,width*0.7,height*0.5)
-
-                # draw needles for hour, minute, seconds
-                ctx.lineWidth = 3
-                hour = now.hour%12 + now.minute/60
-                angle = hour*2*math.pi/12 - math.pi/2
-                needle(angle,0.05,0.5)
-                minute = now.minute
-                angle = minute*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85)
-                ctx.lineWidth = 1
-                second = now.second+now.microsecond/1000000
-                angle = second*2*math.pi/60 - math.pi/2
-                needle(angle,0.05,0.85,"#FF0000") # in red
-
-            def show_hours():
-                ctx.beginPath()
-                ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)
-                ctx.fillStyle = "#000"
-                ctx.fill()
-                for i in range(1,13):
-                    angle = i*math.pi/6-math.pi/2
-                    x3 = width/2+ray*cos(angle)*0.75
-                    y3 = height/2+ray*sin(angle)*0.75
-                    ctx.font = "20px Arial"
-                    ctx.textAlign = "center"
-                    ctx.textBaseline = "middle"
-                    ctx.fillText(i,x3,y3)
-                # cell for day
-                ctx.fillStyle = "#000"
-                ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)
-
-            canvas = doc["clock"]
-            # draw clock border
-            if hasattr(canvas,'getContext'):
-                ctx = canvas.getContext("2d")
-                ctx.beginPath()
-                ctx.lineWidth = 10
-                ctx.arc(width/2,height/2,ray,0,2*math.pi)
-                ctx.stroke()
-
-                for i in range(60):
-                    ctx.lineWidth = 1
-                    if i%5 == 0:
-                        ctx.lineWidth = 3
-                    angle = i*2*math.pi/60 - math.pi/3
-                    x1 = width/2+ray*cos(angle)
-                    y1 = height/2+ray*sin(angle)
-                    x2 = width/2+ray*cos(angle)*0.9
-                    y2 = height/2+ray*sin(angle)*0.9
-                    ctx.beginPath()
-                    ctx.moveTo(x1,y1)
-                    ctx.lineTo(x2,y2)
-                    ctx.stroke()
-                browser.timer.set_interval(set_clock,100)
-                show_hours()
-            else:
-                doc['navig_zone'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"
-            </script>
-
             <title>Brython</title>
             <link rel="stylesheet" href="Brython_files/doc_brython.css">
             </head>
             <body onload="brython({debug:1, cache:'none'})">
+            <!-- comment -->
             </body>
             </html>
-        ''').strip() + '\n'
-        #@-<< define s >>
+        '''
+
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'html',
+            (1, '<html>',
                     '<!DOCTYPE html>\n'
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
             ),
-            (2, 'head',
+            (2, '<head>',
                     '<head>\n'
+                    '@others\n'
+                    '<title>Brython</title>\n'
+                    '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
+                    '</head>\n'
+            ),
+            (3, '<script type="text/python3">',
                     '<script type="text/python3">\n'
                     '"""Code for the header menu"""\n'
                     'from browser import document as doc\n'
                     'from browser import html\n'
                     'import header\n'
-                    '\n'
-                    'qs_lang,language = header.show()\n'
-                    '\n'
-                    'doc["content"].html = doc["content_%s" %language].html\n'
-                    '\n'
-                    'if qs_lang:\n'
-                    '    doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang\n'
-                    '\n'
-                    'def ch_lang(ev):\n'
-                    '    sel = ev.target\n'
-                    '    new_lang = sel.options[sel.selectedIndex].value\n'
-                    "    doc.location.href = 'index.html?lang=%s' %new_lang\n"
-                    '\n'
-                    'for elt in doc[html.SELECT]:\n'
-                    "    if elt.id.startswith('change_lang_'):\n"
-                    "        doc[elt.id].bind('change',ch_lang)\n"
                     '</script>\n'
-                    '\n'
-                    '<script type="text/python3">\n'
-                    '"""Code for the clock"""\n'
-                    '\n'
-                    'import time\n'
-                    'import math\n'
-                    'import datetime\n'
-                    '\n'
-                    'from browser import document as doc\n'
-                    'import browser.timer\n'
-                    '\n'
-                    'sin,cos = math.sin,math.cos\n'
-                    'width,height = 250,250 # canvas dimensions\n'
-                    'ray = 100 # clock ray\n'
-                    '\n'
-                    'def needle(angle,r1,r2,color="#000000"):\n'
-                    '    # draw a needle at specified angle in specified color\n'
-                    '    # r1 and r2 are percentages of clock ray\n'
-                    '    x1 = width/2-ray*cos(angle)*r1\n'
-                    '    y1 = height/2-ray*sin(angle)*r1\n'
-                    '    x2 = width/2+ray*cos(angle)*r2\n'
-                    '    y2 = height/2+ray*sin(angle)*r2\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.strokeStyle = color\n'
-                    '    ctx.moveTo(x1,y1)\n'
-                    '    ctx.lineTo(x2,y2)\n'
-                    '    ctx.stroke()\n'
-                    '\n'
-                    'def set_clock():\n'
-                    '    # erase clock\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.fillStyle = "#FFF"\n'
-                    '    ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)\n'
-                    '    ctx.fill()\n'
-                    '\n'
-                    '    # redraw hours\n'
-                    '    show_hours()\n'
-                    '\n'
-                    '    # print day\n'
-                    '    now = datetime.datetime.now()\n'
-                    '    day = now.day\n'
-                    '    ctx.font = "bold 14px Arial"\n'
-                    '    ctx.textAlign = "center"\n'
-                    '    ctx.textBaseline = "middle"\n'
-                    '    ctx.fillStyle="#FFF"\n'
-                    '    ctx.fillText(day,width*0.7,height*0.5)\n'
-                    '\n'
-                    '    # draw needles for hour, minute, seconds\n'
-                    '    ctx.lineWidth = 3\n'
-                    '    hour = now.hour%12 + now.minute/60\n'
-                    '    angle = hour*2*math.pi/12 - math.pi/2\n'
-                    '    needle(angle,0.05,0.5)\n'
-                    '    minute = now.minute\n'
-                    '    angle = minute*2*math.pi/60 - math.pi/2\n'
-                    '    needle(angle,0.05,0.85)\n'
-                    '    ctx.lineWidth = 1\n'
-                    '    second = now.second+now.microsecond/1000000\n'
-                    '    angle = second*2*math.pi/60 - math.pi/2\n'
-                    '    needle(angle,0.05,0.85,"#FF0000") # in red\n'
-                    '\n'
-                    'def show_hours():\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)\n'
-                    '    ctx.fillStyle = "#000"\n'
-                    '    ctx.fill()\n'
-                    '    for i in range(1,13):\n'
-                    '        angle = i*math.pi/6-math.pi/2\n'
-                    '        x3 = width/2+ray*cos(angle)*0.75\n'
-                    '        y3 = height/2+ray*sin(angle)*0.75\n'
-                    '        ctx.font = "20px Arial"\n'
-                    '        ctx.textAlign = "center"\n'
-                    '        ctx.textBaseline = "middle"\n'
-                    '        ctx.fillText(i,x3,y3)\n'
-                    '    # cell for day\n'
-                    '    ctx.fillStyle = "#000"\n'
-                    '    ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)\n'
-                    '\n'
-                    'canvas = doc["clock"]\n'
-                    '# draw clock border\n'
-                    "if hasattr(canvas,'getContext'):\n"
-                    '    ctx = canvas.getContext("2d")\n'
-                    '    ctx.beginPath()\n'
-                    '    ctx.lineWidth = 10\n'
-                    '    ctx.arc(width/2,height/2,ray,0,2*math.pi)\n'
-                    '    ctx.stroke()\n'
-                    '\n'
-                    '    for i in range(60):\n'
-                    '        ctx.lineWidth = 1\n'
-                    '        if i%5 == 0:\n'
-                    '            ctx.lineWidth = 3\n'
-                    '        angle = i*2*math.pi/60 - math.pi/3\n'
-                    '        x1 = width/2+ray*cos(angle)\n'
-                    '        y1 = height/2+ray*sin(angle)\n'
-                    '        x2 = width/2+ray*cos(angle)*0.9\n'
-                    '        y2 = height/2+ray*sin(angle)*0.9\n'
-                    '        ctx.beginPath()\n'
-                    '        ctx.moveTo(x1,y1)\n'
-                    '        ctx.lineTo(x2,y2)\n'
-                    '        ctx.stroke()\n'
-                    '    browser.timer.set_interval(set_clock,100)\n'
-                    '    show_hours()\n'
-                    'else:\n'
-                    '    doc[\'navig_zone\'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"\n'
-                    '</script>\n'
-                    '\n'
-                    '<title>Brython</title>\n'
-                    '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
-                    '</head>\n'
             ),
-            (2, 'body',
+            (2, """<body onload="brython({debug:1, cache:'none'})">""",
                     '<body onload="brython({debug:1, cache:\'none\'})">\n'
+                    '<!-- comment -->\n'
                     '</body>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
 
@@ -1295,8 +1011,7 @@ class TestHtml(BaseTestImporter):
 
             </body>
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1304,26 +1019,27 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<body>',
                     '<body>\n'
-                    '\n'
-                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                    '<!-- OOPS: this table got generated twice. -->\n'
-                    '\n'
-                    '<p id="P1">\n'
                     '@others\n'
                     '</p> <!-- orphan -->\n'
                     '\n'
                     '</body>\n'
-                    '\n'
             ),
-            (2, '<div id="D666">',
+            (2, '<div id="D666">Paragraph</p> <!-- P1 -->',
+                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                    '<!-- OOPS: this table got generated twice. -->\n'
+                    '\n'
+                    '<p id="P1">\n'
                     '<div id="D666">Paragraph</p> <!-- P1 -->\n'
+                    '@others\n'
+                    '</div>\n'
+            ),
+            (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
                     '<p id="P2">\n'
                     '\n'
                     '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-                    '</div>\n'
-            ),
-        ))
-
+            ),    
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
 
@@ -1341,20 +1057,9 @@ class TestHtml(BaseTestImporter):
 
             <!-- oops: missing tags. -->
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language html\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                    '<html>\n'
-                    '\n'
-                    '@others\n'
-            ),
-            (2, '<head>',
-                    '<head>\n'
                     '    <!-- oops: link elements terminated two different ways -->\n'
                     '    <link id="L1">\n'
                     '    <link id="L2">\n'
@@ -1364,69 +1069,30 @@ class TestHtml(BaseTestImporter):
                     '    <title>TITLE</title>\n'
                     '\n'
                     '<!-- oops: missing tags. -->\n'
+                    '@language html\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<head>',
+                    '<html>\n'
                     '\n'
+                    '<head>\n'
             ),
-        ))
-
-    #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
-    def test_improperly_terminated_tags2(self):
-
-        s = '''
-            <html>
-            <head>
-                <!-- oops: link elements terminated two different ways -->
-                <link id="L1">
-                <link id="L2">
-                <link id="L3" />
-                <link id='L4' />
-
-                <title>TITLE</title>
-
-            </head>
-            </html>
-        '''
-        p = self.run_test(s)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '@others\n'
-                '@language html\n'
-                '@tabwidth -4\n'
-            ),
-            (1, '<html>',
-                '<html>\n'
-                '@others\n'
-                '</html>\n'
-                '\n'
-            ),
-            (2, '<head>',
-                '<head>\n'
-                '    <!-- oops: link elements terminated two different ways -->\n'
-                '    <link id="L1">\n'
-                '    <link id="L2">\n'
-                '    <link id="L3" />\n'
-                "    <link id='L4' />\n"
-                '\n'
-                '    <title>TITLE</title>\n'
-                '\n'
-                '</head>\n'
-            ),
-        ))
-
-    #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
-    def test_lowercase_tags(self):
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
+    def test_mixed_case_tags(self):
 
         s = """
             <html>
-            <head>
+            <HEAD>
                 <title>Bodystring</title>
             </head>
             <body class="bodystring">
             <div id='bodydisplay'></div>
             </body>
-            </html>
+            </HTML>
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1435,11 +1101,10 @@ class TestHtml(BaseTestImporter):
             (1, '<html>',
                     '<html>\n'
                     '@others\n'
-                    '</html>\n'
-                    '\n'
+                    '</HTML>\n'
             ),
-            (2, '<head>',
-                    '<head>\n'
+            (2, '<HEAD>',  # We don't want to lowercase *all* headlines.
+                    '<HEAD>\n'
                     '    <title>Bodystring</title>\n'
                     '</head>\n'
             ),
@@ -1448,7 +1113,8 @@ class TestHtml(BaseTestImporter):
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
@@ -1512,9 +1178,6 @@ class TestHtml(BaseTestImporter):
         """
         #@-<< define s >>
 
-        # Don't run the standard round-trip test.
-        p = self.run_test(s, check_flag=False)
-
         # xml.preprocess_lines inserts several newlines.
         # Modify the expected result accordingly.
         expected_s = (s
@@ -1524,11 +1187,7 @@ class TestHtml(BaseTestImporter):
             .replace('<td class="blutopgrabot"><a', '<td class="blutopgrabot">\n<a')
             .replace('<noscript><img', '<noscript>\n<img')
         )
-
-        # This dump now looks good!
-        # self.dump_tree(p)
-
-        self.check_round_trip(p, expected_s)
+        self.new_round_trip_test(s, expected_s)
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
@@ -1537,41 +1196,23 @@ class TestHtml(BaseTestImporter):
             <html><head>headline</head><body>body</body></html>
         """
 
-        # xml.preprocess_lines inserts several newlines.
-        # Modify the expected result accordingly.
-        expected_s = textwrap.dedent("""\
-            <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
-            <html>
-            <head>headline</head>
-            <body>body</body>
-            </html>
-        """)
-
-        # Don't run the standard round-trip test.
-        p = self.run_test(s, check_flag=False)
-
-        # xml.preprocess_lines should insert various newlines.
-        self.check_round_trip(p, expected_s)
-
-        # This dump now looks good!
-        # self.dump_tree(p)
-
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
+        # xml.preprocess_lines inserts a newline between </head> and <body>.
+        
+        expected_results = (
+            (0, '',
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
+                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '<html>\n'
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
                     '</html>\n'
-                    '\n'
             ),
-        ))
-
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
 
@@ -1581,8 +1222,7 @@ class TestHtml(BaseTestImporter):
             <body>body</body>
             </html>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1593,9 +1233,9 @@ class TestHtml(BaseTestImporter):
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
                     '</html>\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
     def test_slideshow_slide(self):
 
@@ -1733,9 +1373,6 @@ class TestHtml(BaseTestImporter):
         '''
         #@-<< define s >>
 
-        # Don't run the standard round-trip test.
-        p = self.run_test(s, check_flag=False)
-
         # xml.preprocess_lines inserts several newlines.
         # Modify the expected result accordingly.
         expected_s = (s
@@ -1753,10 +1390,7 @@ class TestHtml(BaseTestImporter):
             .replace('<p><strong>', '<p>\n<strong>')
             .replace('</a></p>', '</a>\n</p>')
         )
-        self.check_round_trip(p, expected_s)
-
-        # This dump now looks good!
-        # self.dump_tree()
+        self.new_round_trip_test(s, expected_s)
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
@@ -1774,8 +1408,7 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language html\n'
@@ -1785,7 +1418,6 @@ class TestHtml(BaseTestImporter):
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
-                    '\n'
             ),
             (2, '<head>',
                     '<head>\n'
@@ -1803,67 +1435,51 @@ class TestHtml(BaseTestImporter):
                      '</div>\n'
             ),
             (4, '<div class="a-1">',
-
                      '<div class="a-1">\n'
                      '    some text\n'
                      '</div>\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
     def test_underindented_comment(self):
 
         s = r'''
-            <td width="550">
             <table cellspacing="0" cellpadding="0" width="600" border="0">
-                <td class="blutopgrabot" height="28"></td>
-
                 <!-- The indentation of this element causes the problem. -->
                 <table>
-
-            <!--
             <div align="center">
-            <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
+            <iframe src="http://www.amex.com/index.jsp"</iframe>
             </div>
-            -->
-
             </table>
             </table>
-
             <p>Paragraph</p>
-            </td>
         '''
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '<td width="550">\n'
                     '@others\n'
                     '<p>Paragraph</p>\n'
-                    '</td>\n'
-                    '\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
                     '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
-                    '    <td class="blutopgrabot" height="28"></td>\n'
-                    '\n'
-                    '    <!-- The indentation of this element causes the problem. -->\n'
-                    '    @others\n'
+                    '@others\n'
                     '</table>\n'
-                    '\n'
             ),
             (2, '<table>',
-                    '<table>\n'
-                    '\n'
-                    '<!--\n'
-                    '<div align="center">\n'
-                    '<iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>\n'
-                    '</div>\n'
-                    '-->\n'
-                    '\n'
+                    '    <!-- The indentation of this element causes the problem. -->\n'
+                    '    <table>\n'
+                    '@others\n'
                     '</table>\n'
             ),
-        ))
+            (3, '<div align="center">',
+                    '<div align="center">\n'
+                    '<iframe src="http://www.amex.com/index.jsp"</iframe>\n'
+                    '</div>\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
 
@@ -1899,8 +1515,7 @@ class TestHtml(BaseTestImporter):
                     '</BODY>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
@@ -1965,7 +1580,7 @@ class TestIni(BaseTestImporter):
                 disallow_incomplete_defs = False
 
         """.replace('AT', '@')
-        self.run_test(s, check_flag=False)
+        self.run_test(s)
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
@@ -1977,8 +1592,7 @@ class TestJava(BaseTestImporter):
     def test_from_AdminPermission_java(self):
 
         ### To do: allow '{' on following line.
-        s = textwrap.dedent(
-        """
+        s = """
             /**
              * Indicates the caller's authority to perform lifecycle operations on
              */
@@ -1991,8 +1605,7 @@ class TestJava(BaseTestImporter):
                     super("AdminPermission");
                 }
             }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '',  # check_outline does not check the first outline.
                     '@others\n'
@@ -2017,8 +1630,7 @@ class TestJava(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
 
@@ -2075,20 +1687,17 @@ class TestJava(BaseTestImporter):
                     '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
 
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             interface Bicycle {
                 void changeCadence(int newValue);
                 void changeGear(int newValue);
             }
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'interface Bicycle {\n'
@@ -2099,20 +1708,16 @@ class TestJava(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             interface Bicycle {
             void changeCadence(int newValue);
             void changeGear(int newValue);
             }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'interface Bicycle {\n'
@@ -2123,8 +1728,7 @@ class TestJava(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript(BaseTestImporter):
@@ -2135,8 +1739,7 @@ class TestJavascript(BaseTestImporter):
     #@+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
     def test_plain_function(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             // Restarting
             function restart() {
                 invokeParamifier(params,"onstart");
@@ -2148,7 +1751,7 @@ class TestJavascript(BaseTestImporter):
                 }
                 window.scrollTo(0,0);
             }
-        """).strip() + '\n'
+        """
         
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -2157,16 +1760,24 @@ class TestJavascript(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'function restart',
-                s
+                    '// Restarting\n'
+                    'function restart() {\n'
+                    '    invokeParamifier(params,"onstart");\n'
+                    '    if(story.isEmpty()) {\n'
+                    '        var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));\n'
+                    '        for(var t=0; t<tiddlers.length; t++) {\n'
+                    '            story.displayTiddler("bottom",tiddlers[t].title);\n'
+                    '        }\n'
+                    '    }\n'
+                    '    window.scrollTo(0,0);\n'
+                    '}\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test var_equal_function
     def var_equal_function(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             var c3 = (function () {
                 "use strict";
 
@@ -2179,7 +1790,7 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """).strip() + '\n'
+        """
 
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -2191,34 +1802,28 @@ class TestJavascript(BaseTestImporter):
                 s
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=True)
-
-
-
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             /* Test of multi-line comments.
              * line 2.
              */
-        """).strip() + '\n'
-        self.run_test(s)
+        """
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
     def test_regex(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             String.prototype.toJSONString = function() {
                 if(/["\\\\\\x00-\\x1f]/.test(this))
                     return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
 
                 return '"' + this + '"';
             };
-        """).strip() + '\n'
-        self.run_test(s)
+            """
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):
@@ -2249,28 +1854,24 @@ class TestLua (BaseTestImporter):
              print("main", coroutine.resume(co, "x", "y"))
              print("main", coroutine.resume(co, "x", "y"))
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
-                    'end)\n'
                     '\n'
                     'print("main", coroutine.resume(co, 1, 10))\n'
                     'print("main", coroutine.resume(co, "r"))\n'
                     'print("main", coroutine.resume(co, "x", "y"))\n'
                     'print("main", coroutine.resume(co, "x", "y"))\n'
-                    '\n'
                     '@language lua\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'foo',
+            (1, 'function foo',
                     'function foo (a)\n'
                     '  print("foo", a)\n'
                     '  return coroutine.yield(2*a)\n'
                     'end\n'
-                    '\n'
             ),
-            (1, 'co = coroutine.create',
+            (1, 'function coroutine.create',
                     'co = coroutine.create(function (a,b)\n'
                     '      print("co-body", a, b)\n'
                     '      local r = foo(a+1)\n'
@@ -2278,8 +1879,10 @@ class TestLua (BaseTestImporter):
                     '      local r, s = coroutine.yield(a+b, a-b)\n'
                     '      print("co-body", r, s)\n'
                     '      return b, "end"\n'
+                    'end)\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
@@ -2315,13 +1918,8 @@ class TestMarkdown(BaseTestImporter):
             ## Section 3
             Section 3, line 1
         """
-        p = self.run_test(s)
-        # A hack, to simulate an unexpected line in the root node.
-        # Alas, this does not affect coverage testing.
-        p.b = 'line in root node\n' + p.b
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outlines ignores the first headline.
-                    'line in root node\n'
                     '@language md\n'
                     '@tabwidth -4\n'
             ),
@@ -2349,9 +1947,9 @@ class TestMarkdown(BaseTestImporter):
             ),
             (2, 'Section 3',
                     'Section 3, line 1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
 
@@ -2389,8 +1987,7 @@ class TestMarkdown(BaseTestImporter):
 
             section 3, line 1
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import is impossible.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2429,9 +2026,9 @@ class TestMarkdown(BaseTestImporter):
             (2, 'Section 3',
                 '\n'
                 'section 3, line 1\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
 
@@ -2452,8 +2049,7 @@ class TestMarkdown(BaseTestImporter):
 
             # Last header: no text
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2476,9 +2072,10 @@ class TestMarkdown(BaseTestImporter):
                 '\n'
             ),
             (1, 'Last header: no text',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
 
@@ -2501,8 +2098,7 @@ class TestMarkdown(BaseTestImporter):
 
             #Last header: no text
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import is impossible.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2528,9 +2124,10 @@ class TestMarkdown(BaseTestImporter):
                 '\n'
             ),
             (1, 'Last header: no text',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
 
@@ -2547,8 +2144,7 @@ class TestMarkdown(BaseTestImporter):
             ```
             # Last header
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
@@ -2566,9 +2162,10 @@ class TestMarkdown(BaseTestImporter):
                 '```\n'
             ),
             (1, 'Last header',
-                '\n'
+                ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
         c = self.c
@@ -2621,8 +2218,7 @@ class TestOrg(BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2644,9 +2240,9 @@ class TestOrg(BaseTestImporter):
             ),
             (2, 'Section 3.1',
                     'Sec 3.1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
 
@@ -2654,17 +2250,16 @@ class TestOrg(BaseTestImporter):
             *  Test
             First line.
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
             (1, ' Test',
                     'First line.\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
 
@@ -2676,8 +2271,7 @@ class TestOrg(BaseTestImporter):
             ** 整理个人生活
             *** 每周惯例
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
@@ -2691,9 +2285,10 @@ class TestOrg(BaseTestImporter):
                     ''
             ),
             (3, '每周惯例',
-                    '\n'
+                    ''
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
 
@@ -2704,8 +2299,7 @@ class TestOrg(BaseTestImporter):
             * Section 2
             Sec 2.
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 'Intro line.\n'
                 '@language org\n'
@@ -2716,22 +2310,9 @@ class TestOrg(BaseTestImporter):
             ),
             (1, 'Section 2',
                 'Sec 2.\n'
-                '\n'
             ),
-        ))
-    #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
-    def test_pattern(self):
-
-        c = self.c
-        x = org.Org_Importer(c)
-        pattern = x.org_pattern
-        table = (
-            '* line 1',
-            '** level 2',
         )
-        for line in table:
-            m = pattern.match(line)
-            assert m, repr(line)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
 
@@ -2751,8 +2332,7 @@ class TestOrg(BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
-        expected = (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2779,10 +2359,9 @@ class TestOrg(BaseTestImporter):
             ),
             (2, 'Section 3.1',
                 'Sec 3.1\n'
-                '\n'
             ),
         )
-        self.check_outline(p, expected)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
 
@@ -2796,18 +2375,16 @@ class TestOrg(BaseTestImporter):
         from leo.plugins.nodetags import TagController
         c.theTagController = TagController(c)
         # Run the test.
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
             (1, 'Section 1 :tag1:', ''),
             (1, 'Section 2 :tag2:', ''),
-            (1, 'Section 3 :tag3:tag4:',
-                    '\n'
-            ),
-        ))
+            (1, 'Section 3 :tag3:tag4:', ''),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl(BaseTestImporter):
@@ -2834,13 +2411,9 @@ class TestOtl(BaseTestImporter):
             \tSection 3.1
             : Sec 3.1
         """
-        p = self.run_test(s)
-        # A hack, to simulate an unexpected line in the root node.
-        # Alas, this does not affect coverage testing.
-        p.b = 'line in root node\n' + p.b
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                'line in root node\n'
+                # 'line in root node\n'
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
@@ -2851,7 +2424,8 @@ class TestOtl(BaseTestImporter):
             (3, 'Section 2-1-1', 'Sec 2-1-1\n'),
             (1, 'Section 3', 'Sec 3\n'),
             (2, 'Section 3.1', 'Sec 3.1\n'),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
     def test_otl_placeholder(self):
 
@@ -2863,8 +2437,7 @@ class TestOtl(BaseTestImporter):
             \t\tSection 3
             : Sec 3.
         """
-        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language otl\n'
                 '@tabwidth -4\n'
@@ -2873,7 +2446,8 @@ class TestOtl(BaseTestImporter):
             (1, 'Section 2', 'Sec 2.\n'),
             (2, 'placeholder level 2', ''),
             (3, 'Section 3', 'Sec 3.\n'),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 
@@ -2987,8 +2561,7 @@ class TestPascal(BaseTestImporter):
                     'end. // interface\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
 
@@ -3147,10 +2720,7 @@ class TestPascal(BaseTestImporter):
                     'end;\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
-
-
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):
@@ -3184,25 +2754,33 @@ class TestPerl(BaseTestImporter):
             # Function call
             Hello();
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '#!/usr/bin/perl\n'
-                    '\n'
                     '@others\n'
+                    '            "ﬁ" =~ /fi/i;\n'
+                    '\n'
+                    '            $bar = "foo";\n'
+                    '            if ($bar =~ /foo/){\n'
+                    '               print "Second time is matching\n'
+                    '";\n'
+                    '            }else{\n'
+                    '               print "Second time is not matching\n'
+                    '";\n'
+                    '            }\n'
+                    '\n'
                     '            # Function call\n'
                     '            Hello();\n'
-                    '\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
             (1, 'sub Hello',
+                    '#!/usr/bin/perl\n'
+                    '\n'
                     '            # Function definition\n'
                     '            sub Hello{\n'
                     '               print "Hello, World!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
             ),
             (1, 'sub Test',
                     '            sub Test{\n'
@@ -3210,23 +2788,8 @@ class TestPerl(BaseTestImporter):
                     '";\n'
                     '            }\n'
             ),
-            (1,  '"ﬁ" =~ /fi/i',
-                '            "ﬁ" =~ /fi/i;\n'
-                '\n'
-                '            $bar = "foo";\n'
-
-            ),
-            (1, 'if ($bar =~ /foo/)',
-                '            if ($bar =~ /foo/){\n'
-                '               print "Second time is matching\n'
-                '";\n'
-                '            }else{\n'
-                '               print "Second time is not matching\n'
-                '";\n'
-                '            }\n'
-                '\n'
-            ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
 
@@ -3242,8 +2805,7 @@ class TestPerl(BaseTestImporter):
 
             world\n";
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '#!/usr/bin/perl\n'
                     '\n'
@@ -3256,11 +2818,11 @@ class TestPerl(BaseTestImporter):
                     '\n'
                     '            world\n'
                     '";\n'
-                    '\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
 
@@ -3282,43 +2844,37 @@ class TestPerl(BaseTestImporter):
                print "Hello, World!\n";
             }
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
-                    '#!/usr/bin/perl\n'
-                    '\n'
                     '@others\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
             ),
             (1, 'sub Test',
+                    '#!/usr/bin/perl\n'
+                    '\n'
                     '            sub Test{\n'
                     '               print "Test!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
-            ),
-            (1, '=begin comment',
-                    '            =begin comment\n'
             ),
             (1, 'sub World',
+                    '            =begin comment\n'
                     '            sub World {\n'
                     '                print "This is not a funtion!"\n'
                     '            }\n'
             ),
-            (1, '=cut',
+            (1, 'sub Hello',
                     '            =cut\n'
                     '\n'
-            ),
-            (1, 'sub Hello',
                     '            # Function definition\n'
                     '            sub Hello{\n'
                     '               print "Hello, World!\n'
                     '";\n'
                     '            }\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex
     def test_regex(self):
 
@@ -3341,8 +2897,7 @@ class TestPerl(BaseTestImporter):
                 s = tr///}/;
             }
         """
-        p = self.run_test(s)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
                     '@language perl\n'
@@ -3354,27 +2909,24 @@ class TestPerl(BaseTestImporter):
                     'sub test1 {\n'
                     '    s = /}/g;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test2',
                     'sub test2 {\n'
                     '    s = m//}/;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test3',
                     'sub test3 {\n'
                     '    s = s///}/;\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'sub test4',
                     'sub test4 {\n'
                     '    s = tr///}/;\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
 class TestPhp(BaseTestImporter):
@@ -3418,7 +2970,7 @@ class TestPhp(BaseTestImporter):
 
             ?>
         """
-        self.run_test(s)
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
     def test_import_classes__functions(self):
 
@@ -3460,7 +3012,8 @@ class TestPhp(BaseTestImporter):
             }
             ?>
         """
-        self.run_test(s)
+        self.new_round_trip_test(s)
+        
     #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
 
@@ -3474,7 +3027,7 @@ class TestPhp(BaseTestImporter):
             }
             ?>
         """
-        self.run_test(s)
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython(BaseTestImporter):
@@ -3522,7 +3075,7 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
 
-        s = self.dedent(
+        s = (
         """
             import sys
             def f1():
@@ -3567,7 +3120,7 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
-        """).replace('AT', '@').strip() + '\n'
+        """).replace('AT', '@')
 
         expected_results = (
             (0, '', # check_outline ignores the first headline'
@@ -3641,20 +3194,16 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             class A:
                 a=1
                 b=2
                 c=3
-        """).strip() + '\n'
-       
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                    '@others\n'
@@ -3668,13 +3217,10 @@ class TestPython(BaseTestImporter):
                    '    c=3\n'
             )
         )
-        p = self.run_test(s, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
-
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
-        s = textwrap.dedent(
-        """
+        s = """
             import sys
             def f1():
                 pass
@@ -3692,8 +3238,8 @@ class TestPython(BaseTestImporter):
             
             if __name__ == '__main__':
                 main()
-        """).strip() + '\n'
-        
+        """
+
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -3726,12 +3272,10 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        s = textwrap.dedent(
-            """
+        s = """
             class TestCopyFile(unittest.TestCase):
                 _delete = False
                 a00 = 1
@@ -3739,7 +3283,7 @@ class TestPython(BaseTestImporter):
                     _entered = False
                     _exited_with = None # type: tuple
                     _raised = False
-            """).strip() + '\n'
+            """
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
@@ -3760,12 +3304,10 @@ class TestPython(BaseTestImporter):
                         '    _raised = False\n'
             ),
         )
-        p = self.run_test(s, check_flag=False, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
-        s = textwrap.dedent(
-        """
+        s = """
             a = 1
             if 1:
              print('1')
@@ -3791,8 +3333,7 @@ class TestPython(BaseTestImporter):
                 print('11')
             if 12:
                 print('12')
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # check_outline ignores the first headline.
                'a = 1\n'
@@ -3824,8 +3365,7 @@ class TestPython(BaseTestImporter):
                '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=True)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
@@ -3884,10 +3424,7 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3934,9 +3471,9 @@ class TestRst(BaseTestImporter):
             (3, 'section 3.1.1',
                 '\n'
                 'section 3.1.1, line 1\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
     def test_simple(self):
 
@@ -3957,9 +3494,7 @@ class TestRst(BaseTestImporter):
 
             The top chapter.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -3973,9 +3508,9 @@ class TestRst(BaseTestImporter):
             (1, "Chapter",
                 '\n'
                 'The top chapter.\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
     def test_no_double_underlines(self):
 
@@ -4025,9 +3560,7 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -4074,9 +3607,9 @@ class TestRst(BaseTestImporter):
             (3, 'section 3.1.1',
                     '\n'
                     'section 3.1.1, line 1\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
     def test_long_underlines(self):
 
@@ -4094,9 +3627,7 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -4108,9 +3639,9 @@ class TestRst(BaseTestImporter):
             (1, 'top',
                     '\n'
                     'The top section\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
     def test_test_long_overlines(self):
 
@@ -4129,9 +3660,7 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -4143,9 +3672,9 @@ class TestRst(BaseTestImporter):
             (1, "top",
                 '\n'
                 'The top section\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
     def test_trailing_whitespace(self):
 
@@ -4166,9 +3695,7 @@ class TestRst(BaseTestImporter):
 
             The top section.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
@@ -4182,9 +3709,9 @@ class TestRst(BaseTestImporter):
             (1, "top",
                 '\n'
                 'The top section.\n'
-                '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
     def test_leo_rst(self):
 
@@ -4212,9 +3739,7 @@ class TestRst(BaseTestImporter):
 
             Sec 2.
         """
-        # Perfect import must fail: The writer won't use the same underlines.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
+        expected_results = (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
@@ -4232,9 +3757,9 @@ class TestRst(BaseTestImporter):
             (2, 'section 2',
                     '\n'
                     'Sec 2.\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220814094900.1: ** class TestRust (BaseTestImporter)
 class TestRust(BaseTestImporter):
@@ -4260,9 +3785,7 @@ class TestRust(BaseTestImporter):
                 width * height
             }
         """
-        p = self.run_test(s, strict_flag=True)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_outline(p, (
+        expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
                     '@language rust\n'
@@ -4278,15 +3801,14 @@ class TestRust(BaseTestImporter):
                     '        area(width1, height1)\n'
                     '    );\n'
                     '}\n'
-                    '\n'
             ),
             (1, 'fn area',
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
-                    '\n'
             ),
-        ))
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
 class TestTcl (BaseTestImporter):
@@ -4297,8 +3819,7 @@ class TestTcl (BaseTestImporter):
     #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
 
-        s = textwrap.dedent(
-        r"""
+        s = r"""
             proc dumpFile { fileName { channel stdout } } {
 
                  # Open the file, and set up to process it in binary mode.
@@ -4320,8 +3841,7 @@ class TestTcl (BaseTestImporter):
                      dumpFile $file
                  }
              }
-        """).strip() + '\n'
-        
+        """
         expected_results = (
             (0, '', # check_outline ignores the first headline'
                     '@others\n'
@@ -4352,8 +3872,7 @@ class TestTcl (BaseTestImporter):
                     ' }\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
 class TestTreepad (BaseTestImporter):
@@ -4361,39 +3880,80 @@ class TestTreepad (BaseTestImporter):
     ext = '.hjt'
 
     #@+others
-    #@+node:ekr.20220810141234.1: *3* test_treepad_1
+    #@+node:ekr.20220810141234.1: *3* TestTreepad.test_treepad_1
     def test_treepad_1(self):
 
         # 5P9i0s8y19Z is a magic number.
-        # The treepad writer always writes '<Treepad version 3.0>', but any version should work.
-        s = self.dedent("""
+        # The treepad writer always writes '<Treepad version 3.0>',
+        # but any version should work.
+        s = """
             <Treepad version 2.7>
             dt=Text
             <node> 5P9i0s8y19Z
             headline 1
             0
-            <end node>
+            node 1, line 1
+            node 1, line 2
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 1.1
+            1
+            node 1.1, line 1
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 1.2
+            1
+            node 1.2, line 1
+            node 1.2, line 2
+            <end node> 5P9i0s8y19Z
             dt=Text
             <node> 5P9i0s8y19Z
             headline 2
-            1
+            0
             node 2, line 1
-            <end node>
-        """)
-        # For now, we don't guarantee round-tripping.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
-            (0, '',  # check_outline ignores the first headline.
-                '<Treepad version 3.0>\n'
+            node 2, line 2
+            <end node> 5P9i0s8y19Z
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 2.1.1
+            3
+            node 2.1.1, line 1
+            node 2.1.1, line 2
+            <end node> 5P9i0s8y19Z
+        """
+       
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '<Treepad version 2.7>\n'
+                '@others\n'
                 '@language plain\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'headline 1', ''),
-            (2, 'headline 2',
-                    'node 2, line 1\n'
-                    '\n'
+            (1, 'headline 1',
+                'node 1, line 1\n'
+                'node 1, line 2\n'
             ),
-        ))
+            (2, 'headline 1.1',
+                'node 1.1, line 1\n'
+            ),
+            (2, 'headline 1.2',
+                'node 1.2, line 1\n'
+                'node 1.2, line 2\n'
+            ),
+            (1, 'headline 2',
+                'node 2, line 1\n'
+                'node 2, line 2\n'
+            ),
+            (2, 'placeholder level 2', ''),
+            (3, 'placeholder level 3', ''),
+            (4, 'headline 2.1.1',
+                'node 2.1.1, line 1\n'
+                'node 2.1.1, line 2\n'
+            ),  
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
 class TestTypescript(BaseTestImporter):
@@ -4426,7 +3986,7 @@ class TestTypescript(BaseTestImporter):
             document.body.appendChild(button)
 
         '''
-        self.run_test(s)
+        self.new_round_trip_test(s)
     #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
         s = '''
@@ -4451,7 +4011,7 @@ class TestTypescript(BaseTestImporter):
 
             document.body.appendChild(button)
         '''
-        self.run_test(s)
+        self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
 class TestXML(BaseTestImporter):
@@ -4462,7 +4022,7 @@ class TestXML(BaseTestImporter):
         super().setUp()
         c = self.c
         # Simulate @data import-xml-tags, with *only* standard tags.
-        tags_list = ['html', 'body', 'head', 'div', 'table']
+        tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
@@ -4471,19 +4031,18 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
 
-        s = textwrap.dedent(
+        s = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE note SYSTEM "Note.dtd">
+        <html>
+        <head>
+            <title>Bodystring</title>
+        </head>
+        <body class='bodystring'>
+        <div id='bodydisplay'></div>
+        </body>
+        </html>
         """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE note SYSTEM "Note.dtd">
-            <html>
-            <head>
-                <title>Bodystring</title>
-            </head>
-            <body class='bodystring'>
-            <div id='bodydisplay'></div>
-            </body>
-            </html>
-        """).strip() + '\n'
         
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
@@ -4510,13 +4069,11 @@ class TestXML(BaseTestImporter):
                     '</body>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 
-        s = textwrap.dedent(
-        """
+        s = """
             <html>
             <head>
                 <title>Bodystring</title>
@@ -4527,8 +4084,7 @@ class TestXML(BaseTestImporter):
             </div>
             </body>
             </html>
-        """).strip() + '\n'
-
+        """
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
                     '@others\n'
@@ -4556,16 +4112,14 @@ class TestXML(BaseTestImporter):
                     '</div>\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
-        s = textwrap.dedent(
-        """
+        s = """
             <:À.Ç>
             <Ì>
             <_.ÌÑ>
-        """).strip() + '\n'
+        """
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
                  '<:À.Ç>\n'
@@ -4575,8 +4129,7 @@ class TestXML(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
         )
-        p = self.run_test(s, check_flag=True, strict_flag=False)
-        self.check_outline(p, expected_results, trace_results=False)
+        self.new_run_test(s, expected_results)
     #@-others
 #@-others
 #@@language python

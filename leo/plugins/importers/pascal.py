@@ -4,11 +4,12 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer(Importer)
 class Pascal_Importer(Importer):

@@ -4,7 +4,7 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -21,9 +21,6 @@ class Java_Importer(Importer):
         ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*{')),
         ('interface', re.compile(r'\w*\binterface\w*{')),
     )
-
-    #@+others
-    #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
