@@ -2924,7 +2924,7 @@ def findAllValidLanguageDirectives(s: str) -> List:
     return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
 def findTabWidthDirectives(c: Cmdr, p: Position) -> Optional[str]:
-    """Return the language in effect at position p."""
+    """Return the tab width in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
     w = None
