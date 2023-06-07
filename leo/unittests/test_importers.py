@@ -505,6 +505,41 @@ class TestC(BaseTestImporter):
                 kind, name, start, start_body, end = z
                 result_lines.extend(lines[start : end])
             self.assertEqual(lines, result_lines)
+    #@+node:ekr.20230607164309.1: *3* TestC.test_struct
+    def test_struct(self):
+        # From codon soources.
+        s = """
+        struct SrcInfoAttribute : public Attribute {
+          static const std::string AttributeName;
+
+          std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {
+            return std::make_unique<SrcInfoAttribute>(*this);
+          }
+
+        private:
+          std::ostream &doFormat(std::ostream &os) const override { return os << info; }
+        };
+        """
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language c\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'struct SrcInfoAttribute',
+                 'struct SrcInfoAttribute : public Attribute {\n'
+                 '  static const std::string AttributeName;\n'
+                 '\n'
+                 '  std::unique_ptr<Attribute> clone(util::CloneVisitor &cv) const override {\n'
+                 '    return std::make_unique<SrcInfoAttribute>(*this);\n'
+                 '  }\n'
+                 '\n'
+                 'private:\n'
+                 '  std::ostream &doFormat(std::ostream &os) const override { return os << info; }\n'
+                 '};\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
