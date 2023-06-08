@@ -4244,15 +4244,17 @@ class Commands:
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(
         self,
-        dir_: str,
-        kind: str,
+        *,  # All arguments are kwargs.
         add_context: Union[bool, None] = None,  # Override setting only if True/False
         add_file_context: Union[bool, None] = None,  # Override setting only if True/False
         add_path: bool = True,
+        dir_: str = None,
+        expand_vars_name: str = None,
+        ignore_pattern: re.Pattern = None,
+        kind: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
         theTypes: List[str] = None,  # force_at_others=False, # tag:no-longer-used
-        ignore_pattern: re.Pattern = None,
         verbose: bool = True,  # legacy value.
     ) -> None:
         #@+<< docstring >>
@@ -4282,10 +4284,12 @@ class Commands:
             # Import all files in dir_ after c.p.
             try:
                 from leo.core import leoImport
-                cc = leoImport.RecursiveImportController(c, kind,
+                cc = leoImport.RecursiveImportController(c,
+                    kind,
                     add_context=add_context,
                     add_file_context=add_file_context,
                     add_path=add_path,
+                    expand_vars_name=expand_vars_name,
                     ignore_pattern=ignore_pattern,
                     recursive=recursive,
                     safe_at_file=safe_at_file,

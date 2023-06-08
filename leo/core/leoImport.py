@@ -1578,9 +1578,11 @@ class RecursiveImportController:
         self,
         c: Cmdr,
         kind: str,
+        *,  # All other args are kwargs.
         add_context: bool = None,  # Override setting only if True/False
         add_file_context: bool = None,  # Override setting only if True/False
         add_path: bool = True,
+        expand_vars_name: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
         theTypes: List[str] = None,
@@ -1590,6 +1592,7 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
+        self.expand_vars_name = expand_vars_name
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
@@ -1621,11 +1624,11 @@ class RecursiveImportController:
             t1 = time.time()
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
-            # Leo 5.6: Always create a new last top-level node.
+            # Always create a new last top-level node.
             last = c.lastTopLevel()
             parent = last.insertAfter()
             parent.v.h = 'imported files'
-            # Leo 5.6: Special case for a single file.
+            # Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
                 if self.verbose:
@@ -1661,8 +1664,7 @@ class RecursiveImportController:
         dirs, files2 = [], []
         for path in files:
             try:
-                # Fix #408. Catch path exceptions.
-                # The idea here is to keep going on small errors.
+                # Catch path exceptions: keep going on small errors.
                 path = g.os_path_join(dir_, path)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(path)
@@ -1694,7 +1696,7 @@ class RecursiveImportController:
         assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
-            p.v.h = '@edit ' + path.replace('\\', '/')  # 2021/02/19: bug fix: add @edit.
+            p.v.h = '@edit ' + path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return
