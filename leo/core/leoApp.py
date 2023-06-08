@@ -14,7 +14,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -56,7 +56,7 @@ class IdleTimeManager:
 
     def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
-        self.callback_list: List[Callable] = []
+        self.callback_list: list[Callable] = []
         self.timer = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
@@ -114,7 +114,7 @@ class LeoApp:
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False  # True: run in batch mode.
-        self.debug: List[str] = []  # A list of switches to be enabled.
+        self.debug: list[str] = []  # A list of switches to be enabled.
         self.diff = False  # True: run Leo in diff mode.
         self.enablePlugins = True  # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False  # True: Use the failfast option in unit tests.
@@ -128,8 +128,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: Optional[bool] = None  # The name of a binding to trace, or None.
-        self.trace_setting: Optional[bool] = None  # The name of a setting to trace, or None.
+        self.trace_binding: bool = None  # The name of a binding to trace, or None.
+        self.trace_setting: bool = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
@@ -137,15 +137,15 @@ class LeoApp:
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.debug_dict: Dict[str, Any] = {}  # For general use.
+        self.debug_dict: dict[str, Any] = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
-        self.idle_timers: List[Any] = []  # A list of IdleTime instances, so they persist.
+        self.idle_timers: list[Any] = []  # A list of IdleTime instances, so they persist.
         self.log_listener: Any = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.structure_errors = 0  # Set by p.safeMoveToThreadNext.
-        self.statsDict: Dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsDict: dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
         self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False  # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -168,17 +168,17 @@ class LeoApp:
         #@-<< LeoApp: global directories >>
         #@+<< LeoApp: global data >>
         #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
-        self.atAutoNames: Set[str] = set()  # The set of all @auto spellings.
-        self.atFileNames: Set[str] = set()  # The set of all built-in @<file> spellings.
-        self.globalKillBuffer: List[str] = []  # The global kill buffer.
-        self.globalRegisters: Dict[str, str] = {}  # The global register list.
+        self.atAutoNames: set[str] = set()  # The set of all @auto spellings.
+        self.atFileNames: set[str] = set()  # The set of all built-in @<file> spellings.
+        self.globalKillBuffer: list[str] = []  # The global kill buffer.
+        self.globalRegisters: dict[str, str] = {}  # The global register list.
         self.leoID: str = None  # The id part of gnx's.
-        self.lossage: List[Any] = []  # List of last 100 keystrokes.
-        self.paste_c: Optional[Cmdr] = None  # The commander that pasted the last outline.
-        self.spellDict: Dict = None  # The singleton PyEnchant spell dict.
+        self.lossage: list[Any] = []  # List of last 100 keystrokes.
+        self.paste_c: Cmdr = None  # The commander that pasted the last outline.
+        self.spellDict: dict = None  # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
-        self.windowList: List[Any] = []  # Global list of all frames.
-        self.realMenuNameDict: Dict[str, str] = {}  # Translations of menu names.
+        self.windowList: list[Any] = []  # Global list of all frames.
+        self.realMenuNameDict: dict[str, str] = {}  # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
@@ -204,13 +204,13 @@ class LeoApp:
         #@+<< LeoApp: global reader/writer data >>
         #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
         # From leoAtFile.py.
-        self.atAutoWritersDict: Dict[str, Callable] = {}
-        self.writersDispatchDict: Dict[str, Callable] = {}
+        self.atAutoWritersDict: dict[str, Callable] = {}
+        self.writersDispatchDict: dict[str, Callable] = {}
 
         # From leoImport.py
         # Keys are @auto names, values are scanner functions..
-        self.atAutoDict: Dict[str, Callable] = {}
-        self.classDispatchDict: Dict[str, Callable] = {}
+        self.atAutoDict: dict[str, Callable] = {}
+        self.classDispatchDict: dict[str, Callable] = {}
 
         # True if an @auto writer should write sentinels,
         # even if the external file doesn't actually contain sentinels.
@@ -222,7 +222,7 @@ class LeoApp:
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
-        self.already_open_files: List[str] = []  # A list of file names that *might* be open in another copy of Leo.
+        self.already_open_files: list[str] = []  # A list of file names that *might* be open in another copy of Leo.
         self.dragging = False  # True: dragging.
         self.inBridge = False  # True: running from leoBridge module.
         self.inScript = False  # True: executing a script.
@@ -236,15 +236,15 @@ class LeoApp:
         self.quit_after_load = False  # True: quit immediately after loading.  For unit a unit test.
         self.restarting = False  # True: restarting all of Leo. #1240.
         self.reverting = False  # True: executing the revert command.
-        self.syntax_error_files: List[str] = []
+        self.syntax_error_files: list[str] = []
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
         #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
         self.log: Widget = None  # The LeoFrame containing the present log.
         self.logInited = False  # False: all log message go to logWaiting list.
         self.logIsLocked = False  # True: no changes to log are allowed.
-        self.logWaiting: List[Tuple] = []  # List of tuples (s, color, newline) waiting to go to a log.
-        self.printWaiting: List[str] = []  # Queue of messages to be sent to the printer.
+        self.logWaiting: list[tuple] = []  # List of tuples (s, color, newline) waiting to go to a log.
+        self.printWaiting: list[str] = []  # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon1 = ''
         self.signon2 = ''
@@ -264,9 +264,9 @@ class LeoApp:
         #@-<< LeoApp: plugins and event handlers >>
         #@+<< LeoApp: scripting ivars >>
         #@+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
-        self.scriptDict: Dict[str, Any] = {}  # For use by scripts. Cleared before running each script.
+        self.scriptDict: dict[str, Any] = {}  # For use by scripts. Cleared before running each script.
         self.scriptResult: Any = None  # For use by leoPymacs.
-        self.permanentScriptDict: Dict[str, Any] = {}  # For use by scripts. Never cleared automatically.
+        self.permanentScriptDict: dict[str, Any] = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
         # Define all global data.
         self.init_at_auto_names()
@@ -278,7 +278,7 @@ class LeoApp:
         self.define_delegate_language_dict()
     #@+node:ekr.20141102043816.5: *5* app.define_delegate_language_dict
     def define_delegate_language_dict(self) -> None:
-        self.delegate_language_dict: Dict[str, str] = {
+        self.delegate_language_dict: dict[str, str] = {
             # Keys are new language names.
             # Values are existing languages in leo/modes.
             "codon": "python",
@@ -294,7 +294,7 @@ class LeoApp:
     def define_extension_dict(self) -> None:
 
         # Keys are extensions, values are languages
-        self.extension_dict: Dict[str, str] = {
+        self.extension_dict: dict[str, str] = {
             # "ada":    "ada",
             "ada":      "ada95", # modes/ada95.py exists.
             "ahk":      "autohotkey",
@@ -482,7 +482,7 @@ class LeoApp:
 
     def define_language_delims_dict(self) -> None:
 
-        self.language_delims_dict: Dict[str, str] = {
+        self.language_delims_dict: dict[str, str] = {
             # Internally, lower case is used for all language names.
             # Keys are languages, values are 1,2 or 3-tuples of delims.
             "actionscript"       : "// /* */", # jason 2003-07-03
@@ -678,7 +678,7 @@ class LeoApp:
         # Used only by g.app.externalFilesController.get_ext.
 
         # Keys are languages, values are extensions.
-        self.language_extension_dict: Dict[str, str] = {
+        self.language_extension_dict: dict[str, str] = {
             "actionscript"  : "as", # jason 2003-07-03
             "ada"           : "ada",
             "ada95"         : "ada",
@@ -1356,7 +1356,7 @@ class LeoApp:
         # #2433 - use the same method as clicking on the close box.
         g.app.gui.close_event(QCloseEvent())  # type:ignore
     #@+node:ville.20090602181814.6219: *3* app.commanders
-    def commanders(self) -> List[Cmdr]:
+    def commanders(self) -> list[Cmdr]:
         """Return list of currently active commanders."""
         return [f.c for f in g.app.windowList]
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
@@ -1544,9 +1544,9 @@ class LoadManager:
 
         # LoadManager ivars corresponding to user options...
 
-        self.files: List[str] = []  # List of files to be loaded.
-        self.options: Dict[str, Any] = {}  # Keys are option names; values are user options.
-        self.old_argv: List[str] = []  # A copy of sys.argv for debugging.
+        self.files: list[str] = []  # List of files to be loaded.
+        self.options: dict[str, Any] = {}  # Keys are option names; values are user options.
+        self.old_argv: list[str] = []  # A copy of sys.argv for debugging.
 
         # True when more files remain on the command line to be loaded.
         # If the user is answering "No" to each file as Leo asks
@@ -1740,7 +1740,7 @@ class LoadManager:
             name = ''
         return name
     #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
-    def computeThemeDirectories(self) -> List[str]:
+    def computeThemeDirectories(self) -> list[str]:
         """
         Return a list of *existing* directories that might contain theme .leo files.
         """
@@ -1884,7 +1884,7 @@ class LoadManager:
         settings_d: g.SettingsDict,
         bindings_d: g.SettingsDict,
         localFlag: bool,
-    ) -> Tuple[g.SettingsDict, g.SettingsDict]:
+    ) -> tuple[g.SettingsDict, g.SettingsDict]:
         """
         Merge the settings dicts from c's outline into *new copies of*
         settings_d and bindings_d.
@@ -1908,13 +1908,13 @@ class LoadManager:
             bindings_d = lm.mergeShortcutsDicts(c, bindings_d, shortcuts_d2, localFlag)
         return settings_d, bindings_d
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
-    def createDefaultSettingsDicts(self) -> Tuple[g.SettingsDict, g.SettingsDict]:
+    def createDefaultSettingsDicts(self) -> tuple[g.SettingsDict, g.SettingsDict]:
         """Create lm.globalSettingsDict & lm.globalBindingsDict."""
         settings_d = g.SettingsDict('lm.globalSettingsDict')
         bindings_d = g.SettingsDict('lm.globalBindingsDict')
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c: Cmdr, localFlag: bool) -> Optional[Tuple[g.SettingsDict, g.SettingsDict]]:
+    def createSettingsDicts(self, c: Cmdr, localFlag: bool) -> Optional[tuple[g.SettingsDict, g.SettingsDict]]:
 
         from leo.core import leoConfig
         if c:
@@ -2017,7 +2017,7 @@ class LoadManager:
         result = lm.uninvert(inverted_old_d)
         return result
     #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
-    def checkForDuplicateShortcuts(self, c: Cmdr, d: Dict[str, str]) -> None:
+    def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:
         """
         Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of BindingInfo nodes.
@@ -2045,9 +2045,7 @@ class LoadManager:
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
     #@+node:ekr.20120214132927.10724: *5* LM.invert
-    def invert(
-        self,
-        d: Dict) -> g.SettingsDict:
+    def invert(self, d: dict) -> g.SettingsDict:
         """
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
@@ -2163,7 +2161,7 @@ class LoadManager:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
     #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
-    def traceSettingsDict(self, d: Dict[str, str], verbose: bool = False) -> None:
+    def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -> None:
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
@@ -2174,7 +2172,7 @@ class LoadManager:
         else:
             print(f"{d.name()} {len(d.keys())}")
     #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
-    def traceShortcutsDict(self, d: Dict[str, str], verbose: bool = False) -> None:
+    def traceShortcutsDict(self, d: dict[str, str], verbose: bool = False) -> None:
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
@@ -2608,7 +2606,7 @@ class LoadManager:
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName: str, pymacs: bool) -> Dict[str, Any]:
+    def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
         obsolete_options = (
@@ -2718,7 +2716,7 @@ class LoadManager:
         add('-v', '--version', dest='version', action='store_true',
             help='print version number and exit')
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
-    def computeFilesList(self, fileName: str) -> List[str]:
+    def computeFilesList(self, fileName: str) -> list[str]:
         """Return the list of files on the command line."""
         lm = self
         files = []
@@ -2835,7 +2833,7 @@ class LoadManager:
         # --trace-setting=setting
         g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self, args: Any) -> Optional[Tuple[int, int]]:
+    def doWindowSpotOption(self, args: Any) -> Optional[tuple[int, int]]:
 
         # --window-spot
         spot = args.window_spot
@@ -2849,7 +2847,7 @@ class LoadManager:
 
         return spot
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args: Any) -> Optional[Tuple[int, int]]:
+    def doWindowSizeOption(self, args: Any) -> Optional[tuple[int, int]]:
 
         # --window-size
         windowSize = args.window_size
@@ -3301,15 +3299,15 @@ class RecentFilesManager:
     def __init__(self) -> None:
 
         self.edit_headline = 'Recent files. Do not change this headline!'
-        self.groupedMenus: List[Any] = []  # Set in rf.createRecentFilesMenuItems.
-        self.recentFiles: List[Any] = []  # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.groupedMenus: list[Any] = []  # Set in rf.createRecentFilesMenuItems.
+        self.recentFiles: list[Any] = []  # List of g.Bunches describing .leoRecentFiles.txt files.
         self.recentFilesMenuName = 'Recent Files'  # May be changed later.
         self.recentFileMessageWritten = False  # To suppress all but the first message.
         self.write_recent_files_as_needed = False  # Will be set later.
 
     #@+others
     #@+node:ekr.20041201080436: *3* rf.appendToRecentFiles
-    def appendToRecentFiles(self, files: List[str]) -> None:
+    def appendToRecentFiles(self, files: list[str]) -> None:
         rf = self
         files = [theFile.strip() for theFile in files]
 
@@ -3336,7 +3334,7 @@ class RecentFilesManager:
                 self.updateRecentFiles(path)
             self.writeRecentFilesFile(c)
     #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
-    def demangleRecentFiles(self, c: Cmdr, data: List[str]) -> None:
+    def demangleRecentFiles(self, c: Cmdr, data: list[str]) -> None:
         """Rewrite recent files based on c.config.getData('path-demangle')"""
         changes = []
         replace = None
@@ -3391,7 +3389,7 @@ class RecentFilesManager:
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries:  # if so, make dict of groups
-            dirCount: Dict[str, Any] = {}
+            dirCount: dict[str, Any] = {}
             for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:
@@ -3444,13 +3442,13 @@ class RecentFilesManager:
         c.bodyWantsFocusNow()
         g.es('edit list and run write-rff to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
-    def getRecentFiles(self) -> List[str]:
+    def getRecentFiles(self) -> list[str]:
         # Fix #299: Leo loads a deleted file.
         self.recentFiles = [z for z in self.recentFiles
             if g.os_path_exists(z)]
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
-    def getRecentFilesTable(self) -> Tuple:
+    def getRecentFilesTable(self) -> tuple:
         return (
             "*clear-recent-files",
             "*clean-recent-files",
@@ -3522,7 +3520,7 @@ class RecentFilesManager:
             name = name.replace(ch, '')
         return name or None
     #@+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
-    def setRecentFiles(self, files: List[str]) -> None:
+    def setRecentFiles(self, files: list[str]) -> None:
         """Update the recent files list."""
         rf = self
         rf.appendToRecentFiles(files)
