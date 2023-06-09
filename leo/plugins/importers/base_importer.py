@@ -4,7 +4,7 @@
 from __future__ import annotations
 import io
 import re
-from typing import Dict, List, Tuple, TYPE_CHECKING
+from typing import Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -51,7 +51,7 @@ class Importer:
     block_patterns: Tuple = tuple()
     level_up_ch = '{'
     level_down_ch = '}'
-    string_list: List[str] = ['"', "'"]
+    string_list: list[str] = ['"', "'"]
 
     #@+others
     #@+node:ekr.20230529075138.5: *3* i.__init__ & reloadSettings
@@ -79,7 +79,7 @@ class Importer:
         self.warn_about_underindented_lines = True
     #@+node:ekr.20230529075640.1: *3* i: Generic methods: may be overridden
     #@+node:ekr.20230529075138.36: *4* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
+    def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
         """
         Importer.check_blanks_and_tabs.
 
@@ -125,7 +125,7 @@ class Importer:
         return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
 
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
-    def find_blocks(self, i1: int, i2: int) -> List[Block]:
+    def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
         Importer.find_blocks.
 
@@ -225,7 +225,7 @@ class Importer:
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
-    def gen_lines(self, lines: List[str], parent: Position) -> None:
+    def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
         Importer.gen_lines: Allocate lines to the parent and descendant nodes.
 
@@ -290,7 +290,7 @@ class Importer:
         for p in root.self_and_subtree():
             p.clearDirty()
     #@+node:ekr.20230529075138.12: *4* i.make_guide_lines
-    def make_guide_lines(self, lines: List[str]) -> List[str]:
+    def make_guide_lines(self, lines: list[str]) -> list[str]:
         """
         Importer.make_guide_lines.
 
@@ -303,7 +303,7 @@ class Importer:
         """
         return self.delete_comments_and_strings(lines[:])
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
-    def preprocess_lines(self, lines: List[str]) -> List[str]:
+    def preprocess_lines(self, lines: list[str]) -> list[str]:
         """
         A hook to enable preprocessing lines before calling x.find_blocks.
 
@@ -311,7 +311,7 @@ class Importer:
         """
         return lines
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
+    def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)
         """
         Importer.regularize_whitespace.
 
@@ -350,7 +350,7 @@ class Importer:
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
     #@+node:ekr.20230529075138.8: *4* i.compute_common_lws
-    def compute_common_lws(self, blocks: List[Block]) -> str:
+    def compute_common_lws(self, blocks: list[Block]) -> str:
         """
         Return the length of the common leading indentation of all non-blank
         lines in all blocks.
@@ -361,7 +361,7 @@ class Importer:
         """
         if not blocks:
             return ''
-        lws_list: List[int] = []
+        lws_list: list[int] = []
         for block in blocks:
             kind, name, start, start_body, end = block
             lines = self.lines[start:end]
@@ -373,7 +373,7 @@ class Importer:
         ws_char = ' ' if self.tab_width < 1 else '\t'
         return ws_char * n
     #@+node:ekr.20230529075138.34: *4* i.create_placeholders
-    def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
+    def create_placeholders(self, level: int, lines_dict: Dict, parents: list[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
 
@@ -392,7 +392,7 @@ class Importer:
             parents.append(child)
             lines_dict[child.v] = []
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
-    def delete_comments_and_strings(self, lines: List[str]) -> list[str]:
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
         Delete all comments and strings from the given lines.
 
@@ -460,14 +460,14 @@ class Importer:
         assert lws.isspace(), repr(lws)
         n = len(lws)
         lines = g.splitLines(p.b)
-        result: List[str] = []
+        result: list[str] = []
         for line in lines:
             stripped_line = line.strip()
             assert not stripped_line or line.startswith(lws), repr(line)
             result.append(line[n:] if stripped_line else line)
         p.b = ''.join(result)
     #@+node:ekr.20230529075138.17: *4* i.trace_blocks
-    def trace_blocks(self, blocks: List[Block]) -> None:
+    def trace_blocks(self, blocks: list[Block]) -> None:
         """For debugging: trace the list of blocks."""
         if not blocks:
             g.trace('No blocks')

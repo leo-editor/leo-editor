@@ -63,7 +63,7 @@ import html.parser as HTMLParser
 import io
 import os
 import sys
-from typing import Any, List
+from typing import Any
 import urllib.parse as urlparse
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
@@ -152,7 +152,7 @@ class FTPurl:
 
         try:
             if self.mode == '':  # mode='': ASCII mode
-                slist: List = []
+                slist: list = []
                 self.ftp.retrlines('RETR %s' % self.path, slist.append)  # type:ignore
                 s = '\n'.join(slist)
             else:  # mode='b': binary mode
@@ -168,7 +168,7 @@ class FTPurl:
     #@+node:edream.110203113231.883: *4* readline
     def readline(self):
         """Read one entire line from the remote file."""
-        self.lst: List
+        self.lst: list
         try:
             self.lst
         except AttributeError:
@@ -208,7 +208,7 @@ class FTPurl:
     #@+node:edream.110203113231.889: *4* dir
     def dir(self, path=None):
         """Issue a LIST command passing the specified argument and return output as a string."""
-        s: List = []
+        s: list = []
 
         if path is None:
             path = self.dirname

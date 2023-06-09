@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -330,7 +330,7 @@ class ChapterController:
         # New in Leo 5.6: don't call c.redraw immediately.
         c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
-    def setAllChapterNames(self) -> List[str]:
+    def setAllChapterNames(self) -> list[str]:
         """Called early and often to discover all chapter names."""
         c, cc = self.c, self
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'

@@ -50,7 +50,7 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
-from typing import Any, List
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
@@ -345,7 +345,7 @@ if QtWidgets:
             position = len(self.document().toPlainText())
             textCursor.setPosition(position)
             self.setTextCursor(textCursor)
-            lines: List[str] = []
+            lines: list[str] = []
             block = self.document().lastBlock()
             #
             # Scan backward, looking for lines.
@@ -383,7 +383,7 @@ if QtWidgets:
             # Execute lines in groups, delimited by indentation.
             indent: int = 0
             ok: bool = True
-            exec_lines: List = []
+            exec_lines: list = []
             for line in lines:
                 indent = compute_indent(line) if exec_lines else 0
                 if indent > 0 or not exec_lines:

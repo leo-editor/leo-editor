@@ -32,7 +32,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 
 # Third-party.
@@ -332,7 +332,7 @@ class LeoTreeData(npyscreen.TreeData):
         # self.sort_function_wrapper = True
     #@-<< about LeoTreeData ivars >>
 
-    _children: List["LeoTreeData"]
+    _children: list["LeoTreeData"]
     content = Union[str, Position]
 
     def __len__(self) -> int:
@@ -384,7 +384,7 @@ class LeoTreeData(npyscreen.TreeData):
             parent = parent.get_parent()
         return d
     #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
-    def get_children(self) -> List["LeoTreeData"]:
+    def get_children(self) -> list["LeoTreeData"]:
 
         if native:
             p = self.content
@@ -398,7 +398,7 @@ class LeoTreeData(npyscreen.TreeData):
             return p.parent()
         return self._parent
     #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
-    def get_tree_as_list(self) -> List["LeoTreeData"]:  # only_expanded=True, sort=None, key=None):
+    def get_tree_as_list(self) -> list["LeoTreeData"]:  # only_expanded=True, sort=None, key=None):
         """
         Called only from LeoMLTree.values._getValues.
 
@@ -1286,7 +1286,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log: Wrapper = None  # The present log. Used by g.es
         self.log_inited: bool = False  # True: don't use the wait_list.
         self.minibuffer_label: str = ''  # The label set by k.setLabel.
-        self.wait_list: List[Tuple[str, Any]] = []  # Queued log messages.
+        self.wait_list: list[Tuple[str, Any]] = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
@@ -1384,7 +1384,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # Clear the wait list and disable it.
         self.wait_list = []
         self.log_inited = True
-        widgets: List[Wrapper] = box._my_widgets
+        widgets: list[Wrapper] = box._my_widgets
         assert len(widgets) == 1
         w = widgets[0]
         assert isinstance(w, LeoLog), repr(w)
@@ -1745,11 +1745,11 @@ class LeoCursesGui(leoGui.LeoGui):
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
+        filetypes: list[str],
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         if not g.unitTesting:
             g.trace('not ready yet', title)
         return ''
@@ -1760,14 +1760,14 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str='Properties',
         data: Any=None,
         callback: Callable=None,
-        buttons: List[str]=None,
+        buttons: list[str]=None,
     ) -> None:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
         if g.unitTesting:
             return None
         # Not tested.
@@ -1850,7 +1850,7 @@ class LeoCursesGui(leoGui.LeoGui):
         g.trace('(CursesGui) ===== no leo_wrapper', widget)
         return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
-    set_focus_fail: List[Wrapper] = []  # List of widgets
+    set_focus_fail: list[Wrapper] = []  # List of widgets
 
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Given a Leo wrapper, set focus to the underlying npyscreen widget."""
@@ -2384,7 +2384,7 @@ class CoreLog(leoFrame.LeoLog):
     def isLogWidget(self, w: Wrapper) -> bool:
         return w == self or w in list(self.contentsDict.values())
     #@+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: Wrapper=None) -> List[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: Wrapper=None) -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
@@ -2604,7 +2604,7 @@ class CoreTree(leoFrame.LeoTree):
         p = c.currentPosition()
         self.onHeadChanged(p)
     #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions (called from Leo's core)
-    def getSelectedPositions(self) -> List[Position]:
+    def getSelectedPositions(self) -> list[Position]:
         """This can be called from Leo's core."""
         # Not called from unit tests.
         return [self.c.p]
@@ -2702,7 +2702,7 @@ class LeoBody(npyscreen.MultiLineEditable):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.values: List[Any]
+        self.values: list[Any]
         self.cursor_line: int
         self.start_display_at: int
         self.leo_box: Wrapper = None
@@ -3058,7 +3058,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.leo_c: Cmdr = None  # Set later
         self.leo_wrapper: Wrapper = None  # Set later.
         self.leo_completion_index: int = 0
-        self.leo_completion_list: List[str] = []
+        self.leo_completion_list: list[str] = []
         self.leo_completion_prefix: str = ''
         self.set_handlers()
 
@@ -3227,7 +3227,7 @@ class LeoMLTree(npyscreen.MLTree):
     _contained_widgets: Wrapper = LeoTreeLine
     continuation_line = "- more -"  # value of contination line.
     _cached_tree: "LeoTreeData"
-    _cached_tree_as_list: List["LeoTreeData"]
+    _cached_tree_as_list: list["LeoTreeData"]
     start_display_at: int
     cursor_line: int
 
@@ -3866,7 +3866,7 @@ class LeoMLTree(npyscreen.MLTree):
         # To invalidate the cache, set __cached_tree = None
         #@+others
         #@+node:ekr.20170517142822.1: *5* _getValues
-        def _getValues(self) -> List["LeoTreeData"]:
+        def _getValues(self) -> list["LeoTreeData"]:
             """
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
 

@@ -7,7 +7,7 @@ from __future__ import annotations
 import copy
 import time
 import uuid
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
@@ -34,7 +34,7 @@ class NodeIndices:
         """Ctor for NodeIndices class."""
         self.defaultId = id_
         self.lastIndex = 0
-        self.stack: List[Cmdr] = []  # A stack of open commanders.
+        self.stack: list[Cmdr] = []  # A stack of open commanders.
         self.timeString = ''  # Set by setTimeStamp.
         self.userId = id_
         # Assign the initial timestamp.
@@ -247,7 +247,7 @@ class Position:
         """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: "VNode", childIndex: int = 0, stack: Optional[List] = None) -> None:
+    def __init__(self, v: "VNode", childIndex: int = 0, stack: Optional[list] = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
@@ -321,7 +321,7 @@ class Position:
 
     __repr__ = __str__
     #@+node:ekr.20061006092649: *4* p.archivedPosition
-    def archivedPosition(self, root_p: Optional["Position"] = None) -> List[int]:
+    def archivedPosition(self, root_p: Optional["Position"] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
         p = self
         if root_p is None:
@@ -356,7 +356,7 @@ class Position:
         result.append(f"{id(p.v)}:{p._childIndex}")
         return '.'.join(result)
 
-    def sort_key(self, p: "Position") -> List[int]:
+    def sort_key(self, p: "Position") -> list[int]:
         """Used as a sort function, which explains "redundant" argument."""
         return [int(s.split(':')[1]) for s in p.key().split('.')]
 
@@ -741,7 +741,7 @@ class Position:
         p = self
         return p._childIndex
     #@+node:ekr.20040323160302: *5* p.directParents
-    def directParents(self) -> List["VNode"]:
+    def directParents(self) -> list["VNode"]:
         return self.v.directParents()
     #@+node:ekr.20040306214240.3: *5* p.hasChildren & p.numberOfChildren
     def hasChildren(self) -> bool:
@@ -1016,7 +1016,7 @@ class Position:
                 p._childIndex -= 1
                 return
         # Adjust p's stack.
-        stack: List[Tuple[VNode, int]] = []
+        stack: list[Tuple[VNode, int]] = []
         changed, i = False, 0
         while i < len(p.stack):
             v, childIndex = p.stack[i]
@@ -1451,7 +1451,7 @@ class Position:
         p = self
         return Position(v=p.v.copyTree(copyMarked))
     #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
-    def createNodeHierarchy(self, heads: List, forcecreate: bool = False) -> "Position":
+    def createNodeHierarchy(self, heads: list, forcecreate: bool = False) -> "Position":
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' as children of the current position
 
@@ -1959,8 +1959,8 @@ class VNode:
         self._headString = 'newHeadline'  # Headline.
         self._bodyString = ''  # Body Text.
         self._p_changed = False  # For zodb.
-        self.children: List["VNode"] = []  # Ordered list of all children of this node.
-        self.parents: List["VNode"] = []  # Unordered list of all parents of this node.
+        self.children: list["VNode"] = []  # Ordered list of all children of this node.
+        self.parents: list["VNode"] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
         self.fileIndex: Optional[str] = None
         self.iconVal = 0  # The present value of the node's icon.
@@ -1972,7 +1972,7 @@ class VNode:
         # Required so we can compute top-level siblings.
         # It is named .context rather than .c to emphasize its limited usage.
         self.context: Cmdr = context
-        self.expandedPositions: List[Position] = []  # Positions that should be expanded.
+        self.expandedPositions: list[Position] = []  # Positions that should be expanded.
         self.insertSpot: Optional[int] = None  # Location of previous insert point.
         self.scrollBarSpot: Optional[int] = None  # Previous value of scrollbar position.
         self.selectionLength = 0  # The length of the selected body text.
@@ -2219,7 +2219,7 @@ class VNode:
         v = self
         return len(v.children)
     #@+node:ekr.20040323100443: *4* v.directParents
-    def directParents(self) -> List["VNode"]:
+    def directParents(self) -> list["VNode"]:
         """(New in 4.2) Return a list of all direct parent vnodes of a VNode.
 
         This is NOT the same as the list of ancestors of the VNode."""

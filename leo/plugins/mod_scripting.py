@@ -228,7 +228,7 @@ import pprint
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -248,7 +248,7 @@ def eval_cmd(name: str) -> Callable:
     return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Position, rclicks: List[Any]=None, top_level: bool=False) -> List:
+def build_rclick_tree(command_p: Position, rclicks: list[Any]=None, top_level: bool=False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.
@@ -768,7 +768,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: List[Any]=None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: list[Any]=None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -957,7 +957,7 @@ class ScriptingController:
                 tag='local @rclick')
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
-    def handleRclicks(self, rclicks: List) -> None:
+    def handleRclicks(self, rclicks: list) -> None:
         def handlerc(rc: Any) -> None:
             if rc.children:
                 for i in rc.children:
@@ -1049,9 +1049,9 @@ class ScriptingController:
             self.iconBar.deleteButton(w)
             self.c.bodyWantsFocus()
     #@+node:ekr.20080813064908.4: *4* sc.getArgs
-    def getArgs(self, p: Position) -> List[str]:
+    def getArgs(self, p: Position) -> list[str]:
         """Return the list of @args field of p.h."""
-        args: List[str] = []
+        args: list[str] = []
         if not p:
             return args
         h, tag = p.h, '@args'
@@ -1223,7 +1223,7 @@ class EvalController:
     #@+node:ekr.20180328130835.1: *3* eval.Birth
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EvalController class."""
-        self.answers: List[Tuple[str, str]] = []
+        self.answers: list[Tuple[str, str]] = []
         self.c = c
         self.d: Dict[str, Any] = {}
         self.globals_d: Dict[str, Any] = {'c': c, 'g': g, 'p': c.p}
@@ -1312,7 +1312,7 @@ class EvalController:
         if c != event.get('c'):
             return
         pos = 0
-        lines: List[str] = []
+        lines: list[str] = []
         current_seen = False
         current: bool
         source: str
@@ -1446,7 +1446,7 @@ class EvalController:
         except Exception:
             g.es_exception()
     #@+node:ekr.20180329130623.1: *5* eval.old_exec
-    def old_exec(self, blocks: List[str], txt: str) -> str:
+    def old_exec(self, blocks: list[str], txt: str) -> str:
 
         # pylint: disable=eval-used
         c = self.c
@@ -1503,7 +1503,7 @@ class EvalController:
             key, val = answer
             g.es(f"{key} = {val}")
     #@+node:ekr.20180329154232.1: *5* eval.show_legacy_answer
-    def show_legacy_answer(self, ans: str, blocks: List[str]) -> str:
+    def show_legacy_answer(self, ans: str, blocks: list[str]) -> str:
 
         cvs = self.c.vs
         if ans is None:  # see if last block was a simple "var =" assignment
@@ -1548,7 +1548,7 @@ class EvalController:
         pos = c.frame.body.wrapper.getInsertPoint()
         chrs = 0
         lines = c.p.b.split('\n')
-        block: Dict[str, List] = {'source': [], 'output': []}
+        block: Dict[str, list] = {'source': [], 'output': []}
         reading = 'source'
         seeking_current = True
         # if the last non-blank line isn't the end of a possibly empty

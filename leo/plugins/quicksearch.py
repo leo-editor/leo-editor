@@ -82,7 +82,7 @@ from __future__ import annotations
 import fnmatch
 import itertools
 import re
-from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union
+from typing import Any, Dict, Callable, Iterable, Iterator, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
@@ -102,7 +102,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Match = re.Match
     Match_Iter = Iterator[re.Match[str]]
-    Match_List = List[Tuple[Position, Match_Iter]]
+    Match_List = list[Tuple[Position, Match_Iter]]
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Widget = Any
 #@-<< quicksearch annotations >>
@@ -200,7 +200,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 #@+node:ekr.20111014074810.15659: *3* matchLines
-def matchlines(b: str, miter: Iterator[Match[str]]) -> List:
+def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
 
     res = []
     for m in miter:
@@ -363,7 +363,7 @@ class QuickSearchController:
                                "@auto-otl", "@auto-rst"]
 
         self.frozen = False
-        self._search_patterns: List[str] = []
+        self._search_patterns: list[str] = []
 
         def searcher(inp:str) -> Tuple[Match_List, Match_List]:
             if self.frozen:
@@ -379,7 +379,7 @@ class QuickSearchController:
             out = self.worker.output
             self.throttler.add(out)
 
-        def throttledDump(lst: List[Tuple[Match_List, Match_List]]) -> None:
+        def throttledDump(lst: list[Tuple[Match_List, Match_List]]) -> None:
             """ dumps the last output """
             # we do get called with empty list on occasion
             if not lst:

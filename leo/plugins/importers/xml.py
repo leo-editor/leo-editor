@@ -3,7 +3,7 @@
 """The @auto importer for the xml language."""
 from __future__ import annotations
 import re
-from typing import List, Tuple, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -31,7 +31,7 @@ class Xml_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
-    def add_tags(self, setting: str) -> List[str]:
+    def add_tags(self, setting: str) -> list[str]:
         """
         Add items to self.class/functionTags and from settings.
         """
@@ -64,7 +64,7 @@ class Xml_Importer(Importer):
         Return the index of the start of next block.
         """
         # Get the tag that started the block
-        tag_stack: List[str] = []
+        tag_stack: list[str] = []
         tag1: str = None
         line = self.guide_lines[i1 - 1]
         for pattern in self.start_patterns:
@@ -105,7 +105,7 @@ class Xml_Importer(Importer):
     # Match two adjacent elements. Don't match comments.
     adjacent_tags_pat = re.compile(r'(.*?)(<[^!].*?>)\s*(<[^!].*?>)')
 
-    def preprocess_lines(self, lines: List[str]) -> List[str]:
+    def preprocess_lines(self, lines: list[str]) -> list[str]:
         """
         Xml_Importer.preprocess_lines.
 

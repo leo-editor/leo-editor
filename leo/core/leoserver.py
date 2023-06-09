@@ -22,7 +22,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Iterable, Iterator, Optional, Set, Tuple, Union
 import warnings
 
 # Third-party.
@@ -84,7 +84,7 @@ connectionsPool: Set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List[str] = []  # list of traces names, to be used as flags to output traces
+traces: list[str] = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -411,7 +411,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.2: *3* QSC.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.lw: List = []  # empty list
+        self.lw: list = []  # empty list
         # Keys are id(w),values are either tuples in tuples (w (p,Position)) or tuples (w, f)
         self.its: Dict[int, Any] = {}
         self.fileDirectives = [
@@ -419,7 +419,7 @@ class QuickSearchController:
             "@auto-md", "@auto-org", "@auto-otl", "@auto-rst",
             "@clean", "@file", "@edit",
         ]
-        self._search_patterns: List[str] = []
+        self._search_patterns: list[str] = []
         self.navText = ''
         self.showParents = True
         self.isTag = False  # added concept to combine tag pane functionality
@@ -506,12 +506,12 @@ class QuickSearchController:
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
-                parents: Dict[str, List[Tuple[Position, Match_Iter]]] = {}
+                parents: Dict[str, list[Tuple[Position, Match_Iter]]] = {}
 
                 for nodeList in [hm, bm]:
                     for node in nodeList:
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
-                        aList: List[Tuple[Position, Match_Iter]] = parents.get(key, [])
+                        aList: list[Tuple[Position, Match_Iter]] = parents.get(key, [])
                         aList.append(node)
                         parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
@@ -532,7 +532,7 @@ class QuickSearchController:
         self._search_patterns = ([pat] + self._search_patterns)[:30]
 
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
-    def addBodyMatches(self, positions: List[Tuple[Position, Match_Iter]]) -> int:
+    def addBodyMatches(self, positions: list[Tuple[Position, Match_Iter]]) -> int:
         lineMatchHits = 0
         for p in positions:
             it = {"type": "headline", "label": p[0].h}
@@ -573,7 +573,7 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline: List[Tuple[Position, Match_Iter]] = [
+        timeline: list[Tuple[Position, Match_Iter]] = [
             (p.copy(), None) for p in c.all_unique_positions()
         ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
@@ -581,8 +581,8 @@ class QuickSearchController:
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
     def qsc_background_search(self, pat: str) -> Tuple[
-        List[Tuple[Position, Match_Iter]],
-        List[Position]
+        list[Tuple[Position, Match_Iter]],
+        list[Position]
     ]:
 
         flags: RegexFlag
@@ -609,7 +609,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed: List[Tuple[Position, Match_Iter]] = [
+        changed: list[Tuple[Position, Match_Iter]] = [
             (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
         ]
         self.clear()
@@ -649,7 +649,7 @@ class QuickSearchController:
         return it
 
     #@+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> List[Tuple[Position, Match_Iter]]:
+    def find_tag(self, pat: str) -> list[Tuple[Position, Match_Iter]]:
         """
         Return list of all positions that have matching tags
         """
@@ -689,7 +689,7 @@ class QuickSearchController:
                 resultset -= nodes
             elif op == '^':
                 resultset ^= nodes
-        aList: List[Tuple[Position, Match_Iter]] = []
+        aList: list[Tuple[Position, Match_Iter]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
@@ -698,7 +698,7 @@ class QuickSearchController:
         return aList
     #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: List[Tuple[Position, Match_Iter]] = [
+        headlines: list[Tuple[Position, Match_Iter]] = [
             (po[0].copy(), None) for po in self.c.nodeHistory.beadList
         ]
         headlines.reverse()
@@ -714,7 +714,7 @@ class QuickSearchController:
     #@+node:ekr.20220818083228.1: *3* QSC: helpers
     #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
     def addHeadlineMatches(self,
-        position_list: List[Tuple[Position, Match_Iter]]
+        position_list: list[Tuple[Position, Match_Iter]]
     ) -> None:
         for p in position_list:
             it = {"type": "headline", "label": p[0].h}
@@ -727,7 +727,7 @@ class QuickSearchController:
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
     def addParentMatches(self,
-        parent_list: Dict[str, List[Tuple[Position, Match_Iter]]],
+        parent_list: Dict[str, list[Tuple[Position, Match_Iter]]],
     ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
@@ -761,9 +761,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        positions: List[Position],
+        positions: list[Position],
         flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
-    ) -> List[Tuple[Position, Match_Iter]]:
+    ) -> list[Tuple[Position, Match_Iter]]:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
         """
@@ -772,7 +772,7 @@ class QuickSearchController:
         except Exception:
             return []
 
-        aList: List[Tuple[Position, Match_Iter]] = []
+        aList: list[Tuple[Position, Match_Iter]] = []
         for p in positions:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
@@ -787,9 +787,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        positions: List[Position],
+        positions: list[Position],
         flags: RegexFlag = re.IGNORECASE,
-    ) -> List[Tuple[Position, Match_Iter]]:
+    ) -> list[Tuple[Position, Match_Iter]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
@@ -799,7 +799,7 @@ class QuickSearchController:
             return []
         return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Match_Iter) -> List[Tuple[str, Tuple[int, int]]]:
+    def matchlines(self, b: str, miter: Match_Iter) -> list[Tuple[str, Tuple[int, int]]]:
         aList = []
         for m in miter:
             st, en = g.getLine(b, m.start())
@@ -860,7 +860,7 @@ class LeoServer:
         self.c: Cmdr = None  # Currently Selected Commander.
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
-        self.bad_commands_list: List[str] = []  # Set below.
+        self.bad_commands_list: list[str] = []  # Set below.
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -1069,8 +1069,8 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:felix.20220220203658.1: *5* _get_rclickTree
-    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict[str, Any]]:
-        rclickList: List[Dict[str, Any]] = []
+    def _get_rclickTree(self, rclicks: list[Any]) -> list[Dict[str, Any]]:
+        rclickList: list[Dict[str, Any]] = []
         for rc in rclicks:
             children = []
             if rc.children:
@@ -3231,7 +3231,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
-    def _bad_commands(self, c: Cmdr) -> List[str]:
+    def _bad_commands(self, c: Cmdr) -> list[str]:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
@@ -3997,7 +3997,7 @@ class LeoServer:
         result = list(sorted(bad))
         return result
     #@+node:felix.20210621233316.74: *6* server._good_commands
-    def _good_commands(self) -> List[str]:
+    def _good_commands(self) -> list[str]:
         """Defined commands that should be available in a connected client"""
         good_list = [
 
@@ -4388,7 +4388,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_response({"server-commands": names})
     #@+node:felix.20210914231602.1: *6* _get_all_server_commands
-    def _get_all_server_commands(self) -> List[str]:
+    def _get_all_server_commands(self) -> list[str]:
         """
         Private server method:
         Return the names of all callable public methods of the server.

@@ -5,7 +5,7 @@
 #@+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -111,7 +111,7 @@ class GoToCommands:
         delim1, delim2 = self.get_delims(root)
         file_s = self.get_external_file_with_sentinels(root)
         gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
-        stack: List[Tuple[str, str, int]] = []
+        stack: list[Tuple[str, str, int]] = []
         for s in g.splitLines(file_s):
             n += 1  # All lines contribute to the file's line count.
             if self.is_sentinel(delim1, delim2, s):
@@ -142,7 +142,7 @@ class GoToCommands:
         g.trace('\nNot found', target_offset, target_gnx)
         return None
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
-    def scan_nonsentinel_lines(self, lines: List[str], n: int, root: Position) -> Tuple[str, str, int]:
+    def scan_nonsentinel_lines(self, lines: list[str], n: int, root: Position) -> Tuple[str, str, int]:
         """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.
@@ -193,7 +193,7 @@ class GoToCommands:
             gnx, h, offset = None, None, -1
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
-    def scan_sentinel_lines(self, lines: List[str], n: int, root: Position) -> Tuple[str, str, int]:
+    def scan_sentinel_lines(self, lines: list[str], n: int, root: Position) -> Tuple[str, str, int]:
         """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.

@@ -205,7 +205,7 @@ import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Optional, Tuple, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
@@ -393,7 +393,7 @@ def show_scrolled_message(tag: str, kw: Any) -> bool:
     )
     return True
 #@+node:vitalije.20170713082256.1: *3* vr.split_last_sizes
-def split_last_sizes(sizes: List[int]) -> List[int]:
+def split_last_sizes(sizes: list[int]) -> list[int]:
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
     result.append(sizes[-1])
@@ -655,7 +655,7 @@ class ViewRenderedProvider:
         # return f"vr_id:{self.c.shortFileName()}"
         return '_leo_viewrendered'
     #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self) -> List[Tuple[str, str]]:
+    def ns_provides(self) -> list[Tuple[str, str]]:
         # #1671: Better Window names.
         # #1678: duplicates in Open Window list
         return [('Viewrendered', self.ns_provider_id())]
@@ -679,7 +679,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_pane(parent)
         # Set the ivars.
         self.active = False
-        self.badColors: List[str] = []
+        self.badColors: list[str] = []
         self.delete_callback: Callable = None
         self.gnx: str = None
         self.graphics_class = QtWidgets.QGraphicsWidget
@@ -691,7 +691,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.locked = False
         self.pyplot_active = False
         self.scrollbar_pos_dict: Dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.sizes: List[int] = []  # Saved splitter sizes.
+        self.sizes: list[int] = []  # Saved splitter sizes.
         self.splitter = None
         self.splitter_index: int = None  # The index of the rendering pane in the splitter.
         self.title: str = None

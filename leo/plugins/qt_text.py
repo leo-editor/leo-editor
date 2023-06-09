@@ -6,7 +6,7 @@
 from __future__ import annotations
 import time
 assert time
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
@@ -686,7 +686,7 @@ if QtWidgets:
                 self.setGeometry(geom2)
                 self.leo_geom_set = True
             #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
-            def show_completions(self, aList: List[str]) -> None:
+            def show_completions(self, aList: list[str]) -> None:
                 """Set the QListView contents to aList."""
                 self.clear()
                 self.addItems(aList)
@@ -695,7 +695,7 @@ if QtWidgets:
                 self.setFocus()
             #@-others
         #@+node:ekr.20110605121601.18017: *4* lqtb.lqtb.init_completer
-        def init_completer(self, options: List[str]) -> Widget:
+        def init_completer(self, options: list[str]) -> Widget:
             """Connect a QCompleter."""
             c = self.leo_c
             self.leo_qc = qc = self.LeoQListWidget(c)
@@ -714,7 +714,7 @@ if QtWidgets:
                 self.leo_qc.end_completer()
                 delattr(self, 'leo_qc')
 
-        def show_completions(self, aList: List) -> None:
+        def show_completions(self, aList: list) -> None:
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
         #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
@@ -1075,7 +1075,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
         self.highest_line = 0  # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
-        self.offsets: List[Tuple[int, Any]] = []
+        self.offsets: list[Tuple[int, Any]] = []
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings

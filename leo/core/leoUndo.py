@@ -45,7 +45,7 @@
 #@+<< leoUndo imports & annotations >>
 #@+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
-from typing import Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -96,7 +96,7 @@ class Undoer:
         self.beforeTree = None
         self.children = None
         self.deleteMarkedNodesData: g.Bunch = None
-        self.followingSibs: List[VNode] = None
+        self.followingSibs: list[VNode] = None
         self.headlines: Dict[str, Tuple[str, str]]
         self.inHead: bool = None
         self.kind: str = None
@@ -311,7 +311,7 @@ class Undoer:
             u.setRedoType("Can't Redo")
         u.cutStack()
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
-    def restoreTree(self, treeInfo: List[g.Bunch]) -> None:
+    def restoreTree(self, treeInfo: list[g.Bunch]) -> None:
         """Use the tree info to restore all VNode data, including all links."""
         u = self
         # This effectively relinks all vnodes.
@@ -339,7 +339,7 @@ class Undoer:
             v.unknownAttributes = uA
             v._p_changed = True
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
-    def saveTree(self, p: Position, treeInfo: List[g.Bunch] = None) -> List[g.Bunch]:
+    def saveTree(self, p: Position, treeInfo: list[g.Bunch] = None) -> list[g.Bunch]:
         """Return a list of tuples with all info needed to handle a general undo operation."""
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
@@ -666,7 +666,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.8: *5* u.afterDemote
-    def afterDemote(self, p: Position, followingSibs: List[VNode]) -> None:
+    def afterDemote(self, p: Position, followingSibs: list[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -734,7 +734,7 @@ class Undoer:
         bunch.newP = p.copy()
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.12: *5* u.afterPromote
-    def afterPromote(self, p: Position, children: List[VNode]) -> None:
+    def afterPromote(self, p: Position, children: list[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -864,7 +864,7 @@ class Undoer:
     def beforeInsertNode(self,
         p: Position,
         pasteAsClone: bool = False,
-        copiedBunchList: List[g.Bunch] = None,
+        copiedBunchList: list[g.Bunch] = None,
     ) -> None:
         u = self
         if copiedBunchList is None:
@@ -893,8 +893,8 @@ class Undoer:
     def beforeSort(self,
         p: Position,
         undoType: str,
-        oldChildren: List[VNode],
-        newChildren: List[VNode],
+        oldChildren: list[VNode],
+        newChildren: list[VNode],
         sortChildren: bool,
     ) -> None:
         """Create an undo node for sort operations."""
@@ -1203,11 +1203,11 @@ class Undoer:
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(
         self,
-        old_lines: List[str],
+        old_lines: list[str],
         old_row: int,
         old_col: int,
         old_ch: str,
-        new_lines: List[str],
+        new_lines: list[str],
         new_row: int,
         new_col: int,
         new_ch: str,
@@ -1974,10 +1974,10 @@ class Undoer:
         p: Position,
         leading: int,
         trailing: int,  # Number of matching leading & trailing lines.
-        oldMidLines: List[str],
-        newMidLines: List[str],  # Lists of unmatched lines.
-        oldNewlines: List[str],
-        newNewlines: List[str],  # Number of trailing newlines.
+        oldMidLines: list[str],
+        newMidLines: list[str],  # Lists of unmatched lines.
+        oldNewlines: list[str],
+        newNewlines: list[str],  # Number of trailing newlines.
         tag: str = "undo",  # "undo" or "redo"
         undoType: str = None,
     ) -> None:

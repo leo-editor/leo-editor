@@ -11,7 +11,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 #@+<< leoGui imports & annotations >>
 #@+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -54,9 +54,9 @@ class LeoGui:
         self.ScriptingControllerClass = NullScriptingControllerClass
         #
         # Define special keys that may be overridden is subclasses.
-        self.ignoreChars: List[str] = []  # Keys that should always be ignored.
-        self.FKeys: List[str] = []  # The representation of F-keys.
-        self.specialChars: List[str] = []  # A list of characters/keys to be handle specially.
+        self.ignoreChars: list[str] = []  # Keys that should always be ignored.
+        self.FKeys: list[str] = []  # The representation of F-keys.
+        self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
     def create_key_event(
@@ -160,7 +160,7 @@ class LeoGui:
         title: str = 'Properties',
         data: str = None,
         callback: Callable = None,
-        buttons: List[str] = None,
+        buttons: list[str] = None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
         raise NotImplementedError
@@ -168,15 +168,15 @@ class LeoGui:
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
+        filetypes: list[str],
         defaultextension: str,
         multiple: bool = False,
         startpath: str = None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         """Create and run an open file dialog ."""
         raise NotImplementedError
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
@@ -401,14 +401,14 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
+        filetypes: list[str],
         defaultextension: str,
         multiple: bool = False,
         startpath: str = None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         return self.simulateDialog("openFileDialog", None)
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
         return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(

@@ -7,7 +7,7 @@ import getpass
 import os
 import subprocess
 import tempfile
-from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -70,14 +70,14 @@ class ExternalFilesController:
         # Values are cached @bool check-for-changed-external-file settings.
         self.enabled_d: Dict[Cmdr, bool] = {}
         # List of ExternalFile instances created by self.open_with.
-        self.files: List[Any] = []
+        self.files: list[Any] = []
         # Keys are commanders. Values are bools.
         # Used only to limit traces.
         self.has_changed_d: Dict[Cmdr, bool] = {}
         # Copy of g.app.commanders()
-        self.unchecked_commanders: List[Cmdr] = []
+        self.unchecked_commanders: list[Cmdr] = []
         # Copy of self file. Only one files is checked at idle time.
-        self.unchecked_files: List[Any] = []
+        self.unchecked_files: list[Any] = []
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
@@ -410,7 +410,7 @@ class ExternalFilesController:
             'shortcut': menu shortcut (used only by the menu code).
         """
         testing = testing or g.unitTesting
-        arg_tuple: List[str] = d.get('args', [])
+        arg_tuple: list[str] = d.get('args', [])
         arg = ' '.join(arg_tuple)
         kind: Callable = d.get('kind')
         try:

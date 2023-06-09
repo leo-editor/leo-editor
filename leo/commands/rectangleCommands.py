@@ -4,7 +4,7 @@
 #@+<< rectangleCommands imports & annotations >>
 #@+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
 from __future__ import annotations
-from typing import Callable, List, Tuple, TYPE_CHECKING
+from typing import Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -26,7 +26,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """Ctor for RectangleCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.theKillRectangle: List[str] = []  # Do not re-init this!
+        self.theKillRectangle: list[str] = []  # Do not re-init this!
         self.stringRect: Tuple[int, int, int, int] = None
         self.commandsDict = {
             'c': ('clear-rectangle', self.clearRectangle),

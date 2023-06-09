@@ -15,7 +15,7 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 #@+node:ekr.20220901092745.1: ** << signal_manager imports >>
 from __future__ import annotations
 from collections import defaultdict
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict
 #@-<< signal_manager imports >>
 
 #@+others
@@ -24,7 +24,7 @@ class SignalData:
 
     def __init__(self) -> None:
         self.listeners: Dict[Any, Any] = defaultdict(list)
-        self.emitters: List[Callable] = []
+        self.emitters: list[Callable] = []
         self.locked = False
 #@+node:tbrown.20171028115601.4: ** class MsgSignalHandled
 class MsgSignalHandled:

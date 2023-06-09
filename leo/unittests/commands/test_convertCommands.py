@@ -117,7 +117,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             def f1(i: int, s: str) -> str:
                 return s
 
-            def f2(self, c: Cmdr, g: Any, ivars: List[str]) -> Any:
+            def f2(self, c: Cmdr, g: Any, ivars: list[str]) -> Any:
                 pass
     ''')
         self.x.convert_body(p)

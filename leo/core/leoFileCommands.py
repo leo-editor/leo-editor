@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
@@ -599,10 +599,10 @@ class FileCommands:
         self.leo_file_encoding = c.config.new_leo_file_encoding
         # For reading...
         self.checking = False  # True: checking only: do *not* alter the outline.
-        self.descendentExpandedList: List[str] = []  # List of gnx's.
-        self.descendentMarksList: List[str] = []  # List of gnx's.
-        self.descendentTnodeUaDictList: List[Any] = []
-        self.descendentVnodeUaDictList: List[Any] = []
+        self.descendentExpandedList: list[str] = []  # List of gnx's.
+        self.descendentMarksList: list[str] = []  # List of gnx's.
+        self.descendentTnodeUaDictList: list[Any] = []
+        self.descendentVnodeUaDictList: list[Any] = []
         self.ratio = 0.5
         self.currentVnode: VNode = None
         # For writing...
@@ -1222,7 +1222,7 @@ class FileCommands:
             return sub_gnxes(priv_vnodes())
         #@+node:vitalije.20170831144827.7: *6* function: restore_priv
         def restore_priv(prdata: Any, topgnxes: Any) -> None:
-            vnodes: List[VNode] = []
+            vnodes: list[VNode] = []
             for row in prdata:
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 v = leoNodes.VNode(context=c, gnx=gnx)
@@ -1295,7 +1295,7 @@ class FileCommands:
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
     #@+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
-    def getDescendentAttributes(self, s: str, tag: str = "") -> List[str]:
+    def getDescendentAttributes(self, s: str, tag: str = "") -> list[str]:
         """s is a list of gnx's, separated by commas from a <v> or <t> element.
         Parses s into a list.
 
@@ -1966,7 +1966,7 @@ class FileCommands:
         if p == c.p:
             status |= v.selectedBit
 
-        children: List[Dict[str, Any]] = []  # Start empty
+        children: list[Dict[str, Any]] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.
@@ -2123,7 +2123,7 @@ class FileCommands:
             return ''
         return self.pickle(torv=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList: List) -> List[Tuple[Any, Dict]]:
+    def createUaList(self, aList: list) -> list[Tuple[Any, Dict]]:
         """
         Given aList of pairs (p,torv), return a list of pairs (torv,d)
         where d contains all picklable items of torv.unknownAttributes.

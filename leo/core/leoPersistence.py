@@ -6,7 +6,7 @@
 from __future__ import annotations
 import binascii
 import pickle
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -323,7 +323,7 @@ class PersistenceDataController:
         # return self.find_best_match(root, unl_list)
         return self.find_exact_match(root, unl_list)
     #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
-    def find_best_match(self, root: Position, unl_list: List[str]) -> Optional[Position]:
+    def find_best_match(self, root: Position, unl_list: list[str]) -> Optional[Position]:
         """Find the best partial matches of the tail in root's tree."""
         tail = unl_list[-1]
         matches = []
@@ -351,7 +351,7 @@ class PersistenceDataController:
             return p
         return None
     #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
-    def find_exact_match(self, root: Position, unl_list: List[str]) -> Position:
+    def find_exact_match(self, root: Position, unl_list: list[str]) -> Position:
         """
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.

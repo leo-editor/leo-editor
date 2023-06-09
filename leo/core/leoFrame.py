@@ -11,7 +11,7 @@ These classes should be overridden to create frames for a particular gui.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -1241,7 +1241,7 @@ class LeoLog:
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str = None) -> List:
+    def orderedTabNames(self, LeoLog: str = None) -> list:
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self) -> int:
@@ -1260,7 +1260,7 @@ class LeoLog:
     # This table encodes which groups extract the filename and line_number from global regex patterns.
     # This is the *only* method that should need to know this information!
 
-    link_table: List[Tuple[int, int, Any]] = [
+    link_table: list[Tuple[int, int, Any]] = [
         # (filename_i, line_number_i, pattern)
         (1, 2, g.flake8_pat),
         (1, 2, g.mypy_pat),

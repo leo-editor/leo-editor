@@ -98,7 +98,7 @@ whitespace (calling .strip()).
 #@+node:ekr.20220828131647.1: ** << nodetags imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
@@ -147,7 +147,7 @@ class TagController:
     def __init__(self, c: Cmdr) -> None:
 
         self.c = c
-        self.taglist: List[str] = []
+        self.taglist: list[str] = []
         self.initialize_taglist()
         c.theTagController = self
         # #2031: Init the widgets only if we are using Qt.
@@ -166,15 +166,15 @@ class TagController:
 
     #@+node:peckj.20140804103733.9264: *3* tag_c.outline-level
     #@+node:peckj.20140804103733.9268: *4* tag_c.get_all_tags
-    def get_all_tags(self) -> List[str]:
+    def get_all_tags(self) -> list[str]:
         """ return a list of all tags in the outline """
         return self.taglist
     #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
     def show_all_tags(self) -> None:
         """Show all tags, organized by node."""
         c, tc = self.c, self
-        aList: List[str]
-        d: Dict[str, List[str]] = {}
+        aList: list[str]
+        d: Dict[str, list[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))
@@ -203,9 +203,9 @@ class TagController:
         if hasattr(self, 'ui'):
             self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
-    def get_tagged_nodes(self, tag: str) -> List[Position]:
+    def get_tagged_nodes(self, tag: str) -> list[Position]:
         """ return a list of *positions* of nodes containing the tag, with * as a wildcard """
-        nodelist: List[Position] = []
+        nodelist: list[Position] = []
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)
@@ -226,7 +226,7 @@ class TagController:
                     yield p.v.gnx
     #@+node:peckj.20140804103733.9265: *3* tag_c.individual nodes
     #@+node:peckj.20140804103733.9259: *4* tag_c.get_tags
-    def get_tags(self, p: Position) -> List[str]:
+    def get_tags(self, p: Position) -> list[str]:
         """ returns a list of tags applied to position p."""
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))

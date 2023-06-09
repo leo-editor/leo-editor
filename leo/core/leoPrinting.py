@@ -7,7 +7,7 @@ Adapted from printing plugin.
 #@+<< leoPrinting imports & annotations >>
 #@+node:ekr.20220901091411.1: ** << leoPrinting imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, List, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # Qt imports. May fail from the bridge.
@@ -58,7 +58,7 @@ class PrintingController:
         return '\n'.join(table)
     #@+node:ekr.20150420072955.1: *3* pr.Doc constructors
     #@+node:ekr.20150419124739.11: *4* pr.complex document
-    def complex_document(self, nodes: List[VNode], heads: bool = False) -> Any:
+    def complex_document(self, nodes: list[VNode], heads: bool = False) -> Any:
         """Create a complex document."""
         doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)

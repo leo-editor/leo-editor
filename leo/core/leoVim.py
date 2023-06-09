@@ -21,7 +21,7 @@ doing the normal key handling that vim emulation uses.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 
@@ -409,13 +409,13 @@ class VimCommands:
     def init_dot_ivars(self) -> None:
         """Init all dot-related ivars."""
         self.in_dot = False  # True if we are executing the dot command.
-        self.dot_list: List = []  # This list is preserved across commands.
-        self.old_dot_list: List = []  # The dot_list saved at the start of visual mode.
+        self.dot_list: list = []  # This list is preserved across commands.
+        self.old_dot_list: list = []  # The dot_list saved at the start of visual mode.
     #@+node:ekr.20140803220119.18109: *5* vc.init_constant_ivars
     def init_constant_ivars(self) -> None:
         """Init ivars whose values never change."""
         # List of printable characters
-        self.chars: List[str] = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+        self.chars: list[str] = [ch for ch in string.printable if 32 <= ord(ch) < 128]
         # List of register names.
         self.register_names = string.ascii_letters
     #@+node:ekr.20140803220119.18106: *5* vc.init_state_ivars
@@ -423,7 +423,7 @@ class VimCommands:
         """Init all ivars related to command state."""
         self.ch = None  # The incoming character.
         self.command_i: int = None  # The offset into the text at the start of a command.
-        self.command_list: List[Any] = []  # The list of all characters seen in this command.
+        self.command_list: list[Any] = []  # The list of all characters seen in this command.
         self.command_n: int = None  # The repeat count in effect at the start of a command.
         self.command_w: Widget = None  # The widget in effect at the start of a command.
         self.event: Event = None  # The event for the current key.
@@ -438,7 +438,7 @@ class VimCommands:
         self.n1_seen = False  # True if self.n1 has been set.
         self.next_func: Callable = None  # The continuation of a multi-character command.
         self.old_sel: Tuple = None  # The selection range at the start of a command.
-        self.repeat_list: List[str] = []  # The characters of the current repeat count.
+        self.repeat_list: list[str] = []  # The characters of the current repeat count.
         # The value returned by do_key().
         # Handlers set this to False to tell k.masterKeyHandler to handle the key.
         self.return_value = True

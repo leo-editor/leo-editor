@@ -76,7 +76,6 @@ where the extra information is the name of the linked node's parent.
 # - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB. Revised for Qt6 by EKR.
-from typing import List
 from leo.core import leoGlobals as g
 try:  # #2343
     from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
@@ -350,7 +349,7 @@ class backlinkController:
         self.updateTabInt()
     #@+node:ekr.20090616105756.3953: *3* bc.linksFrom
     def linksFrom(self, v, type_='S'):
-        ans: List = []
+        ans: list = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             return ans
 
@@ -496,7 +495,7 @@ class backlinkController:
         """
 
         c = self.c
-        hits: List[List] = [[]]  # hits/including before the current node
+        hits: list[list] = [[]]  # hits/including before the current node
 
         current = c.p.v
 
@@ -626,7 +625,7 @@ class backlinkController:
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             links = v.u['_bklnk']['links']
-            dests: List = []
+            dests: list = []
             self.dests = dests
             for data in links[:]:  # Must use a copy.
                 linkType, other = data

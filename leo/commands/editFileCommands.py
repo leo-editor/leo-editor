@@ -8,7 +8,7 @@ import difflib
 import io
 import os
 import re
-from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Dict, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -38,7 +38,7 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units: List[Position] = []  # List of positions containing @unit.
+    units: list[Position] = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
@@ -940,7 +940,7 @@ class GitDiffController:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
-    def create_file_node(self, diff_list: List[str], fn: str) -> Position:
+    def create_file_node(self, diff_list: list[str], fn: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = 'diff: ' + fn.strip()
@@ -1066,7 +1066,7 @@ class GitDiffController:
             g.es_exception()
             return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
-    def get_files(self, rev1: str, rev2: str) -> List[str]:
+    def get_files(self, rev1: str, rev2: str) -> list[str]:
         """Return a list of changed files."""
         # #2143
         directory = self.get_directory()

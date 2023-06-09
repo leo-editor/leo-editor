@@ -6,7 +6,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -109,10 +109,10 @@ def delete_trace_statements(event: Event = None) -> None:
         p.b = s[:i] + s[k:]
 #@+node:ekr.20180210160930.1: *3* @g.command('mark-first-parents')
 @g.command('mark-first-parents')
-def mark_first_parents(event: Event) -> List[Position]:
+def mark_first_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
     c = event.get('c')
-    changed: List[Position] = []
+    changed: list[Position] = []
     if not c:
         return changed
     for parent in c.p.self_and_parents():
@@ -306,10 +306,10 @@ def show_clones(event: Event = None) -> None:
 
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
-def unmark_first_parents(event: Event = None) -> List[Position]:
+def unmark_first_parents(event: Event = None) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
-    changed: List[Position] = []
+    changed: list[Position] = []
     if not c:
         return changed
     for parent in c.p.self_and_parents():
@@ -333,7 +333,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = 0  # For comment column functions.
-        self.cursorStack: List[Tuple] = []  # Values are tuples, (i, j, ins)
+        self.cursorStack: list[Tuple] = []  # Values are tuples, (i, j, ins)
         self.extendMode = False  # True: all cursor move commands extend the selection.
         self.fillPrefix = ''  # For fill prefix functions.
         # Set by the set-fill-column command.
@@ -1156,7 +1156,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         Add a 1-based outline number (relative to the root) to p.h.
         """
         c = self.c
-        indices: List[int] = []
+        indices: list[int] = []
         for p2 in p.self_and_parents():
             if p2 == root:
                 break
@@ -1213,7 +1213,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # - Tree control recomputes height of each line.
     #@+node:ekr.20150514063305.230: *4* ec. Helpers
     #@+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
-    def appendImageDictToList(self, aList: List, path: str, xoffset: int, **kargs: Any) -> int:
+    def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: Any) -> int:
         c = self.c
         relPath = path  # for finding icon on load in different environment
         path = g.app.gui.getImageFinder(path)
@@ -1244,16 +1244,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Hash a dictionary"""
         return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> List[Dict]:
+    def getIconList(self, v: VNode) -> list[Dict]:
         """Return list of icons for v."""
-        fromVnode: List[Dict] = []
+        fromVnode: list[Dict] = []
         if hasattr(v, 'unknownAttributes'):
             fromVnode = [dict(i) for i in v.u.get('icons', [])]
             for i in fromVnode:
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, aList: List[Any]) -> None:
+    def setIconList(self, p: Position, aList: list[Any]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
@@ -1266,7 +1266,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # set p.u.
         self._setIconListHelper(p, aList)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, aList: List[Any]) -> None:
+    def _setIconListHelper(self, p: Position, aList: list[Any]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""
         v = p.v
         if aList:  # Update the uA.
@@ -1351,7 +1351,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             defaultextension=None, multiple=True)
         if not paths:
             return
-        aList: List[Any] = []
+        aList: list[Any] = []
         xoffset = 2
         for path in paths:
             xoffset = self.appendImageDictToList(aList, path, xoffset)
@@ -1365,7 +1365,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if not p:
             p = c.p
-        aList: List[Any] = []
+        aList: list[Any] = []
         xoffset = 2
         xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
         aList2 = self.getIconList(p.v)

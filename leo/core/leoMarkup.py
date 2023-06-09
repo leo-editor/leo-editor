@@ -9,7 +9,7 @@ from shutil import which
 import os
 import re
 import time
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    File_List = Optional[List[str]]
+    File_List = Optional[list[str]]
 #@-<< leoMarkup imports & annotations >>
 
 asciidoctor_exec = which('asciidoctor')
@@ -236,7 +236,7 @@ class MarkupCommands:
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
-    def command_helper(self, event: Event, kind: str, preview: bool, verbose: bool) -> List[str]:
+    def command_helper(self, event: Event, kind: str, preview: bool, verbose: bool) -> list[str]:
 
         def predicate(p: Position) -> str:
             return self.filename(p)

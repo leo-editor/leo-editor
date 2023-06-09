@@ -67,7 +67,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
@@ -360,7 +360,7 @@ class todoController:
         c.cleo = self
         self.donePriority = 100
         self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
-        self.recentIcons: List[Icon] = []
+        self.recentIcons: list[Icon] = []
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()

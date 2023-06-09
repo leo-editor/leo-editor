@@ -224,7 +224,6 @@ import select
 import shutil
 import socket
 import time
-from typing import List
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
@@ -1226,9 +1225,9 @@ def poll(timeout=0.0):
     map = asyncore.socket_map
     if not map:
         return False
-    e: List
-    r: List = []
-    w: List
+    e: list
+    r: list = []
+    w: list
     while 1:
         e = w = []
         for fd, obj in map.items():

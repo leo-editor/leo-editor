@@ -34,7 +34,7 @@
 # rules.
 #@-<< about internal bindings >>
 import sys
-from typing import Any, List
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -410,7 +410,7 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
         c, e = self.c, QtCore.QEvent
         eventType = event.type()
         # http://doc.qt.io/qt-5/qevent.html
-        show: List[Any] = []
+        show: list[Any] = []
         ignore = [
             e.Type.MetaCall,  # 43
             e.Type.Timer,  # 1

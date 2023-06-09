@@ -13,7 +13,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
@@ -174,15 +174,15 @@ class AutoCompleterClass:
         self.language: str = ''
         # additional namespaces to search for objects, other code
         # can append namespaces to this to extend scope of search
-        self.namespaces: List[Dict] = []
+        self.namespaces: list[Dict] = []
         self.qw = None  # The object that supports qcompletion methods.
         self.tabName: str = None  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
         self.w = None  # The widget that gets focus after autocomplete is done.
         self.warnings: Dict[str, str] = {}  # Keys are language names.
         # Codewise pre-computes...
-        self.codewiseSelfList: List[str] = []  # The (global) completions for "self."
-        self.completionsDict: Dict[str, List[str]] = {}  # Keys are prefixes, values are completion lists.
+        self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
+        self.completionsDict: Dict[str, list[str]] = {}  # Keys are prefixes, values are completion lists.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -363,7 +363,7 @@ class AutoCompleterClass:
             self.tabName = newTabName
             log.clearTab(self.tabName)
     #@+node:ekr.20110509064011.14556: *4* ac.attr_matches
-    def attr_matches(self, s: str, namespace: Any) -> Optional[List[str]]:
+    def attr_matches(self, s: str, namespace: Any) -> Optional[list[str]]:
         """Compute matches when string s is of the form name.name....name.
 
         Evaluates s using eval(s,namespace)
@@ -485,7 +485,7 @@ class AutoCompleterClass:
         self.insert_string("(", select=False)
         self.insert_string(s, select=True)
     #@+node:ekr.20061031131434.28: *4* ac.compute_completion_list & helper
-    def compute_completion_list(self) -> Tuple[str, str, List]:
+    def compute_completion_list(self) -> Tuple[str, str, list]:
         """Return the autocompleter completion list."""
         prefix = self.get_autocompleter_prefix()
         key, options = self.get_cached_options(prefix)
@@ -500,7 +500,7 @@ class AutoCompleterClass:
             self.show_completion_list(common_prefix, prefix, tabList)
         return common_prefix, prefix, tabList
     #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
-    def get_cached_options(self, prefix: str) -> Tuple[str, List[str]]:
+    def get_cached_options(self, prefix: str) -> Tuple[str, list[str]]:
         d = self.completionsDict
         # Search the completions Dict for shorter and shorter prefixes.
         i = len(prefix)
@@ -547,7 +547,7 @@ class AutoCompleterClass:
     #@+node:ekr.20110512212836.14471: *4* ac.get_completions & helpers
     jedi_warning = False
 
-    def get_completions(self, prefix: str) -> List[str]:
+    def get_completions(self, prefix: str) -> list[str]:
         """Return jedi or codewise completions."""
         d = self.completionsDict
         if self.use_jedi:
@@ -585,7 +585,7 @@ class AutoCompleterClass:
         d[prefix] = aList
         return aList
     #@+node:ekr.20110510120621.14539: *5* ac.get_codewise_completions & helpers
-    def get_codewise_completions(self, prefix: str) -> List[str]:
+    def get_codewise_completions(self, prefix: str) -> list[str]:
         """Use codewise to generate a list of hits."""
         c = self.c
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix)
@@ -613,14 +613,14 @@ class AutoCompleterClass:
             hits = [f"{varname}.{z}" for z in hits]
         return hits
     #@+node:ekr.20110510120621.14540: *6* ac.clean
-    def clean(self, hits: List[List[str]]) -> List[str]:
+    def clean(self, hits: list[list[str]]) -> list[str]:
         """Clean up hits, a list of ctags patterns, for use in completion lists."""
         # Just take the function name: ignore the signature & file.
         aList = list(set([z[0] for z in hits]))
         aList.sort()
         return aList
     #@+node:ekr.20110512232915.14481: *6* ac.clean_for_display (not used)
-    def clean_for_display(self, hits: str) -> List[str]:
+    def clean_for_display(self, hits: str) -> list[str]:
         """Clean up hits, a list of ctags patterns, for display purposes."""
         aList = []
         for h in hits:
@@ -636,7 +636,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
-    def guess_class(self, c: Cmdr, varname: str) -> Tuple[str, List[str]]:
+    def guess_class(self, c: Cmdr, varname: str) -> Tuple[str, list[str]]:
         """Return kind, class_list"""
         # if varname == 'g':
             # return 'module',['leoGlobals']
@@ -657,7 +657,7 @@ class AutoCompleterClass:
     #@+node:ekr.20110510120621.14543: *6* ac.lookup_functions/methods/modules
     # Leo 6.6.2: These functions can fail if codewise has not been inited.
 
-    def lookup_functions(self, prefix: str) -> List[str]:
+    def lookup_functions(self, prefix: str) -> list[str]:
         try:
             aList = codewise.cmd_functions([prefix])
             hits = [z.split(None, 1) for z in aList if z.strip()]
@@ -665,7 +665,7 @@ class AutoCompleterClass:
         except Exception:
             return []
 
-    def lookup_methods(self, aList: List[str], prefix: str) -> List[str]:
+    def lookup_methods(self, aList: list[str], prefix: str) -> list[str]:
         # prefix not used, only aList[0] used.
         try:
             aList = codewise.cmd_members([aList[0]])
@@ -674,7 +674,7 @@ class AutoCompleterClass:
         except Exception:
             return []
 
-    def lookup_modules(self, aList: List[str], prefix: str) -> List[str]:
+    def lookup_modules(self, aList: list[str], prefix: str) -> list[str]:
         # prefix not used, only aList[0] used.
         try:
             aList = codewise.cmd_functions([aList[0]])
@@ -683,7 +683,7 @@ class AutoCompleterClass:
         except Exception:
             return []
     #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions & helper
-    def get_jedi_completions(self, prefix: str) -> List[str]:
+    def get_jedi_completions(self, prefix: str) -> list[str]:
 
         c = self.c
         w = c.frame.body.wrapper
@@ -766,7 +766,7 @@ class AutoCompleterClass:
             prefix = '.'.join(aList[:-1]) + '.'
         return s if s.startswith(prefix) else prefix + s
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
-    def get_leo_completions(self, prefix: str) -> List[str]:
+    def get_leo_completions(self, prefix: str) -> list[str]:
         """Return completions in an environment defining c, g and p."""
         aList = []
         for d in self.namespaces + [self.get_leo_namespace(prefix)]:
@@ -971,7 +971,7 @@ class AutoCompleterClass:
         else:
             g.es(*args, **keys)
     #@+node:ekr.20110511133940.14561: *4* ac.show_completion_list & helpers
-    def show_completion_list(self, common_prefix: str, prefix: str, tabList: List[str]) -> None:
+    def show_completion_list(self, common_prefix: str, prefix: str, tabList: list[str]) -> None:
 
         c = self.c
         aList = common_prefix.split('.')
@@ -993,13 +993,13 @@ class AutoCompleterClass:
             s = '\n'.join(tabList)
             self.put('', s, tabName=self.tabName)
     #@+node:ekr.20110513104728.14453: *5* ac.clean_completion_list
-    def clean_completion_list(self, header: str, tabList: List[str]) -> List[str]:
+    def clean_completion_list(self, header: str, tabList: list[str]) -> list[str]:
         """Return aList with header removed from the start of each list item."""
         return [
             z[len(header) + 1 :] if z.startswith(header) else z
                 for z in tabList]
     #@+node:ekr.20110513104728.14454: *5* ac.get_summary_list
-    def get_summary_list(self, header: str, tabList: List[str]) -> List[str]:
+    def get_summary_list(self, header: str, tabList: list[str]) -> list[str]:
         """Show the possible starting letters,
         but only if there are more than one.
         """
@@ -1047,10 +1047,10 @@ class ContextSniffer:
     """
 
     def __init__(self) -> None:
-        self.vars: Dict[str, List[Any]] = {}  # Keys are var names; values are list of classes
+        self.vars: Dict[str, list[Any]] = {}  # Keys are var names; values are list of classes
     #@+others
     #@+node:ekr.20110312162243.14261: *3* get_classes
-    def get_classes(self, s: str, varname: str) -> List[str]:
+    def get_classes(self, s: str, varname: str) -> list[str]:
         """Return a list of classes for string s."""
         self.push_declarations(s)
         aList = self.vars.get(varname, [])
@@ -1088,11 +1088,11 @@ class FileNameChooser:
         assert c and c.k
         self.log: Any = c.frame.log or g.NullObject()  # A Union.
         self.callback: Callable = None
-        self.filterExt: List[str] = None
+        self.filterExt: list[str] = None
         self.prompt: str = None
         self.tabName: str = None
     #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
-    def compute_tab_list(self) -> Tuple[str, List[str]]:
+    def compute_tab_list(self) -> Tuple[str, list[str]]:
         """Compute the list of completions."""
         path = self.get_label()
         # #215: insert-file-name doesn't process ~
@@ -1184,7 +1184,7 @@ class FileNameChooser:
     def get_file_name(self,
         event: Event,
         callback: Callable,
-        filterExt: List[str],
+        filterExt: list[str],
         prompt: str,
         tabName: str,
     ) -> None:
@@ -1257,7 +1257,7 @@ class FileNameChooser:
         self.c.k.setLabel(self.prompt, protect=True)
         self.c.k.extendLabel(s or '', select=False, protect=False)
     #@+node:ekr.20140813052702.18202: *3* fnc.show_tab_list
-    def show_tab_list(self, tabList: List[str]) -> None:
+    def show_tab_list(self, tabList: list[str]) -> None:
         """Show the tab list in the log tab."""
         self.log.clearTab(self.tabName)
         s = g.finalize(os.curdir) + os.sep
@@ -1299,11 +1299,11 @@ class GetArg:
         self.after_get_arg_state: Tuple[str, int, Callable] = None
         self.arg_completion = True
         self.handler: Callable = None
-        self.tabList: List[str] = []
+        self.tabList: list[str] = []
         # Tab cycling ivars...
         self.cycling_prefix: str = None
         self.cycling_index = -1
-        self.cycling_tabList: List[str] = []
+        self.cycling_tabList: list[str] = []
         # The following are k globals.
             # k.arg.
             # k.argSelectedText
@@ -1311,7 +1311,7 @@ class GetArg:
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
-    def compute_tab_list(self, tabList: List[str]) -> Tuple[str, List[str]]:
+    def compute_tab_list(self, tabList: list[str]) -> Tuple[str, list[str]]:
         """Compute and show the available completions."""
         # Support vim-mode commands.
         command = self.get_label()
@@ -1325,7 +1325,7 @@ class GetArg:
     #@+node:ekr.20140816165728.18965: *3* ga.do_back_space (entry)
     # Called from k.fullCommand: with defaultTabList = list(c.commandsDict.keys())
 
-    def do_back_space(self, tabList: List[str], completion: bool = True) -> None:
+    def do_back_space(self, tabList: list[str], completion: bool = True) -> None:
         """Handle a backspace and update the completion list."""
         k = self.k
         self.tabList = tabList[:] if tabList else []
@@ -1357,7 +1357,7 @@ class GetArg:
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
-    def do_tab(self, tabList: List[str], completion: bool = True) -> None:
+    def do_tab(self, tabList: list[str], completion: bool = True) -> None:
         """Handle tab completion when the user hits a tab."""
         c = self.c
         if completion:
@@ -1389,7 +1389,7 @@ class GetArg:
             return True
         return False
     #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
-    def do_tab_cycling(self, common_prefix: str, tabList: List[str]) -> None:
+    def do_tab_cycling(self, common_prefix: str, tabList: list[str]) -> None:
         """Put the next (or first) completion in the minibuffer."""
         s = self.get_label()
         if not common_prefix:
@@ -1447,7 +1447,7 @@ class GetArg:
         returnKind: str = None,
         returnState: int = None,
         handler: Callable = None,
-        tabList: List[str] = None,
+        tabList: list[str] = None,
         completion: bool = True,
         oneCharacter: bool = False,
         stroke: Stroke = None,
@@ -1555,7 +1555,7 @@ class GetArg:
         oneCharacter: bool,
         returnKind: str,
         returnState: int,
-        tabList: List[str],
+        tabList: list[str],
         useMinibuffer: bool,
     ) -> None:
         """Do state 0 processing."""
@@ -1629,7 +1629,7 @@ class GetArg:
         # #1121: only ascii space terminates a command.
         return ' ' not in s
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
-    def show_tab_list(self, tabList: List[str]) -> None:
+    def show_tab_list(self, tabList: list[str]) -> None:
         """Show the tab list in the log tab."""
         k = self.k
         self.log.clearTab(self.tabName)
@@ -1702,7 +1702,7 @@ class KeyHandlerClass:
         self.getArgInstance: GetArg = None  # A singleton defined in k.finishCreate.
         self.inited = False  # Set at end of finishCreate.
         # A list of commands whose bindings have been set to None in the local file.
-        self.killedBindings: List[Any] = []
+        self.killedBindings: list[Any] = []
         self.replace_meta_with_alt = False  # True: (Mac only) swap Meta and Alt keys.
         self.w = None  # Will be None for NullGui.
         # Generalize...
@@ -1726,13 +1726,13 @@ class KeyHandlerClass:
         self.abbrevOn = False  # True: abbreviations are on.
         self.arg = ''  # The value returned by k.getArg.
         self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
-        self.getArgEscapes: List[str] = []
+        self.getArgEscapes: list[str] = []
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode prompt.
         self.state = g.bunch(kind=None, n=None, handler=None)
 
         # Remove ???
-        self.givenArgs: List[str] = []  # Args specified after the command name in k.simulateCommand.
+        self.givenArgs: list[str] = []  # Args specified after the command name in k.simulateCommand.
         self.functionTail = ''  # For commands that take minibuffer arguments.
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self) -> None:
@@ -1742,14 +1742,14 @@ class KeyHandlerClass:
         self.bindingsDict: Dict[str, Any] = {}  # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
         self.bindtagsDict: Dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
-        self.commandHistory: List[str] = []
+        self.commandHistory: list[str] = []
         # Up arrow will select commandHistory[commandIndex]
         self.commandIndex = 0  # List/stack of previously executed commands.
         # Keys are scope names: 'all','text',etc. or mode names.
         # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterBindingsDict: Dict = {}
         # Keys are strokes; value is list of Widgets in which the strokes are bound.
-        self.masterGuiBindingsDict: Dict[Stroke, List[Wrapper]] = {}
+        self.masterGuiBindingsDict: Dict[Stroke, list[Wrapper]] = {}
         # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
@@ -1762,7 +1762,7 @@ class KeyHandlerClass:
         # Used by k.masterKeyHandler...
         self.stroke: Stroke = None
         self.mb_event: Event = None
-        self.mb_history: List[str] = []
+        self.mb_history: list[str] = []
         self.mb_help: bool = False
         self.mb_helpHandler: Callable = None
         # Important: these are defined in k.defineExternallyVisibleIvars...
@@ -2129,11 +2129,11 @@ class KeyHandlerClass:
         c.config.shortcutsDict = lm.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(self,
-        aList: List[str],
+        aList: list[str],
         commandName: str,
         pane: str,
         shortcut: str,
-    ) -> List:
+    ) -> list:
 
         k = self
         result = []
@@ -2284,7 +2284,7 @@ class KeyHandlerClass:
         d = c.commandsDict
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2: Dict[g.KeyStroke, List[g.BindingInfo]] = g.SettingsDict('binding helper dict')
+        d2: Dict[g.KeyStroke, list[g.BindingInfo]] = g.SettingsDict('binding helper dict')
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -2322,7 +2322,7 @@ class KeyHandlerClass:
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
             widgets = [c.miniBufferWidget, wrapper, canvas, bindingWidget]
-        aList: List
+        aList: list
         for w in widgets:
             if not w:
                 continue
@@ -2518,7 +2518,7 @@ class KeyHandlerClass:
         pass
     #@+node:ekr.20061031131434.119: *4* k.showBindings & helper
     @cmd('show-bindings')
-    def showBindings(self, event: Event = None) -> List[str]:
+    def showBindings(self, event: Event = None) -> list[str]:
         """Print all the bindings presently in effect."""
         c, k = self.c, self
         d = k.masterBindingsDict
@@ -2580,7 +2580,7 @@ class KeyHandlerClass:
         k.showStateAndMode()
         return result  # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
-    def printBindingsHelper(self, result: List[str], data: List[Any], prefix: str) -> None:
+    def printBindingsHelper(self, result: list[str], data: list[Any], prefix: str) -> None:
         """Helper for k.showBindings"""
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
@@ -2639,7 +2639,7 @@ class KeyHandlerClass:
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
         data, n = [], 0
-        dataList: List[Tuple[str, str]]
+        dataList: list[Tuple[str, str]]
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
@@ -2662,7 +2662,7 @@ class KeyHandlerClass:
         inverseBindingDict = k.computeInverseBindingDict()
         data = []
         key: str
-        dataList: List[Tuple[str, str]]
+        dataList: list[Tuple[str, str]]
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for pane, key in dataList:
@@ -2768,7 +2768,7 @@ class KeyHandlerClass:
         event: Event,
         handler: Callable,
         prefix: str = None,
-        tabList: List[str] = None,
+        tabList: list[str] = None,
         completion: bool = True,
         oneCharacter: bool = False,
         stroke: Stroke = None,
@@ -2872,7 +2872,7 @@ class KeyHandlerClass:
         returnState: int = None,
         handler: Callable = None,
         prefix: str = None,
-        tabList: List[str] = None,
+        tabList: list[str] = None,
         completion: bool = True,
         oneCharacter: bool = False,
         stroke: Stroke = None,
@@ -2882,11 +2882,11 @@ class KeyHandlerClass:
         self.getArgInstance.get_arg(event, returnKind, returnState, handler,
             tabList, completion, oneCharacter, stroke, useMinibuffer)
 
-    def doBackSpace(self, tabList: List[str], completion: bool = True) -> None:
+    def doBackSpace(self, tabList: list[str], completion: bool = True) -> None:
         """Convenience method mapping k.doBackSpace to ga.do_back_space."""
         self.getArgInstance.do_back_space(tabList, completion)
 
-    def doTabCompletion(self, tabList: List[str]) -> None:
+    def doTabCompletion(self, tabList: list[str]) -> None:
         """Convenience method mapping k.doTabCompletion to ga.do_tab."""
         self.getArgInstance.do_tab(tabList)
 
@@ -3081,7 +3081,7 @@ class KeyHandlerClass:
         self,
         event: Event,
         callback: Callable = None,
-        filterExt: List[str] = None,
+        filterExt: list[str] = None,
         prompt: str = 'Enter File Name: ',
         tabName: str = 'Dired',
     ) -> None:
@@ -3795,7 +3795,7 @@ class KeyHandlerClass:
             modeName = modeName[:-5]
         k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
     #@+node:ekr.20061031131434.158: *4* k.createModeBindings
-    def createModeBindings(self, modeName: str, d: Dict[str, List], w: Wrapper) -> None:
+    def createModeBindings(self, modeName: str, d: Dict[str, list], w: Wrapper) -> None:
         """Create mode bindings for the named mode using dictionary d for w, a text widget."""
         c, k = self.c, self
         assert d.name().endswith('-mode')
@@ -3807,7 +3807,7 @@ class KeyHandlerClass:
             if not func:
                 g.es_print('no such command:', commandName, 'Referenced from', modeName)
                 continue
-            aList: List = d.get(commandName, [])
+            aList: list = d.get(commandName, [])
             stroke: Stroke
             for bi in aList:
                 stroke = bi.stroke
@@ -3997,21 +3997,21 @@ class KeyHandlerClass:
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
-    def computeInverseBindingDict(self) -> Dict[str, List[Tuple[str, Any]]]:
+    def computeInverseBindingDict(self) -> Dict[str, list[Tuple[str, Any]]]:
         """
         Return a dictionary whose keys are command names,
         values are lists of tuples(pane, stroke).
         """
         k = self
         d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
-        result_d: Dict[str, List[Tuple[str, Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
+        result_d: Dict[str, list[Tuple[str, Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
         for scope in sorted(d):
             d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
             for stroke in d2:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
                 assert isinstance(bi, g.BindingInfo), repr(bi)
-                aList: List[Any] = result_d.get(bi.commandName, [])
+                aList: list[Any] = result_d.get(bi.commandName, [])
                 data = (bi.pane, stroke)
                 if data not in aList:
                     aList.append(data)
@@ -4189,13 +4189,13 @@ class ModeInfo:
     __str__ = __repr__
     #@+others
     #@+node:ekr.20120208064440.10193: *3* mode_i. ctor
-    def __init__(self, c: Cmdr, name: str, aList: List) -> None:
+    def __init__(self, c: Cmdr, name: str, aList: list) -> None:
 
         self.c = c
         # The bindings in effect for this mode.
         # Keys are names of (valid) command names, values are BindingInfo objects.
         self.d: Dict[str, Any] = {}
-        self.entryCommands: List[Any] = []  # A list of BindingInfo objects.
+        self.entryCommands: list[Any] = []  # A list of BindingInfo objects.
         self.k = c.k
         self.name: str = self.computeModeName(name)
         self.prompt: str = self.computeModePrompt(self.name)
@@ -4273,7 +4273,7 @@ class ModeInfo:
         event = None
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* mode_i.init
-    def init(self, name: str, dataList: List[Tuple[str, Any]]) -> None:
+    def init(self, name: str, dataList: list[Tuple[str, Any]]) -> None:
         """aList is a list of tuples (commandName,bi)."""
         c, d, modeName = self.c, self.d, self.name
         for name, bi in dataList:

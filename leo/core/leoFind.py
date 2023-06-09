@@ -8,7 +8,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -116,14 +116,14 @@ class LeoFind:
         self.whole_word: bool = None
         #
         # For isearch commands...
-        self.stack: List[Tuple[Position, int, int, bool]] = []
-        self.inverseBindingDict: Dict[str, List[Tuple[str, Stroke]]] = {}
+        self.stack: list[Tuple[Position, int, int, bool]] = []
+        self.inverseBindingDict: Dict[str, list[Tuple[str, Stroke]]] = {}
         self.isearch_ignore_case: bool = False
         self.isearch_forward_flag: bool = False
         self.isearch_regexp: bool = False
-        self.iSearchStrokes: List[Stroke] = []
-        self.findTextList: List = []
-        self.changeTextList: List = []
+        self.iSearchStrokes: list[Stroke] = []
+        self.findTextList: list = []
+        self.changeTextList: list = []
         #
         # For find/change...
         self.find_text = ""
@@ -225,7 +225,7 @@ class LeoFind:
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self,
         root: Position,
-        replacements: List[Tuple[str, str]],
+        replacements: list[Tuple[str, str]],
         settings: Settings = None,
     ) -> int:
         #@+<< docstring: find.batch_change >>
@@ -279,7 +279,7 @@ class LeoFind:
         # Init...
         self.find_text = find_text
         self.change_text = self.replace_back_slashes(change_text)
-        positions: Union[List, Generator]
+        positions: Union[list, Generator]
         if self.node_only:
             positions = [p1]
         elif self.suboutline_only:
@@ -1458,7 +1458,7 @@ class LeoFind:
         c.redraw()
         return len(clones), found
     #@+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
-    def _create_clone_tag_nodes(self, clones: List[Position]) -> Position:
+    def _create_clone_tag_nodes(self, clones: list[Position]) -> Position:
         """
         Create a "Found Tag" node as the last node of the outline.
         Clone all positions in the clones set as children of found.
@@ -1571,7 +1571,7 @@ class LeoFind:
         """
         Handle the find-all command from p to after.
 
-        Return the List of Dicts describing each match.
+        Return the list of Dicts describing each match.
         """
         c, u = self.c, self.c.undoer
         undoType = 'Find All'
@@ -1581,14 +1581,14 @@ class LeoFind:
             if not ok:
                 return {}
         # Create a list of vnodes, honoring limiters.
-        vnodes: List[VNode]
+        vnodes: list[VNode]
         if self.node_only:
             vnodes = [c.p.v]
         elif self.suboutline_only:
             vnodes = list(set(z.v for z in c.p.self_and_subtree()))
         else:
             vnodes = list(c.all_unique_nodes())
-        matches_dict: List[Dict] = []
+        matches_dict: list[Dict] = []
         distinct_body_lines, total_matches, total_nodes = 0, 0, 0
         for v in vnodes:
             body, head = [], []
@@ -1669,9 +1669,9 @@ class LeoFind:
         row, col = g.convertPythonIndexToRowCol(s, i)
         return row + 1, line
     #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
-    def make_result_from_matches(self, matches: List[Dict]) -> str:
+    def make_result_from_matches(self, matches: list[Dict]) -> str:
 
-        results: List[str] = ['\n']
+        results: list[str] = ['\n']
         # Report settings.
         results.append(
             f"  ignore-case: {self.ignore_case}\n"
@@ -1711,7 +1711,7 @@ class LeoFind:
         unl = p.get_UNL()
         log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number - 1}")  # Local line.
     #@+node:ekr.20230124101551.1: *7* find.find_all_matches_in_string & helpers
-    def find_all_matches_in_string(self, s: str) -> List[int]:
+    def find_all_matches_in_string(self, s: str) -> list[int]:
         """
         Find all matches in string s.
 
@@ -1728,7 +1728,7 @@ class LeoFind:
         f = self.find_all_regex if self.pattern_match else self.find_all_plain
         return f(find_s, s)
     #@+node:ekr.20230124130028.2: *8* find.find_all_plain
-    def find_all_plain(self, find_s: str, s: str) -> List[int]:
+    def find_all_plain(self, find_s: str, s: str) -> list[int]:
         """
         Perform all plain finds s, including whole-word finds.
         return a list indices into s.
@@ -1748,7 +1748,7 @@ class LeoFind:
             i += len(find_s)
         return result
     #@+node:ekr.20230124130028.3: *8* find.find_all_regex
-    def find_all_regex(self, find_s: str, s: str) -> List[int]:
+    def find_all_regex(self, find_s: str, s: str) -> list[int]:
         """
         Perform all regex find/replace on s.
         return a list of matching indices.
@@ -2057,7 +2057,7 @@ class LeoFind:
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
-    def _cfa_create_nodes(self, clones: List[Position], flattened: bool) -> Position:
+    def _cfa_create_nodes(self, clones: list[Position], flattened: bool) -> Position:
         """
         Create a "Found" node as the last node of the outline.
         Clone all positions in the clones set a children of found.
@@ -2832,7 +2832,7 @@ class LeoFind:
         if len(self.stack) <= 1:
             self.abort_search()
     #@+node:ekr.20131117164142.16952: *5* find.get_strokes
-    def get_strokes(self, commandName: str) -> List[Stroke]:  # pragma: no cover (cmd)
+    def get_strokes(self, commandName: str) -> list[Stroke]:  # pragma: no cover (cmd)
         aList = self.inverseBindingDict.get(commandName, [])
         return [key for pane, key in aList]
     #@+node:ekr.20131117164142.16953: *5* find.push & pop

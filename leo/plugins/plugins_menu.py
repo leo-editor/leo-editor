@@ -60,7 +60,7 @@ __plugin_priority__
 from __future__ import annotations
 import configparser as ConfigParser
 import os
-from typing import Any, Dict, List, Sequence, TYPE_CHECKING
+from typing import Any, Dict, Sequence, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -136,11 +136,11 @@ def createPluginsMenu(tag: str, keywords: Any) -> None:
     if lmd:
         impModSpecList = list(lmd.keys())
 
-        def key(aList: List) -> str:
+        def key(aList: list) -> str:
             return aList.split('.')[-1].lower()
 
         impModSpecList.sort(key=key)
-        plgObList: List[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+        plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
         # 2013/12/13: Add any items in @menu plugins
         add_menu_from_settings(c)
@@ -192,8 +192,8 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: Dict[Group, List[Any]] = {}
-        self.groups_by_plugin: Dict[Any, List[Group]] = {}
+        self.plugins_by_group: Dict[Group, list[Any]] = {}
+        self.groups_by_plugin: Dict[Any, list[Group]] = {}
         self.menus: Dict[str, Menu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item: Item, group: Group) -> None:
@@ -202,7 +202,7 @@ class _PluginDatabase:
             self.plugins_by_group.setdefault(group, []).append(item)
             self.groups_by_plugin[item] = group
     #@+node:pap.20050305152751.3: *3* getGroups
-    def getGroups(self) -> List[Any]:
+    def getGroups(self) -> list[Any]:
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()

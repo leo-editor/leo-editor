@@ -6,7 +6,7 @@ The @auto importer for restructured text.
 This module must **not** be named rst, so as not to conflict with docutils.
 """
 from __future__ import annotations
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -41,9 +41,9 @@ class Rst_Importer(Importer):
         """
         lines = self.lines
         assert parent == self.root
-        self.lines_dict: Dict[VNode, List[str]] = {parent.v: []}
+        self.lines_dict: Dict[VNode, list[str]] = {parent.v: []}
         self.lines = lines
-        self.stack: List[Position] = [parent]
+        self.stack: list[Position] = [parent]
         skip = 0
         for i, line in enumerate(lines):
             if skip > 0:

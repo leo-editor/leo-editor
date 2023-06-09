@@ -7,7 +7,7 @@ from __future__ import annotations
 import functools
 import re
 import string
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -599,7 +599,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ch = event.char
         return ch
     #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
-    def get_prefixes(self, w: Wrapper) -> Tuple[str, int, int, List[str]]:
+    def get_prefixes(self, w: Wrapper) -> Tuple[str, int, int, list[str]]:
         """Return the prefixes at the current insertion point of w."""
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
@@ -680,7 +680,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper(self,
         event: Event,
         prefix: str = None,
-        aList: List[str] = None,
+        aList: list[str] = None,
         w: Wrapper = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
@@ -720,7 +720,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.undoer.afterChangeNodeContents(p, command='dabbrev-expand', bunch=b)
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
-    def getDynamicList(self, w: Wrapper, s: str) -> List[str]:
+    def getDynamicList(self, w: Wrapper, s: str) -> list[str]:
         """Return a list of dynamic abbreviations."""
         if self.globalDynamicAbbrevs:
             # Look in all nodes.h

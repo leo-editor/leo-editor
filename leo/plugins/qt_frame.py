@@ -10,7 +10,7 @@ import platform
 import string
 import sys
 import time
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
@@ -1345,7 +1345,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         if self.factory:
             del kwargs['factory']
         super().__init__(*args, **kwargs)
-        self.detached: List[Any] = []
+        self.detached: list[Any] = []
         self.setMovable(True)
 
         def tabContextMenu(point: str) -> None:
@@ -2548,7 +2548,7 @@ class LeoQtLog(leoFrame.LeoLog):
         assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
         self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
-        self.eventFilters: List = []  # Apparently needed to make filters work!
+        self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None
         self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
         self.logWidget: "LeoQtLog" = None  # Set in finishCreate.
@@ -2909,7 +2909,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def hideTab(self, tabName: str) -> None:
         self.selectTab('Log')
     #@+node:ekr.20111122080923.10185: *4* LeoQtLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str=None) -> List[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: str=None) -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         w = self.tabWidget
         return [w.tabText(i) for i in range(w.count())]
@@ -3230,7 +3230,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # menubar.setActiveAction(None)
         # menubar.repaint()
     #@+node:ekr.20110605121601.18362: *3* LeoQtMenu.getMacHelpMenu
-    def getMacHelpMenu(self, table: List) -> None:
+    def getMacHelpMenu(self, table: list) -> None:
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
@@ -3802,7 +3802,7 @@ class LeoQtSpellTab:
     def bringToFront(self) -> None:
         self.c.frame.log.selectTab('Spell')
     #@+node:ekr.20110605121601.18399: *4* fillbox (LeoQtSpellTab)
-    def fillbox(self, alts: List[str], word: str=None) -> None:
+    def fillbox(self, alts: list[str], word: str=None) -> None:
         """Update the suggestions listBox in the Check Spelling dialog."""
         self.suggestions = alts
         if not word:
@@ -3864,7 +3864,7 @@ class LeoQtTreeTab:
         assert self.cc
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
-        self.tabNames: List[str] = []  # The list of tab names. Changes when tabs are renamed.
+        self.tabNames: list[str] = []  # The list of tab names. Changes when tabs are renamed.
         self.w: Widget = None  # A QComboBox
         # self.reloadSettings()
         self.createControl()
@@ -3980,7 +3980,7 @@ class QtIconBarClass:
         self.c = c
         self.parentFrame = parentFrame
         # Status ivars.
-        self.actions: List[Any] = []
+        self.actions: list[Any] = []
         self.chapterController = None
         self.toolbar = self
         self.w = c.frame.top.iconBar  # A QToolBar.
@@ -4148,7 +4148,7 @@ class QtIconBarClass:
     def add_rclick_menu(
         self,
         action_container: Any,
-        rclicks: List[Any],
+        rclicks: list[Any],
         controller: Cmdr,
         top_level: bool=True,
         button: str=None,

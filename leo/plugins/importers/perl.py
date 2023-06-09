@@ -3,7 +3,7 @@
 """The @auto importer for Perl."""
 from __future__ import annotations
 import re
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class Perl_Importer(Importer):
 
     #@+others
     #@+node:ekr.20230529055751.1: *3* perl_i.make_guide_lines
-    def make_guide_lines(self, lines: List[str]) -> List[str]:
+    def make_guide_lines(self, lines: list[str]) -> list[str]:
         """
         Perl_Importer.make_guide_lines.
 
@@ -34,7 +34,7 @@ class Perl_Importer(Importer):
     #@+node:ekr.20230529055848.1: *3* perl_i.delete_regexes
     regex_pat = re.compile(r'(.*?=\s*(m|s|tr|)/)')
 
-    def delete_regexes(self, lines: List[str]) -> List[str]:
+    def delete_regexes(self, lines: list[str]) -> list[str]:
         """Remove regexes."""
         result = []
         for line in lines:

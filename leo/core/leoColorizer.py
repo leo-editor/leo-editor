@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 import string
 import time
-from typing import Any, Callable, Dict, Generator, Sequence, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, Sequence, Optional, Tuple, TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -580,7 +580,7 @@ class BaseColorizer:
         c, getBool = self.c, self.c.config.getBool
         #
         # Init all settings ivars.
-        self.color_tags_list: List[str] = []
+        self.color_tags_list: list[str] = []
         self.showInvisibles      = getBool("show-invisibles-by-default")
         self.underline_undefined = getBool("underline-undefined-section-names")
         self.use_hyperlinks      = getBool("use-hyperlinks")
@@ -694,7 +694,7 @@ class BaseColorizer:
         self.modes: Dict[str, Mode] = {}  # Keys are languages, values are modes.
         self.mode: Mode = None  # The mode object for the present language.
         self.modeBunch: g.Bunch = None  # A bunch fully describing a mode.
-        self.modeStack: List[Mode] = []
+        self.modeStack: list[Mode] = []
         self.rulesDict: Dict[str, Any] = {}
         # self.defineAndExtendForthWords()
         self.word_chars: Dict[str, str] = {}  # Inited by init_keywords().
@@ -1218,7 +1218,7 @@ class JEditColorizer(BaseColorizer):
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
     #@+node:ekr.20170205055743.1: *4* jedit.set_wikiview_patterns
-    def set_wikiview_patterns(self, leadins: List[str], patterns: List[re.Pattern]) -> None:
+    def set_wikiview_patterns(self, leadins: list[str], patterns: list[re.Pattern]) -> None:
         """
         Init the colorizer so it will *skip* all patterns.
         The wikiview plugin calls this method.
@@ -2989,7 +2989,7 @@ class PygmentsColorizer(BaseColorizer):
             # Color only the @language, indicating an unknown language.
             yield match.start(), Name.Decorator, match.group(1)
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
-    unknown_languages: List[str] = []
+    unknown_languages: list[str] = []
 
     def get_lexer(self, language: str) -> Any:
         """Return the lexer for self.language, creating it if necessary."""
@@ -3154,7 +3154,7 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
             lexer.setStringsOverNewlineAllowed(False)
-        table: List[Tuple[str, str]] = []
+        table: list[Tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
             aList = [s.split(',') for s in aList]

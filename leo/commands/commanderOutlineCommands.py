@@ -7,7 +7,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -159,7 +159,7 @@ def computeCopiedBunchList(
     c: Cmdr,
     pasted: Position,
     vnodeInfoDict: Dict[VNode, Any],
-) -> List[Any]:
+) -> list[Any]:
     """Create a dict containing only copied vnodes."""
     d = {}
     for p in pasted.self_and_subtree(copy=False):

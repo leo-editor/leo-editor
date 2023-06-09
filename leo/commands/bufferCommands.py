@@ -4,7 +4,7 @@
 #@+<< bufferCommands imports & annotations >>
 #@+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -33,8 +33,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.fromName = ''  # Saved name from getBufferName.
-        self.nameList: List[str] = []  # [n: <headline>]
-        self.names: Dict[str, List[str]] = {}
+        self.nameList: list[str] = []  # [n: <headline>]
+        self.names: Dict[str, list[str]] = {}
         self.vnodes: Dict[str, VNode] = {}  # Keys are n: <headline>, values are vnodes.
     #@+node:ekr.20150514045829.5: *3* buffer.Entry points
     #@+node:ekr.20150514045829.6: *4* appendToBuffer

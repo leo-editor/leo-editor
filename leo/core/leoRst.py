@@ -17,7 +17,7 @@ import io
 import os
 import re
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, Optional, Set, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils
@@ -72,11 +72,11 @@ class RstCommands:
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
-        self.changed_positions: List[Position] = []
+        self.changed_positions: list[Position] = []
         self.changed_vnodes: Set[VNode] = set()
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
-        self.result_list: List[str] = []  # The intermediate results.
+        self.result_list: list[str] = []  # The intermediate results.
         self.root: Position = None  # The @rst node being processed.
 
         # Default settings.
