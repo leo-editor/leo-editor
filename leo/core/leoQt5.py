@@ -2,9 +2,6 @@
 #@+node:ekr.20210407010914.1: * @file leoQt5.py
 """Import wrapper for pyQt5"""
 
-# For now, suppress all mypy checks
-# type:ignore
-
 # pylint: disable=import-error,no-name-in-module,unused-import
 
 # Required imports
@@ -20,9 +17,7 @@ printsupport = Qt
 qt_version = QtCore.QT_VERSION_STR
 assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
 assert QCloseEvent and QUrl and Signal  # For pyflakes.
-#
-# Optional imports.
-# Must import this before creating the GUI
+# Optional imports: Import this before creating the GUI.
 try:
     # pylint: disable=ungrouped-imports
     from PyQt5 import QtWebEngineWidgets
