@@ -7,9 +7,6 @@ For Qt6, plugins are responsible for loading all optional modules.
 
 """
 
-# For now, suppress all mypy checks
-# type: ignore
-
 # pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
 
 # Required imports
