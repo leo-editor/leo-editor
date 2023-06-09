@@ -22,7 +22,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Generator, Iterable, Iterator, Optional, Set, Union
+from typing import Any, Callable, Generator, Iterable, Iterator, Optional, Union
 import warnings
 
 # Third-party.
@@ -80,7 +80,7 @@ g = None  # The bridge's leoGlobals module.
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
-connectionsPool: Set[Any] = set()
+connectionsPool: set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
@@ -677,10 +677,10 @@ class QuickSearchController:
         tags.reverse()
         operations.reverse()
 
-        resultset: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+        resultset: set[str] = set(tc.get_tagged_gnxes(tags.pop()))
         while operations:
             op = operations.pop()
-            nodes: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+            nodes: set[str] = set(tc.get_tagged_gnxes(tags.pop()))
             if op == '&':
                 resultset &= nodes
             elif op == '|':

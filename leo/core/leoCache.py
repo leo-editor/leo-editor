@@ -9,7 +9,7 @@ import os
 import pickle
 import sqlite3
 import stat
-from typing import Any, Generator, Optional, Sequence, Set, TYPE_CHECKING
+from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -121,7 +121,7 @@ class CommanderWrapper:
         self.c = c
         self.db = g.app.db
         self.key = fn or c.mFileName
-        self.user_keys: Set[str] = set()
+        self.user_keys: set[str] = set()
 
     def get(self, key: str, default: Any = None) -> Any:
         value = self.db.get(f"{self.key}:::{key}")

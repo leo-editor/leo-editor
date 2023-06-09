@@ -13,8 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Callable, Generator, Iterable, Optional, Set, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Generator, Iterable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
@@ -1904,7 +1903,7 @@ class Commands:
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
-        d: dict[str, Set[VNode]] = {}
+        d: dict[str, set[VNode]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1918,7 +1917,7 @@ class Commands:
             v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
-                aSet: Set[VNode] = d.get(gnx, set())
+                aSet: set[VNode] = d.get(gnx, set())
                 aSet.add(v)
                 d[gnx] = aSet
             else:

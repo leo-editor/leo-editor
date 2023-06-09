@@ -7,7 +7,7 @@ from __future__ import annotations
 import copy
 import time
 import uuid
-from typing import Any, Callable, Generator, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -2438,7 +2438,7 @@ class VNode:
         Modified by EKR.
         """
         v = self
-        seen: Set[VNode] = set([v.context.hiddenRootNode])
+        seen: set[VNode] = set([v.context.hiddenRootNode])
 
         def v_and_parents(v: "VNode") -> Generator:
             if v in seen:

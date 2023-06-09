@@ -11,8 +11,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, Optional, Set, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -354,7 +353,7 @@ class AtFile:
 
         c = self.c
         p = root.copy()
-        scanned_nodes: Set[tuple[str, str]] = set()
+        scanned_nodes: set[tuple[str, str]] = set()
         files: list[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:

@@ -228,7 +228,7 @@ import pprint
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Generator, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -453,7 +453,7 @@ class ScriptingController:
         else:
             self.iconBar = iconBar
         # #74: problems with @button if defined in myLeoSettings.leo
-        self.seen: Set[str] = set()  # Set of gnx's (not vnodes!) that created buttons or commands.
+        self.seen: set[str] = set()  # Set of gnx's (not vnodes!) that created buttons or commands.
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event: Event=None) -> None:

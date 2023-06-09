@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Generator, Optional, Set, Union, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -1855,7 +1855,7 @@ class FileCommands:
         c = self.c
         uas = {}
         # holds all gnx found so far, to exclude adding headlines of already defined gnx.
-        gnxSet: Set[str] = set()
+        gnxSet: set[str] = set()
         if self.usingClipboard:  # write the currently selected subtree ONLY.
             # Node to be root of tree to be put on clipboard
             sp = p or c.p  # Selected Position: sp
@@ -2356,8 +2356,8 @@ class FileCommands:
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
-            self.expanded_gnxs: Set[str] = set()
-            self.marked_gnxs: Set[str] = set()
+            self.expanded_gnxs: set[str] = set()
+            self.marked_gnxs: set[str] = set()
             self.put_v_element(self.currentPosition)  # Write only current tree.
         else:
             for p in c.rootPosition().self_and_siblings():

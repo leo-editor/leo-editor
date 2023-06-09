@@ -5,7 +5,7 @@
 #@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Callable, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 # Third-party annotations
 try:
     # We can't assume the user has enchant..
@@ -132,9 +132,9 @@ class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
     def __init__(self, words: list[str] = None) -> None:
-        self.added_words: Set[str] = set()
-        self.ignored_words: Set[str] = set()
-        self.words: Set[str] = set() if words is None else set(words)
+        self.added_words: set[str] = set()
+        self.ignored_words: set[str] = set()
+        self.words: set[str] = set() if words is None else set(words)
 
     #@+others
     #@+node:ekr.20180207075740.1: *3* dict.add
@@ -243,7 +243,7 @@ class DefaultWrapper(BaseSpellWrapper):
         fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words
-    def read_words(self, kind: Any, fn: str) -> Set[str]:
+    def read_words(self, kind: Any, fn: str) -> set[str]:
         """Return all the words from the dictionary file."""
         words = set()
         try:
@@ -684,7 +684,7 @@ class SpellTabHandler:
         # [^\W\d_] means any unicode char except underscore or digit.
         self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
-        self.seen: Set[str] = set()  # Adding a word to seen will ignore it until restart.
+        self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
         # A text widget for scanning. Must have a parent frame.
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
         if enchant:

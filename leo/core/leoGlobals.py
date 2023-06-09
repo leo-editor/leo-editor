@@ -35,7 +35,7 @@ import time
 import traceback
 import types
 from typing import TYPE_CHECKING
-from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Set, Union
+from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -3052,7 +3052,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     3. Search p's "extended parents" for an unambiguous @language directive.
     """
     v0 = p.v
-    seen: Set[VNode]
+    seen: set[VNode]
 
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
     # Original idea by Виталије Милошевић (Vitalije Milosevic).
@@ -4939,8 +4939,8 @@ def dummy_act_on_node(c: Cmdr, p: Position, event: Any) -> None:
 
 act_on_node = dummy_act_on_node
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet: Set["VNode"] = set()
-contentModifiedSet: Set["VNode"] = set()
+childrenModifiedSet: set["VNode"] = set()
+contentModifiedSet: set["VNode"] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
     """

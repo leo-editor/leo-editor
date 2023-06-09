@@ -80,7 +80,7 @@ import shlex
 import subprocess
 import tempfile
 import threading
-from typing import Any, Set
+from typing import Any
 from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
@@ -404,7 +404,7 @@ class LeoCloud:
 
         respects @ignore in headlines, doesn't recurse into @leo_cloud nodes
         """
-        found: Set = set()
+        found: set = set()
         self._find_clouds_recursive(self.c.hiddenRootNode, found)
         valid = []
         for lc in found:

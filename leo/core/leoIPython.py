@@ -24,7 +24,7 @@ Leo commanders.
 #@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
 from __future__ import annotations
 import sys
-from typing import Any, Optional, Set, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 def import_fail(s: str) -> None:
@@ -94,7 +94,7 @@ class InternalIPKernel:
         self.kernelApp: InternalIPKernel = None  # The IPKernelApp instance.
         # Keys present at startup so we don't print the entire pylab/numpy
         # namespace when the user clicks the 'namespace' button
-        self._init_keys: Set[str] = None
+        self._init_keys: set[str] = None
         # Start IPython kernel with GUI event loop and pylab support.
         kernelApp = self.pylab_kernel(backend)  # Sets self.kernelApp.
         assert kernelApp == self.kernelApp
