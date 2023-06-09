@@ -403,7 +403,7 @@ class notetextedit(QTextEdit):
         action.setData(notetextedit.Pre)
 
         action = menu.addAction("Numbered List", self.setTextEffect)
-        action.setData(notetextedit.list)
+        action.setData(notetextedit.List)
 
         header_menu = QMenu("Header")
         action = header_menu.addAction('H1', self.setTextEffect)
