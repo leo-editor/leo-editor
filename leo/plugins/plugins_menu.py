@@ -78,7 +78,7 @@ __plugin_group__ = "Core"
 #@+others
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
-def addPluginMenuItem(plugin: "PlugIn", c: Cmdr) -> None:
+def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
     """
     @param plugin:  Plugin object for one currently loaded plugin
     @param c:       Leo-editor "commander" for the current .leo file

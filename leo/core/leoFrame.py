@@ -854,13 +854,13 @@ class LeoFrame:
             return self.iconBar.clear()
         return None
 
-    def createIconBar(self) -> Union["NullIconBarClass", QtIconBarClass]:
+    def createIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
         c = self.c
         if not self.iconBar:
             self.iconBar = self.iconBarClass(c, None)
         return self.iconBar
 
-    def getIconBar(self) -> Union["NullIconBarClass", QtIconBarClass]:
+    def getIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
         if not self.iconBar:
             self.iconBar = self.iconBarClass(self.c, None)
         return self.iconBar
@@ -880,7 +880,7 @@ class LeoFrame:
         if self.iconBar:
             self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
-    def createStatusLine(self) -> Union[CoreStatusLine, "NullStatusLineClass", g.NullObject]:
+    def createStatusLine(self) -> Union[CoreStatusLine, NullStatusLineClass, g.NullObject]:
         if not self.statusLine:
             self.statusLine = self.statusLineClass(self.c, None)
         return self.statusLine
@@ -897,7 +897,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> Union[CoreStatusLine, "NullStatusLineClass", g.NullObject]:
+    def getStatusLine(self) -> Union[CoreStatusLine, NullStatusLineClass, g.NullObject]:
         return self.statusLine
 
     getStatusObject = getStatusLine

@@ -151,6 +151,7 @@ Leo's outline structure. These comments have the form::
 #@-<< leoAst docstring >>
 #@+<< leoAst imports & annotations >>
 #@+node:ekr.20200105054219.1: ** << leoAst imports & annotations >>
+from __future__ import annotations
 import argparse
 import ast
 import codecs
@@ -978,7 +979,7 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
-    def add_token_to_token_list(token: "Token", node: Node) -> None:
+    def add_token_to_token_list(token: Token, node: Node) -> None:
         """Insert token in the proper location of node.token_list."""
 
         # Note: get_node_token_list returns global_tokens_list[first_i : last_i + 1]
@@ -1005,7 +1006,7 @@ if 1:  # pragma: no cover
                     setattr(old_node, field, new_node)
                     break
     #@+node:ekr.20191225055626.1: *4* function: replace_token
-    def replace_token(token: "Token", kind: str, value: str) -> None:
+    def replace_token(token: Token, kind: str, value: str) -> None:
         """Replace kind and value of the given token."""
         if token.kind in ('endmarker', 'killed'):
             return

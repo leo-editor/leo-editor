@@ -176,7 +176,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if where:
             self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
-    def createMainWindow(self) -> tuple["LeoQtFrame", "LeoQtFrame"]:
+    def createMainWindow(self) -> tuple[LeoQtFrame, LeoQtFrame]:
         """
         Create the component ivars of the main window.
         Copied/adapted from qt_main.py.
@@ -207,7 +207,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
-    def addNewEditor(self, name: str) -> tuple["LeoQtFrame", Wrapper]:
+    def addNewEditor(self, name: str) -> tuple[LeoQtFrame, Wrapper]:
         """Create a new body editor."""
         c, p = self.leo_c, self.leo_c.p
         body = c.frame.body
@@ -233,7 +233,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             body.recolorWidget(p, wrapper)
         return parent_frame, wrapper
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
-    def createBodyPane(self, parent: "LeoQtFrame") -> "LeoQtFrame":
+    def createBodyPane(self, parent: LeoQtFrame) -> LeoQtFrame:
         """
         Create the *pane* for the body, not the actual QTextBrowser.
         """
@@ -271,7 +271,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return bodyFrame
 
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
-    def createCentralWidget(self) -> "LeoQtFrame":
+    def createCentralWidget(self) -> LeoQtFrame:
         """Create the central widget."""
         dw = self
         w = QtWidgets.QWidget(dw)
@@ -331,7 +331,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
-    def createMainLayout(self, parent: "LeoQtFrame") -> tuple["LeoQtFrame", "LeoQtFrame"]:
+    def createMainLayout(self, parent: LeoQtFrame) -> tuple[LeoQtFrame, LeoQtFrame]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
@@ -358,7 +358,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # Official ivars.
         self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
-    def createMiniBuffer(self, parent: "LeoQtFrame") -> "LeoQtFrame":
+    def createMiniBuffer(self, parent: LeoQtFrame) -> LeoQtFrame:
         """Create the widgets for Leo's minibuffer area."""
         # Create widgets.
         frame = self.createFrame(parent, 'minibufferFrame',
@@ -420,7 +420,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # self.leo_minibuffer_layout = layout
         return frame
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
-    def createOutlinePane(self, parent: "LeoQtFrame") -> "LeoQtFrame":
+    def createOutlinePane(self, parent: LeoQtFrame) -> LeoQtFrame:
         """Create the widgets and ivars for Leo's outline."""
         # Create widgets.
         treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
@@ -434,7 +434,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.treeWidget = treeWidget
         return treeFrame
     #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar
-    def createStatusBar(self, parent: "LeoQtFrame") -> None:
+    def createStatusBar(self, parent: LeoQtFrame) -> None:
         """Create the widgets and ivars for Leo's status area."""
         w = QtWidgets.QStatusBar(parent)
         w.setObjectName("statusbar")
@@ -475,13 +475,13 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         dw.resize(691, 635)
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
-    def createButton(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
+    def createButton(self, parent: LeoQtFrame, name: str, label: str) -> LeoQtFrame:
         w = QtWidgets.QPushButton(parent)
         w.setObjectName(name)
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20110605121601.18154: *5* dw.createCheckBox
-    def createCheckBox(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
+    def createCheckBox(self, parent: LeoQtFrame, name: str, label: str) -> LeoQtFrame:
         w = QtWidgets.QCheckBox(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
@@ -489,14 +489,14 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     #@+node:ekr.20110605121601.18155: *5* dw.createFrame
     def createFrame(
         self,
-        parent: "LeoQtFrame",
+        parent: LeoQtFrame,
         name: str,
         hPolicy: Policy=None,
         vPolicy: Policy=None,
         lineWidth: int=1,
         shadow: Shadow=None,
         shape: Shape=None,
-    ) -> "LeoQtFrame":
+    ) -> LeoQtFrame:
         """Create a Qt Frame."""
         if shadow is None:
             shadow = Shadow.Plain
@@ -512,35 +512,35 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return w
     #@+node:ekr.20110605121601.18156: *5* dw.createGrid
     def createGrid(self,
-        parent: "LeoQtFrame", name: str, margin: int=0, spacing: int=0,
-    ) -> "LeoQtFrame":
+        parent: LeoQtFrame, name: str, margin: int=0, spacing: int=0,
+    ) -> LeoQtFrame:
         w = QtWidgets.QGridLayout(parent)
         w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
         w.setSpacing(spacing)
         self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18157: *5* dw.createHLayout & createVLayout
-    def createHLayout(self, parent: "LeoQtFrame", name: str, margin: int=0, spacing: int=0) -> Any:
+    def createHLayout(self, parent: LeoQtFrame, name: str, margin: int=0, spacing: int=0) -> Any:
         hLayout = QtWidgets.QHBoxLayout(parent)
         hLayout.setSpacing(spacing)
         hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         self.setName(hLayout, name)
         return hLayout
 
-    def createVLayout(self, parent: "LeoQtFrame", name: str, margin: int=0, spacing: int=0) -> Any:
+    def createVLayout(self, parent: LeoQtFrame, name: str, margin: int=0, spacing: int=0) -> Any:
         vLayout = QtWidgets.QVBoxLayout(parent)
         vLayout.setSpacing(spacing)
         vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         self.setName(vLayout, name)
         return vLayout
     #@+node:ekr.20110605121601.18158: *5* dw.createLabel
-    def createLabel(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
+    def createLabel(self, parent: LeoQtFrame, name: str, label: str) -> LeoQtFrame:
         w = QtWidgets.QLabel(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20110605121601.18159: *5* dw.createLineEdit
-    def createLineEdit(self, parent: "LeoQtFrame", name: str, disabled: bool=True) -> "LeoQtFrame":
+    def createLineEdit(self, parent: LeoQtFrame, name: str, disabled: bool=True) -> LeoQtFrame:
 
         w = QtWidgets.QLineEdit(parent)
         w.setObjectName(name)
@@ -548,7 +548,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return w
     #@+node:ekr.20110605121601.18160: *5* dw.createRadioButton
     def createRadioButton(self,
-        parent: "LeoQtFrame", name: str, label: str,
+        parent: LeoQtFrame, name: str, label: str,
     ) -> Widget:  # QtWidgets.QRadioButton:
         w = QtWidgets.QRadioButton(parent)
         self.setName(w, name)
@@ -557,7 +557,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     #@+node:ekr.20110605121601.18161: *5* dw.createStackedWidget
     def createStackedWidget(
         self,
-        parent: "LeoQtFrame",
+        parent: LeoQtFrame,
         name: str,
         lineWidth: int=1,
         hPolicy: Policy=None,
@@ -571,8 +571,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return w
     #@+node:ekr.20110605121601.18162: *5* dw.createTabWidget
     def createTabWidget(self,
-        parent: "LeoQtFrame", name: str, hPolicy: Policy=None, vPolicy: Policy=None,
-    ) -> "LeoQtFrame":
+        parent: LeoQtFrame, name: str, hPolicy: Policy=None, vPolicy: Policy=None,
+    ) -> LeoQtFrame:
         w = QtWidgets.QTabWidget(parent)
         # tb = w.tabBar()
         # tb.setTabsClosable(True)
@@ -582,12 +582,12 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
     def createText(
         self,
-        parent: "LeoQtFrame",
+        parent: LeoQtFrame,
         name: str,
         lineWidth: int=0,
         shadow: Shadow=None,
         shape: Shape=None,
-    ) -> "LeoQtFrame":
+    ) -> LeoQtFrame:
         # Create a text widget.
         c = self.leo_c
         if name == 'richTextEdit' and self.useScintilla and Qsci:
@@ -607,7 +607,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
-    def createTreeWidget(self, parent: "LeoQtFrame", name: str) -> "LeoQtFrame":
+    def createTreeWidget(self, parent: LeoQtFrame, name: str) -> LeoQtFrame:
         c = self.leo_c
         w = LeoQTreeWidget(c, parent)
         self.setSizePolicy(w)
@@ -625,7 +625,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return w
     #@+node:ekr.20110605121601.18165: *4* dw.log tabs
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
-    def createSpellTab(self, parent: "LeoQtFrame") -> None:
+    def createSpellTab(self, parent: LeoQtFrame) -> None:
         # dw = self
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
         spellFrame = self.createFrame(parent, 'spellFrame')
@@ -670,7 +670,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.leo_spell_listBox = listBox  # Must exist
         self.leo_spell_label = lab  # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
-    def createFindTab(self, parent: "LeoQtFrame", tab_widget: "LeoQtFrame") -> None:
+    def createFindTab(self, parent: LeoQtFrame, tab_widget: LeoQtFrame) -> None:
         """Create a Find Tab in the given parent."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -696,7 +696,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.leo_find_widget = tab_widget  # A scrollArea.
         ftm.init_widgets()
     #@+node:ekr.20131118152731.16847: *6* dw.create_find_grid
-    def create_find_grid(self, parent: "LeoQtFrame") -> Any:
+    def create_find_grid(self, parent: LeoQtFrame) -> Any:
         grid = self.createGrid(parent, 'findGrid', margin=10, spacing=10)
         grid.setColumnStretch(0, 100)
         grid.setColumnStretch(1, 100)
@@ -705,7 +705,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         grid.setColumnMinimumWidth(2, 175)
         return grid
     #@+node:ekr.20131118152731.16849: *6* dw.create_find_header
-    def create_find_header(self, grid: Any, parent: "LeoQtFrame", row: int) -> int:
+    def create_find_header(self, grid: Any, parent: LeoQtFrame, row: int) -> int:
         if False:
             dw = self
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
@@ -713,7 +713,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             row += 1
         return row
     #@+node:ekr.20131118152731.16848: *6* dw.create_find_findbox
-    def create_find_findbox(self, grid: Any, parent: "LeoQtFrame", row: int) -> int:
+    def create_find_findbox(self, grid: Any, parent: LeoQtFrame, row: int) -> int:
         """Create the Find: label and text area."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -727,7 +727,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         row += 1
         return row
     #@+node:ekr.20131118152731.16850: *6* dw.create_find_replacebox
-    def create_find_replacebox(self, grid: Any, parent: "LeoQtFrame", row: int) -> int:
+    def create_find_replacebox(self, grid: Any, parent: LeoQtFrame, row: int) -> int:
         """Create the Replace: label and text area."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -741,7 +741,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         row += 1
         return row
     #@+node:ekr.20131118152731.16851: *6* dw.create_find_checkboxes
-    def create_find_checkboxes(self, grid: Any, parent: "LeoQtFrame", max_row2: int, row: int) -> int:
+    def create_find_checkboxes(self, grid: Any, parent: LeoQtFrame, max_row2: int, row: int) -> int:
         """Create check boxes and radio buttons."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -808,7 +808,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             setattr(ftm, name, w)
         return max_row2
     #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
-    def create_help_row(self, grid: Any, parent: "LeoQtFrame", row: int) -> int:
+    def create_help_row(self, grid: Any, parent: LeoQtFrame, row: int) -> int:
         # Help row.
         if False:
             w = self.createLabel(parent,
@@ -817,7 +817,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             row += 1
         return row
     #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
-    def create_find_buttons(self, grid: Any, parent: "LeoQtFrame", max_row2: int, row: int) -> int:
+    def create_find_buttons(self, grid: Any, parent: LeoQtFrame, max_row2: int, row: int) -> int:
         """
         Per #1342, this method now creates labels, not real buttons.
         """
@@ -848,7 +848,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
     if 0:
 
-        def create_find_status(self, grid: Any, parent: "LeoQtFrame", row: int) -> None:
+        def create_find_status(self, grid: Any, parent: LeoQtFrame, row: int) -> None:
             """Create the status line."""
             dw = self
             status_label = dw.createLabel(parent, 'status-label', 'Status')
@@ -870,7 +870,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         class EventWrapper:
 
             def __init__(self,
-                c: Cmdr, w: "LeoQtFrame", next_w: "LeoQtFrame", func: Callable,
+                c: Cmdr, w: LeoQtFrame, next_w: LeoQtFrame, func: Callable,
             ) -> None:
                 self.c = c
                 self.d = self.create_d()  # Keys: stroke.s; values: command-names.
@@ -966,13 +966,13 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
     #@+node:ekr.20110605121601.18169: *5* dw.setName
-    def setName(self, widget: "LeoQtFrame", name: str) -> None:
+    def setName(self, widget: LeoQtFrame, name: str) -> None:
         if name:
             # if not name.startswith('leo_'):
                 # name = 'leo_' + name
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
-    def setSizePolicy(self, widget: "LeoQtFrame", kind1: Policy=None, kind2: Policy=None) -> None:
+    def setSizePolicy(self, widget: LeoQtFrame, kind1: Policy=None, kind2: Policy=None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -1009,8 +1009,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         g.app.gui.attachLeoIcon(self)
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
     def setSplitDirection(self,
-        main_splitter: "LeoQtFrame",
-        secondary_splitter: "LeoQtFrame",
+        main_splitter: LeoQtFrame,
+        secondary_splitter: LeoQtFrame,
         orientation: Orientation,
     ) -> None:
         """Set the orientations of the splitters in the Leo main window."""
@@ -1452,7 +1452,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+others
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
-    def __init__(self, frame: "LeoQtFrame", parentFrame: "LeoQtFrame") -> None:
+    def __init__(self, frame: LeoQtFrame, parentFrame: LeoQtFrame) -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
         super().__init__(frame, parentFrame)
@@ -1460,7 +1460,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert c.frame == frame and frame.c == c
         self.colorizer: Any = None  # A Union
         self.wrapper: Wrapper = None
-        self.widget: "LeoQtFrame" = None
+        self.widget: LeoQtFrame = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
@@ -2062,12 +2062,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self) -> None:
         # "Official ivars created in createLeoFrame and its allies.
-        self.bar1: "LeoQtFrame" = None
-        self.bar2: "LeoQtFrame"= None
+        self.bar1: LeoQtFrame = None
+        self.bar2: LeoQtFrame= None
         self.body: "LeoQtBody" = None
         self.iconFrame: "QtIconBarClass" = None
         self.log: "LeoQtLog" = None
-        self.statusFrame: "LeoQtFrame" = None
+        self.statusFrame: LeoQtFrame = None
         self.top: "DynamicWindow" = None
         self.tree: LeoQtTree = None
         # Used by event handlers...
@@ -2390,7 +2390,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         for frame in g.app.windowList:
             self.minimize(frame)
 
-    def minimize(self, frame: "LeoQtFrame") -> None:
+    def minimize(self, frame: LeoQtFrame) -> None:
         # This unit test will fail when run externally.
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
@@ -2538,7 +2538,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+others
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
-    def __init__(self, frame: "LeoQtFrame", parentFrame: "LeoQtFrame") -> None:
+    def __init__(self, frame: LeoQtFrame, parentFrame: LeoQtFrame) -> None:
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)  # Calls createControl.
         # Set in finishCreate.
@@ -2684,7 +2684,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
     #@+node:ekr.20111120124732.10184: *3* LeoQtLog.isLogWidget
-    def isLogWidget(self, w: "LeoQtFrame") -> bool:
+    def isLogWidget(self, w: LeoQtFrame) -> bool:
         val = w == self or w in list(self.contentsDict.values())
         return val
     #@+node:tbnorth.20171220123648.1: *3* LeoQtLog.linkClicked
@@ -2845,7 +2845,7 @@ class LeoQtLog(leoFrame.LeoLog):
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
     def createTab(self,
-        tabName: str, createText: bool=True, widget: "LeoQtFrame"=None, wrap: str='none',
+        tabName: str, createText: bool=True, widget: LeoQtFrame=None, wrap: str='none',
     ) -> Any:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
@@ -2991,7 +2991,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
     #@+others
     #@+node:ekr.20110605121601.18341: *3* LeoQtMenu.__init__
-    def __init__(self, c: Cmdr, frame: "LeoQtFrame", label: str) -> None:
+    def __init__(self, c: Cmdr, frame: LeoQtFrame, label: str) -> None:
         """ctor for LeoQtMenu class."""
         assert frame
         assert frame.c
@@ -3019,7 +3019,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@+node:ekr.20110605121601.18343: *4* LeoQtMenu.Methods with Tk spellings
     #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
     def add_cascade(self,
-        parent: "LeoQtFrame", label: str, menu: Widget, underline: int,
+        parent: LeoQtFrame, label: str, menu: Widget, underline: int,
     ) -> Widget:  # A QMenu.
         """Wrapper for the Tkinter add_cascade menu method.
 
@@ -3107,7 +3107,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
                 action.triggered.connect(insert_callback)
     #@+node:ekr.20110605121601.18352: *5* LeoQtMenu.insert_cascade
     def insert_cascade(self,
-        parent: "LeoQtFrame",
+        parent: LeoQtFrame,
         index: int,
         label: str,
         menu: Widget,  # A QMenu.
@@ -3128,7 +3128,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             g.trace('no action for menu', label)
         return menu
     #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
-    def new_menu(self, parent: "LeoQtFrame", tearoff: int=0, label: str='') -> Any:  # label is for debugging.
+    def new_menu(self, parent: LeoQtFrame, tearoff: int=0, label: str='') -> Any:  # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
@@ -3144,7 +3144,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # realName = realName.replace("&","")
         # menu.entryconfig(realName,accelerator='')
     #@+node:ekr.20110605121601.18356: *5* LeoQtMenu.createMenuBar
-    def createMenuBar(self, frame: "LeoQtFrame") -> None:
+    def createMenuBar(self, frame: LeoQtFrame) -> None:
         """
         (LeoQtMenu) Create all top-level menus.
         The menuBar itself has already been created.
@@ -3235,7 +3235,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
 
-    def __init__(self, c: Cmdr, parent: "LeoQtFrame") -> None:
+    def __init__(self, c: Cmdr, parent: LeoQtFrame) -> None:
         super().__init__(parent)
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
@@ -3973,7 +3973,7 @@ class QtIconBarClass:
     """A class representing the singleton Icon bar"""
     #@+others
     #@+node:ekr.20110605121601.18263: *3*  QtIconBar.ctor & reloadSettings
-    def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
         """Ctor for QtIconBarClass."""
         # Copy ivars
         self.c = c
@@ -4017,13 +4017,13 @@ class QtIconBarClass:
 
         class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
-            def __init__(self, parent: "LeoQtFrame", text: str, toolbar: "QtIconBarClass") -> None:
+            def __init__(self, parent: LeoQtFrame, text: str, toolbar: "QtIconBarClass") -> None:
                 super().__init__(parent)
                 self.button: Widget = None  # A QPushButton
                 self.text = text
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: "LeoQtFrame") -> None:
+            def createWidget(self, parent: LeoQtFrame) -> None:
                 self.button = QtWidgets.QPushButton(self.text, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
@@ -4071,7 +4071,7 @@ class QtIconBarClass:
             # self.addRow()
         # g.app.iconWidgetCount += 1
     #@+node:ekr.20110605121601.18267: *3* QtIconBar.addWidget
-    def addWidget(self, w: "LeoQtFrame") -> None:
+    def addWidget(self, w: LeoQtFrame) -> None:
         self.w.addWidget(w)
     #@+node:ekr.20110605121601.18268: *3* QtIconBar.clear
     def clear(self) -> None:
@@ -4088,7 +4088,7 @@ class QtIconBarClass:
             return LeoQtTreeTab(c, f.iconBar)
         return None
     #@+node:ekr.20110605121601.18270: *3* QtIconBar.deleteButton
-    def deleteButton(self, w: "LeoQtFrame") -> None:
+    def deleteButton(self, w: LeoQtFrame) -> None:
         """ w is button """
         self.w.removeAction(w)
         self.c.bodyWantsFocus()
@@ -4201,7 +4201,7 @@ class QtIconBarClass:
 class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
-    def __init__(self, c: Cmdr, frame: "LeoQtFrame", parent: "LeoQtFrame", label: str) -> None:
+    def __init__(self, c: Cmdr, frame: LeoQtFrame, parent: LeoQtFrame, label: str) -> None:
         """ctor for QtMenuWrapper class."""
         assert c
         assert frame
@@ -4300,7 +4300,7 @@ class QtStatusLineClass:
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[Any, str] = {}
 
-    def put_helper(self, s: str, w: "LeoQtFrame", bg: str=None, fg: str=None) -> None:
+    def put_helper(self, s: str, w: LeoQtFrame, bg: str=None, fg: str=None) -> None:
         """Put string s in the indicated widget, with proper colors."""
         c = self.c
         bg = bg or c.config.getColor('status-bg') or 'white'
@@ -4333,7 +4333,7 @@ class QtStatusLineClass:
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
         w.setText(s)
     #@+node:ekr.20110605121601.18258: *3* QtStatusLineClass.ctor
-    def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
         """Ctor for LeoQtFrame class."""
         self.c = c
         self.statusBar = c.frame.top.statusBar
@@ -4446,7 +4446,7 @@ class QtStatusLineClass:
 class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
-    def __init__(self, parent: "LeoQtFrame"=None) -> None:
+    def __init__(self, parent: LeoQtFrame=None) -> None:
         super().__init__(parent)
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
@@ -4471,11 +4471,11 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames: dict["DynamicWindow", "LeoQtFrame"] = {}
+        self.leoFrames: dict["DynamicWindow", LeoQtFrame] = {}
         self.masterFrame: "LeoTabbedTopLevel" = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
-    def createFrame(self, leoFrame: "LeoQtFrame") -> "LeoQtFrame":
+    def createFrame(self, leoFrame: LeoQtFrame) -> LeoQtFrame:
 
         c = leoFrame.c
         tabw = self.masterFrame
