@@ -145,7 +145,7 @@ from leo.plugins.attrib_edit import DialogCode, ListDialog
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-# pylint: disable=cell-var-from-loop
+# pylint: disable=broad-exception-raised,cell-var-from-loop
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():

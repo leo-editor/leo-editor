@@ -298,39 +298,39 @@ def insert_read_only_node(c, p, name):
     except IOError:  # as msg:
         p.b = ""  # Clear the body text.
         return True  # Mark the node as changed.
-    else:
-        ext = os.path.splitext(parse[2])[1]
-        if ext.lower() in ['.htm', '.html']:
-            #@+<< convert HTML to text >>
-            #@+node:edream.110203113231.895: *3* << convert HTML to text >>
-            fh = StringIO()
-            fmt = AbstractFormatter(DumbWriter(fh))
-            # the parser stores parsed data into fh (file-like handle)
-            parser = HTMLParser(fmt)  # type:ignore
 
-            # send the HTML text to the parser
-            parser.feed(new)
-            parser.close()
+    ext = os.path.splitext(parse[2])[1]
+    if ext.lower() in ['.htm', '.html']:
+        #@+<< convert HTML to text >>
+        #@+node:edream.110203113231.895: *3* << convert HTML to text >>
+        fh = StringIO()
+        fmt = AbstractFormatter(DumbWriter(fh))
+        # the parser stores parsed data into fh (file-like handle)
+        parser = HTMLParser(fmt)  # type:ignore
 
-            # now replace the old string with the parsed text
-            new = fh.getvalue()
-            fh.close()
+        # send the HTML text to the parser
+        parser.feed(new)
+        parser.close()
 
-            # finally, get the list of hyperlinks and append to the end of the text
-            hyperlinks = parser.anchorlist
-            numlinks = len(hyperlinks)
-            if numlinks > 0:
-                hyperlist = ['\n\n--Hyperlink list follows--']
-                for i in range(numlinks):
-                    hyperlist.append("\n[%d]: %s" % (i + 1, hyperlinks[i]))  # 3/26/03: was i.
-                new = new + ''.join(hyperlist)
-            #@-<< convert HTML to text >>
-        previous = p.b
-        p.b = new
-        changed = (g.toUnicode(new) != g.toUnicode(previous))
-        if changed and previous != "":
-            g.es("changed: %s" % name)  # A real change.
-        return changed
+        # now replace the old string with the parsed text
+        new = fh.getvalue()
+        fh.close()
+
+        # finally, get the list of hyperlinks and append to the end of the text
+        hyperlinks = parser.anchorlist
+        numlinks = len(hyperlinks)
+        if numlinks > 0:
+            hyperlist = ['\n\n--Hyperlink list follows--']
+            for i in range(numlinks):
+                hyperlist.append("\n[%d]: %s" % (i + 1, hyperlinks[i]))  # 3/26/03: was i.
+            new = new + ''.join(hyperlist)
+        #@-<< convert HTML to text >>
+    previous = p.b
+    p.b = new
+    changed = (g.toUnicode(new) != g.toUnicode(previous))
+    if changed and previous != "":
+        g.es("changed: %s" % name)  # A real change.
+    return changed
 #@+node:edream.110203113231.896: ** on_open
 #  scan the outline and process @read-only nodes.
 def on_open(tag, keywords):

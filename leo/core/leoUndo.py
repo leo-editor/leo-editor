@@ -979,16 +979,16 @@ class Undoer:
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
-            return None  # pragma: no cover
+            return  # pragma: no cover
         if undo_type is None:
-            return None  # pragma: no cover
+            return  # pragma: no cover
         if undo_type == "Can't Undo":
             u.clearUndoState()
             u.setUndoTypes()  # Must still recalculate the menu labels.
-            return None  # pragma: no cover
+            return  # pragma: no cover
         if oldText == newText:
             u.setUndoTypes()  # Must still recalculate the menu labels.
-            return None  # pragma: no cover
+            return  # pragma: no cover
         #@-<< return if there is nothing to do >>
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
@@ -1213,7 +1213,7 @@ class Undoer:
         new_ch: str,
         prev_row: int,
         prev_col: int,
-    ) -> None:
+    ) -> bool:
         """
         A potentially user-modifiable method that should return True if the
         typing indicated by the params starts a new 'word' for the purposes of

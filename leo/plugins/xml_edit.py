@@ -96,6 +96,8 @@ These commands attempt to deal with all of this.
 
 """
 
+# pylint: disable=broad-exception-raised
+
 import os
 import traceback  # for XML parse error display
 from typing import Any
