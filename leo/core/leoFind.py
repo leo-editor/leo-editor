@@ -4,11 +4,12 @@
 #@+<< leoFind imports & annotations >>
 #@+node:ekr.20220415005856.1: ** << leoFind imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Generator, Optional, Union
+from typing import Any, Generator, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 

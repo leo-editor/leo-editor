@@ -4,7 +4,8 @@
 #@+<< leoMenu imports & annotations >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover

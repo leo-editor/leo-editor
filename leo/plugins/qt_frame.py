@@ -5,12 +5,13 @@
 #@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
 from __future__ import annotations
 from collections import defaultdict
+from collections.abc import Callable
 import os
 import platform
 import string
 import sys
 import time
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer

@@ -6,6 +6,7 @@
 from __future__ import annotations
 import binascii
 from collections import defaultdict
+from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import datetime
 import difflib
@@ -18,7 +19,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax

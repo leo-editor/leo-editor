@@ -44,8 +44,9 @@ And call this in your plugin *once*::
 #@+<< contextmenu imports & annotations >>
 #@+node:ekr.20220828123814.1: ** << contextmenu imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import os
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
