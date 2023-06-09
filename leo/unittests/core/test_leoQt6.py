@@ -23,7 +23,8 @@ class TestQt6(BaseTestImporter):
         attrs = [z for z in dir(Qt6) if not z.startswith('__')]
 
         if 1:  # A real unit test.
-            exceptions = ('Qsci', 'QtSvg', 'uic')  # Optional modules.
+            # Optional modules.
+            exceptions = ('Qsci', 'QtSvg', 'QWebEngineSettings', 'WebEngineAttribute', 'uic')
             fails = [
                 attr for attr in attrs
                     if attr not in exceptions and getattr(Qt6, attr, None) is None

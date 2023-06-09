@@ -40,6 +40,7 @@ try:
     import curses
 except ImportError:
     print('cursesGui2.py: curses required.')
+    print('pip install windows-curses')
     raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
