@@ -6,7 +6,7 @@
 from __future__ import annotations
 import random
 import textwrap
-from typing import Any, List, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -54,9 +54,9 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int = 0, tags: List[str] = None, text: str = '', title: str = '') -> None:
+    def __init__(self, n: int = 0, tags: list[str] = None, text: str = '', title: str = '') -> None:
         self.n = n  # Not used.
-        self.tags: List[str] = tags or []  # Not used.
+        self.tags: list[str] = tags or []  # Not used.
         self.title = title.strip()
         self.text = text.strip()
 
@@ -89,7 +89,7 @@ def make_tips(c: Cmdr) -> None:
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
 
-    def get_tips(data: Any) -> List[UserTip]:
+    def get_tips(data: Any) -> list[UserTip]:
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
         :return: list of Tips
@@ -153,7 +153,7 @@ def make_tip_nodes(c: Cmdr) -> None:
 #@-others
 
 # The global tips array.
-tips: List[UserTip] = [
+tips: list[UserTip] = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
 #@@wrap

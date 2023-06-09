@@ -31,7 +31,6 @@ If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
 #@-<< leoColor docstring >>
-from typing import Tuple
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
 # Names should be lower case, without spaces or special characteres.
@@ -756,7 +755,7 @@ def getColor(name: str, default: str = None) -> str:
 
 get = getColor
 #@+node:bob.20080115070511.4: *3* function: leoColor.getRGB / getColorRGB
-def getColorRGB(name: str, default: str = None) -> Tuple[int, int, int]:
+def getColorRGB(name: str, default: str = None) -> tuple[int, int, int]:
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
@@ -767,7 +766,7 @@ def getColorRGB(name: str, default: str = None) -> Tuple[int, int, int]:
 
 getRGB = getColorRGB
 #@+node:bob.20080115072302: *3* function: leoColor.getCairo / getColorCairo
-def getColorCairo(name: str, default: str = None) -> Tuple[float, float, float]:
+def getColorCairo(name: str, default: str = None) -> tuple[float, float, float]:
     """Convert a named color into a cairo color tuple."""
     color = getColorRGB(name, default)
     if color is None:

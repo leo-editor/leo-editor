@@ -96,8 +96,6 @@ import sys
 import sqlite3
 from sqlite3 import ProgrammingError
 import traceback
-from typing import List
-
 #@-<< imports >>
 consoleEncoding = None
 #@+<< define usage >>
@@ -383,7 +381,7 @@ def translateArgs(args, d):
     if not consoleEncoding:
         e = sys.getdefaultencoding()
         consoleEncoding = e if isValidEncoding(e) else 'utf-8'
-    result: List[str] = []
+    result: list[str] = []
     n = 0
     spaces = d.get('spaces')
     for arg in args:

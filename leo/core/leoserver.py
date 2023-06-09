@@ -22,7 +22,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Generator, Iterable, Iterator, Optional, Union
 import warnings
 
 # Third-party.
@@ -54,8 +54,8 @@ Event = Any  # More than one kind of Event!
 Loop = Any
 Match = re.Match
 Match_Iter = Iterator[re.Match[str]]
-Package = Dict[str, Any]
-Param = Dict[str, Any]
+Package = dict[str, Any]
+Param = dict[str, Any]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 Socket = Any
@@ -80,11 +80,11 @@ g = None  # The bridge's leoGlobals module.
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
-connectionsPool: Set[Any] = set()
+connectionsPool: set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List[str] = []  # list of traces names, to be used as flags to output traces
+traces: list[str] = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -301,7 +301,7 @@ class ServerExternalFilesController(ExternalFilesController):
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
     #@+node:felix.20210626222905.18: *4* sefc.open_with
-    def open_with(self, c: Cmdr, d: Dict[str, str]) -> None:
+    def open_with(self, c: Cmdr, d: dict[str, str]) -> None:
         """open-with is bypassed in leoserver (for now)"""
         return
 
@@ -411,15 +411,15 @@ class QuickSearchController:
     #@+node:felix.20220225003906.2: *3* QSC.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.lw: List = []  # empty list
+        self.lw: list = []  # empty list
         # Keys are id(w),values are either tuples in tuples (w (p,Position)) or tuples (w, f)
-        self.its: Dict[int, Any] = {}
+        self.its: dict[int, Any] = {}
         self.fileDirectives = [
             "@asis", "@auto",
             "@auto-md", "@auto-org", "@auto-otl", "@auto-rst",
             "@clean", "@file", "@edit",
         ]
-        self._search_patterns: List[str] = []
+        self._search_patterns: list[str] = []
         self.navText = ''
         self.showParents = True
         self.isTag = False  # added concept to combine tag pane functionality
@@ -506,12 +506,12 @@ class QuickSearchController:
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
-                parents: Dict[str, List[Tuple[Position, Match_Iter]]] = {}
+                parents: dict[str, list[tuple[Position, Match_Iter]]] = {}
 
                 for nodeList in [hm, bm]:
                     for node in nodeList:
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
-                        aList: List[Tuple[Position, Match_Iter]] = parents.get(key, [])
+                        aList: list[tuple[Position, Match_Iter]] = parents.get(key, [])
                         aList.append(node)
                         parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
@@ -532,7 +532,7 @@ class QuickSearchController:
         self._search_patterns = ([pat] + self._search_patterns)[:30]
 
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
-    def addBodyMatches(self, positions: List[Tuple[Position, Match_Iter]]) -> int:
+    def addBodyMatches(self, positions: list[tuple[Position, Match_Iter]]) -> int:
         lineMatchHits = 0
         for p in positions:
             it = {"type": "headline", "label": p[0].h}
@@ -563,7 +563,7 @@ class QuickSearchController:
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
     #@+node:felix.20220225003906.7: *5* QSC.addGeneric
-    def addGeneric(self, text: str, f: Callable) -> Dict:
+    def addGeneric(self, text: str, f: Callable) -> dict:
         """ Add generic callback """
         it = {"type": "generic", "label": text}
         self.its[id(it)] = (it, f)
@@ -573,16 +573,16 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline: List[Tuple[Position, Match_Iter]] = [
+        timeline: list[tuple[Position, Match_Iter]] = [
             (p.copy(), None) for p in c.all_unique_positions()
         ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
-    def qsc_background_search(self, pat: str) -> Tuple[
-        List[Tuple[Position, Match_Iter]],
-        List[Position]
+    def qsc_background_search(self, pat: str) -> tuple[
+        list[tuple[Position, Match_Iter]],
+        list[Position]
     ]:
 
         flags: RegexFlag
@@ -609,7 +609,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed: List[Tuple[Position, Match_Iter]] = [
+        changed: list[tuple[Position, Match_Iter]] = [
             (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
         ]
         self.clear()
@@ -624,7 +624,7 @@ class QuickSearchController:
             # No pattern! list all tags as string
             c = self.c
             self.clear()
-            d: Dict[str, Any] = {}
+            d: dict[str, Any] = {}
             for p in c.all_unique_positions():
                 u = p.v.u
                 tags = set(u.get('__node_tags', set([])))
@@ -642,14 +642,14 @@ class QuickSearchController:
         self.clear()  # needed for external client ui replacement: fills self.its
         self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
     #@+node:felix.20220318222437.1: *5* QSC.addTag
-    def addTag(self, text: str) -> Dict:
+    def addTag(self, text: str) -> dict:
         """ add Tag label """
         it = {"type": "tag", "label": text}
         self.its[id(it)] = (it, None)
         return it
 
     #@+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> List[Tuple[Position, Match_Iter]]:
+    def find_tag(self, pat: str) -> list[tuple[Position, Match_Iter]]:
         """
         Return list of all positions that have matching tags
         """
@@ -677,10 +677,10 @@ class QuickSearchController:
         tags.reverse()
         operations.reverse()
 
-        resultset: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+        resultset: set[str] = set(tc.get_tagged_gnxes(tags.pop()))
         while operations:
             op = operations.pop()
-            nodes: Set[str] = set(tc.get_tagged_gnxes(tags.pop()))
+            nodes: set[str] = set(tc.get_tagged_gnxes(tags.pop()))
             if op == '&':
                 resultset &= nodes
             elif op == '|':
@@ -689,7 +689,7 @@ class QuickSearchController:
                 resultset -= nodes
             elif op == '^':
                 resultset ^= nodes
-        aList: List[Tuple[Position, Match_Iter]] = []
+        aList: list[tuple[Position, Match_Iter]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
@@ -698,7 +698,7 @@ class QuickSearchController:
         return aList
     #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: List[Tuple[Position, Match_Iter]] = [
+        headlines: list[tuple[Position, Match_Iter]] = [
             (po[0].copy(), None) for po in self.c.nodeHistory.beadList
         ]
         headlines.reverse()
@@ -714,7 +714,7 @@ class QuickSearchController:
     #@+node:ekr.20220818083228.1: *3* QSC: helpers
     #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
     def addHeadlineMatches(self,
-        position_list: List[Tuple[Position, Match_Iter]]
+        position_list: list[tuple[Position, Match_Iter]]
     ) -> None:
         for p in position_list:
             it = {"type": "headline", "label": p[0].h}
@@ -727,7 +727,7 @@ class QuickSearchController:
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
     def addParentMatches(self,
-        parent_list: Dict[str, List[Tuple[Position, Match_Iter]]],
+        parent_list: dict[str, list[tuple[Position, Match_Iter]]],
     ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
@@ -761,9 +761,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        positions: List[Position],
+        positions: list[Position],
         flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
-    ) -> List[Tuple[Position, Match_Iter]]:
+    ) -> list[tuple[Position, Match_Iter]]:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
         """
@@ -772,7 +772,7 @@ class QuickSearchController:
         except Exception:
             return []
 
-        aList: List[Tuple[Position, Match_Iter]] = []
+        aList: list[tuple[Position, Match_Iter]] = []
         for p in positions:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
@@ -787,9 +787,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        positions: List[Position],
+        positions: list[Position],
         flags: RegexFlag = re.IGNORECASE,
-    ) -> List[Tuple[Position, Match_Iter]]:
+    ) -> list[tuple[Position, Match_Iter]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
@@ -799,7 +799,7 @@ class QuickSearchController:
             return []
         return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Match_Iter) -> List[Tuple[str, Tuple[int, int]]]:
+    def matchlines(self, b: str, miter: Match_Iter) -> list[tuple[str, tuple[int, int]]]:
         aList = []
         for m in miter:
             st, en = g.getLine(b, m.start())
@@ -860,7 +860,7 @@ class LeoServer:
         self.c: Cmdr = None  # Currently Selected Commander.
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
-        self.bad_commands_list: List[str] = []  # Set below.
+        self.bad_commands_list: list[str] = []  # Set below.
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -1057,7 +1057,7 @@ class LeoServer:
     #@+node:felix.20210621233316.7: *4* server.button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:felix.20210621233316.8: *5* _check_button_command
-    def _check_button_command(self, tag: str) -> Dict:  # pragma: no cover (no scripting controller)
+    def _check_button_command(self, tag: str) -> dict:  # pragma: no cover (no scripting controller)
         """
         Check that a button command is possible.
         Raise ServerError if not. Otherwise, return sc.buttonsDict.
@@ -1069,8 +1069,8 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:felix.20220220203658.1: *5* _get_rclickTree
-    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict[str, Any]]:
-        rclickList: List[Dict[str, Any]] = []
+    def _get_rclickTree(self, rclicks: list[Any]) -> list[dict[str, Any]]:
+        rclickList: list[dict[str, Any]] = []
         for rc in rclicks:
             children = []
             if rc.children:
@@ -1116,7 +1116,7 @@ class LeoServer:
         # Tag along a possible return value with info sent back by _make_response
         return self._make_response()
     #@+node:felix.20210621233316.10: *5* server.get_buttons
-    def get_buttons(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
+    def get_buttons(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
         """
         Gets the currently opened file's @buttons list
         as an array of dict.
@@ -1150,7 +1150,7 @@ class LeoServer:
             "buttons": buttons
         })
     #@+node:felix.20210621233316.11: *5* server.remove_button
-    def remove_button(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
+    def remove_button(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
         """Remove button by index 'key string'."""
         tag = 'remove_button'
         index = param.get("index")
@@ -1172,7 +1172,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20211016235830.1: *5* server.goto_script
-    def goto_script(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
+    def goto_script(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
         """Goto the script this button originates."""
         tag = 'goto_script'
         index = param.get("index")
@@ -1635,7 +1635,7 @@ class LeoServer:
         c = self._check_c()
         try:
             scon: QuickSearchController = c.patched_quicksearch_controller
-            result: Dict[str, Any] = {}
+            result: dict[str, Any] = {}
             navlist = [
                 {
                     "key": k,
@@ -2304,7 +2304,7 @@ class LeoServer:
         p = self._get_p(param)
         wrapper = c.frame.body.wrapper
 
-        def row_col_wrapper_dict(i: int) -> Dict:
+        def row_col_wrapper_dict(i: int) -> dict:
             if not i:
                 i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
@@ -2312,7 +2312,7 @@ class LeoServer:
             line, col = wrapper.toPythonIndexRowCol(i)
             return {"line": line, "col": col, "index": i}
 
-        def row_col_pv_dict(i: int, s: str) -> Dict:
+        def row_col_pv_dict(i: int, s: str) -> dict:
             if not i:
                 i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
@@ -3204,7 +3204,7 @@ class LeoServer:
         tag = 'get_all_leo_commands'
         # #173: Use the present commander to get commands created by @button and @command.
         c = self.c
-        d: Dict = c.commandsDict if c else {}  # keys are command names, values are functions.
+        d: dict = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
@@ -3231,7 +3231,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_minimal_response({"commands": result})
     #@+node:felix.20210621233316.73: *6* server._bad_commands
-    def _bad_commands(self, c: Cmdr) -> List[str]:
+    def _bad_commands(self, c: Cmdr) -> list[str]:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
@@ -3997,7 +3997,7 @@ class LeoServer:
         result = list(sorted(bad))
         return result
     #@+node:felix.20210621233316.74: *6* server._good_commands
-    def _good_commands(self) -> List[str]:
+    def _good_commands(self) -> list[str]:
         """Defined commands that should be available in a connected client"""
         good_list = [
 
@@ -4388,7 +4388,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_response({"server-commands": names})
     #@+node:felix.20210914231602.1: *6* _get_all_server_commands
-    def _get_all_server_commands(self) -> List[str]:
+    def _get_all_server_commands(self) -> list[str]:
         """
         Private server method:
         Return the names of all callable public methods of the server.
@@ -4417,7 +4417,7 @@ class LeoServer:
         raise TerminateServer("client requested shut down")
     #@+node:felix.20210621233316.78: *3* server.server utils
     #@+node:felix.20210621233316.79: *4* server._ap_to_p
-    def _ap_to_p(self, ap: Dict[str, Any]) -> Optional[Position]:
+    def _ap_to_p(self, ap: dict[str, Any]) -> Optional[Position]:
         """
         Convert ap (archived position, a dict) to a valid Leo position.
 
@@ -4436,7 +4436,7 @@ class LeoServer:
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
 
-            def d_to_childIndex_v(d: Dict[str, str]) -> Tuple[int, VNode]:
+            def d_to_childIndex_v(d: dict[str, str]) -> tuple[int, VNode]:
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex: int
                 childIndex_s: str = d.get('childIndex')
@@ -4596,7 +4596,7 @@ class LeoServer:
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:felix.20210621233316.85: *4* server._do_message
-    def _do_message(self, d: Dict[str, Any]) -> Response:
+    def _do_message(self, d: dict[str, Any]) -> Response:
         """
         Handle d, a python dict representing the incoming request.
         The d dict must have the three (3) following keys:
@@ -4630,7 +4630,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no action")
 
         # TODO : make/force always an object from the client connected.
-        param: Optional[Dict] = d.get('param', {})
+        param: Optional[dict] = d.get('param', {})
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
@@ -4757,7 +4757,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
         return focus
     #@+node:ekr.20220817091731.1: *4* server._get_optional_p
-    def _get_optional_p(self, param: Dict) -> Optional[Position]:
+    def _get_optional_p(self, param: dict) -> Optional[Position]:
         """
         Return _ap_to_p(param["ap"]) or None.
         """
@@ -4774,7 +4774,7 @@ class LeoServer:
                 return p  # Return the position
         return None
     #@+node:felix.20210621233316.90: *4* server._get_p
-    def _get_p(self, param: Dict) -> Position:
+    def _get_p(self, param: dict) -> Position:
         """
         Return _ap_to_p(param["ap"]) or c.p.
         """
@@ -4795,7 +4795,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no c.p")
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p: Position, includeChildren: bool = False) -> Dict:
+    def _get_position_d(self, p: Position, includeChildren: bool = False) -> dict:
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4850,7 +4850,7 @@ class LeoServer:
             d['selected'] = True
         return d
     #@+node:felix.20230202225736.1: *4* server._get_sel_range
-    def _get_sel_range(self) -> Tuple[int, int]:
+    def _get_sel_range(self) -> tuple[int, int]:
         """
         Returns the selection range from either the body widget,
         or the selected node headline widget.
@@ -4984,7 +4984,7 @@ class LeoServer:
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.95: *4* server._p_to_ap
-    def _p_to_ap(self, p: Position) -> Dict:
+    def _p_to_ap(self, p: Position) -> dict:
         """
         * From Leo plugin leoflexx.py *
 

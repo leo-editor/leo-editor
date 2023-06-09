@@ -5,7 +5,7 @@
 #@+node:ekr.20120420054855.14344: ** << leoSessions imports & annotations >>
 from __future__ import annotations
 import json
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -38,9 +38,9 @@ class SessionManager:
         # # Do not use g.trace or g.es here.
         # print(s)
     #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session
-    def get_session(self) -> List[str]:
+    def get_session(self) -> list[str]:
         """Return a list of UNLs for open tabs."""
-        result: List[str] = []
+        result: list[str] = []
         # Fix #1118, part 2.
         if not getattr(g.app.gui, 'frameFactory', None):
             return result
@@ -60,7 +60,7 @@ class SessionManager:
                 return g.finalize_join(path, 'leo.session')
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
-    def load_session(self, c: Cmdr = None, unls: List[str] = None) -> None:
+    def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
             return

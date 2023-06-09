@@ -3,7 +3,7 @@
 #@+<< leoHistory imports & annotations >>
 #@+node:ekr.20221213120137.1: ** << leoHistory imports & annotations >>
 from __future__ import annotations
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
@@ -19,7 +19,7 @@ class NodeHistory:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for NodeHistory class."""
         self.c = c
-        self.beadList: List[Tuple[Position, Chapter]] = []
+        self.beadList: list[tuple[Position, Chapter]] = []
         self.beadPointer = -1
         self.skipBeadUpdate = False
 
@@ -83,7 +83,7 @@ class NodeHistory:
         if p.h.startswith('@chapter '):
             return
         # Fix bug #180: handle the change flag.
-        aList: List[Tuple[Position, Chapter]] = []
+        aList: list[tuple[Position, Chapter]] = []
         found = -1
         for i, data in enumerate(self.beadList):
             p2, junk_chapter = data

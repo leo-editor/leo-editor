@@ -37,7 +37,6 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import os
 import sys
-from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
@@ -226,7 +225,7 @@ class GlobalSearch:
         """]
         fts_max_hits = self.fts_max_hits
         res = fts.search(q, fts_max_hits)
-        outlines: Dict = {}
+        outlines: dict = {}
         for r in res:
             if '#' in r["parent"]:
                 file_name, junk = r["parent"].split('#', 1)

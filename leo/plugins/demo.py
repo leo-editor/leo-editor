@@ -11,7 +11,6 @@ Revised by EKR February 6-7, 2017.
 #@+<< demo.py imports >>
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
-from typing import List
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -313,7 +312,7 @@ class Demo:
         Return a list of strings.
         """
         aList = []
-        lines: List[str] = []
+        lines: list[str] = []
         for s in g.splitLines(script_string):
             if s.startswith(delim):
                 if lines:

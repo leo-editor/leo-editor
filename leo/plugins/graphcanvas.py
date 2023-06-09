@@ -27,7 +27,7 @@ make sense to focus on pydot.
 from math import atan2, sin, cos
 import os
 import tempfile
-from typing import Any, Dict
+from typing import Any
 import urllib.request as urllib
 
 from leo.core import leoGlobals as g
@@ -295,7 +295,7 @@ class GetImage:
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtWidgets.QGraphicsItemGroup):  # type:ignore
 
-    node_types: Dict[str, Any] = {}
+    node_types: dict[str, Any] = {}
 
     @classmethod
     def make_node(cls, owner, node, ntype):

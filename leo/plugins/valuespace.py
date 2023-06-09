@@ -131,7 +131,7 @@ import os
 import re
 import json
 from io import BytesIO
-from typing import Any, Dict, Sequence
+from typing import Any, Sequence
 try:
     import yaml
 except ImportError:
@@ -142,7 +142,7 @@ from leo.core import leoPlugins
 from leo.external.stringlist import SList  # Uses leoPlugins.TryNext.
 #@-<< valuespace imports >>
 # Keys are c.hash(), values are ValueSpaceControllers.
-controllers: Dict[str, Any] = {}
+controllers: dict[str, Any] = {}
 
 # pylint: disable=eval-used
 # Eval is essential to this plugin.

@@ -9,7 +9,7 @@ import os
 import pickle
 import sqlite3
 import stat
-from typing import Any, Dict, Generator, List, Optional, Sequence, Set, TYPE_CHECKING
+from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -121,13 +121,13 @@ class CommanderWrapper:
         self.c = c
         self.db = g.app.db
         self.key = fn or c.mFileName
-        self.user_keys: Set[str] = set()
+        self.user_keys: set[str] = set()
 
     def get(self, key: str, default: Any = None) -> Any:
         value = self.db.get(f"{self.key}:::{key}")
         return default if value is None else value
 
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         return sorted(list(self.user_keys))
 
     def __contains__(self, key: Any) -> bool:
@@ -214,7 +214,7 @@ class PickleShareDB:
             self._makedirs(self.root)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         def loadz(fileobj: Any) -> None:
             if fileobj:
@@ -328,7 +328,7 @@ class PickleShareDB:
                 for f in self._walkfiles(child, pattern):
                     yield f
     #@+node:ekr.20100208223942.10456: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> List[str]:
+    def _listdir(self, s: str, pattern: str = None) -> list[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -374,14 +374,14 @@ class PickleShareDB:
             return False
         return True
     #@+node:ekr.20100208223942.5981: *3* items
-    def items(self) -> List[Any]:
+    def items(self) -> list[Any]:
         return [z for z in self]
     #@+node:ekr.20100208223942.5982: *3* keys & helpers (PickleShareDB)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str = None) -> List[str]:
+    def keys(self, globpat: str = None) -> list[str]:
         """Return all keys in DB, or all keys matching a glob"""
-        files: List[str]
+        files: list[str]
         if globpat is None:
             files = self._walkfiles(self.root)  # type:ignore
         else:
@@ -431,7 +431,7 @@ class PickleShareDB:
     #@+node:ekr.20100208223942.10462: *4* _splitall
     # Used by relpathto.
 
-    def _splitall(self, s: str) -> List[str]:
+    def _splitall(self, s: str) -> list[str]:
         """ Return a list of the path components in this path.
 
         The first item in the list will be a path.  Its value will be
@@ -491,7 +491,7 @@ class SqlitePickleShare:
         self.init_dbtables(self.conn)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         def loadz(data: Any) -> Optional[Any]:
             if data:
@@ -587,7 +587,7 @@ class SqlitePickleShare:
         extension.
         """
     #@+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> List[str]:
+    def _listdir(self, s: str, pattern: str = None) -> list[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -697,7 +697,7 @@ def dump_cache(db: Any, tag: str) -> None:
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d: Dict[str, Any] = {}
+    d: dict[str, Any] = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)
@@ -719,7 +719,7 @@ def dump_cache(db: Any, tag: str) -> None:
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
 
-def dump_list(heading: Any, aList: List) -> None:
+def dump_list(heading: Any, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
     for aTuple in aList:

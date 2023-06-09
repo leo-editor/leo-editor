@@ -3,7 +3,7 @@
 """The @auto importer for JavaScript."""
 from __future__ import annotations
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ class JS_Importer(Importer):
     # These patterns won't find all functions, but they are a reasonable start.
 
     # Group 1 must be the block name.
-    block_patterns: Tuple = (
+    block_patterns: tuple = (
         # (? function name ( .*? {
         ('function', re.compile(r'\s*?\(?function\b\s*([\w\.]*)\s*\(.*?\{')),
 

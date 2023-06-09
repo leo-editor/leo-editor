@@ -11,8 +11,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -110,15 +109,15 @@ class AtFile:
         self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
         self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0  # For perfect import.
-        self.docOut: List[str] = []  # The doc part being accumulated.
+        self.docOut: list[str] = []  # The doc part being accumulated.
         self.done = False  # True when @-leo seen.
         self.fromString = ''
         self.importRootSeen = False
-        self.lastLines: List[str] = []  # The lines after @-leo
+        self.lastLines: list[str] = []  # The lines after @-leo
         self.leadingWs = ""
         self.lineNumber = 0  # New in Leo 4.4.8.
         self.read_i = 0
-        self.read_lines: List[str] = []
+        self.read_lines: list[str] = []
         self.readVersion = ''  # "5" for new-style thin files.
         self.readVersion5 = False  # Synonym for self.readVersion >= '5'
         self.root = root
@@ -224,7 +223,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> Union[Tuple[str, str], Tuple[None, None]]:
+    def openFileForReading(self, fromString: str = None) -> Union[tuple[str, str], tuple[None, None]]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -350,12 +349,12 @@ class AtFile:
         c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
-    def findFilesToRead(self, root: Position, all: bool) -> List[Position]:  # pragma: no cover
+    def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
 
         c = self.c
         p = root.copy()
-        scanned_nodes: Set[Tuple[str, str]] = set()
-        files: List[Position] = []
+        scanned_nodes: set[tuple[str, str]] = set()
+        files: list[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:
             data = (p.gnx, c.fullPath(p))
@@ -556,13 +555,13 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
-    def dump(self, lines: List[str], tag: Any) -> None:  # pragma: no cover
+    def dump(self, lines: list[str], tag: Any) -> None:  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
             print(s.rstrip())
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
-    def read_at_clean_lines(self, fn: str) -> List[str]:  # pragma: no cover
+    def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
         at = self
         # Use the standard helper. Better error reporting.
@@ -577,7 +576,7 @@ class AtFile:
             s = s.replace('\r\n', '\n')  # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
-    def write_at_clean_sentinels(self, root: Position) -> List[str]:  # pragma: no cover
+    def write_at_clean_sentinels(self, root: Position) -> list[str]:  # pragma: no cover
         """
         Return all lines of the @clean tree as if it were
         written as an @file node.
@@ -632,7 +631,7 @@ class AtFile:
     def fast_read_into_root(self,
         c: Cmdr,
         contents: str,
-        gnx2vnode: Dict[str, VNode],
+        gnx2vnode: dict[str, VNode],
         path: str, root: Position,
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
@@ -658,7 +657,7 @@ class AtFile:
         at.read_lines = g.splitLines(s)
         at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
-    def parseLeoSentinel(self, s: str) -> Tuple[bool, bool, str, str, bool]:
+    def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
         If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
@@ -800,7 +799,7 @@ class AtFile:
         # Not an error.
         return ''  # pragma: no cover
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
-    def scanHeader(self, fileName: str, giveErrors: bool = True) -> Tuple[List[str], bool, bool]:
+    def scanHeader(self, fileName: str, giveErrors: bool = True) -> tuple[list[str], bool, bool]:
         """
         Scan the @+leo sentinel, using the old readLine interface.
 
@@ -813,7 +812,7 @@ class AtFile:
         """
         at = self
         new_df, isThinDerivedFile = False, False
-        firstLines: List[str] = []  # The lines before @+leo.
+        firstLines: list[str] = []  # The lines before @+leo.
         s = self.scanFirstLines(firstLines)
         valid = len(s) > 0
         if valid:
@@ -826,7 +825,7 @@ class AtFile:
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
-    def scanFirstLines(self, firstLines: List[str]) -> str:  # pragma: no cover
+    def scanFirstLines(self, firstLines: list[str]) -> str:  # pragma: no cover
         """
         Append all lines before the @+leo line to firstLines.
 
@@ -1000,7 +999,7 @@ class AtFile:
         at.reportEndOfWrite(files, all, dirty)
         # #2338: Never call at.saveOutlineIfPossible().
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
-    def findFilesToWrite(self, force: bool) -> Tuple[List[Position], Position]:  # pragma: no cover
+    def findFilesToWrite(self, force: bool) -> tuple[list[Position], Position]:  # pragma: no cover
         """
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
@@ -1021,7 +1020,7 @@ class AtFile:
             p = c.rootPosition()
             after = None
         seen = set()
-        files: List[Position] = []
+        files: list[Position] = []
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 # Honor @ignore in *body* text, but *not* in @asis nodes.
@@ -1059,7 +1058,7 @@ class AtFile:
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
-    def reportEndOfWrite(self, files: List[Position], all: bool, dirty: bool) -> None:  # pragma: no cover
+    def reportEndOfWrite(self, files: list[Position], all: bool, dirty: bool) -> None:  # pragma: no cover
 
         at = self
         if g.unitTesting:
@@ -1839,7 +1838,7 @@ class AtFile:
             return False
         return True
     #@+node:ekr.20041005105605.199: *6* at.findSectionName
-    def findSectionName(self, s: str, i: int, p: Position) -> Tuple[str, int, int]:
+    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str, int, int]:
         """
         Return n1, n2 representing a section name.
 
@@ -2272,7 +2271,7 @@ class AtFile:
     #@+node:ekr.20041005105605.200: *5* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
 
-    def isSectionName(self, s: str, i: int) -> Tuple[bool, int]:  # pragma: no cover
+    def isSectionName(self, s: str, i: int) -> tuple[bool, int]:  # pragma: no cover
 
         at = self
         # Allow leading periods.
@@ -2830,7 +2829,7 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p: Position) -> Dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
@@ -2967,11 +2966,11 @@ class FastAtRead:
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
-    def __init__(self, c: Cmdr, gnx2vnode: Dict[str, VNode]) -> None:
+    def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
 
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode: Dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.gnx2vnode: dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path: str = None
         self.root: Position = None
         # compiled patterns...
@@ -3035,7 +3034,7 @@ class FastAtRead:
         re.VERBOSE,
     )
 
-    def scan_header(self, lines: Any) -> Optional[Tuple[Any, Any, Any]]:
+    def scan_header(self, lines: Any) -> Optional[tuple[Any, Any, Any]]:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
@@ -3043,7 +3042,7 @@ class FastAtRead:
         Important: delims[0] will end with a blank when reading a file with blackened sentinels!
                    This fact eliminates all special cases in scan_lines!
         """
-        first_lines: List[str] = []
+        first_lines: list[str] = []
         i = 0  # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             m = self.header_pattern.match(line)
@@ -3069,7 +3068,7 @@ class FastAtRead:
         in_doc = False  # True: in @doc parts.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
-        level_stack: List[Tuple[VNode, VNode]] = []
+        level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
         root_gnx_adjusted = False  # True: suppress final checks.
         # #1065 so reads will not create spurious child nodes.
@@ -3079,7 +3078,7 @@ class FastAtRead:
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
         # The stack is updated when at+others, at+<section>, or at+all is seen.
-        stack: List[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
+        stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
         verbatim = False  # True: the next line must be added without change.
         #
@@ -3110,7 +3109,7 @@ class FastAtRead:
             if afterref:
                 #@+<< handle afterref line>>
                 #@+node:ekr.20211102052251.1: *4* << handle afterref line >>
-                if body:  # a List of lines.
+                if body:  # a list of lines.
                     body[-1] = body[-1].rstrip() + line
                 else:
                     body = [line]  # pragma: no cover

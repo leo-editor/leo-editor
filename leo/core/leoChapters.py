@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -32,7 +32,7 @@ class ChapterController:
         """Ctor for ChapterController class."""
         self.c = c
         # Note: chapter names never change, even if their @chapter node changes.
-        self.chaptersDict: Dict[str, Any] = {}  # Keys are chapter names, values are chapters.
+        self.chaptersDict: dict[str, Any] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
         self.re_chapter: re.Pattern = None  # Set where used.
         self.selectedChapter = None
@@ -254,7 +254,7 @@ class ChapterController:
         theChapter = cc.getSelectedChapter()
         return bool(theChapter and theChapter.name != 'main')
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
-    def parseHeadline(self, p: Position) -> Tuple[str, str]:
+    def parseHeadline(self, p: Position) -> tuple[str, str]:
         """Return the chapter name and key binding for p.h."""
         if not self.re_chapter:
             self.re_chapter = re.compile(
@@ -330,7 +330,7 @@ class ChapterController:
         # New in Leo 5.6: don't call c.redraw immediately.
         c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
-    def setAllChapterNames(self) -> List[str]:
+    def setAllChapterNames(self) -> list[str]:
         """Called early and often to discover all chapter names."""
         c, cc = self.c, self
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'

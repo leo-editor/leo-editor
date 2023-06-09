@@ -5,7 +5,7 @@
 #@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Callable, Dict, List, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 # Third-party annotations
 try:
     # We can't assume the user has enchant..
@@ -97,7 +97,7 @@ class BaseSpellWrapper:
 
         self.d.add_to_session(word)
     #@+node:ekr.20150514063305.517: *3* spell.process_word
-    def process_word(self, word: str) -> List[str]:
+    def process_word(self, word: str) -> list[str]:
         """
         Check the word. Return None if the word is properly spelled.
         Otherwise, return a list of alternatives.
@@ -131,10 +131,10 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: List[str] = None) -> None:
-        self.added_words: Set[str] = set()
-        self.ignored_words: Set[str] = set()
-        self.words: Set[str] = set() if words is None else set(words)
+    def __init__(self, words: list[str] = None) -> None:
+        self.added_words: set[str] = set()
+        self.ignored_words: set[str] = set()
+        self.words: set[str] = set() if words is None else set(words)
 
     #@+others
     #@+node:ekr.20180207075740.1: *3* dict.add
@@ -160,9 +160,9 @@ class DefaultDict:
                 return True
         return False
     #@+node:ekr.20180207081634.1: *3* dict.suggest & helpers
-    def suggest(self, word: str) -> List[str]:
+    def suggest(self, word: str) -> list[str]:
 
-        def known(words: List[str]) -> List[str]:
+        def known(words: list[str]) -> list[str]:
             """Return the words that are in the dictionary."""
             return [z for z in list(set(words)) if z in self.words]
 
@@ -176,7 +176,7 @@ class DefaultDict:
     #@+node:ekr.20180207085717.1: *4* dict.edits1 & edits2
     #@@nobeautify
 
-    def edits1(self, word: str) -> List[str]:
+    def edits1(self, word: str) -> list[str]:
         "All edits that are one edit away from `word`."
         letters    = 'abcdefghijklmnopqrstuvwxyz'
         splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
@@ -186,7 +186,7 @@ class DefaultDict:
         inserts    = [L + c + R               for L, R in splits for c in letters]
         return list(set(deletes + transposes + replaces + inserts))
 
-    def edits2(self, word: str) -> List[str]:
+    def edits2(self, word: str) -> list[str]:
         "All edits that are two edits away from `word`."
         return [e2 for e1 in self.edits1(word) for e2 in self.edits1(e1)]
     #@-others
@@ -243,7 +243,7 @@ class DefaultWrapper(BaseSpellWrapper):
         fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words
-    def read_words(self, kind: Any, fn: str) -> Set[str]:
+    def read_words(self, kind: Any, fn: str) -> set[str]:
         """Return all the words from the dictionary file."""
         words = set()
         try:
@@ -316,17 +316,17 @@ class EnchantWrapper(BaseSpellWrapper):
         self.c = c
         self.init_language()
         fn = self.find_user_dict()
-        self.d: Dict[str, str] = self.open_dict_file(fn)
+        self.d: dict[str, str] = self.open_dict_file(fn)
         g.app.spellDict = self.d
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
-    def create_dict_from_file(self, fn: str, language: Any) -> Dict[str, str]:
+    def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
 
         try:
             return enchant.DictWithPWL(language, fn)
         except Exception:
             return {}
     #@+node:ekr.20180207074613.1: *3* enchant.default_dict
-    def default_dict(self, language: Any) -> Dict[str, str]:
+    def default_dict(self, language: Any) -> dict[str, str]:
 
         try:
             return enchant.Dict(language)
@@ -349,7 +349,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
-    def open_dict_file(self, fn: str) -> Dict[str, str]:
+    def open_dict_file(self, fn: str) -> dict[str, str]:
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
@@ -384,7 +384,7 @@ class EnchantWrapper(BaseSpellWrapper):
 
         self.d.add_to_session(word)
     #@+node:ekr.20150514063305.517: *3* spell.process_word
-    def process_word(self, word: str) -> List[str]:
+    def process_word(self, word: str) -> list[str]:
         """
         Check the word. Return None if the word is properly spelled.
         Otherwise, return a list of alternatives.
@@ -462,7 +462,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         if not self.handler.loaded:
             log.deleteTab(tabName)
         # spell as you type stuff
-        self.suggestions: List[str] = []
+        self.suggestions: list[str] = []
         self.suggestions_idx: int = None
         self.word: str = None
         self.spell_as_you_type = False
@@ -684,7 +684,7 @@ class SpellTabHandler:
         # [^\W\d_] means any unicode char except underscore or digit.
         self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
-        self.seen: Set[str] = set()  # Adding a word to seen will ignore it until restart.
+        self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
         # A text widget for scanning. Must have a parent frame.
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
         if enchant:
@@ -769,7 +769,7 @@ class SpellTabHandler:
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
-                alts: List[str] = sc.process_word(word)
+                alts: list[str] = sc.process_word(word)
                 if alts:
                     self.currentWord = word
                     i = ins + start

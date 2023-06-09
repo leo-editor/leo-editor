@@ -3,7 +3,7 @@
 """The @auto importer for vim-outline files."""
 from __future__ import annotations
 import re
-from typing import Dict, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -20,7 +20,7 @@ class Otl_Importer(Importer):
 
     #@+others
     #@+node:ekr.20230530052911.1: *3* otl_i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
+    def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
         """
         Otl_Importer.check_blanks_and_tabs.
         
@@ -49,8 +49,8 @@ class Otl_Importer(Importer):
         lines = self.lines
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.
-        lines_dict: Dict[VNode, List[str]] = {parent.v: []}  # Lines for each vnode.
-        parents: List[Position] = [self.root]
+        lines_dict: dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
+        parents: list[Position] = [self.root]
         for line in lines:
             if not line.strip():
                 continue  # New.
@@ -78,7 +78,7 @@ class Otl_Importer(Importer):
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20220803162645.1: *3* otl_i.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:
+    def regularize_whitespace(self, lines: list[str]) -> list[str]:
         """
         Otl_Importer.regularize_whitespace.
 

@@ -31,7 +31,7 @@ from __future__ import annotations
 import difflib
 import os
 import pprint
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -57,7 +57,7 @@ class ShadowController:
         }
         self.encoding: str = c.config.default_derived_file_encoding
         self.errors = 0
-        self.results: List[str] = []
+        self.results: list[str] = []
         self.shadow_subdir: str = None
         self.shadow_prefix: str = None
         self.shadow_in_home_dir: bool = None
@@ -205,11 +205,11 @@ class ShadowController:
         return ok
     #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm) & helpers
     def propagate_changed_lines(self,
-        new_public_lines: List[str],
-        old_private_lines: List[str],
+        new_public_lines: list[str],
+        old_private_lines: list[str],
         marker: "Marker",
         p: Position = None,
-    ) -> List[str]:
+    ) -> list[str]:
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
         """
@@ -249,13 +249,13 @@ class ShadowController:
             x.dump_lines(lines, title)
         g.pr()
     #@+node:ekr.20150207111757.178: *5* x.dump_lines
-    def dump_lines(self, lines: List[str], title: str) -> None:
+    def dump_lines(self, lines: list[str], title: str) -> None:
         """Dump the given lines."""
         print(f"\n{title}...\n")
         for i, line in enumerate(lines):
             g.pr(f"{i:4} {line!r}")
     #@+node:ekr.20150209044257.6: *5* x.init_data
-    def init_data(self) -> List[str]:
+    def init_data(self) -> list[str]:
         """
         Init x.sentinels and x.trailing_sentinels arrays.
         Return the list of non-sentinel lines in x.old_sent_lines.
@@ -264,9 +264,9 @@ class ShadowController:
         lines = x.old_sent_lines
         # The sentinels preceding each non-sentinel line,
         # not including @verbatim sentinels.
-        sentinels: List[str] = []
+        sentinels: list[str] = []
         # A list of all non-sentinel lines found.  Should match x.a.
-        new_lines: List[str] = []
+        new_lines: list[str] = []
         # A list of lists of sentinels preceding each line.
         x.sentinels = []
         i = 0
@@ -293,8 +293,8 @@ class ShadowController:
         return new_lines
     #@+node:ekr.20080708094444.40: *5* x.init_ivars
     def init_ivars(self,
-        new_public_lines: List[str],
-        old_private_lines: List[str],
+        new_public_lines: list[str],
+        old_private_lines: list[str],
         marker: "Marker",
     ) -> None:
         """Init all ivars used by propagate_changed_lines & its helpers."""
@@ -356,7 +356,7 @@ class ShadowController:
             for i in range(bi, bj):
                 x.put_plain_line(x.b[i])
     #@+node:ekr.20150208060128.7: *5* x.preprocess
-    def preprocess(self, lines: List[str]) -> List[str]:
+    def preprocess(self, lines: list[str]) -> list[str]:
         """
         Preprocess public lines, adding newlines as needed.
         This happens before the diff.
@@ -452,7 +452,7 @@ class ShadowController:
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
     #@+node:ekr.20090529125512.6122: *4* x.markerFromFileLines & helper
-    def markerFromFileLines(self, lines: List[str], fn: str) -> "Marker":
+    def markerFromFileLines(self, lines: list[str], fn: str) -> "Marker":
         """Return the sentinel delimiter comment to be used for filename."""
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
@@ -463,7 +463,7 @@ class ShadowController:
             delims = start, '', ''
         return x.Marker(delims)
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
-    def findLeoLine(self, lines: List[str]) -> str:
+    def findLeoLine(self, lines: list[str]) -> str:
         """Return the @+leo line, or ''."""
         for line in lines:
             i = line.find('@+leo')
@@ -483,7 +483,7 @@ class ShadowController:
         marker = x.Marker(delims)
         return marker
     #@+node:ekr.20080708094444.29: *4* x.separate_sentinels
-    def separate_sentinels(self, lines: List[str], marker: "Marker") -> Tuple[List[str], List[str]]:
+    def separate_sentinels(self, lines: list[str], marker: "Marker") -> tuple[list[str], list[str]]:
         """
         Separates regular lines from sentinel lines.
         Do not return @verbatim sentinels.
@@ -515,8 +515,8 @@ class ShadowController:
         return regular_lines, sentinel_lines
     #@+node:ekr.20080708094444.33: *4* x.show_error & helper
     def show_error(self,
-        lines1: List[str],
-        lines2: List[str],
+        lines1: list[str],
+        lines2: list[str],
         message: str,
         lines1_message: str,
         lines2_message: str,
@@ -530,7 +530,7 @@ class ShadowController:
         x.show_error_lines(lines2, 'shadow_errors.tmp2')
         g.es_print('\n@shadow did not pick up the external changes correctly')
     #@+node:ekr.20080822065427.4: *5* x.show_error_lines
-    def show_error_lines(self, lines: List[str], fileName: str) -> None:
+    def show_error_lines(self, lines: list[str], fileName: str) -> None:
         for i, line in enumerate(lines):
             g.es_print(f"{i:3} {line!r}")
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
@@ -538,7 +538,7 @@ class ShadowController:
         """A class representing comment delims in @shadow files."""
         #@+others
         #@+node:ekr.20090529061522.6257: *4* ctor & repr
-        def __init__(self, delims: Tuple[str, str, str]) -> None:
+        def __init__(self, delims: tuple[str, str, str]) -> None:
             """Ctor for Marker class."""
             delim1, delim2, delim3 = delims
             self.delim1 = delim1  # Single-line comment delim.
@@ -554,7 +554,7 @@ class ShadowController:
                 delims = f"{self.delim2} {self.delim3}"
             return f"<Marker: delims: {delims!r}>"
         #@+node:ekr.20090529061522.6258: *4* getDelims
-        def getDelims(self) -> Tuple[str, str]:
+        def getDelims(self) -> tuple[str, str]:
             """Return the pair of delims to be used in sentinel lines."""
             if self.delim1:
                 return self.delim1, ''

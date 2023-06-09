@@ -4,7 +4,6 @@
 import glob
 import importlib
 import textwrap
-from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
@@ -60,7 +59,7 @@ class BaseTestImporter(LeoUnitTest):
                     return z  # pragma: no cover
         return '@file'
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: Tuple) -> None:
+    def new_run_test(self, s: str, expected_results: tuple) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -88,7 +87,7 @@ class BaseTestImporter(LeoUnitTest):
             self.dump_tree(parent, tag='Actual results...')
             raise
     #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: Tuple) -> None:
+    def check_outline(self, p: Position, expected: tuple) -> None:
         """
         BaseTestImporter.check_outline.
         

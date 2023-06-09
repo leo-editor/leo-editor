@@ -102,7 +102,7 @@ plugins. Here are some points of interest:
 """
 #@-<< docstring >>
 # Written by TNB.
-from typing import Any, List, Tuple
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
@@ -129,7 +129,7 @@ def onCreate(tag, key):
 #@+node:tbrown.20091103080354.1400: ** class AttributeGetter
 class AttributeGetter:
 
-    implementations: List[Any] = []
+    implementations: list[Any] = []
 
     typeMap = {
         '_int': int,
@@ -212,7 +212,7 @@ class AttributeGetterUA(AttributeGetter):
         v.uA['inventory']['_edit']['_int']['cars'] respectively
         """
 
-        ans: List[Tuple] = []
+        ans: list[tuple] = []
         d = v.u
 
         self.recSearch(d, [], ans)

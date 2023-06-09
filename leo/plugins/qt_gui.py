@@ -10,8 +10,7 @@ import functools
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -64,7 +63,7 @@ class LeoQtGui(leoGui.LeoGui):
         super().__init__('qt')  # Initialize the base class.
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
-        self.iconimages: Dict[str, Any] = {}  # Keys are paths, values are Icons.
+        self.iconimages: dict[str, Any] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: Widget = None
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
@@ -201,7 +200,7 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
-    def makeFilter(self, filetypes: List[str]) -> str:
+    def makeFilter(self, filetypes: list[str]) -> str:
         """Return the Qt-style dialog filter from filetypes list."""
         # Careful: the second %s is *not* replaced.
         filters = ['%s (%s)' % (z) for z in filetypes]
@@ -308,7 +307,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str,
         message: str='Select Date/Time',
         init: datetime.datetime=None,
-        step_min: Dict=None,
+        step_min: dict=None,
     ) -> None:
         """Create and run a qt date/time selection dialog.
 
@@ -335,7 +334,7 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: Widget=None, init: bool=None, step_min: Dict=None) -> None:
+            def __init__(self, parent: Widget=None, init: bool=None, step_min: dict=None) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -358,7 +357,7 @@ class LeoQtGui(leoGui.LeoGui):
                 parent: Widget=None,
                 message: str='Select Date/Time',
                 init: Any=None,  # Hard to annotate.
-                step_min: Dict=None,
+                step_min: dict=None,
             ) -> None:
                 if step_min is None:
                     step_min = {}
@@ -615,11 +614,11 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
+        filetypes: list[str],
         defaultextension: str='',
         multiple: bool=False,
         startpath: str=None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         """
         Create and run an Qt open file dialog.
         """
@@ -662,15 +661,15 @@ class LeoQtGui(leoGui.LeoGui):
         title: str='Properties',
         data: Any=None,
         callback: Callable=None,
-        buttons: List[str]=None,
-    ) -> Tuple[str, Dict]:
+        buttons: list[str]=None,
+    ) -> tuple[str, dict]:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
     #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
     def runSaveFileDialog(self,
-        c: Cmdr, title: str='Save', filetypes: List[str]=None, defaultextension: str='',
+        c: Cmdr, title: str='Save', filetypes: list[str]=None, defaultextension: str='',
     ) -> str:
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:
@@ -920,8 +919,8 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace('(LeoQtGui)', name)
         w.setFocus()
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
-    size_warnings: List[str] = []
-    font_ids: List[int] = []  # id's of traced fonts.
+    size_warnings: list[str] = []
+    font_ids: list[int] = []  # id's of traced fonts.
 
     def getFontFromParams(self,
         family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag = '',
@@ -1075,7 +1074,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> Tuple[Any, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[Any, int]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
@@ -1637,7 +1636,7 @@ class StyleClassManager:
 
         self.set_sclasses(w, props)
     #@+node:tbrown.20150724090431.8: *3* sclasses
-    def sclasses(self, w: Wrapper) -> List[str]:
+    def sclasses(self, w: Wrapper) -> list[str]:
         """return list of style classes for QWidget w"""
         return str(w.property(self.style_sclass_property) or '').split()
     #@+node:tbrown.20150724090431.9: *3* set_sclasses
@@ -1692,7 +1691,7 @@ class StyleSheetManager:
     reloadSettings = reload_settings
     #@+node:ekr.20180316091500.1: *3* ssm.Paths...
     #@+node:ekr.20180316065346.1: *4* ssm.compute_icon_directories
-    def compute_icon_directories(self) -> List[str]:
+    def compute_icon_directories(self) -> list[str]:
         """
         Return a list of *existing* directories that could contain theme-related icons.
         """
@@ -1716,7 +1715,7 @@ class StyleSheetManager:
                 table.append(directory2)
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
-    def compute_theme_directories(self) -> List[str]:
+    def compute_theme_directories(self) -> list[str]:
         """
         Return a list of *existing* directories that could contain theme .leo files.
         """
@@ -1766,7 +1765,7 @@ class StyleSheetManager:
     }
     '''
     #@+node:ekr.20140916170549.19551: *4* ssm.get_data
-    def get_data(self, setting: str) -> List:
+    def get_data(self, setting: str) -> list:
         """Return the value of the @data node for the setting."""
         c = self.c
         return c.config.getData(setting, strip_comments=False, strip_data=False) or []
@@ -1855,7 +1854,7 @@ class StyleSheetManager:
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
-    def adjust_sizes(self, settingsDict: Dict) -> Tuple[Dict, Any]:
+    def adjust_sizes(self, settingsDict: dict) -> tuple[dict, Any]:
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {}
@@ -1879,11 +1878,11 @@ class StyleSheetManager:
         return constants, deltas
     #@+node:ekr.20180316093159.1: *5* ssm.do_pass
     def do_pass(self,
-        constants: Dict,
-        deltas: List[str],
-        settingsDict: Dict[str, Any],
+        constants: dict,
+        deltas: list[str],
+        settingsDict: dict[str, Any],
         sheet: str,
-        to_do: List[str],
+        to_do: list[str],
     ) -> str:
 
         to_do.sort(key=len, reverse=True)
@@ -1929,7 +1928,7 @@ class StyleSheetManager:
                 # So rely on whoever calls .setStyleSheet() to do the right thing.
         return sheet
     #@+node:tbrown.20131120093739.27085: *5* ssm.find_constants_referenced
-    def find_constants_referenced(self, text: str) -> List[str]:
+    def find_constants_referenced(self, text: str) -> list[str]:
         """find_constants - Return a list of constants referenced in the supplied text,
         constants match::
 

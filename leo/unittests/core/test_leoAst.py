@@ -9,7 +9,7 @@ import sys
 import textwrap
 import time
 import token as token_module
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable
 import unittest
 import warnings
 warnings.simplefilter("ignore")
@@ -38,7 +38,7 @@ from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op
 #@-<< test_leoAst imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
-ActionList = List[Tuple[Callable, Any]]
+ActionList = list[tuple[Callable, Any]]
 #@+others
 #@+node:ekr.20200107114620.1: ** functions: unit testing
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
@@ -135,15 +135,15 @@ class BaseTest(unittest.TestCase):
     """
 
     # Statistics.
-    counts: Dict[str, int] = {}
-    times: Dict[str, float] = {}
+    counts: dict[str, int] = {}
+    times: dict[str, float] = {}
 
     # Debugging traces & behavior.
     # create_links: 'full-traceback'
     # make_data: 'contents', 'tokens', 'tree',
     #            'post-tokens', 'post-tree',
     #            'unit-test'
-    debug_list: List[str] = []
+    debug_list: list[str] = []
     link_error: Exception = None
 
     #@+others
@@ -1216,7 +1216,7 @@ class Optional_TestFiles(BaseTest):
         if not asttokens:
             self.skipTest('requires asttokens')
         # Define TestToken class and helper functions.
-        stack: List[ast.AST] = []
+        stack: list[ast.AST] = []
         #@+others
         #@+node:ekr.20200124024159.2: *5* class TestToken (internal)
         class TestToken:
@@ -1225,7 +1225,7 @@ class Optional_TestFiles(BaseTest):
             def __init__(self, kind, value):
                 self.kind = kind
                 self.value = value
-                self.node_list: List[ast.AST] = []
+                self.node_list: list[ast.AST] = []
 
             def __str__(self):
                 tokens_s = ', '.join([z.__class__.__name__ for z in self.node_list])
@@ -1257,7 +1257,7 @@ class Optional_TestFiles(BaseTest):
                 stack = []
             if stack:
                 parent = stack[-1]
-                children: List[ast.AST] = getattr(parent, 'children', [])
+                children: list[ast.AST] = getattr(parent, 'children', [])
                 parent.children = children + [node]  # type:ignore
                 node.parent = parent
             else:
@@ -2545,7 +2545,7 @@ class TestTokens(BaseTest):
         import ast
         import asttokens
         import token as token_module
-        stack: List[ast.AST] = []
+        stack: list[ast.AST] = []
         # Define TestToken class and helper functions.
         #@+others
         #@+node:ekr.20200122170101.3: *5* class TestToken
@@ -2555,7 +2555,7 @@ class TestTokens(BaseTest):
             def __init__(self, kind, value):
                 self.kind = kind
                 self.value = value
-                self.node_list: List[Any] = []
+                self.node_list: list[Any] = []
 
             def __str__(self):
                 tokens_s = ', '.join([z.__class__.__name__ for z in self.node_list])
@@ -2587,7 +2587,7 @@ class TestTokens(BaseTest):
                 stack = []
             if stack:
                 parent = stack[-1]
-                children: List[ast.AST] = getattr(parent, 'children', [])
+                children: list[ast.AST] = getattr(parent, 'children', [])
                 parent.children = children + [node]  # type:ignore
                 node.parent = parent
             else:
@@ -2619,7 +2619,7 @@ class TestTokens(BaseTest):
                 if hasattr(node, 'first_token'):
                     parent = getattr(node, 'parent', None)
                     parent_s = parent.__class__.__name__ if parent else 'None'
-                    children: List[ast.AST] = getattr(node, 'children', [])
+                    children: list[ast.AST] = getattr(node, 'children', [])
                     if children:
                         children_s = ', '.join(z.__class__.__name__ for z in children)
                     else:

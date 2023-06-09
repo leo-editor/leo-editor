@@ -75,7 +75,6 @@ If True, when expanding as above, skip blank dict entries.
 import io
 import xml.sax
 import xml.sax.saxutils
-from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoPlugins
@@ -84,7 +83,7 @@ StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports >>
 # For traces.
-printElements: List[str] = []  # ['all','outline','head','body',]
+printElements: list[str] = []  # ['all','outline','head','body',]
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init

@@ -6,7 +6,7 @@ An example client for leoserver.py, based on work by Félix Malboeuf. Used by pe
 import asyncio
 import json
 import time
-from typing import Dict, List
+
 # Third party.
 import websockets
 from leo.core import leoGlobals as g
@@ -21,7 +21,7 @@ tag = 'client'
 trace = True
 verbose = False
 timeout = 0.1
-times_d: Dict[int, float] = {}  # Keys are n, values are time sent.
+times_d: dict[int, float] = {}  # Keys are n, values are time sent.
 tot_response_time = 0.0
 n_known_response_times = 0
 n_unknown_response_times = 0
@@ -101,7 +101,7 @@ def _get_action_list():
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
-    middle: List = [("!" + z, {}) for z in test_names
+    middle: list = [("!" + z, {}) for z in test_names
         if z not in head_names + tail_names + exclude_names]
     middle_names = [name for (name, package) in middle]  # type:ignore
     all_tests = head + middle + tail  # type:ignore

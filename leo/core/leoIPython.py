@@ -24,7 +24,7 @@ Leo commanders.
 #@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
 from __future__ import annotations
 import sys
-from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 def import_fail(s: str) -> None:
@@ -90,15 +90,15 @@ class InternalIPKernel:
     def __init__(self, backend: str = 'qt') -> None:
         """Ctor for InternalIPKernal class."""
         # Part 1: create the ivars.
-        self.consoles: List[Any] = []  # List of Qt consoles.
+        self.consoles: list[Any] = []  # List of Qt consoles.
         self.kernelApp: InternalIPKernel = None  # The IPKernelApp instance.
         # Keys present at startup so we don't print the entire pylab/numpy
         # namespace when the user clicks the 'namespace' button
-        self._init_keys: Set[str] = None
+        self._init_keys: set[str] = None
         # Start IPython kernel with GUI event loop and pylab support.
         kernelApp = self.pylab_kernel(backend)  # Sets self.kernelApp.
         assert kernelApp == self.kernelApp
-        self.namespace: Dict[str, Any] = kernelApp.shell.user_ns  # Import the shell namespace.
+        self.namespace: dict[str, Any] = kernelApp.shell.user_ns  # Import the shell namespace.
         self._init_keys = set(self.namespace.keys())
         if 'ipython' in g.app.debug:
             self.namespace['kernelApp'] = kernelApp
@@ -268,7 +268,7 @@ class LeoNameSpace:
     def __init__(self) -> None:
         """LeoNameSpace ctor."""
         self.commander: Cmdr = None  # The commander returned by the c property.
-        self.commanders_list: List[Cmdr] = []  # The list of commanders returned by the commanders property.
+        self.commanders_list: list[Cmdr] = []  # The list of commanders returned by the commanders property.
         self.g = g
         self.update()
     #@+others
@@ -295,7 +295,7 @@ class LeoNameSpace:
         __get_c, __set_c,
         doc="LeoNameSpace c property")
     #@+node:edward.20130930125732.11822: *3* LeoNS.commanders property
-    def __get_commanders(self) -> List[Cmdr]:
+    def __get_commanders(self) -> list[Cmdr]:
         """Return the designated commander, or the only open commander."""
         self.update()
         return self.commanders_list

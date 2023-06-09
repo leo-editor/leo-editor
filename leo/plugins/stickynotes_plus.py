@@ -326,7 +326,7 @@ class notetextedit(QTextEdit):
     def contextMenuEvent(self, event):  # this catches the context menu right click
         self.textEffectMenu()
 
-    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
+    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes_plus.py)
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts
         # because will do something with control key
@@ -473,7 +473,7 @@ class notetextedit(QTextEdit):
             elif what == notetextedit.Save:
                 self.save()
 
-    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes.py)
+    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes_plus.py)
     def mouseMoveEvent(self, event):
 
         pos = event.pos()
