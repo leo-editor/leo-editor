@@ -4,8 +4,9 @@
 #@+<< leoPlugins imports & annotations >>
 #@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import sys
-from typing import Any, Callable, Iterator, TYPE_CHECKING
+from typing import Any, Iterator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover

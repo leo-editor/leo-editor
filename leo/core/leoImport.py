@@ -3,13 +3,14 @@
 #@+<< leoImport imports >>
 #@+node:ekr.20091224155043.6539: ** << leoImport imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import csv
 import io
 import os
 import re
 import textwrap
 import time
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 import urllib
 #
 # Third-party imports.

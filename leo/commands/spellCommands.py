@@ -4,8 +4,9 @@
 #@+<< spellCommands imports & annotations >>
 #@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 # Third-party annotations
 try:
     # We can't assume the user has enchant..

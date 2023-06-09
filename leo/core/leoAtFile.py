@@ -4,6 +4,7 @@
 #@+<< leoAtFile imports & annotations >>
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import io
 import os
 import re
@@ -11,7 +12,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 

@@ -9,9 +9,10 @@ These classes should be overridden to create frames for a particular gui.
 #@+<< leoFrame imports >>
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import os
 import string
-from typing import Any, Callable, Optional, Union
+from typing import Any, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin

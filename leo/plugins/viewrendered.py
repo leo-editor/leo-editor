@@ -200,12 +200,13 @@ Jacob Peck added markdown support to this plugin.
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 # pylint: disable = c-extension-no-member
 from __future__ import annotations
+from collections.abc import Callable
 import json
 import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets

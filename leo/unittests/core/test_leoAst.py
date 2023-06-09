@@ -4,12 +4,13 @@
 #@+<< test_leoAst imports >>
 #@+node:ekr.20210902074548.1: ** << test_leoAst imports >>
 import ast
+from collections.abc import Callable
 import os
 import sys
 import textwrap
 import time
 import token as token_module
-from typing import Any, Callable
+from typing import Any
 import unittest
 import warnings
 warnings.simplefilter("ignore")

@@ -4,10 +4,11 @@
 #@+<< abbrevCommands imports & abbreviations >>
 #@+node:ekr.20150514045700.1: ** << abbrevCommands imports & abbreviations >>
 from __future__ import annotations
+from collections.abc import Callable
 import functools
 import re
 import string
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass

@@ -4,9 +4,10 @@
 #@+<< convertCommands imports & annotations >>
 #@+node:ekr.20220824202922.1: ** << convertCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
 import time
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass

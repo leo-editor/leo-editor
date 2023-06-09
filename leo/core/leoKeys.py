@@ -6,6 +6,7 @@
 #@+<< leoKeys imports >>
 #@+node:ekr.20061031131434.1: ** << leoKeys imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import inspect
 import os
 import re
@@ -13,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise

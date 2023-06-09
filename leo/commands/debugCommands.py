@@ -4,9 +4,10 @@
 #@+<< debugCommands imports & annotations >>
 #@+node:ekr.20181006100818.1: ** << debugCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import os
 import sys
-from typing import Callable, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 

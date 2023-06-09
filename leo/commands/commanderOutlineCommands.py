@@ -4,10 +4,11 @@
 #@+<< commanderOutlineCommands imports & annotations >>
 #@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
