@@ -3058,7 +3058,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     # Original idea by Виталије Милошевић (Vitalije Milosevic).
     # Modified by EKR.
 
-    def v_and_parents(v: "VNode") -> Generator:
+    def v_and_parents(v: VNode) -> Generator:
         if v in seen:
             return
         seen.add(v)
@@ -3067,7 +3067,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
             if parent_v not in seen:
                 yield from v_and_parents(parent_v)
 
-    def find_language(v: "VNode", phase: int) -> Optional[str]:
+    def find_language(v: VNode, phase: int) -> Optional[str]:
         """
         A helper for all searches.
         Phase one searches only @<file> nodes.
@@ -3935,7 +3935,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
         assert progress < i
     return -1
 #@+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Any) -> Optional["VNode"]:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Any) -> Optional[VNode]:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -4939,8 +4939,8 @@ def dummy_act_on_node(c: Cmdr, p: Position, event: Any) -> None:
 
 act_on_node = dummy_act_on_node
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet: set["VNode"] = set()
-contentModifiedSet: set["VNode"] = set()
+childrenModifiedSet: set[VNode] = set()
+contentModifiedSet: set[VNode] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
     """
