@@ -3,7 +3,7 @@
 """The @auto importer for coffeescript."""
 from __future__ import annotations
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.python import Python_Importer
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -15,7 +15,7 @@ class Coffeescript_Importer(Python_Importer):
 
     language = 'coffeescript'
 
-    block_patterns: Tuple = (
+    block_patterns: tuple = (
         ('class', re.compile(r'^\s*class\s+([\w]+)')),
         ('def', re.compile(r'^\s*(.+?):.*?->')),
         ('def', re.compile(r'^\s*(.+?)=.*?->')),

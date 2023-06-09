@@ -164,10 +164,10 @@ import sys
 import textwrap
 import tokenize
 import traceback
-from typing import Any, Callable, Generator, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Union
 
 Node = ast.AST
-ActionList = list[Tuple[Callable, Any]]
+ActionList = list[tuple[Callable, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
@@ -236,7 +236,7 @@ class LeoGlobals:  # pragma: no cover
         for line in traceback.format_exception(typ, val, tb):
             print(line)
     #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
-    def getLastTracebackFileAndLineNumber(self) -> Tuple[str, int]:
+    def getLastTracebackFileAndLineNumber(self) -> tuple[str, int]:
         typ, val, tb = sys.exc_info()
         if typ == SyntaxError:
             # IndentationError is a subclass of SyntaxError.
@@ -388,7 +388,7 @@ if 1:  # pragma: no cover
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> Tuple[Any, dict[str, Any], list[str], bool]:
+    def scan_ast_args() -> tuple[Any, dict[str, Any], list[str], bool]:
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
@@ -489,7 +489,7 @@ if 1:  # pragma: no cover
             print(f"{tag}: can not read {filename}")
             return None
     #@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding
-    def read_file_with_encoding(filename: str) -> Tuple[str, str]:
+    def read_file_with_encoding(filename: str) -> tuple[str, str]:
         """
         Read the file with the given name,  returning (e, s), where:
 
@@ -521,7 +521,7 @@ if 1:  # pragma: no cover
         s = regularize_nls(s)
         return e, s
     #@+node:ekr.20200106174158.1: *4* function: strip_BOM
-    def strip_BOM(bb: bytes) -> Tuple[Optional[str], bytes]:
+    def strip_BOM(bb: bytes) -> tuple[Optional[str], bytes]:
         """
         bb must be the bytes contents of a file.
 
@@ -1505,7 +1505,7 @@ class Fstringify:
                 f":   conflicting delims:")
         return False
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
-    def munge_spec(self, spec: str) -> Tuple[str, str]:
+    def munge_spec(self, spec: str) -> tuple[str, str]:
         """
         Return (head, tail).
 
@@ -2903,7 +2903,7 @@ class TokenOrderGenerator:
         # Return [] for compatibility with legacy code: list(tog.create_links).
         return []
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
-    def init_from_file(self, filename: str) -> Tuple[str, str, list["Token"], Node]:  # pragma: no cover
+    def init_from_file(self, filename: str) -> tuple[str, str, list["Token"], Node]:  # pragma: no cover
         """
         Create the tokens and ast tree for the given file.
         Create links between tokens and the parse tree.
@@ -2919,7 +2919,7 @@ class TokenOrderGenerator:
         self.create_links(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
-    def init_from_string(self, contents: str, filename: str) -> Tuple[list["Token"], Node]:  # pragma: no cover
+    def init_from_string(self, contents: str, filename: str) -> tuple[list["Token"], Node]:  # pragma: no cover
         """
         Tokenize, parse and create links in the contents string.
 
@@ -3827,12 +3827,12 @@ class TokenOrderGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj: Any) -> Tuple[int, int, Any]:
+        def get_pos(obj: Any) -> tuple[int, int, Any]:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
 
-        def sort_key(aTuple: Tuple) -> int:
+        def sort_key(aTuple: tuple) -> int:
             line, col, obj = aTuple
             return line * 1000 + col
 

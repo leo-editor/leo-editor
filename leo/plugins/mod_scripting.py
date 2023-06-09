@@ -228,7 +228,7 @@ import pprint
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Generator, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, Set, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -726,7 +726,7 @@ class ScriptingController:
         # Do *not* set focus here: the script may have changed the focus.
             # c.bodyWantsFocus()
     #@+node:ekr.20130912061655.11294: *3* sc.open_gnx
-    def open_gnx(self, c: Cmdr, gnx: str) -> Tuple[Cmdr, Position]:
+    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
         """
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and select the specified node.
@@ -1223,7 +1223,7 @@ class EvalController:
     #@+node:ekr.20180328130835.1: *3* eval.Birth
     def __init__(self, c: Cmdr) -> None:
         """Ctor for EvalController class."""
-        self.answers: list[Tuple[str, str]] = []
+        self.answers: list[tuple[str, str]] = []
         self.c = c
         self.d: dict[str, Any] = {}
         self.globals_d: dict[str, Any] = {'c': c, 'g': g, 'p': c.p}

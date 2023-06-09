@@ -13,8 +13,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Callable, Optional, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
@@ -485,7 +484,7 @@ class AutoCompleterClass:
         self.insert_string("(", select=False)
         self.insert_string(s, select=True)
     #@+node:ekr.20061031131434.28: *4* ac.compute_completion_list & helper
-    def compute_completion_list(self) -> Tuple[str, str, list]:
+    def compute_completion_list(self) -> tuple[str, str, list]:
         """Return the autocompleter completion list."""
         prefix = self.get_autocompleter_prefix()
         key, options = self.get_cached_options(prefix)
@@ -500,7 +499,7 @@ class AutoCompleterClass:
             self.show_completion_list(common_prefix, prefix, tabList)
         return common_prefix, prefix, tabList
     #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
-    def get_cached_options(self, prefix: str) -> Tuple[str, list[str]]:
+    def get_cached_options(self, prefix: str) -> tuple[str, list[str]]:
         d = self.completionsDict
         # Search the completions dict for shorter and shorter prefixes.
         i = len(prefix)
@@ -636,7 +635,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
-    def guess_class(self, c: Cmdr, varname: str) -> Tuple[str, list[str]]:
+    def guess_class(self, c: Cmdr, varname: str) -> tuple[str, list[str]]:
         """Return kind, class_list"""
         # if varname == 'g':
             # return 'module',['leoGlobals']
@@ -789,7 +788,7 @@ class AutoCompleterClass:
                 d[name] = m
         return d
     #@+node:ekr.20110512170111.14472: *4* ac.get_object
-    def get_object(self) -> Tuple[Any, str]:
+    def get_object(self) -> tuple[Any, str]:
         """Return the object corresponding to the current prefix."""
         common_prefix, prefix1, aList = self.compute_completion_list()
         if not aList:
@@ -1092,7 +1091,7 @@ class FileNameChooser:
         self.prompt: str = None
         self.tabName: str = None
     #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
-    def compute_tab_list(self) -> Tuple[str, list[str]]:
+    def compute_tab_list(self) -> tuple[str, list[str]]:
         """Compute the list of completions."""
         path = self.get_label()
         # #215: insert-file-name doesn't process ~
@@ -1296,7 +1295,7 @@ class GetArg:
         self.functionTail: str = ''
         self.tabName = tabName
         # State vars.
-        self.after_get_arg_state: Tuple[str, int, Callable] = None
+        self.after_get_arg_state: tuple[str, int, Callable] = None
         self.arg_completion = True
         self.handler: Callable = None
         self.tabList: list[str] = []
@@ -1311,7 +1310,7 @@ class GetArg:
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
-    def compute_tab_list(self, tabList: list[str]) -> Tuple[str, list[str]]:
+    def compute_tab_list(self, tabList: list[str]) -> tuple[str, list[str]]:
         """Compute and show the available completions."""
         # Support vim-mode commands.
         command = self.get_label()
@@ -1617,7 +1616,7 @@ class GetArg:
             return s[: s.find(' ')].strip()
         return s
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
-    def get_minibuffer_command_name(self) -> Tuple[str, str]:
+    def get_minibuffer_command_name(self) -> tuple[str, str]:
         """Return the command name in the minibuffer."""
         s = self.get_label()
         command = self.get_command(s)
@@ -2639,7 +2638,7 @@ class KeyHandlerClass:
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
         data, n = [], 0
-        dataList: list[Tuple[str, str]]
+        dataList: list[tuple[str, str]]
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
@@ -2662,7 +2661,7 @@ class KeyHandlerClass:
         inverseBindingDict = k.computeInverseBindingDict()
         data = []
         key: str
-        dataList: list[Tuple[str, str]]
+        dataList: list[tuple[str, str]]
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for pane, key in dataList:
@@ -2890,7 +2889,7 @@ class KeyHandlerClass:
         """Convenience method mapping k.doTabCompletion to ga.do_tab."""
         self.getArgInstance.do_tab(tabList)
 
-    def getMinibufferCommandName(self) -> Tuple[str, str]:
+    def getMinibufferCommandName(self) -> tuple[str, str]:
         """
         Convenience method mapping k.getMinibufferCommandName to
         ga.get_minibuffer_command_name.
@@ -3638,7 +3637,7 @@ class KeyHandlerClass:
         if protect:
             k.protectLabel()
     #@+node:ekr.20061031170011.13: *4* k.getEditableTextRange
-    def getEditableTextRange(self) -> Tuple[int, int]:
+    def getEditableTextRange(self) -> tuple[int, int]:
         k, w = self, self.w
         s = w.getAllText()
         i = len(k.mb_prefix)
@@ -3997,14 +3996,14 @@ class KeyHandlerClass:
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
-    def computeInverseBindingDict(self) -> dict[str, list[Tuple[str, Any]]]:
+    def computeInverseBindingDict(self) -> dict[str, list[tuple[str, Any]]]:
         """
         Return a dictionary whose keys are command names,
         values are lists of tuples(pane, stroke).
         """
         k = self
         d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
-        result_d: dict[str, list[Tuple[str, Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
+        result_d: dict[str, list[tuple[str, Any]]] = {}  # Dict[command-name, tuple[pane, stroke]]
         for scope in sorted(d):
             d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
             for stroke in d2:
@@ -4273,7 +4272,7 @@ class ModeInfo:
         event = None
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* mode_i.init
-    def init(self, name: str, dataList: list[Tuple[str, Any]]) -> None:
+    def init(self, name: str, dataList: list[tuple[str, Any]]) -> None:
         """aList is a list of tuples (commandName,bi)."""
         c, d, modeName = self.c, self.d, self.name
         for name, bi in dataList:

@@ -11,7 +11,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, Optional, Set, Tuple, Union
+from typing import Any, Callable, Optional, Set, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -224,7 +224,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> Union[Tuple[str, str], Tuple[None, None]]:
+    def openFileForReading(self, fromString: str = None) -> Union[tuple[str, str], tuple[None, None]]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -354,7 +354,7 @@ class AtFile:
 
         c = self.c
         p = root.copy()
-        scanned_nodes: Set[Tuple[str, str]] = set()
+        scanned_nodes: Set[tuple[str, str]] = set()
         files: list[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:
@@ -658,7 +658,7 @@ class AtFile:
         at.read_lines = g.splitLines(s)
         at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
-    def parseLeoSentinel(self, s: str) -> Tuple[bool, bool, str, str, bool]:
+    def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
         If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
@@ -800,7 +800,7 @@ class AtFile:
         # Not an error.
         return ''  # pragma: no cover
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
-    def scanHeader(self, fileName: str, giveErrors: bool = True) -> Tuple[list[str], bool, bool]:
+    def scanHeader(self, fileName: str, giveErrors: bool = True) -> tuple[list[str], bool, bool]:
         """
         Scan the @+leo sentinel, using the old readLine interface.
 
@@ -1000,7 +1000,7 @@ class AtFile:
         at.reportEndOfWrite(files, all, dirty)
         # #2338: Never call at.saveOutlineIfPossible().
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
-    def findFilesToWrite(self, force: bool) -> Tuple[list[Position], Position]:  # pragma: no cover
+    def findFilesToWrite(self, force: bool) -> tuple[list[Position], Position]:  # pragma: no cover
         """
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
@@ -1839,7 +1839,7 @@ class AtFile:
             return False
         return True
     #@+node:ekr.20041005105605.199: *6* at.findSectionName
-    def findSectionName(self, s: str, i: int, p: Position) -> Tuple[str, int, int]:
+    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str, int, int]:
         """
         Return n1, n2 representing a section name.
 
@@ -2272,7 +2272,7 @@ class AtFile:
     #@+node:ekr.20041005105605.200: *5* at.isSectionName
     # returns (flag, end). end is the index of the character after the section name.
 
-    def isSectionName(self, s: str, i: int) -> Tuple[bool, int]:  # pragma: no cover
+    def isSectionName(self, s: str, i: int) -> tuple[bool, int]:  # pragma: no cover
 
         at = self
         # Allow leading periods.
@@ -3035,7 +3035,7 @@ class FastAtRead:
         re.VERBOSE,
     )
 
-    def scan_header(self, lines: Any) -> Optional[Tuple[Any, Any, Any]]:
+    def scan_header(self, lines: Any) -> Optional[tuple[Any, Any, Any]]:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
@@ -3069,7 +3069,7 @@ class FastAtRead:
         in_doc = False  # True: in @doc parts.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
-        level_stack: list[Tuple[VNode, VNode]] = []
+        level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
         root_gnx_adjusted = False  # True: suppress final checks.
         # #1065 so reads will not create spurious child nodes.
@@ -3079,7 +3079,7 @@ class FastAtRead:
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
         # The stack is updated when at+others, at+<section>, or at+all is seen.
-        stack: list[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
+        stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
         verbatim = False  # True: the next line must be added without change.
         #

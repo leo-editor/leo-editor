@@ -10,7 +10,7 @@ import shlex
 import sys
 import tempfile
 import time
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 #
 # Third-party imports.
 # pylint: disable=import-error
@@ -596,7 +596,7 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str = None) -> Optional[Tuple[str, Position]]:
+    def run(self, last_path: str = None) -> Optional[tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not lint:
@@ -617,7 +617,7 @@ class PylintCommand:
                     return False
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
-        data: list[Tuple[str, Position]] = []
+        data: list[tuple[str, Position]] = []
         is_at_file = False
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         if roots:

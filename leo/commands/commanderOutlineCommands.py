@@ -7,7 +7,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any, Callable, Generator, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -255,7 +255,7 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
 
     #@+node:vitalije.20200529114857.1: *4* getv
     gnx2v = c.fileCommands.gnxDict
-    def getv(gnx: str) -> Tuple[VNode, bool]:
+    def getv(gnx: str) -> tuple[VNode, bool]:
         """
         returns a pair (vnode, is_new) for the given gnx.
         if node doesn't exist, creates a new one.

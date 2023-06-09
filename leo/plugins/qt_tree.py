@@ -6,8 +6,7 @@
 from __future__ import annotations
 import re
 import time
-from typing import Any, Callable, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
@@ -220,7 +219,7 @@ class LeoQtTree(leoFrame.LeoTree):
             a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
             return a
         #@+node:ekr.20171122064635.1: *7* declutter_replace
-        def declutter_replace(arg: str, cmd: Callable) -> Tuple[Callable, str]:
+        def declutter_replace(arg: str, cmd: Callable) -> tuple[Callable, str]:
             """
             Executes cmd if cmd is any replace command and returns
             pair (commander, s), where 'commander' corresponds
@@ -256,7 +255,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
             return replacement, s
         #@+node:ekr.20171122055719.1: *7* declutter_style
-        def declutter_style(arg: str, cmd: Callable) -> Tuple[Callable, str]:
+        def declutter_style(arg: str, cmd: Callable) -> tuple[Callable, str]:
             """
             Handles style options and returns pair '(commander, param)',
             where 'commander' is the applied style-modifying operation,
@@ -312,7 +311,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 modifier(item, param)
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
-        def apply_declutter_rules(cmds: list[Tuple[Callable, str]]) -> list[Any]:
+        def apply_declutter_rules(cmds: list[tuple[Callable, str]]) -> list[Any]:
             """
             Applies all commands for the matched rule. Returns the list
             of the applied operations paired with their single parameter.
@@ -920,7 +919,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def expandItem(self, item: Item) -> None:
         self.treeWidget.expandItem(item)
     #@+node:ekr.20110605121601.18420: *4* qtree.createTreeEditorForItem
-    def createTreeEditorForItem(self, item: Item) -> Tuple[Editor, Wrapper]:
+    def createTreeEditorForItem(self, item: Item) -> tuple[Editor, Wrapper]:
 
         c = self.c
         w = self.treeWidget
@@ -1033,7 +1032,7 @@ class LeoQtTree(leoFrame.LeoTree):
         editor.resize(space - used, editor.size().height())
     #@+node:ekr.20110605121601.18433: *3* qtree.Scroll bars
     #@+node:ekr.20110605121601.18434: *4* qtree.getSCroll
-    def getScroll(self) -> Tuple[int, int]:
+    def getScroll(self) -> tuple[int, int]:
         """Return the hPos,vPos for the tree's scrollbars."""
         w = self.treeWidget
         hScroll = w.horizontalScrollBar()
@@ -1108,8 +1107,8 @@ class LeoQtTree(leoFrame.LeoTree):
         return None
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self,
-        p: Position, selectAll: bool=False, selection: Tuple=None,
-    ) -> Tuple[Editor, Any]:
+        p: Position, selectAll: bool=False, selection: tuple=None,
+    ) -> tuple[Editor, Any]:
         """Start editing p's headline."""
         if self.busy:
             return None
@@ -1132,8 +1131,8 @@ class LeoQtTree(leoFrame.LeoTree):
         return e, wrapper
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
-        item: Any, selectAll: bool=False, selection: Tuple=None,
-    ) -> Tuple[Item, Any]:
+        item: Any, selectAll: bool=False, selection: tuple=None,
+    ) -> tuple[Item, Any]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget

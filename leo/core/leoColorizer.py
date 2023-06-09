@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 import string
 import time
-from typing import Any, Callable, Generator, Sequence, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Sequence, Optional, TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -72,7 +72,7 @@ class BaseColorizer:
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
-        self.prev: Tuple[int, int, str] = None  # Used by setTag.
+        self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
         # Statistics....
         self.count = 0
@@ -887,7 +887,7 @@ class JEditColorizer(BaseColorizer):
         self.old_v: VNode = None
         self.nextState = 1  # Dont use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
-        self.prev: Tuple[int, int, str] = None
+        self.prev: tuple[int, int, str] = None
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
         self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
         self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
@@ -1107,7 +1107,7 @@ class JEditColorizer(BaseColorizer):
         self.modes[rulesetName] = self.modeBunch
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
-    def nameToRulesetName(self, name: str) -> Tuple[str, str]:
+    def nameToRulesetName(self, name: str) -> tuple[str, str]:
         """
         Compute language and rulesetName from name, which is either a language
         name or a delegate name.
@@ -3154,7 +3154,7 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
             lexer.setStringsOverNewlineAllowed(False)
-        table: list[Tuple[str, str]] = []
+        table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
             aList = [s.split(',') for s in aList]

@@ -11,7 +11,7 @@ These classes should be overridden to create frames for a particular gui.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -119,7 +119,7 @@ class TreeAPI:
         pass
     # Must be defined in subclasses.
 
-    def editLabel(self, v: VNode, selectAll: bool = False, selection: Tuple = None) -> None:
+    def editLabel(self, v: VNode, selectAll: bool = False, selection: tuple = None) -> None:
         pass
 
     def edit_widget(self, p: Position) -> None:
@@ -214,7 +214,7 @@ class WrapperAPI:
     def getSelectedText(self) -> str:
         return ''
 
-    def getSelectionRange(self) -> Tuple[int, int]:
+    def getSelectionRange(self) -> tuple[int, int]:
         return (0, 0)
 
     def getXScrollPosition(self) -> int:
@@ -611,7 +611,7 @@ class LeoBody:
         w.leo_label_s = p.h
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
-    def getInsertLines(self) -> Tuple[str, str, str]:
+    def getInsertLines(self) -> tuple[str, str, str]:
         """
         Return before,after where:
 
@@ -634,7 +634,7 @@ class LeoBody:
         after = g.checkUnicode(after)
         return before, ins, after
     #@+node:ekr.20031218072017.4031: *4* LeoBody.getSelectionAreas
-    def getSelectionAreas(self) -> Tuple[str, str, str]:
+    def getSelectionAreas(self) -> tuple[str, str, str]:
         """
         Return before,sel,after where:
 
@@ -658,7 +658,7 @@ class LeoBody:
         after = g.checkUnicode(after)
         return before, sel, after
     #@+node:ekr.20031218072017.2377: *4* LeoBody.getSelectionLines
-    def getSelectionLines(self) -> Tuple[str, str, str]:
+    def getSelectionLines(self) -> tuple[str, str, str]:
         """
         Return before,sel,after where:
 
@@ -757,7 +757,7 @@ class LeoFrame:
         pass
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
-    def initialRatios(self) -> Tuple[bool, float, float]:
+    def initialRatios(self) -> tuple[bool, float, float]:
         c = self.c
         s = c.config.getString("initial_split_orientation")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
@@ -1115,7 +1115,7 @@ class LeoFrame:
     def fullyExpandPane(self, event: Event = None) -> None:
         raise NotImplementedError
 
-    def get_window_info(self) -> Tuple[int, int, int, int]:
+    def get_window_info(self) -> tuple[int, int, int, int]:
         raise NotImplementedError
 
     def hideBodyPane(self, event: Event = None) -> None:
@@ -1260,7 +1260,7 @@ class LeoLog:
     # This table encodes which groups extract the filename and line_number from global regex patterns.
     # This is the *only* method that should need to know this information!
 
-    link_table: list[Tuple[int, int, Any]] = [
+    link_table: list[tuple[int, int, Any]] = [
         # (filename_i, line_number_i, pattern)
         (1, 2, g.flake8_pat),
         (1, 2, g.mypy_pat),
@@ -1284,7 +1284,7 @@ class LeoLog:
 
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match
-        def find_match(line: str) -> Tuple[Any, int, int]:
+        def find_match(line: str) -> tuple[Any, int, int]:
             """Search line for any pattern in link_table."""
             if not line.strip():
                 return None, None, None
@@ -1477,7 +1477,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict: dict[VNode, Tuple[Position, Any]] = {}
+        self.edit_text_dict: dict[VNode, tuple[Position, Any]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -1564,7 +1564,7 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Position, selectAll: bool = False, selection: Tuple = None) -> Tuple[Any, Any]:
+    def editLabel(self, p: Position, selectAll: bool = False, selection: tuple = None) -> tuple[Any, Any]:
         raise NotImplementedError
 
     def edit_widget(self, p: Position) -> Wrapper:
@@ -1902,7 +1902,7 @@ class NullFrame(LeoFrame):
     def fullyExpandPane(self, event: Event = None) -> None:
         pass
 
-    def get_window_info(self) -> Tuple[int, int, int, int]:
+    def get_window_info(self) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
     def hideBodyPane(self, event: Event = None) -> None:
@@ -2194,7 +2194,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Position, selectAll: bool = False, selection: Tuple = None) -> Tuple[Any, Any]:
+    def editLabel(self, p: Position, selectAll: bool = False, selection: tuple = None) -> tuple[Any, Any]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
@@ -2365,7 +2365,7 @@ class StringTextWrapper:
         s = self.s[i:j]
         return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18585: *4* stw.getSelectionRange
-    def getSelectionRange(self, sort: bool = True) -> Tuple[int, int]:
+    def getSelectionRange(self, sort: bool = True) -> tuple[int, int]:
         """Return the selected range of the widget."""
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
@@ -2410,7 +2410,7 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else insert
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)

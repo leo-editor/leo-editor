@@ -245,7 +245,7 @@ Leo themes.
 #@+<< typing imports >>
 #@+node:tom.20220919102037.1: *3* << typing imports >>
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Tuple
+from typing import TYPE_CHECKING, Any
 #@-<< typing imports >>
 
 from os.path import exists, join as osp_join
@@ -648,7 +648,7 @@ def change_css_prop(css: str, prop: str, newval:str) -> str:
 
 #@+node:tom.20220329150105.1: ** get_body_colors
 # Get current colors from the body editor widget
-def get_body_colors(c: Cmdr) -> Tuple[str, str]:
+def get_body_colors(c: Cmdr) -> tuple[str, str]:
     wrapper = c.frame.body.wrapper
     w:LeoQTextBrowser = wrapper.widget
 

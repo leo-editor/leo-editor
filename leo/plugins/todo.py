@@ -67,7 +67,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Callable, Iterable, Optional, Tuple, Union
+from typing import Any, Callable, Iterable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
@@ -835,7 +835,7 @@ class todoController:
                     nd.h = nd.h + ans
                 self.loadIcons(nd)  # update progress icon
     #@+node:tbrown.20090119215428.35: *4* recalc_time
-    def recalc_time(self, p: Position=None, clear: bool=False) -> Tuple[str, str]:
+    def recalc_time(self, p: Position=None, clear: bool=False) -> tuple[str, str]:
 
         if p is None:
             p = self.c.currentPosition()
@@ -1094,7 +1094,7 @@ class todoController:
 
         return pa if pa != 24 else 0
     #@+node:tbrown.20110213153425.16373: *4* duekey
-    def duekey(self, v: VNode, field: str='due') -> Tuple[bool, datetime.date, datetime.time, int]:
+    def duekey(self, v: VNode, field: str='due') -> tuple[bool, datetime.date, datetime.time, int]:
         """key function for sorting by due date/time"""
         # pylint: disable=boolean-datetime
         priority = self.getat(v, 'priority')
@@ -1305,7 +1305,7 @@ class todoController:
             (str(prisetdate).strip() or '?')
         )
     #@+node:tbrown.20121129095833.39490: *3* unl_to_pos (todo.py)
-    def unl_to_pos(self, unl: Any, for_p: Any) -> Tuple[Cmdr, Position]:
+    def unl_to_pos(self, unl: Any, for_p: Any) -> tuple[Cmdr, Position]:
         """"unl may be an outline (like c) or an UNL (string)
 
         return c, p where c is an outline and p is a node to copy data to

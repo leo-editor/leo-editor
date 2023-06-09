@@ -102,7 +102,7 @@ plugins. Here are some points of interest:
 """
 #@-<< docstring >>
 # Written by TNB.
-from typing import Any, Tuple
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
@@ -212,7 +212,7 @@ class AttributeGetterUA(AttributeGetter):
         v.uA['inventory']['_edit']['_int']['cars'] respectively
         """
 
-        ans: list[Tuple] = []
+        ans: list[tuple] = []
         d = v.u
 
         self.recSearch(d, [], ans)

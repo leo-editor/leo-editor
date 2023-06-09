@@ -134,7 +134,7 @@ Tags
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
-from typing import Any, Sequence, Tuple
+from typing import Any, Sequence
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
@@ -204,7 +204,7 @@ class quickMove:
        creating buttons, and creates buttons as needed
     """
 
-    flavors: list[Tuple] = [
+    flavors: list[tuple] = [
       # name   first/last  long  short
       ('move', True, "Move", "to"),
       ('copy', True, "Copy", "to"),
@@ -330,7 +330,7 @@ class quickMove:
 
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
-        self.local_imps: list[Tuple] = []  # make table for createMenuItemsFromTable()
+        self.local_imps: list[tuple] = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
 

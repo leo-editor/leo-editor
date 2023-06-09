@@ -9,8 +9,7 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Generator, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -734,7 +733,7 @@ class ParserBaseClass:
                 d[kind] = name, val  # Used only by doFont.
                 return
     #@+node:ekr.20041119205148: *4* pbc.parseHeadline
-    def parseHeadline(self, s: str) -> Tuple[str, str, Any]:
+    def parseHeadline(self, s: str) -> tuple[str, str, Any]:
         """
         Parse a headline of the form @kind:name=val
         Return (kind,name,val).
@@ -798,7 +797,7 @@ class ParserBaseClass:
         else:
             d[tag] = val
     #@+node:ekr.20041120112043: *4* pbc.parseShortcutLine
-    def parseShortcutLine(self, kind: str, s: str) -> Tuple[str, Any]:
+    def parseShortcutLine(self, kind: str, s: str) -> tuple[str, Any]:
         """Parse a shortcut line.  Valid forms:
 
         --> entry-command
@@ -885,7 +884,7 @@ class ParserBaseClass:
             val=val,
         )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
-    def traverse(self) -> Tuple[Any, Any]:
+    def traverse(self) -> tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict: dict[str, list[g.GeneralSetting]] = g.SettingsDict(f"settingsDict for {c.shortFileName()}")
@@ -1199,8 +1198,8 @@ class GlobalConfigManager:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
-        self.atCommonButtonsList: list[Tuple[Cmdr, str, Any]] = []
-        self.atCommonCommandsList: list[Tuple[Cmdr, str]] = []  # List of info for common @commands nodes.
+        self.atCommonButtonsList: list[tuple[Cmdr, str, Any]] = []
+        self.atCommonCommandsList: list[tuple[Cmdr, str]] = []  # List of info for common @commands nodes.
         self.atLocalButtonsList: list[Position] = []  # List of positions of @button nodes.
         self.atLocalCommandsList: list[Position] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
@@ -1284,7 +1283,7 @@ class GlobalConfigManager:
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self,
         d: Any, setting: str, requestedType: str, warn: bool = True,
-    ) -> Tuple[Any, bool]:
+    ) -> tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
@@ -1359,7 +1358,7 @@ class GlobalConfigManager:
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
-    def getCommonAtCommands(self) -> list[Tuple[str, str]]:
+    def getCommonAtCommands(self) -> list[tuple[str, str]]:
         """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
@@ -1599,7 +1598,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12520: *6* c.config.getValFromDict
     def getValFromDict(self,
         d: Any, setting: str, requestedType: str, warn: bool = True,
-    ) -> Tuple[Any, bool]:
+    ) -> tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
@@ -1808,7 +1807,7 @@ class LocalConfigManager:
             pass
         return None
     #@+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
-    def getSettingSource(self, setting: str) -> Tuple[str, Any]:
+    def getSettingSource(self, setting: str) -> tuple[str, Any]:
         """return the name of the file responsible for setting."""
         d = self.settingsDict
         if d:
@@ -1825,7 +1824,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
     no_menu_dict: dict[Cmdr, bool] = {}
 
-    def getShortcut(self, commandName: str) -> Tuple[str, list]:
+    def getShortcut(self, commandName: str) -> tuple[str, list]:
         """Return rawKey,accel for shortcutName"""
         c = self.c
         d = self.shortcutsDict
@@ -1853,11 +1852,11 @@ class LocalConfigManager:
         """Return the value of @string setting."""
         return self.get(setting, "string")
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
-    def getButtons(self) -> list[Tuple[str, str]]:
+    def getButtons(self) -> list[tuple[str, str]]:
         """Return a list of tuples (x,y) for common @button nodes."""
         return g.app.config.atCommonButtonsList  # unusual.
 
-    def getCommands(self) -> list[Tuple[str, str]]:
+    def getCommands(self) -> list[tuple[str, str]]:
         """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList  # unusual.
 
@@ -2115,7 +2114,7 @@ class SettingsTreeParser(ParserBaseClass):
         return None
     #@-others
 #@+node:ekr.20171229131953.1: ** parseFont (leoConfig.py)
-def parseFont(b: str) -> Tuple[str, str, bool, bool, float]:
+def parseFont(b: str) -> tuple[str, str, bool, bool, float]:
     family = None
     weight = None
     slant = None

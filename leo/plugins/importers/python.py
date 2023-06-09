@@ -3,7 +3,7 @@
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -26,7 +26,7 @@ class Python_Importer(Importer):
     def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
     class_pat = re.compile(r'\s*class\s*(\w+)')
 
-    block_patterns: Tuple = (
+    block_patterns: tuple = (
         ('class', class_pat),
         ('async def', async_def_pat),
         ('def', def_pat),

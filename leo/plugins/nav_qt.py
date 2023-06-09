@@ -19,7 +19,7 @@ the left side of toolbar.
 #@+<< nav_qt imports & annotations >>
 #@+node:ville.20090518182905.5422: ** << nav_qt imports & annotations >>
 from __future__ import annotations
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QAction, StandardPixmap
 
@@ -71,11 +71,11 @@ class NavController:
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         c._prev_next = self
-        self._buttons: Optional[Tuple[Action, Action]] = self.makeButtons()
+        self._buttons: Optional[tuple[Action, Action]] = self.makeButtons()
 
     #@+others
     #@+node:ville.20090518182905.5427: *3* NavController.makeButtons
-    def makeButtons(self) -> Tuple[Action, Action]:
+    def makeButtons(self) -> tuple[Action, Action]:
 
         c = self.c
         w = c.frame.iconBar.w

@@ -21,7 +21,7 @@ doing the normal key handling that vim emulation uses.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 
@@ -437,7 +437,7 @@ class VimCommands:
         self.n = 1  # The second repeat count.
         self.n1_seen = False  # True if self.n1 has been set.
         self.next_func: Callable = None  # The continuation of a multi-character command.
-        self.old_sel: Tuple = None  # The selection range at the start of a command.
+        self.old_sel: tuple = None  # The selection range at the start of a command.
         self.repeat_list: list[str] = []  # The characters of the current repeat count.
         # The value returned by do_key().
         # Handlers set this to False to tell k.masterKeyHandler to handle the key.

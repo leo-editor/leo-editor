@@ -10,8 +10,7 @@ import functools
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Optional, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -663,7 +662,7 @@ class LeoQtGui(leoGui.LeoGui):
         data: Any=None,
         callback: Callable=None,
         buttons: list[str]=None,
-    ) -> Tuple[str, dict]:
+    ) -> tuple[str, dict]:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
@@ -1075,7 +1074,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> Tuple[Any, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[Any, int]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
@@ -1855,7 +1854,7 @@ class StyleSheetManager:
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
-    def adjust_sizes(self, settingsDict: dict) -> Tuple[dict, Any]:
+    def adjust_sizes(self, settingsDict: dict) -> tuple[dict, Any]:
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {}

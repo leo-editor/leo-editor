@@ -10,8 +10,7 @@ import platform
 import string
 import sys
 import time
-from typing import Any, Callable, Optional, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -177,7 +176,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if where:
             self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
-    def createMainWindow(self) -> Tuple["LeoQtFrame", "LeoQtFrame"]:
+    def createMainWindow(self) -> tuple["LeoQtFrame", "LeoQtFrame"]:
         """
         Create the component ivars of the main window.
         Copied/adapted from qt_main.py.
@@ -208,7 +207,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
-    def addNewEditor(self, name: str) -> Tuple["LeoQtFrame", Wrapper]:
+    def addNewEditor(self, name: str) -> tuple["LeoQtFrame", Wrapper]:
         """Create a new body editor."""
         c, p = self.leo_c, self.leo_c.p
         body = c.frame.body
@@ -332,7 +331,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
-    def createMainLayout(self, parent: "LeoQtFrame") -> Tuple["LeoQtFrame", "LeoQtFrame"]:
+    def createMainLayout(self, parent: "LeoQtFrame") -> tuple["LeoQtFrame", "LeoQtFrame"]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
@@ -2475,7 +2474,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
-    def get_window_info(self) -> Tuple[int, int, int, int]:
+    def get_window_info(self) -> tuple[int, int, int, int]:
         """Return the geometry of the top window."""
         if getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
@@ -3442,7 +3441,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             else:
                 c.redraw(p2)
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
-    def parseText(self, md: Any) -> Tuple[str, str]:
+    def parseText(self, md: Any) -> tuple[str, str]:
         """Parse md.text() into (fn,s)"""
         fn = ''
         s = md.text()
@@ -4382,7 +4381,7 @@ class QtStatusLineClass:
         self.lastCol = col
         self.lastFcol = fcol
     #@+node:ekr.20190118082646.1: *4* qstatus.compute_columns
-    def compute_columns(self, block: Any, cursor: Any) -> Tuple[int, int]:
+    def compute_columns(self, block: Any, cursor: Any) -> tuple[int, int]:
 
         c = self.c
         line = block.text()

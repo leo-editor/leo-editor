@@ -11,7 +11,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 #@+<< leoGui imports & annotations >>
 #@+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -232,7 +232,7 @@ class LeoGui:
         """Create a labeled frame."""
         raise NotImplementedError
 
-    def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
+    def get_window_info(self, window: str) -> tuple[int, int, int, int]:
         """Return the window information."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
@@ -475,7 +475,7 @@ class NullGui(LeoGui):
     def getTreeImage(self, c: Cmdr, path: str) -> None:
         return None
 
-    def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
+    def get_window_info(self, window: str) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
     def onActivateEvent(self, *args: str, **keys: str) -> None:

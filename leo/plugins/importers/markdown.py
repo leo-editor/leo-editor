@@ -3,7 +3,7 @@
 """The @auto importer for the markdown language."""
 from __future__ import annotations
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -63,7 +63,7 @@ class Markdown_Importer(Importer):
     # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
 
-    def is_hash(self, line: str) -> Tuple[int, str]:
+    def is_hash(self, line: str) -> tuple[int, str]:
         """
         Return level, name if line is a hash section line.
         else return None, None.

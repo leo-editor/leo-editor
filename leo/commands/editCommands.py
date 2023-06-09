@@ -6,7 +6,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -29,7 +29,7 @@ if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
 
 skip_pat = re.compile(r'=.*in g.app.debug')
 
-def find_next_trace(ins: int, p: Position) -> Tuple[int, int, Position]:
+def find_next_trace(ins: int, p: Position) -> tuple[int, int, Position]:
     while p:
         ins = max(0, ins - 1)  # Back up over newline.
         s = p.b[ins:]
@@ -333,7 +333,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = 0  # For comment column functions.
-        self.cursorStack: list[Tuple] = []  # Values are tuples, (i, j, ins)
+        self.cursorStack: list[tuple] = []  # Values are tuples, (i, j, ins)
         self.extendMode = False  # True: all cursor move commands extend the selection.
         self.fillPrefix = ''  # For fill prefix functions.
         # Set by the set-fill-column command.
@@ -2824,7 +2824,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setSelectionRange(i1, i2)
     #@+node:ekr.20150514063305.302: *4* ec.extend-to-word
     @cmd('extend-to-word')
-    def extendToWord(self, event: Event, select: bool = True, w: Wrapper = None) -> Tuple[int, int]:
+    def extendToWord(self, event: Event, select: bool = True, w: Wrapper = None) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         if not w:
             w = self.editWidget(event)

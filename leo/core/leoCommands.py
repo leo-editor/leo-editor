@@ -13,7 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Callable, Generator, Iterable, Optional, Set, Tuple, Union
+from typing import Any, Callable, Generator, Iterable, Optional, Set, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
@@ -236,7 +236,7 @@ class Commands:
     def initOptionsIvars(self) -> None:
         """Init Commander ivars corresponding to user options."""
         self.fixed = False
-        self.fixedWindowPosition: list[Tuple[int, int, int, int]] = []
+        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
         self.forceExecuteEntireBody = False
         self.focus_border_color = 'white'
         self.focus_border_width = 1  # pixels
@@ -761,7 +761,7 @@ class Commands:
         'shellscript': 'bash',
         }
         #@+node:tom.20230308193758.6: *4* get_external_maps
-        def get_external_maps() -> Tuple[dict, dict, str]:
+        def get_external_maps() -> tuple[dict, dict, str]:
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -1309,7 +1309,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[Tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -1334,7 +1334,7 @@ class Commands:
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: list[Tuple]) -> Position:
+        def stack2pos(stack: list[tuple]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
@@ -1484,7 +1484,7 @@ class Commands:
                 break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self) -> Tuple[str, list[str], str, Optional[Tuple], Optional[Tuple]]:
+    def getBodyLines(self) -> tuple[str, list[str], str, Optional[tuple], Optional[tuple]]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1639,7 +1639,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> Union[Tuple[None, None], Tuple[Position, bool]]:
+    def visLimit(self) -> Union[tuple[None, None], tuple[Position, bool]]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
@@ -1690,7 +1690,7 @@ class Commands:
         c = self
         context = v.context  # v's commander.
         assert c == context
-        stack: list[Tuple[VNode, int]] = []
+        stack: list[tuple[VNode, int]] = []
         while v.parents:
             parent = v.parents[0]
             if v in parent.children:
@@ -2738,7 +2738,7 @@ class Commands:
             else:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line
-        def find_line(path: str, n: int) -> Tuple[Position, int]:
+        def find_line(path: str, n: int) -> tuple[Position, int]:
             """
             Return the node corresponding to line n of external file given by path.
             """
@@ -4165,7 +4165,7 @@ class Commands:
     def redrawAndEdit(self,
         p: Position,
         selectAll: bool = False,
-        selection: Tuple = None,
+        selection: tuple = None,
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
@@ -4452,7 +4452,7 @@ class Commands:
         if not aList:
             return []
 
-        def p2link(p: Position) -> Tuple[int, VNode]:
+        def p2link(p: Position) -> tuple[int, VNode]:
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
 
@@ -4480,7 +4480,7 @@ class Commands:
             if aList2:
                 aList.sort()
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
-    def checkBatchOperationsList(self, aList: list) -> Tuple[bool, dict]:
+    def checkBatchOperationsList(self, aList: list) -> tuple[bool, dict]:
         ok = True
         d: dict[VNode, list[Any]] = {}
         for z in aList:

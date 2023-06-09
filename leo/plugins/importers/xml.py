@@ -3,7 +3,7 @@
 """The @auto importer for the xml language."""
 from __future__ import annotations
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -20,9 +20,9 @@ class Xml_Importer(Importer):
     minimum_block_size = 2  # Helps handle one-line elements.
 
     # xml_i.add_tags defines all patterns.
-    block_patterns: Tuple = None
-    end_patterns: Tuple = None
-    start_patterns: Tuple = None
+    block_patterns: tuple = None
+    end_patterns: tuple = None
+    start_patterns: tuple = None
 
     def __init__(self, c: Cmdr, tags_setting: str = 'import_xml_tags') -> None:
         """Xml_Importer.__init__"""

@@ -205,7 +205,7 @@ import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
@@ -327,7 +327,7 @@ latex_template = '''\
 '''
 #@-<< vr define html templates >>
 controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
-layouts: dict[str, Tuple] = {}  # Dict[c.hash(), Tuple[layout_when_closed, layout_when_open]].
+layouts: dict[str, tuple] = {}  # Dict[c.hash(), tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
 #@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
@@ -655,7 +655,7 @@ class ViewRenderedProvider:
         # return f"vr_id:{self.c.shortFileName()}"
         return '_leo_viewrendered'
     #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self) -> list[Tuple[str, str]]:
+    def ns_provides(self) -> list[tuple[str, str]]:
         # #1671: Better Window names.
         # #1678: duplicates in Open Window list
         return [('Viewrendered', self.ns_provider_id())]
@@ -1504,14 +1504,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> Optional[Tuple[Position, Position]]:
+        def find_root(p: Position) -> Optional[tuple[Position, Position]]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> Optional[Tuple[Position, Position]]:
+        def find_inputs(p: Position) -> Optional[tuple[Position, Position]]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
@@ -1683,7 +1683,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 return language
         return None
     #@+node:ekr.20110320233639.5776: *5* vr.get_fn
-    def get_fn(self, s: str, tag: str) -> Tuple[bool, str]:
+    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
         pc = self
         c = pc.c
         fn = s or c.p.h[len(tag) :]

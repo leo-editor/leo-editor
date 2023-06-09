@@ -45,7 +45,7 @@
 #@+<< leoUndo imports & annotations >>
 #@+node:ekr.20220821074023.1: ** << leoUndo imports & annotations >>
 from __future__ import annotations
-from typing import Callable, Tuple, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -97,7 +97,7 @@ class Undoer:
         self.children = None
         self.deleteMarkedNodesData: g.Bunch = None
         self.followingSibs: list[VNode] = None
-        self.headlines: dict[str, Tuple[str, str]]
+        self.headlines: dict[str, tuple[str, str]]
         self.inHead: bool = None
         self.kind: str = None
         self.newBack = None
@@ -955,8 +955,8 @@ class Undoer:
         oldText: str,
         newText: str,
         newInsert: int = None,
-        oldSel: Tuple[int, int] = None,
-        newSel: Tuple[int, int] = None,
+        oldSel: tuple[int, int] = None,
+        newSel: tuple[int, int] = None,
         oldYview: int = None,
     ) -> None:
         """

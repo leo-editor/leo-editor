@@ -4,7 +4,7 @@
 #@+<< leoMenu imports & annotations >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -193,7 +193,7 @@ class LeoMenu:
             g.trace('NO PARENT', parentName, g.callers())
             return  # #2030
         table: list[Any] = []
-        z: Tuple[str, list, str]
+        z: tuple[str, list, str]
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
@@ -362,7 +362,7 @@ class LeoMenu:
         command = c.commandsDict.get(commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
-    def getMenuEntryInfo(self, data: Any, menu: Any) -> Tuple[str, str, bool]:
+    def getMenuEntryInfo(self, data: Any, menu: Any) -> tuple[str, str, bool]:
         """
         Parse a single entry in the table passed to createMenuEntries.
 

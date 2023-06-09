@@ -45,7 +45,7 @@ And call this in your plugin *once*::
 #@+node:ekr.20220828123814.1: ** << contextmenu imports & annotations >>
 from __future__ import annotations
 import os
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
@@ -120,7 +120,7 @@ def install_handlers() -> None:
     ]
     g.tree_popup_handlers.extend(handlers)
 #@+node:tom.20210717164029.1: ** getEditor
-def getEditor(c: Cmdr) -> Tuple[str, str]:
+def getEditor(c: Cmdr) -> tuple[str, str]:
     """Return system's best guess editor quoted.
 
     RETURNS

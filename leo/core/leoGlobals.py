@@ -35,7 +35,7 @@ import time
 import traceback
 import types
 from typing import TYPE_CHECKING
-from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Set, Tuple, Union
+from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Set, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -1127,7 +1127,7 @@ class MatchBrackets:
         right: int,
         max_right: int,
         expand: bool = False,
-    ) -> Tuple[Any, Any, Any, Any]:
+    ) -> tuple[Any, Any, Any, Any]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -2890,7 +2890,7 @@ def timeSince(start: float) -> str:
 # Disabling this will be safe, because pyflakes will still warn about true redefinitions
 # pylint: disable=function-redefined
 #@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
-def comment_delims_from_extension(filename: str) -> Tuple[str, str, str]:
+def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
     """
     Return the comment delims corresponding to the filename's extension.
     """
@@ -3325,7 +3325,7 @@ def scanForAtSettings(p: Position) -> bool:
             return True
     return False
 #@+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
-def set_delims_from_language(language: str) -> Tuple[str, str, str]:
+def set_delims_from_language(language: str) -> tuple[str, str, str]:
     """Return a tuple (single,start,end) of comment delims."""
     val = g.app.language_delims_dict.get(language)
     if val:
@@ -3336,7 +3336,7 @@ def set_delims_from_language(language: str) -> Tuple[str, str, str]:
         return delim1, delim2, delim3
     return '', '', ''  # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> Tuple[str, str, str]:
+def set_delims_from_string(s: str) -> tuple[str, str, str]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3385,7 +3385,7 @@ def set_delims_from_string(s: str) -> Tuple[str, str, str]:
                 delims[i] = delims[i].replace("__", '\n').replace('_', ' ')
     return delims[0], delims[1], delims[2]
 #@+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(s: str, i: int, issue_errors_flag: bool = False) -> Tuple:
+def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3480,7 +3480,7 @@ def computeWindowTitle(fileName: str) -> str:
         title = branch + ": " + title
     return title
 #@+node:ekr.20031218072017.3117: *3* g.create_temp_file
-def create_temp_file(textMode: bool = False) -> Tuple[Any, str]:
+def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
     """
     Return a tuple (theFile,theFileName)
 
@@ -3732,7 +3732,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str = None,  # @file, @edit, ...
     verbose: bool = True,
-) -> Tuple[Any, Any]:
+) -> tuple[Any, Any]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -4229,7 +4229,7 @@ def skip_pp_directive(s: str, i: int) -> int:
 #@+node:ekr.20031218072017.3168: *4* g.skip_pp_if
 # Skips an entire if or if def statement, including any nested statements.
 
-def skip_pp_if(s: str, i: int) -> Tuple[int, int]:
+def skip_pp_if(s: str, i: int) -> tuple[int, int]:
     start_line = g.get_line(s, i)  # used for error messages.
     assert(
         g.match_word(s, i, "#if") or
@@ -4253,7 +4253,7 @@ def skip_pp_if(s: str, i: int) -> Tuple[int, int]:
 #@+node:ekr.20031218072017.3169: *4* g.skip_pp_part
 # Skip to an #else or #endif.  The caller has eaten the #if, #ifdef, #ifndef or #else
 
-def skip_pp_part(s: str, i: int) -> Tuple[int, int]:
+def skip_pp_part(s: str, i: int) -> tuple[int, int]:
 
     delta = 0
     while i < len(s):
@@ -4359,7 +4359,7 @@ def find_on_line(s: str, i: int, pattern: str) -> int:
     k = s.find(pattern, i, j)
     return k
 #@+node:ekr.20031218072017.3179: *4* g.is_special
-def is_special(s: str, directive: str) -> Tuple[bool, int]:
+def is_special(s: str, directive: str) -> tuple[bool, int]:
     """Return True if the body text contains the @ directive."""
     assert(directive and directive[0] == '@')
     # Most directives must start the line.
@@ -4487,7 +4487,7 @@ def skip_to_start_of_line(s: str, i: int) -> int:
         return 0
     return i + 1
 #@+node:ekr.20031218072017.3188: *4* g.skip_long
-def skip_long(s: str, i: int) -> Tuple[int, Optional[int]]:
+def skip_long(s: str, i: int) -> tuple[int, Optional[int]]:
     """
     Scan s[i:] for a valid int.
     Return (i, val) or (i, None) if s[i] does not point at a number.
@@ -4559,7 +4559,7 @@ def skip_string(s: str, i: int) -> int:
         i += 1
     return i
 #@+node:ekr.20031218072017.3193: *4* g.skip_to_char
-def skip_to_char(s: str, i: int, ch: str) -> Tuple[int, str]:
+def skip_to_char(s: str, i: int, ch: str) -> tuple[int, str]:
     j = s.find(ch, i)
     if j == -1:
         return len(s), s[i:]
@@ -4745,7 +4745,7 @@ class GitIssueController:
         else:
             root.h = f"{total} {state} {label} issues"
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
-    def get_one_page(self, label: str, page: int, r: Any, root: Position) -> Tuple[bool, int]:
+    def get_one_page(self, label: str, page: int, r: Any, root: Position) -> tuple[bool, int]:
 
         if self.milestone:
             aList = [
@@ -4777,7 +4777,7 @@ class GitIssueController:
                 print(f"{key:35}: {r.headers.get(key)}")
     #@-others
 #@+node:ekr.20190428173354.1: *3* g.getGitVersion
-def getGitVersion(directory: str = None) -> Tuple[str, str, str]:
+def getGitVersion(directory: str = None) -> tuple[str, str, str]:
     """Return a tuple (author, build, date) from the git log, or None."""
     #
     # -n: Get only the last log.
@@ -4835,20 +4835,20 @@ def gitCommitNumber(path: str = None) -> str:
     branch, commit = g.gitInfo(path)
     return commit
 #@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
-def gitInfoForFile(filename: str) -> Tuple[str, str]:
+def gitInfoForFile(filename: str) -> tuple[str, str]:
     """
     Return the git (branch, commit) info associated for the given file.
     """
     # g.gitInfo and g.gitHeadPath now do all the work.
     return g.gitInfo(filename)
 #@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
-def gitInfoForOutline(c: Cmdr) -> Tuple[str, str]:
+def gitInfoForOutline(c: Cmdr) -> tuple[str, str]:
     """
     Return the git (branch, commit) info associated for commander c.
     """
     return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
-def gitDescribe(path: str = None) -> Tuple[str, str, str]:
+def gitDescribe(path: str = None) -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
@@ -4880,7 +4880,7 @@ def gitHeadPath(path_s: str) -> Optional[str]:
         path = path.parent
     return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
-def gitInfo(path: str = None) -> Tuple[str, str]:
+def gitInfo(path: str = None) -> tuple[str, str]:
     """
     Path may be a directory or file.
 
@@ -5120,7 +5120,7 @@ def import_module(name: str, package: str = None) -> Any:
 #@+node:ekr.20140711071454.17650: ** g.Indices, Strings, Unicode & Whitespace
 #@+node:ekr.20140711071454.17647: *3* g.Indices
 #@+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol
-def convertPythonIndexToRowCol(s: str, i: int) -> Tuple[int, int]:
+def convertPythonIndexToRowCol(s: str, i: int) -> tuple[int, int]:
     """Convert index i into string s into zero-based row/col indices."""
     if not s or i <= 0:
         return 0, 0
@@ -5147,7 +5147,7 @@ def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] = No
         prev += len(line)
     return prev + col
 #@+node:ekr.20061031102333.2: *4* g.getWord & getLine
-def getWord(s: str, i: int) -> Tuple[int, int]:
+def getWord(s: str, i: int) -> tuple[int, int]:
     """Return i,j such that s[i:j] is the word surrounding s[i]."""
     if i >= len(s):
         i = len(s) - 1
@@ -5163,7 +5163,7 @@ def getWord(s: str, i: int) -> Tuple[int, int]:
         j += 1
     return i, j
 
-def getLine(s: str, i: int) -> Tuple[int, int]:
+def getLine(s: str, i: int) -> tuple[int, int]:
     """
     Return i,j such that s[i:j] is the line surrounding s[i].
     s[i] is a newline only if the line is empty.
@@ -5240,7 +5240,7 @@ def longestCommonPrefix(s1: str, s2: str) -> str:
             return prefix
     return prefix
 
-def itemsMatchingPrefixInList(s: str, aList: list[str], matchEmptyPrefix: bool = False) -> Tuple[list, str]:
+def itemsMatchingPrefixInList(s: str, aList: list[str], matchEmptyPrefix: bool = False) -> tuple[list, str]:
     """This method returns a sorted list items of aList whose prefix is s.
 
     It also returns the longest common prefix of all the matches.
@@ -5398,7 +5398,7 @@ def isWordChar(ch: str) -> bool:
 def isWordChar1(ch: str) -> bool:
     return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s_bytes: bytes) -> Tuple[str, bytes]:
+def stripBOM(s_bytes: bytes) -> tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -5676,7 +5676,7 @@ def skip_leading_ws(s: str, i: int, ws: int, tab_width: int) -> int:
             break
     return i
 #@+node:ekr.20031218072017.3205: *4* g.skip_leading_ws_with_indent
-def skip_leading_ws_with_indent(s: str, i: int, tab_width: int) -> Tuple[int, int]:
+def skip_leading_ws_with_indent(s: str, i: int, tab_width: int) -> tuple[int, int]:
     """Skips leading whitespace and returns (i, indent),
 
     - i points after the whitespace
@@ -5904,7 +5904,7 @@ def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
     padding = " " * max(0, 25 - len(combined_name))
     return f"{padding}{combined_name}"
 #@+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
-def getLastTracebackFileAndLineNumber() -> Tuple[str, int]:
+def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
     typ, val, tb = sys.exc_info()
     if typ == SyntaxError:
         # IndentationError is a subclass of SyntaxError.
@@ -6018,7 +6018,7 @@ def print_exception(
     c: Cmdr = None,
     flush: bool = False,
     color: str = "red",
-) -> Tuple[str, int]:
+) -> tuple[str, int]:
     """Print exception info about the last exception."""
     # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
@@ -6519,13 +6519,13 @@ def os_path_realpath(path: str) -> str:
     path = g.os_path_normslashes(path)
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
-def os_path_split(path: str) -> Tuple[str, str]:
+def os_path_split(path: str) -> tuple[str, str]:
     if not path:
         return '', ''
     head, tail = os.path.split(path)
     return head, tail
 #@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
-def os_path_splitext(path: str) -> Tuple[str, str]:
+def os_path_splitext(path: str) -> tuple[str, str]:
 
     if not path:
         return '', ''
@@ -6691,7 +6691,7 @@ def python_tokenize(s: str) -> list:
 
     where kind is in ('comment,'id','nl','other','string','ws').
     """
-    result: list[Tuple[str, str, int]] = []
+    result: list[tuple[str, str, int]] = []
     i, line_number = 0, 0
     while i < len(s):
         progress = j = i
@@ -6825,7 +6825,7 @@ def executeFile(filename: str, options: str = '') -> None:
     fdir, fname = g.os_path_split(filename)
     # New in Leo 4.10: alway use subprocess.
 
-    def subprocess_wrapper(cmdlst: str) -> Tuple:
+    def subprocess_wrapper(cmdlst: str) -> tuple:
 
         p = subprocess.Popen(cmdlst, cwd=fdir,
             universal_newlines=True,

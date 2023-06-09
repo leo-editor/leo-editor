@@ -7,7 +7,7 @@ from __future__ import annotations
 import functools
 import re
 import string
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -39,7 +39,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
-        self.abbrevs: dict[str, Tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
+        self.abbrevs: dict[str, tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
         self.dynaregex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
@@ -415,7 +415,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # c.bodyWantsFocusNow()
         return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
-    def make_script_substitutions(self, i: int, j: int, val: str) -> Tuple[str, bool]:
+    def make_script_substitutions(self, i: int, j: int, val: str) -> tuple[str, bool]:
         """Make scripting substitutions in node p."""
         c, u, w = self.c, self.c.undoer, self.c.frame.body.wrapper
         if not c.abbrev_subst_start:
@@ -486,7 +486,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
-    def match_prefix(self, ch: str, i: int, j: int, prefix: str, s: str) -> Tuple[int, str, str, str]:
+    def match_prefix(self, ch: str, i: int, j: int, prefix: str, s: str) -> tuple[int, str, str, str]:
         """A match helper."""
         i = j - len(prefix)
         word = g.checkUnicode(prefix) + g.checkUnicode(ch)
@@ -509,7 +509,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             word, val = None, None
         return i, tag, word, val
     #@+node:ekr.20150514043850.16: *4* abbrev.next_place
-    def next_place(self, s: str, offset: int = 0) -> Tuple[str, int, int]:
+    def next_place(self, s: str, offset: int = 0) -> tuple[str, int, int]:
         """
         Given string s containing a placeholder like <| block |>,
         return (s2,start,end) where s2 is s without the <| and |>,
@@ -599,7 +599,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ch = event.char
         return ch
     #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
-    def get_prefixes(self, w: Wrapper) -> Tuple[str, int, int, list[str]]:
+    def get_prefixes(self, w: Wrapper) -> tuple[str, int, int, list[str]]:
         """Return the prefixes at the current insertion point of w."""
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.

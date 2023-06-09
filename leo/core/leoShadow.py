@@ -31,7 +31,7 @@ from __future__ import annotations
 import difflib
 import os
 import pprint
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -483,7 +483,7 @@ class ShadowController:
         marker = x.Marker(delims)
         return marker
     #@+node:ekr.20080708094444.29: *4* x.separate_sentinels
-    def separate_sentinels(self, lines: list[str], marker: "Marker") -> Tuple[list[str], list[str]]:
+    def separate_sentinels(self, lines: list[str], marker: "Marker") -> tuple[list[str], list[str]]:
         """
         Separates regular lines from sentinel lines.
         Do not return @verbatim sentinels.
@@ -538,7 +538,7 @@ class ShadowController:
         """A class representing comment delims in @shadow files."""
         #@+others
         #@+node:ekr.20090529061522.6257: *4* ctor & repr
-        def __init__(self, delims: Tuple[str, str, str]) -> None:
+        def __init__(self, delims: tuple[str, str, str]) -> None:
             """Ctor for Marker class."""
             delim1, delim2, delim3 = delims
             self.delim1 = delim1  # Single-line comment delim.
@@ -554,7 +554,7 @@ class ShadowController:
                 delims = f"{self.delim2} {self.delim3}"
             return f"<Marker: delims: {delims!r}>"
         #@+node:ekr.20090529061522.6258: *4* getDelims
-        def getDelims(self) -> Tuple[str, str]:
+        def getDelims(self) -> tuple[str, str]:
             """Return the pair of delims to be used in sentinel lines."""
             if self.delim1:
                 return self.delim1, ''

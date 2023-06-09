@@ -7,7 +7,7 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Any, BinaryIO, Optional, Tuple, TYPE_CHECKING
+from typing import Any, BinaryIO, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -514,7 +514,7 @@ class CompareLeoOutlines:
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[dict, dict, dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
@@ -531,7 +531,7 @@ class CompareLeoOutlines:
                     changed[key] = (v1, v2)
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
-    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: dict[str, Tuple[VNode, VNode]], kind: str) -> None:
+    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: dict[str, tuple[VNode, VNode]], kind: str) -> None:
         """Create nodes describing the changes."""
         if not d:
             return

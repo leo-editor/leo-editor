@@ -32,7 +32,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, Callable, Generator, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Union
 from typing import TYPE_CHECKING
 
 # Third-party.
@@ -1223,7 +1223,7 @@ class KeyHandler:
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170430115131.3: *5* CKey.to_key
-    def to_key(self, i: int) -> Tuple[str, str]:
+    def to_key(self, i: int) -> tuple[str, str]:
         """Convert int i to a char and shortcut."""
         trace = False
         a = curses.ascii
@@ -1286,7 +1286,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log: Wrapper = None  # The present log. Used by g.es
         self.log_inited: bool = False  # True: don't use the wait_list.
         self.minibuffer_label: str = ''  # The label set by k.setLabel.
-        self.wait_list: list[Tuple[str, Any]] = []  # Queued log messages.
+        self.wait_list: list[tuple[str, Any]] = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
@@ -2265,7 +2265,7 @@ class CoreFrame(leoFrame.LeoFrame):
     def forceWrap(self, p: Position) -> None:
         pass
 
-    def get_window_info(self) -> Tuple[int, int, int, int]:
+    def get_window_info(self) -> tuple[int, int, int, int]:
         """Return width, height, left, top."""
         return 700, 500, 50, 50
 
@@ -2571,7 +2571,7 @@ class CoreTree(leoFrame.LeoTree):
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20170511104121.1: *4* CTree.Scroll bars
     #@+node:ekr.20170511104121.2: *5* Ctree.getScroll
-    def getScroll(self) -> Tuple[int, int]:
+    def getScroll(self) -> tuple[int, int]:
         """Return the hPos,vPos for the tree's scrollbars."""
         return 0, 0
     #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
@@ -2592,7 +2592,7 @@ class CoreTree(leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         return HeadWrapper(c=self.c, name='head', p=p)
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Tuple=None) -> Tuple[None, None]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: tuple=None) -> tuple[None, None]:
         """Start editing p's headline."""
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
@@ -4091,7 +4091,7 @@ class TextMixin:
         g.app.gui.set_focus(self)
 
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """TextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)

@@ -8,7 +8,7 @@ import difflib
 import io
 import os
 import re
-from typing import Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -298,7 +298,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
-    def computeChangeDicts(self, d1: dict, d2: dict) -> Tuple[dict, dict, dict]:
+    def computeChangeDicts(self, d1: dict, d2: dict) -> tuple[dict, dict, dict]:
         """
         Compute inserted, deleted, changed dictionaries.
 
@@ -881,7 +881,7 @@ class GitDiffController:
     def create_compare_node(self,
         c1: Cmdr,
         c2: Cmdr,
-        d: dict[str, Tuple[VNode, VNode]],
+        d: dict[str, tuple[VNode, VNode]],
         kind: str,
         rev1: str,
         rev2: str,
@@ -1164,7 +1164,7 @@ class GitDiffController:
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind, rev1, rev2)
     #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[dict, dict, dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         # Special case the root: only compare the body text.
         root1, root2 = c1.rootPosition().v, c2.rootPosition().v

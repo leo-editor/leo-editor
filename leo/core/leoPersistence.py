@@ -6,7 +6,7 @@
 from __future__ import annotations
 import binascii
 import pickle
-from typing import Any, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -344,7 +344,7 @@ class PersistenceDataController:
         if matches:
             # Take the match with the greatest number of parents.
 
-            def key(aTuple: Tuple) -> Any:
+            def key(aTuple: tuple) -> Any:
                 return aTuple[0]
 
             n, p = list(sorted(matches, key=key))[-1]

@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import string
-from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -254,7 +254,7 @@ class ChapterController:
         theChapter = cc.getSelectedChapter()
         return bool(theChapter and theChapter.name != 'main')
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
-    def parseHeadline(self, p: Position) -> Tuple[str, str]:
+    def parseHeadline(self, p: Position) -> tuple[str, str]:
         """Return the chapter name and key binding for p.h."""
         if not self.re_chapter:
             self.re_chapter = re.compile(

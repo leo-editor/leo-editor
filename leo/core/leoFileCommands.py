@@ -18,8 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Generator, Optional, Set, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, Set, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -152,7 +151,7 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> Tuple[VNode, Any]:
+    def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> tuple[VNode, Any]:
 
         contents = g.toUnicode(s_or_b)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -288,7 +287,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Any) -> Tuple[dict[str, str], dict[str, Any]]:
+    def scanTnodes(self, t_elements: Any) -> tuple[dict[str, str], dict[str, Any]]:
 
         gnx2body: dict[str, str] = {}
         gnx2ua: dict[str, dict] = defaultdict(dict)
@@ -403,7 +402,7 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
-    def readWithJsonTree(self, path: str, s: str) -> Tuple[VNode, Any]:
+    def readWithJsonTree(self, path: str, s: str) -> tuple[VNode, Any]:
         try:
             d = json.loads(s)
         except Exception:
@@ -700,7 +699,7 @@ class FileCommands:
 
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
     #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
-    def createBackupFile(self, fileName: str) -> Tuple[bool, str]:
+    def createBackupFile(self, fileName: str) -> tuple[bool, str]:
         """
             Create a closed backup file and copy the file to it,
             but only if the original file exists.
@@ -918,7 +917,7 @@ class FileCommands:
         readAtFileNodesFlag: bool = True,
         silent: bool = False,
         checkOpenFiles: bool = True,
-    ) -> Tuple[VNode, float]:
+    ) -> tuple[VNode, float]:
         """
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
@@ -1152,7 +1151,7 @@ class FileCommands:
         fc.exportToSqlite(c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn: Any) -> Tuple:
+    def getWindowGeometryFromDb(self, conn: Any) -> tuple:
         geom = (600, 400, 50, 50, 0.5, 0.5, '')
         keys = ('width', 'height', 'left', 'top',
                   'ratio', 'secondary_ratio',
@@ -1247,9 +1246,9 @@ class FileCommands:
                 if gnx in pubgnxes:
                     v.parents.append(c.hiddenRootNode)
         #@+node:vitalije.20170831144827.8: *6* function: priv_data
-        def priv_data(gnxes: Any) -> Tuple:
+        def priv_data(gnxes: Any) -> tuple:
 
-            def dbrow(v: VNode) -> Tuple:
+            def dbrow(v: VNode) -> tuple:
                 return (
                         v.gnx,
                         v.h,
@@ -1502,7 +1501,7 @@ class FileCommands:
             fc.put("</vnodes>\n")
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* function: getPublicLeoFile
-        def getPublicLeoFile() -> Tuple[str, str]:
+        def getPublicLeoFile() -> tuple[str, str]:
             fc.outputFile = io.StringIO()
             fc.putProlog()
             fc.putHeader()
@@ -1619,7 +1618,7 @@ class FileCommands:
                 g.trace('unpickleable value', repr(v.u))
             return s
 
-        def dbrow(v: VNode) -> Tuple:
+        def dbrow(v: VNode) -> tuple:
             return (
                 v.gnx,
                 v.h,
@@ -2123,7 +2122,7 @@ class FileCommands:
             return ''
         return self.pickle(torv=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList: list) -> list[Tuple[Any, dict]]:
+    def createUaList(self, aList: list) -> list[tuple[Any, dict]]:
         """
         Given aList of pairs (p,torv), return a list of pairs (torv,d)
         where d contains all picklable items of torv.unknownAttributes.

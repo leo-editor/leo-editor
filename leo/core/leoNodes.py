@@ -7,8 +7,7 @@ from __future__ import annotations
 import copy
 import time
 import uuid
-from typing import Any, Callable, Generator, Optional, Set, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, Set, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -139,7 +138,7 @@ class NodeIndices:
         else:
             v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s: str) -> Tuple[str, str, str]:
+    def scanGnx(self, s: str) -> tuple[str, str, str]:
         """Create a gnx from its string representation."""
         if not isinstance(s, str):  # pragma: no cover
             g.error("scanGnx: unexpected index type:", type(s), '', s)
@@ -165,7 +164,7 @@ class NodeIndices:
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20141015035853.18304: *3* ni.tupleToString
-    def tupleToString(self, aTuple: Tuple) -> str:
+    def tupleToString(self, aTuple: tuple) -> str:
         """
         Convert a gnx tuple returned by scanGnx
         to its string representation.
@@ -1016,7 +1015,7 @@ class Position:
                 p._childIndex -= 1
                 return
         # Adjust p's stack.
-        stack: list[Tuple[VNode, int]] = []
+        stack: list[tuple[VNode, int]] = []
         changed, i = False, 0
         while i < len(p.stack):
             v, childIndex = p.stack[i]
@@ -1319,7 +1318,7 @@ class Position:
         limit: "Position",
         limitIsVisible: bool,
         p: "Position",
-    ) -> Tuple[bool, Optional["Position"]]:
+    ) -> tuple[bool, Optional["Position"]]:
         """Return done, p or None"""
         c = p.v.context
         if limit == p:
@@ -2009,7 +2008,7 @@ class VNode:
         print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: Tuple, h: Optional[str] = None) -> str:
+    def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:
         """Return the name following one of the names in nameList or """
         # Allow h argument for unit testing.
         if not h:

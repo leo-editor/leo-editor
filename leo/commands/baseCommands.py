@@ -4,7 +4,7 @@
 #@+<< baseCommands imports & abbreviations >>
 #@+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>
 from __future__ import annotations
-from typing import Any, Tuple, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -102,7 +102,7 @@ class BaseEditCommandsClass:
             g.es(warning, color='red')
         return val
     #@+node:ekr.20150514043714.13: *4* BaseEdit.getRectanglePoints
-    def getRectanglePoints(self, w: Wrapper) -> Tuple[int, int, int, int]:
+    def getRectanglePoints(self, w: Wrapper) -> tuple[int, int, int, int]:
         """Return the rectangle corresponding to the selection range."""
         c = self.c
         c.widgetWantsFocusNow(w)

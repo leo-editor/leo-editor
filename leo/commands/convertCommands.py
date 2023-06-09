@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import time
-from typing import Any, Callable, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -699,7 +699,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 s = s[:-2]
             return s
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
-        def find_arg(self, s: str, i: int) -> Tuple[str, int]:
+        def find_arg(self, s: str, i: int) -> tuple[str, int]:
             """
             Scan over type annotations or initializers.
 

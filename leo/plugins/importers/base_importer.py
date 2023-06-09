@@ -4,14 +4,14 @@
 from __future__ import annotations
 import io
 import re
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 
-Block = Tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
+Block = tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
 StringIO = io.StringIO
 
 class ImporterError(Exception):
@@ -48,7 +48,7 @@ class Importer:
     language: str = None
 
     # May be overridden in subclasses.
-    block_patterns: Tuple = tuple()
+    block_patterns: tuple = tuple()
     level_up_ch = '{'
     level_down_ch = '}'
     string_list: list[str] = ['"', "'"]

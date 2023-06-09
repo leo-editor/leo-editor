@@ -9,7 +9,7 @@ import os
 import re
 import textwrap
 import time
-from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 import urllib
 #
 # Third-party imports.
@@ -164,7 +164,7 @@ class LeoImportCommands:
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
-    def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> Tuple[int, str]:
+    def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> tuple[int, str]:
         """
         # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
@@ -258,7 +258,7 @@ class LeoImportCommands:
             file_name = ''
         return file_name
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
-    def convertDocPartToWeb(self, s: str, i: int, result: Any) -> Tuple[int, str]:
+    def convertDocPartToWeb(self, s: str, i: int, result: Any) -> tuple[int, str]:
         nl = self.output_newline
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
@@ -329,7 +329,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3299: *4* ic.copyPart
     # Copies characters to result until the end of the present section is seen.
 
-    def copyPart(self, s: str, i: int, result: Any) -> Tuple[int, str]:
+    def copyPart(self, s: str, i: int, result: Any) -> tuple[int, str]:
 
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
@@ -627,7 +627,7 @@ class LeoImportCommands:
         p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext: str, fileName: str, s: str) -> Tuple[str, str]:
+    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str]:
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -1529,7 +1529,7 @@ class MORE_Importer:
         c.redraw()
         return theRoot
     #@+node:ekr.20031218072017.3222: *3* MORE.headlineLevel
-    def headlineLevel(self, s: str) -> Tuple[int, bool]:
+    def headlineLevel(self, s: str) -> tuple[int, bool]:
         """return the headline level of s,or -1 if the string is not a MORE headline."""
         level = 0
         i = 0
@@ -1833,7 +1833,7 @@ class TabImporter:
         self.c = c
         self.root: Position = None
         self.separate = separate
-        self.stack: list[Tuple[int, Position]] = []
+        self.stack: list[tuple[int, Position]] = []
 
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
@@ -2212,7 +2212,7 @@ class ZimImportController:
         self.rstType = c.config.getString('zim-rst-type') or 'rst'
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
-    def parseZimIndex(self) -> list[Tuple[int, str, list[str]]]:
+    def parseZimIndex(self) -> list[tuple[int, str, list[str]]]:
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
