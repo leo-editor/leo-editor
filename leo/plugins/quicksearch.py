@@ -82,7 +82,7 @@ from __future__ import annotations
 import fnmatch
 import itertools
 import re
-from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
@@ -102,7 +102,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Match = re.Match
     Match_Iter = Iterator[re.Match[str]]
-    Match_List = List[Tuple[Position, Match_Iter]]
+    Match_List = list[tuple[Position, Match_Iter]]
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Widget = Any
 #@-<< quicksearch annotations >>
@@ -200,7 +200,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 #@+node:ekr.20111014074810.15659: *3* matchLines
-def matchlines(b: str, miter: Iterator[Match[str]]) -> List:
+def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
 
     res = []
     for m in miter:
@@ -355,7 +355,7 @@ class QuickSearchController:
         self.c = c
         self.lw: Widget = listWidget  # A QListWidget.
         w = listWidget
-        self.its: Dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
+        self.its: dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
         self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
@@ -363,9 +363,9 @@ class QuickSearchController:
                                "@auto-otl", "@auto-rst"]
 
         self.frozen = False
-        self._search_patterns: List[str] = []
+        self._search_patterns: list[str] = []
 
-        def searcher(inp:str) -> Tuple[Match_List, Match_List]:
+        def searcher(inp:str) -> tuple[Match_List, Match_List]:
             if self.frozen:
                 return None
             exp = inp.replace(" ", "*")
@@ -379,7 +379,7 @@ class QuickSearchController:
             out = self.worker.output
             self.throttler.add(out)
 
-        def throttledDump(lst: List[Tuple[Match_List, Match_List]]) -> None:
+        def throttledDump(lst: list[tuple[Match_List, Match_List]]) -> None:
             """ dumps the last output """
             # we do get called with empty list on occasion
             if not lst:
@@ -426,7 +426,7 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list: Dict[str,  Match_List]) -> int:
+    def addParentMatches(self, parent_list: dict[str,  Match_List]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -597,7 +597,7 @@ class QuickSearchController:
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents: Dict[str, Match_List] = {}
+                parents: dict[str, Match_List] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
@@ -617,7 +617,7 @@ class QuickSearchController:
                 self.lw.insertItem(0, "External file directive not found " +
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
-    def bgSearch(self, pat:str) -> Tuple[Match_List, Match_List]:
+    def bgSearch(self, pat:str) -> tuple[Match_List, Match_List]:
 
         if self.frozen:
             return None

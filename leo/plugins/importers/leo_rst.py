@@ -6,7 +6,7 @@ The @auto importer for restructured text.
 This module must **not** be named rst, so as not to conflict with docutils.
 """
 from __future__ import annotations
-from typing import Dict, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -41,9 +41,9 @@ class Rst_Importer(Importer):
         """
         lines = self.lines
         assert parent == self.root
-        self.lines_dict: Dict[VNode, List[str]] = {parent.v: []}
+        self.lines_dict: dict[VNode, list[str]] = {parent.v: []}
         self.lines = lines
-        self.stack: List[Position] = [parent]
+        self.stack: list[Position] = [parent]
         skip = 0
         for i, line in enumerate(lines):
             if skip > 0:
@@ -69,7 +69,7 @@ class Rst_Importer(Importer):
             p.b = ''.join(self.lines_dict[p.v])
     #@+node:ekr.20230529072922.2: *4* rst_i.ch_level
     # # 430, per RagBlufThim. Was {'#': 1,}
-    rst_seen: Dict[str, int] = {}
+    rst_seen: dict[str, int] = {}
     rst_level = 0  # A trick.
 
     def ch_level(self, ch: str) -> int:

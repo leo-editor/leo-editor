@@ -63,7 +63,7 @@ import html.parser as HTMLParser
 import io
 import os
 import sys
-from typing import Any, List
+from typing import Any
 import urllib.parse as urlparse
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
@@ -152,7 +152,7 @@ class FTPurl:
 
         try:
             if self.mode == '':  # mode='': ASCII mode
-                slist: List = []
+                slist: list = []
                 self.ftp.retrlines('RETR %s' % self.path, slist.append)  # type:ignore
                 s = '\n'.join(slist)
             else:  # mode='b': binary mode
@@ -168,7 +168,7 @@ class FTPurl:
     #@+node:edream.110203113231.883: *4* readline
     def readline(self):
         """Read one entire line from the remote file."""
-        self.lst: List
+        self.lst: list
         try:
             self.lst
         except AttributeError:
@@ -208,7 +208,7 @@ class FTPurl:
     #@+node:edream.110203113231.889: *4* dir
     def dir(self, path=None):
         """Issue a LIST command passing the specified argument and return output as a string."""
-        s: List = []
+        s: list = []
 
         if path is None:
             path = self.dirname
@@ -298,39 +298,39 @@ def insert_read_only_node(c, p, name):
     except IOError:  # as msg:
         p.b = ""  # Clear the body text.
         return True  # Mark the node as changed.
-    else:
-        ext = os.path.splitext(parse[2])[1]
-        if ext.lower() in ['.htm', '.html']:
-            #@+<< convert HTML to text >>
-            #@+node:edream.110203113231.895: *3* << convert HTML to text >>
-            fh = StringIO()
-            fmt = AbstractFormatter(DumbWriter(fh))
-            # the parser stores parsed data into fh (file-like handle)
-            parser = HTMLParser(fmt)  # type:ignore
 
-            # send the HTML text to the parser
-            parser.feed(new)
-            parser.close()
+    ext = os.path.splitext(parse[2])[1]
+    if ext.lower() in ['.htm', '.html']:
+        #@+<< convert HTML to text >>
+        #@+node:edream.110203113231.895: *3* << convert HTML to text >>
+        fh = StringIO()
+        fmt = AbstractFormatter(DumbWriter(fh))
+        # the parser stores parsed data into fh (file-like handle)
+        parser = HTMLParser(fmt)  # type:ignore
 
-            # now replace the old string with the parsed text
-            new = fh.getvalue()
-            fh.close()
+        # send the HTML text to the parser
+        parser.feed(new)
+        parser.close()
 
-            # finally, get the list of hyperlinks and append to the end of the text
-            hyperlinks = parser.anchorlist
-            numlinks = len(hyperlinks)
-            if numlinks > 0:
-                hyperlist = ['\n\n--Hyperlink list follows--']
-                for i in range(numlinks):
-                    hyperlist.append("\n[%d]: %s" % (i + 1, hyperlinks[i]))  # 3/26/03: was i.
-                new = new + ''.join(hyperlist)
-            #@-<< convert HTML to text >>
-        previous = p.b
-        p.b = new
-        changed = (g.toUnicode(new) != g.toUnicode(previous))
-        if changed and previous != "":
-            g.es("changed: %s" % name)  # A real change.
-        return changed
+        # now replace the old string with the parsed text
+        new = fh.getvalue()
+        fh.close()
+
+        # finally, get the list of hyperlinks and append to the end of the text
+        hyperlinks = parser.anchorlist
+        numlinks = len(hyperlinks)
+        if numlinks > 0:
+            hyperlist = ['\n\n--Hyperlink list follows--']
+            for i in range(numlinks):
+                hyperlist.append("\n[%d]: %s" % (i + 1, hyperlinks[i]))  # 3/26/03: was i.
+            new = new + ''.join(hyperlist)
+        #@-<< convert HTML to text >>
+    previous = p.b
+    p.b = new
+    changed = (g.toUnicode(new) != g.toUnicode(previous))
+    if changed and previous != "":
+        g.es("changed: %s" % name)  # A real change.
+    return changed
 #@+node:edream.110203113231.896: ** on_open
 #  scan the outline and process @read-only nodes.
 def on_open(tag, keywords):

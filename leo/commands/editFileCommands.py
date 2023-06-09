@@ -8,7 +8,7 @@ import difflib
 import io
 import os
 import re
-from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -38,7 +38,7 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units: List[Position] = []  # List of positions containing @unit.
+    units: list[Position] = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
@@ -298,7 +298,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
-    def computeChangeDicts(self, d1: Dict, d2: Dict) -> Tuple[Dict, Dict, Dict]:
+    def computeChangeDicts(self, d1: dict, d2: dict) -> tuple[dict, dict, dict]:
         """
         Compute inserted, deleted, changed dictionaries.
 
@@ -324,9 +324,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def createAllCompareClones(self,
         c1: Cmdr,
         c2: Cmdr,
-        inserted: Dict,
-        deleted: Dict,
-        changed: Dict,
+        inserted: dict,
+        deleted: dict,
+        changed: dict,
     ) -> None:
         """Create the comparison trees."""
         c = self.c  # Always use the visible commander
@@ -351,7 +351,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         u.afterChangeGroup(parent, undoType)
         c.redraw()
     #@+node:ekr.20170806094317.12: *5* efc.createCompareClones
-    def createCompareClones(self, d: Dict[str, str], kind: str, parent: Position) -> None:
+    def createCompareClones(self, d: dict[str, str], kind: str, parent: Position) -> None:
         if d:
             c = self.c  # Use the visible commander.
             parent = parent.insertAsLastChild()
@@ -371,9 +371,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
-    def createFileDict(self, c: Cmdr) -> Dict[str, Position]:
+    def createFileDict(self, c: Cmdr) -> dict[str, Position]:
         """Create a dictionary of all relevant positions in commander c."""
-        d: Dict[str, Position] = {}
+        d: dict[str, Position] = {}
         for p in c.all_positions():
             d[p.v.fileIndex] = p.copy()
         return d
@@ -381,9 +381,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def dumpCompareNodes(self,
         fileName1: str,
         fileName2: str,
-        inserted: Dict,
-        deleted: Dict,
-        changed: Dict,
+        inserted: dict,
+        deleted: dict,
+        changed: dict,
     ) -> None:
         for d, kind in (
             (inserted, f"inserted (only in {fileName1})"),
@@ -402,8 +402,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             #@+others
             #@+node:ekr.20170806094318.18: *4* ct.compare
             def compare(self,
-                d1: Dict,
-                d2: Dict,
+                d1: dict,
+                d2: dict,
                 p1: Position,
                 p2: Position,
                 root: Position,
@@ -447,13 +447,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 c.selectPosition(root)
                 c.redraw()
             #@+node:ekr.20170806094319.2: *4* ct.scan
-            def scan(self, p1: Position) -> Dict[str, Position]:
+            def scan(self, p1: Position) -> dict[str, Position]:
                 """
                 Create a dict of the methods in p1.
                 Keys are headlines, stripped of prefixes.
                 Values are copies of positions.
                 """
-                d: Dict[str, Position] = {}
+                d: dict[str, Position] = {}
                 for p in p1.self_and_subtree(copy=False):
                     h = p.h.strip()
                     i = h.find('.')
@@ -881,7 +881,7 @@ class GitDiffController:
     def create_compare_node(self,
         c1: Cmdr,
         c2: Cmdr,
-        d: Dict[str, Tuple[VNode, VNode]],
+        d: dict[str, tuple[VNode, VNode]],
         kind: str,
         rev1: str,
         rev2: str,
@@ -940,7 +940,7 @@ class GitDiffController:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
-    def create_file_node(self, diff_list: List[str], fn: str) -> Position:
+    def create_file_node(self, diff_list: list[str], fn: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = 'diff: ' + fn.strip()
@@ -1066,7 +1066,7 @@ class GitDiffController:
             g.es_exception()
             return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
-    def get_files(self, rev1: str, rev2: str) -> List[str]:
+    def get_files(self, rev1: str, rev2: str) -> list[str]:
         """Return a list of changed files."""
         # #2143
         directory = self.get_directory()
@@ -1164,7 +1164,7 @@ class GitDiffController:
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind, rev1, rev2)
     #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[Dict, Dict, Dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         # Special case the root: only compare the body text.
         root1, root2 = c1.rootPosition().v, c2.rootPosition().v

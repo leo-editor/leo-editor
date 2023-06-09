@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 import string
 import time
-from typing import Any, Callable, Dict, Generator, Sequence, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Sequence, Optional, TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -66,13 +66,13 @@ class BaseColorizer:
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
         # Configuration dicts...
-        self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict: Dict[str, bool] = {}  # Keys are tags, values are bools.
+        self.configDict: dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict: dict[str, bool] = {}  # Keys are tags, values are bools.
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
-        self.prev: Tuple[int, int, str] = None  # Used by setTag.
+        self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
         # Statistics....
         self.count = 0
@@ -150,7 +150,7 @@ class BaseColorizer:
         c = self.c
         self.font_selectors = ('family', 'size', 'slant', 'weight')
         # Keys are font names. Values are Dicts[selector, value]
-        self.new_fonts: Dict[str, Dict] = {}
+        self.new_fonts: dict[str, dict] = {}
 
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
@@ -229,7 +229,7 @@ class BaseColorizer:
                 self.new_fonts[font_name] = font_info
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.create_font
     # Keys are key::settings_names. Values are cumulative font size.
-    zoom_dict: Dict[str, int] = {}
+    zoom_dict: dict[str, int] = {}
 
     def create_font(self, key: str, setting_name: str) -> Any:
         """
@@ -580,7 +580,7 @@ class BaseColorizer:
         c, getBool = self.c, self.c.config.getBool
         #
         # Init all settings ivars.
-        self.color_tags_list: List[str] = []
+        self.color_tags_list: list[str] = []
         self.showInvisibles      = getBool("show-invisibles-by-default")
         self.underline_undefined = getBool("underline-undefined-section-names")
         self.use_hyperlinks      = getBool("use-hyperlinks")
@@ -664,7 +664,7 @@ class BaseColorizer:
     def init_style_ivars(self) -> None:
         """Init Style data common to JEdit and Pygments colorizers."""
         # init() properly sets these for each language.
-        self.actualColorDict: Dict[str, Color] = {}  # Used only by setTag.
+        self.actualColorDict: dict[str, Color] = {}  # Used only by setTag.
         self.hyperCount = 0
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -687,17 +687,17 @@ class BaseColorizer:
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
-        self.importedRulesets: Dict[str, RuleSet] = {}
+        self.importedRulesets: dict[str, RuleSet] = {}
         self.prev = None  # The previous token.
-        self.fonts: Dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
-        self.keywords: Dict[str, int] = {}  # Keys are keywords, values are 0..5.
-        self.modes: Dict[str, Mode] = {}  # Keys are languages, values are modes.
+        self.fonts: dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
+        self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
+        self.modes: dict[str, Mode] = {}  # Keys are languages, values are modes.
         self.mode: Mode = None  # The mode object for the present language.
         self.modeBunch: g.Bunch = None  # A bunch fully describing a mode.
-        self.modeStack: List[Mode] = []
-        self.rulesDict: Dict[str, Any] = {}
+        self.modeStack: list[Mode] = []
+        self.rulesDict: dict[str, Any] = {}
         # self.defineAndExtendForthWords()
-        self.word_chars: Dict[str, str] = {}  # Inited by init_keywords().
+        self.word_chars: dict[str, str] = {}  # Inited by init_keywords().
         self.tags = [
             # 8 Leo-specific tags.
             "blank",  # show_invisibles_space_color
@@ -849,9 +849,9 @@ class BaseColorizer:
         r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
         , re.MULTILINE)
 
-    def findColorDirectives(self, p: Position) -> Dict[str, str]:
+    def findColorDirectives(self, p: Position) -> dict[str, str]:
         """Return a dict with each color directive in p.b, without the leading '@'."""
-        d: Dict[str, str] = {}
+        d: dict[str, str] = {}
         for m in self.color_directives_pat.finditer(p.b):
             word = m.group(0)[1:]
             d[word] = word
@@ -886,11 +886,11 @@ class JEditColorizer(BaseColorizer):
         self.initialStateNumber = -1
         self.old_v: VNode = None
         self.nextState = 1  # Dont use 0.
-        self.n2languageDict: Dict[int, str] = {-1: c.target_language}
-        self.prev: Tuple[int, int, str] = None
-        self.restartDict: Dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
-        self.stateDict: Dict[int, str] = {}  # Keys are state numbers, values state names.
-        self.stateNameDict: Dict[str, int] = {}  # Keys are state names, values are state numbers.
+        self.n2languageDict: dict[int, str] = {-1: c.target_language}
+        self.prev: tuple[int, int, str] = None
+        self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
+        self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
+        self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
         # #2276: Set by init_section_delims.
         self.section_delim1 = '<<'
         self.section_delim2 = '>>'
@@ -946,7 +946,7 @@ class JEditColorizer(BaseColorizer):
             self.section_delim1 = '<<'
             self.section_delim2 = '>>'
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
-    def addImportedRules(self, mode: Mode, rulesDict: Dict[str, Any], rulesetName: str) -> None:
+    def addImportedRules(self, mode: Mode, rulesDict: dict[str, Any], rulesetName: str) -> None:
         """Append any imported rules at the end of the rulesets specified in mode.importDict"""
         if self.importedRulesets.get(rulesetName):
             return
@@ -968,7 +968,7 @@ class JEditColorizer(BaseColorizer):
                             self.rulesDict[key] = aList
             self.initModeFromBunch(savedBunch)
     #@+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
-    def addLeoRules(self, theDict: Dict[str, Any]) -> None:
+    def addLeoRules(self, theDict: dict[str, Any]) -> None:
         """Put Leo-specific rules to theList."""
         table = [
             # Rules added at front are added in **reverse** order.
@@ -1068,14 +1068,14 @@ class JEditColorizer(BaseColorizer):
         #
         # #1334: Careful: getattr(mode, ivar, {}) might be None!
         #
-        d: Dict[Any, Any] = getattr(mode, 'keywordsDictDict', {}) or {}
+        d: dict[Any, Any] = getattr(mode, 'keywordsDictDict', {}) or {}
         self.keywordsDict = d.get(rulesetName, {})
         self.setKeywords()
         d = getattr(mode, 'attributesDictDict', {}) or {}
-        self.attributesDict: Dict[str, Any] = d.get(rulesetName, {})
+        self.attributesDict: dict[str, Any] = d.get(rulesetName, {})
         self.setModeAttributes()
         d = getattr(mode, 'rulesDictDict', {}) or {}
-        self.rulesDict: Dict[str, Any] = d.get(rulesetName, {})
+        self.rulesDict: dict[str, Any] = d.get(rulesetName, {})
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
@@ -1107,7 +1107,7 @@ class JEditColorizer(BaseColorizer):
         self.modes[rulesetName] = self.modeBunch
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
-    def nameToRulesetName(self, name: str) -> Tuple[str, str]:
+    def nameToRulesetName(self, name: str) -> tuple[str, str]:
         """
         Compute language and rulesetName from name, which is either a language
         name or a delegate name.
@@ -1155,7 +1155,7 @@ class JEditColorizer(BaseColorizer):
                 # g.es_print('removing %s from word_chars' % (repr(ch)))
                 chars.remove(ch)
         # Convert chars to a dict for faster access.
-        self.word_chars: Dict[str, str] = {}
+        self.word_chars: dict[str, str] = {}
         for z in chars:
             self.word_chars[z] = z
     #@+node:ekr.20110605121601.18584: *5* jedit.setModeAttributes
@@ -1218,7 +1218,7 @@ class JEditColorizer(BaseColorizer):
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
     #@+node:ekr.20170205055743.1: *4* jedit.set_wikiview_patterns
-    def set_wikiview_patterns(self, leadins: List[str], patterns: List[re.Pattern]) -> None:
+    def set_wikiview_patterns(self, leadins: list[str], patterns: list[re.Pattern]) -> None:
         """
         Init the colorizer so it will *skip* all patterns.
         The wikiview plugin calls this method.
@@ -2716,7 +2716,7 @@ if QtGui:
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
-        key_error_d: Dict[str, bool] = {}
+        key_error_d: dict[str, bool] = {}
 
         def _get_format_from_style(self, token: Any, style: Any) -> Any:
             """ Returns a QTextCharFormat for token by reading a Pygments style.
@@ -2899,10 +2899,10 @@ class PygmentsColorizer(BaseColorizer):
             self.getFormat = self.getLegacyFormat
             self.setFormat = self.setLegacyFormat
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
-    format_dict: Dict[str, str] = {}  # Keys are repr(Token), values are formats.
-    lexers_dict: Dict[str, Callable] = {}  # Keys are language names, values are instantiated, patched lexers.
-    state_s_dict: Dict[str, int] = {}  # Keys are strings, values are ints.
-    state_n_dict: Dict[int, str] = {}  # # Keys are ints, values are strings.
+    format_dict: dict[str, str] = {}  # Keys are repr(Token), values are formats.
+    lexers_dict: dict[str, Callable] = {}  # Keys are language names, values are instantiated, patched lexers.
+    state_s_dict: dict[str, int] = {}  # Keys are strings, values are ints.
+    state_n_dict: dict[int, str] = {}  # # Keys are ints, values are strings.
     state_index = 1  # Index of state number to be allocated.
     # For traces.
     last_v = None
@@ -2989,7 +2989,7 @@ class PygmentsColorizer(BaseColorizer):
             # Color only the @language, indicating an unknown language.
             yield match.start(), Name.Decorator, match.group(1)
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
-    unknown_languages: List[str] = []
+    unknown_languages: list[str] = []
 
     def get_lexer(self, language: str) -> Any:
         """Return the lexer for self.language, creating it if necessary."""
@@ -3154,7 +3154,7 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
             lexer.setStringsOverNewlineAllowed(False)
-        table: List[Tuple[str, str]] = []
+        table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
             aList = [s.split(',') for s in aList]
@@ -3203,7 +3203,7 @@ class QScintillaColorizer(BaseColorizer):
         self.updateSyntaxColorer(self.c.p)
         self.changeLexer(self.language)
     #@+node:ekr.20170128133525.1: *3* qsc.makeLexersDict
-    def makeLexersDict(self) -> Dict[str, Any]:
+    def makeLexersDict(self) -> dict[str, Any]:
         """Make a dictionary of Scintilla lexers, and configure each one."""
         c = self.c
         # g.printList(sorted(dir(Qsci)))
@@ -3217,7 +3217,7 @@ class QScintillaColorizer(BaseColorizer):
             'Pascal', 'Perl', 'Python', 'PostScript', 'Properties',
             'Ruby', 'SQL', 'TCL', 'TeX', 'XML', 'YAML',
         )
-        d: Dict[str, Any] = {}
+        d: dict[str, Any] = {}
         for language_name in table:
             class_name = 'QsciLexer' + language_name
             lexer_class = getattr(Qsci, class_name, None)

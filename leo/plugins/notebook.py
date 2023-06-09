@@ -6,14 +6,14 @@ Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
 """
-from typing import Any, Dict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtDeclarative, QtGui
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
-controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
+controllers: dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 
 #@+others
 #@+node:ville.20120604212857.4219: ** init

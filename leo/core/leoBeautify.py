@@ -7,7 +7,7 @@ from __future__ import annotations
 import sys
 import os
 import time
-from typing import Any, Dict, List, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 # Third-party tools.
 try:
     import black
@@ -228,7 +228,7 @@ def fstringify_files_silent(event: Event) -> None:
         f"{n_changed} changed file{g.plural(n_changed)} "
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
-def orange_settings(c: Cmdr) -> Dict[str, Any]:
+def orange_settings(c: Cmdr) -> dict[str, Any]:
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)
@@ -299,7 +299,7 @@ class CPrettyPrinter:
         self.brackets = 0  # The brackets indentation level.
         self.p: Position = None  # Set in indent.
         self.parens = 0  # The parenthesis nesting level.
-        self.result: List[Any] = []  # The list of tokens that form the final result.
+        self.result: list[Any] = []  # The list of tokens that form the final result.
         self.tab_width = 4  # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p: Position) -> None:
@@ -325,7 +325,7 @@ class CPrettyPrinter:
             g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
-    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, List[str]]:
+    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, list[str]]:
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return [] if toList else ''  # #2271
@@ -343,7 +343,7 @@ class CPrettyPrinter:
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
-    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> List[str]:
+    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> list[str]:
         p = self.p
 
         def oops(message: str, i: int, j: int) -> None:
@@ -353,7 +353,7 @@ class CPrettyPrinter:
                 g.es_print(f'{message} after\n{repr("".join(s[i:j]))}')
 
         i, n = 0, len(s)
-        result: List[str] = []
+        result: list[str] = []
         while i < n:
             token = s[i]
             progress = i
@@ -513,9 +513,9 @@ class CPrettyPrinter:
     def match(self, s: str, i: int, pat: str) -> bool:
         return i < len(s) and s[i] == pat
     #@+node:ekr.20110917174948.6930: *3* cpp.tokenize & helper
-    def tokenize(self, s: str) -> List[str]:
+    def tokenize(self, s: str) -> list[str]:
         """Tokenize comments, strings, identifiers, whitespace and operators."""
-        result: List[str] = []
+        result: list[str] = []
         i = 0
         while i < len(s):
             # Loop invariant: at end: j > i and s[i:j] is the new token.

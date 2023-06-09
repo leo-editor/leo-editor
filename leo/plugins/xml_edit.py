@@ -96,9 +96,11 @@ These commands attempt to deal with all of this.
 
 """
 
+# broad-exception-raised: Not valid in later pylints.
+
 import os
 import traceback  # for XML parse error display
-from typing import Any, Dict
+from typing import Any
 from lxml import etree
 from leo.core import leoGlobals as g
 
@@ -116,7 +118,7 @@ table = [
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP: Dict[str, Any] = {}
+NSMAP: dict[str, Any] = {}
 
 #@+node:tbrown.20110428102237.20325: ** append_element
 def append_element(xml_node, to_leo_node):

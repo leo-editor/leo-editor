@@ -80,7 +80,7 @@ import shlex
 import subprocess
 import tempfile
 import threading
-from typing import Any, Dict, List, Set
+from typing import Any
 from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
@@ -404,7 +404,7 @@ class LeoCloud:
 
         respects @ignore in headlines, doesn't recurse into @leo_cloud nodes
         """
-        found: Set = set()
+        found: set = set()
         self._find_clouds_recursive(self.c.hiddenRootNode, found)
         valid = []
         for lc in found:
@@ -462,7 +462,7 @@ class LeoCloud:
         Returns:
             dict
         """
-        kwargs: Dict[str, Any] = {'remote': None}
+        kwargs: dict[str, Any] = {'remote': None}
         # some methods assume 'remote' exists, but it's absent in LeoCloudIOFileSystem
         for line in p.b.split('\n'):
             kwarg = KWARG_RE.match(line)
@@ -590,8 +590,8 @@ class LeoCloud:
 
         Trailing newlines are ignored in body text.
         """
-        childs: List = []
-        hashes: List = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
+        childs: list = []
+        hashes: list = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
             hashes.extend([nd.h + nd.b.rstrip('\n') + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()

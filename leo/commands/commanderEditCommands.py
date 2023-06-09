@@ -6,7 +6,7 @@
 #@+node:ekr.20220826084013.1: ** << commanderEditCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -393,7 +393,7 @@ def deleteComments(self: Self, event: Event = None) -> None:
     u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
-def editHeadline(self: Self, event: Event = None) -> Tuple[Any, Any]:
+def editHeadline(self: Self, event: Event = None) -> tuple[Any, Any]:
     """
     Begin editing the headline of the selected node.
 
@@ -543,7 +543,7 @@ def extractDef(c: Cmdr, s: str) -> str:
             return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* def extractDef_find
-def extractDef_find(c: Cmdr, lines: List[str]) -> Optional[str]:
+def extractDef_find(c: Cmdr, lines: list[str]) -> Optional[str]:
     for line in lines:
         def_h = extractDef(c, line.strip())
         if def_h:
@@ -856,7 +856,7 @@ def single_line_paragraph(s: str) -> bool:
     """Return True if s is a single-line paragraph."""
     return s.startswith('@') or s.strip() in ('"""', "'''")
 #@+node:ekr.20171123135625.42: *3* function: find_bound_paragraph
-def find_bound_paragraph(c: Cmdr) -> Tuple[str, List[str], str]:
+def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
     """
     Return the lines of a paragraph to be reformatted.
     This is a convenience method for the reformat-paragraph command.
@@ -906,7 +906,7 @@ def find_bound_paragraph(c: Cmdr) -> Tuple[str, List[str], str]:
         return head, result, tail  # string, list, string
     return None, None, None
 #@+node:ekr.20171123135625.45: *3* function: rp_get_args
-def rp_get_args(c: Cmdr) -> Tuple[int, int, str, int, int]:
+def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
     w = body.wrapper
@@ -921,7 +921,7 @@ def rp_get_args(c: Cmdr) -> Tuple[int, int, str, int, int]:
     oldYview = w.getYScrollPosition()
     return oldSel, oldYview, original, pageWidth, tabWidth
 #@+node:ekr.20171123135625.46: *3* function: rp_get_leading_ws
-def rp_get_leading_ws(c: Cmdr, lines: Any, tabWidth: Any) -> Tuple[List[int], List[str]]:
+def rp_get_leading_ws(c: Cmdr, lines: Any, tabWidth: Any) -> tuple[list[int], list[str]]:
     """Compute and return indents and leading_ws."""
     # c = self
     indents = [0, 0]
@@ -986,7 +986,7 @@ def rp_wrap_all_lines(
     c: Cmdr,
     indents: Any,
     leading_ws: Any,
-    lines: List[str],
+    lines: list[str],
     pageWidth: int,
 ) -> str:
     """Compute the result of wrapping all lines."""
@@ -1250,8 +1250,8 @@ def make_toc(c: Cmdr, kind: str, root: Position) -> str:
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
 
-    result: List[str] = []
-    stack: List[int] = []
+    result: list[str] = []
+    stack: list[int] = []
     for p in root.subtree():
         if cell_type(p) == 'markdown':
             level = p.level() - root.level()

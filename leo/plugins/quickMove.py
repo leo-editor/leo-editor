@@ -134,7 +134,7 @@ Tags
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
-from typing import Any, List, Sequence, Tuple
+from typing import Any, Sequence
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
@@ -145,6 +145,7 @@ from leo.plugins.attrib_edit import DialogCode, ListDialog
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
+# broad-exception-raised: Not valid in later pylints.
 # pylint: disable=cell-var-from-loop
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
@@ -204,7 +205,7 @@ class quickMove:
        creating buttons, and creates buttons as needed
     """
 
-    flavors: List[Tuple] = [
+    flavors: list[tuple] = [
       # name   first/last  long  short
       ('move', True, "Move", "to"),
       ('copy', True, "Copy", "to"),
@@ -330,7 +331,7 @@ class quickMove:
 
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
-        self.local_imps: List[Tuple] = []  # make table for createMenuItemsFromTable()
+        self.local_imps: list[tuple] = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
 
@@ -980,7 +981,7 @@ class quickMoveButton:
     def computeUNL(self, p):
 
         p = p.copy()
-        heads: List[str] = []
+        heads: list[str] = []
         while p:
             heads.insert(0, p.h)
             p = p.parent()

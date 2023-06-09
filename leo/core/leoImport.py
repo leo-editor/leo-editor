@@ -9,7 +9,7 @@ import os
 import re
 import textwrap
 import time
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 import urllib
 #
 # Third-party imports.
@@ -101,7 +101,7 @@ class FreeMindImporter:
         else:
             g.error(f"file not found: {sfn}")
     #@+node:ekr.20160503145113.1: *3* freemind.import_files
-    def import_files(self, files: List[str]) -> None:
+    def import_files(self, files: list[str]) -> None:
         """Import a list of FreeMind (.mmap) files."""
         c = self.c
         if files:
@@ -155,7 +155,7 @@ class LeoImportCommands:
         self.treeType = "@file"  # None or "@file"
         self.verbose = True  # Leo 6.6
         self.webType = "@noweb"  # "cweb" or "noweb"
-        self.web_st: List[str] = []  # noweb symbol table.
+        self.web_st: list[str] = []  # noweb symbol table.
         self.reload_settings()
 
     def reload_settings(self) -> None:
@@ -164,7 +164,7 @@ class LeoImportCommands:
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
-    def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> Tuple[int, str]:
+    def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> tuple[int, str]:
         """
         # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
@@ -258,7 +258,7 @@ class LeoImportCommands:
             file_name = ''
         return file_name
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
-    def convertDocPartToWeb(self, s: str, i: int, result: Any) -> Tuple[int, str]:
+    def convertDocPartToWeb(self, s: str, i: int, result: Any) -> tuple[int, str]:
         nl = self.output_newline
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
@@ -329,7 +329,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3299: *4* ic.copyPart
     # Copies characters to result until the end of the present section is seen.
 
-    def copyPart(self, s: str, i: int, result: Any) -> Tuple[int, str]:
+    def copyPart(self, s: str, i: int, result: Any) -> tuple[int, str]:
 
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
@@ -442,7 +442,7 @@ class LeoImportCommands:
                     theFile.write(nl)
         theFile.close()
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: List[str], toString: bool = False) -> Optional[str]:
+    def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> Optional[str]:
         c = self.c
         self.setEncoding()
         for fileName in paths:
@@ -627,7 +627,7 @@ class LeoImportCommands:
         p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext: str, fileName: str, s: str) -> Tuple[str, str]:
+    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str]:
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -702,7 +702,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(self,
         parent: Position = None,
-        paths: List[str] = None,
+        paths: list[str] = None,
         command: str = 'Import',
     ) -> Optional[Position]:
         """
@@ -744,7 +744,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
         self,
-        files: List[str] = None,
+        files: list[str] = None,
         parent: Position = None,
         shortFn: bool = False,
         treeType: str = None,
@@ -781,21 +781,21 @@ class LeoImportCommands:
         c.validateOutline()
         parent.expand()
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
-    def importFreeMind(self, files: List[str]) -> None:
+    def importFreeMind(self, files: list[str]) -> None:
         """
         Import a list of .mm.html files exported from FreeMind:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
         """
         FreeMindImporter(self.c).import_files(files)
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
-    def importMindMap(self, files: List[str]) -> None:
+    def importMindMap(self, files: list[str]) -> None:
         """
         Import a list of .csv files exported from MindJet:
         https://www.mindjet.com/
         """
         MindMapImporter(self.c).import_files(files)
     #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
-    def importWebCommand(self, files: List[str], webType: str) -> None:
+    def importWebCommand(self, files: list[str], webType: str) -> None:
         c, current = self.c, self.c.p
         if current is None:
             return
@@ -1288,7 +1288,7 @@ class MindMapImporter:
         c.undoer.afterInsertNode(p, 'Import', undoData)
         return p
     #@+node:ekr.20160503144647.1: *3* mindmap.import_files
-    def import_files(self, files: List[str]) -> None:
+    def import_files(self, files: list[str]) -> None:
         """Import a list of MindMap (.csv) files."""
         c = self.c
         if files:
@@ -1324,7 +1324,7 @@ class MindMapImporter:
         n1 = n = target.level()
         p = target.copy()
         for row in list(reader)[1:]:
-            # Row is a List of fields.
+            # Row is a list of fields.
             new_level = self.csv_level(row) + n1
             self.csv_string(row)
             if new_level > n:
@@ -1352,7 +1352,7 @@ class MindMapImporter:
             else:
                 p.h = "@node_with_long_text"
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
-    def csv_level(self, row: List[Any]) -> int:
+    def csv_level(self, row: list[Any]) -> int:
         """
         Return the level of the given row, a list of fields.
         """
@@ -1363,7 +1363,7 @@ class MindMapImporter:
             count = count + 1
         return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
-    def csv_string(self, row: List[str]) -> str:
+    def csv_string(self, row: list[str]) -> str:
         """Return the string for the given csv row."""
         count = 0
         while count <= len(row):
@@ -1397,7 +1397,7 @@ class MORE_Importer:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20161006101218.1: *3* MORE.import_files
-    def import_files(self, files: List[str]) -> None:
+    def import_files(self, files: list[str]) -> None:
         """Import a list of MORE (.csv) files."""
         c = self.c
         if files:
@@ -1446,7 +1446,7 @@ class MORE_Importer:
             g.es("not a valid MORE file", fileName)
         return None
     #@+node:ekr.20031218072017.3215: *3* MORE.import_lines
-    def import_lines(self, strings: List[str], first_p: Position) -> Position:
+    def import_lines(self, strings: list[str], first_p: Position) -> Position:
         c = self.c
         if not strings:
             return None
@@ -1529,7 +1529,7 @@ class MORE_Importer:
         c.redraw()
         return theRoot
     #@+node:ekr.20031218072017.3222: *3* MORE.headlineLevel
-    def headlineLevel(self, s: str) -> Tuple[int, bool]:
+    def headlineLevel(self, s: str) -> tuple[int, bool]:
         """return the headline level of s,or -1 if the string is not a MORE headline."""
         level = 0
         i = 0
@@ -1546,7 +1546,7 @@ class MORE_Importer:
         strings = g.splitLines(s)
         return self.check_lines(strings)
 
-    def check_lines(self, strings: List[str]) -> bool:
+    def check_lines(self, strings: list[str]) -> bool:
 
         if not strings:
             return False
@@ -1585,7 +1585,7 @@ class RecursiveImportController:
         expand_vars_name: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: List[str] = None,
+        theTypes: list[str] = None,
         ignore_pattern: re.Pattern = None,
         verbose: bool = True,  # legacy value.
     ) -> None:
@@ -1835,11 +1835,11 @@ class TabImporter:
         self.c = c
         self.root: Position = None
         self.separate = separate
-        self.stack: List[Tuple[int, Position]] = []
+        self.stack: list[tuple[int, Position]] = []
 
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
-    def check(self, lines: List[str], warn: bool = True) -> bool:
+    def check(self, lines: list[str], warn: bool = True) -> bool:
         """Return False and warn if lines contains mixed leading tabs/blanks."""
         blanks, tabs = 0, 0
         for s in lines:
@@ -1861,7 +1861,7 @@ class TabImporter:
             level, p = data
             print(f"{i:2} {level} {p.h!r}")
     #@+node:ekr.20161006073129.1: *3* tabbed.import_files
-    def import_files(self, files: List[str]) -> None:
+    def import_files(self, files: list[str]) -> None:
         """Import a list of tab-delimited files."""
         c, u = self.c, self.c.undoer
         if files:
@@ -2000,7 +2000,7 @@ class ToDoImporter:
 
     #@+others
     #@+node:ekr.20200310103606.1: *3* todo_i.get_tasks_from_file
-    def get_tasks_from_file(self, path: str) -> List[Any]:
+    def get_tasks_from_file(self, path: str) -> list[Any]:
         """Return the tasks from the given path."""
         tag = 'import-todo-text-files'
         if not os.path.exists(path):
@@ -2016,7 +2016,7 @@ class ToDoImporter:
             g.es_exception()
             return []
     #@+node:ekr.20200310101028.1: *3* todo_i.import_files
-    def import_files(self, files: List[str]) -> Dict[str, List[Any]]:
+    def import_files(self, files: list[str]) -> dict[str, list[Any]]:
         """
         Import all todo.txt files in the given list of file names.
 
@@ -2042,7 +2042,7 @@ class ToDoImporter:
     line_s = fr"^{mark_s}?{priority_s}?{date_s}?{date_s}?{task_s}$"
     line_pat = re.compile(line_s)
 
-    def parse_file_contents(self, s: str) -> List[Any]:
+    def parse_file_contents(self, s: str) -> list[Any]:
         """
         Parse the contents of a file.
         Return a list of ToDoTask objects.
@@ -2081,7 +2081,7 @@ class ToDoImporter:
                 bool(completed), priority, start_date, complete_date, task_s))
         return tasks
     #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
-    def prompt_for_files(self) -> Dict[str, Any]:
+    def prompt_for_files(self) -> dict[str, Any]:
         """
         Prompt for a list of todo.text files and import them.
 
@@ -2127,9 +2127,9 @@ class ToDoTask:
         self.complete_date = complete_date and complete_date.rstrip() or ''
         self.task_s = task_s.strip()
         # Parse tags into separate dictionaries.
-        self.projects: List[str] = []
-        self.contexts: List[str] = []
-        self.key_vals: List[str] = []
+        self.projects: list[str] = []
+        self.contexts: list[str] = []
+        self.key_vals: list[str] = []
         self.parse_task()
 
     #@+others
@@ -2214,7 +2214,7 @@ class ZimImportController:
         self.rstType = c.config.getString('zim-rst-type') or 'rst'
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
-    def parseZimIndex(self) -> List[Tuple[int, str, List[str]]]:
+    def parseZimIndex(self) -> list[tuple[int, str, list[str]]]:
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
@@ -2241,7 +2241,7 @@ class ZimImportController:
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild
-    def rstToLastChild(self, p: Position, name: str, rst: List[str]) -> Position:
+    def rstToLastChild(self, p: Position, name: str, rst: list[str]) -> Position:
         """Import an rst file as a last child of pos node with the specified name"""
         c = self.c
         c.importCommands.importFilesCommand(
@@ -2310,7 +2310,7 @@ class ZimImportController:
         files = self.parseZimIndex()
         if files:
             # Do the import
-            rstNodes: Dict[str, Position] = {'0': zimNode}
+            rstNodes: dict[str, Position] = {'0': zimNode}
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
@@ -2343,9 +2343,9 @@ class LegacyExternalFileImporter:
             """Hold node data."""
             self.h = h.strip()
             self.level = level
-            self.lines: List[str] = []
+            self.lines: list[str] = []
     #@+node:ekr.20200424092652.1: *3* legacy.add
-    def add(self, line: str, stack: List[Any]) -> None:
+    def add(self, line: str, stack: list[Any]) -> None:
         """Add a line to the present node."""
         if stack:
             node = stack[-1]
@@ -2385,8 +2385,8 @@ class LegacyExternalFileImporter:
         # Compute the local ignore list for this file.
         ignore = tuple(delim1 + z for z in self.ignore)
         # Handle each line of the file.
-        nodes: List[Any] = []  # An list of Nodes, in file order.
-        stack: List[Any] = []  # A stack of Nodes.
+        nodes: list[Any] = []  # An list of Nodes, in file order.
+        stack: list[Any] = []  # A stack of Nodes.
         for line in g.splitLines(s):
             s = line.lstrip()
             lws = line[: len(line) - len(line.lstrip())]
@@ -2447,7 +2447,7 @@ class LegacyExternalFileImporter:
         root.expand()  # c.expandAllSubheads()
         c.redraw()
     #@+node:ekr.20200424154553.1: *3* legacy.import_files
-    def import_files(self, paths: List[str]) -> None:
+    def import_files(self, paths: list[str]) -> None:
         """Import zero or more files."""
         for path in paths:
             if os.path.exists(path):

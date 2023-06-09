@@ -6,7 +6,7 @@
 from __future__ import annotations
 import binascii
 import pickle
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -155,13 +155,13 @@ class PersistenceDataController:
         else:
             g.trace('bad @gnxs contents', gnxs, unls)
     #@+node:ekr.20141021083702.18341: *6* pd.create_outer_gnx_dict
-    def create_outer_gnx_dict(self, root: Position) -> Dict[str, Position]:
+    def create_outer_gnx_dict(self, root: Position) -> dict[str, Position]:
         """
         Return a dict whose keys are gnx's and whose values are positions
         **outside** of root's tree.
         """
         c = self.c
-        d: Dict[str, Position] = {}
+        d: dict[str, Position] = {}
         p = c.rootPosition()
         while p:
             if p.v == root.v:
@@ -172,7 +172,7 @@ class PersistenceDataController:
                 p.moveToThreadNext()
         return d
     #@+node:ekr.20140711111623.17809: *6* pd.restore_gnx
-    def restore_gnx(self, d: Dict[str, Position], gnx: str, root: Position, unl: str) -> None:
+    def restore_gnx(self, d: dict[str, Position], gnx: str, root: Position, unl: str) -> None:
         """
         d is an *outer* gnx dict, associating nodes *outside* the tree with positions.
         Let p1 be the position of the node *within* root's tree corresponding to unl.
@@ -323,7 +323,7 @@ class PersistenceDataController:
         # return self.find_best_match(root, unl_list)
         return self.find_exact_match(root, unl_list)
     #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
-    def find_best_match(self, root: Position, unl_list: List[str]) -> Optional[Position]:
+    def find_best_match(self, root: Position, unl_list: list[str]) -> Optional[Position]:
         """Find the best partial matches of the tail in root's tree."""
         tail = unl_list[-1]
         matches = []
@@ -344,14 +344,14 @@ class PersistenceDataController:
         if matches:
             # Take the match with the greatest number of parents.
 
-            def key(aTuple: Tuple) -> Any:
+            def key(aTuple: tuple) -> Any:
                 return aTuple[0]
 
             n, p = list(sorted(matches, key=key))[-1]
             return p
         return None
     #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
-    def find_exact_match(self, root: Position, unl_list: List[str]) -> Position:
+    def find_exact_match(self, root: Position, unl_list: list[str]) -> Position:
         """
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.

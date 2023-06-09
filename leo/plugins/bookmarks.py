@@ -216,7 +216,6 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
 import hashlib
-from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
 from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
@@ -875,7 +874,7 @@ class BookMarkDisplay:
                 s = s[4:]
             return s.strip()
 
-        result: List = []
+        result: list = []
 
         def recurse_bm(node, result, ancestors=None):
 
@@ -895,7 +894,7 @@ class BookMarkDisplay:
                     url = url.replace(' ', '%20')
                 h = self.fix_text(p.h)
 
-                children: List = []
+                children: list = []
                 bm = self.Bookmark(
                     h, url, ancestors, result, children, p.v)
 

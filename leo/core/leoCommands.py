@@ -13,8 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, Generator, Iterable, List, Optional, Set, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Generator, Iterable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
@@ -184,11 +183,11 @@ class Commands:
         self.outlineToNowebDefaultFileName: str = "noweb.nw"  # For Outline To Noweb dialog.
         # For hoist/dehoist commands.
         # Affects drawing routines and find commands, but *not* generators.
-        self.hoistStack: List[g.Bunch] = []  # Stack of g.Bunches to be root of drawn tree.
+        self.hoistStack: list[g.Bunch] = []  # Stack of g.Bunches to be root of drawn tree.
         # For outline navigation.
         self.navPrefix: str = ''  # Must always be a string.
         self.navTime: Optional[float] = None
-        self.recent_commands_list: List[str] = []  # List of command names.
+        self.recent_commands_list: list[str] = []  # List of command names.
         self.sqlite_connection: Any = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self) -> None:
@@ -201,9 +200,9 @@ class Commands:
         """Init per-document ivars."""
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None  # The last node we expanded or contracted.
-        self.nodeConflictList: List[Position] = []  # List of nodes with conflicting read-time data.
+        self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
         self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
-        self.user_dict: Dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
+        self.user_dict: dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self) -> None:
         """Init ivars relating to gui events."""
@@ -223,20 +222,20 @@ class Commands:
     def initFileIvars(self, fileName: str, relativeFileName: Any) -> None:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
-        self.ignored_at_file_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
+        self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
+        self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
         self.openDirectory: Optional[str] = None  #
-        self.orphan_at_file_nodes: List[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
+        self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self) -> None:
         """Init Commander ivars corresponding to user options."""
         self.fixed = False
-        self.fixedWindowPosition: List[Tuple[int, int, int, int]] = []
+        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
         self.forceExecuteEntireBody = False
         self.focus_border_color = 'white'
         self.focus_border_width = 1  # pixels
@@ -761,7 +760,7 @@ class Commands:
         'shellscript': 'bash',
         }
         #@+node:tom.20230308193758.6: *4* get_external_maps
-        def get_external_maps() -> Tuple[Dict, Dict, str]:
+        def get_external_maps() -> tuple[dict, dict, str]:
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -793,8 +792,8 @@ class Commands:
             if not data:
                 return None, None, ''
 
-            processor_map: Dict[str, str] = {}
-            extension_map: Dict[str, str] = {}
+            processor_map: dict[str, str] = {}
+            extension_map: dict[str, str] = {}
             active_map = None
             terminal: str = ''
             found_term = False
@@ -924,7 +923,7 @@ class Commands:
                         return t
             return ''
         #@+node:tom.20230308193758.13: *5* getCommonTerminal
-        def getCommonTerminal(names: Union[str, List, Tuple]) -> str:
+        def getCommonTerminal(names: Union[str, list, tuple]) -> str:
             """Return a terminal name given candidate names.
 
             ARGUMENT
@@ -1143,7 +1142,7 @@ class Commands:
         define_g: bool = True,
         define_name: str = '__main__',
         silent: bool = False,
-        namespace: Dict = None,
+        namespace: dict = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
     ) -> None:
@@ -1309,7 +1308,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: List[Tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -1334,7 +1333,7 @@ class Commands:
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: List[Tuple]) -> Position:
+        def stack2pos(stack: list[tuple]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
@@ -1484,7 +1483,7 @@ class Commands:
                 break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self) -> Tuple[str, List[str], str, Optional[Tuple], Optional[Tuple]]:
+    def getBodyLines(self) -> tuple[str, list[str], str, Optional[tuple], Optional[tuple]]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1639,7 +1638,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> Union[Tuple[None, None], Tuple[Position, bool]]:
+    def visLimit(self) -> Union[tuple[None, None], tuple[Position, bool]]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
@@ -1653,7 +1652,7 @@ class Commands:
             return p, limitIsVisible
         return None, None
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
-    def vnode2allPositions(self, v: VNode) -> List[Position]:
+    def vnode2allPositions(self, v: VNode) -> list[Position]:
         """
         Given a VNode v, find all valid positions p such that p.v = v.
 
@@ -1690,7 +1689,7 @@ class Commands:
         c = self
         context = v.context  # v's commander.
         assert c == context
-        stack: List[Tuple[VNode, int]] = []
+        stack: list[tuple[VNode, int]] = []
         while v.parents:
             parent = v.parents[0]
             if v in parent.children:
@@ -1904,7 +1903,7 @@ class Commands:
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
-        d: Dict[str, Set[VNode]] = {}
+        d: dict[str, set[VNode]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1918,7 +1917,7 @@ class Commands:
             v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
-                aSet: Set[VNode] = d.get(gnx, set())
+                aSet: set[VNode] = d.get(gnx, set())
                 aSet.add(v)
                 d[gnx] = aSet
             else:
@@ -2472,7 +2471,7 @@ class Commands:
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
 
-    def scanAllDirectives(self, p: Position) -> Dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
         Scan p and ancestors for directives.
 
@@ -2516,7 +2515,7 @@ class Commands:
         }
         return d
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
-    def scanAtPathDirectives(self, aList: List) -> str:
+    def scanAtPathDirectives(self, aList: list) -> str:
         """
         Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.
@@ -2738,7 +2737,7 @@ class Commands:
             else:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line
-        def find_line(path: str, n: int) -> Tuple[Position, int]:
+        def find_line(path: str, n: int) -> tuple[Position, int]:
             """
             Return the node corresponding to line n of external file given by path.
             """
@@ -3005,7 +3004,7 @@ class Commands:
         """Convert an archived position (a string) to a position."""
         c = self
         s = g.toUnicode(s)
-        aList: List[int]
+        aList: list[int]
         aList_s = s.split(',')
         try:
             aList = [int(z) for z in aList_s]
@@ -3185,7 +3184,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event = None, d: Dict[str, Any] = None) -> None:
+    def openWith(self, event: Event = None, d: dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -3276,7 +3275,7 @@ class Commands:
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
-    warnings_dict: Dict[str, bool] = {}
+    warnings_dict: dict[str, bool] = {}
 
     def raise_error_dialogs(self, kind: str = 'read') -> None:
         """Warn about read/write failures."""
@@ -4154,7 +4153,7 @@ class Commands:
         if p:
             c.frame.tree.endEditLabel()
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
-    def getSelectedPositions(self) -> List[Position]:
+    def getSelectedPositions(self) -> list[Position]:
         """ Get list of currently selected positions.
 
         So far only makes sense on qt gui (which supports multiselection)
@@ -4165,7 +4164,7 @@ class Commands:
     def redrawAndEdit(self,
         p: Position,
         selectAll: bool = False,
-        selection: Tuple = None,
+        selection: tuple = None,
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
@@ -4254,7 +4253,7 @@ class Commands:
         kind: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: List[str] = None,  # force_at_others=False, # tag:no-longer-used
+        theTypes: list[str] = None,  # force_at_others=False, # tag:no-longer-used
         verbose: bool = True,  # legacy value.
     ) -> None:
         #@+<< docstring >>
@@ -4388,7 +4387,7 @@ class Commands:
         return root
     #@+node:peckj.20131023115434.10114: *4* c.createNodeHierarchy
     def createNodeHierarchy(self,
-        heads: List[str], parent: Position = None, forcecreate: bool = False,
+        heads: list[str], parent: Position = None, forcecreate: bool = False,
     ) -> Position:
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' under 'parent'
@@ -4441,7 +4440,7 @@ class Commands:
         u.afterChangeGroup(parent, undoType)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
-    def deletePositionsInList(self, aList: List) -> List[Any]:
+    def deletePositionsInList(self, aList: list) -> list[Any]:
         """
         Delete all vnodes corresponding to the positions in aList.
 
@@ -4456,7 +4455,7 @@ class Commands:
         if not aList:
             return []
 
-        def p2link(p: Position) -> Tuple[int, VNode]:
+        def p2link(p: Position) -> tuple[int, VNode]:
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
 
@@ -4471,7 +4470,7 @@ class Commands:
         return undodata
 
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: List = None) -> None:
+    def doBatchOperations(self, aList: list = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []
@@ -4484,9 +4483,9 @@ class Commands:
             if aList2:
                 aList.sort()
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
-    def checkBatchOperationsList(self, aList: List) -> Tuple[bool, Dict]:
+    def checkBatchOperationsList(self, aList: list) -> tuple[bool, dict]:
         ok = True
-        d: Dict[VNode, List[Any]] = {}
+        d: dict[VNode, list[Any]] = {}
         for z in aList:
             try:
                 op, p, n = z
@@ -4508,7 +4507,7 @@ class Commands:
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
         it: Iterable[Position] = None,
-    ) -> List[Position]:
+    ) -> list[Position]:
         """
         Return list of all Positions whose body matches the regex at least once.
         """
@@ -4527,7 +4526,7 @@ class Commands:
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
         it: Iterable[Position] = None,
-    ) -> List[Position]:
+    ) -> list[Position]:
         """
         Return list of all Positions whose headline matches the regex.
         """
@@ -4542,7 +4541,7 @@ class Commands:
             g.es_exception()
             return []
     #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions
-    def undoableDeletePositions(self, aList: List) -> None:
+    def undoableDeletePositions(self, aList: list) -> None:
         """
         Deletes all vnodes corresponding to the positions in aList,
         and make changes undoable.

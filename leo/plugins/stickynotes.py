@@ -56,7 +56,7 @@ process for each one.
 #@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)
 import os
 import time
-from typing import Any, Dict
+from typing import Any
 #
 # Third-party imports.
 try:
@@ -78,6 +78,8 @@ from leo.core.leoQt import QAction, Weight
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
+# broad-exception-raised: Not valid in later pylints.
+
 # Aliases...
 # These can *not* be used as the base classes.
 QInputDialog = QtWidgets.QInputDialog
@@ -87,7 +89,7 @@ QTextCharFormat = QtGui.QTextCharFormat
 QTimer = QtCore.QTimer
 
 # Keys are commanders. Values are inner dicts: keys are gnx's; values are widgets.
-outer_dict: Dict[Any, Dict[str, Any]] = {}  # #2471
+outer_dict: dict[Any, dict[str, Any]] = {}  # #2471
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):

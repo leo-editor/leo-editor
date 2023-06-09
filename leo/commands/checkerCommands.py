@@ -10,7 +10,7 @@ import shlex
 import sys
 import tempfile
 import time
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 #
 # Third-party imports.
 # pylint: disable=import-error
@@ -161,7 +161,7 @@ def find_missing_docstrings(event: Event) -> None:
         return
     #@+others # Define functions
     #@+node:ekr.20190615181104.1: *4* function: has_docstring
-    def has_docstring(lines: List[str], n: int) -> bool:
+    def has_docstring(lines: list[str], n: int) -> bool:
         """
         Returns True if function/method/class whose definition
         starts on n-th line in lines has a docstring
@@ -319,9 +319,9 @@ def pylint_command(event: Event) -> None:
 class CheckNodes:
 
     def_pattern = re.compile(r'^def\b')
-    ok_head_patterns: List[re.Pattern]
-    ok_head_prefixes: List[str]
-    suppressions: List[str]
+    ok_head_patterns: list[re.Pattern]
+    ok_head_prefixes: list[str]
+    suppressions: list[str]
 
     #@+others
     #@+node:ekr.20230221110024.1: *3* CheckNodes.check
@@ -409,7 +409,7 @@ class MypyCommand:
         """ctor for MypyCommand class."""
         self.c = c
         self.link_limit = None  # Set in check_file.
-        self.unknown_path_names: List[str] = []
+        self.unknown_path_names: list[str] = []
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
@@ -461,11 +461,11 @@ class Flake8Command:
     def __init__(self, c: Cmdr) -> None:
         """ctor for Flake8Command class."""
         self.c = c
-        self.seen: List[str] = []  # List of checked paths.
+        self.seen: list[str] = []  # List of checked paths.
 
     #@+others
     #@+node:ekr.20221128123523.3: *3* flake8.check_all
-    def check_all(self, roots: List[Position]) -> None:
+    def check_all(self, roots: list[Position]) -> None:
         """Run flake8 on all files in paths."""
         c, tag = self.c, 'flake8'
         for root in roots:
@@ -499,7 +499,7 @@ class PyflakesCommand:
     def __init__(self, c: Cmdr) -> None:
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen: List[str] = []  # List of checked paths.
+        self.seen: list[str] = []  # List of checked paths.
 
     #@+others
     #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
@@ -507,7 +507,7 @@ class PyflakesCommand:
 
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n: int = 0, roots: List[Position] = None) -> None:
+        def __init__(self, fn_n: int = 0, roots: list[Position] = None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
@@ -529,7 +529,7 @@ class PyflakesCommand:
             else:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, roots: List[Position]) -> int:
+    def check_all(self, roots: list[Position]) -> int:
         """Run pyflakes on all files in paths."""
         c = self.c
         total_errors = 0
@@ -596,7 +596,7 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str = None) -> Optional[Tuple[str, Position]]:
+    def run(self, last_path: str = None) -> Optional[tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not lint:
@@ -617,7 +617,7 @@ class PylintCommand:
                     return False
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
-        data: List[Tuple[str, Position]] = []
+        data: list[tuple[str, Position]] = []
         is_at_file = False
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         if roots:

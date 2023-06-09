@@ -3,7 +3,7 @@
 """The @auto importer for the C language and other related languages."""
 from __future__ import annotations
 import re
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 from leo.core import leoGlobals as g
 
@@ -39,7 +39,7 @@ class C_Importer(Importer):
     # Pattern that *might* be continued on the next line.
     multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
 
-    def find_blocks(self, i1: int, i2: int) -> List[Block]:
+    def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
         C_Importer.find_blocks: override Importer.find_blocks.
 

@@ -242,12 +242,8 @@ Leo themes.
 """
 #@+<< imports >>
 #@+node:tom.20210527153415.1: ** << imports >>
-#@+<< typing imports >>
-#@+node:tom.20220919102037.1: *3* << typing imports >>
 from __future__ import annotations
-from typing import TYPE_CHECKING, Dict, Any, Tuple
-#@-<< typing imports >>
-
+from typing import TYPE_CHECKING, Any
 from os.path import exists, join as osp_join
 import re
 
@@ -379,7 +375,7 @@ RST_NO_WARNINGS:int = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE:str = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE:str = 'freewin_rst_dark.css'
 
-instances: Dict[str, 'ZEditorWin' ] = {}
+instances: dict[str, ZEditorWin ] = {}
 
 #@+others
 #@+node:tom.20210709130401.1: *3* Fonts and Text
@@ -648,7 +644,7 @@ def change_css_prop(css: str, prop: str, newval:str) -> str:
 
 #@+node:tom.20220329150105.1: ** get_body_colors
 # Get current colors from the body editor widget
-def get_body_colors(c: Cmdr) -> Tuple[str, str]:
+def get_body_colors(c: Cmdr) -> tuple[str, str]:
     wrapper = c.frame.body.wrapper
     w:LeoQTextBrowser = wrapper.widget
 

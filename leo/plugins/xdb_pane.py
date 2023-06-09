@@ -6,7 +6,7 @@ commands, and an input area in which the user can type other commands.
 """
 #@+<< imports: xdb_pane.py >>
 #@+node:ekr.20220424085736.1: ** << imports: xdb_pane.py >>
-from typing import Any, Dict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy, WrapMode
@@ -15,7 +15,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports: xdb_pane.py >>
 
 # Globals.
-controllers: Dict[str, Any] = {}
+controllers: dict[str, Any] = {}
 
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions

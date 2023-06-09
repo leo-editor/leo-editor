@@ -67,7 +67,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, Callable, Iterable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
@@ -105,7 +105,7 @@ def init() -> bool:
     g.tree_popup_handlers.append(popup_entry)
     return True
 #@+node:tbrown.20090119215428.7: ** onCreate
-def onCreate(tag: str, key: Dict) -> None:
+def onCreate(tag: str, key: dict) -> None:
 
     c = key.get('c')
     todoController(c)
@@ -325,7 +325,7 @@ class todoController:
 
     #@+<< todoController data >>
     #@+node:tbrown.20090119215428.10: *3* << todoController data >>
-    priorities: Dict[int, Dict[str, str]] = {
+    priorities: dict[int, dict[str, str]] = {
       1: {'long': 'Urgent', 'short': '1', 'icon': 'pri1.png'},
       2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
       3: {'long': 'High', 'short': '3', 'icon': 'pri3.png'},
@@ -359,8 +359,8 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
-        self.recentIcons: List[Icon] = []
+        self.menuicons: dict[Priority, Icon] = {}  # menu icon cache
+        self.recentIcons: list[Icon] = []
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()
@@ -743,7 +743,7 @@ class todoController:
                 return True
         return False
     #@+node:tbrown.20090119215428.26: *4* safe_del
-    def safe_del(self, d: Dict[str, Any], k: Any) -> None:
+    def safe_del(self, d: dict[str, Any], k: Any) -> None:
         "delete a key from a dict. if present"
         if k in d:
             del d[k]
@@ -835,7 +835,7 @@ class todoController:
                     nd.h = nd.h + ans
                 self.loadIcons(nd)  # update progress icon
     #@+node:tbrown.20090119215428.35: *4* recalc_time
-    def recalc_time(self, p: Position=None, clear: bool=False) -> Tuple[str, str]:
+    def recalc_time(self, p: Position=None, clear: bool=False) -> tuple[str, str]:
 
         if p is None:
             p = self.c.currentPosition()
@@ -1094,7 +1094,7 @@ class todoController:
 
         return pa if pa != 24 else 0
     #@+node:tbrown.20110213153425.16373: *4* duekey
-    def duekey(self, v: VNode, field: str='due') -> Tuple[bool, datetime.date, datetime.time, int]:
+    def duekey(self, v: VNode, field: str='due') -> tuple[bool, datetime.date, datetime.time, int]:
         """key function for sorting by due date/time"""
         # pylint: disable=boolean-datetime
         priority = self.getat(v, 'priority')
@@ -1199,7 +1199,7 @@ class todoController:
         """show distribution of priority levels in subtree"""
         if p is None:
             p = self.c.currentPosition()
-        pris: Dict = {}
+        pris: dict = {}
         for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
@@ -1239,7 +1239,7 @@ class todoController:
                 w.setStyleSheet("/* */")
                 self._widget_to_style = None
     #@+node:tbrown.20090119215428.49: *3* updateUI
-    def updateUI(self, tag: str=None, k: Dict=None) -> None:
+    def updateUI(self, tag: str=None, k: dict=None) -> None:
 
         if k and k['c'] != self.c:
             return  # wrong number
@@ -1305,7 +1305,7 @@ class todoController:
             (str(prisetdate).strip() or '?')
         )
     #@+node:tbrown.20121129095833.39490: *3* unl_to_pos (todo.py)
-    def unl_to_pos(self, unl: Any, for_p: Any) -> Tuple[Cmdr, Position]:
+    def unl_to_pos(self, unl: Any, for_p: Any) -> tuple[Cmdr, Position]:
         """"unl may be an outline (like c) or an UNL (string)
 
         return c, p where c is an outline and p is a node to copy data to

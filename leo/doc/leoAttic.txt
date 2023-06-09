@@ -2518,17 +2518,17 @@ class IterativeTokenGenerator:
     must queue up **helper actions** for later (delayed) execution.
     """
 
-    begin_end_stack: List[str] = []  # A stack of node names.
+    begin_end_stack: list[str] = []  # A stack of node names.
     n_nodes = 0  # The number of nodes that have been visited.
     node = None  # The current node.
     node_index = 0  # The index into the node_stack.
-    node_stack: List[ast.AST] = []  # The stack of parent nodes.
+    node_stack: list[ast.AST] = []  # The stack of parent nodes.
 
     @others
 #@+node:ekr.20220402095550.1: *5* iterative: Init...
 # Same as in the TokenOrderGenerator class.
 #@+node:ekr.20220402095550.2: *6* iterative.balance_tokens
-def balance_tokens(self, tokens: List["Token"]) -> int:
+def balance_tokens(self, tokens: list["Token"]) -> int:
     """
     TOG.balance_tokens.
 
@@ -2551,7 +2551,7 @@ def balance_tokens(self, tokens: List["Token"]) -> int:
         g.trace("unmatched '(' at {','.join(stack)}")
     return count
 #@+node:ekr.20220402095550.3: *6* iterative.create_links (init all ivars)
-def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -> List:
+def create_links(self, tokens: list["Token"], tree: Node, file_name: str = '') -> List:
     """
     A generator creates two-way links between the given tokens and ast-tree.
 
@@ -2579,7 +2579,7 @@ def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -
     # Return [] for compatibility with legacy code: list(tog.create_links).
     return []
 #@+node:ekr.20220402095550.4: *6* iterative.init_from_file
-def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:  # pragma: no cover
+def init_from_file(self, filename: str) -> Tuple[str, str, list["Token"], Node]:  # pragma: no cover
     """
     Create the tokens and ast tree for the given file.
     Create links between tokens and the parse tree.
@@ -2594,7 +2594,7 @@ def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:
     self.create_links(tokens, tree)
     return contents, encoding, tokens, tree
 #@+node:ekr.20220402095550.5: *6* iterative.init_from_string
-def init_from_string(self, contents: str, filename: str) -> Tuple[List["Token"], Node]:  # pragma: no cover
+def init_from_string(self, contents: str, filename: str) -> Tuple[list["Token"], Node]:  # pragma: no cover
     """
     Tokenize, parse and create links in the contents string.
 
@@ -2641,7 +2641,7 @@ def set_links(self, node: Node, token: "Token") -> None:
     # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
     if token.kind == 'comment':
         # Append the comment to node.comment_list.
-        comment_list: List["Token"] = getattr(node, 'comment_list', [])
+        comment_list: list["Token"] = getattr(node, 'comment_list', [])
         node.comment_list = comment_list + [token]
         return
     if token.kind in ('endmarker', 'ws'):
@@ -2779,7 +2779,7 @@ def enter_node(self, node: Node) -> None:
     # The nearest_common_ancestor function depends upon them.
     node.parent = self.node
     if self.node:
-        children: List[Node] = getattr(self.node, 'children', [])
+        children: list[Node] = getattr(self.node, 'children', [])
         children.append(node)
         self.node.children = children
     # Inject the node_index field.
@@ -4162,7 +4162,7 @@ def do_While(self, node: Node) -> ActionList:
 def do_With(self, node: Node) -> ActionList:
 
     expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
-    items: List[ast.AST] = getattr(node, 'items', [])
+    items: list[ast.AST] = getattr(node, 'items', [])
     result: ActionList = [
         (self.name, 'with'),
         (self.visit, expr),
@@ -4433,7 +4433,7 @@ def traverse(self, tree: Node) -> int:
     The code follows p.moveToThreadNext exactly.
     """
 
-    def has_next(i: int, node: Node, stack: List[int]) -> bool:
+    def has_next(i: int, node: Node, stack: list[int]) -> bool:
         """Return True if stack[i] is a valid child of node.parent."""
         # g.trace(node.__class__.__name__, stack)
         parent = node.parent
@@ -4454,7 +4454,7 @@ def traverse(self, tree: Node) -> int:
         seen.add(node.node_index)
         self.visit(node)
         # if p.v.children: p.moveToFirstChild()
-        children: List[ast.AST] = getattr(node, 'children', [])
+        children: list[ast.AST] = getattr(node, 'children', [])
         if children:
             # Move to the first child.
             stack.append(0)
@@ -9159,7 +9159,7 @@ However, I suspect a line-oriented approch is more robust.
 
 @language python
 #@+node:ekr.20230514084310.1: *4* NEW: c_i.make_guide_lines (override)
-def make_guide_lines(self, lines: List[str]) -> List[str]:
+def make_guide_lines(self, lines: list[str]) -> list[str]:
     """
     C_Importer.make_guide_lines.
     
@@ -9189,7 +9189,7 @@ def make_guide_lines(self, lines: List[str]) -> List[str]:
 
 # Compound statements.
 
-def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
+def find_blocks(self, i1: int, i2: int, level: int) -> list[Block]:
     """
     C_Importer.find_blocks: override Importer.find_blocks.
 
@@ -9207,7 +9207,7 @@ def find_blocks(self, i1: int, i2: int, level: int) -> List[Block]:
     end_i: int = self.index_list[i2][1]
     g.printObj(s[i:end_i], tag=f"guide_string: {i}:{end_i}")
     prev_i = i
-    result: List[Block] = []
+    result: list[Block] = []
     while i < end_i:
         progress = i
         for kind, pattern in self.block_patterns:
@@ -9867,7 +9867,7 @@ def drawVisible(self, p: Position) -> None:
     """
     t1 = time.process_time()
     c = self.c
-    parents: List[Any] = []
+    parents: list[Any] = []
     # Clear the widget.
     w = self.treeWidget
     w.clear()
@@ -10031,7 +10031,7 @@ def tile(self, index: int, orientation: str='V') -> None:
         w.resize(ww, wh / 2)
         w.move(x, y + fh / 2)
 #@+node:ekr.20110510133719.14548: *3* ac.do_qcompleter_tab (not used)
-def do_qcompleter_tab(self, prefix: str, options: List[str]) -> str:
+def do_qcompleter_tab(self, prefix: str, options: list[str]) -> str:
     """Return the longest common prefix of all the options."""
     matches, common_prefix = g.itemsMatchingPrefixInList(
         prefix, options, matchEmptyPrefix=False)

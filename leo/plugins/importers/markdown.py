@@ -3,7 +3,7 @@
 """The @auto importer for the markdown language."""
 from __future__ import annotations
 import re
-from typing import Dict, List, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -29,8 +29,8 @@ class Markdown_Importer(Importer):
         """
         assert parent == self.root
         lines = self.lines
-        self.lines_dict: Dict[VNode, List[str]] = {parent.v: []}  # Lines for each vnode.
-        self.stack: List[Position] = [parent]
+        self.lines_dict: dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
+        self.stack: list[Position] = [parent]
         in_code, skip = False, 0
         for i, line in enumerate(lines):
             top = self.stack[-1]
@@ -63,7 +63,7 @@ class Markdown_Importer(Importer):
     # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
 
-    def is_hash(self, line: str) -> Tuple[int, str]:
+    def is_hash(self, line: str) -> tuple[int, str]:
         """
         Return level, name if line is a hash section line.
         else return None, None.

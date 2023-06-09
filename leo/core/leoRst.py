@@ -17,7 +17,7 @@ import io
 import os
 import re
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils
@@ -65,18 +65,18 @@ class RstCommands:
         self.n_docutils = 0  # Number of docutils files written.
 
         # Http support for HtmlParserClass.  See http_addNodeMarker.
-        self.anchor_map: Dict[str, Position] = {}  # Keys are anchors. Values are positions
-        self.http_map: Dict[str, Position] = {}  # Keys are named hyperlink targets.  Value are positions.
+        self.anchor_map: dict[str, Position] = {}  # Keys are anchors. Values are positions
+        self.http_map: dict[str, Position] = {}  # Keys are named hyperlink targets.  Value are positions.
         self.nodeNumber = 0  # Unique node number.
 
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
-        self.changed_positions: List[Position] = []
-        self.changed_vnodes: Set[VNode] = set()
+        self.changed_positions: list[Position] = []
+        self.changed_vnodes: set[VNode] = set()
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
-        self.result_list: List[str] = []  # The intermediate results.
+        self.result_list: list[str] = []  # The intermediate results.
         self.root: Position = None  # The @rst node being processed.
 
         # Default settings.
@@ -522,7 +522,7 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, s: str = None) -> Dict[str, str]:
+    def handleMissingStyleSheetArgs(self, s: str = None) -> dict[str, str]:
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
@@ -728,7 +728,7 @@ class RstCommands:
         """Concatenate all strings in self.result, ensuring exactly one blank line between strings."""
         return ''.join(f"{s.rstrip()}\n\n" for s in self.result_list if s.strip())
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict
-    def dumpDict(self, d: Dict[str, str], tag: str) -> None:
+    def dumpDict(self, d: dict[str, str], tag: str) -> None:
         """Dump the given settings dict."""
         g.pr(tag + '...')
         for key in sorted(d):
