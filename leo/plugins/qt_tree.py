@@ -4,9 +4,10 @@
 #@+<< qt_tree imports >>
 #@+node:ekr.20140907131341.18709: ** << qt_tree imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
 import time
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g

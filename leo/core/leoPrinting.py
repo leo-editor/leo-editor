@@ -7,7 +7,8 @@ Adapted from printing plugin.
 #@+<< leoPrinting imports & annotations >>
 #@+node:ekr.20220901091411.1: ** << leoPrinting imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # Qt imports. May fail from the bridge.

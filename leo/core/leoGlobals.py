@@ -9,6 +9,7 @@ Important: This module imports no other Leo module.
 #@+node:ekr.20050208101229: ** << leoGlobals imports >>
 from __future__ import annotations
 import binascii
+from collections.abc import Callable
 import codecs
 import copy
 import fnmatch
@@ -34,8 +35,7 @@ import textwrap
 import time
 import traceback
 import types
-from typing import TYPE_CHECKING
-from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Union
+from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse

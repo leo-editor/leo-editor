@@ -12,6 +12,7 @@ Written by Félix Malboeuf and Edward K. Ream.
 # pylint: disable=import-self,raise-missing-from,wrong-import-position
 import argparse
 import asyncio
+from collections.abc import Callable
 import fnmatch
 import inspect
 import itertools
@@ -22,7 +23,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Generator, Iterable, Iterator, Optional, Union
+from typing import Any, Generator, Iterable, Iterator, Optional, Union
 import warnings
 
 # Third-party.
