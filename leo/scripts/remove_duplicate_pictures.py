@@ -52,7 +52,7 @@ import os
 import pathlib
 import sys
 import time
-from typing import Any, Dict, List
+from typing import Any
 # Third party
 try:
     from PIL import Image
@@ -162,9 +162,9 @@ def main():
 #@+node:ekr.20220126054240.13: ** class RemoveDuplicates
 class RemoveDuplicates:
 
-    dup_list: List[str] = []
-    filename_dict: Dict[str, Any] = {}  # Keys are filenames, values are hashes.
-    hash_dict: Dict[Any, List[Any]] = defaultdict(list)  # Keys are hashes, values are lists of filenames.
+    dup_list: list[str] = []
+    filename_dict: dict[str, Any] = {}  # Keys are filenames, values are hashes.
+    hash_dict: dict[Any, list[Any]] = defaultdict(list)  # Keys are hashes, values are lists of filenames.
     hash_size = 8
     window_height = 900
 

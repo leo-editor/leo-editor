@@ -1,59 +1,72 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
 """The @auto importer for the TreePad file format."""
+from __future__ import annotations
 import re
-from typing import Dict, List
-from leo.core import leoGlobals as g  # required.
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
-from leo.plugins.importers.linescanner import Importer
+from typing import TYPE_CHECKING
+import leo.core.leoGlobals as g  # Required.
+from leo.plugins.importers.base_importer import Block, Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20180201203240.3: ** class Treepad_Importer(Importer)
 class Treepad_Importer(Importer):
-    """The importer for the TreePad file format."""
+    """
+    The importer for the TreePad file format.
+    
+    See: http://download.nust.na/pub2/FreeStuff/Software/Home%20office%20helpers/TreePad%20Lite/fileformat.txt
+    """
 
-    def __init__(self, c: Cmdr) -> None:
-        """Org_Importer.__init__"""
-        super().__init__(
-            c,
-            language='plain',  # A reasonable default.
-        )
+    language = 'plain'  # A reasonable default.
 
     #@+others
-    #@+node:ekr.20220810193157.3: *3* treepad_i.gen_lines
-    # #1037: eat only one space.
-    header_pat = re.compile(r'<Treepad version.*?>\s*$')
-    start1_pat = re.compile(r'^\s*dt\=Text\s*$')
-    start2_pat = re.compile(r'\s*<node> 5P9i0s8y19Z$')
-    end_pat = re.compile(r'^\s*<end node>\s*$')
+    #@+node:ekr.20230528062654.1: *3* treepad_i.gen_block
+    def gen_block(self, block: Block, parent: Position) -> None:
+        """
+        Treepad_Importer: gen_block. The `block` arg is unused.
 
-    def gen_lines(self, lines: List[str], parent: Position) -> None:
-        """Treepad_Importer.gen_lines. Allocate nodes to lines."""
-        if not lines:  # pragma: no cover (defensive)
-            return
+        Create all descendant blocks and their nodes from self.lines.
+
+        The Treepad writer adds all structure-related lines,
+        so *remove* those lines here.
+
+        i.gen_lines adds the @language and @tabwidth directives.
+        """
+        header_pat = re.compile(r'<Treepad version.*?>\s*$')
+        start1_pat = re.compile(r'^\s*dt\=\w+\s*$')  # type line.
+        # It's unclear whether the magic number is required after <node>.
+        start2_pat = re.compile(r'\s*<node>(\s*5P9i0s8y19Z)?$')
+        end_pat = re.compile(r'\s*<end node>\s*5P9i0s8y19Z$')
+        lines = self.lines
         assert parent == self.root
-        p = self.root
-        parents: List[Position] = [self.root]
-        # Use a dict instead of creating a new VNode slot.
-        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
-        if self.header_pat.match(lines[0]):
-            i = 1
-            lines_dict[self.root.v] = ['<Treepad version 3.0>\n']
+        parents: list[Position] = [parent]
+        lines_dict: dict[VNode, list[str]] = {}  # Lines for each vnode.
+        i = 0
+        if header_pat.match(lines[0]):
+            i += 1
+            lines_dict[parent.v] = [lines[0], '@others\n']
         else:  # pragma: no cover (user error)
             g.trace('No header line')
-            i = 0
+            lines_dict[parent.v] = ['@others\n']
         while i < len(lines):
             line = lines[i]
-            line2 = lines[i + 1] if i + 2 < len(lines) else ''
             i += 1
-            start1_m = self.start1_pat.match(line)
-            start2_m = self.start2_pat.match(line2)
-            end_m = self.end_pat.match(line)
-            if start1_m and start2_m and i + 3 < len(lines):
-                i += 1
-                headline = lines[i].strip()
-                level_s = lines[i + 1].strip()
-                i += 2
+            if end_pat.match(line):
+                continue  # No need to change the stack.
+            if i + 3 >= len(lines):
+                # Assume the line is a body line.
+                p = parents[-1]
+                lines_dict[p.v].append(line)
+                continue
+            start1_m = start1_pat.match(lines[i - 1])  # dt line.
+            start2_m = start2_pat.match(lines[i])  # type line.
+            if start1_m and start2_m:
+                headline = lines[i + 1].strip()
+                level_s = lines[i + 2].strip()
+                i += 3  # Skip 3 more lines.
                 try:
                     level = 1 + int(level_s)
                 except ValueError:  # pragma: no cover (user error)
@@ -63,21 +76,19 @@ class Treepad_Importer(Importer):
                 # Create any needed placeholders.
                 self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
-                parent = parents[-1]
-                child = parent.insertAsLastChild()
+                top = parents[-1]
+                child = top.insertAsLastChild()
                 parents.append(child)
                 child.h = headline
                 lines_dict[child.v] = []
-            elif end_m:
-                pass  # No need to change the stack.
             else:
-                # Append the line.
-                p = parents[-1]
-                lines_dict[p.v].append(line)
-        # Add the top-level directives.
-        self.append_directives(lines_dict, language='plain')
+                # Append the body line.
+                top = parents[-1]
+                lines_dict[top.v].append(line)
+
         # Set p.b from the lines_dict.
-        for p in self.root.self_and_subtree():
+        assert parent == self.root
+        for p in parent.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@-others
 #@-others

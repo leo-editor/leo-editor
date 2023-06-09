@@ -8,7 +8,7 @@ import re
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
+from typing import Any, Callable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 
@@ -108,10 +108,10 @@ class BackgroundProcessManager:
     def __init__(self) -> None:
         """Ctor for the base BackgroundProcessManager class."""
         self.data: ProcessData = None  # a ProcessData instance.
-        self.process_queue: List = []  # List of g.Bunches.
+        self.process_queue: list = []  # List of g.Bunches.
         self.pid: str = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
-        self.process_return_data: List[str] = None
+        self.process_return_data: list[str] = None
         self.link_root: Position = None
         # #2528: A timer that runs independently of idle time.
         self.timer = None
@@ -190,7 +190,7 @@ class BackgroundProcessManager:
             self.end()  # End this process.
             self.start_next()  # Start the next process.
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
-    unknown_path_names: List[str] = []
+    unknown_path_names: list[str] = []
 
     def put_log(self, s: str, link_root: Position = None) -> None:
         """

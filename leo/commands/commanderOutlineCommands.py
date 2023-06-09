@@ -7,7 +7,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -158,8 +158,8 @@ def pasteOutlineRetainingClones(
 def computeCopiedBunchList(
     c: Cmdr,
     pasted: Position,
-    vnodeInfoDict: Dict[VNode, Any],
-) -> List[Any]:
+    vnodeInfoDict: dict[VNode, Any],
+) -> list[Any]:
     """Create a dict containing only copied vnodes."""
     d = {}
     for p in pasted.self_and_subtree(copy=False):
@@ -171,7 +171,7 @@ def computeCopiedBunchList(
             aList.append(bunch)
     return aList
 #@+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> Dict[VNode, Any]:
+def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
     """
     We don't know yet which nodes will be affected by the paste, so we remember
     everything. This is expensive, but foolproof.
@@ -255,7 +255,7 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
 
     #@+node:vitalije.20200529114857.1: *4* getv
     gnx2v = c.fileCommands.gnxDict
-    def getv(gnx: str) -> Tuple[VNode, bool]:
+    def getv(gnx: str) -> tuple[VNode, bool]:
         """
         returns a pair (vnode, is_new) for the given gnx.
         if node doesn't exist, creates a new one.
@@ -358,7 +358,7 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
 
     seen = set(outside)  # required for the treatment of local clones inside the copied tree
 
-    heads: Dict[str, str] = {}
+    heads: dict[str, str] = {}
 
     bunch = c.undoer.createCommonBunch(p)
     #@+<< prepare destination data >>

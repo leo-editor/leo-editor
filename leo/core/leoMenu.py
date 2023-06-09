@@ -4,7 +4,7 @@
 #@+<< leoMenu imports & annotations >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -20,10 +20,10 @@ class LeoMenu:
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__(self, frame: Widget) -> None:
         self.c = frame.c
-        self.enable_dict: Dict[str, Callable] = {}  # Created by finishCreate.
+        self.enable_dict: dict[str, Callable] = {}  # Created by finishCreate.
         self.frame = frame
         self.isNull = False
-        self.menus: Dict[str, Any] = {}  # Menu dictionary.
+        self.menus: dict[str, Any] = {}  # Menu dictionary.
         self.wrapper: Wrapper = None
 
     def finishCreate(self) -> None:
@@ -142,7 +142,7 @@ class LeoMenu:
         else:
             g.es_print('No @menu setting found')
     #@+node:ekr.20070926135612: *5* LeoMenu.createMenusFromConfigList & helpers
-    def createMenusFromConfigList(self, aList: List) -> None:
+    def createMenusFromConfigList(self, aList: list) -> None:
         """
         Create menus from aList.
         The 'top' menu has already been created.
@@ -174,7 +174,7 @@ class LeoMenu:
             # a list of dicts.
             self.createOpenWithMenuFromTable(aList)
     #@+node:ekr.20070927082205: *6* LeoMenu.createMenuFromConfigList
-    def createMenuFromConfigList(self, parentName: str, aList: List, level: int = 0) -> None:
+    def createMenuFromConfigList(self, parentName: str, aList: list, level: int = 0) -> None:
         """Build menu based on nested list
 
         List entries are either:
@@ -192,8 +192,8 @@ class LeoMenu:
         if not parentMenu:
             g.trace('NO PARENT', parentName, g.callers())
             return  # #2030
-        table: List[Any] = []
-        z: Tuple[str, List, str]
+        table: list[Any] = []
+        z: tuple[str, list, str]
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
@@ -223,7 +223,7 @@ class LeoMenu:
         if table:
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
-    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str = None, table: List = None) -> bool:
+    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str = None, table: list = None) -> bool:
         """
         Handle a special menu if name is the name of a special menu.
         return True if this method handles the menu.
@@ -272,7 +272,7 @@ class LeoMenu:
             return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
-    def createMenuEntries(self, menu: Any, table: List) -> None:
+    def createMenuEntries(self, menu: Any, table: list) -> None:
         """
         Create a menu entry from the table.
 
@@ -362,7 +362,7 @@ class LeoMenu:
         command = c.commandsDict.get(commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
-    def getMenuEntryInfo(self, data: Any, menu: Any) -> Tuple[str, str, bool]:
+    def getMenuEntryInfo(self, data: Any, menu: Any) -> tuple[str, str, bool]:
         """
         Parse a single entry in the table passed to createMenuEntries.
 
@@ -403,7 +403,7 @@ class LeoMenu:
                 done = True  # Ignore bad data
         return label, command, done
     #@+node:ekr.20111028060955.16563: *5* LeoMenu.traceMenuTable
-    def traceMenuTable(self, table: List) -> None:
+    def traceMenuTable(self, table: list) -> None:
 
         trace = False and not g.unitTesting
         if not trace:
@@ -421,7 +421,7 @@ class LeoMenu:
             else:
                 print(format % (data, ''))
     #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
-    def createMenuItemsFromTable(self, menuName: str, table: List) -> None:
+    def createMenuItemsFromTable(self, menuName: str, table: list) -> None:
 
         if g.app.gui.isNullGui:
             return
@@ -463,7 +463,7 @@ class LeoMenu:
             g.es_exception()
             return None
     #@+node:ekr.20031218072017.4116: *4* LeoMenu.createOpenWithMenuFromTable & helpers
-    def createOpenWithMenuFromTable(self, table: List[Dict]) -> None:
+    def createOpenWithMenuFromTable(self, table: list[dict]) -> None:
         """
         Table is a list of dictionaries, created from @openwith settings nodes.
 
@@ -513,7 +513,7 @@ class LeoMenu:
         for d in table:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
-    def createOpenWithMenuItemsFromTable(self, menu: str, table: List[Dict]) -> None:
+    def createOpenWithMenuItemsFromTable(self, menu: str, table: list[dict]) -> None:
         """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
@@ -543,10 +543,10 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: Dict[str, str] = None) -> Callable:
+    def defineOpenWithMenuCallback(self, d: dict[str, str] = None) -> Callable:
         # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event: Event = None, self: Any = self, d: Dict[str, str] = d) -> Any:
+        def openWithMenuCallback(event: Event = None, self: Any = self, d: dict[str, str] = d) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 
@@ -596,11 +596,11 @@ class LeoMenu:
         cmn = self.canonicalizeTranslatedMenuName(menuName)
         return g.app.realMenuNameDict.get(cmn, menuName)
 
-    def setRealMenuName(self, untrans: str, trans: List) -> None:
+    def setRealMenuName(self, untrans: str, trans: list) -> None:
         cmn = self.canonicalizeTranslatedMenuName(untrans)
         g.app.realMenuNameDict[cmn] = trans
 
-    def setRealMenuNamesFromTable(self, table: List) -> None:
+    def setRealMenuNamesFromTable(self, table: list) -> None:
         try:
             for untrans, trans in table:
                 self.setRealMenuName(untrans, trans)
@@ -668,7 +668,7 @@ class LeoMenu:
     def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
         pass
 
-    def getMacHelpMenu(self, table: List) -> Any:
+    def getMacHelpMenu(self, table: list) -> Any:
         pass
 
     def getMenuLabel(self, menu: str, name: str) -> str:

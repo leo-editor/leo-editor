@@ -31,6 +31,8 @@ act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child
 to `@anki` called `@anki error` is populated with the relevant error details.
 """
 
+# broad-exception-raised: Not valid in later pylints.
+
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins
 

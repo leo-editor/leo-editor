@@ -10,7 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 import os
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -466,7 +466,7 @@ class textTree(leoFrame.LeoTree):
         w.setAllText(p.b)
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
-    def editLabel(self, v, selectAll: bool=False, selection: Tuple=None):
+    def editLabel(self, v, selectAll: bool=False, selection: tuple=None):
         pass  # N/A?
 
     def edit_widget(self, p):

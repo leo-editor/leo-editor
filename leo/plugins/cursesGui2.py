@@ -32,7 +32,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Union
 from typing import TYPE_CHECKING
 
 # Third-party.
@@ -40,6 +40,7 @@ try:
     import curses
 except ImportError:
     print('cursesGui2.py: curses required.')
+    print('pip install windows-curses')
     raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
@@ -332,7 +333,7 @@ class LeoTreeData(npyscreen.TreeData):
         # self.sort_function_wrapper = True
     #@-<< about LeoTreeData ivars >>
 
-    _children: List["LeoTreeData"]
+    _children: list[LeoTreeData]
     content = Union[str, Position]
 
     def __len__(self) -> int:
@@ -354,14 +355,14 @@ class LeoTreeData(npyscreen.TreeData):
 
     #@+others
     #@+node:ekr.20170516153211.1: *4* LeoTreeData.__getitem__
-    def __getitem__(self, n: int) -> "LeoTreeData":
+    def __getitem__(self, n: int) -> LeoTreeData:
         """Return the n'th item in this tree."""
         aList = self.get_tree_as_list()
         data = aList[n] if n < len(aList) else None
         # g.trace(n, len(aList), repr(data))
         return data
     #@+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
-    def is_ancestor_of(self, node: "LeoTreeData") -> bool:
+    def is_ancestor_of(self, node: LeoTreeData) -> bool:
 
         assert isinstance(node, LeoTreeData), repr(node)
         parent = node._parent
@@ -384,7 +385,7 @@ class LeoTreeData(npyscreen.TreeData):
             parent = parent.get_parent()
         return d
     #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
-    def get_children(self) -> List["LeoTreeData"]:
+    def get_children(self) -> list[LeoTreeData]:
 
         if native:
             p = self.content
@@ -398,7 +399,7 @@ class LeoTreeData(npyscreen.TreeData):
             return p.parent()
         return self._parent
     #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
-    def get_tree_as_list(self) -> List["LeoTreeData"]:  # only_expanded=True, sort=None, key=None):
+    def get_tree_as_list(self) -> list[LeoTreeData]:  # only_expanded=True, sort=None, key=None):
         """
         Called only from LeoMLTree.values._getValues.
 
@@ -582,14 +583,14 @@ class LeoTreeLine(npyscreen.TreeLine):
         # This draws the actual line.
         super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
-    def display_value(self, vl: "LeoTreeData") -> str:
+    def display_value(self, vl: LeoTreeData) -> str:
 
         # vl is a LeoTreeData.
         if native:
             p = vl.content
             assert p and isinstance(p, Position), repr(p)
             return p.h or ' '
-        return vl.content if vl else ''
+        return vl.content if vl else ''  # type:ignore
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self) -> None:
         """Allow the user to edit the widget: ie. start handling keypresses."""
@@ -812,7 +813,7 @@ def pr(*args: Any, **keys: Any) -> None:
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args: Any, **keys: Any) -> None:
     """Monkey-patch for g.trace."""
-    d: Dict[str, Any] = {
+    d: dict[str, Any] = {
         'align': 0,
         'before': '',
         'newline': True,
@@ -1223,7 +1224,7 @@ class KeyHandler:
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170430115131.3: *5* CKey.to_key
-    def to_key(self, i: int) -> Tuple[str, str]:
+    def to_key(self, i: int) -> tuple[str, str]:
         """Convert int i to a char and shortcut."""
         trace = False
         a = curses.ascii
@@ -1286,7 +1287,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log: Wrapper = None  # The present log. Used by g.es
         self.log_inited: bool = False  # True: don't use the wait_list.
         self.minibuffer_label: str = ''  # The label set by k.setLabel.
-        self.wait_list: List[Tuple[str, Any]] = []  # Queued log messages.
+        self.wait_list: list[tuple[str, Any]] = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
@@ -1384,7 +1385,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # Clear the wait list and disable it.
         self.wait_list = []
         self.log_inited = True
-        widgets: List[Wrapper] = box._my_widgets
+        widgets: list[Wrapper] = box._my_widgets
         assert len(widgets) == 1
         w = widgets[0]
         assert isinstance(w, LeoLog), repr(w)
@@ -1745,11 +1746,11 @@ class LeoCursesGui(leoGui.LeoGui):
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
+        filetypes: list[str],
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         if not g.unitTesting:
             g.trace('not ready yet', title)
         return ''
@@ -1760,14 +1761,14 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str='Properties',
         data: Any=None,
         callback: Callable=None,
-        buttons: List[str]=None,
+        buttons: list[str]=None,
     ) -> None:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
         if g.unitTesting:
             return None
         # Not tested.
@@ -1850,7 +1851,7 @@ class LeoCursesGui(leoGui.LeoGui):
         g.trace('(CursesGui) ===== no leo_wrapper', widget)
         return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
-    set_focus_fail: List[Wrapper] = []  # List of widgets
+    set_focus_fail: list[Wrapper] = []  # List of widgets
 
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Given a Leo wrapper, set focus to the underlying npyscreen widget."""
@@ -1865,7 +1866,6 @@ class LeoCursesGui(leoGui.LeoGui):
         Given a Leo wrapper w, set focus to the underlying npyscreen widget.
         """
         trace = 'focus' in g.app.debug
-        verbose = True  # verbose trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
         if trace:
@@ -2266,7 +2266,7 @@ class CoreFrame(leoFrame.LeoFrame):
     def forceWrap(self, p: Position) -> None:
         pass
 
-    def get_window_info(self) -> Tuple[int, int, int, int]:
+    def get_window_info(self) -> tuple[int, int, int, int]:
         """Return width, height, left, top."""
         return 700, 500, 50, 50
 
@@ -2364,8 +2364,8 @@ class CoreLog(leoFrame.LeoLog):
         self.isNull = False  # Required by Leo's core.
         # The npyscreen log widget. Queue all output until set. Set in CApp.main.
         self.widget: Wrapper = None
-        self.contentsDict: Dict[str, Wrapper] = {}  # Keys are tab names.  Values are widgets.
-        self.logDict: Dict[str, Wrapper] = {}  # Keys are tab names.  Values are the widgets.
+        self.contentsDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are widgets.
+        self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are the widgets.
         self.tabWidget: Wrapper = None
     #@+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')
@@ -2385,7 +2385,7 @@ class CoreLog(leoFrame.LeoLog):
     def isLogWidget(self, w: Wrapper) -> bool:
         return w == self or w in list(self.contentsDict.values())
     #@+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: Wrapper=None) -> List[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: Wrapper=None) -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
@@ -2572,7 +2572,7 @@ class CoreTree(leoFrame.LeoTree):
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20170511104121.1: *4* CTree.Scroll bars
     #@+node:ekr.20170511104121.2: *5* Ctree.getScroll
-    def getScroll(self) -> Tuple[int, int]:
+    def getScroll(self) -> tuple[int, int]:
         """Return the hPos,vPos for the tree's scrollbars."""
         return 0, 0
     #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
@@ -2593,7 +2593,7 @@ class CoreTree(leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         return HeadWrapper(c=self.c, name='head', p=p)
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Tuple=None) -> Tuple[None, None]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: tuple=None) -> tuple[None, None]:
         """Start editing p's headline."""
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
@@ -2605,7 +2605,7 @@ class CoreTree(leoFrame.LeoTree):
         p = c.currentPosition()
         self.onHeadChanged(p)
     #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions (called from Leo's core)
-    def getSelectedPositions(self) -> List[Position]:
+    def getSelectedPositions(self) -> list[Position]:
         """This can be called from Leo's core."""
         # Not called from unit tests.
         return [self.c.p]
@@ -2703,7 +2703,7 @@ class LeoBody(npyscreen.MultiLineEditable):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.values: List[Any]
+        self.values: list[Any]
         self.cursor_line: int
         self.start_display_at: int
         self.leo_box: Wrapper = None
@@ -3059,7 +3059,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.leo_c: Cmdr = None  # Set later
         self.leo_wrapper: Wrapper = None  # Set later.
         self.leo_completion_index: int = 0
-        self.leo_completion_list: List[str] = []
+        self.leo_completion_list: list[str] = []
         self.leo_completion_prefix: str = ''
         self.set_handlers()
 
@@ -3227,8 +3227,8 @@ class LeoMLTree(npyscreen.MLTree):
     # pylint: disable=used-before-assignment
     _contained_widgets: Wrapper = LeoTreeLine
     continuation_line = "- more -"  # value of contination line.
-    _cached_tree: "LeoTreeData"
-    _cached_tree_as_list: List["LeoTreeData"]
+    _cached_tree: LeoTreeData
+    _cached_tree_as_list: list[LeoTreeData]
     start_display_at: int
     cursor_line: int
 
@@ -3867,7 +3867,7 @@ class LeoMLTree(npyscreen.MLTree):
         # To invalidate the cache, set __cached_tree = None
         #@+others
         #@+node:ekr.20170517142822.1: *5* _getValues
-        def _getValues(self) -> List["LeoTreeData"]:
+        def _getValues(self) -> list[LeoTreeData]:
             """
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
 
@@ -3880,7 +3880,7 @@ class LeoMLTree(npyscreen.MLTree):
             self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
             return self._cached_tree_as_list
         #@+node:ekr.20170518054457.1: *5* _setValues
-        def _setValues(self, tree: "LeoTreeData") -> None:
+        def _setValues(self, tree: LeoTreeData) -> None:
             self._myFullValues = tree or LeoTreeData()
         #@-others
         values = property(_getValues, _setValues)
@@ -3894,21 +3894,21 @@ class LeoValues(npyscreen.TreeData):
 
     #@+others
     #@+node:ekr.20170619070717.1: *4* values.__init__
-    def __init__(self, c: Cmdr, tree: "LeoTreeData") -> None:
+    def __init__(self, c: Cmdr, tree: LeoTreeData) -> None:
         """Ctor for LeoValues class."""
         super().__init__()  # Init the base class.
         self.c: Cmdr = c  # The commander of this outline.
-        self.data_cache: Dict[int, "LeoTreeData"] = {}  # Keys are ints, values are LeoTreeData objects.
+        self.data_cache: dict[int, LeoTreeData] = {}  # Keys are ints, values are LeoTreeData objects.
         self.last_generation = -1  # The last value of c.frame.tree.generation.
         self.last_len = 0  # The last computed value of the number of visible nodes.
         self.n_refreshes = 0  # Number of calls to refresh_cache.
-        self.tree: "LeoTreeData" = tree  # not used here.
+        self.tree: LeoTreeData = tree  # not used here.
     #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
-    def __getitem__(self, n: int) -> "LeoTreeData":
+    def __getitem__(self, n: int) -> LeoTreeData:
         """Called from LeoMLTree._setLineValues."""
         return self.get_data(n)
 
-    def get_data(self, n: int) -> "LeoTreeData":
+    def get_data(self, n: int) -> LeoTreeData:
         """Return a LeoTreeData for the n'th visible position of the outline."""
         c = self.c
         # This will almost always be true, because __len__ updates the cache.
@@ -4092,7 +4092,7 @@ class TextMixin:
         g.app.gui.set_focus(self)
 
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """TextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)

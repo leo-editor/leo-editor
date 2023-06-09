@@ -7,7 +7,7 @@ from __future__ import annotations
 import functools
 import re
 import string
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -39,7 +39,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
-        self.abbrevs: Dict[str, Tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
+        self.abbrevs: dict[str, tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
         self.dynaregex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
@@ -51,7 +51,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.save_ins = None  # Saved insert point.
         self.save_sel = None  # Saved selection range.
         self.store = {'rlist': [], 'stext': ''}  # For dynamic expansion.
-        self.tree_abbrevs_d: Dict[str, str] = {}  # Keys are names, values are (tree,tag).
+        self.tree_abbrevs_d: dict[str, str] = {}  # Keys are names, values are (tree,tag).
         self.w = None
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self) -> None:
@@ -188,7 +188,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         data = c.config.getOutlineData('tree-abbreviations')
         if data is None:
             return
-        d: Dict[str, str] = {}
+        d: dict[str, str] = {}
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
@@ -207,7 +207,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.app.disable_redraw = old_disable
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
-    def init_tree_abbrev_helper(self, d: Dict[str, str], tree_s: str) -> None:
+    def init_tree_abbrev_helper(self, d: dict[str, str], tree_s: str) -> None:
         """Init d from tree_s, the text of a copied outline."""
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)
@@ -415,7 +415,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # c.bodyWantsFocusNow()
         return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
-    def make_script_substitutions(self, i: int, j: int, val: str) -> Tuple[str, bool]:
+    def make_script_substitutions(self, i: int, j: int, val: str) -> tuple[str, bool]:
         """Make scripting substitutions in node p."""
         c, u, w = self.c, self.c.undoer, self.c.frame.body.wrapper
         if not c.abbrev_subst_start:
@@ -486,7 +486,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
-    def match_prefix(self, ch: str, i: int, j: int, prefix: str, s: str) -> Tuple[int, str, str, str]:
+    def match_prefix(self, ch: str, i: int, j: int, prefix: str, s: str) -> tuple[int, str, str, str]:
         """A match helper."""
         i = j - len(prefix)
         word = g.checkUnicode(prefix) + g.checkUnicode(ch)
@@ -509,7 +509,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             word, val = None, None
         return i, tag, word, val
     #@+node:ekr.20150514043850.16: *4* abbrev.next_place
-    def next_place(self, s: str, offset: int = 0) -> Tuple[str, int, int]:
+    def next_place(self, s: str, offset: int = 0) -> tuple[str, int, int]:
         """
         Given string s containing a placeholder like <| block |>,
         return (s2,start,end) where s2 is s without the <| and |>,
@@ -599,7 +599,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ch = event.char
         return ch
     #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
-    def get_prefixes(self, w: Wrapper) -> Tuple[str, int, int, List[str]]:
+    def get_prefixes(self, w: Wrapper) -> tuple[str, int, int, list[str]]:
         """Return the prefixes at the current insertion point of w."""
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
@@ -680,7 +680,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper(self,
         event: Event,
         prefix: str = None,
-        aList: List[str] = None,
+        aList: list[str] = None,
         w: Wrapper = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
@@ -720,7 +720,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.undoer.afterChangeNodeContents(p, command='dabbrev-expand', bunch=b)
             c.recolor()
     #@+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
-    def getDynamicList(self, w: Wrapper, s: str) -> List[str]:
+    def getDynamicList(self, w: Wrapper, s: str) -> list[str]:
         """Return a list of dynamic abbreviations."""
         if self.globalDynamicAbbrevs:
             # Look in all nodes.h

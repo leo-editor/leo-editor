@@ -11,7 +11,6 @@
 #@+node:bob.20180206123613.2: ** << imports >>
 import os
 import time
-from typing import List
 
 from leo.core import leoGlobals as leoG
 assert leoG
@@ -27,8 +26,8 @@ class IdleTime:
     """ This is an implementation of the Leo-Editor
     class IdleTime() for use with Leo-Bridge.
     """
-    list_active: List = list()
-    list_inactive: List = list()
+    list_active: list = list()
+    list_inactive: list = list()
 
     #@+others
     #@+node:bob.20180206123842.1: *3* IdleTime.__init__

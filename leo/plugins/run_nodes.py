@@ -44,7 +44,7 @@ import os
 import subprocess
 import threading
 import time
-from typing import Any, List
+from typing import Any
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< globals >>
@@ -58,7 +58,7 @@ else:
 
 # misc global variables...
 RunNode = None
-RunList: List[Any] = None  # List of Positions.
+RunList: list[Any] = None  # List of Positions.
 WorkDir = None
 ExitCode = None
 

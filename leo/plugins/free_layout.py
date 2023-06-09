@@ -29,8 +29,7 @@ free-layout-zoom
 #@+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 from __future__ import annotations
 import json
-from typing import Any, List, Optional, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #
 # Qt imports. May fail from the bridge.
@@ -291,8 +290,8 @@ class FreeLayoutController:
             if splitter:
                 splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
-    def ns_context(self) -> List[Tuple[str, str]]:
-        ans: List[Any] = [
+    def ns_context(self) -> list[tuple[str, str]]:
+        ans: list[Any] = [
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
         ]
@@ -390,8 +389,8 @@ class FreeLayoutController:
             return w
         return None
     #@+node:tbrown.20110627201141.11745: *3* flc.ns_provides
-    def ns_provides(self) -> List[Tuple[str, str]]:
-        ans: List[Tuple[str, str]] = []
+    def ns_provides(self) -> list[tuple[str, str]]:
+        ans: list[tuple[str, str]] = []
         # list of things in tab widget
         logTabWidget = self.get_top_splitter(
             ).find_child(QtWidgets.QWidget, "logTabWidget")

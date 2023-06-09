@@ -7,7 +7,7 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Any, BinaryIO, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, BinaryIO, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -152,7 +152,7 @@ class BaseLeoCompare:
             return
         self.compare_two_files(name1, name2)
     #@+node:ekr.20180211123531.1: *3* compare_list_of_files (entry for scripts)
-    def compare_list_of_files(self, aList1: List[str]) -> None:
+    def compare_list_of_files(self, aList1: list[str]) -> None:
 
         aList = list(set(aList1))
         while len(aList) > 1:
@@ -471,7 +471,7 @@ class CompareLeoOutlines:
         self.path2: str = None
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList: List[str], visible: bool = True) -> None:
+    def diff_list_of_files(self, aList: list[str], visible: bool = True) -> None:
         """The main entry point for scripts."""
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
@@ -514,7 +514,7 @@ class CompareLeoOutlines:
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[Dict, Dict, Dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
@@ -531,7 +531,7 @@ class CompareLeoOutlines:
                     changed[key] = (v1, v2)
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
-    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: Dict[str, Tuple[VNode, VNode]], kind: str) -> None:
+    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: dict[str, tuple[VNode, VNode]], kind: str) -> None:
         """Create nodes describing the changes."""
         if not d:
             return
@@ -570,14 +570,14 @@ class CompareLeoOutlines:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20180211170333.7: *4* loc.create_file_node
-    def create_file_node(self, diff_list: List, fn1: str, fn2: str) -> Position:
+    def create_file_node(self, diff_list: list, fn1: str, fn2: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = f"{g.shortFileName(fn1).strip()}, {g.shortFileName(fn2).strip()}"
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root
-    def create_root(self, aList: List[str]) -> Position:
+    def create_root(self, aList: list[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
         c, u = self.c, self.c.undoer
         undoType = 'Create diff root node'  # Same undoType is reused for all inner undos

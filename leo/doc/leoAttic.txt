@@ -2518,17 +2518,17 @@ class IterativeTokenGenerator:
     must queue up **helper actions** for later (delayed) execution.
     """
 
-    begin_end_stack: List[str] = []  # A stack of node names.
+    begin_end_stack: list[str] = []  # A stack of node names.
     n_nodes = 0  # The number of nodes that have been visited.
     node = None  # The current node.
     node_index = 0  # The index into the node_stack.
-    node_stack: List[ast.AST] = []  # The stack of parent nodes.
+    node_stack: list[ast.AST] = []  # The stack of parent nodes.
 
     @others
 #@+node:ekr.20220402095550.1: *5* iterative: Init...
 # Same as in the TokenOrderGenerator class.
 #@+node:ekr.20220402095550.2: *6* iterative.balance_tokens
-def balance_tokens(self, tokens: List["Token"]) -> int:
+def balance_tokens(self, tokens: list["Token"]) -> int:
     """
     TOG.balance_tokens.
 
@@ -2551,7 +2551,7 @@ def balance_tokens(self, tokens: List["Token"]) -> int:
         g.trace("unmatched '(' at {','.join(stack)}")
     return count
 #@+node:ekr.20220402095550.3: *6* iterative.create_links (init all ivars)
-def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -> List:
+def create_links(self, tokens: list["Token"], tree: Node, file_name: str = '') -> List:
     """
     A generator creates two-way links between the given tokens and ast-tree.
 
@@ -2579,7 +2579,7 @@ def create_links(self, tokens: List["Token"], tree: Node, file_name: str = '') -
     # Return [] for compatibility with legacy code: list(tog.create_links).
     return []
 #@+node:ekr.20220402095550.4: *6* iterative.init_from_file
-def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:  # pragma: no cover
+def init_from_file(self, filename: str) -> Tuple[str, str, list["Token"], Node]:  # pragma: no cover
     """
     Create the tokens and ast tree for the given file.
     Create links between tokens and the parse tree.
@@ -2594,7 +2594,7 @@ def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:
     self.create_links(tokens, tree)
     return contents, encoding, tokens, tree
 #@+node:ekr.20220402095550.5: *6* iterative.init_from_string
-def init_from_string(self, contents: str, filename: str) -> Tuple[List["Token"], Node]:  # pragma: no cover
+def init_from_string(self, contents: str, filename: str) -> Tuple[list["Token"], Node]:  # pragma: no cover
     """
     Tokenize, parse and create links in the contents string.
 
@@ -2641,7 +2641,7 @@ def set_links(self, node: Node, token: "Token") -> None:
     # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
     if token.kind == 'comment':
         # Append the comment to node.comment_list.
-        comment_list: List["Token"] = getattr(node, 'comment_list', [])
+        comment_list: list["Token"] = getattr(node, 'comment_list', [])
         node.comment_list = comment_list + [token]
         return
     if token.kind in ('endmarker', 'ws'):
@@ -2779,7 +2779,7 @@ def enter_node(self, node: Node) -> None:
     # The nearest_common_ancestor function depends upon them.
     node.parent = self.node
     if self.node:
-        children: List[Node] = getattr(self.node, 'children', [])
+        children: list[Node] = getattr(self.node, 'children', [])
         children.append(node)
         self.node.children = children
     # Inject the node_index field.
@@ -4162,7 +4162,7 @@ def do_While(self, node: Node) -> ActionList:
 def do_With(self, node: Node) -> ActionList:
 
     expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
-    items: List[ast.AST] = getattr(node, 'items', [])
+    items: list[ast.AST] = getattr(node, 'items', [])
     result: ActionList = [
         (self.name, 'with'),
         (self.visit, expr),
@@ -4433,7 +4433,7 @@ def traverse(self, tree: Node) -> int:
     The code follows p.moveToThreadNext exactly.
     """
 
-    def has_next(i: int, node: Node, stack: List[int]) -> bool:
+    def has_next(i: int, node: Node, stack: list[int]) -> bool:
         """Return True if stack[i] is a valid child of node.parent."""
         # g.trace(node.__class__.__name__, stack)
         parent = node.parent
@@ -4454,7 +4454,7 @@ def traverse(self, tree: Node) -> int:
         seen.add(node.node_index)
         self.visit(node)
         # if p.v.children: p.moveToFirstChild()
-        children: List[ast.AST] = getattr(node, 'children', [])
+        children: list[ast.AST] = getattr(node, 'children', [])
         if children:
             # Move to the first child.
             stack.append(0)
@@ -9146,315 +9146,351 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20220917052530.1: ** Old code
-#@+node:ekr.20220728055642.1: *3* Old importer code
-@nosearch
-@language plain
+#@+node:ekr.20230514125046.1: ** Experimental code
+#@+node:ekr.20230514124825.1: *3* New C_Importer code (experimental, buggy)
+@language rest
 
-Summary of deleted methods:
+This code attempts to use multi-line regex searches in the new C importer.
 
-- All cut_stack, adjust_parent, end_block, create_child_node, find_parent, start_block, start_new_block methods.
-- All promote_last_lines methods.
-- All get_new_dict methods.
-- All post_pass methods.
-- The Target class.
-- Importer: i.gen_lines, i.generate_nodes, i.undent*, i.indent*, i.finish (The old api), i.check.
+See the post: ENB: Leo's new c++ importer: brags, improvements, and acknowledgments
+https://groups.google.com/g/leo-editor/c/dIFlhPl1KQ0/m/jbD-neSYAwAJ
+
+However, I suspect a line-oriented approch is more robust.
 
 @language python
-#@+node:ekr.20161105140842.5: *4* js_i.scan_line
-def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
+#@+node:ekr.20230514084310.1: *4* NEW: c_i.make_guide_lines (override)
+def make_guide_lines(self, lines: list[str]) -> list[str]:
     """
-    Update the scan state at the *end* of the line.
-    Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
+    C_Importer.make_guide_lines.
+    
+    Return a list if **guide lines** that simplify the detection of blocks.
 
-    This code uses JsLex to scan the tokens, which scans strings and regexs properly.
-
-    This code also handles *partial* tokens: tokens continued from the
-    previous line or continued to the next line.
+    Also compute self.guide_string and self.index_list.
     """
-    context = prev_state.context
-    curlies, parens = prev_state.curlies, prev_state.parens
-    # Scan tokens, updating context and counts.
-    prev_val = None
-    for kind, val in JsLexer().lex(s):
-        if context:
-            if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                context = ''  # pragma: no cover (mysterious)
-            elif (
-                context == '/*'
-                and kind in ('other', 'punct')
-                and prev_val == '*'
-                and val == '/'
-            ):
-                context = ''
-        elif kind in ('other', 'punct') and val in ('"', "'"):
-            context = val
-        elif kind in ('other', 'punct') and val == '*' and prev_val == '/':
-            context = '/*'
-        elif kind in ('other', 'punct'):
-            if val == '*' and prev_val == '/':
-                # TestJavascript.test_comments casts doubt on whether this case is possible.
-                context = '/*'  # pragma: no cover (mysterious)
-            elif val == '{':
-                curlies += 1
-            elif val == '}':
-                curlies -= 1
-            elif val == '(':
-                parens += 1
-            elif val == ')':
-                parens -= 1
-        prev_val = val
-    d = {'context': context, 'curlies': curlies, 'parens': parens}
-    state = JS_ScanState(d)
-    return state
-#@+node:ekr.20171224145755.1: *4* js_i.starts_block
-func_patterns = [
-    re.compile(r'.*?\)\s*=>\s*\{'),
-    re.compile(r'\s*class\b'),
-    re.compile(r'\s*function\b'),
-    re.compile(r'.*?[(=,]\s*function\b'),
-]
+    guide_lines = self.delete_comments_and_strings(lines[:])
 
-def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-    """True if the new state starts a block."""
-    if new_state.level() <= prev_state.level():
-        return False
-    # Remove strings and regexs from the line before applying the patterns.
-    cleaned_line = []
-    for kind, val in JsLexer().lex(lines[i]):
-        if kind not in ('string', 'regex'):
-            cleaned_line.append(val)
-    # Search for any of the patterns.
-    line = ''.join(cleaned_line)
-    for pattern in self.func_patterns:
-        if pattern.match(line) is not None:
-            return True
-    return False
-#@+node:ekr.20170530035601.1: *4* lua_i.starts_block (not used)
-# The function must be an "outer" function, without indentation.
-function_pattern = re.compile(r'^(local\s+)?function')
-function_pattern2 = re.compile(r'(local\s+)?function')
+    # Compute c_i.guide_string for c_i.find_blocks.
+    self.guide_string = ''.join(guide_lines)
 
-def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-    """True if the new state starts a block."""
+    # Compute c_i.index_list, a list of tuples (starting_index, ending_index)
+    # for each of the guide string's lines.
+    i, self.index_list = 0, []
+    for line in guide_lines:
+        self.index_list.append((i, i + len(line)))
+        i += len(line)
+    # Add an extra entry to avoid IndexErrors.
+    n = len(self.guide_string)
+    self.index_list.append((n, n))
 
-    def end(line: str) -> int:
-        # Buggy: 'end' could appear in a string or comment.
-        # However, this code is much better than before.
-        i = line.find('end')
-        return i if i > -1 and g.match_word(line, i, 'end') else -1
+    return guide_lines
+#@+node:ekr.20230514124004.1: *4* NEW (buggy): c_i.find_blocks & helper (override)
+<< define block_patterns >>
+<< define compound_statements_pat >>
 
-    if prev_state.context:
-        return False
-    line = lines[i]
-    m = self.function_pattern.match(line)
-    if m and end(line) < m.start():
-        self.start_stack.append('function')
-        return True
-    # Don't create separate nodes for assigned functions,
-    # but *do* push 'function2' on the start_stack for the later 'end' statement.
-    m = self.function_pattern2.search(line)
-    if m and end(line) < m.start():
-        self.start_stack.append('function2')
-        return False
-    # Not a function. Handle constructs ending with 'end'.
-    line = line.strip()
-    if end(line) == -1:
-        for z in ('do', 'for', 'if', 'while',):
-            if g.match_word(line, 0, z):
-                self.start_stack.append(z)
-                break
-    return False
-#@+node:ekr.20161129213808.1: *4* php_i.get_new_dict
-@nobeautify
+# Compound statements.
 
-def get_new_dict(self, context: str) -> Dict:
+def find_blocks(self, i1: int, i2: int, level: int) -> list[Block]:
     """
-    Return a *general* state dictionary for the given context.
-    Subclasses may override...
-    """
-    comment, block1, block2 = self.single_comment, self.block1, self.block2
-    assert (comment, block1, block2) == ('//', '/*', '*/'), f"php: {comment!r} {block1!r} {block2!r}"
+    C_Importer.find_blocks: override Importer.find_blocks.
 
-    d: Dict[str, List[Any]]
+    Find all blocks in the given range of lines.
+    
+    Search the *guide* string from first index of line i1 to the last index of line i2.
 
-    if context:
-        d = {
-            # key    kind   pattern  ends?
-            '\\':   [('len+1', '\\', None)],
-            '"':    [('len', '"',    context == '"')],
-            "'":    [('len', "'",    context == "'")],
-            '*':    [('len', '*/', True)],  # #1717.
-        }
-    else:
-        # Not in any context.
-        d = {
-            # key    kind pattern new-ctx  deltas
-            '/':    [
-                ('all', '//', context, None),
-                ('len', '/*', '/*', None),
-            ],
-            '\\':   [('len+1', '\\', context, None)],
-            '<':    [('<<<', '<<<', '<<<', None)],
-            '"':    [('len', '"', '"',     None)],
-            "'":    [('len', "'", "'",     None)],
-            '{':    [('len', '{', context, (1,0,0))],
-            '}':    [('len', '}', context, (-1,0,0))],
-            '(':    [('len', '(', context, (0,1,0))],
-            ')':    [('len', ')', context, (0,-1,0))],
-            '[':    [('len', '[', context, (0,0,1))],
-            ']':    [('len', ']', context, (0,0,-1))],
-        }
-    return d
-#@+node:ekr.20161129214803.1: *4* php_i.scan_dict (supports here docs)
-def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
+    Return a list of tuples(kind, name, start, start_body, end) for each block.
     """
-    i.scan_dict: Scan at position i of s with the give context and dict.
-    Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-    """
-    found = False
-    delta_c = delta_p = delta_s = 0
-    if self.here_doc_target:
-        assert i == 0, repr(i)
-        n = len(self.here_doc_target)
-        if self.here_doc_target.lower() == s[:n].lower():
-            self.here_doc_target = None
-            i = n
-            return scan_tuple('', i, 0, 0, 0, False)
-        # Skip the rest of the line
-        return scan_tuple('', len(s), 0, 0, 0, False)
-    ch = s[i]  # For traces.
-    aList = d.get(ch)
-    if aList and context:
-        # In context.
-        for data in aList:
-            kind, pattern, ends = data
-            if self.match(s, i, pattern):
-                if ends is None:
-                    found = True
-                    new_context = context
-                    break
-                elif ends:
-                    found = True
-                    new_context = ''
-                    break
-                else:
-                    pass  # Ignore this match.
-    elif aList:
-        # Not in context.
-        for data in aList:
-            kind, pattern, new_context, deltas = data
-            if self.match(s, i, pattern):
-                found = True
-                if deltas:
-                    delta_c, delta_p, delta_s = deltas
-                break
-    if found:
-        if kind == 'all':
-            i = len(s)
-        elif kind == 'len+1':
-            i += (len(pattern) + 1)
-        elif kind == '<<<':  # Special flag for here docs.
-            new_context = context  # here_doc_target is a another kind of context.
-            m = self.here_doc_pattern.match(s[i:])
+    # Search the *guide* string.
+    s = self.guide_string
+    # Compute the first and last *character* indices withing the guide string.
+    g.trace(i1, i2, len(self.index_list))
+    i: int = self.index_list[i1][0]
+    end_i: int = self.index_list[i2][1]
+    g.printObj(s[i:end_i], tag=f"guide_string: {i}:{end_i}")
+    prev_i = i
+    result: list[Block] = []
+    while i < end_i:
+        progress = i
+        for kind, pattern in self.block_patterns:
+            m = pattern.match(s, i, end_i)
             if m:
-                i = len(s)  # Skip the rest of the line.
-                self.here_doc_target = '%s;' % m.group(1)
-            else:
-                i += 3
+                g.trace(m)
+                assert m.group(0).endswith('{'), m.group(0)
+                name = m.group(1) or ''
+                if (
+                    # Don't match if the line contains a trailing '}'.
+                    ### '}' not in s[m.end(1) :]
+                    # Don't match compound statements.
+                    not self.compound_statements_pat.match(name)
+                ):
+                    i2 = i + len(m.group(0))
+                    end = self.find_end_of_block(i, i2)
+                    assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    result.append((kind, name, prev_i, i, end))
+                    i = prev_i = end
+                    break
         else:
-            assert kind == 'len', (kind, self.name)
-            i += len(pattern)
-        bs_nl = pattern == '\\\n'
-        return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
-    #
-    # No match: stay in present state. All deltas are zero.
-    new_context = context
-    return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-#@+node:ekr.20200203060718.1: *4* TestJavascript.test_scan_line
-def test_scan_line(self):
+            # No patterns match. Skip one line.
+            i += 1
+            while i < len(self.guide_string) and self.guide_string[i] != '\n':
+                i += 1
+            g.printObj(s[i:end_i], tag=f"Advance to {i}")
+        assert progress < i, i
+    return result
+#@+node:ekr.20230514124004.2: *5* << define block_patterns >>
+# Pattern that matches the start of any block.
+class_pat = re.compile(r'.*?\bclass\s+(\w+)\s*\{')
+function_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{', re.MULTILINE)
+namespace_pat = re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')
+struct_pat = re.compile(r'.*?\bstruct\s*(\w+)?\s*\{')
+block_patterns = (
+    ('class', class_pat),
+    ('func', function_pat),
+    ('namespace', namespace_pat),
+    ('struct', struct_pat),
+)
 
-    c = self.c
-    table = (
-        # result        prev_context    s
-        ((0, 0, '"'), "", r'"string'),
-        ((0, 0, '/*'), "", r'/* line 1'),
-        ((0, 0, '/*'), "/*", r'line 2'),  # New.
-        ((0, 0, ''), "/*", r'line 3 */'),  # New.
-        ((0, 0, ''), "", r'a + b // /*'),
-        ((0, 1, ''), "", r'(function'),
-        ((1, 1, ''), "", r'(function(a) {'),
-        ((0, 0, ''), "", r'var x = /abc/'),
-        ((0, 0, ''), "", r'var x = /a"c/'),
-        ((0, 0, ''), "", r'var x = /a\//'),
-        ((0, 0, ''), "", r'var x = /a\//'),
-        ((0, 1, ''), "", r'var x = (0,'),
+# Pattern that *might* be continued on the next line.
+### multi_line_func_pat = re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?')
+#@+node:ekr.20230514124004.3: *5* << define compound_statements_pat >>
+# Pattern that matches any compound statement.
+compound_statements_s = '|'.join([
+    rf"\b{z}\b" for z in (
+        'case', 'catch', 'class', 'do', 'else', 'for', 'if', 'switch', 'try', 'while',
     )
-    for result, prev_context, s in table:
-        importer = JS_Importer(c)
-        prev_state = JS_ScanState()
-        prev_state.context = prev_context
-        new_state = importer.scan_line(s, prev_state)
-        curlies, parens, context = result
-        ok = (
-            new_state.curlies == curlies and
-            new_state.parens == parens and
-            new_state.context == context)
-        assert ok, (
-                f"\n"
-                f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
-                f"new_state: {new_state}\n"
-                f"        s: {s!r}")
-#@+node:ekr.20210904065459.54: *4* TestPerl.test_regex_1
-def test_regex_1(self):
-
-    # ('len',   'tr///', '/',       context,  0,       0,       0),
-    # ('len',   's///',  '/',       context,  0,       0,       0),
-    # ('len',   'm//',   '/',       context,  0,       0,       0),
-    # ('len',   '/',     '/',       '',       0,       0,       0),
-    s = """
-        #!/usr/bin/perl
-
-        sub test1 {
-            s = /{/g;
-        }
-
-        sub test2 {
-            s = m//{/;
-        }
-
-        sub test3 {
-            s = s///{/;
-        }
-
-        sub test4 {
-            s = tr///{/;
-        }
+])
+compound_statements_pat = re.compile(compound_statements_s)
+#@+node:ekr.20230514124004.4: *5* c_i.find_end_of_block
+def find_end_of_block(self, i: int, i2: int) -> int:
     """
-    self.run_test(s)
+    Return the character index within the guide *string* of the end of the block.
+    """
+    # i is the index (within lines) of the line *following* the start of the block.
+    # Return the index (within lines) of end of the block that starts at guide_lines[i].
+    # """
 
-#@+node:ekr.20161118093751.2: *4* ts_i.skip_possible_regex
-def skip_possible_regex(self, s: str, i: int) -> int:
-    """look ahead for a regex /"""
-    assert s[i] in '=(', repr(s[i])
-    i += 1
-    while i < len(s) and s[i] in ' \t':
+    level = 1  # All blocks start with '{'
+    while i < i2:
+        ch = self.guide_string[i]
         i += 1
-    if i < len(s) and s[i] == '/':
-        i += 1
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            if ch == '\\':
-                i += 2
-            elif ch == '/':
-                i += 1
+        ###
+            # line = self.lines[i]
+            # i += 1
+            # for ch in line:
+        if ch == '{':
+            level += 1
+        if ch == '}':
+            level -= 1
+            if level == 0:
+                return i
+    return i2
+#@+node:ekr.20230516044834.1: ** JSLexer and unit test (not used)
+# Something like this lexer is required to handle JS regex expressions.
+# However, it has not been used since Vitalije's importer code, and maybe earlier.
+#@+node:ekr.20200131110322.2: *3* JsLexer (Not used)
+# JsLex: a lexer for Javascript
+# Written by Ned Batchelder. Used by permission.
+#
+# Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
+# For details: https://bitbucket.org/ned/jslex/src/default/NOTICE.txt
+#@+node:ekr.20200131110322.4: *4* class Tok
+class Tok:
+    """A specification for a token class."""
+
+    num = 0
+
+    def __init__(self, name: str, regex: str, next: str = None) -> None:
+        self.id = Tok.num
+        Tok.num += 1
+        self.name = name
+        self.regex = regex
+        self.next = next
+#@+node:ekr.20200131110322.7: *4* class Lexer
+class Lexer:
+    """A generic multi-state regex-based lexer."""
+
+    @others
+#@+node:ekr.20200131110322.8: *5* Lexer.__init__
+def __init__(self, states: Dict, first: Any) -> None:
+    self.regexes = {}
+    self.toks = {}
+    for state, rules in states.items():
+        parts = []
+        for tok in rules:
+            groupid = "t%d" % tok.id
+            self.toks[groupid] = tok
+            parts.append("(?P<%s>%s)" % (groupid, tok.regex))
+        self.regexes[state] = re.compile("|".join(parts), re.MULTILINE | re.VERBOSE)  # |re.UNICODE)
+    self.state = first
+#@+node:ekr.20200131110322.9: *5* Lexer.lex
+def lex(self, text: str) -> Generator:
+    """Lexically analyze `text`.
+
+    Yields pairs (`name`, `tokentext`).
+    """
+    end = len(text)
+    state = self.state
+    regexes = self.regexes
+    toks = self.toks
+    start = 0
+    while start < end:
+        for match in regexes[state].finditer(text, start):
+            # g.trace(state, start, text, match)
+            # g.printObj(regexes[state])
+            name = match.lastgroup
+            tok = toks[name]
+            toktext = match.group(name)
+            start += len(toktext)
+            yield(tok.name, toktext)
+            if tok.next:
+                state = tok.next
                 break
-            else:
-                i += 1
-            assert progress < i
+    self.state = state
+#@+node:ekr.20200131110322.6: *4* function: literals
+def literals(choices: str, prefix: str = "", suffix: str = "") -> str:
+    """
+    Create a regex from a space-separated list of literal `choices`.
 
-    return i - 1
+    If provided, `prefix` and `suffix` will be attached to each choice
+    individually.
+
+    """
+    return "|".join(prefix + re.escape(c) + suffix for c in choices.split())
+#@+node:ekr.20200131110322.10: *4* class JsLexer(Lexer)
+class JsLexer(Lexer):
+    """A Javascript lexer
+
+    >>> lexer = JsLexer()
+    >>> list(lexer.lex("a = 1"))
+    [('id', 'a'), ('ws', ' '), ('punct', '='), ('ws', ' '), ('dnum', '1')]
+
+    This doesn't properly handle non-Ascii characters in the Javascript source.
+    """
+    # EKR: Happily, the JS importer doesn't need to handle id's carefully.
+
+    << constants >>
+
+    def __init__(self) -> None:
+        super().__init__(self.states, 'reg')
+#@+node:ekr.20200131190707.1: *5* << constants >> (JsLexer)
+# Because these tokens are matched as alternatives in a regex, longer possibilities
+# must appear in the list before shorter ones, for example, '>>' before '>'.
+#
+# Note that we don't have to detect malformed Javascript, only properly lex
+# correct Javascript, so much of this is simplified.
+
+# Details of Javascript lexical structure are taken from
+# http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf
+
+# A useful explanation of automatic semicolon insertion is at
+# http://inimino.org/~inimino/blog/javascript_semicolons
+
+# See https://stackoverflow.com/questions/6314614/match-any-unicode-letter
+
+both_before = [
+    Tok("comment", r"/\*(.|\n)*?\*/"),
+    Tok("linecomment", r"//.*?$"),
+    Tok("ws", r"\s+"),
+    Tok("keyword", literals("""
+                            async await
+                            break case catch class const continue debugger
+                            default delete do else enum export extends
+                            finally for function if import in instanceof new
+                            return super switch this throw try typeof var
+                            void while with
+                            """, suffix=r"\b"), next='reg'),
+    Tok("reserved", literals("null true false", suffix=r"\b"), next='div'),
+    #
+    # EKR: This would work if patterns were compiled with the re.UNICODE flag.
+    #      However, \w is not the same as valid JS characters.
+    #      In any case, the JS importer doesn't need to handle id's carefully.
+    #
+    # Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
+    #
+    Tok("id", r"""
+                        ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
+                        ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
+                        """, next='div'),
+    Tok("hnum", r"0[xX][0-9a-fA-F]+", next='div'),
+    Tok("onum", r"0[0-7]+"),
+    Tok("dnum", r"""
+                        (   (0|[1-9][0-9]*)         # DecimalIntegerLiteral
+                            \.                      # dot
+                            [0-9]*                  # DecimalDigits-opt
+                            ([eE][-+]?[0-9]+)?      # ExponentPart-opt
+                        |
+                            \.                      # dot
+                            [0-9]+                  # DecimalDigits
+                            ([eE][-+]?[0-9]+)?      # ExponentPart-opt
+                        |
+                            (0|[1-9][0-9]*)         # DecimalIntegerLiteral
+                            ([eE][-+]?[0-9]+)?      # ExponentPart-opt
+                        )
+                        """, next='div'),
+    Tok("punct", literals("""
+                            >>>= === !== >>> <<= >>= <= >= == != << >> &&
+                            || += -= *= %= &= |= ^=
+                            """), next="reg"),
+    Tok("punct", literals("++ -- ) ]"), next='div'),
+    Tok("punct", literals("{ } ( [ . ; , < > + - * % & | ^ ! ~ ? : ="), next='reg'),
+    Tok("string", r'"([^"\\]|(\\(.|\n)))*?"', next='div'),
+    Tok("string", r"'([^'\\]|(\\(.|\n)))*?'", next='div'),
+    ]
+
+both_after = [
+    Tok("other", r"."),
+    ]
+
+states = {
+    'div':  # slash will mean division
+        both_before + [
+        Tok("punct", literals("/= /"), next='reg'),
+        ] + both_after,
+
+    'reg':  # slash will mean regex
+        both_before + [
+        Tok("regex",
+            r"""
+                /                       # opening slash
+                # First character is..
+                (   [^*\\/[]            # anything but * \ / or [
+                |   \\.                 # or an escape sequence
+                |   \[                  # or a class, which has
+                        (   [^\]\\]     #   anything but \ or ]
+                        |   \\.         #   or an escape sequence
+                        )*              #   many times
+                    \]
+                )
+                # Following characters are same, except for excluding a star
+                (   [^\\/[]             # anything but \ / or [
+                |   \\.                 # or an escape sequence
+                |   \[                  # or a class, which has
+                        (   [^\]\\]     #   anything but \ or ]
+                        |   \\.         #   or an escape sequence
+                        )*              #   many times
+                    \]
+                )*                      # many times
+                /                       # closing slash
+                [a-zA-Z0-9]*            # trailing flags
+            """, next='div'),
+        ] + both_after,
+    }
+#@+node:ekr.20200202104932.1: *3* TestJavascript.test_JsLex
+def test_JsLex(self):
+
+    table = (
+        ('id', ('f_', '$', 'A1', 'abc')),
+        ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
+        ('keyword', ('async', 'await', 'if')),
+        ('punct', ('(', ')', '{', '}', ',', ':', ';')),
+        # ('num', ('9', '2')),  # This test doesn't matter at present.
+    )
+    for kind, data in table:
+        for contents in data:
+            for name, tok in JsLexer().lex(contents):
+                assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
+                # print(f"{kind!s:10} {tok!r:10}")
+
+#@+node:ekr.20220917052530.1: ** Old code
 #@+node:ekr.20220825080908.1: *3* Old scripts
 #@+node:ekr.20210309083845.1: *4* script: old check-leoPy.leo
 """
@@ -9831,7 +9867,7 @@ def drawVisible(self, p: Position) -> None:
     """
     t1 = time.process_time()
     c = self.c
-    parents: List[Any] = []
+    parents: list[Any] = []
     # Clear the widget.
     w = self.treeWidget
     w.clear()
@@ -9995,7 +10031,7 @@ def tile(self, index: int, orientation: str='V') -> None:
         w.resize(ww, wh / 2)
         w.move(x, y + fh / 2)
 #@+node:ekr.20110510133719.14548: *3* ac.do_qcompleter_tab (not used)
-def do_qcompleter_tab(self, prefix: str, options: List[str]) -> str:
+def do_qcompleter_tab(self, prefix: str, options: list[str]) -> str:
     """Return the longest common prefix of all the options."""
     matches, common_prefix = g.itemsMatchingPrefixInList(
         prefix, options, matchEmptyPrefix=False)

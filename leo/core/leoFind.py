@@ -8,7 +8,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    MatchGroups = Tuple  # Best we can do so far.
+    MatchGroups = tuple  # Best we can do so far.
     Settings = g.Bunch
     UndoData = g.Bunch
 #@-<< leoFind imports & annotations >>
@@ -100,7 +100,7 @@ class LeoFind:
         #
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
-        self.work_sel: Tuple[int, int, int] = None  # pos, newpos, insert.
+        self.work_sel: tuple[int, int, int] = None  # pos, newpos, insert.
         #
         # Options ivars: set by FindTabManager.init.
         # These *must* be initially None, not False.
@@ -116,14 +116,14 @@ class LeoFind:
         self.whole_word: bool = None
         #
         # For isearch commands...
-        self.stack: List[Tuple[Position, int, int, bool]] = []
-        self.inverseBindingDict: Dict[str, List[Tuple[str, Stroke]]] = {}
+        self.stack: list[tuple[Position, int, int, bool]] = []
+        self.inverseBindingDict: dict[str, list[tuple[str, Stroke]]] = {}
         self.isearch_ignore_case: bool = False
         self.isearch_forward_flag: bool = False
         self.isearch_regexp: bool = False
-        self.iSearchStrokes: List[Stroke] = []
-        self.findTextList: List = []
-        self.changeTextList: List = []
+        self.iSearchStrokes: list[Stroke] = []
+        self.findTextList: list = []
+        self.changeTextList: list = []
         #
         # For find/change...
         self.find_text = ""
@@ -225,7 +225,7 @@ class LeoFind:
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self,
         root: Position,
-        replacements: List[Tuple[str, str]],
+        replacements: list[tuple[str, str]],
         settings: Settings = None,
     ) -> int:
         #@+<< docstring: find.batch_change >>
@@ -279,7 +279,7 @@ class LeoFind:
         # Init...
         self.find_text = find_text
         self.change_text = self.replace_back_slashes(change_text)
-        positions: Union[List, Generator]
+        positions: Union[list, Generator]
         if self.node_only:
             positions = [p1]
         elif self.suboutline_only:
@@ -538,7 +538,7 @@ class LeoFind:
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
-    def find_def(self, event: Event = None) -> Tuple[Position, int, int]:  # pragma: no cover (cmd)
+    def find_def(self, event: Event = None) -> tuple[Position, int, int]:  # pragma: no cover (cmd)
         """Find the class, def or assignment to var of the word under the cursor."""
 
         # Note: This method is *also* part of the ctrl-click logic:
@@ -560,7 +560,7 @@ class LeoFind:
         alt_word = self._switch_style(word)
         #@+<< compute the search table >>
         #@+node:ekr.20230203092333.1: *5* << compute the search table >>
-        table: Tuple
+        table: tuple
         if alt_word:
             table = (
                 (f"class {word}", self.do_find_def),
@@ -592,7 +592,7 @@ class LeoFind:
         self._restore_after_find_def()
         return None, None, None
 
-    def do_find_def(self, settings: Settings) -> Tuple[Position, int, int]:
+    def do_find_def(self, settings: Settings) -> tuple[Position, int, int]:
         """A standalone helper for unit tests."""
         return self._fd_helper(settings)
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
@@ -638,7 +638,7 @@ class LeoFind:
                 return word[len(tag) :].strip()
         return word
     #@+node:ekr.20150629125733.1: *5* find._fd_helper
-    def _fd_helper(self, settings: Settings) -> Tuple[Position, int, int]:
+    def _fd_helper(self, settings: Settings) -> tuple[Position, int, int]:
         """
         Find the definition of the class, def or var under the cursor.
 
@@ -767,12 +767,12 @@ class LeoFind:
         # Do the command!
         self.do_find_prev(settings)
     #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
-    def do_find_prev(self, settings: Settings) -> Tuple[Position, int, int]:
+    def do_find_prev(self, settings: Settings) -> tuple[Position, int, int]:
         """Find the previous instance of self.find_text."""
         self.request_reverse = True
         return self.do_find_next(settings)
 
-    def do_find_next(self, settings: Settings) -> Tuple[Position, int, int]:
+    def do_find_next(self, settings: Settings) -> tuple[Position, int, int]:
         """
         Find the next instance of self.find_text.
 
@@ -894,7 +894,7 @@ class LeoFind:
             # Restore the previous find settings!
             self._restore_after_find_def()
 
-    def do_find_var(self, settings: Settings) -> Tuple[Position, int, int]:
+    def do_find_var(self, settings: Settings) -> tuple[Position, int, int]:
         """A standalone helper for unit tests."""
         return self._fd_helper(settings)
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
@@ -958,7 +958,7 @@ class LeoFind:
         frame.putStatusLine(part1, bg='blue')
         frame.putStatusLine(part2)
     #@+node:ekr.20171129205648.1: *5* LeoFind.compute_find_options
-    def compute_find_options(self) -> Tuple[str, str]:  # pragma: no cover (cmd)
+    def compute_find_options(self) -> tuple[str, str]:  # pragma: no cover (cmd)
         """Return the status line as two strings."""
         z = []
         # Set the scope field.
@@ -1180,7 +1180,7 @@ class LeoFind:
         self.restore(saveData)
         return count
     #@+node:ekr.20190602134414.1: *6* find._change_all_search_and_replace & helpers
-    def _change_all_search_and_replace(self, s: str) -> Tuple[int, str]:
+    def _change_all_search_and_replace(self, s: str) -> tuple[int, str]:
         """
         Search s for self.find_text and replace with self.change_text.
 
@@ -1200,7 +1200,7 @@ class LeoFind:
             return self._change_all_word(s)
         return self._change_all_plain(s)
     #@+node:ekr.20190602151043.4: *7* find._change_all_plain
-    def _change_all_plain(self, s: str) -> Tuple[int, str]:
+    def _change_all_plain(self, s: str) -> tuple[int, str]:
         """
         Perform all plain find/replace on s.
         return (count, new_s)
@@ -1229,7 +1229,7 @@ class LeoFind:
         result.append(s0[prev_i:])
         return count, ''.join(result)
     #@+node:ekr.20190602151043.2: *7* find._change_all_regex
-    def _change_all_regex(self, s: str) -> Tuple[int, str]:
+    def _change_all_regex(self, s: str) -> tuple[int, str]:
         """
         Perform all regex find/replace on s.
         return (count, new_s)
@@ -1256,7 +1256,7 @@ class LeoFind:
         s = ''.join(result)
         return count, s
     #@+node:ekr.20190602155933.1: *7* find._change_all_word
-    def _change_all_word(self, s: str) -> Tuple[int, str]:
+    def _change_all_word(self, s: str) -> tuple[int, str]:
         """
         Perform all whole word find/replace on s.
         return (count, new_s)
@@ -1432,7 +1432,7 @@ class LeoFind:
         c.treeWantsFocus()
     #@+node:ekr.20210110073117.11: *5* find.do_clone_find_tag & helper
     # A stand-alone method for unit tests.
-    def do_clone_find_tag(self, tag: str) -> Tuple[int, Position]:
+    def do_clone_find_tag(self, tag: str) -> tuple[int, Position]:
         """
         Do the clone-all-find commands from settings.
         Return (len(clones), found) for unit tests.
@@ -1458,7 +1458,7 @@ class LeoFind:
         c.redraw()
         return len(clones), found
     #@+node:ekr.20210110073117.12: *6* find._create_clone_tag_nodes
-    def _create_clone_tag_nodes(self, clones: List[Position]) -> Position:
+    def _create_clone_tag_nodes(self, clones: list[Position]) -> Position:
         """
         Create a "Found Tag" node as the last node of the outline.
         Clone all positions in the clones set as children of found.
@@ -1538,7 +1538,7 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         self.do_change_all(settings)  # Correct: convert to change-all.
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
-    def do_find_all(self, settings: Settings) -> Dict[str, Any]:
+    def do_find_all(self, settings: Settings) -> dict[str, Any]:
         """
         Top-level helper for find-all command.
 
@@ -1567,11 +1567,11 @@ class LeoFind:
         self.node_only = self.suboutline_only = False
         return result_dict
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers
-    def _find_all_helper(self, settings: Settings) -> Dict[str, Any]:
+    def _find_all_helper(self, settings: Settings) -> dict[str, Any]:
         """
         Handle the find-all command from p to after.
 
-        Return the List of Dicts describing each match.
+        Return the list of Dicts describing each match.
         """
         c, u = self.c, self.c.undoer
         undoType = 'Find All'
@@ -1581,14 +1581,14 @@ class LeoFind:
             if not ok:
                 return {}
         # Create a list of vnodes, honoring limiters.
-        vnodes: List[VNode]
+        vnodes: list[VNode]
         if self.node_only:
             vnodes = [c.p.v]
         elif self.suboutline_only:
             vnodes = list(set(z.v for z in c.p.self_and_subtree()))
         else:
             vnodes = list(c.all_unique_nodes())
-        matches_dict: List[Dict] = []
+        matches_dict: list[dict] = []
         distinct_body_lines, total_matches, total_nodes = 0, 0, 0
         for v in vnodes:
             body, head = [], []
@@ -1663,15 +1663,15 @@ class LeoFind:
         found.b = f"@nosearch\n# {status}\n{result}"
         return found
     #@+node:ekr.20230125072433.1: *7* find.index_to_line_info
-    def index_to_line_info(self, index: int, s: str) -> Tuple[int, str]:
+    def index_to_line_info(self, index: int, s: str) -> tuple[int, str]:
         i, j = g.getLine(s, index)
         line = s[i:j]
         row, col = g.convertPythonIndexToRowCol(s, i)
         return row + 1, line
     #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
-    def make_result_from_matches(self, matches: List[Dict]) -> str:
+    def make_result_from_matches(self, matches: list[dict]) -> str:
 
-        results: List[str] = ['\n']
+        results: list[str] = ['\n']
         # Report settings.
         results.append(
             f"  ignore-case: {self.ignore_case}\n"
@@ -1711,7 +1711,7 @@ class LeoFind:
         unl = p.get_UNL()
         log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number - 1}")  # Local line.
     #@+node:ekr.20230124101551.1: *7* find.find_all_matches_in_string & helpers
-    def find_all_matches_in_string(self, s: str) -> List[int]:
+    def find_all_matches_in_string(self, s: str) -> list[int]:
         """
         Find all matches in string s.
 
@@ -1728,7 +1728,7 @@ class LeoFind:
         f = self.find_all_regex if self.pattern_match else self.find_all_plain
         return f(find_s, s)
     #@+node:ekr.20230124130028.2: *8* find.find_all_plain
-    def find_all_plain(self, find_s: str, s: str) -> List[int]:
+    def find_all_plain(self, find_s: str, s: str) -> list[int]:
         """
         Perform all plain finds s, including whole-word finds.
         return a list indices into s.
@@ -1748,7 +1748,7 @@ class LeoFind:
             i += len(find_s)
         return result
     #@+node:ekr.20230124130028.3: *8* find.find_all_regex
-    def find_all_regex(self, find_s: str, s: str) -> List[int]:
+    def find_all_regex(self, find_s: str, s: str) -> list[int]:
         """
         Perform all regex find/replace on s.
         return a list of matching indices.
@@ -2057,7 +2057,7 @@ class LeoFind:
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
-    def _cfa_create_nodes(self, clones: List[Position], flattened: bool) -> Position:
+    def _cfa_create_nodes(self, clones: list[Position], flattened: bool) -> Position:
         """
         Create a "Found" node as the last node of the outline.
         Clone all positions in the clones set a children of found.
@@ -2192,7 +2192,7 @@ class LeoFind:
                 g.warning('invalid regular expression:', self.find_text)
             return False
     #@+node:ekr.20031218072017.3075: *4* find.find_next_match & helpers
-    def find_next_match(self, p: Position) -> Tuple[Position, int, int]:
+    def find_next_match(self, p: Position) -> tuple[Position, int, int]:
         """
         Resume the search where it left off.
 
@@ -2287,7 +2287,7 @@ class LeoFind:
         g.trace('can not happen: no search enabled')  # pragma: no cover
         return False  # pragma: no cover
     #@+node:ekr.20031218072017.3077: *5* find._fnm_search
-    def _fnm_search(self, p: Position) -> Tuple[int, int]:
+    def _fnm_search(self, p: Position) -> tuple[int, int]:
         """
         Search self.work_s for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
@@ -2326,7 +2326,7 @@ class LeoFind:
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
     #@+node:ekr.20210110073117.43: *4* find.inner_search_helper & helpers
-    def inner_search_helper(self, s: str, i: int, j: int, pattern: str) -> Tuple[int, int]:
+    def inner_search_helper(self, s: str, i: int, j: int, pattern: str) -> tuple[int, int]:
         """
         Dispatch the proper search method based on settings.
         """
@@ -2353,7 +2353,7 @@ class LeoFind:
         pattern: str,
         nocase: bool,
         word: bool,
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """
         rfind(sub [,start [,end]])
 
@@ -2413,7 +2413,7 @@ class LeoFind:
         pattern: str,
         nocase: bool,
         word: bool,
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """Do a plain search."""
         if nocase:
             s = s.lower()
@@ -2441,7 +2441,7 @@ class LeoFind:
         pattern: str,
         backwards: bool,
         nocase: bool,
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """Called from inner_search_helper"""
         re_obj = self.re_obj  # Use the pre-compiled object
         if not re_obj:
@@ -2539,7 +2539,7 @@ class LeoFind:
         """
         c = self.c
         ftm = self.ftm
-        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
+        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)  # pylint: disable=simplify-boolean-expression
         if ftm:
             ftm.entry_focus = None  # Only use this focus widget once!
         w_name = c.widget_name(w)
@@ -2832,7 +2832,7 @@ class LeoFind:
         if len(self.stack) <= 1:
             self.abort_search()
     #@+node:ekr.20131117164142.16952: *5* find.get_strokes
-    def get_strokes(self, commandName: str) -> List[Stroke]:  # pragma: no cover (cmd)
+    def get_strokes(self, commandName: str) -> list[Stroke]:  # pragma: no cover (cmd)
         aList = self.inverseBindingDict.get(commandName, [])
         return [key for pane, key in aList]
     #@+node:ekr.20131117164142.16953: *5* find.push & pop
@@ -2840,7 +2840,7 @@ class LeoFind:
         data = p.copy(), i, j, in_headline
         self.stack.append(data)
 
-    def pop(self) -> Tuple[Position, int, int, bool]:  # pragma: no cover (cmd)
+    def pop(self) -> tuple[Position, int, int, bool]:  # pragma: no cover (cmd)
         data = self.stack.pop()
         p, i, j, in_headline = data
         return p, i, j, in_headline

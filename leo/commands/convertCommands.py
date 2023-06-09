@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import time
-from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -71,13 +71,13 @@ class To_Python:  # pragma: no cover
         t2 = time.time()
         g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
-    def convertCodeList(self, lines: List[str]) -> None:
+    def convertCodeList(self, lines: list[str]) -> None:
         """The main search/replace method."""
         g.trace('must be defined in subclasses.')
     #@+node:ekr.20150514063305.128: *3* To_Python.Utils
     #@+node:ekr.20150514063305.129: *4* match...
     #@+node:ekr.20150514063305.130: *5* match
-    def match(self, lines: List[str], i: int, pat: str) -> bool:
+    def match(self, lines: list[str], i: int, pat: str) -> bool:
         """Return True if lines[i:] matches the pat string."""
         assert pat
         j = 0
@@ -90,7 +90,7 @@ class To_Python:  # pragma: no cover
                 return False
         return False
     #@+node:ekr.20150514063305.131: *5* match_word
-    def match_word(self, lines: List[str], i: int, pat: str) -> bool:
+    def match_word(self, lines: list[str], i: int, pat: str) -> bool:
         """
         Return True if lines[i:] word matches the pat string.
         """
@@ -105,7 +105,7 @@ class To_Python:  # pragma: no cover
             return not ch.isalnum() and ch != '_'
         return False
     #@+node:ekr.20150514063305.132: *4* insert_not
-    def insert_not(self, lines: List[str]) -> None:
+    def insert_not(self, lines: list[str]) -> None:
         """Change "!" to "not" except before an equal sign."""
         i = 0
         while i < len(lines):
@@ -126,7 +126,7 @@ class To_Python:  # pragma: no cover
         n2 = s.find(">>", 0)
         return -1 < n1 < n2 and bool(s[n1 + 2 : n2].strip())
     #@+node:ekr.20150514063305.135: *5* is_string_or_comment
-    def is_string_or_comment(self, lines: List[str], i: int) -> bool:
+    def is_string_or_comment(self, lines: list[str], i: int) -> bool:
         # Does range checking.
         m = self.match
         return m(lines, i, "'") or m(lines, i, '"') or m(lines, i, "//") or m(lines, i, "/*")
@@ -143,14 +143,14 @@ class To_Python:  # pragma: no cover
             i -= 1
         return i
 
-    def prevNonWsOrNlChar(self, lines: List[str], i: int) -> int:
+    def prevNonWsOrNlChar(self, lines: list[str], i: int) -> int:
         i -= 1
         while i >= 0 and self.is_ws_or_nl(lines[i]):
             i -= 1
         return i
     #@+node:ekr.20150514063305.138: *4* remove...
     #@+node:ekr.20150514063305.139: *5* removeBlankLines
-    def removeBlankLines(self, lines: List[str]) -> None:
+    def removeBlankLines(self, lines: list[str]) -> None:
         i = 0
         while i < len(lines):
             j = i
@@ -161,7 +161,7 @@ class To_Python:  # pragma: no cover
             else:
                 i = self.skip_past_line(lines, i)
     #@+node:ekr.20150514063305.140: *5* removeExcessWs
-    def removeExcessWs(self, lines: List[str]) -> None:
+    def removeExcessWs(self, lines: list[str]) -> None:
         i = 0
         i = self.removeExcessWsFromLine(lines, i)
         while i < len(lines):
@@ -173,7 +173,7 @@ class To_Python:  # pragma: no cover
             else:
                 i += 1
     #@+node:ekr.20150514063305.141: *5* removeExessWsFromLine
-    def removeExcessWsFromLine(self, lines: List[str], i: int) -> int:
+    def removeExcessWsFromLine(self, lines: list[str], i: int) -> int:
         assert(i == 0 or lines[i - 1] == '\n')
         i = self.skip_ws(lines, i)  # Retain the leading whitespace.
         while i < len(lines):
@@ -191,7 +191,7 @@ class To_Python:  # pragma: no cover
                 i += 1
         return i
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
-    def removeMatchingBrackets(self, lines: List[str], i: int) -> int:
+    def removeMatchingBrackets(self, lines: list[str], i: int) -> int:
         j = self.skip_to_matching_bracket(lines, i)
         if i < j < len(lines):
             c = lines[j]
@@ -202,7 +202,7 @@ class To_Python:  # pragma: no cover
             return j + 1
         return j
     #@+node:ekr.20150514063305.143: *5* removeSemicolonsAtEndOfLines
-    def removeSemicolonsAtEndOfLines(self, lines: List[str]) -> None:
+    def removeSemicolonsAtEndOfLines(self, lines: list[str]) -> None:
         i = 0
         while i < len(lines):
             if self.is_string_or_comment(lines, i):
@@ -221,7 +221,7 @@ class To_Python:  # pragma: no cover
             else:
                 i += 1
     #@+node:ekr.20150514063305.144: *5* removeTrailingWs
-    def removeTrailingWs(self, lines: List[str]) -> None:
+    def removeTrailingWs(self, lines: list[str]) -> None:
         i = 0
         while i < len(lines):
             if self.is_ws(lines[i]):
@@ -235,7 +235,7 @@ class To_Python:  # pragma: no cover
                 i += 1
     #@+node:ekr.20150514063305.145: *4* replace... & safe_replace
     #@+node:ekr.20150514063305.146: *5* replace
-    def replace(self, lines: List[str], findString: str, changeString: str) -> None:
+    def replace(self, lines: list[str], findString: str, changeString: str) -> None:
         """
         Replaces all occurances of findString by changeString.
         changeString may be the empty string, but not None.
@@ -251,7 +251,7 @@ class To_Python:  # pragma: no cover
             else:
                 i += 1
     #@+node:ekr.20150514063305.147: *5* replaceComments
-    def replaceComments(self, lines: List[str]) -> None:
+    def replaceComments(self, lines: list[str]) -> None:
         i = 0
         while i < len(lines):
             # Loop invariant: j > progress at end.
@@ -284,7 +284,7 @@ class To_Python:  # pragma: no cover
             assert j > progress
             i = j
     #@+node:ekr.20150514063305.148: *6* munge_block_comment
-    def munge_block_comment(self, comment_lines: List[str]) -> List[str]:
+    def munge_block_comment(self, comment_lines: list[str]) -> list[str]:
 
         n = len(comment_lines)
         assert n > 0
@@ -293,7 +293,7 @@ class To_Python:  # pragma: no cover
         if n == 1:
             return [f"{' ' * (w - 1)}# {s.strip()}"]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
-        result: List[str] = []
+        result: list[str] = []
         for i, s in enumerate(comment_lines):
             if s.strip():
                 result.append(f"{' ' * w}# {s.strip()}")
@@ -303,7 +303,7 @@ class To_Python:  # pragma: no cover
                 result.append('')  # Add a blank line
         return result
     #@+node:ekr.20150514063305.149: *5* replaceSectionDefs
-    def replaceSectionDefs(self, lines: List[str]) -> None:
+    def replaceSectionDefs(self, lines: list[str]) -> None:
         """Replaces < < x > > = by @c (at the start of lines)."""
         if not lines:
             return
@@ -322,7 +322,7 @@ class To_Python:  # pragma: no cover
             else:
                 i += 1
     #@+node:ekr.20150514063305.150: *5* safe_replace
-    def safe_replace(self, lines: List[str], findString: str, changeString: str) -> None:
+    def safe_replace(self, lines: list[str], findString: str, changeString: str) -> None:
         """
         Replaces occurances of findString by changeString,
         but only outside of C comments and strings.
@@ -350,7 +350,7 @@ class To_Python:  # pragma: no cover
                     i += 1
     #@+node:ekr.20150514063305.151: *4* skip
     #@+node:ekr.20150514063305.152: *5* skip_c_block_comment
-    def skip_c_block_comment(self, lines: List[str], i: int) -> int:
+    def skip_c_block_comment(self, lines: list[str], i: int) -> int:
         assert self.match(lines, i, "/*")
         i += 2
         while i < len(lines):
@@ -359,19 +359,19 @@ class To_Python:  # pragma: no cover
             i += 1
         return i
     #@+node:ekr.20150514063305.153: *5* skip_line
-    def skip_line(self, lines: List[str], i: int) -> int:
+    def skip_line(self, lines: list[str], i: int) -> int:
         while i < len(lines) and lines[i] != '\n':
             i += 1
         return i
     #@+node:ekr.20150514063305.154: *5* skip_past_line
-    def skip_past_line(self, lines: List[str], i: int) -> int:
+    def skip_past_line(self, lines: list[str], i: int) -> int:
         while i < len(lines) and lines[i] != '\n':
             i += 1
         if i < len(lines) and lines[i] == '\n':
             i += 1
         return i
     #@+node:ekr.20150514063305.155: *5* skip_past_word
-    def skip_past_word(self, lines: List[str], i: int) -> int:
+    def skip_past_word(self, lines: list[str], i: int) -> int:
         assert lines[i].isalpha() or lines[i] == '~'
         # Kludge: this helps recognize dtors.
         if lines[i] == '~':
@@ -384,7 +384,7 @@ class To_Python:  # pragma: no cover
                 break
         return i
     #@+node:ekr.20150514063305.156: *5* skip_string
-    def skip_string(self, lines: List[str], i: int) -> int:
+    def skip_string(self, lines: list[str], i: int) -> int:
         delim = lines[i]  # handle either single or double-quoted strings
         assert delim == '"' or delim == "'"
         i += 1
@@ -397,7 +397,7 @@ class To_Python:  # pragma: no cover
                 i += 1
         return i
     #@+node:ekr.20150514063305.157: *5* skip_string_or_comment
-    def skip_string_or_comment(self, lines: List[str], i: int) -> int:
+    def skip_string_or_comment(self, lines: list[str], i: int) -> int:
         if self.match(lines, i, "'") or self.match(lines, i, '"'):
             j = self.skip_string(lines, i)
         elif self.match(lines, i, "//"):
@@ -408,7 +408,7 @@ class To_Python:  # pragma: no cover
             assert False  # noqa
         return j
     #@+node:ekr.20150514063305.158: *5* skip_to_matching_bracket
-    def skip_to_matching_bracket(self, lines: List[str], i: int) -> int:
+    def skip_to_matching_bracket(self, lines: list[str], i: int) -> int:
         ch = lines[i]
         if ch == '(':
             delim = ')'
@@ -432,7 +432,7 @@ class To_Python:  # pragma: no cover
                 i += 1
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
-    def skip_ws(self, lines: List[str], i: int) -> int:
+    def skip_ws(self, lines: list[str], i: int) -> int:
         while i < len(lines):
             c = lines[i]
             if c == ' ' or c == '\t':
@@ -441,7 +441,7 @@ class To_Python:  # pragma: no cover
                 break
         return i
 
-    def skip_ws_and_nl(self, lines: List[str], i: int) -> int:
+    def skip_ws_and_nl(self, lines: list[str], i: int) -> int:
         while i < len(lines):
             c = lines[i]
             if c == ' ' or c == '\t' or c == '\n':
@@ -527,7 +527,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         default_annotation = 'Any'  # The 'DEFAULT' @data add-mypy-annotations key overrides this.
         default_return_annotation = 'None'
         tag = 'add-mypy-annotations'
-        types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
+        types_d: dict[str, str] = {}  # Keys are argument names. Values are mypy types.
 
         def __init__(self, c: Cmdr) -> None:
             self.c = c
@@ -619,7 +619,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #        Alas, now we can't convert defs that already have return values.
         def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\):(.*?)\n', re.MULTILINE + re.DOTALL)
 
-        return_dict: Dict[str, str] = {
+        return_dict: dict[str, str] = {
             '__init__': 'None',
             '__repr__': 'str',
             '__str__': 'str',
@@ -642,7 +642,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
             lws = ' ' * 4 if multiline else ''
-            result: List[str] = []
+            result: list[str] = []
             i = 0
             while i < len(args):
                 rest = args[i:]
@@ -699,7 +699,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 s = s[:-2]
             return s
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
-        def find_arg(self, s: str, i: int) -> Tuple[str, int]:
+        def find_arg(self, s: str, i: int) -> tuple[str, int]:
             """
             Scan over type annotations or initializers.
 
@@ -769,7 +769,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # The class name for the present function.  Used to modify ivars.
             self.class_name = ''
             # List of ivars to be converted to self.ivar
-            self.ivars: List[str] = []
+            self.ivars: list[str] = []
             self.get_user_types()
         #@+node:ekr.20150514063305.162: *6* get_user_types (C_To_Python)
         def get_user_types(self) -> None:
@@ -785,8 +785,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             else:
                 self.ivars_dict = {}
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
-        def parse_ivars_data(self, aList: List[str]) -> Dict[str, List[str]]:
-            d: Dict[str, List[str]] = {}
+        def parse_ivars_data(self, aList: list[str]) -> dict[str, list[str]]:
+            d: dict[str, list[str]] = {}
             key = None
             aList = [z.strip() for z in aList if z.strip()]
             for s in aList:
@@ -802,7 +802,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return {}
             return d
         #@+node:ekr.20150514063305.164: *5* convertCodeList (C_To_Python) & helpers
-        def convertCodeList(self, lines: List[str]) -> None:
+        def convertCodeList(self, lines: list[str]) -> None:
             r, sr = self.replace, self.safe_replace
             # First...
             r(lines, "\r", '')
@@ -863,7 +863,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.removeTrailingWs(lines)
             r(lines, "\t ", "\t")  # happens when deleting declarations.
         #@+node:ekr.20150514063305.165: *6* handle_all_keywords
-        def handle_all_keywords(self, lines: List[str]) -> None:
+        def handle_all_keywords(self, lines: list[str]) -> None:
             """
             converts if ( x ) to if x:
             converts while ( x ) to while x:
@@ -883,7 +883,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 1
 
         #@+node:ekr.20150514063305.166: *7* handle_keyword
-        def handle_keyword(self, lines: List[str], i: int) -> int:
+        def handle_keyword(self, lines: list[str], i: int) -> int:
             if self.match_word(lines, i, "if"):
                 i += 2
             elif self.match_word(lines, i, "elif"):
@@ -919,7 +919,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return j
             return i
         #@+node:ekr.20150514063305.167: *6* mungeAllFunctions
-        def mungeAllFunctions(self, lines: List[str]) -> None:
+        def mungeAllFunctions(self, lines: list[str]) -> None:
             """Scan for a '{' at the top level that is preceeded by ')' """
             prevSemi = 0  # Previous semicolon: header contains all previous text
             i = 0
@@ -953,7 +953,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = j
         #@+node:ekr.20150514063305.168: *7* handlePossibleFunctionHeader
         def handlePossibleFunctionHeader(self,
-            lines: List[str],
+            lines: list[str],
             i: int,
             prevSemi: int,
             firstOpen: int,
@@ -1006,8 +1006,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines[prevSemi:k] = result
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.170: *7* massageFunctionHead (sets .class_name)
-        def massageFunctionHead(self, head: List[str]) -> List[str]:
-            result: List[str] = []
+        def massageFunctionHead(self, head: list[str]) -> list[str]:
+            result: list[str] = []
             prevWord = []
             self.class_name = ''
             i = 0
@@ -1043,10 +1043,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             finalResult.extend(result)
             return finalResult
         #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
-        def massageFunctionArgs(self, args: List[str]) -> List[str]:
+        def massageFunctionArgs(self, args: list[str]) -> list[str]:
             assert args[0] == '('
             assert args[-1] == ')'
-            result: List[str] = ['(']
+            result: list[str] = ['(']
             lastWord = []
             if self.class_name:
                 for item in list("self,"):
@@ -1074,14 +1074,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             result.append(':')
             return result
         #@+node:ekr.20150514063305.171: *7* massageFunctionBody & helpers
-        def massageFunctionBody(self, body: List[str]) -> List[str]:
+        def massageFunctionBody(self, body: list[str]) -> list[str]:
             body = self.massageIvars(body)
             body = self.removeCasts(body)
             body = self.removeTypeNames(body)
             body = self.dedentBlocks(body)
             return body
         #@+node:ekr.20150514063305.172: *8* dedentBlocks
-        def dedentBlocks(self, body: List[str]) -> List[str]:
+        def dedentBlocks(self, body: list[str]) -> list[str]:
             """Look for '{' preceded by '{' or '}' or ';'
             (with intervening whitespace and comments).
             """
@@ -1138,7 +1138,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = j
             return body
         #@+node:ekr.20150514063305.173: *8* massageIvars
-        def massageIvars(self, body: List[str]) -> List[str]:
+        def massageIvars(self, body: list[str]) -> list[str]:
             ivars = self.ivars_dict.get(self.class_name, [])
             i = 0
             while i < len(body):
@@ -1160,7 +1160,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 1
             return body
         #@+node:ekr.20150514063305.174: *8* removeCasts
-        def removeCasts(self, body: List[str]) -> List[str]:
+        def removeCasts(self, body: list[str]) -> list[str]:
             i = 0
             while i < len(body):
                 if self.is_string_or_comment(body, i):
@@ -1185,7 +1185,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 1
             return body
         #@+node:ekr.20150514063305.175: *8* removeTypeNames
-        def removeTypeNames(self, body: List[str]) -> List[str]:
+        def removeTypeNames(self, body: list[str]) -> list[str]:
             """Do _not_ remove type names when preceeded by new."""
             i = 0
             while i < len(body):
@@ -1237,7 +1237,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Ivars set on the command line...
                 self.config_fn = None
                 self.enable_unit_tests = False
-                self.files: List[str] = []  # May also be set in the config file.
+                self.files: list[str] = []  # May also be set in the config file.
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.')
                 self.output_fn: str = None
@@ -1253,8 +1253,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.verbose = c.config.getBool('stub-verbose', default=False)
                 self.warn = c.config.getBool('stub-warn', default=False)
                 # Pattern lists & dicts, set by config sections...
-                self.patterns_dict: Dict[str, Any] = {}
-                self.names_dict: Dict[str, Any] = {}
+                self.patterns_dict: dict[str, Any] = {}
+                self.names_dict: dict[str, Any] = {}
                 self.def_patterns = self.scan_patterns('stub-def-name-patterns')
                 self.general_patterns = self.scan_patterns('stub-general-patterns')
                 self.prefix_lines = self.scan('stub-prefix-lines')
@@ -1269,7 +1269,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 x.regex_patterns = self.regex_patterns
                 x.prefix_lines = self.prefix_lines
             #@+node:ekr.20160213070235.3: *6* msf.scan
-            def scan(self, kind: str) -> List[str]:
+            def scan(self, kind: str) -> list[str]:
                 """Return a list of *all* lines from an @data node, including comments."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=False, strip_data=False)
@@ -1277,11 +1277,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace(f"warning: no @data {kind} node")
                 return aList
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: str) -> Dict[str, List[str]]:
+            def scan_d(self, kind: str) -> dict[str, list[str]]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
-                d: Dict[str, List[str]] = {}
+                d: dict[str, list[str]] = {}
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
@@ -1289,10 +1289,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     d[name.strip()] = value.strip()
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
-            def scan_patterns(self, kind: str) -> List[str]:
+            def scan_patterns(self, kind: str) -> list[str]:
                 """Parse the config section into a list of patterns, preserving order."""
                 d = self.scan_d(kind)
-                aList: List[str] = []
+                aList: list[str] = []
                 seen = set()
                 for key in d:
                     value = d.get(key)
@@ -1383,7 +1383,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c: Cmdr) -> None:
                 """Ctor for Python_To_Coffeescript_Adapter class."""
                 self.c = c
-                self.files: List[str] = []
+                self.files: list[str] = []
                 self.output_directory = self.finalize(
                     c.config.getString('py2cs-output-directory'))
                 # self.output_fn = None
@@ -1504,7 +1504,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
-        types_d: Dict[str, str] = {}
+        types_d: dict[str, str] = {}
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
@@ -1610,7 +1610,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014023141.1: *7* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
 
-        def do_class(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_class(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1622,7 +1622,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013165615.1: *7* py2ts.do_comment
         comment_pat = re.compile(r'^([ \t]*)#(.*)\n')
 
-        def do_comment(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             """Handle a stand-alone comment line."""
             lws, comment = m.group(1), m.group(2).strip()
             if comment:
@@ -1634,7 +1634,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\):(.*)\n')
         this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
-        def do_def(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_def(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
@@ -1649,7 +1649,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20211014031722.1: *8* py2ts.do_args
-        def do_args(self, args: List[str]) -> str:
+        def do_args(self, args: list[str]) -> str:
             """Add type annotations and remove the 'self' argument."""
             result = []
             for arg in (z.strip() for z in args.split(',')):
@@ -1661,7 +1661,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013165952.1: *7* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
 
-        def do_docstring(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_docstring(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             """
             Convert a python docstring.
 
@@ -1700,7 +1700,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014030113.1: *7* py2ts.do_except
         except_pat = re.compile(r'^([ \t]*)except(.*):(.*)\n')
 
-        def do_except(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_except(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1717,7 +1717,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         for2_pat = re.compile(for2_s)
         for_pat = re.compile(fr"{for1_s}|{for2_s}")  # Used by main loop.
 
-        def do_for(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_for(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.for1_pat.match(line)
@@ -1752,7 +1752,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         import1_pat = re.compile(import_s)
         import2_pat = re.compile(import_from_s)
 
-        def do_import(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_import(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.import1_pat.match(line)
@@ -1773,7 +1773,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         elif2_pat = re.compile(elif2_s)
         elif_pat = re.compile(fr"{elif1_s}|{elif2_s}")  # Used by main loop.
 
-        def do_elif(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_elif(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.elif1_pat.match(line)
@@ -1805,7 +1805,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022445.1: *7* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
 
-        def do_else(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_else(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1816,7 +1816,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022453.1: *7* py2ts.do_finally
         finally_pat = re.compile(r'^([ \t]*)finally:(.*)\n')
 
-        def do_finally(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_finally(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1832,7 +1832,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         if2_pat = re.compile(if2_s)
         if_pat = re.compile(fr"{if1_s}|{if2_s}")  # Used by main loop.
 
-        def do_if(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.if1_pat.match(line)
@@ -1863,7 +1863,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211018125503.1: *7* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
 
-        def do_section_ref(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_section_ref(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             # Handle trailing code.
             lws, section_name, tail = m.group(1), m.group(2), m.group(3).strip()
             if tail.startswith('#'):
@@ -1872,7 +1872,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022506.1: *7* py2ts.do_try
         try_pat = re.compile(r'^([ \t]*)try:(.*)\n')
 
-        def do_try(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_try(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1888,7 +1888,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         while2_pat = re.compile(while2_s)
         while_pat = re.compile(fr"{while1_s}|{while2_s}")  # Used by main loop.
 
-        def do_while(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.while1_pat.match(line)
@@ -1920,7 +1920,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022554.1: *7* py2ts.do_with
         with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
 
-        def do_with(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_with(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1932,7 +1932,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013172540.1: *7* py2ts.do_trailing_comment
         trailing_comment_pat = re.compile(r'^([ \t]*)(.*)#(.*)\n')
 
-        def do_trailing_comment(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def do_trailing_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             """
             Handle a trailing comment line.
 
@@ -1944,7 +1944,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1
         #@+node:ekr.20211022090919.1: *6* helpers
         #@+node:ekr.20211017210122.1: *7* py2ts.do_operators
-        def do_operators(self, i: int, lines: List[str], p: Position) -> None:
+        def do_operators(self, i: int, lines: list[str], p: Position) -> None:
 
             # Regex replacements.
             table = (
@@ -1963,7 +1963,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
 
         #@+node:ekr.20211017134103.1: *7* py2ts.do_semicolon
-        def do_semicolon(self, i: int, lines: List[str], p: Position) -> None:
+        def do_semicolon(self, i: int, lines: list[str], p: Position) -> None:
             """
             Insert a semicolon in lines[i] is appropriate.
 
@@ -1982,7 +1982,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
 
         #@+node:ekr.20211017135603.1: *7* py2ts.ends_statement
-        def ends_statement(self, i: int, lines: List[str]) -> bool:
+        def ends_statement(self, i: int, lines: list[str]) -> bool:
             """
             Return True if lines[i] ends a statement.
 
@@ -2016,7 +2016,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013123001.1: *7* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ \t]*)')
 
-        def find_indented_block(self, i: int, lines: List[str], m: Match, p: Position) -> int:
+        def find_indented_block(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             """Return j, the index of the line *after* the indented block."""
             # Scan for the first non-empty line with the same or less indentation.
             lws = m.group(1)
@@ -2036,7 +2036,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211020101415.1: *7* py2ts.kill_semicolons
         kill_semicolons_flag = '  // **kill-semicolon**\n'  # Must end with a newline.
 
-        def kill_semicolons(self, lines: List[str], i: int, j: int) -> None:
+        def kill_semicolons(self, lines: list[str], i: int, j: int) -> None:
             """
             Tell later calls to do_semicolon that lines[i : j] should *not* end with a semicolon.
             """
@@ -2045,7 +2045,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211016214742.1: *7* py2ts.move_docstrings
         class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
 
-        def move_docstrings(self, lines: List[str]) -> None:
+        def move_docstrings(self, lines: list[str]) -> None:
             """Move docstrings before the preceding class or def line."""
             i = 0
             while i < len(lines):
@@ -2078,7 +2078,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[i - 1 : k + 1] = lines[j : k + 1] + [lines[i - 1]]
                 i = k + 1
         #@+node:ekr.20211016200908.1: *7* py2ts.post_pass & helpers
-        def post_pass(self, lines: List[str]) -> str:
+        def post_pass(self, lines: list[str]) -> str:
 
             # Munge lines in place
             self.move_docstrings(lines)
@@ -2095,7 +2095,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211021061023.1: *8* py2ts.do_assignment
         assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
 
-        def do_assignment(self, lines: List[str]) -> None:
+        def do_assignment(self, lines: list[str]) -> None:
             """Add const to all non-tuple assignments."""
             # Do this late so that we can test for the ending semicolon.
 
@@ -2119,7 +2119,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211020185016.1: *8* py2ts.do_f_strings
         f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
 
-        def do_f_strings(self, lines: List[str]) -> None:
+        def do_f_strings(self, lines: list[str]) -> None:
 
             i = 0
             while i < len(lines):
@@ -2154,7 +2154,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
         ternary_pat2 = re.compile(r'^([ \t]*)return\s+(.*?) if (.*?) else (.*);$')  # return statement
 
-        def do_ternary(self, lines: List[str]) -> None:
+        def do_ternary(self, lines: list[str]) -> None:
 
             i = 0
             while i < len(lines):
@@ -2227,7 +2227,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # The class name for the present function.  Used to modify ivars.
                 self.class_name = ''
             #@+node:ekr.20150514063305.178: *5* convertCodeList (TS_To_Python) & helpers
-            def convertCodeList(self, lines: List[str]) -> None:
+            def convertCodeList(self, lines: list[str]) -> None:
                 r, sr = self.replace, self.safe_replace
                 # First...
                 r(lines, '\r', '')
@@ -2292,7 +2292,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.removeTrailingWs(lines)
                 r(lines, '\t ', '\t')  # happens when deleting declarations.
             #@+node:ekr.20150514063305.179: *6* comment_scope_ids
-            def comment_scope_ids(self, lines: List[str]) -> None:
+            def comment_scope_ids(self, lines: list[str]) -> None:
                 """convert (public|private|export) aLine to aLine # (public|private|export)"""
                 scope_ids = ('public', 'private', 'export',)
                 i = 0
@@ -2312,7 +2312,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     assert i > progress
 
             #@+node:ekr.20150514063305.180: *7* handle_scope_keyword
-            def handle_scope_keyword(self, lines: List[str], i: int) -> int:
+            def handle_scope_keyword(self, lines: list[str], i: int) -> int:
                 i1 = i
                 # pylint: disable=undefined-loop-variable
                 for word in ('public', 'private', 'export'):
@@ -2326,13 +2326,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Scan to the next newline:
                 i3 = self.skip_line(lines, i)
                 # Optional: move the word to a trailing comment.
-                comment: List[str] = list(f" # {word}") if False else []
+                comment: list[str] = list(f" # {word}") if False else []
                 # Change the list in place.
                 lines[i1:i3] = lines[i2:i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
                 return i
             #@+node:ekr.20150514063305.181: *6* handle_all_keywords
-            def handle_all_keywords(self, lines: List[str]) -> None:
+            def handle_all_keywords(self, lines: list[str]) -> None:
                 """
                 converts if ( x ) to if x:
                 converts while ( x ) to while x:
@@ -2347,7 +2347,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     else:
                         i += 1
             #@+node:ekr.20150514063305.182: *7* handle_keyword
-            def handle_keyword(self, lines: List[str], i: int) -> int:
+            def handle_keyword(self, lines: list[str], i: int) -> int:
                 if self.match_word(lines, i, "if"):
                     i += 2
                 elif self.match_word(lines, i, "elif"):
@@ -2383,7 +2383,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return j
                 return i
             #@+node:ekr.20150514063305.183: *6* mungeAllClasses
-            def mungeAllClasses(self, lines: List[str]) -> None:
+            def mungeAllClasses(self, lines: list[str]) -> None:
                 """Scan for a '{' at the top level that is preceded by ')' """
                 i = 0
                 while i < len(lines):
@@ -2413,7 +2413,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i += 1
                     assert i > progress
             #@+node:ekr.20150514063305.184: *6* mungeAllFunctions & helpers
-            def mungeAllFunctions(self, lines: List[str]) -> None:
+            def mungeAllFunctions(self, lines: list[str]) -> None:
                 """Scan for a '{' at the top level that is preceded by ')' """
                 prevSemi = 0  # Previous semicolon: header contains all previous text
                 i = 0
@@ -2444,7 +2444,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i = j
             #@+node:ekr.20150514063305.185: *7* handlePossibleFunctionHeader
             def handlePossibleFunctionHeader(self,
-                lines: List[str],
+                lines: list[str],
                 i: int,
                 prevSemi: int,
                 firstOpen: int,
@@ -2497,10 +2497,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines[prevSemi:k] = result
                 return prevSemi + len(result)
             #@+node:ekr.20150514063305.186: *7* massageFunctionArgs
-            def massageFunctionArgs(self, args: List[str]) -> List[str]:
+            def massageFunctionArgs(self, args: list[str]) -> list[str]:
                 assert args[0] == '('
                 assert args[-1] == ')'
-                result: List[str] = ['(']
+                result: list[str] = ['(']
                 lastWord = []
                 if self.class_name:
                     for item in list("self,"):
@@ -2528,8 +2528,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result.append(':')
                 return result
             #@+node:ekr.20150514063305.187: *7* massageFunctionHead (sets .class_name)
-            def massageFunctionHead(self, head: List[str]) -> List[str]:
-                result: List[str] = []
+            def massageFunctionHead(self, head: list[str]) -> list[str]:
+                result: list[str] = []
                 prevWord = []
                 self.class_name = ''
                 i = 0
@@ -2565,14 +2565,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 finalResult.extend(result)
                 return finalResult
             #@+node:ekr.20150514063305.188: *7* massageFunctionBody & helper
-            def massageFunctionBody(self, body: List[str]) -> List[str]:
+            def massageFunctionBody(self, body: list[str]) -> list[str]:
                 # body = self.massageIvars(body)
                 # body = self.removeCasts(body)
                 # body = self.removeTypeNames(body)
                 body = self.dedentBlocks(body)
                 return body
             #@+node:ekr.20150514063305.189: *8* dedentBlocks
-            def dedentBlocks(self, body: List[str]) -> List[str]:
+            def dedentBlocks(self, body: list[str]) -> list[str]:
                 """
                 Look for '{' preceded by '{' or '}' or ';'
                 (with intervening whitespace and comments).

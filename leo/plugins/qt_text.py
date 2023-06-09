@@ -6,8 +6,7 @@
 from __future__ import annotations
 import time
 assert time
-from typing import Any, Callable, Dict, List, Optional, Tuple
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -132,7 +131,7 @@ class QTextMixin:
         self.enabled = True
         # A flag for k.masterKeyHandler and isTextWrapper.
         self.supportsHighLevelInterface = True
-        self.tags: Dict[str, str] = {}
+        self.tags: dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
@@ -293,7 +292,7 @@ class QTextMixin:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """QTextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)
@@ -369,7 +368,7 @@ class QLineEditWrapper(QTextMixin):
             return self.widget.cursorPosition()
         return 0
     #@+node:ekr.20110605121601.18122: *4* qlew.getSelectionRange
-    def getSelectionRange(self, sort: bool=True) -> Tuple[int, int]:
+    def getSelectionRange(self, sort: bool=True) -> tuple[int, int]:
         """QHeadlineWrapper."""
         w = self.widget
         if self.check():
@@ -686,7 +685,7 @@ if QtWidgets:
                 self.setGeometry(geom2)
                 self.leo_geom_set = True
             #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
-            def show_completions(self, aList: List[str]) -> None:
+            def show_completions(self, aList: list[str]) -> None:
                 """Set the QListView contents to aList."""
                 self.clear()
                 self.addItems(aList)
@@ -695,7 +694,7 @@ if QtWidgets:
                 self.setFocus()
             #@-others
         #@+node:ekr.20110605121601.18017: *4* lqtb.lqtb.init_completer
-        def init_completer(self, options: List[str]) -> Widget:
+        def init_completer(self, options: list[str]) -> Widget:
             """Connect a QCompleter."""
             c = self.leo_c
             self.leo_qc = qc = self.LeoQListWidget(c)
@@ -714,14 +713,14 @@ if QtWidgets:
                 self.leo_qc.end_completer()
                 delattr(self, 'leo_qc')
 
-        def show_completions(self, aList: List) -> None:
+        def show_completions(self, aList: list) -> None:
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
         #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
         #@+node:tom.20210827225119.3: *4* lqtb.parse_css
         #@@language python
         @staticmethod
-        def parse_css(css_string: str, clas: str='') -> Tuple[str, str]:
+        def parse_css(css_string: str, clas: str='') -> tuple[str, str]:
             """Extract colors from a css stylesheet string.
 
             This is an extremely simple-minded function. It assumes
@@ -1075,7 +1074,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
         self.highest_line = 0  # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
-        self.offsets: List[Tuple[int, Any]] = []
+        self.offsets: list[tuple[int, Any]] = []
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -1416,7 +1415,7 @@ class QScintillaWrapper(QTextMixin):
         i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
         return i
     #@+node:ekr.20110605121601.18110: *4* qsciw.getSelectionRange
-    def getSelectionRange(self, sort: bool=True) -> Tuple[int, int]:
+    def getSelectionRange(self, sort: bool=True) -> tuple[int, int]:
         """Get the selection range from a QsciScintilla widget."""
         w = self.widget
         i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
@@ -1686,7 +1685,7 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         return self.widget.textCursor().position()
     #@+node:ekr.20110605121601.18083: *4* qtew.getSelectionRange
-    def getSelectionRange(self, sort: bool=True) -> Tuple[int, int]:
+    def getSelectionRange(self, sort: bool=True) -> tuple[int, int]:
         """QTextEditWrapper."""
         w = self.widget
         tc = w.textCursor()
@@ -1963,7 +1962,7 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast)
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+    def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
 
         te = self.widget
         doc = te.document()

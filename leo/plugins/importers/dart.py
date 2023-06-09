@@ -1,28 +1,25 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 """The @auto importer for the dart language."""
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer
+from typing import TYPE_CHECKING
+from leo.plugins.importers.base_importer import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
-#@+node:ekr.20161123120245.2: ** class Dart_Importer
+#@+node:ekr.20161123120245.2: ** class Dart_Importer(Importer)
 class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Dart_Importer.__init__"""
-        super().__init__(c, language='dart')
+    language = 'dart'
 
-    #@+others
-    #@+node:ekr.20161123121021.1: *3* dart_i.compute_headline
-    dart_pattern = re.compile(r'^\s*([\w_][\w_\s]*)\(')
-
-    def compute_headline(self, s: str) -> str:
-
-        m = self.dart_pattern.match(s)
-        return m.group(0).strip('(').strip() if m else s.strip()
-    #@-others
+    block_patterns = (
+        ('function', re.compile(r'^\s*([\w\s]+)\s*\(.*?\)\s*\{')),
+    )
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

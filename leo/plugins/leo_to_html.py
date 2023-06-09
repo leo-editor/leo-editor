@@ -128,7 +128,6 @@ import configparser as ConfigParser
 import os
 import subprocess
 import tempfile
-from typing import List
 import webbrowser
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -340,7 +339,7 @@ class Leo_to_HTML:
         wrapper code to turn it into a file.
         """
 
-        xhtml: List[str] = []
+        xhtml: list[str] = []
 
         if node:
             root = self.c.p

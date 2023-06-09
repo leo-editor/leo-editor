@@ -87,7 +87,6 @@ positions as input::
 import difflib
 from io import StringIO
 import subprocess
-from typing import List
 
 from leo.core import leoGlobals as g
 from leo.external import leosax
@@ -282,7 +281,7 @@ class NodeDiffController:
         c = self.c
 
         dir_, filename = g.os_path_split(c.fileName())
-        relative_path: List[str] = []  # path from top of repo. to .leo file
+        relative_path: list[str] = []  # path from top of repo. to .leo file
 
         mode = None  # mode is which VCS to use
         # given A=/a/b/c/d/e, B=file.leo adjust to A=/a/b/c, B=d/e/file.leo

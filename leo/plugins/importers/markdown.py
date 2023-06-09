@@ -1,68 +1,69 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
 """The @auto importer for the markdown language."""
+from __future__ import annotations
 import re
-from typing import Dict, List, Tuple
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
-from leo.plugins.importers.linescanner import Importer
+from typing import TYPE_CHECKING
+from leo.plugins.importers.base_importer import Block, Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
 class Markdown_Importer(Importer):
     """The importer for the markdown lanuage."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """Markdown_Importer.__init__"""
-        super().__init__(
-            c,
-            language='md',
-        )
+    language = 'md'
 
     #@+others
-    #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
-    def gen_lines(self, lines: List[str], parent: Position) -> None:
-        """Node generator for markdown importer."""
+    #@+node:ekr.20230528165149.1: *3* md_i.gen_block
+    def gen_block(self, block: Block, parent: Position) -> None:
+        """
+        Markdown_Importer: gen_block. The `block` arg is unused.
+
+        Create all descendant blocks and their nodes from self.lines.
+
+        i.gen_lines adds the @language and @tabwidth directives.
+        """
         assert parent == self.root
-        if all(s.isspace() for s in lines):  # pragma: no cover (mysterious)
-            return
-        p = self.root
-        # Use a dict instead of creating a new VNode slot.
-        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
-        self.stack: List[Position] = [self.root]
-        in_code = False
-        skip = 0
+        lines = self.lines
+        self.lines_dict: dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
+        self.stack: list[Position] = [parent]
+        in_code, skip = False, 0
         for i, line in enumerate(lines):
             top = self.stack[-1]
             level, name = self.is_hash(line)
             if skip > 0:
                 skip -= 1
-            elif not in_code and self.lookahead_underline(i, lines):
+            elif not in_code and self.lookahead_underline(i):
                 level = 1 if lines[i + 1].startswith('=') else 2
-                self.make_markdown_node(level, lines_dict, line)
+                self.make_markdown_node(level, line)
                 skip = 1
             elif not in_code and name:
-                self.make_markdown_node(level, lines_dict, name)
+                self.make_markdown_node(level, name)
             elif i == 0:
-                self.make_decls_node(line, lines_dict)
+                self.make_decls_node(line)
             elif in_code:
                 if line.startswith("```"):
                     in_code = False
-                lines_dict[top.v].append(line)
+                self.lines_dict[top.v].append(line)
             elif line.startswith("```"):
                 in_code = True
-                lines_dict[top.v].append(line)
+                self.lines_dict[top.v].append(line)
             else:
-                lines_dict[top.v].append(line)
-        # Add the top-level directives.
-        self.append_directives(lines_dict)
+                self.lines_dict[top.v].append(line)
+
         # Set p.b from the lines_dict.
-        for p in self.root.self_and_subtree():
-            p.b = ''.join(lines_dict[p.v])
-    #@+node:ekr.20161202090722.1: *4* md_i.is_hash
+        assert parent == self.root
+        for p in parent.self_and_subtree():
+            p.b = ''.join(self.lines_dict[p.v])
+    #@+node:ekr.20230528170618.2: *4* md_i.is_hash
     # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
 
-    def is_hash(self, line: str) -> Tuple[int, str]:
+    def is_hash(self, line: str) -> tuple[int, str]:
         """
         Return level, name if line is a hash section line.
         else return None, None.
@@ -74,7 +75,7 @@ class Markdown_Importer(Importer):
             if name:
                 return level, name
         return None, None
-    #@+node:ekr.20161202085119.1: *4* md_i.is_underline
+    #@+node:ekr.20230528170618.3: *4* md_i.is_underline
     md_pattern_table = (
         re.compile(r'^(=+)\n'),
         re.compile(r'^(-+)\n'),
@@ -82,15 +83,15 @@ class Markdown_Importer(Importer):
 
     def is_underline(self, line: str) -> bool:
         """True if line is all '-' or '=' characters."""
-
         for pattern in self.md_pattern_table:
             m = pattern.match(line)
             if m and len(m.group(1)) >= 4:
                 return True
         return False
-    #@+node:ekr.20161202085032.1: *4* md_i.lookahead_underline
-    def lookahead_underline(self, i: int, lines: List[str]) -> bool:
+    #@+node:ekr.20230528170618.4: *4* md_i.lookahead_underline
+    def lookahead_underline(self, i: int) -> bool:
         """True if lines[i:i+1] form an underlined line."""
+        lines = self.lines
         if i + 1 < len(lines):
             line0 = lines[i]
             line1 = lines[i + 1]
@@ -98,18 +99,19 @@ class Markdown_Importer(Importer):
             ch1 = self.is_underline(line1)
             return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
         return False
-    #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
-    def make_decls_node(self, line: str, lines_dict: Dict[VNode, List[str]]) -> None:
+    #@+node:ekr.20230528170618.5: *4* md_i.make_decls_node
+    def make_decls_node(self, line: str) -> None:
         """Make a decls node."""
+        lines_dict = self.lines_dict
         parent = self.stack[-1]
-        assert parent == self.root, repr(parent)
         child = parent.insertAsLastChild()
         child.h = '!Declarations'
         lines_dict[child.v] = [line]
         self.stack.append(child)
-    #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
-    def make_markdown_node(self, level: int, lines_dict: Dict[VNode, List[str]], name: str) -> Position:
+    #@+node:ekr.20230528170618.6: *4* md_i.make_markdown_node
+    def make_markdown_node(self, level: int, name: str) -> Position:
         """Create a new node."""
+        lines_dict = self.lines_dict
         # Cut back the stack.
         self.stack = self.stack[:level]
         # #877: Insert placeholder nodes.
@@ -123,7 +125,6 @@ class Markdown_Importer(Importer):
         assert self.stack
         assert 0 <= level < len(self.stack), (level, len(self.stack))
         return self.stack[level]
-
     #@-others
 #@-others
 

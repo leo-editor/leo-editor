@@ -5,7 +5,7 @@
 #@+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -25,7 +25,7 @@ class GoToCommands:
 
     #@+others
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
-    def find_file_line(self, n: int, p: Position = None) -> Tuple[Position, int]:
+    def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
         """
         Place the cursor on the n'th line (one-based) of an external file.
 
@@ -83,7 +83,7 @@ class GoToCommands:
                 return i + 1
         return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
-    def find_script_line(self, n: int, root: Position) -> Tuple[Position, int]:
+    def find_script_line(self, n: int, root: Position) -> tuple[Position, int]:
         """
         Go to line n (zero based) of the script with the given root.
         Return (p, offset) if found or (None, -1) otherwise.
@@ -111,7 +111,7 @@ class GoToCommands:
         delim1, delim2 = self.get_delims(root)
         file_s = self.get_external_file_with_sentinels(root)
         gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
-        stack: List[Tuple[str, str, int]] = []
+        stack: list[tuple[str, str, int]] = []
         for s in g.splitLines(file_s):
             n += 1  # All lines contribute to the file's line count.
             if self.is_sentinel(delim1, delim2, s):
@@ -142,7 +142,7 @@ class GoToCommands:
         g.trace('\nNot found', target_offset, target_gnx)
         return None
     #@+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
-    def scan_nonsentinel_lines(self, lines: List[str], n: int, root: Position) -> Tuple[str, str, int]:
+    def scan_nonsentinel_lines(self, lines: list[str], n: int, root: Position) -> tuple[str, str, int]:
         """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.
@@ -193,7 +193,7 @@ class GoToCommands:
             gnx, h, offset = None, None, -1
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
-    def scan_sentinel_lines(self, lines: List[str], n: int, root: Position) -> Tuple[str, str, int]:
+    def scan_sentinel_lines(self, lines: list[str], n: int, root: Position) -> tuple[str, str, int]:
         """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.
@@ -251,7 +251,7 @@ class GoToCommands:
         self,
         root: Position,
         gnx: str, vnodeName: str,
-    ) -> Tuple[Position, bool]:  # Retain find_gnx for compatibility.
+    ) -> tuple[Position, bool]:  # Retain find_gnx for compatibility.
         """
         Scan root's tree for a node with the given gnx and vnodeName.
         return (p, True) if found or (None, False) otherwise.
@@ -273,7 +273,7 @@ class GoToCommands:
                     return p.copy()
         return None
     #@+node:ekr.20100216141722.5627: *4* goto.find_root
-    def find_root(self, p: Position) -> Tuple[Position, str]:
+    def find_root(self, p: Position) -> tuple[Position, str]:
         """
         Find the closest ancestor @<file> node, except @all nodes and @edit nodes.
         return root, fileName.
@@ -301,7 +301,7 @@ class GoToCommands:
                             return p2.copy(), fileName
         return None, None
     #@+node:ekr.20150625123747.1: *4* goto.get_delims
-    def get_delims(self, root: Position) -> Tuple[str, str]:
+    def get_delims(self, root: Position) -> tuple[str, str]:
         """Return the delimiters in effect at root."""
         c = self.c
         old_target_language = c.target_language
@@ -338,7 +338,7 @@ class GoToCommands:
             forcePythonSentinels=False,  # See #247.
             useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
-    def get_script_node_info(self, s: str, delim2: Any) -> Tuple[str, str]:
+    def get_script_node_info(self, s: str, delim2: Any) -> tuple[str, str]:
         """Return the gnx and headline of a #@+node."""
         i = s.find(':', 0)
         j = s.find(':', i + 1)
@@ -355,7 +355,7 @@ class GoToCommands:
     def is_sentinel(self, delim1: str, delim2: str, s: str) -> bool:
         """Return True if s is a sentinel line with the given delims."""
         # Leo 6.7.2: Use g.is_sentinel, which handles blackened sentinels properly.
-        delims: Tuple
+        delims: tuple
         if delim1 and delim2:
             delims = (None, delim1, delim2)
         else:

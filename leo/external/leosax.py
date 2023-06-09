@@ -8,7 +8,7 @@ multiple .leo files quickly.
 """
 from binascii import unhexlify
 from pickle import loads
-from typing import Any, Dict
+from typing import Any
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 from leo.core import leoGlobals as g
@@ -40,7 +40,7 @@ class LeoNode:
     def __init__(self):
         """Set ivars"""
         self.children = []
-        self.u: Dict = {}
+        self.u: dict = {}
         self.unknownAttributes = self.u  # for compatibility
         self.h = []
         self.b = []

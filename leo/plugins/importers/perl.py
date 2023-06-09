@@ -1,32 +1,49 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 """The @auto importer for Perl."""
+from __future__ import annotations
 import re
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer
+from typing import TYPE_CHECKING
+from leo.plugins.importers.base_importer import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+
 #@+others
-#@+node:ekr.20161027094537.13: ** class Perl_Importer
+#@+node:ekr.20161027094537.13: ** class Perl_Importer(Importer)
 class Perl_Importer(Importer):
     """A scanner for the perl language."""
 
-    def __init__(self, c: Cmdr) -> None:
-        """The ctor for the Perl_ImportController class."""
-        super().__init__(c, language='perl')
+    language = 'perl'
+
+    block_patterns = (
+        ('sub', re.compile(r'\s*sub\s+(\w+)')),
+    )
 
     #@+others
-    #@+node:ekr.20161027183713.1: *3* perl_i.compute_headline
-    def compute_headline(self, s: str) -> str:
-        """Return a cleaned up headline s."""
-        m = re.match(r'sub\s+(\w+)', s)
-        s = 'sub ' + m.group(1) if m else s
-        # Modified form of Importer.compute_headline.
-        # Only delete trailing characters.
-        s = s.strip()
-        for ch in '{(=;':
-            if s.endswith(ch):
-                s = s[:-1].strip()
-        return s.strip()
+    #@+node:ekr.20230529055751.1: *3* perl_i.make_guide_lines
+    def make_guide_lines(self, lines: list[str]) -> list[str]:
+        """
+        Perl_Importer.make_guide_lines.
+
+        Return a list if **guide lines** that simplify the detection of blocks.
+        """
+        aList = self.delete_comments_and_strings(lines[:])
+        return self.delete_regexes(aList)
+    #@+node:ekr.20230529055848.1: *3* perl_i.delete_regexes
+    regex_pat = re.compile(r'(.*?=\s*(m|s|tr|)/)')
+
+    def delete_regexes(self, lines: list[str]) -> list[str]:
+        """Remove regexes."""
+        result = []
+        for line in lines:
+            m = self.regex_pat.match(line)
+            if m:
+                result.append(line[: len(m.group(0))])
+            else:
+                result.append(line)
+        return result
     #@-others
 #@-others
 

@@ -1,13 +1,17 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
+from __future__ import annotations
 import re
-from typing import Dict, List
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.base_importer import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
 #@+others
-#@+node:tbrown.20140801105909.47551: ** class CText_Importer
+#@+node:tbrown.20140801105909.47551: ** class CText_Importer(Importer)
 class CText_Importer(Importer):
     #@+<< ctext docstring >>
     #@+node:ekr.20161130053507.1: *3* << ctext docstring >>
@@ -38,17 +42,12 @@ class CText_Importer(Importer):
     """
     #@-<< ctext docstring >>
 
-    def __init__(self, c: Cmdr) -> None:
-        """Ctor for CoffeeScriptScanner class."""
-        super().__init__(
-            c,
-            language='plain',  # A reasonable default.
-        )
+    language = 'plain'  # A reasonable default.
 
     #@+others
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
     def import_from_string(self, parent: Position, s: str) -> None:
-        """CText_Importer.import_from_string()"""
+        """CText_Importer.import_from_string."""
         c = self.c
         root = parent.copy()
         ft = c.importCommands.fileType.lower()
@@ -59,8 +58,8 @@ class CText_Importer(Importer):
             '/' if ft == '.js' else '#'
         )
         header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
-        lines_dict: Dict[VNode, List[str]] = {root.v: []}
-        parents: List[Position] = [root]
+        lines_dict: dict[VNode, list[str]] = {root.v: []}
+        parents: list[Position] = [root]
         for line in g.splitLines(s):
             m = header_pat.match(line)
             if m:

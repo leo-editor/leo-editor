@@ -2107,7 +2107,7 @@ class StubFormatter(AstFormatter):
         '''StubFormatter.List.'''
         elts = [self.visit(z) for z in node.elts]
         elts = [z for z in elts if z]  # Defensive.
-        return 'List[%s]' % ', '.join(elts)
+        return 'list[%s]' % ', '.join(elts)
     #@+node:ekr.20160317054700.150: *4* sf.Name
     seen_names = []
 
