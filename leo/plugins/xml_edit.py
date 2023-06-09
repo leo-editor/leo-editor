@@ -96,7 +96,7 @@ These commands attempt to deal with all of this.
 
 """
 
-# pylint: disable=broad-exception-raised
+# broad-exception-raised: Not valid in later pylints.
 
 import os
 import traceback  # for XML parse error display

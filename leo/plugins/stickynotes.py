@@ -78,7 +78,7 @@ from leo.core.leoQt import QAction, Weight
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
-# pylint: disable=broad-exception-raised
+# broad-exception-raised: Not valid in later pylints.
 
 # Aliases...
 # These can *not* be used as the base classes.
