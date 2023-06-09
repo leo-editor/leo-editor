@@ -320,7 +320,7 @@ class Position:
 
     __repr__ = __str__
     #@+node:ekr.20061006092649: *4* p.archivedPosition
-    def archivedPosition(self, root_p: Optional["Position"] = None) -> list[int]:
+    def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
         p = self
         if root_p is None:
@@ -355,7 +355,7 @@ class Position:
         result.append(f"{id(p.v)}:{p._childIndex}")
         return '.'.join(result)
 
-    def sort_key(self, p: "Position") -> list[int]:
+    def sort_key(self, p: Position) -> list[int]:
         """Used as a sort function, which explains "redundant" argument."""
         return [int(s.split(':')[1]) for s in p.key().split('.')]
 
@@ -460,7 +460,7 @@ class Position:
         """
         p1 = self.copy()
 
-        def default_predicate(p: "Position") -> bool:
+        def default_predicate(p: Position) -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -495,7 +495,7 @@ class Position:
         """
         p1 = self.copy()
 
-        def default_predicate(p: "Position") -> bool:
+        def default_predicate(p: Position) -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
@@ -756,42 +756,42 @@ class Position:
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
 
-    def getBack(self) -> "Position":
+    def getBack(self) -> Position:
         return self.copy().moveToBack()
 
-    def getFirstChild(self) -> "Position":
+    def getFirstChild(self) -> Position:
         return self.copy().moveToFirstChild()
 
-    def getLastChild(self) -> "Position":
+    def getLastChild(self) -> Position:
         return self.copy().moveToLastChild()
 
-    def getLastNode(self) -> "Position":
+    def getLastNode(self) -> Position:
         return self.copy().moveToLastNode()
 
-    def getNext(self) -> "Position":
+    def getNext(self) -> Position:
         return self.copy().moveToNext()
 
-    def getNodeAfterTree(self) -> "Position":
+    def getNodeAfterTree(self) -> Position:
         return self.copy().moveToNodeAfterTree()
 
-    def getNthChild(self, n: int) -> "Position":
+    def getNthChild(self, n: int) -> Position:
         return self.copy().moveToNthChild(n)
 
-    def getParent(self) -> "Position":
+    def getParent(self) -> Position:
         return self.copy().moveToParent()
 
-    def getThreadBack(self) -> "Position":
+    def getThreadBack(self) -> Position:
         return self.copy().moveToThreadBack()
 
-    def getThreadNext(self) -> "Position":
+    def getThreadNext(self) -> Position:
         return self.copy().moveToThreadNext()
 
     # New in Leo 4.4.3 b2: add c args.
 
-    def getVisBack(self, c: "Cmdr") -> "Position":
+    def getVisBack(self, c: "Cmdr") -> Position:
         return self.copy().moveToVisBack(c)
 
-    def getVisNext(self, c: "Cmdr") -> "Position":
+    def getVisNext(self, c: "Cmdr") -> Position:
         return self.copy().moveToVisNext(c)
     # These are efficient enough now that iterators are the normal way to traverse the tree!
     back = getBack
@@ -876,13 +876,13 @@ class Position:
             n -= 1
         return False
     #@+node:ekr.20060920203352: *4* p.findRootPosition
-    def findRootPosition(self) -> "Position":
+    def findRootPosition(self) -> Position:
         # 2011/02/25: always use c.rootPosition
         p = self
         c = p.v.context
         return c.rootPosition()
     #@+node:ekr.20080416161551.194: *4* p.isAncestorOf
-    def isAncestorOf(self, p2: "Position") -> bool:
+    def isAncestorOf(self, p2: Position) -> bool:
         """Return True if p is one of the direct ancestors of p2."""
         p = self
         c = p.v.context
@@ -908,7 +908,7 @@ class Position:
         """Return True if p is visible in c's outline."""
         p = self
 
-        def visible(p: "Position", root: Optional["Position"] = None) -> bool:
+        def visible(p: Position, root: Optional[Position] = None) -> bool:
             for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # #12.
@@ -935,7 +935,7 @@ class Position:
 
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
-    def positionAfterDeletedTree(self) -> "Position":
+    def positionAfterDeletedTree(self) -> Position:
         """Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
 
@@ -1001,7 +1001,7 @@ class Position:
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@+node:ekr.20080427062528.4: *4* p._adjustPositionBeforeUnlink
-    def _adjustPositionBeforeUnlink(self, p2: "Position") -> None:
+    def _adjustPositionBeforeUnlink(self, p2: Position) -> None:
         """Adjust position p before unlinking p2."""
         # p will change if p2 is a previous sibling of p or
         # p2 is a previous sibling of any ancestor of p.
@@ -1034,7 +1034,7 @@ class Position:
         if changed:
             p.stack = stack
     #@+node:ekr.20080416161551.214: *4* p._linkAfter
-    def _linkAfter(self, p_after: "Position") -> None:
+    def _linkAfter(self, p_after: Position) -> None:
         """Link self after p_after."""
         p = self
         parent_v = p_after._parentVnode()
@@ -1044,7 +1044,7 @@ class Position:
         n = p_after._childIndex + 1
         child._addLink(n, parent_v)
     #@+node:ekr.20180709181718.1: *4* p._linkCopiedAfter
-    def _linkCopiedAfter(self, p_after: "Position") -> None:
+    def _linkCopiedAfter(self, p_after: Position) -> None:
         """Link self, a newly copied tree, after p_after."""
         p = self
         parent_v = p_after._parentVnode()
@@ -1054,7 +1054,7 @@ class Position:
         n = p_after._childIndex + 1
         child._addCopiedLink(n, parent_v)
     #@+node:ekr.20080416161551.215: *4* p._linkAsNthChild
-    def _linkAsNthChild(self, parent: "Position", n: int) -> None:
+    def _linkAsNthChild(self, parent: Position, n: int) -> None:
         """Link self as the n'th child of the parent."""
         p = self
         parent_v = parent.v
@@ -1064,7 +1064,7 @@ class Position:
         child = p.v
         child._addLink(n, parent_v)
     #@+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
-    def _linkCopiedAsNthChild(self, parent: "Position", n: int) -> None:
+    def _linkCopiedAsNthChild(self, parent: Position, n: int) -> None:
         """Link a copied self as the n'th child of the parent."""
         p = self
         parent_v = parent.v
@@ -1074,7 +1074,7 @@ class Position:
         child = p.v
         child._addCopiedLink(n, parent_v)
     #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
-    def _linkAsRoot(self) -> "Position":
+    def _linkAsRoot(self) -> Position:
         """Link self as the root node."""
         p = self
         assert p.v
@@ -1103,7 +1103,7 @@ class Position:
             return p.v.context.hiddenRootNode
         return None
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
-    def _relinkAsCloneOf(self, p2: "Position") -> None:
+    def _relinkAsCloneOf(self, p2: Position) -> None:
         """A low-level method to replace p.v by a p2.v."""
         p = self
         v, v2 = p.v, p2.v
@@ -1171,7 +1171,7 @@ class Position:
     # These routines all return self on exit so the following kind of code will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@+node:ekr.20080416161551.200: *4* p.moveToBack
-    def moveToBack(self) -> "Position":
+    def moveToBack(self) -> Position:
         """Move self to its previous sibling."""
         p = self
         n = p._childIndex
@@ -1184,7 +1184,7 @@ class Position:
             p.v = None
         return p
     #@+node:ekr.20080416161551.201: *4* p.moveToFirstChild
-    def moveToFirstChild(self) -> "Position":
+    def moveToFirstChild(self) -> Position:
         """Move a position to it's first child's position."""
         p = self
         if p.v and p.v.children:
@@ -1195,7 +1195,7 @@ class Position:
             p.v = None
         return p
     #@+node:ekr.20080416161551.202: *4* p.moveToLastChild
-    def moveToLastChild(self) -> "Position":
+    def moveToLastChild(self) -> Position:
         """Move a position to it's last child's position."""
         p = self
         if p.v and p.v.children:
@@ -1207,7 +1207,7 @@ class Position:
             p.v = None  # pragma: no cover
         return p
     #@+node:ekr.20080416161551.203: *4* p.moveToLastNode
-    def moveToLastNode(self) -> "Position":
+    def moveToLastNode(self) -> Position:
         """Move a position to last node of its tree.
 
         N.B. Returns p if p has no children."""
@@ -1217,7 +1217,7 @@ class Position:
             p.moveToLastChild()
         return p
     #@+node:ekr.20080416161551.204: *4* p.moveToNext
-    def moveToNext(self) -> "Position":
+    def moveToNext(self) -> Position:
         """Move a position to its next sibling."""
         p = self
         n = p._childIndex
@@ -1231,7 +1231,7 @@ class Position:
             p.v = None
         return p
     #@+node:ekr.20080416161551.205: *4* p.moveToNodeAfterTree
-    def moveToNodeAfterTree(self) -> "Position":
+    def moveToNodeAfterTree(self) -> Position:
         """Move a position to the node after the position's tree."""
         p = self
         while p:
@@ -1241,7 +1241,7 @@ class Position:
             p.moveToParent()
         return p
     #@+node:ekr.20080416161551.206: *4* p.moveToNthChild
-    def moveToNthChild(self, n: int) -> "Position":
+    def moveToNthChild(self, n: int) -> Position:
         p = self
         if p.v and len(p.v.children) > n:
             p.stack.append((p.v, p._childIndex),)
@@ -1253,7 +1253,7 @@ class Position:
             p.v = None  # type:ignore   # pragma: no cover
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
-    def moveToParent(self) -> "Position":
+    def moveToParent(self) -> Position:
         """Move a position to its parent position."""
         p = self
         if p.v and p.stack:
@@ -1264,7 +1264,7 @@ class Position:
             p.v = None  # type:ignore
         return p
     #@+node:ekr.20080416161551.208: *4* p.moveToThreadBack
-    def moveToThreadBack(self) -> "Position":
+    def moveToThreadBack(self) -> Position:
         """Move a position to it's threadBack position."""
         p = self
         if p.hasBack():
@@ -1274,7 +1274,7 @@ class Position:
             p.moveToParent()
         return p
     #@+node:ekr.20080416161551.209: *4* p.moveToThreadNext
-    def moveToThreadNext(self) -> "Position":
+    def moveToThreadNext(self) -> Position:
         """Move a position to threadNext position."""
         p = self
         if p.v:
@@ -1292,7 +1292,7 @@ class Position:
                 # not found.
         return p
     #@+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
-    def moveToVisBack(self, c: "Cmdr") -> "Position":
+    def moveToVisBack(self, c: "Cmdr") -> Position:
         """Move a position to the position of the previous visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
@@ -1315,10 +1315,10 @@ class Position:
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self,
-        limit: "Position",
+        limit: Position,
         limitIsVisible: bool,
-        p: "Position",
-    ) -> tuple[bool, Optional["Position"]]:
+        p: Position,
+    ) -> tuple[bool, Optional[Position]]:
         """Return done, p or None"""
         c = p.v.context
         if limit == p:
@@ -1329,7 +1329,7 @@ class Position:
             return False, None
         return True, None
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
-    def moveToVisNext(self, c: "Cmdr") -> "Position":
+    def moveToVisNext(self, c: "Cmdr") -> Position:
         """Move a position to the position of the next visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
@@ -1350,11 +1350,11 @@ class Position:
                     return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
-    def checkVisNextLimit(self, limit: "Position", p: "Position") -> bool:
+    def checkVisNextLimit(self, limit: Position, p: Position) -> bool:
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
-    def safeMoveToThreadNext(self) -> "Position":
+    def safeMoveToThreadNext(self) -> Position:
         """
         Move a position to threadNext position.
         Issue an error if any vnode is an ancestor of itself.
@@ -1402,7 +1402,7 @@ class Position:
     #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20040303175026: *3* p.Moving, Inserting, Deleting, Cloning, Sorting
     #@+node:ekr.20040303175026.8: *4* p.clone
-    def clone(self) -> "Position":
+    def clone(self) -> Position:
         """Create a clone of back.
 
         Returns the newly created position."""
@@ -1411,7 +1411,7 @@ class Position:
         p2._linkAfter(p)  # This should "just work"
         return p2
     #@+node:ekr.20040117171654: *4* p.copy
-    def copy(self) -> "Position":
+    def copy(self) -> Position:
         """"Return an independent copy of a position."""
         return Position(self.v, self._childIndex, self.stack)
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
@@ -1420,7 +1420,7 @@ class Position:
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self, copyGnxs: bool = False) -> "Position":
+    def copyTreeAfter(self, copyGnxs: bool = False) -> Position:
         """Copy p and insert it after itself."""
         p = self
         p2 = p.insertAfter()
@@ -1428,7 +1428,7 @@ class Position:
         return p2
 
 
-    def copyTreeFromSelfTo(self, p2: "Position", copyGnxs: bool = False) -> None:
+    def copyTreeFromSelfTo(self, p2: Position, copyGnxs: bool = False) -> None:
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
@@ -1442,7 +1442,7 @@ class Position:
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2, copyGnxs=copyGnxs)
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
-    def copyWithNewVnodes(self, copyMarked: bool = False) -> "Position":
+    def copyWithNewVnodes(self, copyMarked: bool = False) -> Position:
         """
         Return an **unlinked** copy of p with a new vnode v.
         The new vnode is complete copy of v and all its descendants.
@@ -1450,7 +1450,7 @@ class Position:
         p = self
         return Position(v=p.v.copyTree(copyMarked))
     #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
-    def createNodeHierarchy(self, heads: list, forcecreate: bool = False) -> "Position":
+    def createNodeHierarchy(self, heads: list, forcecreate: bool = False) -> Position:
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' as children of the current position
 
@@ -1477,7 +1477,7 @@ class Position:
         while p.hasChildren():
             p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
-    def doDelete(self, newNode: Optional["Position"] = None) -> None:
+    def doDelete(self, newNode: Optional[Position] = None) -> None:
         """
         Deletes position p from the outline.
 
@@ -1496,7 +1496,7 @@ class Position:
                 break
         p._unlink()
     #@+node:ekr.20040303175026.3: *4* p.insertAfter
-    def insertAfter(self) -> "Position":
+    def insertAfter(self) -> Position:
         """
         Inserts a new position after self.
 
@@ -1510,7 +1510,7 @@ class Position:
         p2._linkAfter(p)
         return p2
     #@+node:ekr.20040303175026.4: *4* p.insertAsLastChild
-    def insertAsLastChild(self) -> "Position":
+    def insertAsLastChild(self) -> Position:
         """
         Insert a new VNode as the last child of self.
 
@@ -1520,7 +1520,7 @@ class Position:
         n = p.numberOfChildren()
         return p.insertAsNthChild(n)
     #@+node:ekr.20040303175026.5: *4* p.insertAsNthChild
-    def insertAsNthChild(self, n: int) -> "Position":
+    def insertAsNthChild(self, n: int) -> Position:
         """
         Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
@@ -1535,7 +1535,7 @@ class Position:
         p2._linkAsNthChild(p, n)
         return p2
     #@+node:ekr.20130923111858.11572: *4* p.insertBefore
-    def insertBefore(self) -> "Position":
+    def insertBefore(self) -> Position:
         """
         Insert a new position before self.
 
@@ -1561,7 +1561,7 @@ class Position:
             node = p
         p.v.context.alert(f"invalid outline: {message}\n{node}")
     #@+node:ekr.20040303175026.10: *4* p.moveAfter
-    def moveAfter(self, a: "Position") -> "Position":
+    def moveAfter(self, a: Position) -> Position:
         """Move a position after position a."""
         p = self  # Do NOT copy the position!
         a._adjustPositionBeforeUnlink(p)
@@ -1569,12 +1569,12 @@ class Position:
         p._linkAfter(a)
         return p
     #@+node:ekr.20040306060312: *4* p.moveToFirst/LastChildOf
-    def moveToFirstChildOf(self, parent: "Position") -> "Position":
+    def moveToFirstChildOf(self, parent: Position) -> Position:
         """Move a position to the first child of parent."""
         p = self  # Do NOT copy the position!
         return p.moveToNthChildOf(parent, 0)  # Major bug fix: 2011/12/04
 
-    def moveToLastChildOf(self, parent: "Position") -> "Position":
+    def moveToLastChildOf(self, parent: Position) -> Position:
         """Move a position to the last child of parent."""
         p = self  # Do NOT copy the position!
         n = parent.numberOfChildren()
@@ -1582,7 +1582,7 @@ class Position:
             n -= 1  # 2011/12/10: Another bug fix.
         return p.moveToNthChildOf(parent, n)  # Major bug fix: 2011/12/04
     #@+node:ekr.20040303175026.11: *4* p.moveToNthChildOf
-    def moveToNthChildOf(self, parent: "Position", n: int) -> "Position":
+    def moveToNthChildOf(self, parent: Position, n: int) -> Position:
         """Move a position to the nth child of parent."""
         p = self  # Do NOT copy the position!
         parent._adjustPositionBeforeUnlink(p)
@@ -1590,7 +1590,7 @@ class Position:
         p._linkAsNthChild(parent, n)
         return p
     #@+node:ekr.20040303175026.6: *4* p.moveToRoot
-    def moveToRoot(self) -> "Position":
+    def moveToRoot(self) -> Position:
         """Move self to the root position."""
         p = self  # Do NOT copy the position!
         #
@@ -1619,7 +1619,7 @@ class Position:
             child.parents.append(parent_v)
     #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent
     # This routine checks the structure of the receiver's tree.
-    def validateOutlineWithParent(self, pv: "Position") -> bool:
+    def validateOutlineWithParent(self, pv: Position) -> bool:
         p = self
         result = True  # optimists get only unpleasant surprises.
         parent = p.getParent()
