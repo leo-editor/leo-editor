@@ -332,7 +332,7 @@ class LeoTreeData(npyscreen.TreeData):
         # self.sort_function_wrapper = True
     #@-<< about LeoTreeData ivars >>
 
-    _children: list["LeoTreeData"]
+    _children: list[LeoTreeData]
     content = Union[str, Position]
 
     def __len__(self) -> int:
@@ -354,14 +354,14 @@ class LeoTreeData(npyscreen.TreeData):
 
     #@+others
     #@+node:ekr.20170516153211.1: *4* LeoTreeData.__getitem__
-    def __getitem__(self, n: int) -> "LeoTreeData":
+    def __getitem__(self, n: int) -> LeoTreeData:
         """Return the n'th item in this tree."""
         aList = self.get_tree_as_list()
         data = aList[n] if n < len(aList) else None
         # g.trace(n, len(aList), repr(data))
         return data
     #@+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
-    def is_ancestor_of(self, node: "LeoTreeData") -> bool:
+    def is_ancestor_of(self, node: LeoTreeData) -> bool:
 
         assert isinstance(node, LeoTreeData), repr(node)
         parent = node._parent
@@ -384,7 +384,7 @@ class LeoTreeData(npyscreen.TreeData):
             parent = parent.get_parent()
         return d
     #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
-    def get_children(self) -> list["LeoTreeData"]:
+    def get_children(self) -> list[LeoTreeData]:
 
         if native:
             p = self.content
@@ -398,7 +398,7 @@ class LeoTreeData(npyscreen.TreeData):
             return p.parent()
         return self._parent
     #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
-    def get_tree_as_list(self) -> list["LeoTreeData"]:  # only_expanded=True, sort=None, key=None):
+    def get_tree_as_list(self) -> list[LeoTreeData]:  # only_expanded=True, sort=None, key=None):
         """
         Called only from LeoMLTree.values._getValues.
 
@@ -582,7 +582,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         # This draws the actual line.
         super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
-    def display_value(self, vl: "LeoTreeData") -> str:
+    def display_value(self, vl: LeoTreeData) -> str:
 
         # vl is a LeoTreeData.
         if native:
@@ -3226,8 +3226,8 @@ class LeoMLTree(npyscreen.MLTree):
     # pylint: disable=used-before-assignment
     _contained_widgets: Wrapper = LeoTreeLine
     continuation_line = "- more -"  # value of contination line.
-    _cached_tree: "LeoTreeData"
-    _cached_tree_as_list: list["LeoTreeData"]
+    _cached_tree: LeoTreeData
+    _cached_tree_as_list: list[LeoTreeData]
     start_display_at: int
     cursor_line: int
 
@@ -3866,7 +3866,7 @@ class LeoMLTree(npyscreen.MLTree):
         # To invalidate the cache, set __cached_tree = None
         #@+others
         #@+node:ekr.20170517142822.1: *5* _getValues
-        def _getValues(self) -> list["LeoTreeData"]:
+        def _getValues(self) -> list[LeoTreeData]:
             """
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
 
@@ -3879,7 +3879,7 @@ class LeoMLTree(npyscreen.MLTree):
             self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
             return self._cached_tree_as_list
         #@+node:ekr.20170518054457.1: *5* _setValues
-        def _setValues(self, tree: "LeoTreeData") -> None:
+        def _setValues(self, tree: LeoTreeData) -> None:
             self._myFullValues = tree or LeoTreeData()
         #@-others
         values = property(_getValues, _setValues)
@@ -3893,21 +3893,21 @@ class LeoValues(npyscreen.TreeData):
 
     #@+others
     #@+node:ekr.20170619070717.1: *4* values.__init__
-    def __init__(self, c: Cmdr, tree: "LeoTreeData") -> None:
+    def __init__(self, c: Cmdr, tree: LeoTreeData) -> None:
         """Ctor for LeoValues class."""
         super().__init__()  # Init the base class.
         self.c: Cmdr = c  # The commander of this outline.
-        self.data_cache: dict[int, "LeoTreeData"] = {}  # Keys are ints, values are LeoTreeData objects.
+        self.data_cache: dict[int, LeoTreeData] = {}  # Keys are ints, values are LeoTreeData objects.
         self.last_generation = -1  # The last value of c.frame.tree.generation.
         self.last_len = 0  # The last computed value of the number of visible nodes.
         self.n_refreshes = 0  # Number of calls to refresh_cache.
-        self.tree: "LeoTreeData" = tree  # not used here.
+        self.tree: LeoTreeData = tree  # not used here.
     #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
-    def __getitem__(self, n: int) -> "LeoTreeData":
+    def __getitem__(self, n: int) -> LeoTreeData:
         """Called from LeoMLTree._setLineValues."""
         return self.get_data(n)
 
-    def get_data(self, n: int) -> "LeoTreeData":
+    def get_data(self, n: int) -> LeoTreeData:
         """Return a LeoTreeData for the n'th visible position of the outline."""
         c = self.c
         # This will almost always be true, because __len__ updates the cache.
