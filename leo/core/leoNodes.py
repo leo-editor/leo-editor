@@ -39,7 +39,7 @@ class NodeIndices:
         # Assign the initial timestamp.
         self.setTimeStamp()
     #@+node:ekr.20150321161305.8: *3* ni.check_gnx
-    def check_gnx(self, c: "Cmdr", gnx: str, v: VNode) -> None:
+    def check_gnx(self, c: Cmdr, gnx: str, v: VNode) -> None:
         """Check that no vnode exists with the given gnx in fc.gnxDict."""
         fc = c.fileCommands
         if gnx == 'hidden-root-vnode-gnx':
@@ -53,7 +53,7 @@ class NodeIndices:
                 f"          v: {v}\n"
                 f"         v2: {v2}")
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
-    def compute_last_index(self, c: "Cmdr") -> None:
+    def compute_last_index(self, c: Cmdr) -> None:
         """Scan the entire leo outline to compute ni.last_index."""
         ni = self
         # Partial, experimental, fix for #658.
@@ -123,7 +123,7 @@ class NodeIndices:
         fc.gnxDict[gnx] = v
         return gnx
     #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
-    def new_vnode_helper(self, c: "Cmdr", gnx: str, v: VNode) -> None:
+    def new_vnode_helper(self, c: Cmdr, gnx: str, v: VNode) -> None:
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
         # Special case for the c.hiddenRootNode. This eliminates a hack in c.initObjects.
@@ -788,10 +788,10 @@ class Position:
 
     # New in Leo 4.4.3 b2: add c args.
 
-    def getVisBack(self, c: "Cmdr") -> Position:
+    def getVisBack(self, c: Cmdr) -> Position:
         return self.copy().moveToVisBack(c)
 
-    def getVisNext(self, c: "Cmdr") -> Position:
+    def getVisNext(self, c: Cmdr) -> Position:
         return self.copy().moveToVisNext(c)
     # These are efficient enough now that iterators are the normal way to traverse the tree!
     back = getBack
@@ -904,7 +904,7 @@ class Position:
         p = self
         return not p.hasParent() and not p.hasBack()
     #@+node:ekr.20080416161551.196: *4* p.isVisible
-    def isVisible(self, c: "Cmdr") -> bool:
+    def isVisible(self, c: Cmdr) -> bool:
         """Return True if p is visible in c's outline."""
         p = self
 
@@ -1292,7 +1292,7 @@ class Position:
                 # not found.
         return p
     #@+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
-    def moveToVisBack(self, c: "Cmdr") -> Position:
+    def moveToVisBack(self, c: Cmdr) -> Position:
         """Move a position to the position of the previous visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
@@ -1329,7 +1329,7 @@ class Position:
             return False, None
         return True, None
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
-    def moveToVisNext(self, c: "Cmdr") -> Position:
+    def moveToVisNext(self, c: Cmdr) -> Position:
         """Move a position to the position of the next visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
@@ -1949,7 +1949,7 @@ class VNode:
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init__
-    def __init__(self, context: "Cmdr", gnx: Optional[str] = None):
+    def __init__(self, context: Cmdr, gnx: Optional[str] = None):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = True whenever
