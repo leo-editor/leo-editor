@@ -32,7 +32,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, Callable, Dict, Generator, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 
 # Third-party.
@@ -812,7 +812,7 @@ def pr(*args: Any, **keys: Any) -> None:
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args: Any, **keys: Any) -> None:
     """Monkey-patch for g.trace."""
-    d: Dict[str, Any] = {
+    d: dict[str, Any] = {
         'align': 0,
         'before': '',
         'newline': True,
@@ -2363,8 +2363,8 @@ class CoreLog(leoFrame.LeoLog):
         self.isNull = False  # Required by Leo's core.
         # The npyscreen log widget. Queue all output until set. Set in CApp.main.
         self.widget: Wrapper = None
-        self.contentsDict: Dict[str, Wrapper] = {}  # Keys are tab names.  Values are widgets.
-        self.logDict: Dict[str, Wrapper] = {}  # Keys are tab names.  Values are the widgets.
+        self.contentsDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are widgets.
+        self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are the widgets.
         self.tabWidget: Wrapper = None
     #@+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')
@@ -3897,7 +3897,7 @@ class LeoValues(npyscreen.TreeData):
         """Ctor for LeoValues class."""
         super().__init__()  # Init the base class.
         self.c: Cmdr = c  # The commander of this outline.
-        self.data_cache: Dict[int, "LeoTreeData"] = {}  # Keys are ints, values are LeoTreeData objects.
+        self.data_cache: dict[int, "LeoTreeData"] = {}  # Keys are ints, values are LeoTreeData objects.
         self.last_generation = -1  # The last value of c.frame.tree.generation.
         self.last_len = 0  # The last computed value of the number of visible nodes.
         self.n_refreshes = 0  # Number of calls to refresh_cache.

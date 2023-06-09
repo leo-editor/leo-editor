@@ -14,7 +14,7 @@ This plugin makes line numbers in gutter (if used), to represent
 #@+node:vitalije.20170727201931.1: ** << imports >>
 from contextlib import contextmanager
 import re
-from typing import Dict, Tuple
+from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 #
@@ -117,7 +117,7 @@ def renumber(c):
             w.update()
     finish_update(c)
 #@+node:vitalije.20170727214225.1: ** request & finish_update
-REQUESTS: Dict[str, bool] = {}
+REQUESTS: dict[str, bool] = {}
 
 def request_update(c):
     h = c.hash()
@@ -148,7 +148,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
 
     code_pattern = re.compile('^(@code|@c)$')
     #@+node:vitalije.20170726120813.1: *3* vlines
-    vlinescache: Dict[str, Tuple] = {}
+    vlinescache: dict[str, Tuple] = {}
     def vlines(p):
         if p.gnx in vlinescache:
             return vlinescache[p.gnx]

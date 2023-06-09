@@ -82,7 +82,7 @@ from __future__ import annotations
 import fnmatch
 import itertools
 import re
-from typing import Any, Dict, Callable, Iterable, Iterator, Tuple, Union
+from typing import Any, Callable, Iterable, Iterator, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
@@ -355,7 +355,7 @@ class QuickSearchController:
         self.c = c
         self.lw: Widget = listWidget  # A QListWidget.
         w = listWidget
-        self.its: Dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
+        self.its: dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
         self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
@@ -426,7 +426,7 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list: Dict[str,  Match_List]) -> int:
+    def addParentMatches(self, parent_list: dict[str,  Match_List]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -597,7 +597,7 @@ class QuickSearchController:
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents: Dict[str, Match_List] = {}
+                parents: dict[str, Match_List] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx

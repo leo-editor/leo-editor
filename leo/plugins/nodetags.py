@@ -98,7 +98,7 @@ whitespace (calling .strip()).
 #@+node:ekr.20220828131647.1: ** << nodetags imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Callable, Dict, Generator, TYPE_CHECKING
+from typing import Any, Callable, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
@@ -174,7 +174,7 @@ class TagController:
         """Show all tags, organized by node."""
         c, tc = self.c, self
         aList: list[str]
-        d: Dict[str, list[str]] = {}
+        d: dict[str, list[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))

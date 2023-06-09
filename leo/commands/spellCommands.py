@@ -5,7 +5,7 @@
 #@+node:ekr.20150514050530.1: ** << spellCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Callable, Dict, Optional, Set, TYPE_CHECKING
+from typing import Any, Callable, Optional, Set, TYPE_CHECKING
 # Third-party annotations
 try:
     # We can't assume the user has enchant..
@@ -316,17 +316,17 @@ class EnchantWrapper(BaseSpellWrapper):
         self.c = c
         self.init_language()
         fn = self.find_user_dict()
-        self.d: Dict[str, str] = self.open_dict_file(fn)
+        self.d: dict[str, str] = self.open_dict_file(fn)
         g.app.spellDict = self.d
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
-    def create_dict_from_file(self, fn: str, language: Any) -> Dict[str, str]:
+    def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
 
         try:
             return enchant.DictWithPWL(language, fn)
         except Exception:
             return {}
     #@+node:ekr.20180207074613.1: *3* enchant.default_dict
-    def default_dict(self, language: Any) -> Dict[str, str]:
+    def default_dict(self, language: Any) -> dict[str, str]:
 
         try:
             return enchant.Dict(language)
@@ -349,7 +349,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
-    def open_dict_file(self, fn: str) -> Dict[str, str]:
+    def open_dict_file(self, fn: str) -> dict[str, str]:
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:

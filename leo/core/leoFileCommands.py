@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
@@ -92,7 +92,7 @@ class FastRead:
         # 'tnodeList',  # Removed in Leo 4.7.
     )
 
-    def __init__(self, c: Cmdr, gnx2vnode: Dict[str, VNode]) -> None:
+    def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
         self.c = c
         self.gnx2vnode = gnx2vnode
 
@@ -263,7 +263,7 @@ class FastRead:
         else:
             mf.show()
     #@+node:ekr.20180708060437.1: *5* fast.getGlobalData
-    def getGlobalData(self) -> Dict[str, Any]:
+    def getGlobalData(self) -> dict[str, Any]:
         """Return a dict containing all global data."""
         c = self.c
         try:
@@ -288,10 +288,10 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Any) -> Tuple[Dict[str, str], Dict[str, Any]]:
+    def scanTnodes(self, t_elements: Any) -> Tuple[dict[str, str], dict[str, Any]]:
 
-        gnx2body: Dict[str, str] = {}
-        gnx2ua: Dict[str, dict] = defaultdict(dict)
+        gnx2body: dict[str, str] = {}
+        gnx2ua: dict[str, dict] = defaultdict(dict)
         for e in t_elements:
             # First, find the gnx.
             gnx = e.attrib['tx']
@@ -305,9 +305,9 @@ class FastRead:
         return gnx2body, gnx2ua
     #@+node:ekr.20180602062323.9: *4* fast.scanVnodes & helper
     def scanVnodes(self,
-        gnx2body: Dict[str, str],
-        gnx2vnode: Dict[str, VNode],
-        gnx2ua: Dict[str, Any],
+        gnx2body: dict[str, str],
+        gnx2vnode: dict[str, VNode],
+        gnx2ua: dict[str, Any],
         v_elements: Any,
     ) -> VNode:
 
@@ -415,7 +415,7 @@ class FastRead:
             g_element = d.get('globals', {})  # globals is optional
             v_elements = d.get('vnodes')
             t_elements = d.get('tnodes')
-            gnx2ua: Dict = defaultdict(dict)
+            gnx2ua: dict = defaultdict(dict)
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
@@ -428,7 +428,7 @@ class FastRead:
         return hidden_v, g_element
 
     #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
-    def scanJsonGlobals(self, json_d: Dict) -> None:
+    def scanJsonGlobals(self, json_d: dict) -> None:
         """Set the geometries from the globals dict."""
         c = self.c
 
@@ -488,9 +488,9 @@ class FastRead:
             mf.show()
 
     #@+node:felix.20220618174623.1: *4* fast.scanJsonTnodes
-    def scanJsonTnodes(self, t_elements: Any) -> Dict[str, str]:
+    def scanJsonTnodes(self, t_elements: Any) -> dict[str, str]:
 
-        gnx2body: Dict[str, str] = {}
+        gnx2body: dict[str, str] = {}
 
         for gnx, body in t_elements.items():
             gnx2body[gnx] = body or ''
@@ -499,9 +499,9 @@ class FastRead:
 
     #@+node:felix.20220618174639.1: *4* scanJsonVnodes & helper
     def scanJsonVnodes(self,
-        gnx2body: Dict[str, str],
-        gnx2vnode: Dict[str, VNode],
-        gnx2ua: Dict[str, Any],
+        gnx2body: dict[str, str],
+        gnx2vnode: dict[str, VNode],
+        gnx2ua: dict[str, Any],
         v_elements: Any,
     ) -> Optional[VNode]:
 
@@ -615,8 +615,8 @@ class FileCommands:
         # New in 3.12...
         self.copiedTree: Position = None
         # fc.gnxDict is never re-inited.
-        self.gnxDict: Dict[str, VNode] = {}  # Keys are gnx strings. Values are vnodes.
-        self.vnodesDict: Dict[str, Any] = {}  # keys are gnx strings; values are ignored
+        self.gnxDict: dict[str, VNode] = {}  # Keys are gnx strings. Values are vnodes.
+        self.vnodesDict: dict[str, Any] = {}  # keys are gnx strings; values are ignored
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
@@ -1851,7 +1851,7 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_outline_dict
-    def leojs_outline_dict(self, p: Position = None) -> Dict[str, Any]:
+    def leojs_outline_dict(self, p: Position = None) -> dict[str, Any]:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
@@ -1911,7 +1911,7 @@ class FileCommands:
             self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
-    def leojs_globals(self) -> Optional[Dict[str, Any]]:
+    def leojs_globals(self) -> Optional[dict[str, Any]]:
         """Put json representation of Leo's cached globals."""
         c = self.c
         width, height, left, top = c.frame.get_window_info()
@@ -1935,7 +1935,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> Dict[str, Any]:
+    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Any]:
         """Return a jsonized vnode."""
         c = self.c
         fc = self
@@ -1966,7 +1966,7 @@ class FileCommands:
         if p == c.p:
             status |= v.selectedBit
 
-        children: list[Dict[str, Any]] = []  # Start empty
+        children: list[dict[str, Any]] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.
@@ -1980,7 +1980,7 @@ class FileCommands:
             p.moveToParent()  # Restore p in the caller.
 
         # At least will contain  the gnx
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             'gnx': v.fileIndex,
         }
 
@@ -2123,7 +2123,7 @@ class FileCommands:
             return ''
         return self.pickle(torv=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList: list) -> list[Tuple[Any, Dict]]:
+    def createUaList(self, aList: list) -> list[Tuple[Any, dict]]:
         """
         Given aList of pairs (p,torv), return a list of pairs (torv,d)
         where d contains all picklable items of torv.unknownAttributes.

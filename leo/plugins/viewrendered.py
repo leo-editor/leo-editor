@@ -205,7 +205,7 @@ import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Callable, Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
@@ -326,8 +326,8 @@ latex_template = '''\
 </html>
 '''
 #@-<< vr define html templates >>
-controllers: Dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
-layouts: Dict[str, Tuple] = {}  # Dict[c.hash(), Tuple[layout_when_closed, layout_when_open]].
+controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
+layouts: dict[str, Tuple] = {}  # Dict[c.hash(), Tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
 #@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
@@ -355,14 +355,14 @@ def init() -> bool:
 def isVisible() -> bool:
     """Return True if the VR pane is visible."""
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
-def onCreate(tag: str, keys: Dict) -> None:
+def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
 #@+node:vitalije.20170712174157.1: *3* vr.onClose
-def onClose(tag: str, keys: Dict) -> None:
+def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
     h = c.hash()
     vr = controllers.get(h)
@@ -690,7 +690,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.pyplot_active = False
-        self.scrollbar_pos_dict: Dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
+        self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
         self.sizes: list[int] = []  # Saved splitter sizes.
         self.splitter = None
         self.splitter_index: int = None  # The index of the rendering pane in the splitter.
@@ -705,7 +705,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.activate()
         self.zoomed = False
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
-    def create_dispatch_dict(self) -> Dict[str, Callable]:
+    def create_dispatch_dict(self) -> dict[str, Callable]:
         pc = self
         d = {
             'asciidoc': pc.update_asciidoc,

@@ -8,7 +8,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, Generator, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -117,7 +117,7 @@ class LeoFind:
         #
         # For isearch commands...
         self.stack: list[Tuple[Position, int, int, bool]] = []
-        self.inverseBindingDict: Dict[str, list[Tuple[str, Stroke]]] = {}
+        self.inverseBindingDict: dict[str, list[Tuple[str, Stroke]]] = {}
         self.isearch_ignore_case: bool = False
         self.isearch_forward_flag: bool = False
         self.isearch_regexp: bool = False
@@ -1538,7 +1538,7 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         self.do_change_all(settings)  # Correct: convert to change-all.
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
-    def do_find_all(self, settings: Settings) -> Dict[str, Any]:
+    def do_find_all(self, settings: Settings) -> dict[str, Any]:
         """
         Top-level helper for find-all command.
 
@@ -1567,7 +1567,7 @@ class LeoFind:
         self.node_only = self.suboutline_only = False
         return result_dict
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper & helpers
-    def _find_all_helper(self, settings: Settings) -> Dict[str, Any]:
+    def _find_all_helper(self, settings: Settings) -> dict[str, Any]:
         """
         Handle the find-all command from p to after.
 
@@ -1588,7 +1588,7 @@ class LeoFind:
             vnodes = list(set(z.v for z in c.p.self_and_subtree()))
         else:
             vnodes = list(c.all_unique_nodes())
-        matches_dict: list[Dict] = []
+        matches_dict: list[dict] = []
         distinct_body_lines, total_matches, total_nodes = 0, 0, 0
         for v in vnodes:
             body, head = [], []
@@ -1669,7 +1669,7 @@ class LeoFind:
         row, col = g.convertPythonIndexToRowCol(s, i)
         return row + 1, line
     #@+node:ekr.20230124103253.1: *7* find.make_result_from_matches
-    def make_result_from_matches(self, matches: list[Dict]) -> str:
+    def make_result_from_matches(self, matches: list[dict]) -> str:
 
         results: list[str] = ['\n']
         # Report settings.

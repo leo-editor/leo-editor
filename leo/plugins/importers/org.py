@@ -3,7 +3,7 @@
 """The @auto importer for the org language."""
 from __future__ import annotations
 import re
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class Org_Importer(Importer):
         lines = self.lines
         assert parent == self.root
         parents: list[Position] = [parent]
-        lines_dict: Dict[VNode, list[str]] = {parent.v: []}
+        lines_dict: dict[VNode, list[str]] = {parent.v: []}
         i = 0
         while i < len(lines):
             line = lines[i]

@@ -65,7 +65,6 @@ import shutil
 import sys
 import random
 import textwrap
-from typing import Dict
 # Leo imports: This is not a plugin.
 try:
     import leo.core.leoGlobals as g
@@ -220,7 +219,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
     wrap_flag: bool = True
 
     # Internal...
-    db: Dict[str, list] = None
+    db: dict[str, list] = None
     debug: bool = False
     dx: int = 0  # x-scroll value.
     dy: int = 0  # y-scroll value.

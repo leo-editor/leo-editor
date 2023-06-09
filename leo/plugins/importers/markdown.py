@@ -3,7 +3,7 @@
 """The @auto importer for the markdown language."""
 from __future__ import annotations
 import re
-from typing import Dict, Tuple, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class Markdown_Importer(Importer):
         """
         assert parent == self.root
         lines = self.lines
-        self.lines_dict: Dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
+        self.lines_dict: dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
         self.stack: list[Position] = [parent]
         in_code, skip = False, 0
         for i, line in enumerate(lines):

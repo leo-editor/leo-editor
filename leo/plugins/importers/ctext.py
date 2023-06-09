@@ -2,7 +2,7 @@
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
 from __future__ import annotations
 import re
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g  # Required
 from leo.plugins.importers.base_importer import Importer
 
@@ -58,7 +58,7 @@ class CText_Importer(Importer):
             '/' if ft == '.js' else '#'
         )
         header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
-        lines_dict: Dict[VNode, list[str]] = {root.v: []}
+        lines_dict: dict[VNode, list[str]] = {root.v: []}
         parents: list[Position] = [root]
         for line in g.splitLines(s):
             m = header_pat.match(line)

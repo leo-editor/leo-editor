@@ -9,7 +9,7 @@ import sys
 import textwrap
 import time
 import token as token_module
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Tuple
 import unittest
 import warnings
 warnings.simplefilter("ignore")
@@ -135,8 +135,8 @@ class BaseTest(unittest.TestCase):
     """
 
     # Statistics.
-    counts: Dict[str, int] = {}
-    times: Dict[str, float] = {}
+    counts: dict[str, int] = {}
+    times: dict[str, float] = {}
 
     # Debugging traces & behavior.
     # create_links: 'full-traceback'

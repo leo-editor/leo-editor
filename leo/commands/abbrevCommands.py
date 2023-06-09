@@ -7,7 +7,7 @@ from __future__ import annotations
 import functools
 import re
 import string
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -39,7 +39,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
-        self.abbrevs: Dict[str, Tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
+        self.abbrevs: dict[str, Tuple[str, str]] = {}  # Keys are names, values are (abbrev,tag).
         self.dynaregex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
@@ -51,7 +51,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.save_ins = None  # Saved insert point.
         self.save_sel = None  # Saved selection range.
         self.store = {'rlist': [], 'stext': ''}  # For dynamic expansion.
-        self.tree_abbrevs_d: Dict[str, str] = {}  # Keys are names, values are (tree,tag).
+        self.tree_abbrevs_d: dict[str, str] = {}  # Keys are names, values are (tree,tag).
         self.w = None
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self) -> None:
@@ -188,7 +188,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         data = c.config.getOutlineData('tree-abbreviations')
         if data is None:
             return
-        d: Dict[str, str] = {}
+        d: dict[str, str] = {}
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
@@ -207,7 +207,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.app.disable_redraw = old_disable
         self.tree_abbrevs_d = d
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
-    def init_tree_abbrev_helper(self, d: Dict[str, str], tree_s: str) -> None:
+    def init_tree_abbrev_helper(self, d: dict[str, str], tree_s: str) -> None:
         """Init d from tree_s, the text of a copied outline."""
         c = self.c
         hidden_root = c.fileCommands.getPosFromClipboard(tree_s)

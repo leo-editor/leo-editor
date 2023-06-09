@@ -9,13 +9,13 @@ import glob
 import os
 import re
 import textwrap
-from typing import Dict, Tuple
+from typing import Tuple
 import unittest
 from leo.core import leoGlobals as g
 #@-<< test_design imports >>
 
 # Keys are paths, values are contents of file.
-files_dict: Dict[str, Tuple[str, ast.AST]] = None
+files_dict: dict[str, Tuple[str, ast.AST]] = None
 
 #@+others
 #@+node:ekr.20230508065238.1: ** functions...

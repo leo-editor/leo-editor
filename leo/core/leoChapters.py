@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import string
-from typing import Any, Callable, Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -32,7 +32,7 @@ class ChapterController:
         """Ctor for ChapterController class."""
         self.c = c
         # Note: chapter names never change, even if their @chapter node changes.
-        self.chaptersDict: Dict[str, Any] = {}  # Keys are chapter names, values are chapters.
+        self.chaptersDict: dict[str, Any] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
         self.re_chapter: re.Pattern = None  # Set where used.
         self.selectedChapter = None

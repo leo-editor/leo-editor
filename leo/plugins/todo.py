@@ -67,7 +67,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Callable, Dict, Iterable, Optional, Tuple, Union
+from typing import Any, Callable, Iterable, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
@@ -105,7 +105,7 @@ def init() -> bool:
     g.tree_popup_handlers.append(popup_entry)
     return True
 #@+node:tbrown.20090119215428.7: ** onCreate
-def onCreate(tag: str, key: Dict) -> None:
+def onCreate(tag: str, key: dict) -> None:
 
     c = key.get('c')
     todoController(c)
@@ -325,7 +325,7 @@ class todoController:
 
     #@+<< todoController data >>
     #@+node:tbrown.20090119215428.10: *3* << todoController data >>
-    priorities: Dict[int, Dict[str, str]] = {
+    priorities: dict[int, dict[str, str]] = {
       1: {'long': 'Urgent', 'short': '1', 'icon': 'pri1.png'},
       2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
       3: {'long': 'High', 'short': '3', 'icon': 'pri3.png'},
@@ -359,7 +359,7 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
+        self.menuicons: dict[Priority, Icon] = {}  # menu icon cache
         self.recentIcons: list[Icon] = []
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
@@ -743,7 +743,7 @@ class todoController:
                 return True
         return False
     #@+node:tbrown.20090119215428.26: *4* safe_del
-    def safe_del(self, d: Dict[str, Any], k: Any) -> None:
+    def safe_del(self, d: dict[str, Any], k: Any) -> None:
         "delete a key from a dict. if present"
         if k in d:
             del d[k]
@@ -1199,7 +1199,7 @@ class todoController:
         """show distribution of priority levels in subtree"""
         if p is None:
             p = self.c.currentPosition()
-        pris: Dict = {}
+        pris: dict = {}
         for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
@@ -1239,7 +1239,7 @@ class todoController:
                 w.setStyleSheet("/* */")
                 self._widget_to_style = None
     #@+node:tbrown.20090119215428.49: *3* updateUI
-    def updateUI(self, tag: str=None, k: Dict=None) -> None:
+    def updateUI(self, tag: str=None, k: dict=None) -> None:
 
         if k and k['c'] != self.c:
             return  # wrong number

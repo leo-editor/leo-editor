@@ -9,7 +9,7 @@ import os
 import pickle
 import sqlite3
 import stat
-from typing import Any, Dict, Generator, Optional, Sequence, Set, TYPE_CHECKING
+from typing import Any, Generator, Optional, Sequence, Set, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -214,7 +214,7 @@ class PickleShareDB:
             self._makedirs(self.root)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         def loadz(fileobj: Any) -> None:
             if fileobj:
@@ -491,7 +491,7 @@ class SqlitePickleShare:
         self.init_dbtables(self.conn)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         def loadz(data: Any) -> Optional[Any]:
             if data:
@@ -697,7 +697,7 @@ def dump_cache(db: Any, tag: str) -> None:
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d: Dict[str, Any] = {}
+    d: dict[str, Any] = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)

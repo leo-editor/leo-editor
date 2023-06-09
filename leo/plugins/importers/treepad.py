@@ -3,7 +3,7 @@
 """The @auto importer for the TreePad file format."""
 from __future__ import annotations
 import re
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g  # Required.
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -43,7 +43,7 @@ class Treepad_Importer(Importer):
         lines = self.lines
         assert parent == self.root
         parents: list[Position] = [parent]
-        lines_dict: Dict[VNode, list[str]] = {}  # Lines for each vnode.
+        lines_dict: dict[VNode, list[str]] = {}  # Lines for each vnode.
         i = 0
         if header_pat.match(lines[0]):
             i += 1

@@ -11,7 +11,7 @@ These classes should be overridden to create frames for a particular gui.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -300,7 +300,7 @@ class LeoBody:
         c = frame.c
         frame.body = self
         self.c = c
-        self.editorWrappers: Dict[str, Widget] = {}  # keys are pane names, values are text widgets
+        self.editorWrappers: dict[str, Widget] = {}  # keys are pane names, values are text widgets
         self.frame = frame
         self.parentFrame: Widget = parentFrame  # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -1179,11 +1179,11 @@ class LeoLog:
         self.logCtrl: Widget = None  # Set below. Same as self.textDict.get(self.tabName)
         self.tabName: str = None  # The name of the active tab.
         self.tabFrame: Widget = None  # Same as self.frameDict.get(self.tabName)
-        self.canvasDict: Dict[str, Widget] = {}  # Keys are page names.  Values are Widgets.
-        self.frameDict: Dict[str, Widget] = {}  # Keys are page names. Values are Frames
+        self.canvasDict: dict[str, Widget] = {}  # Keys are page names.  Values are Widgets.
+        self.frameDict: dict[str, Widget] = {}  # Keys are page names. Values are Frames
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
-        self.textDict: Dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
+        self.textDict: dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
         self.wrapper: Any = None  # For cursesGui2.py.
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
@@ -1477,7 +1477,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict: Dict[VNode, Tuple[Position, Any]] = {}
+        self.edit_text_dict: dict[VNode, Tuple[Position, Any]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -2174,7 +2174,7 @@ class NullTree(LeoTree):
         super().__init__(frame)
         assert self.frame
         self.c = frame.c
-        self.editWidgetsDict: Dict[VNode, Widget] = {}  # Keys are vnodes, values are StringTextWidgets.
+        self.editWidgetsDict: dict[VNode, Widget] = {}  # Keys are vnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None

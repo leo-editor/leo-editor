@@ -6,7 +6,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -1240,13 +1240,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         xoffset += 2
         return xoffset
     #@+node:ekr.20150514063305.232: *5* ec.dHash
-    def dHash(self, d: Dict[str, str]) -> str:
+    def dHash(self, d: dict[str, str]) -> str:
         """Hash a dictionary"""
         return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> list[Dict]:
+    def getIconList(self, v: VNode) -> list[dict]:
         """Return list of icons for v."""
-        fromVnode: list[Dict] = []
+        fromVnode: list[dict] = []
         if hasattr(v, 'unknownAttributes'):
             fromVnode = [dict(i) for i in v.u.get('icons', [])]
             for i in fromVnode:

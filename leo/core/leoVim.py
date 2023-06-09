@@ -21,7 +21,7 @@ doing the normal key handling that vim emulation uses.
 from __future__ import annotations
 import os
 import string
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 
@@ -134,7 +134,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
     #@@nobeautify
 
-    def create_motion_dispatch_d(self) -> Dict[str, Callable]:
+    def create_motion_dispatch_d(self) -> dict[str, Callable]:
         """
         Return the dispatch dict for motions.
         Keys are strokes, values are methods.
@@ -226,7 +226,7 @@ class VimCommands:
         }
         return d
     #@+node:ekr.20131111061547.16460: *5* vc.create_normal_dispatch_d
-    def create_normal_dispatch_d(self) -> Dict[str, Callable]:
+    def create_normal_dispatch_d(self) -> dict[str, Callable]:
         """
         Return the dispatch dict for normal mode.
         Keys are strokes, values are methods.
@@ -329,7 +329,7 @@ class VimCommands:
         }
         return d
     #@+node:ekr.20140222064735.16630: *5* vc.create_vis_dispatch_d
-    def create_vis_dispatch_d(self) -> Dict[str, Callable]:
+    def create_vis_dispatch_d(self) -> dict[str, Callable]:
         """
         Create a dispatch dict for visual mode.
         Keys are strokes, values are methods.
@@ -379,7 +379,7 @@ class VimCommands:
         }
         return d
     #@+node:ekr.20140805130800.18161: *5* vc.create_arrow_d
-    def create_arrow_d(self) -> Dict[str, Callable]:
+    def create_arrow_d(self) -> dict[str, Callable]:
         """Return a dict binding *all* arrows to self.arrow."""
         d = {}
         for arrow in ('Left', 'Right', 'Up', 'Down'):
@@ -455,7 +455,7 @@ class VimCommands:
         self.colon_w = None
         # True: allow f,F,h,l,t,T,x to cross line boundaries.
         self.cross_lines = c.config.getBool('vim-crosses-lines', default=True)
-        self.register_d: Dict[str, str] = {}  # Keys are letters; values are strings.
+        self.register_d: dict[str, str] = {}  # Keys are letters; values are strings.
         # The stroke ('/' or '?') that starts a vim search command.
         self.search_stroke = None
         # True: in vim-training mode: Mouse clicks and arrows are disabled.
@@ -2250,7 +2250,7 @@ class VimCommands:
         # because all normal mode commands call self.done.
         self.do_state(self.normal_mode_dispatch_d, 'normal')
     #@+node:ekr.20140802225657.18029: *4* vc.do_state
-    def do_state(self, d: Dict[str, Callable], mode_name: str) -> None:
+    def do_state(self, d: dict[str, Callable], mode_name: str) -> None:
         """General dispatcher code. d is a dispatch dict."""
         try:
             func = d.get(self.stroke)

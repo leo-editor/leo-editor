@@ -60,7 +60,7 @@ __plugin_priority__
 from __future__ import annotations
 import configparser as ConfigParser
 import os
-from typing import Any, Dict, Sequence, TYPE_CHECKING
+from typing import Any, Sequence, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -192,9 +192,9 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: Dict[Group, list[Any]] = {}
-        self.groups_by_plugin: Dict[Any, list[Group]] = {}
-        self.menus: Dict[str, Menu] = {}
+        self.plugins_by_group: dict[Group, list[Any]] = {}
+        self.groups_by_plugin: dict[Any, list[Group]] = {}
+        self.menus: dict[str, Menu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item: Item, group: Group) -> None:
         """Add a plugin"""

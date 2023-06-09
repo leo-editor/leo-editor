@@ -4,7 +4,7 @@
 #@+<< leoMenu imports & annotations >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -20,10 +20,10 @@ class LeoMenu:
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__(self, frame: Widget) -> None:
         self.c = frame.c
-        self.enable_dict: Dict[str, Callable] = {}  # Created by finishCreate.
+        self.enable_dict: dict[str, Callable] = {}  # Created by finishCreate.
         self.frame = frame
         self.isNull = False
-        self.menus: Dict[str, Any] = {}  # Menu dictionary.
+        self.menus: dict[str, Any] = {}  # Menu dictionary.
         self.wrapper: Wrapper = None
 
     def finishCreate(self) -> None:
@@ -463,7 +463,7 @@ class LeoMenu:
             g.es_exception()
             return None
     #@+node:ekr.20031218072017.4116: *4* LeoMenu.createOpenWithMenuFromTable & helpers
-    def createOpenWithMenuFromTable(self, table: list[Dict]) -> None:
+    def createOpenWithMenuFromTable(self, table: list[dict]) -> None:
         """
         Table is a list of dictionaries, created from @openwith settings nodes.
 
@@ -513,7 +513,7 @@ class LeoMenu:
         for d in table:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
-    def createOpenWithMenuItemsFromTable(self, menu: str, table: list[Dict]) -> None:
+    def createOpenWithMenuItemsFromTable(self, menu: str, table: list[dict]) -> None:
         """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
@@ -543,10 +543,10 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: Dict[str, str] = None) -> Callable:
+    def defineOpenWithMenuCallback(self, d: dict[str, str] = None) -> Callable:
         # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event: Event = None, self: Any = self, d: Dict[str, str] = d) -> Any:
+        def openWithMenuCallback(event: Event = None, self: Any = self, d: dict[str, str] = d) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 

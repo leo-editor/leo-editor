@@ -13,7 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, Generator, Iterable, Optional, Set, Tuple, Union
+from typing import Any, Callable, Generator, Iterable, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
@@ -203,7 +203,7 @@ class Commands:
         self.expansionNode = None  # The last node we expanded or contracted.
         self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
         self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
-        self.user_dict: Dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
+        self.user_dict: dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self) -> None:
         """Init ivars relating to gui events."""
@@ -761,7 +761,7 @@ class Commands:
         'shellscript': 'bash',
         }
         #@+node:tom.20230308193758.6: *4* get_external_maps
-        def get_external_maps() -> Tuple[Dict, Dict, str]:
+        def get_external_maps() -> Tuple[dict, dict, str]:
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -793,8 +793,8 @@ class Commands:
             if not data:
                 return None, None, ''
 
-            processor_map: Dict[str, str] = {}
-            extension_map: Dict[str, str] = {}
+            processor_map: dict[str, str] = {}
+            extension_map: dict[str, str] = {}
             active_map = None
             terminal: str = ''
             found_term = False
@@ -1143,7 +1143,7 @@ class Commands:
         define_g: bool = True,
         define_name: str = '__main__',
         silent: bool = False,
-        namespace: Dict = None,
+        namespace: dict = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
     ) -> None:
@@ -1904,7 +1904,7 @@ class Commands:
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
-        d: Dict[str, Set[VNode]] = {}
+        d: dict[str, Set[VNode]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -2472,7 +2472,7 @@ class Commands:
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
 
-    def scanAllDirectives(self, p: Position) -> Dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
         Scan p and ancestors for directives.
 
@@ -3185,7 +3185,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event = None, d: Dict[str, Any] = None) -> None:
+    def openWith(self, event: Event = None, d: dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -3276,7 +3276,7 @@ class Commands:
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
-    warnings_dict: Dict[str, bool] = {}
+    warnings_dict: dict[str, bool] = {}
 
     def raise_error_dialogs(self, kind: str = 'read') -> None:
         """Warn about read/write failures."""
@@ -4480,9 +4480,9 @@ class Commands:
             if aList2:
                 aList.sort()
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
-    def checkBatchOperationsList(self, aList: list) -> Tuple[bool, Dict]:
+    def checkBatchOperationsList(self, aList: list) -> Tuple[bool, dict]:
         ok = True
-        d: Dict[VNode, list[Any]] = {}
+        d: dict[VNode, list[Any]] = {}
         for z in aList:
             try:
                 op, p, n = z

@@ -11,7 +11,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, Dict, Optional, Set, Tuple, Union
+from typing import Any, Callable, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -632,7 +632,7 @@ class AtFile:
     def fast_read_into_root(self,
         c: Cmdr,
         contents: str,
-        gnx2vnode: Dict[str, VNode],
+        gnx2vnode: dict[str, VNode],
         path: str, root: Position,
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
@@ -2830,7 +2830,7 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p: Position) -> Dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
@@ -2967,11 +2967,11 @@ class FastAtRead:
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
-    def __init__(self, c: Cmdr, gnx2vnode: Dict[str, VNode]) -> None:
+    def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
 
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode: Dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.gnx2vnode: dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path: str = None
         self.root: Position = None
         # compiled patterns...

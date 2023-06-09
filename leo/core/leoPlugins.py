@@ -5,7 +5,7 @@
 #@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
 import sys
-from typing import Any, Callable, Dict, Iterator, TYPE_CHECKING
+from typing import Any, Callable, Iterator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -275,12 +275,12 @@ class LeoPluginsController:
     def __init__(self) -> None:
 
         # Keys are tags, values are lists of bunches.
-        self.handlers: Dict[str, Any] = {}
+        self.handlers: dict[str, Any] = {}
         # Keys are regularized module names, values are the names of .leo files
         # containing @enabled-plugins nodes that caused the plugin to be loaded
-        self.loadedModulesFilesDict: Dict[str, str] = {}
+        self.loadedModulesFilesDict: dict[str, str] = {}
         # Keys are regularized module names, values are modules.
-        self.loadedModules: Dict[str, Any] = {}
+        self.loadedModules: dict[str, Any] = {}
         # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack: list[str] = []
         self.signonModule = None  # A hack for plugin_signon.

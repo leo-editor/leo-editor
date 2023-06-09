@@ -19,7 +19,7 @@ the left side of toolbar.
 #@+<< nav_qt imports & annotations >>
 #@+node:ville.20090518182905.5422: ** << nav_qt imports & annotations >>
 from __future__ import annotations
-from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QAction, StandardPixmap
 
@@ -31,7 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< nav_qt imports & annotations >>
 
-controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
+controllers: dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 #@+others
 #@+node:ville.20090518182905.5423: ** init
 def init() -> bool:

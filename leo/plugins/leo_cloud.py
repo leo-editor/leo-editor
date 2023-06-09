@@ -80,7 +80,7 @@ import shlex
 import subprocess
 import tempfile
 import threading
-from typing import Any, Dict, Set
+from typing import Any, Set
 from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
@@ -462,7 +462,7 @@ class LeoCloud:
         Returns:
             dict
         """
-        kwargs: Dict[str, Any] = {'remote': None}
+        kwargs: dict[str, Any] = {'remote': None}
         # some methods assume 'remote' exists, but it's absent in LeoCloudIOFileSystem
         for line in p.b.split('\n'):
             kwarg = KWARG_RE.match(line)

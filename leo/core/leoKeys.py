@@ -13,7 +13,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
@@ -174,15 +174,15 @@ class AutoCompleterClass:
         self.language: str = ''
         # additional namespaces to search for objects, other code
         # can append namespaces to this to extend scope of search
-        self.namespaces: list[Dict] = []
+        self.namespaces: list[dict] = []
         self.qw = None  # The object that supports qcompletion methods.
         self.tabName: str = None  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
         self.w = None  # The widget that gets focus after autocomplete is done.
-        self.warnings: Dict[str, str] = {}  # Keys are language names.
+        self.warnings: dict[str, str] = {}  # Keys are language names.
         # Codewise pre-computes...
         self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
-        self.completionsDict: Dict[str, list[str]] = {}  # Keys are prefixes, values are completion lists.
+        self.completionsDict: dict[str, list[str]] = {}  # Keys are prefixes, values are completion lists.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -502,7 +502,7 @@ class AutoCompleterClass:
     #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
     def get_cached_options(self, prefix: str) -> Tuple[str, list[str]]:
         d = self.completionsDict
-        # Search the completions Dict for shorter and shorter prefixes.
+        # Search the completions dict for shorter and shorter prefixes.
         i = len(prefix)
         while i > 0:
             key = prefix[:i]
@@ -774,7 +774,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
-    def get_leo_namespace(self, prefix: str) -> Dict[str, Any]:
+    def get_leo_namespace(self, prefix: str) -> dict[str, Any]:
         """
         Return an environment in which to evaluate prefix.
         Add some common standard library modules as needed.
@@ -1003,7 +1003,7 @@ class AutoCompleterClass:
         """Show the possible starting letters,
         but only if there are more than one.
         """
-        d: Dict[str, int] = {}
+        d: dict[str, int] = {}
         for z in tabList:
             tail = z[len(header) :] if z else ''
             if tail.startswith('.'):
@@ -1047,7 +1047,7 @@ class ContextSniffer:
     """
 
     def __init__(self) -> None:
-        self.vars: Dict[str, list[Any]] = {}  # Keys are var names; values are list of classes
+        self.vars: dict[str, list[Any]] = {}  # Keys are var names; values are list of classes
     #@+others
     #@+node:ekr.20110312162243.14261: *3* get_classes
     def get_classes(self, s: str, varname: str) -> list[str]:
@@ -1737,19 +1737,19 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self) -> None:
         """Define internal ivars of the KeyHandlerClass class."""
-        self.abbreviationsDict: Dict = {}  # Abbreviations created by @alias nodes.
+        self.abbreviationsDict: dict = {}  # Abbreviations created by @alias nodes.
         # Previously defined bindings...
-        self.bindingsDict: Dict[str, Any] = {}  # Keys are Tk key names, values are lists of BindingInfo objects.
+        self.bindingsDict: dict[str, Any] = {}  # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
-        self.bindtagsDict: Dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
+        self.bindtagsDict: dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory: list[str] = []
         # Up arrow will select commandHistory[commandIndex]
         self.commandIndex = 0  # List/stack of previously executed commands.
         # Keys are scope names: 'all','text',etc. or mode names.
         # Values are dicts: keys are strokes, values are BindingInfo objects.
-        self.masterBindingsDict: Dict = {}
+        self.masterBindingsDict: dict = {}
         # Keys are strokes; value is list of Widgets in which the strokes are bound.
-        self.masterGuiBindingsDict: Dict[Stroke, list[Wrapper]] = {}
+        self.masterGuiBindingsDict: dict[Stroke, list[Wrapper]] = {}
         # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
@@ -1771,7 +1771,7 @@ class KeyHandlerClass:
         # For onIdleTime...
         self.idleCount = 0
         # For modes...
-        self.modeBindingsDict: Dict = {}
+        self.modeBindingsDict: dict = {}
         self.modeWidget = None
         self.silentMode = False
     #@+node:ekr.20080509064108.7: *5* k.defineMultiLineCommands
@@ -2154,14 +2154,14 @@ class KeyHandlerClass:
         d[stroke] = bi
         k.masterBindingsDict[pane] = d
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
-    def bindOpenWith(self, d: Dict[str, str]) -> None:
+    def bindOpenWith(self, d: dict[str, str]) -> None:
         """Register an open-with command."""
         c, k = self.c, self
         shortcut = d.get('shortcut') or ''
         name = d.get('name')
         # The first parameter must be event, and it must default to None.
 
-        def openWithCallback(event: Event = None, c: Cmdr = c, d: Dict = d) -> None:
+        def openWithCallback(event: Event = None, c: Cmdr = c, d: dict = d) -> None:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
@@ -2284,7 +2284,7 @@ class KeyHandlerClass:
         d = c.commandsDict
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2: Dict[g.KeyStroke, list[g.BindingInfo]] = g.SettingsDict('binding helper dict')
+        d2: dict[g.KeyStroke, list[g.BindingInfo]] = g.SettingsDict('binding helper dict')
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -3795,7 +3795,7 @@ class KeyHandlerClass:
             modeName = modeName[:-5]
         k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
     #@+node:ekr.20061031131434.158: *4* k.createModeBindings
-    def createModeBindings(self, modeName: str, d: Dict[str, list], w: Wrapper) -> None:
+    def createModeBindings(self, modeName: str, d: dict[str, list], w: Wrapper) -> None:
         """Create mode bindings for the named mode using dictionary d for w, a text widget."""
         c, k = self.c, self
         assert d.name().endswith('-mode')
@@ -3954,7 +3954,7 @@ class KeyHandlerClass:
         if not k.silentMode:
             c.minibufferWantsFocus()
     #@+node:ekr.20061031131434.166: *5* modeHelpHelper
-    def modeHelpHelper(self, d: Dict[str, str]) -> None:
+    def modeHelpHelper(self, d: dict[str, str]) -> None:
         c, k = self.c, self
         tabName = 'Mode'
         c.frame.log.clearTab(tabName)
@@ -3997,14 +3997,14 @@ class KeyHandlerClass:
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
-    def computeInverseBindingDict(self) -> Dict[str, list[Tuple[str, Any]]]:
+    def computeInverseBindingDict(self) -> dict[str, list[Tuple[str, Any]]]:
         """
         Return a dictionary whose keys are command names,
         values are lists of tuples(pane, stroke).
         """
         k = self
         d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
-        result_d: Dict[str, list[Tuple[str, Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
+        result_d: dict[str, list[Tuple[str, Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
         for scope in sorted(d):
             d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
             for stroke in d2:
@@ -4194,7 +4194,7 @@ class ModeInfo:
         self.c = c
         # The bindings in effect for this mode.
         # Keys are names of (valid) command names, values are BindingInfo objects.
-        self.d: Dict[str, Any] = {}
+        self.d: dict[str, Any] = {}
         self.entryCommands: list[Any] = []  # A list of BindingInfo objects.
         self.k = c.k
         self.name: str = self.computeModeName(name)

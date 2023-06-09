@@ -9,7 +9,7 @@ import os
 import re
 import textwrap
 import time
-from typing import Any, Callable, Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Optional, Tuple, TYPE_CHECKING
 import urllib
 #
 # Third-party imports.
@@ -2014,7 +2014,7 @@ class ToDoImporter:
             g.es_exception()
             return []
     #@+node:ekr.20200310101028.1: *3* todo_i.import_files
-    def import_files(self, files: list[str]) -> Dict[str, list[Any]]:
+    def import_files(self, files: list[str]) -> dict[str, list[Any]]:
         """
         Import all todo.txt files in the given list of file names.
 
@@ -2079,7 +2079,7 @@ class ToDoImporter:
                 bool(completed), priority, start_date, complete_date, task_s))
         return tasks
     #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
-    def prompt_for_files(self) -> Dict[str, Any]:
+    def prompt_for_files(self) -> dict[str, Any]:
         """
         Prompt for a list of todo.text files and import them.
 
@@ -2308,7 +2308,7 @@ class ZimImportController:
         files = self.parseZimIndex()
         if files:
             # Do the import
-            rstNodes: Dict[str, Position] = {'0': zimNode}
+            rstNodes: dict[str, Position] = {'0': zimNode}
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"

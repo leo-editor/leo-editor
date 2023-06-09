@@ -9,7 +9,7 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Dict, Generator, Tuple
+from typing import Any, Generator, Tuple
 from typing import TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
@@ -61,7 +61,7 @@ class ParserBaseClass:
         'shortcuts',
     ]
     # Keys are settings names, values are (type,value) tuples.
-    settingsDict: Dict[str, Any] = {}
+    settingsDict: dict[str, Any] = {}
     #@-<< ParserBaseClass data >>
     #@+others
     #@+node:ekr.20041119204700: *3*  pbc.ctor
@@ -74,9 +74,9 @@ class ParserBaseClass:
         # True if this is the .leo file being opened,
         # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
-        self.shortcutsDict: Dict[str, list[g.BindingInfo]] = g.SettingsDict('parser.shortcutsDict')
+        self.shortcutsDict: dict[str, list[g.BindingInfo]] = g.SettingsDict('parser.shortcutsDict')
         # A list of dicts containing 'name','shortcut','command' keys.
-        self.openWithList: list[Dict[str, Any]] = []
+        self.openWithList: list[dict[str, Any]] = []
         # Keys are canonicalized names.
         self.dispatchDict = {
             'bool':         self.doBool,
@@ -552,7 +552,7 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d: Dict[str, list[g.BindingInfo]] = g.SettingsDict(f"modeDict for {modeName}")
+        d: dict[str, list[g.BindingInfo]] = g.SettingsDict(f"modeDict for {modeName}")
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -690,8 +690,8 @@ class ParserBaseClass:
         return g.app.config.canonicalizeSettingName(s)
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
-    def parseFont(self, p: Position) -> Dict[str, Any]:
-        d: Dict[str, Any] = {
+    def parseFont(self, p: Position) -> dict[str, Any]:
+        d: dict[str, Any] = {
             'comments': [],
             'family': None,
             'size': None,
@@ -706,7 +706,7 @@ class ParserBaseClass:
         d['comments'] = '\n'.join(comments)
         return d
     #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
-    def parseFontLine(self, line: str, d: Dict[str, Any]) -> None:
+    def parseFontLine(self, line: str, d: dict[str, Any]) -> None:
         s = line.strip()
         if not s:
             return
@@ -764,14 +764,14 @@ class ParserBaseClass:
                         val = s[j + 1 :].strip()
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* pbc.parseOpenWith & helper
-    def parseOpenWith(self, p: Position) -> Dict[str, Any]:
+    def parseOpenWith(self, p: Position) -> dict[str, Any]:
 
         d = {'command': None}  # d contains args, kind, etc tags.
         for line in g.splitLines(p.b):
             self.parseOpenWithLine(line, d)
         return d
     #@+node:ekr.20070411101643.4: *5* pbc.parseOpenWithLine
-    def parseOpenWithLine(self, line: str, d: Dict[str, Any]) -> None:
+    def parseOpenWithLine(self, line: str, d: dict[str, Any]) -> None:
         s = line.strip()
         if not s:
             return
@@ -888,7 +888,7 @@ class ParserBaseClass:
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict: Dict[str, list[g.GeneralSetting]] = g.SettingsDict(f"settingsDict for {c.shortFileName()}")
+        self.settingsDict: dict[str, list[g.GeneralSetting]] = g.SettingsDict(f"settingsDict for {c.shortFileName()}")
         self.shortcutsDict = g.SettingsDict(f"shortcutsDict for {c.shortFileName()}")
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot()
@@ -1163,7 +1163,7 @@ class ActiveSettingsOutline:
             else:
                 p.doDelete()
     #@+node:ekr.20190905091614.14: *3* aso.filter_settings
-    def filter_settings(self, target_kind: str) -> Dict[str, Any]:
+    def filter_settings(self, target_kind: str) -> dict[str, Any]:
         """Return a dict containing only settings defined in the file given by kind."""
         # Crucial: Always use the newly-created commander.
         #          It's settings are guaranteed to be correct.
@@ -1210,7 +1210,7 @@ class GlobalConfigManager:
         self.enabledPluginsString = ''
         self.menusList: list[Any] = []  # pbc.doMenu comment: likely buggy.
         self.menusFileName = ''
-        self.modeCommandsDict: Dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
+        self.modeCommandsDict: dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
         self.panes = None
         self.recentFiles: list[str] = []
         self.sc = None
@@ -1336,7 +1336,7 @@ class GlobalConfigManager:
             or type1 == type2
         )
     #@+node:ekr.20060608224112: *4* gcm.getAbbrevDict
-    def getAbbrevDict(self) -> Dict[str, Any]:
+    def getAbbrevDict(self) -> dict[str, Any]:
         """Search all dictionaries for the setting & check it's type"""
         d = self.get('abbrev', 'abbrev')
         return d or {}
@@ -1443,7 +1443,7 @@ class GlobalConfigManager:
         # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20070411101643: *4* gcm.getOpenWith
-    def getOpenWith(self) -> list[Dict[str, Any]]:
+    def getOpenWith(self) -> list[dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
@@ -1651,7 +1651,7 @@ class LocalConfigManager:
             or type1 == type2
         )
     #@+node:ekr.20120215072959.12522: *5* c.config.getAbbrevDict
-    def getAbbrevDict(self) -> Dict[str, Any]:
+    def getAbbrevDict(self) -> dict[str, Any]:
         """Search all dictionaries for the setting & check it's type"""
         d = self.get('abbrev', 'abbrev')
         return d or {}
@@ -1788,7 +1788,7 @@ class LocalConfigManager:
 
         return aList or g.app.config.menusList
     #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
-    def getOpenWith(self) -> list[Dict[str, Any]]:
+    def getOpenWith(self) -> list[dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
@@ -1823,7 +1823,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: Dict[Cmdr, bool] = {}
+    no_menu_dict: dict[Cmdr, bool] = {}
 
     def getShortcut(self, commandName: str) -> Tuple[str, list]:
         """Return rawKey,accel for shortcutName"""

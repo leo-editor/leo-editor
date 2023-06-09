@@ -6,7 +6,7 @@
 from __future__ import annotations
 import binascii
 import pickle
-from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -155,13 +155,13 @@ class PersistenceDataController:
         else:
             g.trace('bad @gnxs contents', gnxs, unls)
     #@+node:ekr.20141021083702.18341: *6* pd.create_outer_gnx_dict
-    def create_outer_gnx_dict(self, root: Position) -> Dict[str, Position]:
+    def create_outer_gnx_dict(self, root: Position) -> dict[str, Position]:
         """
         Return a dict whose keys are gnx's and whose values are positions
         **outside** of root's tree.
         """
         c = self.c
-        d: Dict[str, Position] = {}
+        d: dict[str, Position] = {}
         p = c.rootPosition()
         while p:
             if p.v == root.v:
@@ -172,7 +172,7 @@ class PersistenceDataController:
                 p.moveToThreadNext()
         return d
     #@+node:ekr.20140711111623.17809: *6* pd.restore_gnx
-    def restore_gnx(self, d: Dict[str, Position], gnx: str, root: Position, unl: str) -> None:
+    def restore_gnx(self, d: dict[str, Position], gnx: str, root: Position, unl: str) -> None:
         """
         d is an *outer* gnx dict, associating nodes *outside* the tree with positions.
         Let p1 be the position of the node *within* root's tree corresponding to unl.

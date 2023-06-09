@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import time
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -527,7 +527,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         default_annotation = 'Any'  # The 'DEFAULT' @data add-mypy-annotations key overrides this.
         default_return_annotation = 'None'
         tag = 'add-mypy-annotations'
-        types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
+        types_d: dict[str, str] = {}  # Keys are argument names. Values are mypy types.
 
         def __init__(self, c: Cmdr) -> None:
             self.c = c
@@ -619,7 +619,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #        Alas, now we can't convert defs that already have return values.
         def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\):(.*?)\n', re.MULTILINE + re.DOTALL)
 
-        return_dict: Dict[str, str] = {
+        return_dict: dict[str, str] = {
             '__init__': 'None',
             '__repr__': 'str',
             '__str__': 'str',
@@ -785,8 +785,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             else:
                 self.ivars_dict = {}
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
-        def parse_ivars_data(self, aList: list[str]) -> Dict[str, list[str]]:
-            d: Dict[str, list[str]] = {}
+        def parse_ivars_data(self, aList: list[str]) -> dict[str, list[str]]:
+            d: dict[str, list[str]] = {}
             key = None
             aList = [z.strip() for z in aList if z.strip()]
             for s in aList:
@@ -1253,8 +1253,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.verbose = c.config.getBool('stub-verbose', default=False)
                 self.warn = c.config.getBool('stub-warn', default=False)
                 # Pattern lists & dicts, set by config sections...
-                self.patterns_dict: Dict[str, Any] = {}
-                self.names_dict: Dict[str, Any] = {}
+                self.patterns_dict: dict[str, Any] = {}
+                self.names_dict: dict[str, Any] = {}
                 self.def_patterns = self.scan_patterns('stub-def-name-patterns')
                 self.general_patterns = self.scan_patterns('stub-general-patterns')
                 self.prefix_lines = self.scan('stub-prefix-lines')
@@ -1277,11 +1277,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace(f"warning: no @data {kind} node")
                 return aList
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: str) -> Dict[str, list[str]]:
+            def scan_d(self, kind: str) -> dict[str, list[str]]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
-                d: Dict[str, list[str]] = {}
+                d: dict[str, list[str]] = {}
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
@@ -1504,7 +1504,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
-        types_d: Dict[str, str] = {}
+        types_d: dict[str, str] = {}
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor

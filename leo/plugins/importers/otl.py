@@ -3,7 +3,7 @@
 """The @auto importer for vim-outline files."""
 from __future__ import annotations
 import re
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -49,7 +49,7 @@ class Otl_Importer(Importer):
         lines = self.lines
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.
-        lines_dict: Dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
+        lines_dict: dict[VNode, list[str]] = {parent.v: []}  # Lines for each vnode.
         parents: list[Position] = [self.root]
         for line in lines:
             if not line.strip():

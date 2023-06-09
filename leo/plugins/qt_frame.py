@@ -10,7 +10,7 @@ import platform
 import string
 import sys
 import time
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
@@ -884,7 +884,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
 
             #@+others
             #@+node:ekr.20131120054058.16281: *8* EventWrapper.create_d
-            def create_d(self) -> Dict[str, str]:
+            def create_d(self) -> dict[str, str]:
                 """Create self.d dictionary."""
                 c = self.c
                 d = {}
@@ -2547,10 +2547,10 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
+        self.contentsDict: dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
         self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None
-        self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
+        self.logDict: dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
         self.logWidget: "LeoQtLog" = None  # Set in finishCreate.
         self.menu: Widget = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: Widget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
@@ -4299,7 +4299,7 @@ class QtStatusLineClass:
         self.put_helper(s, self.textWidget1, bg, fg)
 
     # Keys are widgets, values are stylesheets.
-    styleSheetCache: Dict[Any, str] = {}
+    styleSheetCache: dict[Any, str] = {}
 
     def put_helper(self, s: str, w: "LeoQtFrame", bg: str=None, fg: str=None) -> None:
         """Put string s in the indicated widget, with proper colors."""
@@ -4472,7 +4472,7 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames: Dict["DynamicWindow", "LeoQtFrame"] = {}
+        self.leoFrames: dict["DynamicWindow", "LeoQtFrame"] = {}
         self.masterFrame: "LeoTabbedTopLevel" = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame

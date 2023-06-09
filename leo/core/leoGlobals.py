@@ -35,7 +35,7 @@ import time
 import traceback
 import types
 from typing import TYPE_CHECKING
-from typing import Any, Callable, Dict, Generator, Iterable, Optional, Sequence, Set, Tuple, Union
+from typing import Any, Callable, Generator, Iterable, Optional, Sequence, Set, Tuple, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -344,7 +344,7 @@ url_kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
 #@-<< define regex's >>
 tree_popup_handlers: list[Callable] = []  # Set later.
-user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
+user_dict: dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
 app: Any = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
@@ -538,7 +538,7 @@ class EmergencyDialog:
         else:
             print(message.rstrip() + '\n')
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
-    def createButtons(self, buttons: list[Dict[str, Any]]) -> list[Any]:
+    def createButtons(self, buttons: list[dict[str, Any]]) -> list[Any]:
         """Create a row of buttons.
 
         buttons is a list of dictionaries containing
@@ -1616,9 +1616,9 @@ class SherlockTracer:
         """SherlockTracer ctor."""
         self.bad_patterns: list[str] = []  # List of bad patterns.
         self.indent = indent  # True: indent calls and returns.
-        self.contents_d: Dict[str, list] = {}  # Keys are file names, values are file lines.
+        self.contents_d: dict[str, list] = {}  # Keys are file names, values are file lines.
         self.n = 0  # The frame level on entry to run.
-        self.stats: Dict[str, Dict] = {}  # Keys are full file names, values are dicts.
+        self.stats: dict[str, dict] = {}  # Keys are full file names, values are dicts.
         self.patterns: list[Any] = None  # A list of regex patterns to match.
         self.pattern_stack: list[str] = []
         self.show_args = show_args  # True: show args for each function call.
@@ -2088,10 +2088,10 @@ class Tracer:
     def __init__(self, limit: int = 0, trace: bool = False, verbose: bool = False) -> None:
         # Keys are function names.
         # Values are the number of times the function was called by the caller.
-        self.callDict: Dict[str, Any] = {}
+        self.callDict: dict[str, Any] = {}
         # Keys are function names.
         # Values are the total number of times the function was called.
-        self.calledDict: Dict[str, int] = {}
+        self.calledDict: dict[str, int] = {}
         self.count = 0
         self.inited = False
         self.limit = limit  # 0: no limit, otherwise, limit trace to n entries deep.
@@ -2186,7 +2186,7 @@ class Tracer:
         caller = self.stack[-1]
         # d is a dict representing the called functions.
         # Keys are called functions, values are counts.
-        d: Dict[str, int] = self.callDict.get(caller, {})
+        d: dict[str, int] = self.callDict.get(caller, {})
         d[name] = 1 + d.get(name, 0)
         self.callDict[caller] = d
         # Update the total counts.
@@ -2200,10 +2200,10 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 #@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
 #@@nobeautify
 
-tracing_tags: Dict[int, str] = {}  # Keys are id's, values are tags.
-tracing_vars: Dict[int, list] = {}  # Keys are id's, values are names of ivars.
+tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
+tracing_vars: dict[int, list] = {}  # Keys are id's, values are names of ivars.
 # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
-tracing_signatures: Dict[str, Any] = {}
+tracing_signatures: dict[str, Any] = {}
 
 class NullObject:
     """An object that does nothing, and does it very well."""
@@ -2659,16 +2659,16 @@ def get_line_after(s: str, i: int) -> str:
 
 getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj: Any) -> Dict[str, Any]:
+def getIvarsDict(obj: Any) -> dict[str, Any]:
     """Return a dictionary of ivars:values for non-methods of obj."""
-    d: Dict[str, Any] = dict(
+    d: dict[str, Any] = dict(
         [[key, getattr(obj, key)] for key in dir(obj)
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
 def checkUnchangedIvars(
     obj: Any,
-    d: Dict[str, Any],
+    d: dict[str, Any],
     exceptions: Sequence[str] = None,
 ) -> bool:
     if not exceptions:
@@ -2782,7 +2782,7 @@ def printGcObjects() -> int:
     print(f"garbage: {n}")
     print(f"{delta:6d} = {n2:7d} totals")
     # print number of each type of object.
-    d: Dict[str, int] = {}
+    d: dict[str, int] = {}
     count = 0
     for obj in gc.get_objects():
         key = str(type(obj))
@@ -2791,7 +2791,7 @@ def printGcObjects() -> int:
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2: Dict[Any, Any] = {v: k for k, v in d.items()}
+    d2: dict[Any, Any] = {v: k for k, v in d.items()}
     for key in reversed(sorted(d2.keys())):
         val = d2.get(key)
         print(f"{key:7} {val}")
@@ -3006,7 +3006,7 @@ def findReference(name: str, root: Position) -> Optional[Position]:
             return p.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
-def get_directives_dict(p: Position) -> Dict[str, str]:
+def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
 
@@ -3031,7 +3031,7 @@ def get_directives_dict(p: Position) -> Dict[str, str]:
             d[word] = val
     return d
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p: Position) -> list[Dict]:
+def get_directives_dict_list(p: Position) -> list[dict]:
     """Scans p and all its ancestors for directives.
 
     Returns a list of dicts containing pointers to
@@ -3181,7 +3181,7 @@ def isValidLanguage(language: str) -> bool:
     fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
     return g.os_path_exists(fn)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
-def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[Dict[str, str]]:
+def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
     Scan aList for @comment and @language directives.
 
@@ -5303,7 +5303,7 @@ def unCamel(s: str) -> list[str]:
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
-checkUnicode_dict: Dict[str, bool] = {}
+checkUnicode_dict: dict[str, bool] = {}
 
 def checkUnicode(s: str, encoding: str = None) -> str:
     """
@@ -5438,7 +5438,7 @@ def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False)
     # Tracing these calls directly yields thousands of calls.
     return s  # type:ignore
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
+unicode_warnings: dict[str, bool] = {}  # Keys are g.callers.
 
 def toUnicode(s: Any, encoding: str = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
@@ -5709,7 +5709,7 @@ def stripBlankLines(s: str) -> str:
 # g.pr prints to the console.
 # g.es_print and related print to both the Log window and the console.
 #@+node:ekr.20080821073134.2: *3* g.doKeywordArgs
-def doKeywordArgs(keys: Dict, d: Dict = None) -> Dict:
+def doKeywordArgs(keys: dict, d: dict = None) -> dict:
     """
     Return a result dict that is a copy of the keys dict
     with missing items replaced by defaults in d dict.
@@ -6083,7 +6083,7 @@ def trace(*args: Any, **keys: Any) -> None:
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
 
-def translateArgs(args: Iterable[Any], d: Dict[str, Any]) -> str:
+def translateArgs(args: Iterable[Any], d: dict[str, Any]) -> str:
     """
     Return the concatenation of s and all args, with odd args translated.
     """
@@ -6237,8 +6237,8 @@ def funcToMethod(f: Any, theClass: Any, name: str = None) -> None:
     setattr(theClass, name or f.__name__, f)
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
-init_zodb_failed: Dict[str, bool] = {}  # Keys are paths, values are True.
-init_zodb_db: Dict[str, Any] = {}  # Keys are paths, values are ZODB.DB instances.
+init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
+init_zodb_db: dict[str, Any] = {}  # Keys are paths, values are ZODB.DB instances.
 
 def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Any:
     """
@@ -6299,7 +6299,7 @@ def issueSecurityWarning(setting: str) -> None:
 #@+node:ekr.20031218072017.3144: *3* g.makeDict (Python Cookbook)
 # From the Python cookbook.
 
-def makeDict(**keys: Any) -> Dict:
+def makeDict(**keys: Any) -> dict:
     """Returns a Python dictionary from using the optional keyword arguments."""
     return keys
 #@+node:ekr.20140528065727.17963: *3* g.pep8_class_name
@@ -6718,7 +6718,7 @@ def python_tokenize(s: str) -> list:
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
 #@+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: Dict[str, Any], script: str = None) -> None:
+def exec_file(path: str, d: dict[str, Any], script: str = None) -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:

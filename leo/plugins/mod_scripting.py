@@ -228,7 +228,7 @@ import pprint
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, Set, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -419,7 +419,7 @@ class ScriptingController:
         getBool = c.config.getBool
         self.scanned = False
         kind = c.config.getString('debugger-kind') or 'idle'
-        self.buttonsDict: Dict[Any, str] = {}  # Keys are buttons, values are button names (strings).
+        self.buttonsDict: dict[Any, str] = {}  # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         # True: adds a button for every @button node.
         self.atButtonNodes = getBool('scripting-at-button-nodes')
@@ -1225,9 +1225,9 @@ class EvalController:
         """Ctor for EvalController class."""
         self.answers: list[Tuple[str, str]] = []
         self.c = c
-        self.d: Dict[str, Any] = {}
-        self.globals_d: Dict[str, Any] = {'c': c, 'g': g, 'p': c.p}
-        self.locals_d: Dict[str, Any] = {}
+        self.d: dict[str, Any] = {}
+        self.globals_d: dict[str, Any] = {'c': c, 'g': g, 'p': c.p}
+        self.locals_d: dict[str, Any] = {}
         self.legacy = c.config.getBool('legacy-eval', default=True)
         if g.app.ipk:
             # Use the IPython namespace.
@@ -1526,7 +1526,7 @@ class EvalController:
             g.es(txt)
         return ans
     #@+node:ekr.20180329125626.1: *4* eval.exec_then_eval (not used yet)
-    def exec_then_eval(self, code: str, ns: Dict) -> str:
+    def exec_then_eval(self, code: str, ns: dict) -> str:
         # From Milan Melena.
         import ast
         block = ast.parse(code, mode='exec')
@@ -1548,7 +1548,7 @@ class EvalController:
         pos = c.frame.body.wrapper.getInsertPoint()
         chrs = 0
         lines = c.p.b.split('\n')
-        block: Dict[str, list] = {'source': [], 'output': []}
+        block: dict[str, list] = {'source': [], 'output': []}
         reading = 'source'
         seeking_current = True
         # if the last non-blank line isn't the end of a possibly empty

@@ -10,7 +10,7 @@ import functools
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
@@ -64,7 +64,7 @@ class LeoQtGui(leoGui.LeoGui):
         super().__init__('qt')  # Initialize the base class.
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
-        self.iconimages: Dict[str, Any] = {}  # Keys are paths, values are Icons.
+        self.iconimages: dict[str, Any] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: Widget = None
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
@@ -308,7 +308,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str,
         message: str='Select Date/Time',
         init: datetime.datetime=None,
-        step_min: Dict=None,
+        step_min: dict=None,
     ) -> None:
         """Create and run a qt date/time selection dialog.
 
@@ -335,7 +335,7 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: Widget=None, init: bool=None, step_min: Dict=None) -> None:
+            def __init__(self, parent: Widget=None, init: bool=None, step_min: dict=None) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -358,7 +358,7 @@ class LeoQtGui(leoGui.LeoGui):
                 parent: Widget=None,
                 message: str='Select Date/Time',
                 init: Any=None,  # Hard to annotate.
-                step_min: Dict=None,
+                step_min: dict=None,
             ) -> None:
                 if step_min is None:
                     step_min = {}
@@ -663,7 +663,7 @@ class LeoQtGui(leoGui.LeoGui):
         data: Any=None,
         callback: Callable=None,
         buttons: list[str]=None,
-    ) -> Tuple[str, Dict]:
+    ) -> Tuple[str, dict]:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
@@ -1855,7 +1855,7 @@ class StyleSheetManager:
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
-    def adjust_sizes(self, settingsDict: Dict) -> Tuple[Dict, Any]:
+    def adjust_sizes(self, settingsDict: dict) -> Tuple[dict, Any]:
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {}
@@ -1879,9 +1879,9 @@ class StyleSheetManager:
         return constants, deltas
     #@+node:ekr.20180316093159.1: *5* ssm.do_pass
     def do_pass(self,
-        constants: Dict,
+        constants: dict,
         deltas: list[str],
-        settingsDict: Dict[str, Any],
+        settingsDict: dict[str, Any],
         sheet: str,
         to_do: list[str],
     ) -> str:

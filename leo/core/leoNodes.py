@@ -7,7 +7,7 @@ from __future__ import annotations
 import copy
 import time
 import uuid
-from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple
+from typing import Any, Callable, Generator, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
@@ -1979,7 +1979,7 @@ class VNode:
         self.selectionStart = 0  # The start of the selected body text.
 
         # For at.read logic.
-        self.at_read: Dict[str, set] = {}
+        self.at_read: dict[str, set] = {}
 
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
@@ -2631,7 +2631,7 @@ class VNode:
         __get_h, __set_h,
         doc="VNode headline string property")
     #@+node:ekr.20090130114732.6: *4* v.u Property
-    def __get_u(self) -> Dict:
+    def __get_u(self) -> dict:
         v = self
         # Wrong: return getattr(v, 'unknownAttributes', {})
         # It is does not set v.unknownAttributes, which can cause problems.

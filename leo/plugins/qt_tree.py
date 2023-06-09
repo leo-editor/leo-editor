@@ -6,7 +6,7 @@
 from __future__ import annotations
 import re
 import time
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Tuple
 from typing import TYPE_CHECKING
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
@@ -47,12 +47,12 @@ class LeoQtTree(leoFrame.LeoTree):
         self.busy = False
         # Associating items with position and vnodes...
         self.items: list[Item] = []
-        self.item2positionDict: Dict[str, Position] = {}  # Keys are gnxs.
-        self.item2vnodeDict: Dict[str, VNode] = {}  # Keys are gnxs.
-        self.nodeIconsDict: Dict[str, list[Icon]] = {}  # keys are gnxs, values are declutter generated icons
-        self.position2itemDict: Dict[str, Item] = {}  # Keys are gnxs.
-        self.vnode2itemsDict: Dict[VNode, list[Item]] = {}  # values are lists of items.
-        self.editWidgetsDict: Dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
+        self.item2positionDict: dict[str, Position] = {}  # Keys are gnxs.
+        self.item2vnodeDict: dict[str, VNode] = {}  # Keys are gnxs.
+        self.nodeIconsDict: dict[str, list[Icon]] = {}  # keys are gnxs, values are declutter generated icons
+        self.position2itemDict: dict[str, Item] = {}  # Keys are gnxs.
+        self.vnode2itemsDict: dict[VNode, list[Item]] = {}  # values are lists of items.
+        self.editWidgetsDict: dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
         self.reloadSettings()
         # Components...
         self.canvas = self  # An official ivar used by Leo's core.
@@ -61,8 +61,8 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         # Declutter data...
         self.declutter_patterns: list[Any] = None  # list of pairs of patterns for decluttering
-        self.declutter_data: Dict[Any, Any] = {}
-        self.loaded_images: Dict[str, Icon] = {}
+        self.declutter_data: dict[Any, Any] = {}
+        self.loaded_images: dict[str, Icon] = {}
 
         if 0:  # None of this works.
             #@+<< Drag and drop >>

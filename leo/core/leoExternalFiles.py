@@ -7,7 +7,7 @@ import getpass
 import os
 import subprocess
 import tempfile
-from typing import Any, Callable, Dict, Optional, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -64,16 +64,16 @@ class ExternalFilesController:
     #@+node:ekr.20150404083533.1: *3* efc.ctor
     def __init__(self, c: Cmdr = None) -> None:
         """Ctor for ExternalFiles class."""
-        self.checksum_d: Dict[str, str] = {}  # Keys are full paths, values are file checksums.
+        self.checksum_d: dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
         # Keys are commanders.
         # Values are cached @bool check-for-changed-external-file settings.
-        self.enabled_d: Dict[Cmdr, bool] = {}
+        self.enabled_d: dict[Cmdr, bool] = {}
         # List of ExternalFile instances created by self.open_with.
         self.files: list[Any] = []
         # Keys are commanders. Values are bools.
         # Used only to limit traces.
-        self.has_changed_d: Dict[Cmdr, bool] = {}
+        self.has_changed_d: dict[Cmdr, bool] = {}
         # Copy of g.app.commanders()
         self.unchecked_commanders: list[Cmdr] = []
         # Copy of self file. Only one files is checked at idle time.
@@ -81,7 +81,7 @@ class ExternalFilesController:
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self._time_d: Dict[str, float] = {}
+        self._time_d: dict[str, float] = {}
         self.yesno_all_answer: str = None  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20150405105938.1: *3* efc.entries
@@ -251,7 +251,7 @@ class ExternalFilesController:
             p.setDirty()
             c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
-    def open_with(self, c: Cmdr, d: Dict[str, Any]) -> None:
+    def open_with(self, c: Cmdr, d: dict[str, Any]) -> None:
         """
         Called by c.openWith to handle items in the Open With... menu.
 
@@ -394,7 +394,7 @@ class ExternalFilesController:
         self.files.append(ExternalFile(c, ext, p, path, time))
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
-    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool = False) -> str:
+    def open_file_in_external_editor(self, c: Cmdr, d: dict[str, Any], fn: str, testing: bool = False) -> str:
         """
         Open a file fn in an external editor.
 

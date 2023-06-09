@@ -7,7 +7,7 @@ from __future__ import annotations
 import sys
 import os
 import time
-from typing import Any, Dict, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 # Third-party tools.
 try:
     import black
@@ -228,7 +228,7 @@ def fstringify_files_silent(event: Event) -> None:
         f"{n_changed} changed file{g.plural(n_changed)} "
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
-def orange_settings(c: Cmdr) -> Dict[str, Any]:
+def orange_settings(c: Cmdr) -> dict[str, Any]:
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)

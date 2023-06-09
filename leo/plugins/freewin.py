@@ -245,7 +245,7 @@ Leo themes.
 #@+<< typing imports >>
 #@+node:tom.20220919102037.1: *3* << typing imports >>
 from __future__ import annotations
-from typing import TYPE_CHECKING, Dict, Any, Tuple
+from typing import TYPE_CHECKING, Any, Tuple
 #@-<< typing imports >>
 
 from os.path import exists, join as osp_join
@@ -379,7 +379,7 @@ RST_NO_WARNINGS:int = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE:str = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE:str = 'freewin_rst_dark.css'
 
-instances: Dict[str, 'ZEditorWin' ] = {}
+instances: dict[str, 'ZEditorWin' ] = {}
 
 #@+others
 #@+node:tom.20210709130401.1: *3* Fonts and Text

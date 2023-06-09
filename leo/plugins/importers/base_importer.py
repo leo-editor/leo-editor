@@ -4,7 +4,7 @@
 from __future__ import annotations
 import io
 import re
-from typing import Dict, Tuple, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -373,7 +373,7 @@ class Importer:
         ws_char = ' ' if self.tab_width < 1 else '\t'
         return ws_char * n
     #@+node:ekr.20230529075138.34: *4* i.create_placeholders
-    def create_placeholders(self, level: int, lines_dict: Dict, parents: list[Position]) -> None:
+    def create_placeholders(self, level: int, lines_dict: dict, parents: list[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
 

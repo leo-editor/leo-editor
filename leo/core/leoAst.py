@@ -164,7 +164,7 @@ import sys
 import textwrap
 import tokenize
 import traceback
-from typing import Any, Callable, Dict, Generator, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Optional, Tuple, Union
 
 Node = ast.AST
 ActionList = list[Tuple[Callable, Any]]
@@ -365,7 +365,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
     #@+node:ekr.20200702115002.1: *3* command: orange_command
-    def orange_command(files: list[str], settings: Optional[Dict[str, Any]] = None) -> None:
+    def orange_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -375,7 +375,7 @@ if 1:  # pragma: no cover
                 print(f"file not found: {filename}")
         # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-    def orange_diff_command(files: list[str], settings: Optional[Dict[str, Any]] = None) -> None:
+    def orange_diff_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -388,7 +388,7 @@ if 1:  # pragma: no cover
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> Tuple[Any, Dict[str, Any], list[str], bool]:
+    def scan_ast_args() -> Tuple[Any, dict[str, Any], list[str], bool]:
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
@@ -430,7 +430,7 @@ if 1:  # pragma: no cover
         files = args.PATHS
         recursive = args.recursive
         # Create the settings dict, ensuring proper values.
-        settings_dict: Dict[str, Any] = {
+        settings_dict: dict[str, Any] = {
             'allow_joined_strings': bool(args.allow_joined),
             'max_join_line_length': abs(args.max_join),
             'max_split_line_length': abs(args.max_split),
@@ -1691,7 +1691,7 @@ class Orange:
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, settings: Optional[dict[str, Any]] = None):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
@@ -2072,7 +2072,7 @@ class Orange:
             self.blank()
     #@+node:ekr.20230115141629.1: *6* orange.do_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
-    arg_dict: Dict[int, int] = {}
+    arg_dict: dict[int, int] = {}
 
     dump_flag = True
 

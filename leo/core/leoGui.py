@@ -11,7 +11,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 #@+<< leoGui imports & annotations >>
 #@+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -790,7 +790,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: Dict = None) -> None:
+    def __init__(self, theDict: dict = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")
