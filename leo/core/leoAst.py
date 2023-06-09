@@ -4,8 +4,6 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
-# For now, suppress all mypy checks
-# type: ignore
 #@+<< leoAst docstring >>
 #@+node:ekr.20200113081838.1: ** << leoAst docstring >>
 """
@@ -14,6 +12,8 @@ leoAst.py: This file does not depend on Leo in any way.
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
 the parse tree. For more details, see the "Overview" section below.
+
+This file requires Python 3.9 or above.
 
 
 **Stand-alone operation**
@@ -90,18 +90,13 @@ links are significant additions to python's tokenize and ast modules:
 - The TOG class solves real problems, such as:
   https://stackoverflow.com/questions/16748029/
 
-**Known bug**
+**Historical note re Python 3.8**
 
-This file has no known bugs *except* for Python version 3.8.
-
-For Python 3.8, syncing tokens will fail for function call such as:
+In Python 3.8 *only*, syncing tokens will fail for function calls like:
 
     f(1, x=2, *[3, 4], y=5)
 
 that is, for calls where keywords appear before non-keyword args.
-
-There are no plans to fix this bug. The workaround is to use Python version
-3.9 or above.
 
 
 **Figures of merit**
@@ -509,10 +504,8 @@ if 1:  # pragma: no cover
             with open(filename, 'rb') as f:
                 bb = f.read()
         except Exception:
-            bb = ''
             print(f"{tag}: can not read {filename}")
-        if not bb:
-            return 'UTF-8', ''
+            return 'UTF-8', None
         # Look for the BOM.
         e, bb = strip_BOM(bb)
         if not e:
@@ -1718,7 +1711,7 @@ class Orange:
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
     #@+node:ekr.20200107165250.51: *4* orange.push_state
-    def push_state(self, kind: str, value: str = None) -> None:
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
         """Append a state to the state stack."""
         state = ParseState(kind, value)
         self.state_stack.append(state)
@@ -2601,7 +2594,7 @@ class ParseState:
 
     """
 
-    def __init__(self, kind: str, value: str) -> None:
+    def __init__(self, kind: str, value: Union[int, str]) -> None:
         self.kind = kind
         self.value = value
 
