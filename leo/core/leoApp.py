@@ -4,6 +4,7 @@
 #@+node:ekr.20120219194520.10463: ** << leoApp imports >>
 from __future__ import annotations
 import argparse
+from collections.abc import Callable
 import importlib
 import io
 import os
@@ -14,7 +15,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g

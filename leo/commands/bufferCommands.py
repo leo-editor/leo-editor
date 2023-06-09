@@ -4,7 +4,8 @@
 #@+<< bufferCommands imports & annotations >>
 #@+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 

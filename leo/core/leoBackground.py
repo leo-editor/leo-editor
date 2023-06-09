@@ -4,11 +4,12 @@
 #@+<< leoBackground imports & annotations >>
 #@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Callable, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 

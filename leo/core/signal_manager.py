@@ -15,7 +15,8 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 #@+node:ekr.20220901092745.1: ** << signal_manager imports >>
 from __future__ import annotations
 from collections import defaultdict
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 #@-<< signal_manager imports >>
 
 #@+others

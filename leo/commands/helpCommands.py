@@ -4,11 +4,12 @@
 #@+<< helpCommands imports & annotations >>
 #@+node:ekr.20150514050337.1: ** << helpCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import io
 import re
 import sys
 import textwrap
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 

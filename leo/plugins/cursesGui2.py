@@ -27,13 +27,13 @@ https://leo-editor.github.io/leo-editor/console-gui.html#developing-the-cursesgu
 #@+<< cursesGui2 imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import copy
 import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, Callable, Generator, Optional, Union
-from typing import TYPE_CHECKING
+from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 
 # Third-party.
 try:

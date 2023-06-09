@@ -13,11 +13,12 @@ available."""
 #@+<< leoRst imports >>
 #@+node:ekr.20100908120927.5971: ** << leoRst imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import io
 import os
 import re
 import time
-from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils

@@ -8,10 +8,11 @@
 #@+<< leoColorizer imports >>
 #@+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Callable, Generator, Sequence, Optional, TYPE_CHECKING
+from typing import Any, Generator, Sequence, Optional, TYPE_CHECKING
 #
 # Third-part tools.
 try:

@@ -3,6 +3,7 @@
 #@+<< leoCommands imports >>
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import json
 import os
 import re
@@ -13,7 +14,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Callable, Generator, Iterable, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Iterable, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.

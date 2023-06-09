@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18079: * @file ../plugins/writers/org.py
 """The @auto write code for Emacs org-mode (.org) files."""
-from typing import Callable
+from collections.abc import Callable
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position

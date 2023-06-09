@@ -5,12 +5,13 @@
 #@+<< qt_gui imports  >>
 #@+node:ekr.20140918102920.17891: ** << qt_gui imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import datetime
 import functools
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui

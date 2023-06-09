@@ -19,9 +19,10 @@ doing the normal key handling that vim emulation uses.
 #@+<< leoVim imports & annotations >>
 #@+node:ekr.20220901100947.1: ** << leoVim imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import os
 import string
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 

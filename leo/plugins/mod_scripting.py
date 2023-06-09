@@ -224,11 +224,12 @@ most brilliant idea in Leo's history.
 #@+node:ekr.20060328125248.2: ** << mod_scripting imports & annotations >>
 from __future__ import annotations
 from collections import namedtuple
+from collections.abc import Callable
 import pprint
 import re
 import sys
 import textwrap
-from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
