@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -123,7 +123,7 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20180318145515.797"><vh>@string font-family = Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
 <v t="tom.20210613133557.1"><vh>@string font-size-base = 11pt</vh></v>
 <v t="ekr.20180318145515.798"><vh>@string font-family-body = @font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log = @font-family</vh></v>
