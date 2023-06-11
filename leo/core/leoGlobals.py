@@ -3175,7 +3175,7 @@ def isDirective(s: str) -> bool:
 #@+node:ekr.20200810074755.1: *3* g.isValidLanguage
 def isValidLanguage(language: str) -> bool:
     """True if the given language may be used as an external file."""
-    return language and language in g.app.language_delims_dict
+    return bool(language and language in g.app.language_delims_dict)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
