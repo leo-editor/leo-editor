@@ -2847,7 +2847,7 @@ class AtFile:
             delims = lang_dict.get('delims')
         if not language:
             # No language directive.  Look for @<file> nodes.
-            # Do *not* used.get('language')!
+            # Do *not* use d.get('language')!
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
         at.language = language
         if not delims:
