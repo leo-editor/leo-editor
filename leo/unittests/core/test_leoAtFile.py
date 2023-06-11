@@ -168,7 +168,7 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
-    #@+node:ekr.20211106034202.1: *3* TsetAtFile.test_findSectionName
+    #@+node:ekr.20211106034202.1: *3* TestAtFile.test_findSectionName
     def test_findSectionName(self):
         # Test code per #2303.
         at, p = self.at, self.c.p

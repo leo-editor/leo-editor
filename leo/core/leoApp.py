@@ -134,7 +134,7 @@ class LeoApp:
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
-        self.write_black_sentinels = False  # True: write a space befor '@' in sentinel lines.
+        self.write_black_sentinels = False  # True: write a space before '@' in sentinel lines.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
