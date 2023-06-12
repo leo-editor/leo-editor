@@ -831,12 +831,12 @@ class TestCython(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # check_outlines ignores the first headline.
-                    '<< preamble >>\n'
+                    '<< TestCython.test_importer: preamble >>\n'
                     '@others\n'
                     '@language cython\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< preamble >>',
+            (1, '<< TestCython.test_importer: preamble >>',
                     'from libc.math cimport pow\n'
                     '\n'
             ),
@@ -3165,7 +3165,7 @@ class TestPython(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< preamble >>\n'
+                    '<< TestPython.test_general_test_1: preamble >>\n'
                     '@others\n'
                     '\n'
                     "if __name__ == '__main__':\n"
@@ -3173,7 +3173,7 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< preamble >>',
+            (1, '<< TestPython.test_general_test_1: preamble >>',
                     'import sys\n'
             ),
             (1, 'def f1',
@@ -3358,7 +3358,7 @@ class TestPython(BaseTestImporter):
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< preamble >>\n'
+                    '<< TestPython.test_oneliners: preamble >>\n'
                     '@others\n'
                     '\n'
                     "if __name__ == '__main__':\n"
@@ -3366,7 +3366,7 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< preamble >>',
+            (1, '<< TestPython.test_oneliners: preamble >>',
                     'import sys\n'
             ),
             (1, 'def f1',
@@ -3407,19 +3407,19 @@ class TestPython(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< docstring >>\n'
-                    '<< declarations >>\n'
+                    '<< TestPython.test_preamble: docstring >>\n'
+                    '<< TestPython.test_preamble: declarations >>\n'
                    '@others\n'
                    '@language python\n'
                    '@tabwidth -4\n'
             ),
-            (1, '<< docstring >>',
+            (1, '<< TestPython.test_preamble: docstring >>',
                     '# This file is part of Leo: https://leo-editor.github.io/leo-editor\n'
                     '"""\n'
                     'This is a docstring.\n'
                     '"""\n'
             ),
-            (1, '<< declarations >>',
+            (1, '<< TestPython.test_preamble: declarations >>',
                     'import sys\n'
                     'from leo.core import leoGlobals as g\n'
                     '\n'

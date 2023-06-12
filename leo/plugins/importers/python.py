@@ -2,6 +2,7 @@
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
+import os
 import re
 from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
@@ -52,7 +53,8 @@ class Python_Importer(Importer):
 
         def make_node(index: int, preamble_lines: list[str], title: str) -> None:
             child = parent.insertAsLastChild()
-            section_name = f"<< {title} >>"
+            parent_s = os.path.split(parent.h)[1].replace('@file ', '').replace('@clean ', '')
+            section_name = f"<< {parent_s}: {title} >>"
             child.h = section_name
             child.b = ''.join(preamble_lines)
             result_list.insert(index, f"{common_lws}{section_name}\n")
