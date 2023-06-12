@@ -27,12 +27,12 @@ class TestLeoImport(BaseTestImporter):
         """)
         f = StringIO(s)
         x.scan(f, target)
-        # self.dump_tree(target, tag='Actual results...')
 
         # #2760: These results ignore way too much.
-
+        
+        # Don't call run_test.
         self.check_outline(target, (
-            (0, '',  # check_outline ignores the top-level headline.
+            (0, '',  # Ignore the top-level headline.
                 ''
             ),
             (1, 'a1', ''),
@@ -57,7 +57,7 @@ class TestLeoImport(BaseTestImporter):
         x.parse_body(target)
 
         expected_results = (
-            (0, '',  # check_outline ignores the top-level headline.
+            (0, '',  # Ignore the top-level headline.
                 '@others\n'
                 'return new_func\n'
                 '@language python\n'
@@ -76,7 +76,6 @@ class TestLeoImport(BaseTestImporter):
         )
         # Don't call run_test.
         self.check_outline(target, expected_results)
-
     #@-others
 #@-others
 #@-leo

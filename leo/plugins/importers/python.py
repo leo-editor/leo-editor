@@ -74,11 +74,11 @@ class Python_Importer(Importer):
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
-        # Handle multi-line def's. Scan to the line containing "->"
-        if prev_line.strip().startswith('def ') and '->' not in prev_line:
+        # Handle multi-line def's. Scan to the line containing a close parenthesis.
+        if prev_line.strip().startswith('def ') and ')' not in prev_line:
             while i < i2:
                 i += 1
-                if '->' in self.guide_lines[i - 1]:
+                if ')' in self.guide_lines[i - 1]:
                     break
         tail_lines = 0
         if i < i2:
