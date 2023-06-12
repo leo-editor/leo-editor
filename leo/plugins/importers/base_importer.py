@@ -4,7 +4,7 @@
 from __future__ import annotations
 import io
 import re
-from typing import TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -124,6 +124,27 @@ class Importer:
         child_kind, child_name, child_start, child_start_body, child_end = block
         return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
 
+    #@+node:ekr.20230612170928.1: *4* i.create_preamble
+    def create_preamble(self, blocks: List[Block], parent: Position, result_list: List[str]) -> None:
+        """
+        Importer.create_preamble: Create one preamble node.
+
+        Subclasses may override this method to create multiple preamble nodes.
+        """
+        assert self.allow_preamble
+        assert parent == self.root
+        lines = self.lines
+        common_lws = self.compute_common_lws(blocks)
+        child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
+        new_start = max(0, child_start_body - 1)
+        preamble = lines[:new_start]
+        if preamble and any(z for z in preamble):
+            child = parent.insertAsLastChild()
+            child.h = '<< preamble >>'
+            child.b = ''.join(preamble)
+            result_list.insert(0, f"{common_lws}<< preamble >>\n")
+            # Adjust this block.
+            blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -206,20 +227,9 @@ class Importer:
             result_list = lines[start:start_body]
             # Special case: create a preamble node as the first child of the parent.
             if self.allow_preamble and parent == self.root and start == 0:
-                child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
-                new_start = max(0, child_start_body - 1)
-                preamble = lines[:new_start]
-                if preamble and any(z for z in preamble):
-                    child = parent.insertAsLastChild()
-                    child.h = '<< preamble >>'
-                    child.b = ''.join(preamble)
-                    result_list.insert(0, f"{common_lws}<< preamble >>\n")
-                    # Adjust this block.
-                    blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
-
+                self.create_preamble(blocks, parent, result_list)
             # Add indented @others.
             result_list.extend([f"{common_lws}@others\n"])
-
             # Recursively generate the inner nodes/blocks.
             last_end = end
             for block in blocks:

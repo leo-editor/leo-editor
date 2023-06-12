@@ -3,7 +3,7 @@
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
 import re
-from typing import TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -34,6 +34,26 @@ class Python_Importer(Importer):
     )
 
     #@+others
+    #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
+    def create_preamble(self, blocks: List[Block], parent: Position, result_list: List[str]) -> None:
+        """
+        Python_Importer.create_preamble:
+        Create preamble nodes for the module docstrings and everything else.
+        """
+        assert self.allow_preamble
+        assert parent == self.root
+        lines = self.lines
+        common_lws = self.compute_common_lws(blocks)
+        child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
+        new_start = max(0, child_start_body - 1)
+        preamble = lines[:new_start]
+        if preamble and any(z for z in preamble):
+            child = parent.insertAsLastChild()
+            child.h = '<< preamble >>'
+            child.b = ''.join(preamble)
+            result_list.insert(0, f"{common_lws}<< preamble >>\n")
+            # Adjust this block.
+            blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -65,7 +85,7 @@ class Python_Importer(Importer):
         i is the index of the class/def line (within the *guide* lines).
 
         Return the index of the line *following* the entire class/def
-        
+
         Note: All following blank/comment lines are *excluded* from the block.
         """
         def lws_n(s: str) -> int:
