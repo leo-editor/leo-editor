@@ -19,6 +19,7 @@ class Python_Importer(Importer):
 
     language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
+    allow_preamble = True
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.

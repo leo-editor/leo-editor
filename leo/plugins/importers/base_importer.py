@@ -48,6 +48,7 @@ class Importer:
     language: str = None
 
     # May be overridden in subclasses.
+    allow_preamble = False
     block_patterns: tuple = tuple()
     level_up_ch = '{'
     level_down_ch = '}'
@@ -204,8 +205,17 @@ class Importer:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
             # Special case: create a preamble node as the first child of the parent.
-            if parent == self.root and any(z.strip() for z in result_list):
-                g.printObj(result_list, tag=f"Preamble: {parent.h}")
+            if self.allow_preamble and parent == self.root and start == 0:
+                child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
+                new_start = max(0, child_start_body - 1)
+                preamble = lines[:new_start]
+                if preamble and any(z for z in preamble):
+                    child = parent.insertAsLastChild()
+                    child.h = 'preamble'
+                    child.b = ''.join(preamble)
+                    # Adjust this block.
+                    blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
+
             # Add indented @others.
             common_lws = self.compute_common_lws(blocks)
             result_list.extend([f"{common_lws}@others\n"])

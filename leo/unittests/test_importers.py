@@ -573,13 +573,15 @@ class TestCoffeescript(BaseTestImporter):
                     '@language coffeescript\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def buildCoffee',
+            (1, 'preamble',
                     "# Js2coffee relies on Narcissus's parser.\n"
                     '\n'
                     "{parser} = @Narcissus or require('./narcissus_packed')\n"
                     '\n'
                     '# Main entry point\n'
                     '\n'
+            ),
+            (1, 'def buildCoffee',
                     'buildCoffee = (str) ->\n'
                     "  str  = str.replace /\\r/g, ''\n"
                     '  str += "\\n"\n'
@@ -832,9 +834,11 @@ class TestCython(BaseTestImporter):
                     '@language cython\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'cdef double square_and_add',
+            (1, 'preamble',
                     'from libc.math cimport pow\n'
                     '\n'
+            ),
+            (1, 'cdef double square_and_add',
                     'cdef double square_and_add (double x):\n'
                     '    """Compute x^2 + x as double.\n'
                     '\n'
@@ -3166,8 +3170,10 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def f1',
+            (1, 'preamble',
                     'import sys\n'
+            ),
+            (1, 'def f1',
                     'def f1():\n'
                     '    pass\n'
             ),
@@ -3356,8 +3362,10 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def f1',
+            (1, 'preamble',
                     'import sys\n'
+            ),
+            (1, 'def f1',
                     'def f1():\n'
                     '    pass\n'
             ),
@@ -3406,6 +3414,7 @@ class TestPython(BaseTestImporter):
                     '"""\n'
                     'import sys\n'
                     'from leo.core import leoGlobals as g\n'
+                    '\n'
             ),
             (1, 'def f',
                    'def f():\n'

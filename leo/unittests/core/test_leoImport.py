@@ -63,9 +63,11 @@ class TestLeoImport(BaseTestImporter):
                 '@language python\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'def macro',
+            (1, 'preamble',
                 'import os\n'
                 '\n'
+            ),
+            (1, 'def macro',
                 'def macro(func):\n'
                 '    @others\n'
             ),
