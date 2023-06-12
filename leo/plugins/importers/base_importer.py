@@ -4,7 +4,7 @@
 from __future__ import annotations
 import io
 import re
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -125,7 +125,7 @@ class Importer:
         return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
 
     #@+node:ekr.20230612170928.1: *4* i.create_preamble
-    def create_preamble(self, blocks: List[Block], parent: Position, result_list: List[str]) -> None:
+    def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
         Importer.create_preamble: Create one preamble node.
 
