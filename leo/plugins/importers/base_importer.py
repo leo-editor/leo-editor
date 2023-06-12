@@ -108,7 +108,6 @@ class Importer:
             message = 'intermixed blanks and tabs in: %s' % (fn)
         if not ok:
             if g.unitTesting:
-                ### self.report(message)
                 assert False, message
             else:
                 g.es(message)
@@ -219,7 +218,6 @@ class Importer:
                     blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
 
             # Add indented @others.
-            ### common_lws = self.compute_common_lws(blocks)
             result_list.extend([f"{common_lws}@others\n"])
 
             # Recursively generate the inner nodes/blocks.
@@ -339,7 +337,6 @@ class Importer:
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
         count, result, tab_width = 0, [], self.tab_width
-        self.ws_error = False  # 2016/11/23
         if tab_width < 0:  # Convert tabs to blanks.
             for n, line in enumerate(lines):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
@@ -355,12 +352,8 @@ class Importer:
                 if s != line:
                     count += 1
                 result.append(s)
-        if count:
-            self.ws_error = True  ### A flag to check.
-            if not g.unitTesting:
-                ### g.es('changed leading %s to %s in %s line%s in %s' % (
-                ###     kind2, kind, count, g.plural(count), fn))
-                g.es(f"changed leading {kind2} to {kind} in {count} line{g.plural(count)} in {fn}")
+        if count and not g.unitTesting:
+            g.es(f"changed leading {kind2} to {kind} in {count} line{g.plural(count)} in {fn}")
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
