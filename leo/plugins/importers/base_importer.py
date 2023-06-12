@@ -140,9 +140,10 @@ class Importer:
         preamble = lines[:new_start]
         if preamble and any(z for z in preamble):
             child = parent.insertAsLastChild()
-            child.h = '<< preamble >>'
+            section_name = '<< preamble >>'
+            child.h = section_name
             child.b = ''.join(preamble)
-            result_list.insert(0, f"{common_lws}<< preamble >>\n")
+            result_list.insert(0, f"{common_lws}{section_name}\n")
             # Adjust this block.
             blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
     #@+node:ekr.20230529075138.10: *4* i.find_blocks

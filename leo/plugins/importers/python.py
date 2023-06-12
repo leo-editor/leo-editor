@@ -52,9 +52,10 @@ class Python_Importer(Importer):
 
         def make_node(index: int, preamble_lines: list[str], title: str) -> None:
             child = parent.insertAsLastChild()
-            child.h = f"<< {title} >>"
+            section_name = f"<< {title} >>"
+            child.h = section_name
             child.b = ''.join(preamble_lines)
-            result_list.insert(index, f"{common_lws}<< {title} >>\n")
+            result_list.insert(index, f"{common_lws}{section_name}\n")
 
         def find_docstring() -> list[str]:
             i = 0
