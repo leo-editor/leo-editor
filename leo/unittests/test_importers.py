@@ -569,12 +569,12 @@ class TestCoffeescript(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< preamble >>\n'
+                    '<< TestCoffeescript.test_1: preamble >>\n'
                     '@others\n'
                     '@language coffeescript\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< preamble >>',
+            (1, '<< TestCoffeescript.test_1: preamble >>',
                     "# Js2coffee relies on Narcissus's parser.\n"
                     '\n'
                     "{parser} = @Narcissus or require('./narcissus_packed')\n"

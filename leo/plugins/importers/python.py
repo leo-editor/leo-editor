@@ -53,7 +53,7 @@ class Python_Importer(Importer):
 
         def make_node(index: int, preamble_lines: list[str], title: str) -> None:
             child = parent.insertAsLastChild()
-            parent_s = os.path.split(parent.h)[1].replace('@file ', '').replace('@clean ', '')
+            parent_s = os.path.split(parent.h)[1].replace('@file', '').replace('@clean', '').strip()
             section_name = f"<< {parent_s}: {title} >>"
             child.h = section_name
             child.b = ''.join(preamble_lines)
