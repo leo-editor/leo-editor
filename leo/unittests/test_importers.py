@@ -25,6 +25,28 @@ class BaseTestImporter(LeoUnitTest):
         g.app.write_black_sentinels = False
 
     #@+others
+    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
+    def check_outline(self, p: Position, expected: tuple) -> None:
+        """
+        BaseTestImporter.check_outline.
+        
+        Check that p's outline matches the expected results.
+        
+        Dump the actual outline if there is a mismatch.
+        """
+        p0_level = p.level()
+        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        for i, actual in enumerate(actual):
+            try:
+                a_level, a_h, a_str = actual
+                e_level, e_h, e_str = expected[i]
+            except ValueError:
+                assert False  # So we print the actual results.
+            msg = f"FAIL in node {i} {e_h}"
+            self.assertEqual(a_level - p0_level, e_level, msg=msg)
+            if i > 0:  # Don't test top-level headline.
+                self.assertEqual(e_h, a_h, msg=msg)
+            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
@@ -58,6 +80,10 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
+    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
+    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
+        p = self.run_test(s)
+        self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
     def new_run_test(self, s: str, expected_results: tuple) -> None:
         """
@@ -86,32 +112,6 @@ class BaseTestImporter(LeoUnitTest):
             # Dump actual results, including bodies.
             self.dump_tree(parent, tag='Actual results...')
             raise
-    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple) -> None:
-        """
-        BaseTestImporter.check_outline.
-        
-        Check that p's outline matches the expected results.
-        
-        Dump the actual outline if there is a mismatch.
-        """
-        p0_level = p.level()
-        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        for i, actual in enumerate(actual):
-            try:
-                a_level, a_h, a_str = actual
-                e_level, e_h, e_str = expected[i]
-            except ValueError:
-                assert False  # So we print the actual results.
-            msg = f"FAIL in node {i} {e_h}"
-            self.assertEqual(a_level - p0_level, e_level, msg=msg)
-            if i > 0:  # Don't test top-level headline.
-                self.assertEqual(e_h, a_h, msg=msg)
-            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
-    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
-        p = self.run_test(s)
-        self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -3400,6 +3400,27 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230612072414.1: *3* TestPython: test_long_declaration
+    def test_long_declaration(self):
+        
+        # ekr-mypy2/mypy/applytype.py
+        
+        # Note the return type.
+        
+        s = """
+        def get_target_type(
+            tvar: TypeVarLikeType,
+            type: Type,
+            callable: CallableType,
+        ) -> Type | None:
+            if isinstance(tvar, ParamSpecType):
+                return type
+            if isinstance(tvar, TypeVarTupleType):
+                return type
+            return type
+        """
+        p = self.run_test(s)
+        self.dump_tree(p, tag='Actual results...')
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
