@@ -50,13 +50,34 @@ class Python_Importer(Importer):
         if not preamble_lines or not any(z for z in preamble_lines):
             return
 
-        def make_node(preamble_lines: list[str], title: str) -> None:
+        def make_node(index: int, preamble_lines: list[str], title: str) -> None:
             child = parent.insertAsLastChild()
             child.h = f"<< {title} >>"
             child.b = ''.join(preamble_lines)
-            result_list.insert(0, f"{common_lws}<< {title} >>\n")
+            result_list.insert(index, f"{common_lws}<< {title} >>\n")
 
-        make_node(preamble_lines, "preamble")
+        def find_docstring() -> list[str]:
+            i = 0
+            while i < len(preamble_lines):
+                for delim in ('"""', "'''"):
+                    if preamble_lines[i].count(delim) == 1:
+                        i += 1
+                        while i < len(preamble_lines):
+                            if preamble_lines[i].count(delim) == 1:
+                                return preamble_lines[: i + 1]
+                            i += 1
+                        return []  # Mal-formed docstring.
+                i += 1
+            return []
+
+        docstring_lines = find_docstring()
+        if docstring_lines:
+            make_node(0, docstring_lines, "docstring")
+            declaration_lines = preamble_lines[len(docstring_lines) :]
+            if declaration_lines:
+                make_node(1, declaration_lines, "declarations")
+        else:
+            make_node(0, preamble_lines, "preamble")
 
         # Adjust this block.
         blocks[0] = child_kind, child_name, new_start, child_start_body, child_end

@@ -3407,16 +3407,19 @@ class TestPython(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< preamble >>\n'
+                    '<< docstring >>\n'
+                    '<< declarations >>\n'
                    '@others\n'
                    '@language python\n'
                    '@tabwidth -4\n'
             ),
-            (1, '<< preamble >>',
+            (1, '<< docstring >>',
                     '# This file is part of Leo: https://leo-editor.github.io/leo-editor\n'
                     '"""\n'
                     'This is a docstring.\n'
                     '"""\n'
+            ),
+            (1, '<< declarations >>',
                     'import sys\n'
                     'from leo.core import leoGlobals as g\n'
                     '\n'
