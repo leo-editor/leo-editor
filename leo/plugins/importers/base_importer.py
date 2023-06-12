@@ -202,6 +202,7 @@ class Importer:
         if 0:
             self.trace_blocks(blocks)
         if blocks:
+            common_lws = self.compute_common_lws(blocks)
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
             # Special case: create a preamble node as the first child of the parent.
@@ -211,13 +212,14 @@ class Importer:
                 preamble = lines[:new_start]
                 if preamble and any(z for z in preamble):
                     child = parent.insertAsLastChild()
-                    child.h = 'preamble'
+                    child.h = '<< preamble >>'
                     child.b = ''.join(preamble)
+                    result_list.insert(0, f"{common_lws}<< preamble >>\n")
                     # Adjust this block.
                     blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
 
             # Add indented @others.
-            common_lws = self.compute_common_lws(blocks)
+            ### common_lws = self.compute_common_lws(blocks)
             result_list.extend([f"{common_lws}@others\n"])
 
             # Recursively generate the inner nodes/blocks.

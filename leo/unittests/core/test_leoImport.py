@@ -58,12 +58,13 @@ class TestLeoImport(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the top-level headline.
+                '<< preamble >>\n'
                 '@others\n'
                 'return new_func\n'
                 '@language python\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'preamble',
+            (1, '<< preamble >>',
                 'import os\n'
                 '\n'
             ),
