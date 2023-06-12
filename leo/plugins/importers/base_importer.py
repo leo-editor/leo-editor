@@ -203,6 +203,9 @@ class Importer:
         if blocks:
             # Start with the head: lines[start : start_start_body].
             result_list = lines[start:start_body]
+            # Special case: create a preamble node as the first child of the parent.
+            if parent == self.root and any(z.strip() for z in result_list):
+                g.printObj(result_list, tag=f"Preamble: {parent.h}")
             # Add indented @others.
             common_lws = self.compute_common_lws(blocks)
             result_list.extend([f"{common_lws}@others\n"])

@@ -52,7 +52,6 @@ class BaseTestImporter(LeoUnitTest):
             # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
             raise
-
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
@@ -3231,6 +3230,77 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
+    def test_long_declaration(self):
+        
+        # ekr-mypy2/mypy/applytype.py
+        
+        # Note: the return type uses the python 3.11 syntax for Union.
+        
+        s = """
+        def get_target_type(
+            tvar: TypeVarLikeType,
+            type: Type,
+            callable: CallableType,
+        ) -> Type | None:
+            if isinstance(tvar, ParamSpecType):
+                return type
+            if isinstance(tvar, TypeVarTupleType):
+                return type
+            return type
+        """
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'def get_target_type',
+                    'def get_target_type(\n'
+                    '    tvar: TypeVarLikeType,\n'
+                    '    type: Type,\n'
+                    '    callable: CallableType,\n'
+                    ') -> Type | None:\n'
+                    '    if isinstance(tvar, ParamSpecType):\n'
+                    '        return type\n'
+                    '    if isinstance(tvar, TypeVarTupleType):\n'
+                    '        return type\n'
+                    '    return type\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20211202064822.1: *3* TestPython.test_nested_classes
+    def test_nested_classes(self):
+        s = """
+            class TestCopyFile(unittest.TestCase):
+                _delete = False
+                a00 = 1
+                class Faux(object):
+                    _entered = False
+                    _exited_with = None # type: tuple
+                    _raised = False
+            """
+        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
+            ),
+            (1, 'class TestCopyFile',
+                    'class TestCopyFile(unittest.TestCase):\n'
+                    '    ATothers\n'.replace('AT', '@')
+            ),
+            (2, 'class Faux',
+                        '_delete = False\n'
+                        'a00 = 1\n'
+                        'class Faux(object):\n'
+                        '    _entered = False\n'
+                        '    _exited_with = None # type: tuple\n'
+                        '    _raised = False\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
@@ -3309,39 +3379,41 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
-    def test_nested_classes(self):
-        s = """
-            class TestCopyFile(unittest.TestCase):
-                _delete = False
-                a00 = 1
-                class Faux(object):
-                    _entered = False
-                    _exited_with = None # type: tuple
-                    _raised = False
+    #@+node:ekr.20230612085239.1: *3* TestPython.test_preamble
+    def test_preamble(self):
+
+        s = '''
+            # This file is part of Leo: https://leo-editor.github.io/leo-editor
             """
-        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+            This is a docstring.
+            """
+            import sys
+            from leo.core import leoGlobals as g
+            
+            def f():
+                g.trace()
+        '''
         expected_results = (
             (0, '',  # Ignore the first headline.
                    '@others\n'
                    '@language python\n'
                    '@tabwidth -4\n'
             ),
-            (1, 'class TestCopyFile',
-                    'class TestCopyFile(unittest.TestCase):\n'
-                    '    ATothers\n'.replace('AT', '@')
+            (1, 'preamble',
+                    '# This file is part of Leo: https://leo-editor.github.io/leo-editor\n'
+                    '"""\n'
+                    'This is a docstring.\n'
+                    '"""\n'
+                    'import sys\n'
+                    'from leo.core import leoGlobals as g\n'
             ),
-            (2, 'class Faux',
-                        '_delete = False\n'
-                        'a00 = 1\n'
-                        'class Faux(object):\n'
-                        '    _entered = False\n'
-                        '    _exited_with = None # type: tuple\n'
-                        '    _raised = False\n'
-            ),
+            (1, 'def f',
+                   'def f():\n'
+                   '    g.trace()\n'
+            )
         )
         self.new_run_test(s, expected_results)
-    #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
+    #@+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
     def test_strange_indentation(self):
         s = """
             a = 1
@@ -3399,45 +3471,6 @@ class TestPython(BaseTestImporter):
                "    print('12')\n"
                '@language python\n'
                '@tabwidth -4\n'
-            ),
-        )
-        self.new_run_test(s, expected_results)
-    #@+node:ekr.20230612072414.1: *3* TestPython: test_long_declaration
-    def test_long_declaration(self):
-        
-        # ekr-mypy2/mypy/applytype.py
-        
-        # Note: the return type uses the python 3.11 syntax for Union.
-        
-        s = """
-        def get_target_type(
-            tvar: TypeVarLikeType,
-            type: Type,
-            callable: CallableType,
-        ) -> Type | None:
-            if isinstance(tvar, ParamSpecType):
-                return type
-            if isinstance(tvar, TypeVarTupleType):
-                return type
-            return type
-        """
-        expected_results = (
-            (0, '',  # Ignore the first headline.
-                    '@others\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'def get_target_type',
-                    'def get_target_type(\n'
-                    '    tvar: TypeVarLikeType,\n'
-                    '    type: Type,\n'
-                    '    callable: CallableType,\n'
-                    ') -> Type | None:\n'
-                    '    if isinstance(tvar, ParamSpecType):\n'
-                    '        return type\n'
-                    '    if isinstance(tvar, TypeVarTupleType):\n'
-                    '        return type\n'
-                    '    return type\n'
             ),
         )
         self.new_run_test(s, expected_results)
