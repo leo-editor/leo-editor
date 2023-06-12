@@ -3405,7 +3405,7 @@ class TestPython(BaseTestImporter):
         
         # ekr-mypy2/mypy/applytype.py
         
-        # Note the return type.
+        # Note: the return type uses the python 3.11 syntax for Union.
         
         s = """
         def get_target_type(
@@ -3419,8 +3419,26 @@ class TestPython(BaseTestImporter):
                 return type
             return type
         """
-        p = self.run_test(s)
-        self.dump_tree(p, tag='Actual results...')
+        expected_results = (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'def get_target_type',
+                    'def get_target_type(\n'
+                    '    tvar: TypeVarLikeType,\n'
+                    '    type: Type,\n'
+                    '    callable: CallableType,\n'
+                    ') -> Type | None:\n'
+                    '    if isinstance(tvar, ParamSpecType):\n'
+                    '        return type\n'
+                    '    if isinstance(tvar, TypeVarTupleType):\n'
+                    '        return type\n'
+                    '    return type\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
