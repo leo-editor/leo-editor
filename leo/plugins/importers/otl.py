@@ -23,9 +23,9 @@ class Otl_Importer(Importer):
     def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
         """
         Otl_Importer.check_blanks_and_tabs.
-        
+
         Check for intermixed blank & tabs.
-        
+
         Tabs are part of the otl format. Never complain.
         """
         return True

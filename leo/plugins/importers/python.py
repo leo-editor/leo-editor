@@ -2,6 +2,7 @@
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
+import os
 import re
 from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
@@ -19,6 +20,7 @@ class Python_Importer(Importer):
 
     language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
+    allow_preamble = True
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
@@ -33,6 +35,55 @@ class Python_Importer(Importer):
     )
 
     #@+others
+    #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
+    def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
+        """
+        Python_Importer.create_preamble:
+        Create preamble nodes for the module docstrings and everything else.
+        """
+        assert self.allow_preamble
+        assert parent == self.root
+        lines = self.lines
+        common_lws = self.compute_common_lws(blocks)
+        child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
+        new_start = max(0, child_start_body - 1)
+        preamble_lines = lines[:new_start]
+        if not preamble_lines or not any(z for z in preamble_lines):
+            return
+
+        def make_node(index: int, preamble_lines: list[str], title: str) -> None:
+            child = parent.insertAsLastChild()
+            parent_s = os.path.split(parent.h)[1].replace('@file', '').replace('@clean', '').strip()
+            section_name = f"<< {parent_s}: {title} >>"
+            child.h = section_name
+            child.b = ''.join(preamble_lines)
+            result_list.insert(index, f"{common_lws}{section_name}\n")
+
+        def find_docstring() -> list[str]:
+            i = 0
+            while i < len(preamble_lines):
+                for delim in ('"""', "'''"):
+                    if preamble_lines[i].count(delim) == 1:
+                        i += 1
+                        while i < len(preamble_lines):
+                            if preamble_lines[i].count(delim) == 1:
+                                return preamble_lines[: i + 1]
+                            i += 1
+                        return []  # Mal-formed docstring.
+                i += 1
+            return []
+
+        docstring_lines = find_docstring()
+        if docstring_lines:
+            make_node(0, docstring_lines, "docstring")
+            declaration_lines = preamble_lines[len(docstring_lines) :]
+            if declaration_lines:
+                make_node(1, declaration_lines, "declarations")
+        else:
+            make_node(0, preamble_lines, "preamble")
+
+        # Adjust this block.
+        blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -64,7 +115,7 @@ class Python_Importer(Importer):
         i is the index of the class/def line (within the *guide* lines).
 
         Return the index of the line *following* the entire class/def
-        
+
         Note: All following blank/comment lines are *excluded* from the block.
         """
         def lws_n(s: str) -> int:
@@ -74,6 +125,12 @@ class Python_Importer(Importer):
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
+        # Handle multi-line def's. Scan to the line containing a close parenthesis.
+        if prev_line.strip().startswith('def ') and ')' not in prev_line:
+            while i < i2:
+                i += 1
+                if ')' in self.guide_lines[i - 1]:
+                    break
         tail_lines = 0
         if i < i2:
             lws1 = lws_n(prev_line)

@@ -25,6 +25,33 @@ class BaseTestImporter(LeoUnitTest):
         g.app.write_black_sentinels = False
 
     #@+others
+    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
+    def check_outline(self, p: Position, expected: tuple) -> None:
+        """
+        BaseTestImporter.check_outline.
+        
+        Check that p's outline matches the expected results.
+        
+        Dump the actual outline if there is a mismatch.
+        """
+        try:
+            p0_level = p.level()
+            actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+            for i, actual in enumerate(actual):
+                try:
+                    a_level, a_h, a_str = actual
+                    e_level, e_h, e_str = expected[i]
+                except ValueError:
+                    assert False  # So we print the actual results.
+                msg = f"FAIL in node {i} {e_h}"
+                self.assertEqual(a_level - p0_level, e_level, msg=msg)
+                if i > 0:  # Don't test top-level headline.
+                    self.assertEqual(e_h, a_h, msg=msg)
+                self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
+        except AssertionError:
+            # Dump actual results, including bodies.
+            self.dump_tree(p, tag='Actual results...')
+            raise
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
@@ -58,6 +85,10 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
+    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
+    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
+        p = self.run_test(s)
+        self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
     def new_run_test(self, s: str, expected_results: tuple) -> None:
         """
@@ -80,38 +111,8 @@ class BaseTestImporter(LeoUnitTest):
         test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
-        try:
-            self.check_outline(parent, expected_results)
-        except AssertionError:
-            # Dump actual results, including bodies.
-            self.dump_tree(parent, tag='Actual results...')
-            raise
-    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple) -> None:
-        """
-        BaseTestImporter.check_outline.
-        
-        Check that p's outline matches the expected results.
-        
-        Dump the actual outline if there is a mismatch.
-        """
-        p0_level = p.level()
-        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        for i, actual in enumerate(actual):
-            try:
-                a_level, a_h, a_str = actual
-                e_level, e_h, e_str = expected[i]
-            except ValueError:
-                assert False  # So we print the actual results.
-            msg = f"FAIL in node {i} {e_h}"
-            self.assertEqual(a_level - p0_level, e_level, msg=msg)
-            if i > 0:  # Don't test top-level headline.
-                self.assertEqual(e_h, a_h, msg=msg)
-            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
-    def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
-        p = self.run_test(s)
-        self.check_round_trip(p, expected_s or s)
+        # Dump the actual results on failure and raise AssertionError.
+        self.check_outline(parent, expected_results)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -172,7 +173,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
@@ -213,7 +214,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
@@ -255,7 +256,7 @@ class TestC(BaseTestImporter):
             } // comment
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
@@ -288,7 +289,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'extern "C"\n'
                 '{\n'
                 '#include "stuff.h"\n'
@@ -316,7 +317,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'static void\n'
                 'ReleaseCharSet(cset)\n'
                 '    CharSet *cset;\n'
@@ -345,7 +346,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'Tcl_Obj *\n'
                 'Tcl_NewLongObj(longValue)\n'
                 '    register long longValue; /* Long integer used to initialize the\n'
@@ -370,7 +371,7 @@ class TestC(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
@@ -520,7 +521,7 @@ class TestC(BaseTestImporter):
         };
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
@@ -567,18 +568,21 @@ class TestCoffeescript(BaseTestImporter):
         """
 
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
+                    '<< TestCoffeescript.test_1: preamble >>\n'
                     '@others\n'
                     '@language coffeescript\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def buildCoffee',
+            (1, '<< TestCoffeescript.test_1: preamble >>',
                     "# Js2coffee relies on Narcissus's parser.\n"
                     '\n'
                     "{parser} = @Narcissus or require('./narcissus_packed')\n"
                     '\n'
                     '# Main entry point\n'
                     '\n'
+            ),
+            (1, 'def buildCoffee',
                     'buildCoffee = (str) ->\n'
                     "  str  = str.replace /\\r/g, ''\n"
                     '  str += "\\n"\n'
@@ -626,7 +630,7 @@ class TestCoffeescript(BaseTestImporter):
               
           """
         expected_results = (
-          (0, '',  # check_outline ignores the first headline.
+          (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language coffeescript\n'
                 '@tabwidth -4\n'
@@ -699,7 +703,7 @@ class TestCSharp(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language csharp\n'
                     '@tabwidth -4\n'
@@ -727,7 +731,7 @@ class TestCSharp(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language csharp\n'
                     '@tabwidth -4\n'
@@ -777,7 +781,7 @@ class TestCText(BaseTestImporter):
         """
         # Round-tripping is not guaranteed.
         expected_results = (
-            (0, '', # check_outline ignores the first headline.
+            (0, '', # Ignore the first headline.
                     'Leading text in root node of subtree\n'
                     '\n'
                     'Etc. etc.\n'
@@ -827,13 +831,16 @@ class TestCython(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # check_outlines ignores the first headline.
+                    '<< TestCython.test_importer: preamble >>\n'
                     '@others\n'
                     '@language cython\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'cdef double square_and_add',
+            (1, '<< TestCython.test_importer: preamble >>',
                     'from libc.math cimport pow\n'
                     '\n'
+            ),
+            (1, 'cdef double square_and_add',
                     'cdef double square_and_add (double x):\n'
                     '    """Compute x^2 + x as double.\n'
                     '\n'
@@ -878,7 +885,7 @@ class TestDart(BaseTestImporter):
         }
         '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language dart\n'
                     '@tabwidth -4\n'
@@ -931,7 +938,7 @@ class TestElisp(BaseTestImporter):
                (+ 1 2 3))
         """
         expected_results = (
-            (0, '', # check_outline ignores the first headline.
+            (0, '', # Ignore the first headline.
                     '@others\n'
                     '@language lisp\n'
                     '@tabwidth -4\n'
@@ -993,7 +1000,7 @@ class TestHtml(BaseTestImporter):
         '''
 
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1046,7 +1053,7 @@ class TestHtml(BaseTestImporter):
             </body>
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1092,7 +1099,7 @@ class TestHtml(BaseTestImporter):
             <!-- oops: missing tags. -->
         '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '    <!-- oops: link elements terminated two different ways -->\n'
                     '    <link id="L1">\n'
@@ -1127,7 +1134,7 @@ class TestHtml(BaseTestImporter):
             </HTML>
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1257,7 +1264,7 @@ class TestHtml(BaseTestImporter):
             </html>
         '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1443,7 +1450,7 @@ class TestHtml(BaseTestImporter):
             </html>
         '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1490,7 +1497,7 @@ class TestHtml(BaseTestImporter):
             <p>Paragraph</p>
         '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '<p>Paragraph</p>\n'
                     '@language html\n'
@@ -1528,7 +1535,7 @@ class TestHtml(BaseTestImporter):
             </HTML>
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language html\n'
                 '@tabwidth -4\n'
@@ -1641,7 +1648,7 @@ class TestJava(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline does not check the first outline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language java\n'
                     '@tabwidth -4\n'
@@ -1691,7 +1698,7 @@ class TestJava(BaseTestImporter):
 
         """
         expected_results = (
-            (0, '',  # check_outline does not check the first outline.
+            (0, '', # Ignore the first headline.
                 '@others\n'
                 '@language java\n'
                 '@tabwidth -4\n'
@@ -1733,7 +1740,7 @@ class TestJava(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'interface Bicycle {\n'
                 '    void changeCadence(int newValue);\n'
                 '    void changeGear(int newValue);\n'
@@ -1753,7 +1760,7 @@ class TestJava(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'interface Bicycle {\n'
                 'void changeCadence(int newValue);\n'
                 'void changeGear(int newValue);\n'
@@ -1788,7 +1795,7 @@ class TestJavascript(BaseTestImporter):
         """
         
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language javascript\n'
                 '@tabwidth -4\n'
@@ -1827,7 +1834,7 @@ class TestJavascript(BaseTestImporter):
         """
 
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language javascript\n'
                 '@tabwidth -4\n'
@@ -1889,7 +1896,7 @@ class TestLua (BaseTestImporter):
              print("main", coroutine.resume(co, "x", "y"))
         """
         expected_results = (
-            (0, '', # check_outline ignores the first headline'
+            (0, '', # Ignore the first headline.
                     '@others\n'
                     '\n'
                     'print("main", coroutine.resume(co, 1, 10))\n'
@@ -2022,7 +2029,7 @@ class TestMarkdown(BaseTestImporter):
             section 3, line 1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
             ),
@@ -2084,7 +2091,7 @@ class TestMarkdown(BaseTestImporter):
             # Last header: no text
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
             ),
@@ -2133,7 +2140,7 @@ class TestMarkdown(BaseTestImporter):
             #Last header: no text
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
             ),
@@ -2179,7 +2186,7 @@ class TestMarkdown(BaseTestImporter):
             # Last header
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language md\n'
                 '@tabwidth -4\n'
             ),
@@ -2253,7 +2260,7 @@ class TestOrg(BaseTestImporter):
             Sec 3.1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
             ),
@@ -2285,7 +2292,7 @@ class TestOrg(BaseTestImporter):
             First line.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
@@ -2306,7 +2313,7 @@ class TestOrg(BaseTestImporter):
             *** 每周惯例
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
@@ -2334,7 +2341,7 @@ class TestOrg(BaseTestImporter):
             Sec 2.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 'Intro line.\n'
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2367,7 +2374,7 @@ class TestOrg(BaseTestImporter):
             Sec 3.1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
             ),
@@ -2410,7 +2417,7 @@ class TestOrg(BaseTestImporter):
         c.theTagController = TagController(c)
         # Run the test.
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
@@ -2446,7 +2453,7 @@ class TestOtl(BaseTestImporter):
             : Sec 3.1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 # 'line in root node\n'
                 '@language otl\n'
                 '@tabwidth -4\n'
@@ -2472,7 +2479,7 @@ class TestOtl(BaseTestImporter):
             : Sec 3.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
@@ -2549,7 +2556,7 @@ class TestPascal(BaseTestImporter):
         #@-<< define s >>
         
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language pascal\n'
                 '@tabwidth -4\n'
@@ -2674,7 +2681,7 @@ class TestPascal(BaseTestImporter):
         """).strip() + '\n'
         #@-<< define s >>
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language pascal\n'
                     '@tabwidth -4\n'
@@ -2789,7 +2796,7 @@ class TestPerl(BaseTestImporter):
             Hello();
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '            "ﬁ" =~ /fi/i;\n'
                     '\n'
@@ -2840,7 +2847,7 @@ class TestPerl(BaseTestImporter):
             world\n";
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '#!/usr/bin/perl\n'
                     '\n'
                     '            # This would print with a line break in the middle\n'
@@ -2879,7 +2886,7 @@ class TestPerl(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
@@ -2932,7 +2939,7 @@ class TestPerl(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language perl\n'
                     '@tabwidth -4\n'
@@ -3157,7 +3164,8 @@ class TestPython(BaseTestImporter):
         """).replace('AT', '@')
 
         expected_results = (
-            (0, '', # check_outline ignores the first headline'
+            (0, '',  # Ignore the first headline.
+                    '<< TestPython.test_general_test_1: preamble >>\n'
                     '@others\n'
                     '\n'
                     "if __name__ == '__main__':\n"
@@ -3165,8 +3173,10 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def f1',
+            (1, '<< TestPython.test_general_test_1: preamble >>',
                     'import sys\n'
+            ),
+            (1, 'def f1',
                     'def f1():\n'
                     '    pass\n'
             ),
@@ -3229,6 +3239,77 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
+    def test_long_declaration(self):
+        
+        # ekr-mypy2/mypy/applytype.py
+        
+        # Note: the return type uses the python 3.11 syntax for Union.
+        
+        s = """
+        def get_target_type(
+            tvar: TypeVarLikeType,
+            type: Type,
+            callable: CallableType,
+        ) -> Type | None:
+            if isinstance(tvar, ParamSpecType):
+                return type
+            if isinstance(tvar, TypeVarTupleType):
+                return type
+            return type
+        """
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'def get_target_type',
+                    'def get_target_type(\n'
+                    '    tvar: TypeVarLikeType,\n'
+                    '    type: Type,\n'
+                    '    callable: CallableType,\n'
+                    ') -> Type | None:\n'
+                    '    if isinstance(tvar, ParamSpecType):\n'
+                    '        return type\n'
+                    '    if isinstance(tvar, TypeVarTupleType):\n'
+                    '        return type\n'
+                    '    return type\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20211202064822.1: *3* TestPython.test_nested_classes
+    def test_nested_classes(self):
+        s = """
+            class TestCopyFile(unittest.TestCase):
+                _delete = False
+                a00 = 1
+                class Faux(object):
+                    _entered = False
+                    _exited_with = None # type: tuple
+                    _raised = False
+            """
+        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
+            ),
+            (1, 'class TestCopyFile',
+                    'class TestCopyFile(unittest.TestCase):\n'
+                    '    ATothers\n'.replace('AT', '@')
+            ),
+            (2, 'class Faux',
+                        '_delete = False\n'
+                        'a00 = 1\n'
+                        'class Faux(object):\n'
+                        '    _entered = False\n'
+                        '    _exited_with = None # type: tuple\n'
+                        '    _raised = False\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
@@ -3239,7 +3320,7 @@ class TestPython(BaseTestImporter):
                 c=3
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                    '@others\n'
                    '@language python\n'
                    '@tabwidth -4\n'
@@ -3276,7 +3357,8 @@ class TestPython(BaseTestImporter):
 
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
+                    '<< TestPython.test_oneliners: preamble >>\n'
                     '@others\n'
                     '\n'
                     "if __name__ == '__main__':\n"
@@ -3284,8 +3366,10 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def f1',
+            (1, '<< TestPython.test_oneliners: preamble >>',
                     'import sys\n'
+            ),
+            (1, 'def f1',
                     'def f1():\n'
                     '    pass\n'
             ),
@@ -3307,39 +3391,46 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
-    def test_nested_classes(self):
-        s = """
-            class TestCopyFile(unittest.TestCase):
-                _delete = False
-                a00 = 1
-                class Faux(object):
-                    _entered = False
-                    _exited_with = None # type: tuple
-                    _raised = False
+    #@+node:ekr.20230612085239.1: *3* TestPython.test_preamble
+    def test_preamble(self):
+
+        s = '''
+            # This file is part of Leo: https://leo-editor.github.io/leo-editor
             """
-        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+            This is a docstring.
+            """
+            import sys
+            from leo.core import leoGlobals as g
+            
+            def f():
+                g.trace()
+        '''
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
+                    '<< TestPython.test_preamble: docstring >>\n'
+                    '<< TestPython.test_preamble: declarations >>\n'
                    '@others\n'
                    '@language python\n'
                    '@tabwidth -4\n'
             ),
-            (1, 'class TestCopyFile',
-                    'class TestCopyFile(unittest.TestCase):\n'
-                    '    ATothers\n'.replace('AT', '@')
+            (1, '<< TestPython.test_preamble: docstring >>',
+                    '# This file is part of Leo: https://leo-editor.github.io/leo-editor\n'
+                    '"""\n'
+                    'This is a docstring.\n'
+                    '"""\n'
             ),
-            (2, 'class Faux',
-                        '_delete = False\n'
-                        'a00 = 1\n'
-                        'class Faux(object):\n'
-                        '    _entered = False\n'
-                        '    _exited_with = None # type: tuple\n'
-                        '    _raised = False\n'
+            (1, '<< TestPython.test_preamble: declarations >>',
+                    'import sys\n'
+                    'from leo.core import leoGlobals as g\n'
+                    '\n'
             ),
+            (1, 'def f',
+                   'def f():\n'
+                   '    g.trace()\n'
+            )
         )
         self.new_run_test(s, expected_results)
-    #@+node:vitalije.20211207183645.1: *3* TestPython: test_strange_indentation
+    #@+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
     def test_strange_indentation(self):
         s = """
             a = 1
@@ -3369,7 +3460,7 @@ class TestPython(BaseTestImporter):
                 print('12')
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                'a = 1\n'
                'if 1:\n'
                " print('1')\n"
@@ -3459,7 +3550,7 @@ class TestRst(BaseTestImporter):
             section 3.1.1, line 1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
             ),
@@ -3529,7 +3620,7 @@ class TestRst(BaseTestImporter):
             The top chapter.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
             ),
@@ -3595,7 +3686,7 @@ class TestRst(BaseTestImporter):
             section 3.1.1, line 1
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
             ),
@@ -3662,7 +3753,7 @@ class TestRst(BaseTestImporter):
             The top section
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
             ),
@@ -3695,7 +3786,7 @@ class TestRst(BaseTestImporter):
             The top section
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
             ),
@@ -3730,7 +3821,7 @@ class TestRst(BaseTestImporter):
             The top section.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                 '@language rest\n'
                 '@tabwidth -4\n'
             ),
@@ -3774,7 +3865,7 @@ class TestRst(BaseTestImporter):
             Sec 2.
         """
         expected_results = (
-            (0, '',  # check_outline ignores the first headline.
+            (0, '',  # Ignore the first headline.
                     '@language rest\n'
                     '@tabwidth -4\n'
             ),
@@ -3820,7 +3911,7 @@ class TestRust(BaseTestImporter):
             }
         """
         expected_results = (
-            (0, '', # check_outline ignores the first headline'
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language rust\n'
                     '@tabwidth -4\n'
@@ -3877,7 +3968,7 @@ class TestTcl (BaseTestImporter):
              }
         """
         expected_results = (
-            (0, '', # check_outline ignores the first headline'
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '\n'
                     ' # Main program\n'
