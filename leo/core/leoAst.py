@@ -165,6 +165,7 @@ from typing import Any, Generator, Optional, Union
 
 Node = ast.AST
 ActionList = list[tuple[Callable, Any]]
+Settings = Optional[dict[str, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
@@ -362,7 +363,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
     #@+node:ekr.20200702115002.1: *3* command: orange_command
-    def orange_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
+    def orange_command(files: list[str], settings: Settings = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -372,7 +373,7 @@ if 1:  # pragma: no cover
                 print(f"file not found: {filename}")
         # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-    def orange_diff_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
+    def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
