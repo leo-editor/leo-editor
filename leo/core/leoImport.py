@@ -1580,8 +1580,6 @@ class RecursiveImportController:
         c: Cmdr,
         kind: str,
         *,  # All other args are kwargs.
-        add_context: bool = None,  # Override setting only if True/False
-        add_file_context: bool = None,  # Override setting only if True/False
         add_path: bool = True,
         expand_vars_name: str = None,
         recursive: bool = True,
@@ -1602,15 +1600,15 @@ class RecursiveImportController:
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
-        # #1605:
 
-        def set_bool(setting: str, val: Any) -> None:
-            if val not in (True, False):
-                return
-            c.config.set(None, 'bool', setting, val, warn=True)
+        ###
+            # def set_bool(setting: str, val: Any) -> None:
+                # if val not in (True, False):
+                    # return
+                # c.config.set(None, 'bool', setting, val, warn=True)
 
-        set_bool('add-context-to-headlines', add_context)
-        set_bool('add-file-context-to-headlines', add_file_context)
+            # set_bool('add-context-to-headlines', add_context)
+            # set_bool('add-file-context-to-headlines', add_file_context)
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_: str) -> None:
         """

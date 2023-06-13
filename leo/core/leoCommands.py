@@ -4245,8 +4245,6 @@ class Commands:
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
-        add_context: Union[bool, None] = None,  # Override setting only if True/False
-        add_file_context: Union[bool, None] = None,  # Override setting only if True/False
         add_path: bool = True,
         dir_: str = None,
         expand_vars_name: str = None,
@@ -4286,8 +4284,6 @@ class Commands:
                 from leo.core import leoImport
                 cc = leoImport.RecursiveImportController(c,
                     kind,
-                    add_context=add_context,
-                    add_file_context=add_file_context,
                     add_path=add_path,
                     expand_vars_name=expand_vars_name,
                     ignore_pattern=ignore_pattern,
