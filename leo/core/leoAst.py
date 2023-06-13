@@ -2787,7 +2787,7 @@ class Tokenizer:
     #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
     header_has_been_shown = False
 
-    def do_token(self, contents: str, five_tuple: Any) -> None:
+    def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
         Handle the given token, optionally including between-token whitespace.
 
