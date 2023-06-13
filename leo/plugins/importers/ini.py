@@ -26,7 +26,7 @@ class Ini_Importer(Importer):
         Ini_Importer.find_end_of_block.
 
         i is the index of the line *following* the start of the block.
-        
+
         Return the index of the start of next section.
         """
         while i < i2:

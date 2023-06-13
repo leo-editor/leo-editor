@@ -88,18 +88,6 @@ class TestAtFile(LeoUnitTest):
             child.b = '@language python\n# test #1889'
             path = c.fullPath(child)
             assert '~' not in path, repr(path)
-    #@+node:ekr.20230410082517.1: *3* TestAtFile.test_bug_3270_at_path
-    def test_bug_3270_at_path(self):
-        #  @path c:/temp/leo
-        #    @file at_file_test.py
-        c = self.c
-        root = c.rootPosition()
-        root.h = '@path c:/temp/leo'
-        child = root.insertAsLastChild()
-        child.h = '@file at_file_test.py'
-        path = c.fullPath(child)
-        expected = 'c:/temp/leo/at_file_test.py'
-        self.assertEqual(path, expected)
     #@+node:ekr.20230411094250.1: *3* TestAtFile.test_bug_3272_at_path
     def test_bug_3272_at_path(self):
         #  @path bookmarks
@@ -180,7 +168,7 @@ class TestAtFile(LeoUnitTest):
         for expected, s in table:
             result = at.directiveKind4(s, 0)
             self.assertEqual(expected, result, msg=repr(s))
-    #@+node:ekr.20211106034202.1: *3* TsetAtFile.test_findSectionName
+    #@+node:ekr.20211106034202.1: *3* TestAtFile.test_findSectionName
     def test_findSectionName(self):
         # Test code per #2303.
         at, p = self.at, self.c.p

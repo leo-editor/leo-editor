@@ -134,7 +134,7 @@ class LeoApp:
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
-        self.write_black_sentinels = False  # True: write a space befor '@' in sentinel lines.
+        self.write_black_sentinels = False  # True: write a space before '@' in sentinel lines.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
@@ -485,7 +485,7 @@ class LeoApp:
 
         self.language_delims_dict: dict[str, str] = {
             # Internally, lower case is used for all language names.
-            # Keys are languages, values are 1,2 or 3-tuples of delims.
+            # Keys are languages, values are strings that contain 1, 2 or 3 delims separated by spaces.
             "actionscript"       : "// /* */", # jason 2003-07-03
             "ada"                : "--",
             "ada95"              : "--",
@@ -518,7 +518,7 @@ class LeoApp:
             "coffeescript"       : "#", # 2016/02/26.
             "config"             : "#", # Leo 4.5.1
             "cplusplus"          : "// /* */",
-            "cpp"                : "// /* */",# C++.
+            "cpp"                : "// /* */", # C++.
             "csharp"             : "// /* */", # C#
             "css"                : "/* */", # 4/1/04
             "cweb"               : "@q@ @>", # Use the "cweb hack"

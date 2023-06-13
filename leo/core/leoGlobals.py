@@ -3174,12 +3174,8 @@ def isDirective(s: str) -> bool:
     return False
 #@+node:ekr.20200810074755.1: *3* g.isValidLanguage
 def isValidLanguage(language: str) -> bool:
-    """True if language exists in leo/modes."""
-    # 2020/08/12: A hack for c++
-    if language in ('c++', 'cpp'):
-        language = 'cplusplus'
-    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
-    return g.os_path_exists(fn)
+    """True if the given language may be used as an external file."""
+    return bool(language and language in g.app.language_delims_dict)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
