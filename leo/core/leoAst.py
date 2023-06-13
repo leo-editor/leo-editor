@@ -148,7 +148,6 @@ Leo's outline structure. These comments have the form::
 #@+node:ekr.20200105054219.1: ** << leoAst imports & annotations >>
 from __future__ import annotations
 import argparse
-from collections.abc import Callable
 import ast
 import codecs
 import difflib
@@ -164,7 +163,6 @@ import traceback
 from typing import Any, Generator, Optional, Union
 
 Node = ast.AST
-ActionList = list[tuple[Callable, Any]]
 Settings = Optional[dict[str, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
