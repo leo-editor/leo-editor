@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class Treepad_Importer(Importer):
     """
     The importer for the TreePad file format.
-    
+
     See: http://download.nust.na/pub2/FreeStuff/Software/Home%20office%20helpers/TreePad%20Lite/fileformat.txt
     """
 

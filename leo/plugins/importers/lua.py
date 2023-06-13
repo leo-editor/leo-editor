@@ -33,9 +33,9 @@ class Lua_Importer(Importer):
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         Lua_Importer.find_end_of_block.
-        
+
         i is the index (within the *guide* lines) of the line *following* the start of the block.
-        
+
         Return the index of end of the block.
         """
         level = 1  # The previous line starts the function.
