@@ -84,44 +84,13 @@
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20200227064211.1"><vh>Notes</vh>
-<v t="ekr.20200229053354.1"><vh>Changed settings</vh>
-<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
+<v t="ekr.20200226103829.1"><vh>Recently deleted settings</vh>
+<v t="ekr.20230613071616.1"><vh>--- old import options</vh>
+<v t="tbrown.20180525163032.1"><vh>@@bool add-context-to-headlines = True</vh></v>
+<v t="ekr.20200620064409.1"><vh>@@bool add-file-context-to-headlines = True</vh></v>
+<v t="ekr.20211209060458.1"><vh>@@bool put-class-in-imported-headlines = True</vh></v>
+<v t="ekr.20200620060909.1"><vh>@@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 </v>
-<v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
-<v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
-<v t="ekr.20190915192702.1"><vh>@@bool black-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192705.1"><vh>@@bool black-string-normalization = False</vh></v>
-<v t="ekr.20190915192705.2"><vh>@@int black-line-length = 88</vh></v>
-</v>
-<v t="ekr.20141010095448.19779"><vh>@@bool beautify-keep-comment-indentation = True</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@@bool use_codewise = False</vh></v>
-<v t="ekr.20200227181439.1"><vh>@@bool find-def-creates-clones = False</vh></v>
-<v t="ekr.20210327192658.1"><vh>rst No longer used</vh>
-<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
-</v>
-<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
-<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
-</v>
-<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
-<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
-</v>
-<v t="ekr.20210327193058.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
-</v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
-</v>
-<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -719,10 +688,6 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
-<v t="ekr.20211209060458.1"><vh>@bool put-class-in-imported-headlines = True</vh></v>
-<v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
-<v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
-<v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
@@ -2306,7 +2271,7 @@
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
-<v t="edward.20081129091117.12"></v>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
 <v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
@@ -2577,22 +2542,6 @@ False: The undo buffer persists across saves.</t>
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.</t>
-<t tx="ekr.20041119041304.1">This option specifies the directory to be used as a prefix for &lt;filename&gt; in
-
-@path &lt;filename&gt;
-@file &lt;filename&gt;
-@root &lt;filename&gt;
-
-when &lt;filename&gt; is a relative path.
-
-Valid values for this option:
-
-'!' means relative to the location leo.py (recommended).
-'.' means relative to the location of the .leo file in the top window.
-
-An absolute path (in platform-dependent format).
-
-Relative paths are not allowed because their meaning would depend on the changing value of the current working directory.</t>
 <t tx="ekr.20041119041747">nl or lf: (recommended) All lines end with "\n"
 cr:       All lines end with "\r"
 crlf:     All lines end with "\r\n"
@@ -3908,9 +3857,6 @@ for which leading whitespace is not terribly significant.
 True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
 <t tx="ekr.20071213060239">@color</t>
-<t tx="ekr.20071213060514.1"></t>
-<t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
-<t tx="ekr.20071213061454"></t>
 <t tx="ekr.20071213061454.1">True: Writes **node markers** for use by the http plugin.
 
 Node markers are rst named hyperlink targets. By default they look like:
@@ -3919,7 +3865,6 @@ Node markers are rst named hyperlink targets. By default they look like:
 `@string rst3-node-begin-marker` specifies the format of these node markers.
 
 </t>
-<t tx="ekr.20071213061454.2"></t>
 <t tx="ekr.20071213061454.3">The string used for node markers.  See `@bool rst3-http-server-support`.
 </t>
 <t tx="ekr.20071213061504">The path to be prepended to *relative* filenames given in @rst nodes.
@@ -3945,7 +3890,6 @@ The setting should be comma-separated list of strings: For example, the option::
 results in the call::
 
     publish(['--language=de','--documentclass=report','--use-latex-toc'])</t>
-<t tx="ekr.20071213061811"></t>
 <t tx="ekr.20071213061811.1">The underlining characters to be used to specify rST sections.
 
 The first character is reserved (not used) so you can specify the top-level
@@ -3958,18 +3902,6 @@ The name of the intermediate file is the name of the output file with the extens
 
 `@string rst3-write-intermediate-extension`.
 </t>
-<t tx="ekr.20071213061923"># True: generate rst markup from @code and @doc parts.</t>
-<t tx="ekr.20071213061923.1"># True: generate only from @doc parts.</t>
-<t tx="ekr.20071213061923.2"># True: generate rst markup. False: generate plain text.</t>
-<t tx="ekr.20071213061923.3"></t>
-<t tx="ekr.20071213061930.1"># Can be set by @rst-no-head headlines.</t>
-<t tx="ekr.20071213061930.2"></t>
-<t tx="ekr.20071213061930.3"></t>
-<t tx="ekr.20071213061930.4"></t>
-<t tx="ekr.20071213062019"></t>
-<t tx="ekr.20071213062019.1"></t>
-<t tx="ekr.20071213062019.2"></t>
-<t tx="ekr.20071213062019.3"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line. Lines starting with '#' are *included* in the data.
 
 @data nodes may be split: the data consists of the body text of the @data node itself and the body text of all descendant nodes, in outline order. Two fine points about the concatenation of data:
@@ -4664,21 +4596,6 @@ print ('done')
 .. rst3: filename: &lt;filename&gt;
 
 at these start of the output.</t>
-<t tx="ekr.20090430173906.1">@nocolor-node
-
-The rST markup string preceding code parts.
-
-The default for the C, Perl, Python and Ruby languages is: 
-
-'**code**:\n\n.. code-block:: %s\n' % language.title()
-
-The default for all other languages is:
-    
-'**code**:\n\n.. class:: code\n..\n\n::\n'
-
-A reasonable alternative would be:
-    
-'\n.. class:: code\n..\n\n::\n'</t>
 <t tx="ekr.20090514111518.8379"></t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
@@ -4770,9 +4687,6 @@ False: show completions in Leo's Completions tab.
 
 **Note**: this option has effect only when using the qt or qttabs gui's.
 </t>
-<t tx="ekr.20110510071925.14590">This setting is no longer used!
-
-Instead, enable the codewisecompleter.py plugin.</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="ekr.20110611092035.16463"></t>
@@ -9256,7 +9170,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19779">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
@@ -11286,10 +11199,6 @@ c.redraw()
 <t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
 <t tx="ekr.20190622093004.1"></t>
 <t tx="ekr.20190712053127.1"></t>
-<t tx="ekr.20190915192551.1"></t>
-<t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
-<t tx="ekr.20190915192705.1"></t>
-<t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
 <t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length.
 Zero suppresses all line joining.</t>
 <t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
@@ -11349,8 +11258,6 @@ opened longest. You can this setting to specify an alternative location.
 For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
 <t tx="ekr.20200227064211.1">@nosearch</t>
-<t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
-<t tx="ekr.20200229053354.1"></t>
 <t tx="ekr.20200620060909.1">True: The cython importer will copy the first decorator preceding a
       function/method into the headline of the imported node.
       
@@ -11408,8 +11315,6 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
 <t tx="ekr.20210324162150.1">Save As .db (&amp;SQLite)...</t>
-<t tx="ekr.20210327192658.1"></t>
-<t tx="ekr.20210327193058.1"></t>
 <t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
 
 True: Docutils will embed a the stylesheet in the output file.
@@ -11752,6 +11657,7 @@ screencaset_style = normal
     
 False: do nothing when the mouse hovers over nodes.</t>
 <t tx="ekr.20230507080533.1"></t>
+<t tx="ekr.20230613071616.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
