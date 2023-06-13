@@ -55,7 +55,7 @@ class Importer:
     string_list: list[str] = ['"', "'"]
 
     #@+others
-    #@+node:ekr.20230529075138.5: *3* i.__init__ & reloadSettings
+    #@+node:ekr.20230529075138.5: *3* i.__init__
     def __init__(self, c: Cmdr) -> None:
         """Importer.__init__"""
         assert self.language, g.callers()  # Do not remove.
@@ -64,20 +64,6 @@ class Importer:
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
-
-        # Settings...
-        self.reloadSettings()
-
-    def reloadSettings(self) -> None:
-        c = self.c
-        if not c:  # pragma: no cover (defensive)
-            return
-        getBool = c.config.getBool
-        c.registerReloadSettings(self)
-        self.add_context = getBool("add-context-to-headlines")
-        self.add_file_context = getBool("add-file-context-to-headlines")
-        self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
-        self.warn_about_underindented_lines = True
     #@+node:ekr.20230529075640.1: *3* i: Generic methods: may be overridden
     #@+node:ekr.20230529075138.36: *4* i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
