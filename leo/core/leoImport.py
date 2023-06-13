@@ -1575,16 +1575,15 @@ class RecursiveImportController:
     """Recursively import all python files in a directory and clean the result."""
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
-    def __init__(
-        self,
-        c: Cmdr,
-        kind: str,
+    def __init__(self, c: Cmdr,
         *,  # All other args are kwargs.
         add_path: bool = True,
+        dir_: str,
+        ignore_pattern: re.Pattern = None,
+        kind: str,
         recursive: bool = True,
         safe_at_file: bool = True,
         theTypes: list[str] = None,
-        ignore_pattern: re.Pattern = None,
         verbose: bool = True,  # legacy value.
     ) -> None:
         """Ctor for RecursiveImportController class."""
@@ -1595,6 +1594,13 @@ class RecursiveImportController:
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root = None
+        self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
+        # Adjust the root directory.
+        assert dir_ and self.root_directory, dir_
+        self.root_directory = self.root_directory.replace('\\', '/')
+        ###
+        # if not self.root_directory.endswith('/'):
+            # self.root_directory = self.root_directory + '/'
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
@@ -1624,7 +1630,8 @@ class RecursiveImportController:
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-            self.post_process(parent, dir_)  # Fix # 1033.
+            ### self.post_process(parent, dir_)  # Fix # 1033.
+            self.post_process(parent)  # Fix # 1033.
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
@@ -1701,15 +1708,15 @@ class RecursiveImportController:
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
-    def post_process(self, p: Position, prefix: str) -> None:
+    def post_process(self, p: Position) -> None:
         """
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         """
+        assert self.root_directory
         self.fix_back_slashes(p)
-        prefix = prefix.replace('\\', '/')
         if p.firstChild():
-            self.minimize_headlines(p.firstChild(), prefix)
+            self.minimize_headlines(p.firstChild())
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
         self.clear_dirty_bits(p)
@@ -1773,34 +1780,47 @@ class RecursiveImportController:
             if s != p.h:
                 p.v.h = s
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
-    def minimize_headlines(self, p: Position, prefix: str) -> None:
-        """Create @path nodes to minimize the paths required in descendant nodes."""
-        if prefix and not prefix.endswith('/'):
-            prefix = prefix + '/'
+    def minimize_headlines(self, p: Position) -> None:
+        """
+        Create @path nodes and @<file> nodes that create paths
+        relative to the *parent* of self.root_directory.
+        """
+        # Remove all but the last component of the root directory.
+        root_dir = self.root_directory
+        prefix = '/'.join(root_dir.split('/')[:-1]) + '/'
+
+        def compute_at_path(path: str) -> str:
+            """Compute the @path directive corresponding to path."""
+            path = p.h.replace('\\', '/')
+            if path.startswith(prefix):
+                path = path[len(prefix) :].strip()
+                if path:
+                    return f"@path {path}"
+            return None
+
+        def truncate_path(path: str) -> str:
+            """Return the path relative to the root_directory."""
+            path = p.h.replace('\\', '/')
+            if path.startswith(root_dir):
+                path = path[len(root_dir) :].strip()
+            return path.split('/')[-1] if '/' in path else path
+
         m = self.file_pattern.match(p.h)
         if m:
-            # It's an @file node of some kind. Strip off the prefix.
+            # p is an @file node of some kind. Create relative paths.
             kind = m.group(0)
             path = p.h[len(kind) :].strip()
-            stripped = self.strip_prefix(path, prefix)
-            p.h = f"{kind} {stripped or path}"
-            # Put the *full* @path directive in the body.
-            if self.add_path and prefix:
-                tail = g.os_path_dirname(stripped).rstrip('/')
-                p.b = f"@path {prefix}{tail}\n{p.b}"
+            path = truncate_path(path)
+            p.h = f"{kind} {path}"
+            if self.add_path and path:
+                p.b = f"@path {path}\n{p.b}"
         else:
-            # p.h is a path.
-            path = p.h
-            stripped = self.strip_prefix(path, prefix)
-            p.h = f"@path {stripped or path}"
+            # p.h is a path. Create the relative @path node.
+            h = compute_at_path(p.h)
+            if h:
+                p.h = h
             for p in p.children():
-                self.minimize_headlines(p, prefix + stripped)
-    #@+node:ekr.20170404134052.1: *6* ric.strip_prefix
-    def strip_prefix(self, path: str, prefix: str) -> str:
-        """Strip the prefix from the path and return the result."""
-        if path.startswith(prefix):
-            return path[len(prefix) :]
-        return ''  # A signal.
+                self.minimize_headlines(p)
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""

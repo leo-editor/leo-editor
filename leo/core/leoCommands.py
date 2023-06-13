@@ -4245,8 +4245,8 @@ class Commands:
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
-        add_path: bool = True,
-        dir_: str = None,
+        add_path: bool = True,  # Add an @path directive to each @<file> nodes.
+        dir_: str = None,  # A directory or file name.
         ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
         kind: str = None,
         recursive: bool = True,
@@ -4277,24 +4277,30 @@ class Commands:
         """
         #@-<< docstring >>
         c = self
-        if g.os_path_exists(dir_):
-            # Import all files in dir_ after c.p.
-            try:
-                from leo.core import leoImport
-                cc = leoImport.RecursiveImportController(c,
-                    kind,
-                    add_path=add_path,
-                    ignore_pattern=ignore_pattern,
-                    recursive=recursive,
-                    safe_at_file=safe_at_file,
-                    theTypes=['.py'] if not theTypes else theTypes,
-                    verbose=verbose,
-                )
-                cc.run(dir_)
-            finally:
-                c.redraw()
-        else:
-            g.es_print(f"Does not exist: {dir_}")
+        if not dir_:
+            g.es_print('Missing dir_ argument')
+            return
+        if not g.os_path_exists(dir_):
+            g.es_print(f"Directory/file does not exist: {dir_}")
+            return
+        # Import all files in dir_ after c.p.
+        try:
+            from leo.core import leoImport
+            cc = leoImport.RecursiveImportController(c,
+                add_path=add_path,
+                dir_=dir_,
+                ignore_pattern=ignore_pattern,
+                kind=kind,
+                recursive=recursive,
+                safe_at_file=safe_at_file,
+                theTypes=['.py'] if not theTypes else theTypes,
+                verbose=verbose,
+            )
+            cc.run(dir_)
+        except AssertionError:
+            g.es_exception()
+        finally:
+            c.redraw()
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
     #@@nobeautify
