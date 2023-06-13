@@ -148,7 +148,6 @@ Leo's outline structure. These comments have the form::
 #@+node:ekr.20200105054219.1: ** << leoAst imports & annotations >>
 from __future__ import annotations
 import argparse
-from collections.abc import Callable
 import ast
 import codecs
 import difflib
@@ -164,7 +163,7 @@ import traceback
 from typing import Any, Generator, Optional, Union
 
 Node = ast.AST
-ActionList = list[tuple[Callable, Any]]
+Settings = Optional[dict[str, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
@@ -362,7 +361,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
     #@+node:ekr.20200702115002.1: *3* command: orange_command
-    def orange_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
+    def orange_command(files: list[str], settings: Settings = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -372,7 +371,7 @@ if 1:  # pragma: no cover
                 print(f"file not found: {filename}")
         # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-    def orange_diff_command(files: list[str], settings: Optional[dict[str, Any]] = None) -> None:
+    def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
         for filename in files:
             if os.path.exists(filename):
@@ -720,7 +719,7 @@ if 1:  # pragma: no cover
         results = global_token_list[first_i : last_j + 1]
         return results
     #@+node:ekr.20200101030236.1: *4* function: tokens_to_string
-    def tokens_to_string(tokens: list[Any]) -> str:
+    def tokens_to_string(tokens: list[Token]) -> str:
         """Return the string represented by the list of tokens."""
         if tokens is None:
             # This indicates an internal error.
@@ -1443,7 +1442,7 @@ class Fstringify:
                 return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, lt_s: str, aList: list[Any]) -> bool:
+    def change_quotes(self, lt_s: str, aList: list[Token]) -> bool:
         """
         Carefully check quotes in all "inner" tokens as necessary.
 
@@ -1534,12 +1533,12 @@ class Fstringify:
 
     format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
-    def scan_format_string(self, s: str) -> list[Any]:
+    def scan_format_string(self, s: str) -> list[re.Match]:
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
     #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
-    def scan_rhs(self, node: Node) -> list[Any]:
+    def scan_rhs(self, node: Node) -> list[list[Token]]:
         """
         Scan the right-hand side of a potential f-string.
 
@@ -1564,7 +1563,7 @@ class Fstringify:
         tokens = tokens_for_node(self.filename, node, self.tokens)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s: str, specs: list[Any], values: list) -> list[Token]:
+    def substitute_values(self, lt_s: str, specs: list[re.Match], values: list[list[Token]]) -> list[Token]:
         """
         Replace specifiers with values in lt_s string.
 
@@ -1637,7 +1636,7 @@ class Fstringify:
             f"{ln_n_s}: {self.line_number}\n"
             f"{line_s}: {self.line!r}")
     #@+node:ekr.20191225054848.1: *4* fs.replace
-    def replace(self, node: Node, s: str, values: list[Token]) -> None:
+    def replace(self, node: Node, s: str, values: list[list[Token]]) -> None:
         """
         Replace node with an ast.Str node for s.
         Replace all tokens in the range of values with a single 'string' node.
@@ -1686,7 +1685,7 @@ class Orange:
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[dict[str, Any]] = None):
+    def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
@@ -2649,7 +2648,7 @@ class Token:
         self.value = value
         #
         # Injected by Tokenizer.add_token.
-        self.five_tuple = None
+        self.five_tuple: tuple = None
         self.index = 0
         # The entire line containing the token.
         # Same as five_tuple.line.
@@ -2734,7 +2733,7 @@ class Tokenizer:
     token_index = 0
     prev_line_token = None
 
-    def add_token(self, kind: str, five_tuple: Any, line: str, s_row: int, value: str) -> None:
+    def add_token(self, kind: str, five_tuple: tuple, line: str, s_row: int, value: str) -> None:
         """
         Add a token to the results list.
 
@@ -2786,7 +2785,7 @@ class Tokenizer:
     #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
     header_has_been_shown = False
 
-    def do_token(self, contents: str, five_tuple: Any) -> None:
+    def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
         Handle the given token, optionally including between-token whitespace.
 
@@ -3822,7 +3821,7 @@ class TokenOrderGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj: Any) -> tuple[int, int, Any]:
+        def get_pos(obj: Node) -> tuple[int, int, Any]:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
