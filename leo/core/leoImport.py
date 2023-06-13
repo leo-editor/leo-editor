@@ -1779,7 +1779,7 @@ class RecursiveImportController:
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s
-    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
+    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines
     def minimize_headlines(self, p: Position) -> None:
         """
         Create @path nodes and @<file> nodes that create paths
@@ -1791,6 +1791,7 @@ class RecursiveImportController:
 
         def compute_at_path(path: str) -> str:
             """Compute the @path directive corresponding to path."""
+            # Similar to os.path.relpath.
             path = p.h.replace('\\', '/')
             if path.startswith(prefix):
                 path = path[len(prefix) :].strip()
