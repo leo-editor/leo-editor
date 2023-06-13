@@ -1540,7 +1540,7 @@ class Fstringify:
         result = list(re.finditer(self.format_pat, s))
         return result
     #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
-    def scan_rhs(self, node: Node) -> list[Any]:
+    def scan_rhs(self, node: Node) -> list[list[Token]]:
         """
         Scan the right-hand side of a potential f-string.
 
@@ -1638,7 +1638,7 @@ class Fstringify:
             f"{ln_n_s}: {self.line_number}\n"
             f"{line_s}: {self.line!r}")
     #@+node:ekr.20191225054848.1: *4* fs.replace
-    def replace(self, node: Node, s: str, values: list[Token]) -> None:
+    def replace(self, node: Node, s: str, values: list[list[Token]]) -> None:
         """
         Replace node with an ast.Str node for s.
         Replace all tokens in the range of values with a single 'string' node.
