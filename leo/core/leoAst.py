@@ -3823,7 +3823,7 @@ class TokenOrderGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj: Any) -> tuple[int, int, Any]:
+        def get_pos(obj: Node) -> tuple[int, int, Any]:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
