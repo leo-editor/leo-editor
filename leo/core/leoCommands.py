@@ -4247,13 +4247,12 @@ class Commands:
         *,  # All arguments are kwargs.
         add_path: bool = True,
         dir_: str = None,
-        expand_vars_name: str = None,
-        ignore_pattern: re.Pattern = None,
+        ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
         kind: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,  # force_at_others=False, # tag:no-longer-used
-        verbose: bool = True,  # legacy value.
+        theTypes: list[str] = None,
+        verbose: bool = True,
     ) -> None:
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -4285,7 +4284,6 @@ class Commands:
                 cc = leoImport.RecursiveImportController(c,
                     kind,
                     add_path=add_path,
-                    expand_vars_name=expand_vars_name,
                     ignore_pattern=ignore_pattern,
                     recursive=recursive,
                     safe_at_file=safe_at_file,

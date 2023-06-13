@@ -1581,7 +1581,6 @@ class RecursiveImportController:
         kind: str,
         *,  # All other args are kwargs.
         add_path: bool = True,
-        expand_vars_name: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
         theTypes: list[str] = None,
@@ -1591,7 +1590,6 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
-        self.expand_vars_name = expand_vars_name
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
