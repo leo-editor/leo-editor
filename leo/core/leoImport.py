@@ -1708,10 +1708,10 @@ class RecursiveImportController:
         """
         self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
-        if self.kind not in ('@auto', '@edit'):
-            self.remove_empty_nodes(p)
         if p.firstChild():
             self.minimize_headlines(p.firstChild(), prefix)
+        if self.kind not in ('@auto', '@edit'):
+            self.remove_empty_nodes(p)
         self.clear_dirty_bits(p)
         self.add_class_names(p)
     #@+node:ekr.20180524100258.1: *5* ric.add_class_names
@@ -1805,9 +1805,21 @@ class RecursiveImportController:
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""
         c = self.c
+
+        def has_significant_children(p: Position) -> bool:
+            """Return True if p has any descendant that is not an @path node."""
+            if not p.hasChildren():
+                return False
+            if not p.h.startswith('@path '):
+                return True
+            for p2 in p.subtree():
+                if has_significant_children(p2):
+                    return True
+            return False
+
         aList = [
             p2 for p2 in p.self_and_subtree()
-                if not p2.b and not p2.hasChildren()]
+                if not p2.b.strip() and not has_significant_children(p2)]
         if aList:
             c.deletePositionsInList(aList)  # Don't redraw.
     #@-others
