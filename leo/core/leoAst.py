@@ -1444,7 +1444,7 @@ class Fstringify:
                 return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, lt_s: str, aList: list[Any]) -> bool:
+    def change_quotes(self, lt_s: str, aList: list[Token]) -> bool:
         """
         Carefully check quotes in all "inner" tokens as necessary.
 
