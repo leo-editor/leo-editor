@@ -2650,7 +2650,7 @@ class Token:
         self.value = value
         #
         # Injected by Tokenizer.add_token.
-        self.five_tuple = None
+        self.five_tuple: tuple = None
         self.index = 0
         # The entire line containing the token.
         # Same as five_tuple.line.
@@ -2735,7 +2735,7 @@ class Tokenizer:
     token_index = 0
     prev_line_token = None
 
-    def add_token(self, kind: str, five_tuple: Any, line: str, s_row: int, value: str) -> None:
+    def add_token(self, kind: str, five_tuple: tuple, line: str, s_row: int, value: str) -> None:
         """
         Add a token to the results list.
 
