@@ -721,7 +721,7 @@ if 1:  # pragma: no cover
         results = global_token_list[first_i : last_j + 1]
         return results
     #@+node:ekr.20200101030236.1: *4* function: tokens_to_string
-    def tokens_to_string(tokens: list[Any]) -> str:
+    def tokens_to_string(tokens: list[Token]) -> str:
         """Return the string represented by the list of tokens."""
         if tokens is None:
             # This indicates an internal error.
