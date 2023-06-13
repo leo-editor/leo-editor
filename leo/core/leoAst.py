@@ -1687,7 +1687,7 @@ class Orange:
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[dict[str, Any]] = None):
+    def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
