@@ -1534,7 +1534,7 @@ class Fstringify:
 
     format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
-    def scan_format_string(self, s: str) -> list[Any]:
+    def scan_format_string(self, s: str) -> list[re.Match]:
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
