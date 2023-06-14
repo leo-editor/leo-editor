@@ -1651,7 +1651,7 @@ class RecursiveImportController:
         else:
             if self.verbose:
                 g.es_print('importing directory:', dir_)
-            files = os.listdir(dir_)
+            files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
             try:
