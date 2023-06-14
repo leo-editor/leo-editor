@@ -1778,37 +1778,52 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headline
     def minimize_headline(self, p: Position) -> None:
         """
-        Create an @path node or @<file> node with path relative to the *parent*
-        of self.root_directory.
+        Create an @path directive in  @<file> nodes.
         """
 
-        def compute_at_path(path: str) -> str:
-            """Compute the proper path for the @path directive."""
-            # We only need to return the last component because
-            # of previosly generated ancestor @path directives.
-            path = path.replace('\\', '/')
-            return path.split('/')[-1] if '/' in path else None
-
-        def truncate_path(path: str) -> str:
-            """Return the path relative to the root_directory."""
-            root_dir = self.root_directory
-            path = path.replace('\\', '/')
-            if path.startswith(root_dir):
-                path = path[len(root_dir) :].strip()
+        def strip_path(path: str) -> str:
+            if path.startswith(self.root_directory):
+                path = path[len(self.root_directory) :].strip()
             return path.split('/')[-1] if '/' in path else path
+
+        def body_path(path: str) -> str:
+            """Return the path relative to the root_directory."""
+            if not path.startswith(self.root_directory):
+                return None
+            prefix = '/'.join(self.root_directory.split('/')[:-1])
+            path = path[len(prefix) :].strip()
+            if path.startswith('/'):
+                path = path[1:]
+            path = os.path.dirname(path)
+            return path
+
+        def headline_path(path: str) -> str:
+            if not path.startswith(self.root_directory):
+                return None
+            prefix = '/'.join(self.root_directory.split('/')[:-1])
+            assert path.startswith(prefix), prefix
+            path = path[len(prefix) :]
+            if path.startswith('/'):
+                path = path[1:]
+            return path
 
         m = self.file_pattern.match(p.h)
         if m:
-            # p is an @file node of some kind. Create relative paths.
+            # p is an @file node of some kind.
             kind = m.group(0)
-            path = p.h[len(kind) :].strip()
-            path = truncate_path(path)
-            p.h = f"{kind} {path}"
+            path = p.h[len(kind) :].strip().replace('\\', '/')
+            # Shorten p.h.
+            p.h = f"{kind} {strip_path(path)}"
+            # Prepend an @path directive to p.b.
+            path = body_path(path)
+            if path:
+                p.b = f"@path {path}\n{p.b}"
         else:
-            # p.h is a path. Create the relative @path node.
-            h = compute_at_path(p.h)
+            # p.h is any other node.
+            # Append 'path' the the headline only for paths.
+            h = headline_path(p.h)
             if h:
-                p.h = f"@path {h}"
+                p.h = f"path: {h}"
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""
@@ -1818,7 +1833,7 @@ class RecursiveImportController:
             """Return True if p has any descendant that is not an @path node."""
             if not p.hasChildren():
                 return False
-            if not p.h.startswith('@path '):
+            if not p.h.startswith('path: '):
                 return True
             for p2 in p.subtree():
                 if has_significant_children(p2):

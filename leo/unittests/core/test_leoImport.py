@@ -86,9 +86,10 @@ class TestLeoImport(BaseTestImporter):
         dir_ = r'C:/Repos/ekr-mypy2/mypy'
         table = (
             ('root', 'root'),
-            (dir_, '@path mypy'),
-            (f"{dir_}/test", '@path test'),
-            (f"{dir_}/xyzzy/test2", '@path test2'),
+            (dir_, 'path: mypy'),
+            (f"{dir_}/test", 'path: mypy/test'),
+            (f"{dir_}/xyzzy/test2", 'path: mypy/xyzzy/test2'),
+            (f"@clean {dir_}/x.py", '@clean x.py'),
             ('@clean x.py', '@clean x.py'),
         )
         x = leoImport.RecursiveImportController(c,
