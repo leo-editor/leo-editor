@@ -4244,16 +4244,14 @@ class Commands:
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(
         self,
-        dir_: str,
-        kind: str,
-        add_context: Union[bool, None] = None,  # Override setting only if True/False
-        add_file_context: Union[bool, None] = None,  # Override setting only if True/False
-        add_path: bool = True,
+        *,  # All arguments are kwargs.
+        dir_: str = None,  # A directory or file name.
+        ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
+        kind: str = None,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,  # force_at_others=False, # tag:no-longer-used
-        ignore_pattern: re.Pattern = None,
-        verbose: bool = True,  # legacy value.
+        theTypes: list[str] = None,
+        verbose: bool = True,
     ) -> None:
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -4263,7 +4261,6 @@ class Commands:
         Parameters::
             dir_              The root directory or file to import.
             kind              One of ('@clean','@edit','@file','@nosent').
-            add_path=True     True: add a full @path directive to @<file> nodes.
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
@@ -4278,25 +4275,29 @@ class Commands:
         """
         #@-<< docstring >>
         c = self
-        if g.os_path_exists(dir_):
-            # Import all files in dir_ after c.p.
-            try:
-                from leo.core import leoImport
-                cc = leoImport.RecursiveImportController(c, kind,
-                    add_context=add_context,
-                    add_file_context=add_file_context,
-                    add_path=add_path,
-                    ignore_pattern=ignore_pattern,
-                    recursive=recursive,
-                    safe_at_file=safe_at_file,
-                    theTypes=['.py'] if not theTypes else theTypes,
-                    verbose=verbose,
-                )
-                cc.run(dir_)
-            finally:
-                c.redraw()
-        else:
-            g.es_print(f"Does not exist: {dir_}")
+        if not dir_:
+            g.es_print('Missing dir_ argument')
+            return
+        if not g.os_path_exists(dir_):
+            g.es_print(f"Directory/file does not exist: {dir_}")
+            return
+        # Import all files in dir_ after c.p.
+        try:
+            from leo.core import leoImport
+            cc = leoImport.RecursiveImportController(c,
+                dir_=dir_,
+                ignore_pattern=ignore_pattern,
+                kind=kind,
+                recursive=recursive,
+                safe_at_file=safe_at_file,
+                theTypes=['.py'] if not theTypes else theTypes,
+                verbose=verbose,
+            )
+            cc.run(dir_)
+        except AssertionError:
+            g.es_exception()
+        finally:
+            c.redraw()
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
     #@@nobeautify

@@ -79,6 +79,30 @@ class TestLeoImport(BaseTestImporter):
         )
         # Don't call run_test.
         self.check_outline(target, expected_results)
+    #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_recursive_import
+    def test_recursive_import(self):
+        from leo.core import leoImport
+        c, root = self.c, self.c.rootPosition()
+        dir_ = r'C:/Repos/ekr-mypy2/mypy'
+        table = (
+            ('root', 'root'),
+            (dir_, '@path mypy'),
+            (f"{dir_}/test", '@path test'),
+            (f"{dir_}/xyzzy/test2", '@path test2'),
+            ('@clean x.py', '@clean x.py'),
+        )
+        x = leoImport.RecursiveImportController(c,
+            dir_=dir_,
+            kind='@clean',
+            recursive=True,
+            safe_at_file = False,
+            theTypes=['.py'],
+            verbose=False,
+        )
+        for h, expected in table:
+            root.h = h
+            x.minimize_headline(root)
+            self.assertEqual(root.h, expected)
     #@-others
 #@-others
 #@-leo
