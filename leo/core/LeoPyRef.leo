@@ -14,7 +14,6 @@
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
 <v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
@@ -26,11 +25,13 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
-<v t="ekr.20220306092217.1"><vh>@button test-one</vh></v>
-<v t="ekr.20211020091540.1"><vh>@command b</vh></v>
+<v t="ekr.20220306092217.1"><vh>@button test-one</vh>
+<v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20230508145335.1"><vh>@button slow-tests</vh></v>
+<v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
+<v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
-<v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
-<v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
 <v t="ekr.20150413091056.1"><vh>@@button check-clones</vh></v>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
@@ -102,62 +103,6 @@
 <v t="ekr.20210110092457.5"><vh>@@@button cov @key=ctrl-6</vh></v>
 <v t="ekr.20210110092457.6"><vh>@@@button moz @key=ctrl-7</vh></v>
 <v t="ekr.20210110092457.7"><vh>@@@button unit</vh></v>
-</v>
-</v>
-<v t="ekr.20140103105930.16446"><vh>@views</vh>
-<v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
-</v>
-<v t="ekr.20140808103117.18035"><vh>@persistence</vh>
-<v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20160425070345.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20160425070345.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20160420054135.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20160420054135.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150604130353.1"><vh>@data:@auto test/unit_tests.py</vh>
-<v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20201012111649.1"><vh>@data:@auto leo_cloud.py</vh>
-<v t="ekr.20210509083811.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
-<v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191729.1"><vh>@data:@auto ../test/external_files/at-auto-line-number-test.py</vh>
-<v t="ekr.20211107080227.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191730.1"><vh>@data:@auto ../test/external_files/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20211107080227.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191730.3"><vh>@data:@auto ../test/external_files/at-auto-section-ref-test.py</vh>
-<v t="ekr.20211107080227.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
-<v t="ekr.20211118024343.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
-<v t="ekr.20211107080227.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.5"><vh>@data:@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20211107080227.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20211107080227.7"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220811130331.1"><vh>@data:@auto-json c:\test\at-auto-json-test.py</vh>
-<v t="ekr.20220811162331.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220829104501.1"><vh>@data:@auto c:\test\GSTATOBJ.PAS</vh>
-<v t="ekr.20220830153132.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220830152850.1"><vh>@data:@auto c:\test\extract.pas</vh>
-<v t="ekr.20220830152850.2"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -524,6 +469,7 @@
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230529075138.1"><vh>@file ../plugins/importers/base_importer.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file ../plugins/importers/c.py</vh></v>
 <v t="ekr.20160505094722.1"><vh>@file ../plugins/importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file ../plugins/importers/csharp.py</vh></v>
@@ -536,7 +482,6 @@
 <v t="ekr.20140723122936.18143"><vh>@file ../plugins/importers/java.py</vh></v>
 <v t="ekr.20140723122936.18144"><vh>@file ../plugins/importers/javascript.py</vh></v>
 <v t="ekr.20140723122936.18151"><vh>@file ../plugins/importers/leo_rst.py</vh></v>
-<v t="ekr.20161108125620.1"><vh>@file ../plugins/importers/linescanner.py</vh></v>
 <v t="ekr.20170530024520.2"><vh>@file ../plugins/importers/lua.py</vh></v>
 <v t="ekr.20140725190808.18066"><vh>@file ../plugins/importers/markdown.py</vh></v>
 <v t="ekr.20140723122936.18146"><vh>@file ../plugins/importers/org.py</vh></v>
@@ -697,6 +642,7 @@
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
+<v t="ekr.20230506095312.1"><vh>@file ../unittests/test_design.py</vh></v>
 <v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
 <v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
 <v t="ekr.20210904064440.2"><vh>@file ../unittests/test_importers.py</vh></v>
@@ -726,6 +672,7 @@
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
+<v t="ekr.20220911163718.1"><vh>@file ../unittests/core/test_leoQt6.py</vh></v>
 <v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
 <v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 <v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
@@ -1043,12 +990,6 @@ g.app.debug_widgets = not g.app.debug_widgets
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
 </t>
-<t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBaseClass &gt;&gt;--&gt;kind handlers (ParserBaseClass)--&gt;doData
-@language rest
-The parser for @data nodes, doData, no longer strips *anything*.</t>
-<t tx="ekr.20140103105930.16446"></t>
 <t tx="ekr.20140723122936.17925"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
 
 # These plugins now contain the importer code for all kinds of @auto nodes.
@@ -1060,15 +1001,6 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 # These plugins contain the write code for all kinds of special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.
 @language python
-</t>
-<t tx="ekr.20140808103117.18035"></t>
-<t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
-</t>
-<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
-</t>
-<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
-</t>
-<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
 <t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
 
@@ -1156,7 +1088,6 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20150304130753.4">@language xml
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -1375,8 +1306,8 @@ CreateDecorators(c,make_changes=False).run()
     for s in lines:
         aList = s.split()
         if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
+            aList = [alist[0],' '.join(alist[1:])]
+        c_name,f_name = alist[0].strip(),alist[1].strip()
         if ' ' not in f_name:
             f_name = f_name.split('.')[-1]
         # if '(' in f_name:
@@ -1476,8 +1407,8 @@ CreateDecorators().run()
     for s in lines:
         aList = s.split()
         if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
+            aList = [alist[0],' '.join(alist[1:])]
+        c_name,f_name = alist[0].strip(),alist[1].strip()
         if ' ' not in f_name:
             f_name = f_name.split('.')[-1]
         if trace:
@@ -1554,9 +1485,6 @@ CreateDecorators().run()
     print('%s commands %s failed' % (self.n,self.n_fail))
 </t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
-</t>
-<t tx="ekr.20150604130353.2"></t>
 <t tx="ekr.20150703061709.1">@language python
 
 """myLeoSettings.py: save the outline and run the pylint command"""
@@ -1587,33 +1515,13 @@ output_directory: ~/stubs
 
 prefix_lines:
     # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable, Tuple
+    from typing import TypeVar, Iterable
     T = TypeVar('T', int, float, complex)
 
 [Def Name Patterns]
 
 [General Patterns]
 </t>
-<t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
-unl: qt_quicksearch declarations
-gnx: ekr.20160412193816.6
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20160412193816.7
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20160412193816.8
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
-</t>
-<t tx="ekr.20160420054135.5"></t>
-<t tx="ekr.20160425070345.1">gnx: ekr.20160412193816.1
-unl: qt_main declarations
-gnx: ekr.20160412193816.2
-unl: class Ui_MainWindow
-gnx: ekr.20160412193816.3
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20160412193816.4
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
-<t tx="ekr.20160425070345.2"></t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
@@ -1638,24 +1546,28 @@ else:
         print('done')
         </t>
 <t tx="ekr.20170427114412.1"></t>
-<t tx="ekr.20170428084123.1">"""Recursively import all python files in a directory and clean the result."""
+<t tx="ekr.20170428084123.1">@language python
+"""Recursively import all python files in a directory and clean the result."""
+@tabwidth -4 # For a better match.
 g.cls()
-if 0:
-    import importlib
-    import leo.core.leoImport as leoImport
-    importlib.reload(leoImport)
-
-dir_ = r'C:\Users\Edward Ream\Python\python39\Lib\site-packages\mypy'
-assert g.os_path_exists(dir_), repr(dir_)
+# dir_ = r'C:\Repos\codon\codon\app'
+dir_ = r'C:\Repos\ekr-mypy2\mypy'
 c.recursiveImport(
-    add_context = False,
-    dir_ = dir_,
-    kind = '@clean', # '@clean', '@edit', '@nosent','@auto','@file',
-    recursive = False,
+    dir_=dir_,
+    kind = '@clean', # '@auto', '@clean', '@nosent','@file',
+    recursive = True,
     safe_at_file = False,
-    theTypes = ['.py',]
+    # ['.codon', '.cpp', '.html', '.js', '.json', '.py', '.rs', '.svg', '.ts', '.tsx']
+    theTypes = ['.py'],
+    verbose = False,
 )
-</t>
+if 1:
+    last = c.lastTopLevel()
+    last.expand()
+    if last.hasChildren():
+        last.firstChild().expand()
+    c.redraw(last)
+print('Done')</t>
 <t tx="ekr.20170428084208.443">#!/usr/bin/python
 # This file generates pyflakes warnings for *all* imported symbols.
 @others
@@ -1963,10 +1875,8 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    # rev1='f85969ae8cb',  # Before.
-    # rev2='dd0fadf7b15',  # After.
-    rev1='6.6.4',               # Old
-    rev2='devel',   # New
+    rev1='devel',               # Old
+    rev2='ekr-archived-positions',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2020,10 +1930,6 @@ print('done')</t>
 <t tx="ekr.20201012111545.1">@language python
 @tabwidth -4
 @pagewidth 80
-</t>
-<t tx="ekr.20201012111649.1">gnx: ekr.20170925083314.1
-</t>
-<t tx="ekr.20201012111649.3">gnx: ekr.20170925083853.1
 </t>
 <t tx="ekr.20201013034659.1"></t>
 <t tx="ekr.20201013034742.10"># These can be overridden in subclasses.
@@ -2446,8 +2352,6 @@ os.system('moz htmlcov/leo_core_leoFind_py.html')</t>
 import os
 os.system('python -m unittest leoFind.py')
 g.es_print('done')</t>
-<t tx="ekr.20210113054702.1">import os
-print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
 <t tx="ekr.20210118013157.1">"""
 Convert defs in LeoFind to pep8 names.
 - Don't change defs containing underscores.
@@ -2528,92 +2432,6 @@ for key in sorted(d.keys()):
         else:
             print('no position for', v)
 print('done')</t>
-<t tx="ekr.20210509083811.1">gnx: ekr.20201012111338.2
-unl: Declarations (leo_cloud.py)
-gnx: ekr.20201012111338.3
-unl: init (leo_cloud.py)
-gnx: ekr.20201012111338.4
-unl: onCreate (leo_cloud.py)
-gnx: ekr.20201012111338.5
-unl: onSave (leo_cloud.py)
-gnx: ekr.20201012111338.6
-unl: lc_read_current (leo_cloud.py)
-gnx: ekr.20201012111338.7
-unl: lc_write_current (leo_cloud.py)
-gnx: ekr.20201012111338.8
-unl: class LeoCloudIOBase
-gnx: ekr.20201012111338.9
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.__init__
-gnx: ekr.20201012111338.10
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.get_subtree
-gnx: ekr.20201012111338.11
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.put_subtree
-gnx: ekr.20201012111338.12
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)
-gnx: ekr.20201012111338.13
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.14
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.15
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.16
-unl: class LeoCloudIOGit(LeoCloudIOBase)
-gnx: ekr.20201012111338.17
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.18
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase)._run_git
-gnx: ekr.20201012111338.19
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.20
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.21
-unl: class LeoCloud
-gnx: ekr.20201012111338.22
-unl: class LeoCloud--&gt;LeoCloud.__init__
-gnx: ekr.20201012111338.23
-unl: class LeoCloud--&gt;LeoCloud.bg_check
-gnx: ekr.20201012111338.24
-unl: class LeoCloud--&gt;LeoCloud.bg_post_process
-gnx: ekr.20201012111338.25
-unl: class LeoCloud--&gt;LeoCloud.find_at_leo_cloud
-gnx: ekr.20201012111338.26
-unl: class LeoCloud--&gt;LeoCloud._find_clouds_recursive
-gnx: ekr.20201012111338.27
-unl: class LeoCloud--&gt;LeoCloud.find_clouds
-gnx: ekr.20201012111338.28
-unl: class LeoCloud--&gt;LeoCloud._from_dict_recursive
-gnx: ekr.20201012111338.29
-unl: class LeoCloud--&gt;LeoCloud.from_dict
-gnx: ekr.20201012111338.30
-unl: class LeoCloud--&gt;LeoCloud.io_from_node
-gnx: ekr.20201012111338.31
-unl: class LeoCloud--&gt;LeoCloud.kw_from_node
-gnx: ekr.20201012111338.32
-unl: class LeoCloud--&gt;LeoCloud.load_clouds
-gnx: ekr.20201012111338.33
-unl: class LeoCloud--&gt;LeoCloud.read_current
-gnx: ekr.20201012111338.34
-unl: class LeoCloud--&gt;LeoCloud.recursive_hash
-gnx: ekr.20201012111338.35
-unl: class LeoCloud--&gt;LeoCloud.save_clouds
-gnx: ekr.20201012111338.36
-unl: class LeoCloud--&gt;LeoCloud.subtree_changed
-gnx: ekr.20201012111338.37
-unl: class LeoCloud--&gt;LeoCloud._to_json_serial
-gnx: ekr.20201012111338.38
-unl: class LeoCloud--&gt;LeoCloud.to_json
-gnx: ekr.20201012111338.39
-unl: class LeoCloud--&gt;LeoCloud._to_dict_recursive
-gnx: ekr.20201012111338.40
-unl: class LeoCloud--&gt;LeoCloud.to_dict
-gnx: ekr.20201012111338.41
-unl: class LeoCloud--&gt;LeoCloud._ua_clean
-gnx: ekr.20201012111338.42
-unl: class LeoCloud--&gt;LeoCloud.write_current
-</t>
-<t tx="ekr.20210509083811.2">gnx: ekr.20201012111338.43
-unl: Declarations (leo_cloud_server.py)
-</t>
 <t tx="ekr.20210510071427.1">def put_prolog():
     """Same as fc.putProlog, without the stylysheet."""
     fc = c.fileCommands
@@ -2678,7 +2496,7 @@ rust: rustc
 # The other group defines the file name.
 
 
-go ^\s*(.*):([0-9]+):([0-9]+):.+$
+go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="ekr.20210630070717.1">"""
@@ -2833,20 +2651,6 @@ converter = convertCommands.ConvertAtTests()
 # converter = convertCommands.ConvertUndoTests()
 # converter = convertCommands.ConvertColorizerTests()
 convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
-<t tx="ekr.20210911191729.1">gnx: ekr.20190113123439.5
-</t>
-<t tx="ekr.20210911191730.1">gnx: ekr.20190113123439.7
-</t>
-<t tx="ekr.20210911191730.3">gnx: ekr.20190113123439.11
-</t>
-<t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
-</t>
-<t tx="ekr.20210911191731.3">gnx: ekr.20190113123439.16
-</t>
-<t tx="ekr.20210911191731.5">gnx: ekr.20190113123635.2
-</t>
-<t tx="ekr.20210911191731.7">gnx: ekr.20190113123635.5
-</t>
 <t tx="ekr.20210912064148.1"></t>
 <t tx="ekr.20210912064205.1"></t>
 <t tx="ekr.20211011090013.1">"""
@@ -2953,72 +2757,19 @@ def do_sec(i, m, s):
 </t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
-<t tx="ekr.20211107080227.1">gnx: ekr.20210911191226.3
-unl: at_auto_child (at-auto-line-number-test.py)
-</t>
-<t tx="ekr.20211107080227.2">gnx: ekr.20210911191226.4
-unl: !Declarations
-gnx: ekr.20210911191226.5
-unl: section 1
-gnx: ekr.20210911191226.6
-unl: section 2
-</t>
-<t tx="ekr.20211107080227.3">gnx: ekr.20210911191226.7
-unl: Declarations (at-auto-section-ref-test.py)
-</t>
-<t tx="ekr.20211107080227.5">gnx: ekr.20210911191226.10
-unl: class class1
-gnx: ekr.20210911191226.11
-unl: class class1--&gt;class1_method1
-gnx: ekr.20210911191226.12
-unl: class class1--&gt;class1_method2
-gnx: ekr.20210911191226.13
-unl: class class2
-gnx: ekr.20210911191226.14
-unl: class class2--&gt;class2_method1
-gnx: ekr.20210911191226.15
-unl: class class2--&gt;class2_method2
-</t>
-<t tx="ekr.20211107080227.6">gnx: ekr.20210911191226.16
-unl: section 1
-gnx: ekr.20210911191226.17
-unl: section 2
-</t>
-<t tx="ekr.20211107080227.7">gnx: ekr.20210911191226.18
-unl: First line.
-gnx: ekr.20210911191226.19
-unl: section 1
-gnx: ekr.20210911191226.20
-unl: section 2
-</t>
-<t tx="ekr.20211118024343.1">gnx: ekr.20210911191226.8
-unl: spam (at-auto-test.py)
-gnx: ekr.20210911191226.9
-unl: eggs (at-auto-test.py)
-</t>
 <t tx="ekr.20220306092217.1">g.cls()
-
-core = 'leo.unittests.core'
-design = 'leo.unittests.test_design'
-gui = 'leo.unittests.test_gui'
-syntax = 'leo.unittests.test_syntax'
-testAtFile = 'test_leoAtFile.TestAtFile'
-testColorizer = 'test_leoColorizer.TestColorizer'
-testCommands = 'test_leoCommands.TestCommands'
-testDesign = 'test_design'  # not used yet.
-testGlobals = 'test_leoGlobals.TestGlobals'
-
+&lt;&lt; prefixes &gt;&gt;
 commands = (
-    # f" {core}.{testCommands}.test_c_expand_path_expression",
-    # f" {core}.{testAtFile}.test_bug_1889_tilde_in_at_path",
-    # f" {core}.{testGlobals}.test_g_finalize",
-    # f" {core}.{testColorizer}.test_colorizer_HTML_script_tag",
-    # f" {core}.{testGlobals}.test_g_findUnl",
-    # f" {gui}.TestQtGui.test_put_html_links",
-    # f" {design}",
+    # f" {core}.test_leoImport.TestLeoImport.test_parse_body",
+    # f" {importers}.TestCoffeescript",
+    # f" {importers}.TestCython",
+    # f" {importers}.TestPython",
+    # f" {importers}",
+    f" {core}.test_leoImport.TestLeoImport.test_recursive_import",
 )
 commands_s = f"python -m unittest {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
+
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3192,7 +2943,7 @@ import re
 &lt;&lt; init core_p, command_p and globals_p &gt;&gt;
 d = {}  # Dict[func-name, True]
 # If I were going to do more work I would do the following:
-# exclusions: Dict[str, List[str]] = {}
+# exclusions: Dict[str, list[str]] = {}
 exclusions = set()  # Set[func-name]
 @others
 # Create d...
@@ -3359,15 +3110,6 @@ make_outline(d, top, topFlag=True)
 top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
-<t tx="ekr.20220811130331.1">gnx: ekr.20220811130232.1
-</t>
-<t tx="ekr.20220811162331.1">gnx: ekr.20220811130300.1
-unl: spam
-gnx: ekr.20220811162311.1
-unl: spam--&gt;ham
-gnx: ekr.20220811130530.1
-unl: eggs
-</t>
 <t tx="ekr.20220823130338.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
 # #2743 is a duplicate of #1789. 
 g.cls()
@@ -3522,94 +3264,6 @@ while todo:
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20220829104501.1">gnx: ekr.20220829102658.1
-</t>
-<t tx="ekr.20220830152850.1">gnx: ekr.20220830152749.1
-</t>
-<t tx="ekr.20220830152850.2"></t>
-<t tx="ekr.20220830153132.1">gnx: ekr.20220830152857.1
-unl: procedure statObj.scale
-gnx: ekr.20220830152857.2
-unl: procedure statObj.multiplyGraph
-gnx: ekr.20220830152857.3
-unl: function statObj.divideGraph
-gnx: ekr.20220830152857.4
-unl: procedure statObj.addGraph
-gnx: ekr.20220830152857.5
-unl: procedure statObj.subtract
-gnx: ekr.20220830152857.6
-unl: procedure statObj.addConstant
-gnx: ekr.20220830152857.7
-unl: procedure statObj.square
-gnx: ekr.20220830152857.8
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.9
-unl: procedure statObj.convolve
-gnx: ekr.20220830152857.10
-unl: (*{ ------------------------------------------------------------------------
-gnx: ekr.20220830152857.11
-unl: procedure statObj.convolve
-gnx: ekr.20220830152857.12
-unl: procedure statObj.shiftRight
-gnx: ekr.20220830152857.13
-unl: procedure statObj.shiftLeft
-gnx: ekr.20220830152857.14
-unl: { ----------------------------------------------------------------------
-gnx: ekr.20220830152857.15
-unl: procedure statObj.sortOnX
-gnx: ekr.20220830152857.16
-unl: procedure statObj.sortOnY
-gnx: ekr.20220830152857.17
-unl: constructor statObj.init;
-gnx: ekr.20220830152857.18
-unl: destructor statObj.byebye;
-gnx: ekr.20220830152857.19
-unl: procedure statObj.clear
-gnx: ekr.20220830152857.20
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.21
-unl: function statObj.getXStep
-gnx: ekr.20220830152857.22
-unl: procedure statObj.pad
-gnx: ekr.20220830152857.23
-unl: procedure statObj.copyData
-gnx: ekr.20220830152857.24
-unl: { Return true if ASCII, false if file contains bytes }
-gnx: ekr.20220830152857.25
-unl: function testDataType
-gnx: ekr.20220830152857.26
-unl: function statObj.sendXData
-gnx: ekr.20220830152857.27
-unl: function statObj.sendYData
-gnx: ekr.20220830152857.28
-unl: procedure statObj.getXData
-gnx: ekr.20220830152857.29
-unl: procedure statObj.getYData
-gnx: ekr.20220830152857.30
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.31
-unl: procedure statObj.importData
-gnx: ekr.20220830152857.32
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.33
-unl: procedure statObj.exportData
-gnx: ekr.20220830152857.34
-unl: procedure statObj.getYMax
-gnx: ekr.20220830152857.35
-unl: procedure statObj.getYMin
-gnx: ekr.20220830152857.36
-unl: procedure statObj.getXMax
-gnx: ekr.20220830152857.37
-unl: procedure statObj.getXMin
-gnx: ekr.20220830152857.38
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.39
-unl: procedure statObj.Integrate
-gnx: ekr.20220830152857.40
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.41
-unl: procedure statObj.differentiate
-</t>
 <t tx="ekr.20220904210247.1"># This is a copy of the @enabled-plugins node from leoSettings.leo,
 # ensuring that the @enabled-plugins node in myLeoSettings.leo has no effect.
 
@@ -3680,7 +3334,7 @@ py -m mypy --debug-cache leo %*
 cls
 call %~dp0\set-repo-dir
 
-echo test-one-leo: test_leoFind.TestFind
+echo test-one-leo
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
 </t>
 <t tx="ekr.20221204071554.1">@language batch
@@ -3714,10 +3368,14 @@ set /P "REINDENT_PATH="&lt; %PATH_FILE%
 
 if "%REINDENT_PATH%"=="" goto no_reindent
 
-echo reindent leo\core
+echo reindent leo/core
 call py %REINDENT_PATH% -r leo\core
-echo reindent leo\commands
+echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
+echo reindent leo/plugins/importers
+call py %REINDENT_PATH% -r leo\plugins\importers
+echo reindent leo/plugins/writers
+call py %REINDENT_PATH% -r leo\plugins\writers
 goto done
 
 :no_reindent
@@ -3773,6 +3431,24 @@ sphinx-build -M html . _build -a
 :: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
 @echo off
 cd %~dp0..\..
+</t>
+<t tx="ekr.20230508145335.1"># These tests load (once) all files in leo/core, leo/commands and leo/plugins/qt_*.py.
+g.execute_shell_commands(
+    'python -m unittest '
+    'leo.unittests.test_design.TestAnnotations.slow_test_all_paths '
+    'leo.unittests.test_design.TestChains.slow_test_all_paths'
+)
+</t>
+<t tx="ekr.20230511074046.1">core = 'leo.unittests.core'
+design = 'leo.unittests.test_design'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.test_importers'
+syntax = 'leo.unittests.test_syntax'
+#
+testAtFile = 'test_leoAtFile.TestAtFile'
+testColorizer = 'test_leoColorizer.TestColorizer'
+testCommands = 'test_leoCommands.TestCommands'
+testGlobals = 'test_leoGlobals.TestGlobals'
 </t>
 </tnodes>
 </leo_file>
