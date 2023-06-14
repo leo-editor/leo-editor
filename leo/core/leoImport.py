@@ -1577,7 +1577,6 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c: Cmdr,
         *,  # All other args are kwargs.
-        add_path: bool = True,
         dir_: str,
         ignore_pattern: re.Pattern = None,
         kind: str,
@@ -1588,7 +1587,6 @@ class RecursiveImportController:
     ) -> None:
         """Ctor for RecursiveImportController class."""
         self.c = c
-        self.add_path = add_path
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
@@ -1629,8 +1627,7 @@ class RecursiveImportController:
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-            ### self.post_process(parent, dir_)  # Fix # 1033.
-            self.post_process(parent)  # Fix # 1033.
+            self.post_process(parent)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
@@ -1786,10 +1783,9 @@ class RecursiveImportController:
         """
 
         def compute_at_path(path: str) -> str:
-            """
-            Compute the proper path for the @path directive,
-            which is the last part of the full path!
-            """
+            """Compute the proper path for the @path directive."""
+            # We only need to return the last component because
+            # of previosly generated ancestor @path directives.
             path = path.replace('\\', '/')
             return path.split('/')[-1] if '/' in path else None
 

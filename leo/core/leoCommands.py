@@ -4245,7 +4245,6 @@ class Commands:
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
-        add_path: bool = True,  # Add an @path directive to each @<file> nodes.
         dir_: str = None,  # A directory or file name.
         ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
         kind: str = None,
@@ -4262,7 +4261,6 @@ class Commands:
         Parameters::
             dir_              The root directory or file to import.
             kind              One of ('@clean','@edit','@file','@nosent').
-            add_path=True     True: add a full @path directive to @<file> nodes.
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
@@ -4287,7 +4285,6 @@ class Commands:
         try:
             from leo.core import leoImport
             cc = leoImport.RecursiveImportController(c,
-                add_path=add_path,
                 dir_=dir_,
                 ignore_pattern=ignore_pattern,
                 kind=kind,
