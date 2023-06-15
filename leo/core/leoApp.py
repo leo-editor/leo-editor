@@ -2767,23 +2767,9 @@ class LoadManager:
         """
         usage: launchLeo.py [options] file1, file2, ...
 
-        simple options:
-            [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--listen-to-log]
-            [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]  [-v]
-            [--select ID] [--silent]
-
-        optional complex options:
-            --script-window
-            --load-type=@edit|@file
-            --screen-shot=<path>
-            --script=<path>]
-
-
-
         options:
-          -h, --help                show this help message and exit
-          -b, --black-sentinels
-                                write black-compatible sentinel comments
+          -h, --help            show this help message and exit
+          -b, --black-sentinels write black-compatible sentinel comments
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
           --fullscreen          start fullscreen
@@ -2813,7 +2799,6 @@ class LoadManager:
           --window-spot=SPOT    initial window position (top x left)
           -v, --version         print version number and exit
         """))
-
     #@+node:ekr.20230615034517.1: *6* LM.scanArgv
     def scanArgv(self) -> None:
 
