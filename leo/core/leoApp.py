@@ -2701,28 +2701,35 @@ class LoadManager:
         """Handle --qui option. Default to 'qt'"""
         gui = 'qt'  # The default.
         arg = self.findOption('--gui=')
-        if arg:
-            m = re.match(r'--gui=(\w+)', arg)
-            if m:
-                gui = m.group(1).lower()
-                if gui == 'qttabs':
-                    gui = 'qt'  # Allow legacy qttabs gui.
-                elif not (
-                    gui.startswith('browser')
-                    or gui in ('console', 'curses', 'text', 'null', 'qt')
-                ):
-                    print(f"unknown --gui option: {gui}. Using qt gui")
-                    gui = 'qt'
+        if not arg:
+            g.app.guiArgName = gui
+            return gui
+        m = re.match(r'--gui=(\w+)', arg)
+        if not m:
+            g.app.guiArgName = gui
+            return gui
+        gui = m.group(1).lower()
+        if gui == 'qttabs':
+            gui = 'qt'  # Allow legacy qttabs gui.
+        elif not (
+            gui.startswith('browser')
+            or gui in ('console', 'curses', 'text', 'null', 'qt')
+        ):
+            print(f"unknown --gui option: {gui}. Using qt gui")
+            gui = 'qt'
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
-
+        arg = self.findOption('--load-type=')
+        if not arg:
+            return None
+        m = re.match(r'--load-type=(@\w+)', arg)
+        if m:
+            return m.group(1).lower()
+        print(f"Ignoring unknown --load-type option: {arg}")
         return None
-        # s = args.load_type
-        # s = s.lower() if s else 'edit'
-        # return '@' + s
-    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
+    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption (to do)
     def doScreenShotOption(self) -> str:
 
         # --screen-shot=fn
@@ -2733,7 +2740,7 @@ class LoadManager:
             # if s:
                 # s = s.strip('"')
             # return s
-    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
+    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption (to do)(
     def doScriptOption(self) -> Optional[str]:
 
         return None  ###
@@ -2749,14 +2756,14 @@ class LoadManager:
         # else:
             # script = None
         # return script
-    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption (new, todo)
+    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption (new, to do)
     def doSelectOption(self) -> Optional[str]:
         ### args.select and args.select.strip('"'),  # --select=headline
         return None
-    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption (new, todo)
+    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption (new, to do)
     def doThemeOption(self) -> Optional[str]:
         return None
-    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions (new, todo)
+    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions (new, to do)
     def doTraceOptions(self) -> Optional[str]:
 
         return None
@@ -2790,7 +2797,7 @@ class LoadManager:
         # #
         # # --trace-setting=setting
         # g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
-    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
+    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption (to do)
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
         # --window-size
@@ -2805,7 +2812,7 @@ class LoadManager:
                 # windowSize = None
                 # print('scanOptions: bad --window-size:', windowSize)
         # return windowSize
-    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
+    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption (to do)
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
 
         # --window-spot
