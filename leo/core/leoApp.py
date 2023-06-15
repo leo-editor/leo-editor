@@ -2860,6 +2860,59 @@ class LoadManager:
                 windowSize = None
                 print('scanOptions: bad --window-size:', windowSize)
         return windowSize
+    #@+node:ekr.20230615035233.1: *6* LM.printUsage
+    def printUsage(self):
+        print(textwrap.dedent(
+        """
+        usage: launchLeo.py [options] file1, file2, ...
+        
+        simple options:
+            [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--listen-to-log]
+            [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]  [-v]
+            [--select ID] [--silent]
+            
+        optional complex options:
+            --script-window
+            --load-type=@edit|@file
+            --screen-shot=<path>
+            --script=<path>]
+           
+            
+
+        options:
+          -h, --help                show this help message and exit
+          -b, --black-sentinels
+                                write black-compatible sentinel comments
+          --diff                use Leo as an external git diff
+          --fail-fast           stop unit tests after the first failure
+          --fullscreen          start fullscreen
+          --ipython             enable ipython support
+          --gui=<gui>           specify gui: browser|console|curses|qt|text|null
+          --listen-to-log       start log_listener.py on startup
+          --load-type=<type>    @<file> type for non-outlines: @edit or @file
+          --maximized           start maximized
+          --minimized           start minimized
+          --no-plugins          disable all plugins
+          --no-splash           disable the splash screen
+          --quit                quit immediately after loading
+          --screen-shot=<path>  take a screen shot and then exit
+          --script=<path>       execute a script and then exit
+          --script-window=      execute script using default gui
+          --select=ID           headline or gnx of node to select
+          --silent              disable all log messages
+          --theme=NAME          use the named theme file
+          --trace=LIST          add one or more strings to g.app.debug.
+                                A comma-separated list of one or more of:
+                                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+                                importers, ipython, keys, layouts, plugins, save, select, sections,
+                                shutdown, size, speed, startup, themes, undo, verbose, zoom
+          --trace-binding=KEY   trace commands bound to a key
+          --trace-setting=NAME  trace where named setting is set
+          --window-size=SIZE    initial window size (height x width)
+          --window-spot=SPOT    initial window position (top x left)
+          -v, --version         print version number and exit
+        """))
+
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
