@@ -2705,7 +2705,7 @@ class LoadManager:
             if m:
                 valid.append(m.group(1))
         self.valid_options = sorted(list(set(valid)))
-        g.printObj(self.valid_options)
+        # g.printObj(self.valid_options)
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         ### assert any(z.startswith('--gui') for z in sys.argv)
