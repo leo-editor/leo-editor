@@ -2654,15 +2654,12 @@ class LoadManager:
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             print(self.usage_message)
             sys.exit()
-        # Handle all args.
         self.computeValidOptions()
-        self.scanArgv()
-        self.postscanArgv()
-        # Compute the files ivar.
+        self.checkOptions()
+        self.doSimpleOptions()
         self.files = self.computeFilesList(fileName)
-        # Compute the script. Used twice below.
-        script = None if pymacs else self.doScriptOption()
-        # Return the dictionary of options.
+        # Return a dictionary of complex options.
+        script = None if pymacs else self.doScriptOption()  # Used twice below.
         return {
             'qui': self.doGuiOption(),
             'load_type': self.doLoadTypeOption(),
@@ -2675,6 +2672,27 @@ class LoadManager:
             'windowSize': self.doWindowSizeOption(),
             'windowSpot': self.doWindowSpotOption(),
         }
+    #@+node:ekr.20230615034937.1: *6* LM.checkOptions
+    def checkOptions(self) -> None:
+        """Make sure all command-line options pass sanity checks."""
+        option_prefixes = [z[:-1] for z in self.valid_options if z.endswith('=')]
+        for arg in sys.argv[:]:
+            if arg.startswith('-'):
+                for option in self.valid_options:
+                    if arg.startswith(option):
+                        break
+                else:
+                    for prefix in option_prefixes:
+                        if arg.startswith(prefix):
+                            print(f"Invalid option: expected {arg}=VALUE")
+                            sys.exit()
+                    print(f"Invalid option arg: {arg}")
+                    sys.exit()
+            else:
+                # Do a simple check for file arguments.
+                if any(z in arg for z in ',='):
+                    print(f"Invalid file arg: {arg}")
+                    sys.exit()
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
     def computeFilesList(self, fileName: str) -> list[str]:
         """Return the list of files on the command line."""
@@ -2695,17 +2713,18 @@ class LoadManager:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
-    def computeValidOptions(self):
-        
+    def computeValidOptions(self) -> None:
+        """
+        Return a list of valid options.
+        Options requiring an argument end with '='.
+        """
         option_pattern = re.compile(r'\s*(--[\w-]+=?)')
-        
         valid = ['-b', '-h', '-v']  # Start with short options.
         for line in g.splitLines(self.usage_message):
             m = option_pattern.match(line)
             if m:
                 valid.append(m.group(1))
         self.valid_options = sorted(list(set(valid)))
-        # g.printObj(self.valid_options)
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         ### assert any(z.startswith('--gui') for z in sys.argv)
@@ -2726,10 +2745,6 @@ class LoadManager:
         assert gui
         g.app.guiArgName = gui
         return gui
-    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
-    def doThemeOption(self) -> Optional[str]:  # pylint: disable=useless-return
-        g.trace('TO DO')
-        return None
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
 
@@ -2768,43 +2783,8 @@ class LoadManager:
     def doSelectOption(self) -> Optional[str]:
         ### args.select and args.select.strip('"'),  # --select=headline
         return None
-    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-size
-        return None
-
-        # windowSize = args.window_size
-        # if windowSize:
-            # try:
-                # h, w = windowSize.split('x')
-                # windowSize = int(h), int(w)
-            # except ValueError:
-                # windowSize = None
-                # print('scanOptions: bad --window-size:', windowSize)
-        # return windowSize
-    #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-spot
-        return None
-
-        ###
-        # spot = args.window_spot
-        # if spot:
-            # try:
-                # top, left = spot.split('x')
-                # spot = int(top), int(left)
-            # except ValueError:
-                # print('scanOptions: bad --window-spot:', spot)
-                # spot = None
-
-        # return spot
-    #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
-    def postscanArgv(self) -> None:
-        g.trace()
-    #@+node:ekr.20230615034517.1: *6* LM.scanArgv
-    def scanArgv(self) -> None:
+    #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
+    def doSimpleOptions(self) -> None:
         """
         Handle options without arguments.
         """
@@ -2866,6 +2846,42 @@ class LoadManager:
         for option, helper in options_dict.items():
             if option in sys.argv:
                 helper()
+    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
+    def doThemeOption(self) -> Optional[str]:  # pylint: disable=useless-return
+        g.trace('TO DO')
+        return None
+    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
+    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
+
+        # --window-size
+        return None
+
+        # windowSize = args.window_size
+        # if windowSize:
+            # try:
+                # h, w = windowSize.split('x')
+                # windowSize = int(h), int(w)
+            # except ValueError:
+                # windowSize = None
+                # print('scanOptions: bad --window-size:', windowSize)
+        # return windowSize
+    #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
+    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
+
+        # --window-spot
+        return None
+
+        ###
+        # spot = args.window_spot
+        # if spot:
+            # try:
+                # top, left = spot.split('x')
+                # spot = int(top), int(left)
+            # except ValueError:
+                # print('scanOptions: bad --window-spot:', spot)
+                # spot = None
+
+        # return spot
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
