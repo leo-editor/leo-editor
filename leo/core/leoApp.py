@@ -2608,8 +2608,11 @@ class LoadManager:
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
+
+        # Save a copy of argv for debugging.
         self.old_argv = sys.argv[:]
-        args = sys.argv[:]
+
+        args = sys.argv[:]  ### To be removed.
         
         class OptionError(Exception):
             pass
@@ -2799,8 +2802,13 @@ class LoadManager:
         g.trace()
     #@+node:ekr.20230615034509.1: *6* LM.prescanArgv
     def prescanArgv(self):
-        g.trace()
-    #@+node:ekr.20230615035115.1: *6* LM.printUsage
+        """Handle options that cause an immediate exit."""
+        if any(z in sys.argv for z in ('-h', '-?', '--help')):
+            self.printUsage()
+            sys.exit()
+        if any(z in sys.argv for z in ('-v', '--version')):
+            self.printVersion()
+            sys.exit()
     #@+node:ekr.20230615035233.1: *6* LM.printUsage
     def printUsage(self):
         print(textwrap.dedent(
