@@ -2660,6 +2660,7 @@ class LoadManager:
         self.computeValidOptions()
         self.checkOptions()
         self.doSimpleOptions()
+        self.doTraceOptions()
         self.files = self.computeFilesList(fileName)
         # Return a dictionary of complex options.
         script = None if pymacs else self.doScriptOption()  # Used twice below.
@@ -2862,6 +2863,40 @@ class LoadManager:
     #@+node:ekr.20230615060055.1: *6* LM.doThemeOption (new, todo)
     def doThemeOption(self) -> Optional[str]:
         return None
+    #@+node:ekr.20230615075314.1: *6* LM.doTraceOptions (new, todo)
+    def doTraceOptions(self) -> Optional[str]:
+        
+        return None
+        
+        # trace_m = textwrap.dedent("""\
+            # abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+            # importers, ipython, keys, layouts, plugins, save, select, sections,
+            # shutdown, size, speed, startup, themes, undo, verbose, zoom
+        # """)
+       
+        # --trace=...
+
+        # valid = trace_m.replace(' ', '').replace('\n', '').split(',')
+        # if args.trace:
+            # ok = True
+            # values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
+            # for val in values.split(','):
+                # if val in valid:
+                    # g.app.debug.append(val)
+                # else:
+                    # g.es_print(f"unknown --trace value: {val}")
+                    # ok = False
+            # if not ok:
+                # g.es_print('Valid --trace values are...')
+                # for line in trace_m.split('\n'):
+                    # print('  ', line.rstrip())
+        # #
+        # # These are not bool args.
+        # # --trace-binding
+        # g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
+        # #
+        # # --trace-setting=setting
+        # g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
