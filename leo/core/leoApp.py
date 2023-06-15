@@ -7,6 +7,7 @@ from collections.abc import Callable
 import importlib
 import io
 import os
+import re
 import sqlite3
 import subprocess
 import string
@@ -2608,26 +2609,55 @@ class LoadManager:
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
-
         # Save a copy of argv for debugging.
         self.old_argv = sys.argv[:]
+        #@+<< define self.usage_message >>
+        #@+node:ekr.20230615062931.1: *6* << define self.usage_message >>
+        self.usage_message = textwrap.dedent(
+            """
+            usage: launchLeo.py [options] file1, file2, ...
 
-        class OptionError(Exception):
-            pass
-
+            options:
+              -h, --help            show this help message and exit
+              -b, --black-sentinels write black-compatible sentinel comments
+              --diff                use Leo as an external git diff
+              --fail-fast           stop unit tests after the first failure
+              --fullscreen          start fullscreen
+              --ipython             enable ipython support
+              --gui=GUI             specify gui: browser,console,curses,qt,text,null
+              --listen-to-log       start log_listener.py on startup
+              --load-type=TYPE      @<file> type for non-outlines: @edit or @file
+              --maximized           start maximized
+              --minimized           start minimized
+              --no-plugins          disable all plugins
+              --no-splash           disable the splash screen
+              --quit                quit immediately after loading
+              --screen-shot=PATH    take a screen shot and then exit
+              --script=<path>       execute a script and then exit
+              --script-window       execute script using default gui
+              --select=ID           headline or gnx of node to select
+              --silent              disable all log messages
+              --theme=NAME          use the named theme file
+              --trace=LIST          add one or more strings to g.app.debug.
+                                    A comma-separated list of one or more of:
+                                    abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+                                    importers, ipython, keys, layouts, plugins, save, select, sections,
+                                    shutdown, size, speed, startup, themes, undo, verbose, zoom
+              --trace-binding=KEY   trace commands bound to a key
+              --trace-setting=NAME  trace where named setting is set
+              --window-size=SIZE    initial window size (height x width)
+              --window-spot=SPOT    initial window position (top x left)
+              -v, --version         print version number and exit
+            """)
+        #@-<< define self.usage_message >>
         # Handle help args.
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
-            self.printUsage()
+            print(self.usage_message)
             sys.exit()
-
         # Handle all args.
-        try:
-            self.scanArgv()
-            self.postscanArgv()
-        except OptionError as e:
-            print(f"Bad option: {e}")
-            sys.exit()
-
+        self.computeValidOptions()
+        self.scanArgv()
+        self.postscanArgv()
         # Compute the files ivar.
         self.files = self.computeFilesList(fileName)
         # Compute the script. Used twice below.
@@ -2664,6 +2694,18 @@ class LoadManager:
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
+    #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
+    def computeValidOptions(self):
+        
+        option_pattern = re.compile(r'\s*(--[\w-]+=?)')
+        
+        valid = ['-b', '-h', '-v']  # Start with short options.
+        for line in g.splitLines(self.usage_message):
+            m = option_pattern.match(line)
+            if m:
+                valid.append(m.group(1))
+        self.valid_options = sorted(list(set(valid)))
+        g.printObj(self.valid_options)
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         ### assert any(z.startswith('--gui') for z in sys.argv)
@@ -2761,47 +2803,11 @@ class LoadManager:
     #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
     def postscanArgv(self) -> None:
         g.trace()
-    #@+node:ekr.20230615035233.1: *6* LM.printUsage
-    def printUsage(self) -> None:
-        print(textwrap.dedent(
-        """
-        usage: launchLeo.py [options] file1, file2, ...
-
-        options:
-          -h, --help            show this help message and exit
-          -b, --black-sentinels write black-compatible sentinel comments
-          --diff                use Leo as an external git diff
-          --fail-fast           stop unit tests after the first failure
-          --fullscreen          start fullscreen
-          --ipython             enable ipython support
-          --gui=<gui>           specify gui: browser|console|curses|qt|text|null
-          --listen-to-log       start log_listener.py on startup
-          --load-type=<type>    @<file> type for non-outlines: @edit or @file
-          --maximized           start maximized
-          --minimized           start minimized
-          --no-plugins          disable all plugins
-          --no-splash           disable the splash screen
-          --quit                quit immediately after loading
-          --screen-shot=<path>  take a screen shot and then exit
-          --script=<path>       execute a script and then exit
-          --script-window=      execute script using default gui
-          --select=ID           headline or gnx of node to select
-          --silent              disable all log messages
-          --theme=NAME          use the named theme file
-          --trace=LIST          add one or more strings to g.app.debug.
-                                A comma-separated list of one or more of:
-                                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-                                importers, ipython, keys, layouts, plugins, save, select, sections,
-                                shutdown, size, speed, startup, themes, undo, verbose, zoom
-          --trace-binding=KEY   trace commands bound to a key
-          --trace-setting=NAME  trace where named setting is set
-          --window-size=SIZE    initial window size (height x width)
-          --window-spot=SPOT    initial window position (top x left)
-          -v, --version         print version number and exit
-        """))
     #@+node:ekr.20230615034517.1: *6* LM.scanArgv
     def scanArgv(self) -> None:
-
+        """
+        Handle options without arguments.
+        """
         #@+<< define scanArgv helpers >>
         #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
         def _black() -> None:
@@ -2843,7 +2849,6 @@ class LoadManager:
         #@-<< define scanArgv helpers >>
 
         options_dict: dict[str, Callable] = {
-            # Simple args.
             '-b': _black,
             '--black-sentinels': _black,
             '--diff': _diff,
@@ -2857,32 +2862,10 @@ class LoadManager:
             '--no-splash': _no_splash,
             '--quit': _quit,
             '--silent': _silent,
-            # Args with arguments not handled separately.
-
         }
-        for option, function in options_dict.items():
+        for option, helper in options_dict.items():
             if option in sys.argv:
-                g.trace(function.__name__)
-                function()
-
-        # add('--script', dest='script', metavar="PATH",
-            # help='execute a script and then exit')
-        # add('--script-window', dest='script_window', action='store_true',
-            # help='execute script using default gui')
-        # add('--select', dest='select', metavar='ID',
-            # help='headline or gnx of node to select')
-        # add('--theme', dest='theme', metavar='NAME',
-            # help='use the named theme file')
-        # add('--trace', dest='trace', metavar='TRACE-KEY',
-            # help=f"add one or more strings to g.app.debug. One or more of...\n{trace_m}")
-        # add('--trace-binding', dest='trace_binding', metavar='KEY',
-            # help='trace commands bound to a key')
-        # add('--trace-setting', dest='trace_setting', metavar="NAME",
-            # help='trace where named setting is set')
-        # add('--window-size', dest='window_size', metavar='SIZE',
-            # help='initial window size (height x width)')
-        # add('--window-spot', dest='window_spot', metavar='SPOT',
-            # help='initial window position (top x left)')
+                helper()
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
