@@ -2700,7 +2700,7 @@ class LoadManager:
     def doGuiOption(self) -> str:
         """Handle --qui option. Default to 'qt'"""
         gui = 'qt'  # The default.
-        arg = self.findOption('--gui=')
+        arg = self.findComplexOption('--gui=')
         if not arg:
             g.app.guiArgName = gui
             return gui
@@ -2721,9 +2721,9 @@ class LoadManager:
         return gui
     #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
-        
+
         # load-type=@(edit|file)
-        arg = self.findOption('--load-type=')
+        arg = self.findComplexOption('--load-type=')
         if not arg:
             return None
         m = re.match(r'--load-type=(@\w+)', arg)
@@ -2735,17 +2735,18 @@ class LoadManager:
     def doScreenShotOption(self) -> str:
 
         # --screen-shot=path
-        arg = self.findOption('--screen-shot=')
+        arg = self.findComplexOption('--screen-shot=')
         if not arg:
             return None
         m = re.match(r'--screen-shot=(.*)', arg)
         if m:
             return m.group(1).replace('"', '')
+        return None
     #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
 
         # --script=path
-        arg = self.findOption('--script=')
+        arg = self.findComplexOption('--script=')
         if not arg:
             return None
         m = re.match(r'--script=(.*)', arg)
@@ -2761,9 +2762,9 @@ class LoadManager:
         sys.exit(1)
     #@+node:ekr.20230615055158.1: *7* LM.doSelectOption
     def doSelectOption(self) -> Optional[str]:
-        
+
         # --select=headline
-        arg = self.findOption('--select=')
+        arg = self.findComplexOption('--select=')
         if not arg:
             return None
         m = re.match(r'--select=(.*)', arg)
@@ -2774,7 +2775,7 @@ class LoadManager:
     def doThemeOption(self) -> Optional[str]:
 
         # --theme=path
-        arg = self.findOption('--theme=')
+        arg = self.findComplexOption('--theme=')
         if not arg:
             return None
         m = re.match(r'--theme=(.*)', arg)
@@ -2784,9 +2785,9 @@ class LoadManager:
     #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
     def doTraceOptions(self) -> None:
         """Handle --trace-binding, --trace-setting and --trace"""
-        
+
         # --trace-binding
-        arg = self.findOption('--trace-binding=')
+        arg = self.findComplexOption('--trace-binding=')
         if arg:
             m = re.match(r'--trace-binding=([\w\-\+]+)', arg)
             if m:
@@ -2795,14 +2796,14 @@ class LoadManager:
                 g.app.trace_binding = m.group(1)
 
         # --trace-setting=setting
-        arg = self.findOption('--trace-setting=')
+        arg = self.findComplexOption('--trace-setting=')
         if arg:
             m = re.match(r'--trace-setting=([\w]+)', arg)
             if m:
                 # g.app.config does not exist yet.
                 # print(f"Enable {arg}")
                 g.app.trace_setting = m.group(1)
-        
+
         # --trace=option.
         valid = [
             'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
@@ -2810,7 +2811,7 @@ class LoadManager:
             'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
             'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
         ]
-        arg = self.findOption('--trace=')
+        arg = self.findComplexOption('--trace=')
         if not arg:
             return
         m = re.match(r'--trace=([\w\,]+)', arg)
@@ -2833,7 +2834,7 @@ class LoadManager:
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
         # --window-size
-        arg = self.findOption('--window-size=')
+        arg = self.findComplexOption('--window-size=')
         if not arg:
             return None
         m = re.match(r'--window-size=(\d+)x(\d+)', arg)
@@ -2859,7 +2860,7 @@ class LoadManager:
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
 
         # --window-spot
-        arg = self.findOption('--window-spot=')
+        arg = self.findComplexOption('--window-spot=')
         if not arg:
             return None
         m = re.match(r'--window-spot=(\d+)x(\d+)', arg)
@@ -2978,19 +2979,14 @@ class LoadManager:
         }
         for option, helper in options_dict.items():
             if option in sys.argv:
-                g.trace(option)
                 helper()
-    #@+node:ekr.20230615084117.1: *6* LM.findOption
-    def findOption(self, prefix: str) -> Optional[str]:
+    #@+node:ekr.20230615084117.1: *6* LM.findComplexOption
+    def findComplexOption(self, prefix: str) -> Optional[str]:
         """Return the argument starting with the given prefix."""
-        if '=' in prefix:
-            for arg in sys.argv:
-                if arg.startswith(prefix):
-                    return arg
-        else:
-            for arg in sys.argv:
-                if arg == prefix:
-                    return arg
+        assert '=' in prefix, repr(prefix)
+        for arg in sys.argv:
+            if arg.startswith(prefix):
+                return arg
         return None
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
