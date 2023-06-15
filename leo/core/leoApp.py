@@ -477,7 +477,9 @@ class LeoApp:
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
-        self.prolog_namespace_string = 'xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1"'
+        self.prolog_namespace_string = (
+            'xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1"'
+        )
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
 
@@ -2677,8 +2679,14 @@ class LoadManager:
     def checkOptions(self) -> None:
         """Make sure all command-line options pass sanity checks."""
         option_prefixes = [z[:-1] for z in self.valid_options if z.endswith('=')]
-        for arg in sys.argv[:]:
-            if arg.startswith('-'):
+        obsolete_options = (
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        )
+        for arg in sys.argv:
+            if arg in obsolete_options:
+                print(f"Ignoring obsolete option: {arg!r}")
+            elif arg.startswith('-'):
                 for option in self.valid_options:
                     if arg.startswith(option):
                         break
@@ -2780,7 +2788,7 @@ class LoadManager:
         # else:
             # script = None
         # return script
-    #@+node:ekr.20230615055158.1: *6* LM.doSelectOption (new) (todo)
+    #@+node:ekr.20230615055158.1: *6* LM.doSelectOption (new, todo)
     def doSelectOption(self) -> Optional[str]:
         ### args.select and args.select.strip('"'),  # --select=headline
         return None
@@ -2847,9 +2855,8 @@ class LoadManager:
         for option, helper in options_dict.items():
             if option in sys.argv:
                 helper()
-    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
-    def doThemeOption(self) -> Optional[str]:  # pylint: disable=useless-return
-        g.trace('TO DO')
+    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption (new, todo)
+    def doThemeOption(self) -> Optional[str]:
         return None
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
