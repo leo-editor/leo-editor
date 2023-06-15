@@ -3,7 +3,6 @@
 #@+<< leoApp imports >>
 #@+node:ekr.20120219194520.10463: ** << leoApp imports >>
 from __future__ import annotations
-import argparse
 from collections.abc import Callable
 import importlib
 import io
@@ -2609,54 +2608,38 @@ class LoadManager:
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
-        lm = self
-        obsolete_options = (
-            '--dock',
-            '--global-docks',  # #1643. use --use-docks instead.
-            '--init-docks',
-            '--no-cache',
-            '--no-dock',  # #1171 and #1514: use --use-docks instead.
-            '--session-restore',
-            '--session-save',
-            '--use-docks',
-        )
-        trace_m = textwrap.dedent("""\
-            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-            importers, ipython, keys, layouts, plugins, save, select, sections,
-            shutdown, size, speed, startup, themes, undo, verbose, zoom
-        """)
-        for bad_option in obsolete_options:
-            if bad_option in sys.argv:
-                sys.argv.remove(bad_option)
-                print(f"Ignoring the unused/deprecated {bad_option} option")
-        lm.old_argv = sys.argv[:]
-        # Automatically implements the --help option.
-        description = "usage: launchLeo.py [options] file1, file2, ..."
-        parser = argparse.ArgumentParser(
-            description=description,
-            formatter_class=argparse.RawTextHelpFormatter)
-        #
-        # Parse the options, and remove them from sys.argv.
-        self.addOptionsToParser(parser, trace_m)
-        args = parser.parse_args()
-        # Handle simple args...
-        self.doSimpleOptions(args, trace_m)
-        # Compute the lm.files ivar.
-        lm.files = lm.computeFilesList(fileName)
+        self.old_argv = sys.argv[:]
+        args = sys.argv[:]
+        
+        class OptionError(Exception):
+            pass
+
+        try:
+            self.prescanArgv()
+            self.scanArgv()
+            self.postscanArgv()
+        except OptionError as e:
+            self.handleOptionError(e)
+
+        # Compute the files ivar.
+        self.files = self.computeFilesList(fileName)
         # Compute the script. Used twice below.
-        script = None if pymacs else self.doScriptOption(args, parser)
+        script = None if pymacs else self.doScriptOption()
         # Return the dictionary of options.
         return {
-            'gui': lm.doGuiOption(args),
-            'load_type': lm.doLoadTypeOption(args),
-            'screenshot_fn': lm.doScreenShotOption(args),  # --screen-shot=fn
+            'qui': self.doGuiOption(args),
+        }
+        return {
+            'gui': self.doGuiOption(args),
+            'load_type': self.doLoadTypeOption(args),
+            'screenshot_fn': self.doScreenShotOption(args),  # --screen-shot=fn
             'script': script,
             'select': args.select and args.select.strip('"'),  # --select=headline
             'theme_path': args.theme,  # --theme=name
             'version': args.version,  # --version: print the version and exit.
             'windowFlag': script and args.script_window,
-            'windowSize': lm.doWindowSizeOption(args),
-            'windowSpot': lm.doWindowSpotOption(args),
+            'windowSize': self.doWindowSizeOption(args),
+            'windowSpot': self.doWindowSpotOption(args),
         }
     #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
     #@@nobeautify
@@ -2736,8 +2719,8 @@ class LoadManager:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self, args: Any) -> str:
-        gui = args.gui
+    def doGuiOption(self, args: list[str]) -> str:
+        gui = 'qt'  ###
         if gui:
             gui = gui.lower()
             if gui in ('qt', 'qttabs'):
@@ -2769,10 +2752,11 @@ class LoadManager:
             s = s.strip('"')
         return s
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
-    def doScriptOption(self, args: Any, parser: Any) -> Optional[str]:
+    def doScriptOption(self) -> Optional[str]:
 
+        return ###
         # --script
-        script = args.script
+        script = None  ### args.script
         if script:
             # #1090: use cwd, not g.app.loadDir, to find scripts.
             fn = g.finalize_join(os.getcwd(), script)
@@ -2783,56 +2767,19 @@ class LoadManager:
         else:
             script = None
         return script
-    #@+node:ekr.20210927034148.8: *6* LM.doSimpleOptions
-    def doSimpleOptions(self, args: Any, trace_m: str) -> None:
-        """These args just set g.app ivars."""
-        # --black-sentinels
-        g.app.write_black_sentinels = args.black_sentinels
-        # --fail-fast
-        g.app.failFast = args.fail_fast
-        # --fullscreen
-        g.app.start_fullscreen = args.fullscreen
-        # --git-diff
-        g.app.diff = args.diff
-        # --listen-to-log
-        g.app.listen_to_log_flag = args.listen_to_log
-        # --ipython
-        g.app.useIpython = args.ipython
-        # --maximized
-        g.app.start_maximized = args.maximized
-        # --minimized
-        g.app.start_minimized = args.minimized
-        # --no-plugins
-        if args.no_plugins:
-            g.app.enablePlugins = False
-        # --no-splash: --minimized disables the splash screen
-        g.app.use_splash_screen = not args.no_splash and not args.minimized
-        # -- quit
-        g.app.quit_after_load = args.quit
-        # --silent
-        g.app.silentMode = args.silent
-        # --trace=...
-        valid = trace_m.replace(' ', '').replace('\n', '').split(',')
-        if args.trace:
-            ok = True
-            values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-            for val in values.split(','):
-                if val in valid:
-                    g.app.debug.append(val)
-                else:
-                    g.es_print(f"unknown --trace value: {val}")
-                    ok = False
-            if not ok:
-                g.es_print('Valid --trace values are...')
-                for line in trace_m.split('\n'):
-                    print('  ', line.rstrip())
-        #
-        # These are not bool args.
-        # --trace-binding
-        g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
-        #
-        # --trace-setting=setting
-        g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
+    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
+    def doWindowSizeOption(self, args: Any) -> Optional[tuple[int, int]]:
+
+        # --window-size
+        windowSize = args.window_size
+        if windowSize:
+            try:
+                h, w = windowSize.split('x')
+                windowSize = int(h), int(w)
+            except ValueError:
+                windowSize = None
+                print('scanOptions: bad --window-size:', windowSize)
+        return windowSize
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
     def doWindowSpotOption(self, args: Any) -> Optional[tuple[int, int]]:
 
@@ -2847,19 +2794,13 @@ class LoadManager:
                 spot = None
 
         return spot
-    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args: Any) -> Optional[tuple[int, int]]:
-
-        # --window-size
-        windowSize = args.window_size
-        if windowSize:
-            try:
-                h, w = windowSize.split('x')
-                windowSize = int(h), int(w)
-            except ValueError:
-                windowSize = None
-                print('scanOptions: bad --window-size:', windowSize)
-        return windowSize
+    #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
+    def postscanArgv(self):
+        g.trace()
+    #@+node:ekr.20230615034509.1: *6* LM.prescanArgv
+    def prescanArgv(self):
+        g.trace()
+    #@+node:ekr.20230615035115.1: *6* LM.printUsage
     #@+node:ekr.20230615035233.1: *6* LM.printUsage
     def printUsage(self):
         print(textwrap.dedent(
@@ -2913,6 +2854,9 @@ class LoadManager:
           -v, --version         print version number and exit
         """))
 
+    #@+node:ekr.20230615034517.1: *6* LM.scanArgv
+    def scanArgv(self):
+        g.trace()
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
