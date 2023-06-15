@@ -2613,6 +2613,7 @@ class LoadManager:
         self.old_argv = sys.argv[:]
         #@+<< define self.usage_message >>
         #@+node:ekr.20230615062931.1: *6* << define self.usage_message >>
+        # LM.computeValidOptions uses this message to compute the list of valid options!
         self.usage_message = textwrap.dedent(
             """
             usage: launchLeo.py [options] file1, file2, ...
