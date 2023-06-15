@@ -2612,8 +2612,6 @@ class LoadManager:
         # Save a copy of argv for debugging.
         self.old_argv = sys.argv[:]
 
-        args = sys.argv[:]  ### To be removed.
-
         class OptionError(Exception):
             pass
 
@@ -2637,19 +2635,15 @@ class LoadManager:
         # Return the dictionary of options.
         return {
             'qui': self.doGuiOption(),
-            'version': any(z in sys.argv for z in ('-v', '--version'))
-        }
-        return {
-            'gui': self.doGuiOption(),
-            'load_type': self.doLoadTypeOption(args),
-            'screenshot_fn': self.doScreenShotOption(args),  # --screen-shot=fn
+            'load_type': self.doLoadTypeOption(),
             'script': script,
-            'select': args.select and args.select.strip('"'),  # --select=headline
-            'theme_path': args.theme,  # --theme=name
-            'version': args.version,  # --version: print the version and exit.
-            'windowFlag': script and args.script_window,
-            'windowSize': self.doWindowSizeOption(args),
-            'windowSpot': self.doWindowSpotOption(args),
+            'screenshot_fn': self.doScreenShotOption(),
+            'select': self.doSelectOption(),  ### New.
+            'theme_path': self.doThemeOption(),  ### New.
+            'version': any(z in sys.argv for z in ('-v', '--version')),
+            'windowFlag': script and '--script-window' in sys.argv,
+            'windowSize': self.doWindowSizeOption(),
+            'windowSpot': self.doWindowSpotOption(),
         }
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
     def computeFilesList(self, fileName: str) -> list[str]:
@@ -2672,6 +2666,7 @@ class LoadManager:
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
+        ### assert any(z.startswith('--gui') for z in sys.argv)
         gui = 'qt'  ###
         if gui:
             gui = gui.lower()
@@ -2689,63 +2684,80 @@ class LoadManager:
         assert gui
         g.app.guiArgName = gui
         return gui
+    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
+    def doThemeOption(self) -> Optional[str]:  # pylint: disable=useless-return
+        g.trace('TO DO')
+        return None
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self, args: Any) -> str:
+    def doLoadTypeOption(self) -> Optional[str]:
 
-        s = args.load_type
-        s = s.lower() if s else 'edit'
-        return '@' + s
+        return None
+        # s = args.load_type
+        # s = s.lower() if s else 'edit'
+        # return '@' + s
     #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
-    def doScreenShotOption(self, args: Any) -> str:
+    def doScreenShotOption(self) -> str:
 
         # --screen-shot=fn
-        s = args.screen_shot
-        if s:
-            s = s.strip('"')
-        return s
+        return None  ###
+
+        ###
+            # s = args.screen_shot
+            # if s:
+                # s = s.strip('"')
+            # return s
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
 
-        return  None ###
+        return None  ###
         # --script
-        script = None  ### args.script
-        if script:
-            # #1090: use cwd, not g.app.loadDir, to find scripts.
-            fn = g.finalize_join(os.getcwd(), script)
-            script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
-            if not script:
-                print(f"script not found: {fn}")
-                sys.exit(1)
-        else:
-            script = None
-        return script
+        # script = None  ### args.script
+        # if script:
+            # # #1090: use cwd, not g.app.loadDir, to find scripts.
+            # fn = g.finalize_join(os.getcwd(), script)
+            # script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
+            # if not script:
+                # print(f"script not found: {fn}")
+                # sys.exit(1)
+        # else:
+            # script = None
+        # return script
+    #@+node:ekr.20230615055158.1: *6* LM.doSelectOption (new) (todo)
+    def doSelectOption(self) -> Optional[str]:
+        ### args.select and args.select.strip('"'),  # --select=headline
+        return None
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args: Any) -> Optional[tuple[int, int]]:
+    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
         # --window-size
-        windowSize = args.window_size
-        if windowSize:
-            try:
-                h, w = windowSize.split('x')
-                windowSize = int(h), int(w)
-            except ValueError:
-                windowSize = None
-                print('scanOptions: bad --window-size:', windowSize)
-        return windowSize
+        return None
+
+        # windowSize = args.window_size
+        # if windowSize:
+            # try:
+                # h, w = windowSize.split('x')
+                # windowSize = int(h), int(w)
+            # except ValueError:
+                # windowSize = None
+                # print('scanOptions: bad --window-size:', windowSize)
+        # return windowSize
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self, args: Any) -> Optional[tuple[int, int]]:
+    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
 
         # --window-spot
-        spot = args.window_spot
-        if spot:
-            try:
-                top, left = spot.split('x')
-                spot = int(top), int(left)
-            except ValueError:
-                print('scanOptions: bad --window-spot:', spot)
-                spot = None
+        return None
 
-        return spot
+        ###
+        # spot = args.window_spot
+        # if spot:
+            # try:
+                # top, left = spot.split('x')
+                # spot = int(top), int(left)
+            # except ValueError:
+                # print('scanOptions: bad --window-spot:', spot)
+                # spot = None
+
+        # return spot
     #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
     def postscanArgv(self) -> None:
         g.trace()
@@ -2804,47 +2816,47 @@ class LoadManager:
 
     #@+node:ekr.20230615034517.1: *6* LM.scanArgv
     def scanArgv(self) -> None:
-        
+
         #@+<< define scanArgv helpers >>
         #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
         def _black() -> None:
             g.app.write_black_sentinels = True
-            
+
         def _diff() -> None:
             g.app.diff = True
-            
+
         def _fail_fast() -> None:
             g.app.failFast = True
-            
+
         def _full_screen() -> None:
             g.app.start_fullscreen = True
 
         def _listen_to_log() -> None:
             g.app.listen_to_log_flag = True
-            
+
         def _ipython() -> None:
             g.app.useIpython = True
-            
+
         def _maximized() -> None:
             g.app.start_maximized = True
 
         def _minimized() -> None:
             g.app.start_minimized = True
             g.app.use_splash_screen = False
-            
+
         def _no_plugins() -> None:
             g.app.enablePlugins = False
-            
+
         def _no_splash() -> None:
             g.app.use_splash_screen = False
-            
+
         def _quit() -> None:
             g.app.quit_after_load = True
-            
+
         def _silent() -> None:
             g.app.silentMode = True
         #@-<< define scanArgv helpers >>
-       
+
         options_dict: dict[str, Callable] = {
             # Simple args.
             '-b': _black,
@@ -2860,22 +2872,14 @@ class LoadManager:
             '--no-splash': _no_splash,
             '--quit': _quit,
             '--silent': _silent,
-            # Args with arguments.
-            '--gui': self.doGuiOption,
-            '--load-type': self.doLoadTypeOption,
+            # Args with arguments not handled separately.
+
         }
         for option, function in options_dict.items():
             if option in sys.argv:
                 g.trace(function.__name__)
                 function()
-                
 
-
-        # add('--load-type', dest='load_type', metavar='TYPE',
-            # help='@<file> type for non-outlines')
-
-        # add('--screen-shot', dest='screen_shot', metavar='PATH',
-            # help='take a screen shot and then exit')
         # add('--script', dest='script', metavar="PATH",
             # help='execute a script and then exit')
         # add('--script-window', dest='script_window', action='store_true',
