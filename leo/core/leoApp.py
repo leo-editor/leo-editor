@@ -2622,6 +2622,7 @@ class LoadManager:
             self.printUsage()
             sys.exit()
 
+        # Handle all args.
         try:
             self.scanArgv()
             self.postscanArgv()
@@ -2803,7 +2804,96 @@ class LoadManager:
 
     #@+node:ekr.20230615034517.1: *6* LM.scanArgv
     def scanArgv(self) -> None:
-        g.trace()
+        
+        #@+<< define scanArgv helpers >>
+        #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
+        def _black() -> None:
+            g.app.write_black_sentinels = True
+            
+        def _diff() -> None:
+            g.app.diff = True
+            
+        def _fail_fast() -> None:
+            g.app.failFast = True
+            
+        def _full_screen() -> None:
+            g.app.start_fullscreen = True
+
+        def _listen_to_log() -> None:
+            g.app.listen_to_log_flag = True
+            
+        def _ipython() -> None:
+            g.app.useIpython = True
+            
+        def _maximized() -> None:
+            g.app.start_maximized = True
+
+        def _minimized() -> None:
+            g.app.start_minimized = True
+            g.app.use_splash_screen = False
+            
+        def _no_plugins() -> None:
+            g.app.enablePlugins = False
+            
+        def _no_splash() -> None:
+            g.app.use_splash_screen = False
+            
+        def _quit() -> None:
+            g.app.quit_after_load = True
+            
+        def _silent() -> None:
+            g.app.silentMode = True
+        #@-<< define scanArgv helpers >>
+       
+        options_dict: dict[str, Callable] = {
+            # Simple args.
+            '-b': _black,
+            '--black-sentinels': _black,
+            '--diff': _diff,
+            '--fail-fast': _fail_fast,
+            '--fullscreen': _full_screen,
+            '--listen-to-log': _listen_to_log,
+            '--ipython': _ipython,
+            '--maximized': _maximized,
+            '--minimized': _minimized,
+            '--no-plugins': _no_plugins,
+            '--no-splash': _no_splash,
+            '--quit': _quit,
+            '--silent': _silent,
+            # Args with arguments.
+            '--gui': self.doGuiOption,
+            '--load-type': self.doLoadTypeOption,
+        }
+        for option, function in options_dict.items():
+            if option in sys.argv:
+                g.trace(function.__name__)
+                function()
+                
+
+
+        # add('--load-type', dest='load_type', metavar='TYPE',
+            # help='@<file> type for non-outlines')
+
+        # add('--screen-shot', dest='screen_shot', metavar='PATH',
+            # help='take a screen shot and then exit')
+        # add('--script', dest='script', metavar="PATH",
+            # help='execute a script and then exit')
+        # add('--script-window', dest='script_window', action='store_true',
+            # help='execute script using default gui')
+        # add('--select', dest='select', metavar='ID',
+            # help='headline or gnx of node to select')
+        # add('--theme', dest='theme', metavar='NAME',
+            # help='use the named theme file')
+        # add('--trace', dest='trace', metavar='TRACE-KEY',
+            # help=f"add one or more strings to g.app.debug. One or more of...\n{trace_m}")
+        # add('--trace-binding', dest='trace_binding', metavar='KEY',
+            # help='trace commands bound to a key')
+        # add('--trace-setting', dest='trace_setting', metavar="NAME",
+            # help='trace where named setting is set')
+        # add('--window-size', dest='window_size', metavar='SIZE',
+            # help='initial window size (height x width)')
+        # add('--window-spot', dest='window_spot', metavar='SPOT',
+            # help='initial window position (top x left)')
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
