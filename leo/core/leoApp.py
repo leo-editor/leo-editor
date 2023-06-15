@@ -2677,6 +2677,151 @@ class LoadManager:
             'windowSize': self.doWindowSizeOption(),
             'windowSpot': self.doWindowSpotOption(),
         }
+    #@+node:ekr.20230615083942.1: *6* complex args
+    #@+node:ekr.20210927034148.3: *7* LM.computeFilesList
+    def computeFilesList(self, fileName: str) -> list[str]:
+        """Return the list of files on the command line."""
+        lm = self
+        files = []
+        if fileName:
+            files.append(fileName)
+        for arg in sys.argv[1:]:
+            if arg and not arg.startswith('-'):
+                files.append(arg)
+        result = []
+        for z in files:
+            aList = g.glob_glob(lm.completeFileName(z))
+            if aList:
+                result.extend(aList)
+            else:
+                result.append(z)
+        return [g.os_path_normslashes(z) for z in result]
+    #@+node:ekr.20210927034148.4: *7* LM.doGuiOption
+    def doGuiOption(self) -> str:
+        """Handle --qui option. Default to 'qt'"""
+        gui = 'qt'  # The default.
+        arg = self.findOption('--gui=')
+        if arg:
+            m = re.match(r'--gui=(\w+)', arg)
+            if m:
+                gui = m.group(1).lower()
+                if gui == 'qttabs':
+                    gui = 'qt'  # Allow legacy qttabs gui.
+                elif not (
+                    gui.startswith('browser')
+                    or gui in ('console', 'curses', 'text', 'null', 'qt')
+                ):
+                    print(f"unknown --gui option: {gui}. Using qt gui")
+                    gui = 'qt'
+        g.app.guiArgName = gui
+        return gui
+    #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
+    def doLoadTypeOption(self) -> Optional[str]:
+
+        return None
+        # s = args.load_type
+        # s = s.lower() if s else 'edit'
+        # return '@' + s
+    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
+    def doScreenShotOption(self) -> str:
+
+        # --screen-shot=fn
+        return None  ###
+
+        ###
+            # s = args.screen_shot
+            # if s:
+                # s = s.strip('"')
+            # return s
+    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
+    def doScriptOption(self) -> Optional[str]:
+
+        return None  ###
+        # --script
+        # script = None  ### args.script
+        # if script:
+            # # #1090: use cwd, not g.app.loadDir, to find scripts.
+            # fn = g.finalize_join(os.getcwd(), script)
+            # script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
+            # if not script:
+                # print(f"script not found: {fn}")
+                # sys.exit(1)
+        # else:
+            # script = None
+        # return script
+    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption (new, todo)
+    def doSelectOption(self) -> Optional[str]:
+        ### args.select and args.select.strip('"'),  # --select=headline
+        return None
+    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption (new, todo)
+    def doThemeOption(self) -> Optional[str]:
+        return None
+    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions (new, todo)
+    def doTraceOptions(self) -> Optional[str]:
+
+        return None
+
+        # trace_m = textwrap.dedent("""\
+            # abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+            # importers, ipython, keys, layouts, plugins, save, select, sections,
+            # shutdown, size, speed, startup, themes, undo, verbose, zoom
+        # """)
+
+        # --trace=...
+
+        # valid = trace_m.replace(' ', '').replace('\n', '').split(',')
+        # if args.trace:
+            # ok = True
+            # values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
+            # for val in values.split(','):
+                # if val in valid:
+                    # g.app.debug.append(val)
+                # else:
+                    # g.es_print(f"unknown --trace value: {val}")
+                    # ok = False
+            # if not ok:
+                # g.es_print('Valid --trace values are...')
+                # for line in trace_m.split('\n'):
+                    # print('  ', line.rstrip())
+        # #
+        # # These are not bool args.
+        # # --trace-binding
+        # g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
+        # #
+        # # --trace-setting=setting
+        # g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
+    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
+    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
+
+        # --window-size
+        return None
+
+        # windowSize = args.window_size
+        # if windowSize:
+            # try:
+                # h, w = windowSize.split('x')
+                # windowSize = int(h), int(w)
+            # except ValueError:
+                # windowSize = None
+                # print('scanOptions: bad --window-size:', windowSize)
+        # return windowSize
+    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
+    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
+
+        # --window-spot
+        return None
+
+        ###
+        # spot = args.window_spot
+        # if spot:
+            # try:
+                # top, left = spot.split('x')
+                # spot = int(top), int(left)
+            # except ValueError:
+                # print('scanOptions: bad --window-spot:', spot)
+                # spot = None
+
+        # return spot
     #@+node:ekr.20230615034937.1: *6* LM.checkOptions
     def checkOptions(self) -> None:
         """Make sure all command-line options pass sanity checks."""
@@ -2704,25 +2849,6 @@ class LoadManager:
                 if any(z in arg for z in ',='):
                     print(f"Invalid file arg: {arg}")
                     sys.exit()
-    #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
-    def computeFilesList(self, fileName: str) -> list[str]:
-        """Return the list of files on the command line."""
-        lm = self
-        files = []
-        if fileName:
-            files.append(fileName)
-        for arg in sys.argv[1:]:
-            if arg and not arg.startswith('-'):
-                files.append(arg)
-        result = []
-        for z in files:
-            # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
-            aList = g.glob_glob(lm.completeFileName(z))
-            if aList:
-                result.extend(aList)
-            else:
-                result.append(z)
-        return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
     def computeValidOptions(self) -> None:
         """
@@ -2740,65 +2866,7 @@ class LoadManager:
                 if m.group(2):
                     valid.append(m.group(2))
         self.valid_options = list(sorted(list(set(valid))))
-        g.printObj(self.valid_options)
-    #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self) -> str:
-        ### assert any(z.startswith('--gui') for z in sys.argv)
-        gui = 'qt'  ###
-        if gui:
-            gui = gui.lower()
-            if gui in ('qt', 'qttabs'):
-                gui = 'qt'  # Allow qttabs gui.
-            elif gui.startswith('browser'):
-                pass
-            elif gui in ('console', 'curses', 'text', 'null'):
-                pass
-            else:
-                print(f"scanOptions: unknown gui: {gui}.  Using qt gui")
-                gui = 'qt'
-        else:
-            gui = 'qt'
-        assert gui
-        g.app.guiArgName = gui
-        return gui
-    #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self) -> Optional[str]:
-
-        return None
-        # s = args.load_type
-        # s = s.lower() if s else 'edit'
-        # return '@' + s
-    #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
-    def doScreenShotOption(self) -> str:
-
-        # --screen-shot=fn
-        return None  ###
-
-        ###
-            # s = args.screen_shot
-            # if s:
-                # s = s.strip('"')
-            # return s
-    #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
-    def doScriptOption(self) -> Optional[str]:
-
-        return None  ###
-        # --script
-        # script = None  ### args.script
-        # if script:
-            # # #1090: use cwd, not g.app.loadDir, to find scripts.
-            # fn = g.finalize_join(os.getcwd(), script)
-            # script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
-            # if not script:
-                # print(f"script not found: {fn}")
-                # sys.exit(1)
-        # else:
-            # script = None
-        # return script
-    #@+node:ekr.20230615055158.1: *6* LM.doSelectOption (new, todo)
-    def doSelectOption(self) -> Optional[str]:
-        ### args.select and args.select.strip('"'),  # --select=headline
-        return None
+        # g.printObj(self.valid_options)
     #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self) -> None:
         """
@@ -2863,75 +2931,18 @@ class LoadManager:
             if option in sys.argv:
                 g.trace(option)
                 helper()
-    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption (new, todo)
-    def doThemeOption(self) -> Optional[str]:
+    #@+node:ekr.20230615084117.1: *6* LM.findOption
+    def findOption(self, prefix: str) -> Optional[str]:
+        """Return the argument starting with the given prefix."""
+        if '=' in prefix:
+            for arg in sys.argv:
+                if arg.startswith(prefix):
+                    return arg
+        else:
+            for arg in sys.argv:
+                if arg == prefix:
+                    return arg
         return None
-    #@+node:ekr.20230615075314.1: *6* LM.doTraceOptions (new, todo)
-    def doTraceOptions(self) -> Optional[str]:
-
-        return None
-
-        # trace_m = textwrap.dedent("""\
-            # abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-            # importers, ipython, keys, layouts, plugins, save, select, sections,
-            # shutdown, size, speed, startup, themes, undo, verbose, zoom
-        # """)
-
-        # --trace=...
-
-        # valid = trace_m.replace(' ', '').replace('\n', '').split(',')
-        # if args.trace:
-            # ok = True
-            # values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-            # for val in values.split(','):
-                # if val in valid:
-                    # g.app.debug.append(val)
-                # else:
-                    # g.es_print(f"unknown --trace value: {val}")
-                    # ok = False
-            # if not ok:
-                # g.es_print('Valid --trace values are...')
-                # for line in trace_m.split('\n'):
-                    # print('  ', line.rstrip())
-        # #
-        # # These are not bool args.
-        # # --trace-binding
-        # g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
-        # #
-        # # --trace-setting=setting
-        # g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
-    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-size
-        return None
-
-        # windowSize = args.window_size
-        # if windowSize:
-            # try:
-                # h, w = windowSize.split('x')
-                # windowSize = int(h), int(w)
-            # except ValueError:
-                # windowSize = None
-                # print('scanOptions: bad --window-size:', windowSize)
-        # return windowSize
-    #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-spot
-        return None
-
-        ###
-        # spot = args.window_spot
-        # if spot:
-            # try:
-                # top, left = spot.split('x')
-                # spot = int(top), int(left)
-            # except ValueError:
-                # print('scanOptions: bad --window-spot:', spot)
-                # spot = None
-
-        # return spot
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
