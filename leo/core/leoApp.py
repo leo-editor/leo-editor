@@ -2613,10 +2613,10 @@ class LoadManager:
         self.old_argv = sys.argv[:]
 
         args = sys.argv[:]  ### To be removed.
-        
+
         class OptionError(Exception):
             pass
-            
+
         # Handle help args.
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             self.printUsage()
@@ -2626,7 +2626,8 @@ class LoadManager:
             self.scanArgv()
             self.postscanArgv()
         except OptionError as e:
-            self.handleOptionError(e)
+            print(f"Bad option: {e}")
+            sys.exit()
 
         # Compute the files ivar.
         self.files = self.computeFilesList(fileName)
@@ -2649,64 +2650,6 @@ class LoadManager:
             'windowSize': self.doWindowSizeOption(args),
             'windowSpot': self.doWindowSpotOption(args),
         }
-    #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
-    #@@nobeautify
-
-    def addOptionsToParser(self, parser: Any, trace_m: str) -> None:
-        """Init the argsparse parser."""
-        add = parser.add_argument
-        add('PATHS', nargs='*', metavar='FILES',
-            help='list of files')
-        add('-b', '--black-sentinels', dest='black_sentinels', action='store_true',
-            help='write black-compatible sentinel comments')
-        add('--diff', dest='diff', action='store_true',
-            help='use Leo as an external git diff')
-        add('--fail-fast', dest='fail_fast', action='store_true',
-            help='stop unit tests after the first failure')
-        add('--fullscreen', dest='fullscreen', action='store_true',
-            help='start fullscreen')
-        add('--ipython', dest='ipython', action='store_true',
-            help='enable ipython support')
-        add('--gui', dest='gui', metavar='GUI',
-            help='gui to use (qt/console/null)')
-        add('--listen-to-log', dest='listen_to_log', action='store_true',
-            help='start log_listener.py on startup')
-        add('--load-type', dest='load_type', metavar='TYPE',
-            help='@<file> type for non-outlines')
-        add('--maximized', dest='maximized', action='store_true',
-            help='start maximized')
-        add('--minimized', dest='minimized', action='store_true',
-            help='start minimized')
-        add('--no-plugins', dest='no_plugins', action='store_true',
-            help='disable all plugins')
-        add('--no-splash', dest='no_splash', action='store_true',
-            help='disable the splash screen')
-        add('--quit', dest='quit', action='store_true',
-            help='quit immediately after loading')
-        add('--screen-shot', dest='screen_shot', metavar='PATH',
-            help='take a screen shot and then exit')
-        add('--script', dest='script', metavar="PATH",
-            help='execute a script and then exit')
-        add('--script-window', dest='script_window', action='store_true',
-            help='execute script using default gui')
-        add('--select', dest='select', metavar='ID',
-            help='headline or gnx of node to select')
-        add('--silent', dest='silent', action='store_true',
-            help='disable all log messages')
-        add('--theme', dest='theme', metavar='NAME',
-            help='use the named theme file')
-        add('--trace', dest='trace', metavar='TRACE-KEY',
-            help=f"add one or more strings to g.app.debug. One or more of...\n{trace_m}")
-        add('--trace-binding', dest='trace_binding', metavar='KEY',
-            help='trace commands bound to a key')
-        add('--trace-setting', dest='trace_setting', metavar="NAME",
-            help='trace where named setting is set')
-        add('--window-size', dest='window_size', metavar='SIZE',
-            help='initial window size (height x width)')
-        add('--window-spot', dest='window_spot', metavar='SPOT',
-            help='initial window position (top x left)')
-        add('-v', '--version', dest='version', action='store_true',
-            help='print version number and exit')
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
     def computeFilesList(self, fileName: str) -> list[str]:
         """Return the list of files on the command line."""
@@ -2762,7 +2705,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
 
-        return ###
+        return  None ###
         # --script
         script = None  ### args.script
         if script:
@@ -2803,26 +2746,26 @@ class LoadManager:
 
         return spot
     #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
-    def postscanArgv(self):
+    def postscanArgv(self) -> None:
         g.trace()
     #@+node:ekr.20230615035233.1: *6* LM.printUsage
-    def printUsage(self):
+    def printUsage(self) -> None:
         print(textwrap.dedent(
         """
         usage: launchLeo.py [options] file1, file2, ...
-        
+
         simple options:
             [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--listen-to-log]
             [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]  [-v]
             [--select ID] [--silent]
-            
+
         optional complex options:
             --script-window
             --load-type=@edit|@file
             --screen-shot=<path>
             --script=<path>]
-           
-            
+
+
 
         options:
           -h, --help                show this help message and exit
@@ -2859,7 +2802,7 @@ class LoadManager:
         """))
 
     #@+node:ekr.20230615034517.1: *6* LM.scanArgv
-    def scanArgv(self):
+    def scanArgv(self) -> None:
         g.trace()
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
