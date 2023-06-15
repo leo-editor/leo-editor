@@ -2617,6 +2617,7 @@ class LoadManager:
         #@+node:ekr.20230615062931.1: *6* << define self.usage_message >>
         # LM.computeValidOptions uses this message to compute the list of valid options!
         self.usage_message = textwrap.dedent(
+            # Abbreviations must come first.
             """
             usage: launchLeo.py [options] file1, file2, ...
 
@@ -2728,7 +2729,8 @@ class LoadManager:
         Return a list of valid options.
         Options requiring an argument end with '='.
         """
-        option_pattern = re.compile(r'\s*(-\w)*,?\s*(--[\w-]+=?)')
+        # Abbreviations must come first.
+        option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
         valid = ['-?']
         for line in g.splitLines(self.usage_message):
             m = option_pattern.match(line)
@@ -2737,8 +2739,8 @@ class LoadManager:
                     valid.append(m.group(1))
                 if m.group(2):
                     valid.append(m.group(2))
-        self.valid_options = sorted(list(set(valid)))
-        # g.printObj(self.valid_options)
+        self.valid_options = list(sorted(list(set(valid))))
+        g.printObj(self.valid_options)
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         ### assert any(z.startswith('--gui') for z in sys.argv)
@@ -2859,21 +2861,22 @@ class LoadManager:
         }
         for option, helper in options_dict.items():
             if option in sys.argv:
+                g.trace(option)
                 helper()
     #@+node:ekr.20230615060055.1: *6* LM.doThemeOption (new, todo)
     def doThemeOption(self) -> Optional[str]:
         return None
     #@+node:ekr.20230615075314.1: *6* LM.doTraceOptions (new, todo)
     def doTraceOptions(self) -> Optional[str]:
-        
+
         return None
-        
+
         # trace_m = textwrap.dedent("""\
             # abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
             # importers, ipython, keys, layouts, plugins, save, select, sections,
             # shutdown, size, speed, startup, themes, undo, verbose, zoom
         # """)
-       
+
         # --trace=...
 
         # valid = trace_m.replace(' ', '').replace('\n', '').split(',')
