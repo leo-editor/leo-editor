@@ -2657,7 +2657,7 @@ class LoadManager:
         # Handle help args.
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             print(self.usage_message)
-            sys.exit()
+            sys.exit(1)
         self.computeValidOptions()
         self.checkOptions()
         self.doSimpleOptions()
@@ -2721,6 +2721,8 @@ class LoadManager:
         return gui
     #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
+        
+        # load-type=@(edit|file)
         arg = self.findOption('--load-type=')
         if not arg:
             return None
@@ -2729,39 +2731,55 @@ class LoadManager:
             return m.group(1).lower()
         print(f"Ignoring unknown --load-type option: {arg}")
         return None
-    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption (to do)
+    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
     def doScreenShotOption(self) -> str:
 
-        # --screen-shot=fn
-        return None  ###
-
-        ###
-            # s = args.screen_shot
-            # if s:
-                # s = s.strip('"')
-            # return s
-    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption (to do)(
+        # --screen-shot=path
+        arg = self.findOption('--screen-shot=')
+        if not arg:
+            return None
+        m = re.match(r'--screen-shot=(.*)', arg)
+        if m:
+            return m.group(1).replace('"', '')
+    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
 
-        return None  ###
-        # --script
-        # script = None  ### args.script
-        # if script:
-            # # #1090: use cwd, not g.app.loadDir, to find scripts.
-            # fn = g.finalize_join(os.getcwd(), script)
-            # script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
-            # if not script:
-                # print(f"script not found: {fn}")
-                # sys.exit(1)
-        # else:
-            # script = None
-        # return script
-    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption (new, to do)
+        # --script=path
+        arg = self.findOption('--script=')
+        if not arg:
+            return None
+        m = re.match(r'--script=(.*)', arg)
+        if not m:
+            return None
+        fn = m.group(1).replace('"', '')
+        # #1090: use cwd, not g.app.loadDir, to find scripts.
+        path = g.finalize_join(os.getcwd(), fn)
+        script, e = g.readFileIntoString(path, kind='script:', verbose=False)
+        if script:
+            return script
+        print(f"script not found: {path}")
+        sys.exit(1)
+    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption
     def doSelectOption(self) -> Optional[str]:
-        ### args.select and args.select.strip('"'),  # --select=headline
+        
+        # --select=headline
+        arg = self.findOption('--select=')
+        if not arg:
+            return None
+        m = re.match(r'--select=(.*)', arg)
+        if m:
+            return m.group(1)
         return None
-    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption (new, to do)
+    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption
     def doThemeOption(self) -> Optional[str]:
+
+        # --theme=path
+        arg = self.findOption('--theme=')
+        if not arg:
+            return None
+        m = re.match(r'--theme=(.*)', arg)
+        if m:
+            return m.group(1).replace('"', '')
         return None
     #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
     def doTraceOptions(self) -> None:
@@ -2795,7 +2813,7 @@ class LoadManager:
         arg = self.findOption('--trace=')
         if not arg:
             return
-        m = re.match(r'--trace=([\w,]+)', arg)
+        m = re.match(r'--trace=([\w\,]+)', arg)
         if not m:
             return
         values = m.group(1).split(',')
@@ -2811,10 +2829,21 @@ class LoadManager:
             print(f"Valid --trace values:\n   {valid_s}")
         else:
             print(f"Enabling --trace={', '.join(g.app.debug)}")
-    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption (to do)
+    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
         # --window-size
+        arg = self.findOption('--window-size=')
+        if not arg:
+            return None
+        m = re.match(r'--window-size=(\d+)x(\d+)', arg)
+        if m:
+            try:
+                h, w = m.group(1), m.group(2)
+                return (int(h), int(w))
+            except ValueError:
+                pass
+        print(f"Ignoring bad --window-size: option: {arg!r}")
         return None
 
         # windowSize = args.window_size
@@ -2826,23 +2855,22 @@ class LoadManager:
                 # windowSize = None
                 # print('scanOptions: bad --window-size:', windowSize)
         # return windowSize
-    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption (to do)
+    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
 
         # --window-spot
+        arg = self.findOption('--window-spot=')
+        if not arg:
+            return None
+        m = re.match(r'--window-spot=(\d+)x(\d+)', arg)
+        if m:
+            try:
+                top, left = m.group(1), m.group(2)
+                return (int(top), int(left))
+            except ValueError:
+                pass
+        print(f"Ignoring bad --window-spot: option: {arg!r}")
         return None
-
-        ###
-        # spot = args.window_spot
-        # if spot:
-            # try:
-                # top, left = spot.split('x')
-                # spot = int(top), int(left)
-            # except ValueError:
-                # print('scanOptions: bad --window-spot:', spot)
-                # spot = None
-
-        # return spot
     #@+node:ekr.20230615034937.1: *6* LM.checkOptions
     def checkOptions(self) -> None:
         """Make sure all command-line options pass sanity checks."""
@@ -2862,14 +2890,14 @@ class LoadManager:
                     for prefix in option_prefixes:
                         if arg.startswith(prefix):
                             print(f"Invalid option: expected {arg}=VALUE")
-                            sys.exit()
+                            sys.exit(1)
                     print(f"Invalid option arg: {arg}")
-                    sys.exit()
+                    sys.exit(1)
             else:
                 # Do a simple check for file arguments.
                 if any(z in arg for z in ',='):
                     print(f"Invalid file arg: {arg}")
-                    sys.exit()
+                    sys.exit(1)
     #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
     def computeValidOptions(self) -> None:
         """
