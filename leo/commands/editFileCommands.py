@@ -1049,9 +1049,6 @@ class GitDiffController:
         if not directory:
             return ''
         path = g.finalize_join(directory, fn)
-        if not g.os_path_exists(path):
-            g.trace(f"File not found: {path!r} fn: {fn!r}")
-            return ''
         if rev:
             # Get the file using git.
             # Use the file name, not the path.
