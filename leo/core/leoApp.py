@@ -2616,9 +2616,13 @@ class LoadManager:
         
         class OptionError(Exception):
             pass
+            
+        # Handle help args.
+        if any(z in sys.argv for z in ('-h', '-?', '--help')):
+            self.printUsage()
+            sys.exit()
 
         try:
-            self.prescanArgv()
             self.scanArgv()
             self.postscanArgv()
         except OptionError as e:
@@ -2630,10 +2634,11 @@ class LoadManager:
         script = None if pymacs else self.doScriptOption()
         # Return the dictionary of options.
         return {
-            'qui': self.doGuiOption(args),
+            'qui': self.doGuiOption(),
+            'version': any(z in sys.argv for z in ('-v', '--version'))
         }
         return {
-            'gui': self.doGuiOption(args),
+            'gui': self.doGuiOption(),
             'load_type': self.doLoadTypeOption(args),
             'screenshot_fn': self.doScreenShotOption(args),  # --screen-shot=fn
             'script': script,
@@ -2722,7 +2727,7 @@ class LoadManager:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self, args: list[str]) -> str:
+    def doGuiOption(self) -> str:
         gui = 'qt'  ###
         if gui:
             gui = gui.lower()
@@ -2800,15 +2805,6 @@ class LoadManager:
     #@+node:ekr.20230615034937.1: *6* LM.postscanArgv
     def postscanArgv(self):
         g.trace()
-    #@+node:ekr.20230615034509.1: *6* LM.prescanArgv
-    def prescanArgv(self):
-        """Handle options that cause an immediate exit."""
-        if any(z in sys.argv for z in ('-h', '-?', '--help')):
-            self.printUsage()
-            sys.exit()
-        if any(z in sys.argv for z in ('-v', '--version')):
-            self.printVersion()
-            sys.exit()
     #@+node:ekr.20230615035233.1: *6* LM.printUsage
     def printUsage(self):
         print(textwrap.dedent(
