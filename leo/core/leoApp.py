@@ -2727,13 +2727,17 @@ class LoadManager:
         Return a list of valid options.
         Options requiring an argument end with '='.
         """
-        option_pattern = re.compile(r'\s*(--[\w-]+=?)')
-        valid = ['-b', '-h', '-v']  # Start with short options.
+        option_pattern = re.compile(r'\s*(-\w)*,?\s*(--[\w-]+=?)')
+        valid = ['-?']
         for line in g.splitLines(self.usage_message):
             m = option_pattern.match(line)
             if m:
-                valid.append(m.group(1))
+                if m.group(1):
+                    valid.append(m.group(1))
+                if m.group(2):
+                    valid.append(m.group(2))
         self.valid_options = sorted(list(set(valid)))
+        # g.printObj(self.valid_options)
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         ### assert any(z.startswith('--gui') for z in sys.argv)
