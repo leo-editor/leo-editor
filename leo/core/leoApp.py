@@ -2763,40 +2763,54 @@ class LoadManager:
     #@+node:ekr.20230615060055.1: *7* LM.doThemeOption (new, to do)
     def doThemeOption(self) -> Optional[str]:
         return None
-    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions (new, to do)
-    def doTraceOptions(self) -> Optional[str]:
+    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
+    def doTraceOptions(self) -> None:
+        """Handle --trace-binding, --trace-setting and --trace"""
+        
+        # --trace-binding
+        arg = self.findOption('--trace-binding=')
+        if arg:
+            m = re.match(r'--trace-binding=([\w\-\+]+)', arg)
+            if m:
+                # g.app.config does not exist yet.
+                # print(f"Enable {arg}")
+                g.app.trace_binding = m.group(1)
 
-        return None
-
-        # trace_m = textwrap.dedent("""\
-            # abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-            # importers, ipython, keys, layouts, plugins, save, select, sections,
-            # shutdown, size, speed, startup, themes, undo, verbose, zoom
-        # """)
-
-        # --trace=...
-
-        # valid = trace_m.replace(' ', '').replace('\n', '').split(',')
-        # if args.trace:
-            # ok = True
-            # values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-            # for val in values.split(','):
-                # if val in valid:
-                    # g.app.debug.append(val)
-                # else:
-                    # g.es_print(f"unknown --trace value: {val}")
-                    # ok = False
-            # if not ok:
-                # g.es_print('Valid --trace values are...')
-                # for line in trace_m.split('\n'):
-                    # print('  ', line.rstrip())
-        # #
-        # # These are not bool args.
-        # # --trace-binding
-        # g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
-        # #
-        # # --trace-setting=setting
-        # g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
+        # --trace-setting=setting
+        arg = self.findOption('--trace-setting=')
+        if arg:
+            m = re.match(r'--trace-setting=([\w]+)', arg)
+            if m:
+                # g.app.config does not exist yet.
+                # print(f"Enable {arg}")
+                g.app.trace_setting = m.group(1)
+        
+        # --trace=option.
+        valid = [
+            'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
+            'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
+            'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
+            'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+        ]
+        arg = self.findOption('--trace=')
+        if not arg:
+            return
+        m = re.match(r'--trace=([\w,]+)', arg)
+        if not m:
+            return
+        values = m.group(1).split(',')
+        error = False
+        for value in values:
+            if value in valid:
+                g.app.debug.append(value)
+            else:
+                error = True
+                print(f"Ignoring invalid --trace value: {value!r}")
+        if error:
+            valid_s = '\n   '.join(valid)
+            print(f"Valid --trace values:\n   {valid_s}")
+        else:
+            print(f"Enabling --trace={', '.join(g.app.debug)}")
     #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption (to do)
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
