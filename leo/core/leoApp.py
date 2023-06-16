@@ -2729,7 +2729,7 @@ class LoadManager:
         m = re.match(r'--load-type=(@\w+)', arg)
         if m:
             return m.group(1).lower()
-        print(f"Ignoring unknown --load-type option: {arg!r}")
+        self.optionError(arg, '--load-type')
         return None
     #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
     def doScreenShotOption(self) -> str:
@@ -2740,7 +2740,7 @@ class LoadManager:
         m = re.match(r'--screen-shot=(.*)', arg)
         if m:
             return m.group(1).replace('"', '')
-        print(f"Ignoring invalid --screen-shot option: {arg!r}")
+        self.optionError(arg, '--screen-shot')
         return None
     #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
@@ -2750,7 +2750,7 @@ class LoadManager:
             return None
         m = re.match(r'--script=(.*)', arg)
         if not m:
-            print(f"Ignoring invalid --script option: {arg!r}")
+            self.optionError(arg, '--script')
             return None
         fn = m.group(1).replace('"', '')
         # #1090: use cwd, not g.app.loadDir, to find scripts.
@@ -2769,7 +2769,7 @@ class LoadManager:
         m = re.match(r'--select=(.*)', arg)
         if m:
             return m.group(1)
-        print(f"Ignoring invalid --select option: {arg!r}")
+        self.optionError(arg, '--select')
         return None
     #@+node:ekr.20230615060055.1: *7* LM.doThemeOption
     def doThemeOption(self) -> Optional[str]:
@@ -2780,7 +2780,7 @@ class LoadManager:
         m = re.match(r'--theme=(.*)', arg)
         if m:
             return m.group(1).replace('"', '')
-        print(f"Ignoring invalid --theme option: {arg!r}")
+        self.optionError(arg, '--theme')
         return None
     #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
     def doTraceOptions(self) -> None:
@@ -2795,7 +2795,7 @@ class LoadManager:
                 # print(f"Enable {arg}")
                 g.app.trace_binding = m.group(1)
             else:
-                print(f"Ignoring invalid --trace-binding option: {arg!r}")
+                self.optionError(arg, '--trace-binding')
 
         # --trace-setting=setting
         arg = self.findComplexOption('--trace-setting=')
@@ -2806,7 +2806,7 @@ class LoadManager:
                 # print(f"Enable {arg}")
                 g.app.trace_setting = m.group(1)
             else:
-                print(f"Ignoring invalid --trace-setting option: {arg!r}")
+                self.optionError(arg, '--trace-setting')
 
         # --trace=option.
         valid = [
@@ -2820,7 +2820,7 @@ class LoadManager:
             return
         m = re.match(r'--trace=([\w\,]+)', arg)
         if not m:
-            print(f"Ignoring invalid --trace option: {arg!r}")
+            self.optionError(arg, '--trace')
             return
         values = m.group(1).split(',')
         error = False
@@ -2829,7 +2829,7 @@ class LoadManager:
                 g.app.debug.append(value)
             else:
                 error = True
-                print(f"Ignoring invalid --trace value: {value!r}")
+                self.optionError(arg, '--trace')
         if error:
             valid_s = '\n   '.join(valid)
             print(f"Valid --trace values:\n   {valid_s}")
@@ -2848,7 +2848,7 @@ class LoadManager:
                 return (int(h), int(w))
             except ValueError:
                 pass
-        print(f"Ignoring invalid --window-size: option: {arg!r}")
+        self.optionError(arg, '--window-size')
         return None
     #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
@@ -2863,7 +2863,7 @@ class LoadManager:
                 return (int(top), int(left))
             except ValueError:
                 pass
-        print(f"Ignoring invalid --window-spot: option: {arg!r}")
+        self.optionError(arg, '--window-spot')
         return None
     #@+node:ekr.20230615034937.1: *6* LM.checkOptions
     def checkOptions(self) -> None:
@@ -2979,6 +2979,11 @@ class LoadManager:
             if arg.startswith(prefix):
                 return arg
         return None
+    #@+node:ekr.20230616075049.1: *6* LM.optionError
+    def optionError(self, arg: str, option: str) -> None:
+        print('')
+        print(f"Ignoring invalid {option} option: {arg!r}")
+        print('')
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
