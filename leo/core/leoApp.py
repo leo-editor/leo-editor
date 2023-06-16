@@ -2792,7 +2792,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
         """Handle --window-size"""
-        m = self.findComplexOption('--window-size=(\d+)x(\d+)')
+        m = self.findComplexOption(r'--window-size=(\d+)x(\d+)')
         if not m:
             return None
         try:
@@ -2939,7 +2939,6 @@ class LoadManager:
     def optionError(self, arg: str, message: str) -> None:
         """Print an error message and help message, then exit."""
         print(f"Invalid {arg!r} option: {message}")
-        ### print(self.usage_message)
         sys.exit(1)
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
