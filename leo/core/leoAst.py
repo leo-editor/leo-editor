@@ -4203,6 +4203,36 @@ class TokenOrderGenerator:
             self.op(':')
             self.visit(node.finalbody)
         self.level -= 1
+    #@+node:ekr.20230615211005.1: *6* tog.TryStar
+    # TryStar(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+    # Examples:
+    #   except* SpamError:
+    #   except* FooError as e:
+    #   except* (BarError, BazError) as e:
+
+    def do_TryStar(self, node: Node) -> None:
+
+        # Try line...
+        self.name('except*')
+        self.op(':')
+        # Body...
+        self.level += 1
+        self.visit(node.body)
+        ### self.try_stack.append('*')
+        self.visit(node.handlers)
+        ### self.try_stack.pop()
+        # Else...
+        if node.orelse:
+            self.name('else')
+            self.op(':')
+            self.visit(node.orelse)
+        # Finally...
+        if node.finalbody:
+            self.name('finally')
+            self.op(':')
+            self.visit(node.finalbody)
+        self.level -= 1
     #@+node:ekr.20191113063144.88: *6* tog.While
     def do_While(self, node: Node) -> None:
 

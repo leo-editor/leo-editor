@@ -1114,6 +1114,23 @@ class TestTOG(BaseTest):
         print('d2')
     """
         self.make_data(contents)
+    #@+node:ekr.20230616015533.1: *5* test_TryStar
+    def test_TryStar(self):
+        contents = r"""\
+    try:
+        print('a1')
+        print('a2')
+    except* ImportError:
+        print('b1')
+        print('b2')
+    except* SyntaxError:
+        print('c1')
+        print('c2')
+    finally:
+        print('d1')
+        print('d2')
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.47: *5* test_TryExceptElse
     def test_Try2(self):
         # Line 240: leoDebugger.py
