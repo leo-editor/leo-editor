@@ -126,7 +126,7 @@ UserTip(
 '''
     template = textwrap.dedent(template)
     for kind in ('open',):  # 'closed':
-        data = requests.get(url + kind).json()
+        data = requests.get(url + kind, timeout=2.0).json()
         for tip in get_tips(data):
             tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
