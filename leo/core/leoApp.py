@@ -2738,7 +2738,7 @@ class LoadManager:
         arg = self.findComplexOption('--screen-shot=')
         if not arg:
             return None
-        m = re.match(r'--screen-shot=(.*)', arg)
+        m = re.match(r'--screen-shot=(.+)', arg)
         if m:
             return m.group(1).replace('"', '')
         self.optionError(arg, '--screen-shot')
@@ -2749,7 +2749,7 @@ class LoadManager:
         arg = self.findComplexOption('--script=')
         if not arg:
             return None
-        m = re.match(r'--script=(.*)', arg)
+        m = re.match(r'--script=(.+)', arg)
         if not m:
             self.optionError(arg, '--script')
             return None
@@ -2767,7 +2767,7 @@ class LoadManager:
         arg = self.findComplexOption('--select=')
         if not arg:
             return None
-        m = re.match(r'--select=(.*)', arg)
+        m = re.match(r'--select=(.+)', arg)
         if m:
             return m.group(1)
         self.optionError(arg, '--select')
@@ -2778,7 +2778,7 @@ class LoadManager:
         arg = self.findComplexOption('--theme=')
         if not arg:
             return None
-        m = re.match(r'--theme=(.*)', arg)
+        m = re.match(r'--theme=(.+)', arg)
         if m:
             return m.group(1).replace('"', '')
         self.optionError(arg, '--theme')
