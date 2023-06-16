@@ -1149,9 +1149,9 @@ class VimCommands:
             extend = self.state == 'visual'
             s = w.getAllText()
             i = w.getInsertPoint()
+            on_line = self.on_same_line(s, 0, i)
             if self.stroke == 'g':
                 # Go to start of buffer.
-                on_line = self.on_same_line(s, 0, i)
                 if on_line and extend:
                     self.do('back-to-home-extend-selection')
                 elif on_line:
