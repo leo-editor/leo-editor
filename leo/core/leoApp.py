@@ -2666,7 +2666,7 @@ class LoadManager:
         # Return a dictionary of complex options.
         script = None if pymacs else self.doScriptOption()  # Used twice below.
         return {
-            'qui': self.doGuiOption(),
+            'gui': self.doGuiOption(),
             'load_type': self.doLoadTypeOption(),
             'script': script,
             'screenshot_fn': self.doScreenShotOption(),
@@ -2698,7 +2698,7 @@ class LoadManager:
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *7* LM.doGuiOption
     def doGuiOption(self) -> str:
-        """Handle --qui option. Default to 'qt'"""
+        """Handle --gui option. Default to 'qt'"""
         gui = 'qt'  # The default.
         arg = self.findComplexOption('--gui=')
         if not arg:
