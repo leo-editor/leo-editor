@@ -354,7 +354,7 @@ class TestTOG(BaseTest):
 
     debug_list = [
         # 'tokens', 'tree',
-        #'post-tokens', 'post-tree'
+        # 'post-tokens', 'post-tree'
     ]
 
     #@+others
