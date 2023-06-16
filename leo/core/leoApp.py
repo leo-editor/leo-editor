@@ -2657,7 +2657,7 @@ class LoadManager:
         # Handle help args.
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             print(self.usage_message)
-            sys.exit(1)
+            sys.exit()
         self.computeValidOptions()
         self.checkOptions()
         self.doSimpleOptions()
