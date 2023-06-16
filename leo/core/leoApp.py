@@ -2700,7 +2700,7 @@ class LoadManager:
     def doGuiOption(self) -> str:
         """Handle --gui option. Default to 'qt'"""
         m = self.findComplexOption(r'--gui=(\w+)')
-        valid = ('console', 'curses', 'text', 'null', 'qt')
+        valid = ('console', 'curses', 'null', 'qt', 'text')
         if not m:
             g.app.guiArgName = 'qt'
             return 'qt'
@@ -2797,7 +2797,7 @@ class LoadManager:
             return None
         try:
             h, w = int(m.group(1)), int(m.group(2))
-        except Exception:
+        except ValueError:
             arg = m.group(0)
             self.optionError(arg, 'Invalid value: expected int x int')
         return h, w
@@ -2809,7 +2809,7 @@ class LoadManager:
             return None
         try:
             top, left = int(m.group(1)), int(m.group(2))
-        except Exception:
+        except ValueError:
             arg = m.group(0)
             self.optionError(arg, 'Invalid value: expected int x int')
         return top, left
@@ -2925,9 +2925,7 @@ class LoadManager:
         Exit if the option exists but contains no value.
         """
         assert '=' in regex, repr(regex)
-        i = regex.find('=')
-        prefix = regex[: i + 1]
-        assert '=' in prefix, repr(prefix)
+        prefix = regex.split('=')[0]
         for arg in sys.argv:
             if arg.startswith(prefix):
                 m = re.match(regex, arg)
