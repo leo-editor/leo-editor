@@ -6339,6 +6339,70 @@ def truncate(s: str, n: int) -> str:
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows() -> Optional[list]:
     return app and app.windowList
+#@+node:ekr.20230616134732.1: ** g.Options
+# stateless utility functions for handling command-line options.
+
+# LM.scanOptions uses these functions.
+#@+node:ekr.20230615034937.1: *3* g.checkOptions
+def checkOptions(obsolete_options: list[str], valid_options: list[str], usage: str) -> None:
+    """Make sure all command-line options pass sanity checks."""
+    option_prefixes = [z[:-1] for z in valid_options if z.endswith('=')]
+    for arg in sys.argv:
+        if arg in obsolete_options:
+            print(f"Ignoring obsolete option: {arg!r}")
+        elif arg.startswith('-'):
+            for option in valid_options:
+                if arg.startswith(option):
+                    break
+            else:
+                for prefix in option_prefixes:
+                    if arg.startswith(prefix):
+                        g.optionError(arg, 'Missing value', usage)
+                g.optionError(arg, 'Unknown option', usage)
+        else:
+            # Do a simple check for file arguments.
+            if any(z in arg for z in ',='):
+                g.optionError(arg, 'Invalid file arg', usage)
+#@+node:ekr.20230615062610.1: *3* g.computeValidOptions
+def computeValidOptions(usage: str) -> list[str]:
+    """
+    Return a list of valid options by parsing the given usage message.
+    Options requiring an argument end with '='.
+    """
+    # Abbreviations (-whatever) must appear before full options (--whatever).
+    option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
+    valid = ['-?']
+    for line in g.splitLines(usage):
+        m = option_pattern.match(line)
+        if m:
+            if m.group(1):
+                valid.append(m.group(1))
+            if m.group(2):
+                valid.append(m.group(2))
+    return list(sorted(list(set(valid))))
+#@+node:ekr.20230615084117.1: *3* g.findComplexOption
+def findComplexOption(regex: str, usage: str) -> Optional[re.Match]:
+    # """Return the complex argument starting with the given prefix."""
+    """
+    Handle the common portion of complex arguments.
+
+    Exit if the option exists but contains no value.
+    """
+    assert '=' in regex, repr(regex)
+    prefix = regex.split('=')[0]
+    for arg in sys.argv:
+        if arg.startswith(prefix):
+            m = re.match(regex, arg)
+            if m:
+                return m
+            g.optionError(arg, 'Missing or erroneous value', usage)
+    return None
+#@+node:ekr.20230616075049.1: *3* g.optionError
+def optionError(arg: str, message: str, usage: str) -> None:
+    """Print an error message and help message, then exit."""
+    print(f"Invalid {arg!r} option: {message}")
+    print(usage)
+    sys.exit(1)
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
