@@ -2982,7 +2982,7 @@ class LoadManager:
                 helper()
     #@+node:ekr.20230615084117.1: *6* LM.findComplexOption
     def findComplexOption(self, prefix: str) -> Optional[str]:
-        """Return the argument starting with the given prefix."""
+        """Return the complex argument starting with the given prefix."""
         assert '=' in prefix, repr(prefix)
         for arg in sys.argv:
             if arg.startswith(prefix):
