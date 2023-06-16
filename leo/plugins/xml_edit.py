@@ -240,7 +240,7 @@ def leo2xml(event):
     file_name = g.app.gui.runSaveFileDialog(
             c, title="Open", filetypes=table, defaultextension=".xml")
     if not file_name:
-        raise Exception("No file selected")
+        raise ImportError("No file selected")
 
     open(file_name, 'w').write(ans)
 
@@ -296,7 +296,7 @@ def xml2leo(event, from_string=None):
                 c, title="Open", filetypes=table, defaultextension=".xml")
 
         if not file_name:
-            raise Exception("No file selected")
+            raise ImportError("No file selected")
 
     try:
         xml_ = parser_func(file_name)

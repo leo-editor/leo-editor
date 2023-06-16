@@ -4680,7 +4680,7 @@ class GitIssueController:
         page, total = 1, 0
         while True:
             url = page_url % (state, page)
-            r = requests.get(url)
+            r = requests.get(url, timeout=2.0)
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.
@@ -4718,7 +4718,7 @@ class GitIssueController:
         page_url = self.base_url + '?labels=%s&state=%s&page=%s'
         while True:
             url = page_url % (label, state, page)
-            r = requests.get(url)
+            r = requests.get(url, timeout=2.0)
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.

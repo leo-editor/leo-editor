@@ -193,11 +193,11 @@ class LiveCodeDisplay:
                     if isinstance(node, ast.AugAssign):
                         todo = [node.target]
                     else:
-                        todo = list(node.targets)
+                        todo = list(node.targets)  # type:ignore
                     while todo:
                         target = todo.pop(0)
                         if isinstance(target, ast.Tuple):
-                            todo.extend(target.elts)
+                            todo.extend(target.elts)  # type:ignore
                             continue
                         code = asttools.dump_python_source(target)
                         # pylint: disable=eval-used
