@@ -352,7 +352,10 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
 
-    debug_list = ['unit-test']
+    debug_list = [
+        # 'tokens', 'tree',
+        #'post-tokens', 'post-tree'
+    ]
 
     #@+others
     #@+node:ekr.20210318213945.1: *4* TestTOG.Recent bugs & features
@@ -1126,9 +1129,11 @@ class TestTOG(BaseTest):
     except* SyntaxError:
         print('c1')
         print('c2')
-    finally:
+    else:
         print('d1')
-        print('d2')
+    finally:
+        print('e1')
+        print('e2')
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.47: *5* test_TryExceptElse

@@ -2841,6 +2841,7 @@ class TokenOrderGenerator:
     n_nodes = 0  # The number of nodes that have been visited.
     node_index = 0  # The index into the node_stack.
     node_stack: list[ast.AST] = []  # The stack of parent nodes.
+    try_stack: list[str] = []  # A stack of either '' (Try) or '*' (TryStar)
 
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
@@ -3909,6 +3910,8 @@ class TokenOrderGenerator:
 
         # Except line...
         self.name('except')
+        if self.try_stack[-1] == '*':
+            self.op('*')
         if getattr(node, 'type', None):
             self.visit(node.type)
         if getattr(node, 'name', None):
@@ -4191,7 +4194,9 @@ class TokenOrderGenerator:
         # Body...
         self.level += 1
         self.visit(node.body)
+        self.try_stack.append('')
         self.visit(node.handlers)
+        self.try_stack.pop()
         # Else...
         if node.orelse:
             self.name('else')
@@ -4214,14 +4219,14 @@ class TokenOrderGenerator:
     def do_TryStar(self, node: Node) -> None:
 
         # Try line...
-        self.name('except*')
+        self.name('try')
         self.op(':')
         # Body...
         self.level += 1
         self.visit(node.body)
-        ### self.try_stack.append('*')
+        self.try_stack.append('*')
         self.visit(node.handlers)
-        ### self.try_stack.pop()
+        self.try_stack.pop()
         # Else...
         if node.orelse:
             self.name('else')
