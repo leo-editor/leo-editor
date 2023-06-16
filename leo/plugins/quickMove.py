@@ -898,13 +898,13 @@ class quickMoveButton:
                     p.moveToLastChildOf(p2)
                 elif self.which in ('next sibling', 'prev sibling'):
                     if not p2.parent():
-                        raise Exception("Not implemented for top-level nodes")  #FIXME
+                        raise NotImplementedError("Not implemented for top-level nodes")  #FIXME
                     if self.which == 'next sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
                     elif self.which == 'prev sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex - 1)
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
 
             elif self.type_ == 'bkmk':
                 unl = self.computeUNL(p)  # before tree changes
@@ -917,7 +917,7 @@ class quickMoveButton:
                 elif self.which == 'prev sibling':
                     nd = p2.insertBefore()
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
                 h = p.anyAtFileNodeName() or p.h
                 while h and h[0] == '@':
                     h = h[1:]
@@ -940,7 +940,7 @@ class quickMoveButton:
                     nd = p2.insertBefore()
                     quickMove.copy_recursively(p, nd)
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
 
             elif self.type_ in ('linkTo', 'linkFrom'):
                 blc = getattr(c, 'backlinkController', None)

@@ -305,7 +305,7 @@ if encOK:
         md5.update(txt.encode('utf-8'))
         __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
         if len(__ENCKEY[0]) != 32:
-            raise Exception("sn_getenckey failed to build key")
+            raise KeyError("sn_getenckey failed to build key")
 #@+node:tbrown.20141214173054.3: ** class TextEditSearch
 class TextEditSearch(QtWidgets.QWidget):  # type:ignore
     """A QTextEdit with a search box
