@@ -3,11 +3,11 @@
 #@+<< leoApp imports >>
 #@+node:ekr.20120219194520.10463: ** << leoApp imports >>
 from __future__ import annotations
-import argparse
 from collections.abc import Callable
 import importlib
 import io
 import os
+import re
 import sqlite3
 import subprocess
 import string
@@ -477,7 +477,9 @@ class LeoApp:
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
-        self.prolog_namespace_string = 'xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1"'
+        self.prolog_namespace_string = (
+            'xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1"'
+        )
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
 
@@ -2609,114 +2611,74 @@ class LoadManager:
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
-        lm = self
-        obsolete_options = (
-            '--dock',
-            '--global-docks',  # #1643. use --use-docks instead.
-            '--init-docks',
-            '--no-cache',
-            '--no-dock',  # #1171 and #1514: use --use-docks instead.
-            '--session-restore',
-            '--session-save',
-            '--use-docks',
-        )
-        trace_m = textwrap.dedent("""\
-            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-            importers, ipython, keys, layouts, plugins, save, select, sections,
-            shutdown, size, speed, startup, themes, undo, verbose, zoom
-        """)
-        for bad_option in obsolete_options:
-            if bad_option in sys.argv:
-                sys.argv.remove(bad_option)
-                print(f"Ignoring the unused/deprecated {bad_option} option")
-        lm.old_argv = sys.argv[:]
-        # Automatically implements the --help option.
-        description = "usage: launchLeo.py [options] file1, file2, ..."
-        parser = argparse.ArgumentParser(
-            description=description,
-            formatter_class=argparse.RawTextHelpFormatter)
-        #
-        # Parse the options, and remove them from sys.argv.
-        self.addOptionsToParser(parser, trace_m)
-        args = parser.parse_args()
-        # Handle simple args...
-        self.doSimpleOptions(args, trace_m)
-        # Compute the lm.files ivar.
-        lm.files = lm.computeFilesList(fileName)
-        # Compute the script. Used twice below.
-        script = None if pymacs else self.doScriptOption(args, parser)
-        # Return the dictionary of options.
-        return {
-            'gui': lm.doGuiOption(args),
-            'load_type': lm.doLoadTypeOption(args),
-            'screenshot_fn': lm.doScreenShotOption(args),  # --screen-shot=fn
-            'script': script,
-            'select': args.select and args.select.strip('"'),  # --select=headline
-            'theme_path': args.theme,  # --theme=name
-            'version': args.version,  # --version: print the version and exit.
-            'windowFlag': script and args.script_window,
-            'windowSize': lm.doWindowSizeOption(args),
-            'windowSpot': lm.doWindowSpotOption(args),
-        }
-    #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
-    #@@nobeautify
+        # Save a copy of argv for debugging.
+        self.old_argv = sys.argv[:]
+        #@+<< define self.usage_message >>
+        #@+node:ekr.20230615062931.1: *6* << define self.usage_message >>
+        # LM.computeValidOptions uses this message to compute the list of valid options!
+        self.usage_message = textwrap.dedent(
+            # Abbreviations must come first.
+            """
+            usage: launchLeo.py [options] file1, file2, ...
 
-    def addOptionsToParser(self, parser: Any, trace_m: str) -> None:
-        """Init the argsparse parser."""
-        add = parser.add_argument
-        add('PATHS', nargs='*', metavar='FILES',
-            help='list of files')
-        add('-b', '--black-sentinels', dest='black_sentinels', action='store_true',
-            help='write black-compatible sentinel comments')
-        add('--diff', dest='diff', action='store_true',
-            help='use Leo as an external git diff')
-        add('--fail-fast', dest='fail_fast', action='store_true',
-            help='stop unit tests after the first failure')
-        add('--fullscreen', dest='fullscreen', action='store_true',
-            help='start fullscreen')
-        add('--ipython', dest='ipython', action='store_true',
-            help='enable ipython support')
-        add('--gui', dest='gui', metavar='GUI',
-            help='gui to use (qt/console/null)')
-        add('--listen-to-log', dest='listen_to_log', action='store_true',
-            help='start log_listener.py on startup')
-        add('--load-type', dest='load_type', metavar='TYPE',
-            help='@<file> type for non-outlines')
-        add('--maximized', dest='maximized', action='store_true',
-            help='start maximized')
-        add('--minimized', dest='minimized', action='store_true',
-            help='start minimized')
-        add('--no-plugins', dest='no_plugins', action='store_true',
-            help='disable all plugins')
-        add('--no-splash', dest='no_splash', action='store_true',
-            help='disable the splash screen')
-        add('--quit', dest='quit', action='store_true',
-            help='quit immediately after loading')
-        add('--screen-shot', dest='screen_shot', metavar='PATH',
-            help='take a screen shot and then exit')
-        add('--script', dest='script', metavar="PATH",
-            help='execute a script and then exit')
-        add('--script-window', dest='script_window', action='store_true',
-            help='execute script using default gui')
-        add('--select', dest='select', metavar='ID',
-            help='headline or gnx of node to select')
-        add('--silent', dest='silent', action='store_true',
-            help='disable all log messages')
-        add('--theme', dest='theme', metavar='NAME',
-            help='use the named theme file')
-        add('--trace', dest='trace', metavar='TRACE-KEY',
-            help=f"add one or more strings to g.app.debug. One or more of...\n{trace_m}")
-        add('--trace-binding', dest='trace_binding', metavar='KEY',
-            help='trace commands bound to a key')
-        add('--trace-setting', dest='trace_setting', metavar="NAME",
-            help='trace where named setting is set')
-        add('--window-size', dest='window_size', metavar='SIZE',
-            help='initial window size (height x width)')
-        add('--window-spot', dest='window_spot', metavar='SPOT',
-            help='initial window position (top x left)')
-        add('-v', '--version', dest='version', action='store_true',
-            help='print version number and exit')
-    #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
+            options:
+              -h, --help            show this help message and exit
+              -b, --black-sentinels write black-compatible sentinel comments
+              --diff                use Leo as an external git diff
+              --fail-fast           stop unit tests after the first failure
+              --fullscreen          start fullscreen
+              --ipython             enable ipython support
+              --gui=GUI             specify gui: browser,console,curses,qt,text,null
+              --listen-to-log       start log_listener.py on startup
+              --load-type=TYPE      @<file> type for non-outlines: @edit or @file
+              --maximized           start maximized
+              --minimized           start minimized
+              --no-plugins          disable all plugins
+              --no-splash           disable the splash screen
+              --quit                quit immediately after loading
+              --screen-shot=PATH    take a screen shot and then exit
+              --script=<path>       execute a script and then exit
+              --script-window       execute script using default gui
+              --select=ID           headline or gnx of node to select
+              --silent              disable all log messages
+              --theme=NAME          use the named theme file
+              --trace=LIST          add one or more strings to g.app.debug.
+                                    A comma-separated list of one or more of:
+                                    abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
+                                    importers, ipython, keys, layouts, plugins, save, select, sections,
+                                    shutdown, size, speed, startup, themes, undo, verbose, zoom
+              --trace-binding=KEY   trace commands bound to a key
+              --trace-setting=NAME  trace where named setting is set
+              --window-size=SIZE    initial window size (height x width)
+              --window-spot=SPOT    initial window position (top x left)
+              -v, --version         print version number and exit
+            """)
+        #@-<< define self.usage_message >>
+        # Handle help args.
+        if any(z in sys.argv for z in ('-h', '-?', '--help')):
+            print(self.usage_message)
+            sys.exit()
+        self.computeValidOptions()
+        self.checkOptions()
+        self.doSimpleOptions()
+        self.doTraceOptions()
+        self.files = self.computeFilesList(fileName)
+        # Return a dictionary of complex options.
+        script = None if pymacs else self.doScriptOption()  # Used twice below.
+        return {
+            'qui': self.doGuiOption(),
+            'load_type': self.doLoadTypeOption(),
+            'script': script,
+            'screenshot_fn': self.doScreenShotOption(),
+            'select': self.doSelectOption(),  ### New.
+            'theme_path': self.doThemeOption(),  ### New.
+            'version': any(z in sys.argv for z in ('-v', '--version')),
+            'windowFlag': script and '--script-window' in sys.argv,
+            'windowSize': self.doWindowSizeOption(),
+            'windowSpot': self.doWindowSpotOption(),
+        }
+    #@+node:ekr.20230615083942.1: *6* complex args
+    #@+node:ekr.20210927034148.3: *7* LM.computeFilesList
     def computeFilesList(self, fileName: str) -> list[str]:
         """Return the list of files on the command line."""
         lm = self
@@ -2728,138 +2690,304 @@ class LoadManager:
                 files.append(arg)
         result = []
         for z in files:
-            # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
             aList = g.glob_glob(lm.completeFileName(z))
             if aList:
                 result.extend(aList)
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
-    #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self, args: Any) -> str:
-        gui = args.gui
-        if gui:
-            gui = gui.lower()
-            if gui in ('qt', 'qttabs'):
-                gui = 'qt'  # Allow qttabs gui.
-            elif gui.startswith('browser'):
-                pass
-            elif gui in ('console', 'curses', 'text', 'null'):
-                pass
-            else:
-                print(f"scanOptions: unknown gui: {gui}.  Using qt gui")
-                gui = 'qt'
-        else:
+    #@+node:ekr.20210927034148.4: *7* LM.doGuiOption
+    def doGuiOption(self) -> str:
+        """Handle --qui option. Default to 'qt'"""
+        gui = 'qt'  # The default.
+        arg = self.findComplexOption('--gui=')
+        if not arg:
+            g.app.guiArgName = gui
+            return gui
+        m = re.match(r'--gui=(\w+)', arg)
+        if not m:
+            g.app.guiArgName = gui
+            return gui
+        gui = m.group(1).lower()
+        if gui == 'qttabs':
+            gui = 'qt'  # Allow legacy qttabs gui.
+        elif not (
+            gui.startswith('browser')
+            or gui in ('console', 'curses', 'text', 'null', 'qt')
+        ):
+            print(f"unknown --gui option: {gui}. Using qt gui")
             gui = 'qt'
-        assert gui
         g.app.guiArgName = gui
         return gui
-    #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self, args: Any) -> str:
+    #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
+    def doLoadTypeOption(self) -> Optional[str]:
 
-        s = args.load_type
-        s = s.lower() if s else 'edit'
-        return '@' + s
-    #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
-    def doScreenShotOption(self, args: Any) -> str:
+        # load-type=@(edit|file)
+        arg = self.findComplexOption('--load-type=')
+        if not arg:
+            return None
+        m = re.match(r'--load-type=(@\w+)', arg)
+        if m:
+            return m.group(1).lower()
+        print(f"Ignoring unknown --load-type option: {arg}")
+        return None
+    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
+    def doScreenShotOption(self) -> str:
 
-        # --screen-shot=fn
-        s = args.screen_shot
-        if s:
-            s = s.strip('"')
-        return s
-    #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
-    def doScriptOption(self, args: Any, parser: Any) -> Optional[str]:
+        # --screen-shot=path
+        arg = self.findComplexOption('--screen-shot=')
+        if not arg:
+            return None
+        m = re.match(r'--screen-shot=(.*)', arg)
+        if m:
+            return m.group(1).replace('"', '')
+        return None
+    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
+    def doScriptOption(self) -> Optional[str]:
 
-        # --script
-        script = args.script
+        # --script=path
+        arg = self.findComplexOption('--script=')
+        if not arg:
+            return None
+        m = re.match(r'--script=(.*)', arg)
+        if not m:
+            return None
+        fn = m.group(1).replace('"', '')
+        # #1090: use cwd, not g.app.loadDir, to find scripts.
+        path = g.finalize_join(os.getcwd(), fn)
+        script, e = g.readFileIntoString(path, kind='script:', verbose=False)
         if script:
-            # #1090: use cwd, not g.app.loadDir, to find scripts.
-            fn = g.finalize_join(os.getcwd(), script)
-            script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
-            if not script:
-                print(f"script not found: {fn}")
-                sys.exit(1)
-        else:
-            script = None
-        return script
-    #@+node:ekr.20210927034148.8: *6* LM.doSimpleOptions
-    def doSimpleOptions(self, args: Any, trace_m: str) -> None:
-        """These args just set g.app ivars."""
-        # --black-sentinels
-        g.app.write_black_sentinels = args.black_sentinels
-        # --fail-fast
-        g.app.failFast = args.fail_fast
-        # --fullscreen
-        g.app.start_fullscreen = args.fullscreen
-        # --git-diff
-        g.app.diff = args.diff
-        # --listen-to-log
-        g.app.listen_to_log_flag = args.listen_to_log
-        # --ipython
-        g.app.useIpython = args.ipython
-        # --maximized
-        g.app.start_maximized = args.maximized
-        # --minimized
-        g.app.start_minimized = args.minimized
-        # --no-plugins
-        if args.no_plugins:
-            g.app.enablePlugins = False
-        # --no-splash: --minimized disables the splash screen
-        g.app.use_splash_screen = not args.no_splash and not args.minimized
-        # -- quit
-        g.app.quit_after_load = args.quit
-        # --silent
-        g.app.silentMode = args.silent
-        # --trace=...
-        valid = trace_m.replace(' ', '').replace('\n', '').split(',')
-        if args.trace:
-            ok = True
-            values = args.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
-            for val in values.split(','):
-                if val in valid:
-                    g.app.debug.append(val)
-                else:
-                    g.es_print(f"unknown --trace value: {val}")
-                    ok = False
-            if not ok:
-                g.es_print('Valid --trace values are...')
-                for line in trace_m.split('\n'):
-                    print('  ', line.rstrip())
-        #
-        # These are not bool args.
+            return script
+        print(f"script not found: {path}")
+        sys.exit(1)
+    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption
+    def doSelectOption(self) -> Optional[str]:
+
+        # --select=headline
+        arg = self.findComplexOption('--select=')
+        if not arg:
+            return None
+        m = re.match(r'--select=(.*)', arg)
+        if m:
+            return m.group(1)
+        return None
+    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption
+    def doThemeOption(self) -> Optional[str]:
+
+        # --theme=path
+        arg = self.findComplexOption('--theme=')
+        if not arg:
+            return None
+        m = re.match(r'--theme=(.*)', arg)
+        if m:
+            return m.group(1).replace('"', '')
+        return None
+    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
+    def doTraceOptions(self) -> None:
+        """Handle --trace-binding, --trace-setting and --trace"""
+
         # --trace-binding
-        g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
-        #
+        arg = self.findComplexOption('--trace-binding=')
+        if arg:
+            m = re.match(r'--trace-binding=([\w\-\+]+)', arg)
+            if m:
+                # g.app.config does not exist yet.
+                # print(f"Enable {arg}")
+                g.app.trace_binding = m.group(1)
+
         # --trace-setting=setting
-        g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
-    #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self, args: Any) -> Optional[tuple[int, int]]:
+        arg = self.findComplexOption('--trace-setting=')
+        if arg:
+            m = re.match(r'--trace-setting=([\w]+)', arg)
+            if m:
+                # g.app.config does not exist yet.
+                # print(f"Enable {arg}")
+                g.app.trace_setting = m.group(1)
 
-        # --window-spot
-        spot = args.window_spot
-        if spot:
-            try:
-                top, left = spot.split('x')
-                spot = int(top), int(left)
-            except ValueError:
-                print('scanOptions: bad --window-spot:', spot)
-                spot = None
-
-        return spot
-    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args: Any) -> Optional[tuple[int, int]]:
+        # --trace=option.
+        valid = [
+            'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
+            'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
+            'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
+            'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+        ]
+        arg = self.findComplexOption('--trace=')
+        if not arg:
+            return
+        m = re.match(r'--trace=([\w\,]+)', arg)
+        if not m:
+            return
+        values = m.group(1).split(',')
+        error = False
+        for value in values:
+            if value in valid:
+                g.app.debug.append(value)
+            else:
+                error = True
+                print(f"Ignoring invalid --trace value: {value!r}")
+        if error:
+            valid_s = '\n   '.join(valid)
+            print(f"Valid --trace values:\n   {valid_s}")
+        else:
+            print(f"Enabling --trace={', '.join(g.app.debug)}")
+    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
+    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
 
         # --window-size
-        windowSize = args.window_size
-        if windowSize:
+        arg = self.findComplexOption('--window-size=')
+        if not arg:
+            return None
+        m = re.match(r'--window-size=(\d+)x(\d+)', arg)
+        if m:
             try:
-                h, w = windowSize.split('x')
-                windowSize = int(h), int(w)
+                h, w = m.group(1), m.group(2)
+                return (int(h), int(w))
             except ValueError:
-                windowSize = None
-                print('scanOptions: bad --window-size:', windowSize)
-        return windowSize
+                pass
+        print(f"Ignoring bad --window-size: option: {arg!r}")
+        return None
+
+        # windowSize = args.window_size
+        # if windowSize:
+            # try:
+                # h, w = windowSize.split('x')
+                # windowSize = int(h), int(w)
+            # except ValueError:
+                # windowSize = None
+                # print('scanOptions: bad --window-size:', windowSize)
+        # return windowSize
+    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
+    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
+
+        # --window-spot
+        arg = self.findComplexOption('--window-spot=')
+        if not arg:
+            return None
+        m = re.match(r'--window-spot=(\d+)x(\d+)', arg)
+        if m:
+            try:
+                top, left = m.group(1), m.group(2)
+                return (int(top), int(left))
+            except ValueError:
+                pass
+        print(f"Ignoring bad --window-spot: option: {arg!r}")
+        return None
+    #@+node:ekr.20230615034937.1: *6* LM.checkOptions
+    def checkOptions(self) -> None:
+        """Make sure all command-line options pass sanity checks."""
+        option_prefixes = [z[:-1] for z in self.valid_options if z.endswith('=')]
+        obsolete_options = (
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        )
+        for arg in sys.argv:
+            if arg in obsolete_options:
+                print(f"Ignoring obsolete option: {arg!r}")
+            elif arg.startswith('-'):
+                for option in self.valid_options:
+                    if arg.startswith(option):
+                        break
+                else:
+                    for prefix in option_prefixes:
+                        if arg.startswith(prefix):
+                            print(f"Invalid option: expected {arg}=VALUE")
+                            sys.exit(1)
+                    print(f"Invalid option arg: {arg}")
+                    sys.exit(1)
+            else:
+                # Do a simple check for file arguments.
+                if any(z in arg for z in ',='):
+                    print(f"Invalid file arg: {arg}")
+                    sys.exit(1)
+    #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
+    def computeValidOptions(self) -> None:
+        """
+        Return a list of valid options.
+        Options requiring an argument end with '='.
+        """
+        # Abbreviations must come first.
+        option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
+        valid = ['-?']
+        for line in g.splitLines(self.usage_message):
+            m = option_pattern.match(line)
+            if m:
+                if m.group(1):
+                    valid.append(m.group(1))
+                if m.group(2):
+                    valid.append(m.group(2))
+        self.valid_options = list(sorted(list(set(valid))))
+        # g.printObj(self.valid_options)
+    #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
+    def doSimpleOptions(self) -> None:
+        """
+        Handle options without arguments.
+        """
+        #@+<< define scanArgv helpers >>
+        #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
+        def _black() -> None:
+            g.app.write_black_sentinels = True
+
+        def _diff() -> None:
+            g.app.diff = True
+
+        def _fail_fast() -> None:
+            g.app.failFast = True
+
+        def _full_screen() -> None:
+            g.app.start_fullscreen = True
+
+        def _listen_to_log() -> None:
+            g.app.listen_to_log_flag = True
+
+        def _ipython() -> None:
+            g.app.useIpython = True
+
+        def _maximized() -> None:
+            g.app.start_maximized = True
+
+        def _minimized() -> None:
+            g.app.start_minimized = True
+            g.app.use_splash_screen = False
+
+        def _no_plugins() -> None:
+            g.app.enablePlugins = False
+
+        def _no_splash() -> None:
+            g.app.use_splash_screen = False
+
+        def _quit() -> None:
+            g.app.quit_after_load = True
+
+        def _silent() -> None:
+            g.app.silentMode = True
+        #@-<< define scanArgv helpers >>
+
+        options_dict: dict[str, Callable] = {
+            '-b': _black,
+            '--black-sentinels': _black,
+            '--diff': _diff,
+            '--fail-fast': _fail_fast,
+            '--fullscreen': _full_screen,
+            '--listen-to-log': _listen_to_log,
+            '--ipython': _ipython,
+            '--maximized': _maximized,
+            '--minimized': _minimized,
+            '--no-plugins': _no_plugins,
+            '--no-splash': _no_splash,
+            '--quit': _quit,
+            '--silent': _silent,
+        }
+        for option, helper in options_dict.items():
+            if option in sys.argv:
+                helper()
+    #@+node:ekr.20230615084117.1: *6* LM.findComplexOption
+    def findComplexOption(self, prefix: str) -> Optional[str]:
+        """Return the argument starting with the given prefix."""
+        assert '=' in prefix, repr(prefix)
+        for arg in sys.argv:
+            if arg.startswith(prefix):
+                return arg
+        return None
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
