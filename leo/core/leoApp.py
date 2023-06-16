@@ -2706,6 +2706,7 @@ class LoadManager:
             return gui
         m = re.match(r'--gui=(\w+)', arg)
         if not m:
+            print(f"Invalid --gui option: {gui!r}. Using qt gui")
             g.app.guiArgName = gui
             return gui
         gui = m.group(1).lower()
@@ -2715,42 +2716,41 @@ class LoadManager:
             gui.startswith('browser')
             or gui in ('console', 'curses', 'text', 'null', 'qt')
         ):
-            print(f"unknown --gui option: {gui}. Using qt gui")
+            print(f"unknown --gui option: {gui!r}. Using qt gui")
             gui = 'qt'
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
-
-        # load-type=@(edit|file)
+        """Handle load-type=@(edit|file)"""
         arg = self.findComplexOption('--load-type=')
         if not arg:
             return None
         m = re.match(r'--load-type=(@\w+)', arg)
         if m:
             return m.group(1).lower()
-        print(f"Ignoring unknown --load-type option: {arg}")
+        print(f"Ignoring unknown --load-type option: {arg!r}")
         return None
     #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
     def doScreenShotOption(self) -> str:
-
-        # --screen-shot=path
+        """Handle --screen-shot=path"""
         arg = self.findComplexOption('--screen-shot=')
         if not arg:
             return None
         m = re.match(r'--screen-shot=(.*)', arg)
         if m:
             return m.group(1).replace('"', '')
+        print(f"Ignoring invalid --screen-shot option: {arg!r}")
         return None
     #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
-
-        # --script=path
+        """Handle --script=path"""
         arg = self.findComplexOption('--script=')
         if not arg:
             return None
         m = re.match(r'--script=(.*)', arg)
         if not m:
+            print(f"Ignoring invalid --script option: {arg!r}")
             return None
         fn = m.group(1).replace('"', '')
         # #1090: use cwd, not g.app.loadDir, to find scripts.
@@ -2758,29 +2758,29 @@ class LoadManager:
         script, e = g.readFileIntoString(path, kind='script:', verbose=False)
         if script:
             return script
-        print(f"script not found: {path}")
+        print(f"script not found: {path!r}")
         sys.exit(1)
     #@+node:ekr.20230615055158.1: *7* LM.doSelectOption
     def doSelectOption(self) -> Optional[str]:
-
-        # --select=headline
+        """Handle --select=headline"""
         arg = self.findComplexOption('--select=')
         if not arg:
             return None
         m = re.match(r'--select=(.*)', arg)
         if m:
             return m.group(1)
+        print(f"Ignoring invalid --select option: {arg!r}")
         return None
     #@+node:ekr.20230615060055.1: *7* LM.doThemeOption
     def doThemeOption(self) -> Optional[str]:
-
-        # --theme=path
+        """Handle --theme=path"""
         arg = self.findComplexOption('--theme=')
         if not arg:
             return None
         m = re.match(r'--theme=(.*)', arg)
         if m:
             return m.group(1).replace('"', '')
+        print(f"Ignoring invalid --theme option: {arg!r}")
         return None
     #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
     def doTraceOptions(self) -> None:
@@ -2794,6 +2794,8 @@ class LoadManager:
                 # g.app.config does not exist yet.
                 # print(f"Enable {arg}")
                 g.app.trace_binding = m.group(1)
+            else:
+                print(f"Ignoring invalid --trace-binding option: {arg!r}")
 
         # --trace-setting=setting
         arg = self.findComplexOption('--trace-setting=')
@@ -2803,6 +2805,8 @@ class LoadManager:
                 # g.app.config does not exist yet.
                 # print(f"Enable {arg}")
                 g.app.trace_setting = m.group(1)
+            else:
+                print(f"Ignoring invalid --trace-setting option: {arg!r}")
 
         # --trace=option.
         valid = [
@@ -2816,6 +2820,7 @@ class LoadManager:
             return
         m = re.match(r'--trace=([\w\,]+)', arg)
         if not m:
+            print(f"Ignoring invalid --trace option: {arg!r}")
             return
         values = m.group(1).split(',')
         error = False
@@ -2832,8 +2837,7 @@ class LoadManager:
             print(f"Enabling --trace={', '.join(g.app.debug)}")
     #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-size
+        """Handle --window-size"""
         arg = self.findComplexOption('--window-size=')
         if not arg:
             return None
@@ -2844,22 +2848,11 @@ class LoadManager:
                 return (int(h), int(w))
             except ValueError:
                 pass
-        print(f"Ignoring bad --window-size: option: {arg!r}")
+        print(f"Ignoring invalid --window-size: option: {arg!r}")
         return None
-
-        # windowSize = args.window_size
-        # if windowSize:
-            # try:
-                # h, w = windowSize.split('x')
-                # windowSize = int(h), int(w)
-            # except ValueError:
-                # windowSize = None
-                # print('scanOptions: bad --window-size:', windowSize)
-        # return windowSize
     #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
-
-        # --window-spot
+        """Handle --window-spot"""
         arg = self.findComplexOption('--window-spot=')
         if not arg:
             return None
@@ -2870,7 +2863,7 @@ class LoadManager:
                 return (int(top), int(left))
             except ValueError:
                 pass
-        print(f"Ignoring bad --window-spot: option: {arg!r}")
+        print(f"Ignoring invalid --window-spot: option: {arg!r}")
         return None
     #@+node:ekr.20230615034937.1: *6* LM.checkOptions
     def checkOptions(self) -> None:
@@ -2919,9 +2912,7 @@ class LoadManager:
         # g.printObj(self.valid_options)
     #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self) -> None:
-        """
-        Handle options without arguments.
-        """
+        """Handle options without arguments."""
         #@+<< define scanArgv helpers >>
         #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
         def _black() -> None:
