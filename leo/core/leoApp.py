@@ -7,7 +7,6 @@ from collections.abc import Callable
 import importlib
 import io
 import os
-import re
 import sqlite3
 import subprocess
 import string
@@ -2615,7 +2614,7 @@ class LoadManager:
         self.old_argv = sys.argv[:]
         #@+<< define self.usage_message >>
         #@+node:ekr.20230615062931.1: *6* << define self.usage_message >>
-        # computeValidOptions uses this message to compute the list of valid options!
+        # g.computeValidOptions uses this message to compute the list of valid options!
         # Abbreviations (-whatever) must appear before full options (--whatever).
         self.usage_message = textwrap.dedent(
             """
@@ -2658,8 +2657,12 @@ class LoadManager:
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             print(self.usage_message)
             sys.exit()
-        self.computeValidOptions()
-        self.checkOptions()
+        obsolete_options = (
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        )
+        valid_options = g.computeValidOptions(self.usage_message)
+        g.checkOptions(obsolete_options, valid_options)
         self.doSimpleOptions()
         self.doTraceOptions()
         self.files = self.computeFilesList(fileName)
@@ -2677,8 +2680,7 @@ class LoadManager:
             'windowSize': self.doWindowSizeOption(),
             'windowSpot': self.doWindowSpotOption(),
         }
-    #@+node:ekr.20230615083942.1: *6* complex args
-    #@+node:ekr.20210927034148.3: *7* LM.computeFilesList
+    #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
     def computeFilesList(self, fileName: str) -> list[str]:
         """Return the list of files on the command line."""
         lm = self
@@ -2696,10 +2698,10 @@ class LoadManager:
             else:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
-    #@+node:ekr.20210927034148.4: *7* LM.doGuiOption
+    #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         """Handle --gui option. Default to 'qt'"""
-        m = self.findComplexOption(r'--gui=(\w+)')
+        m = g.findComplexOption(r'--gui=(\w+)')
         valid = ('console', 'curses', 'null', 'qt', 'text')
         if not m:
             g.app.guiArgName = 'qt'
@@ -2711,24 +2713,24 @@ class LoadManager:
         elif not gui.startswith('browser') and gui not in valid:
             arg = m.group(0)
             valid_s = ', '.join(valid)
-            self.optionError(arg, f"Expected one of {valid_s}")
+            g.optionError(arg, f"Expected one of {valid_s}")
         g.app.guiArgName = gui
         return gui
 
-    #@+node:ekr.20210927034148.5: *7* LM.doLoadTypeOption
+    #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
         """Handle load-type=@(edit|file)"""
-        m = self.findComplexOption(r'--load-type=(@\w+)')
+        m = g.findComplexOption(r'--load-type=(@\w+)')
         return m.group(1).lower() if m else None
-    #@+node:ekr.20210927034148.6: *7* LM.doScreenShotOption
+    #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
     def doScreenShotOption(self) -> str:
         """Handle --screen-shot=path"""
-        m = self.findComplexOption(r'--screen-shot=(.+)')
+        m = g.findComplexOption(r'--screen-shot=(.+)')
         return m.group(1).replace('"', '') if m else None
-    #@+node:ekr.20210927034148.7: *7* LM.doScriptOption
+    #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
         """Handle --script=path"""
-        m = self.findComplexOption(r'--script=(.+)')
+        m = g.findComplexOption(r'--script=(.+)')
         if not m:
             return None
         fn = m.group(1).replace('"', '')
@@ -2737,124 +2739,13 @@ class LoadManager:
         script, e = g.readFileIntoString(path, kind='script:', verbose=False)
         if not script:
             arg = m.group(0)
-            self.optionError(arg, f"Script not found: {m.group(1)!r}")
+            g.optionError(arg, f"Script not found: {m.group(1)!r}")
         return script
-    #@+node:ekr.20230615055158.1: *7* LM.doSelectOption
+    #@+node:ekr.20230615055158.1: *6* LM.doSelectOption
     def doSelectOption(self) -> Optional[str]:
         """Handle --select=headline"""
-        m = self.findComplexOption(r'--select=(.+)')
+        m = g.findComplexOption(r'--select=(.+)')
         return m.group(1) if m else None
-    #@+node:ekr.20230615060055.1: *7* LM.doThemeOption
-    def doThemeOption(self) -> Optional[str]:
-        """Handle --theme=path"""
-        m = self.findComplexOption(r'--theme=(.+)')
-        return m.group(1).replace('"', '') if m else None
-    #@+node:ekr.20230615075314.1: *7* LM.doTraceOptions
-    def doTraceOptions(self) -> None:
-        """Handle --trace-binding, --trace-setting and --trace"""
-
-        # --trace-binding
-        m = self.findComplexOption(r'--trace-binding=([\w\-\+]+)')
-        if m:
-            g.app.trace_binding = m.group(1)
-            print(f"Enabling --trace-binding={m.group(1)}")
-
-        # --trace-setting=setting
-        m = self.findComplexOption(r'--trace-setting=([\w]+)')
-        if m:
-            # g.app.config does not exist yet.
-            g.app.trace_setting = m.group(1)
-            print(f"Enabling --trace-setting={m.group(1)}")
-
-        # --trace=option.
-        valid = [
-            'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
-            'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
-            'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
-            'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
-        ]
-        m = self.findComplexOption(r'--trace=([\w\,]+)')
-        if not m:
-            return
-        values = m.group(1).split(',')
-        error = False
-        for value in values:
-            if value in valid:
-                g.app.debug.append(value)
-            else:
-                error = True
-        if error:
-            arg = m.group(0)
-            valid_s = '\n   '.join(valid)
-            print(f"Valid --trace values are:\n   {valid_s}")
-            self.optionError(arg, 'Invalid value')
-        print(f"Enabling --trace={', '.join(g.app.debug)}")
-    #@+node:ekr.20210927034148.10: *7* LM.doWindowSizeOption
-    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
-        """Handle --window-size"""
-        m = self.findComplexOption(r'--window-size=(\d+)x(\d+)')
-        if not m:
-            return None
-        try:
-            h, w = int(m.group(1)), int(m.group(2))
-        except ValueError:
-            arg = m.group(0)
-            self.optionError(arg, 'Invalid value: expected int x int')
-        return h, w
-    #@+node:ekr.20210927034148.9: *7* LM.doWindowSpotOption
-    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
-        """Handle --window-spot"""
-        m = self.findComplexOption(r'--window-spot=(\d+)x(\d+)')
-        if not m:
-            return None
-        try:
-            top, left = int(m.group(1)), int(m.group(2))
-        except ValueError:
-            arg = m.group(0)
-            self.optionError(arg, 'Invalid value: expected int x int')
-        return top, left
-    #@+node:ekr.20230615034937.1: *6* LM.checkOptions
-    def checkOptions(self) -> None:
-        """Make sure all command-line options pass sanity checks."""
-        option_prefixes = [z[:-1] for z in self.valid_options if z.endswith('=')]
-        obsolete_options = (
-            '--dock', '--global-docks', '--init-docks', '--no-cache',
-            '--no-dock', '--session-restore', '--session-save', '--use-docks',
-        )
-        for arg in sys.argv:
-            if arg in obsolete_options:
-                print(f"Ignoring obsolete option: {arg!r}")
-            elif arg.startswith('-'):
-                for option in self.valid_options:
-                    if arg.startswith(option):
-                        break
-                else:
-                    for prefix in option_prefixes:
-                        if arg.startswith(prefix):
-                            self.optionError(arg, 'Missing value')
-                    self.optionError(arg, 'Unknown option')
-            else:
-                # Do a simple check for file arguments.
-                if any(z in arg for z in ',='):
-                    self.optionError(arg, 'Invalid file arg')
-    #@+node:ekr.20230615062610.1: *6* LM.computeValidOptions
-    def computeValidOptions(self) -> None:
-        """
-        Return a list of valid options.
-        Options requiring an argument end with '='.
-        """
-        # Abbreviations must come first.
-        option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
-        valid = ['-?']
-        for line in g.splitLines(self.usage_message):
-            m = option_pattern.match(line)
-            if m:
-                if m.group(1):
-                    valid.append(m.group(1))
-                if m.group(2):
-                    valid.append(m.group(2))
-        self.valid_options = list(sorted(list(set(valid))))
-        # g.printObj(self.valid_options)
     #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self) -> None:
         """Handle options without arguments."""
@@ -2916,28 +2807,75 @@ class LoadManager:
         for option, helper in options_dict.items():
             if option in sys.argv:
                 helper()
-    #@+node:ekr.20230615084117.1: *6* LM.findComplexOption
-    def findComplexOption(self, regex: str) -> Optional[re.Match]:
-        # """Return the complex argument starting with the given prefix."""
-        """
-        Handle the common portion of complex arguments.
+    #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
+    def doThemeOption(self) -> Optional[str]:
+        """Handle --theme=path"""
+        m = g.findComplexOption(r'--theme=(.+)')
+        return m.group(1).replace('"', '') if m else None
+    #@+node:ekr.20230615075314.1: *6* LM.doTraceOptions
+    def doTraceOptions(self) -> None:
+        """Handle --trace-binding, --trace-setting and --trace"""
 
-        Exit if the option exists but contains no value.
-        """
-        assert '=' in regex, repr(regex)
-        prefix = regex.split('=')[0]
-        for arg in sys.argv:
-            if arg.startswith(prefix):
-                m = re.match(regex, arg)
-                if m:
-                    return m
-                self.optionError(arg, 'Missing or erroneous value')
-        return None
-    #@+node:ekr.20230616075049.1: *6* LM.optionError
-    def optionError(self, arg: str, message: str) -> None:
-        """Print an error message and help message, then exit."""
-        print(f"Invalid {arg!r} option: {message}")
-        sys.exit(1)
+        # --trace-binding
+        m = g.findComplexOption(r'--trace-binding=([\w\-\+]+)')
+        if m:
+            g.app.trace_binding = m.group(1)
+            print(f"Enabling --trace-binding={m.group(1)}")
+
+        # --trace-setting=setting
+        m = g.findComplexOption(r'--trace-setting=([\w]+)')
+        if m:
+            # g.app.config does not exist yet.
+            g.app.trace_setting = m.group(1)
+            print(f"Enabling --trace-setting={m.group(1)}")
+
+        # --trace=option.
+        valid = [
+            'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
+            'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
+            'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
+            'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+        ]
+        m = g.findComplexOption(r'--trace=([\w\,]+)')
+        if not m:
+            return
+        values = m.group(1).split(',')
+        error = False
+        for value in values:
+            if value in valid:
+                g.app.debug.append(value)
+            else:
+                error = True
+        if error:
+            arg = m.group(0)
+            valid_s = '\n   '.join(valid)
+            print(f"Valid --trace values are:\n   {valid_s}")
+            g.optionError(arg, 'Invalid value')
+        print(f"Enabling --trace={', '.join(g.app.debug)}")
+    #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
+    def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
+        """Handle --window-size"""
+        m = g.findComplexOption(r'--window-size=(\d+)x(\d+)')
+        if not m:
+            return None
+        try:
+            h, w = int(m.group(1)), int(m.group(2))
+        except ValueError:
+            arg = m.group(0)
+            g.optionError(arg, 'Invalid value: expected int x int')
+        return h, w
+    #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
+    def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
+        """Handle --window-spot"""
+        m = g.findComplexOption(r'--window-spot=(\d+)x(\d+)')
+        if not m:
+            return None
+        try:
+            top, left = int(m.group(1)), int(m.group(2))
+        except ValueError:
+            arg = m.group(0)
+            g.optionError(arg, 'Invalid value: expected int x int')
+        return top, left
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
         """
