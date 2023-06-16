@@ -6364,15 +6364,15 @@ def checkOptions(obsolete_options: list[str], valid_options: list[str], usage: s
             if any(z in arg for z in ',='):
                 g.optionError(arg, 'Invalid file arg', usage)
 #@+node:ekr.20230615062610.1: *3* g.computeValidOptions
-def computeValidOptions(usage_message: str) -> list[str]:
+def computeValidOptions(usage: str) -> list[str]:
     """
-    Return a list of valid options.
+    Return a list of valid options by parsing the given usage message.
     Options requiring an argument end with '='.
     """
     # Abbreviations (-whatever) must appear before full options (--whatever).
     option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
     valid = ['-?']
-    for line in g.splitLines(usage_message):
+    for line in g.splitLines(usage):
         m = option_pattern.match(line)
         if m:
             if m.group(1):
