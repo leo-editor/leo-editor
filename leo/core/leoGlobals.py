@@ -6344,7 +6344,7 @@ def windows() -> Optional[list]:
 
 # LM.scanOptions uses these functions.
 #@+node:ekr.20230615034937.1: *3* g.checkOptions
-def checkOptions(obsolete_options: list[str], valid_options: list[str]) -> None:
+def checkOptions(obsolete_options: list[str], valid_options: list[str], usage: str) -> None:
     """Make sure all command-line options pass sanity checks."""
     option_prefixes = [z[:-1] for z in valid_options if z.endswith('=')]
     for arg in sys.argv:
@@ -6357,12 +6357,12 @@ def checkOptions(obsolete_options: list[str], valid_options: list[str]) -> None:
             else:
                 for prefix in option_prefixes:
                     if arg.startswith(prefix):
-                        g.optionError(arg, 'Missing value')
-                g.optionError(arg, 'Unknown option')
+                        g.optionError(arg, 'Missing value', usage)
+                g.optionError(arg, 'Unknown option', usage)
         else:
             # Do a simple check for file arguments.
             if any(z in arg for z in ',='):
-                g.optionError(arg, 'Invalid file arg')
+                g.optionError(arg, 'Invalid file arg', usage)
 #@+node:ekr.20230615062610.1: *3* g.computeValidOptions
 def computeValidOptions(usage_message: str) -> list[str]:
     """
@@ -6381,7 +6381,7 @@ def computeValidOptions(usage_message: str) -> list[str]:
                 valid.append(m.group(2))
     return list(sorted(list(set(valid))))
 #@+node:ekr.20230615084117.1: *3* g.findComplexOption
-def findComplexOption(regex: str) -> Optional[re.Match]:
+def findComplexOption(regex: str, usage: str) -> Optional[re.Match]:
     # """Return the complex argument starting with the given prefix."""
     """
     Handle the common portion of complex arguments.
@@ -6395,12 +6395,13 @@ def findComplexOption(regex: str) -> Optional[re.Match]:
             m = re.match(regex, arg)
             if m:
                 return m
-            g.optionError(arg, 'Missing or erroneous value')
+            g.optionError(arg, 'Missing or erroneous value', usage)
     return None
 #@+node:ekr.20230616075049.1: *3* g.optionError
-def optionError(arg: str, message: str) -> None:
+def optionError(arg: str, message: str, usage: str) -> None:
     """Print an error message and help message, then exit."""
     print(f"Invalid {arg!r} option: {message}")
+    print(usage)
     sys.exit(1)
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to

@@ -2612,17 +2612,17 @@ class LoadManager:
         """Handle all options, remove them from sys.argv and set lm.options."""
         # Save a copy of argv for debugging.
         self.old_argv = sys.argv[:]
-        usage_message = self.defineUsage()
+        self.usage = self.defineUsage()
         # Handle help args.
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
-            print(usage_message)
+            print(self.usage)
             sys.exit()
         obsolete_options = [
             '--dock', '--global-docks', '--init-docks', '--no-cache',
             '--no-dock', '--session-restore', '--session-save', '--use-docks',
         ]
-        valid_options = g.computeValidOptions(usage_message)
-        g.checkOptions(obsolete_options, valid_options)
+        valid_options = g.computeValidOptions(self.usage)
+        g.checkOptions(obsolete_options, valid_options, self.usage)
         self.doSimpleOptions()
         self.doTraceOptions()
         self.files = self.computeFilesList(fileName)
@@ -2701,7 +2701,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
     def doGuiOption(self) -> str:
         """Handle --gui option. Default to 'qt'"""
-        m = g.findComplexOption(r'--gui=(\w+)')
+        m = g.findComplexOption(r'--gui=(\w+)', self.usage)
         valid = ('console', 'curses', 'null', 'qt', 'text')
         if not m:
             g.app.guiArgName = 'qt'
@@ -2713,24 +2713,24 @@ class LoadManager:
         elif not gui.startswith('browser') and gui not in valid:
             arg = m.group(0)
             valid_s = ', '.join(valid)
-            g.optionError(arg, f"Expected one of {valid_s}")
+            g.optionError(arg, f"Expected one of {valid_s}", self.usage)
         g.app.guiArgName = gui
         return gui
 
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
     def doLoadTypeOption(self) -> Optional[str]:
         """Handle load-type=@(edit|file)"""
-        m = g.findComplexOption(r'--load-type=(@\w+)')
+        m = g.findComplexOption(r'--load-type=(@\w+)', self.usage)
         return m.group(1).lower() if m else None
     #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
     def doScreenShotOption(self) -> str:
         """Handle --screen-shot=path"""
-        m = g.findComplexOption(r'--screen-shot=(.+)')
+        m = g.findComplexOption(r'--screen-shot=(.+)', self.usage)
         return m.group(1).replace('"', '') if m else None
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
     def doScriptOption(self) -> Optional[str]:
         """Handle --script=path"""
-        m = g.findComplexOption(r'--script=(.+)')
+        m = g.findComplexOption(r'--script=(.+)', self.usage)
         if not m:
             return None
         fn = m.group(1).replace('"', '')
@@ -2739,12 +2739,12 @@ class LoadManager:
         script, e = g.readFileIntoString(path, kind='script:', verbose=False)
         if not script:
             arg = m.group(0)
-            g.optionError(arg, f"Script not found: {m.group(1)!r}")
+            g.optionError(arg, f"Script not found: {m.group(1)!r}", self.usage)
         return script
     #@+node:ekr.20230615055158.1: *6* LM.doSelectOption
     def doSelectOption(self) -> Optional[str]:
         """Handle --select=headline"""
-        m = g.findComplexOption(r'--select=(.+)')
+        m = g.findComplexOption(r'--select=(.+)', self.usage)
         return m.group(1) if m else None
     #@+node:ekr.20230615034517.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self) -> None:
@@ -2810,20 +2810,20 @@ class LoadManager:
     #@+node:ekr.20230615060055.1: *6* LM.doThemeOption
     def doThemeOption(self) -> Optional[str]:
         """Handle --theme=path"""
-        m = g.findComplexOption(r'--theme=(.+)')
+        m = g.findComplexOption(r'--theme=(.+)', self.usage)
         return m.group(1).replace('"', '') if m else None
     #@+node:ekr.20230615075314.1: *6* LM.doTraceOptions
     def doTraceOptions(self) -> None:
         """Handle --trace-binding, --trace-setting and --trace"""
 
         # --trace-binding
-        m = g.findComplexOption(r'--trace-binding=([\w\-\+]+)')
+        m = g.findComplexOption(r'--trace-binding=([\w\-\+]+)', self.usage)
         if m:
             g.app.trace_binding = m.group(1)
             print(f"Enabling --trace-binding={m.group(1)}")
 
         # --trace-setting=setting
-        m = g.findComplexOption(r'--trace-setting=([\w]+)')
+        m = g.findComplexOption(r'--trace-setting=([\w]+)', self.usage)
         if m:
             # g.app.config does not exist yet.
             g.app.trace_setting = m.group(1)
@@ -2836,7 +2836,7 @@ class LoadManager:
             'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
             'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
         ]
-        m = g.findComplexOption(r'--trace=([\w\,]+)')
+        m = g.findComplexOption(r'--trace=([\w\,]+)', self.usage)
         if not m:
             return
         values = m.group(1).split(',')
@@ -2850,31 +2850,31 @@ class LoadManager:
             arg = m.group(0)
             valid_s = '\n   '.join(valid)
             print(f"Valid --trace values are:\n   {valid_s}")
-            g.optionError(arg, 'Invalid value')
+            g.optionError(arg, 'Invalid value', self.usage)
         print(f"Enabling --trace={', '.join(g.app.debug)}")
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self) -> Optional[tuple[int, int]]:
         """Handle --window-size"""
-        m = g.findComplexOption(r'--window-size=(\d+)x(\d+)')
+        m = g.findComplexOption(r'--window-size=(\d+)x(\d+)', self.usage)
         if not m:
             return None
         try:
             h, w = int(m.group(1)), int(m.group(2))
         except ValueError:
             arg = m.group(0)
-            g.optionError(arg, 'Invalid value: expected int x int')
+            g.optionError(arg, 'Invalid value: expected int x int', self.usage)
         return h, w
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
     def doWindowSpotOption(self) -> Optional[tuple[int, int]]:
         """Handle --window-spot"""
-        m = g.findComplexOption(r'--window-spot=(\d+)x(\d+)')
+        m = g.findComplexOption(r'--window-spot=(\d+)x(\d+)', self.usage)
         if not m:
             return None
         try:
             top, left = int(m.group(1)), int(m.group(2))
         except ValueError:
             arg = m.group(0)
-            g.optionError(arg, 'Invalid value: expected int x int')
+            g.optionError(arg, 'Invalid value: expected int x int', self.usage)
         return top, left
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
