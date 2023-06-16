@@ -2700,13 +2700,14 @@ class LoadManager:
     def doGuiOption(self) -> str:
         """Handle --gui option. Default to 'qt'"""
         gui = 'qt'  # The default.
+        extra_message = 'Using qt gui'
         arg = self.findComplexOption('--gui=')
         if not arg:
             g.app.guiArgName = gui
             return gui
         m = re.match(r'--gui=(\w+)', arg)
         if not m:
-            print(f"Invalid --gui option: {gui!r}. Using qt gui")
+            self.optionError(arg, '--gui', extra_message)
             g.app.guiArgName = gui
             return gui
         gui = m.group(1).lower()
@@ -2716,7 +2717,7 @@ class LoadManager:
             gui.startswith('browser')
             or gui in ('console', 'curses', 'text', 'null', 'qt')
         ):
-            print(f"unknown --gui option: {gui!r}. Using qt gui")
+            self.optionError(arg, '--gui', extra_message)
             gui = 'qt'
         g.app.guiArgName = gui
         return gui
@@ -2980,9 +2981,10 @@ class LoadManager:
                 return arg
         return None
     #@+node:ekr.20230616075049.1: *6* LM.optionError
-    def optionError(self, arg: str, option: str) -> None:
+    def optionError(self, arg: str, option: str, extra_message: str = None) -> None:
         print('')
-        print(f"Ignoring invalid {option} option: {arg!r}")
+        message = f"{arg!r} {extra_message}" if extra_message else f"{arg!r}"
+        print(f"Ignoring invalid {option} option: {message}")
         print('')
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self) -> None:
