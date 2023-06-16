@@ -6364,7 +6364,7 @@ def checkOptions(obsolete_options: list[str], valid_options: list[str]) -> None:
             if any(z in arg for z in ',='):
                 g.optionError(arg, 'Invalid file arg')
 #@+node:ekr.20230615062610.1: *3* g.computeValidOptions
-def computeValidOptions(usage_message: str) -> list(str):
+def computeValidOptions(usage_message: str) -> list[str]:
     """
     Return a list of valid options.
     Options requiring an argument end with '='.

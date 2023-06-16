@@ -2617,10 +2617,10 @@ class LoadManager:
         if any(z in sys.argv for z in ('-h', '-?', '--help')):
             print(usage_message)
             sys.exit()
-        obsolete_options = (
+        obsolete_options = [
             '--dock', '--global-docks', '--init-docks', '--no-cache',
             '--no-dock', '--session-restore', '--session-save', '--use-docks',
-        )
+        ]
         valid_options = g.computeValidOptions(usage_message)
         g.checkOptions(obsolete_options, valid_options)
         self.doSimpleOptions()
@@ -2661,7 +2661,7 @@ class LoadManager:
     #@+node:ekr.20230615062931.1: *6* LM.defineUsage
     # g.computeValidOptions uses this message to compute the list of valid options!
     # Abbreviations (-whatever) must appear before full options (--whatever).
-    def defineUsage(self):
+    def defineUsage(self) -> str:
         return textwrap.dedent(
         """
         usage: launchLeo.py [options] file1, file2, ...
