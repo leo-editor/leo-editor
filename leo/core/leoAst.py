@@ -2841,6 +2841,7 @@ class TokenOrderGenerator:
     n_nodes = 0  # The number of nodes that have been visited.
     node_index = 0  # The index into the node_stack.
     node_stack: list[ast.AST] = []  # The stack of parent nodes.
+    try_stack: list[str] = []  # A stack of either '' (Try) or '*' (TryStar)
 
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
@@ -3909,6 +3910,8 @@ class TokenOrderGenerator:
 
         # Except line...
         self.name('except')
+        if self.try_stack[-1] == '*':
+            self.op('*')
         if getattr(node, 'type', None):
             self.visit(node.type)
         if getattr(node, 'name', None):
@@ -4191,7 +4194,39 @@ class TokenOrderGenerator:
         # Body...
         self.level += 1
         self.visit(node.body)
+        self.try_stack.append('')
         self.visit(node.handlers)
+        self.try_stack.pop()
+        # Else...
+        if node.orelse:
+            self.name('else')
+            self.op(':')
+            self.visit(node.orelse)
+        # Finally...
+        if node.finalbody:
+            self.name('finally')
+            self.op(':')
+            self.visit(node.finalbody)
+        self.level -= 1
+    #@+node:ekr.20230615211005.1: *6* tog.TryStar
+    # TryStar(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
+
+    # Examples:
+    #   except* SpamError:
+    #   except* FooError as e:
+    #   except* (BarError, BazError) as e:
+
+    def do_TryStar(self, node: Node) -> None:
+
+        # Try line...
+        self.name('try')
+        self.op(':')
+        # Body...
+        self.level += 1
+        self.visit(node.body)
+        self.try_stack.append('*')
+        self.visit(node.handlers)
+        self.try_stack.pop()
         # Else...
         if node.orelse:
             self.name('else')
