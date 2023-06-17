@@ -1504,7 +1504,7 @@ class OptionsUtils:
                     valid.append(m.group(1))
                 if m.group(2):
                     valid.append(m.group(2))
-        return list(sorted(list(set(valid))))
+        return sorted(list(set(valid)))
     #@+node:ekr.20230615084117.1: *4* OptionsUtils.find_complex_option
     def find_complex_option(self, regex: str) -> Optional[re.Match]:
         # """Return the complex argument starting with the given prefix."""
