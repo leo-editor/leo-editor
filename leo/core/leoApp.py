@@ -2634,7 +2634,7 @@ class LoadManager:
         def defineUsage() -> str:
             """
             Return (that is, define) Leo's usage message.
-            
+
             The g.OptionsUtils class uses this message to compute the list of valid options!
             """
             # Abbreviations (-whatever) must appear before full options (--whatever).
