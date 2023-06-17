@@ -2610,11 +2610,6 @@ class LoadManager:
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
-        # Save a copy of argv for debugging.
-        obsolete_options = [
-            '--dock', '--global-docks', '--init-docks', '--no-cache',
-            '--no-dock', '--session-restore', '--session-save', '--use-docks',
-        ]
         # Define helper functions.
         #@+others
         #@+node:ekr.20210927034148.3: *6* function: computeFilesList
@@ -2854,6 +2849,11 @@ class LoadManager:
                 utils.option_error(arg, 'Invalid value: expected int x int')
             return top, left
         #@-others
+
+        obsolete_options = [
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        ]
         usage = defineUsage()
         utils = g.OptionsUtils(usage, obsolete_options)
         # Handle help args.
