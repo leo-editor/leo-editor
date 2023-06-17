@@ -6,14 +6,15 @@
 Adapted from rpcalc.
 """
 
-#@+others
-#@+node:tom.20230425232153.1: ** imports
+#@+<< rpcalc: imports >>
+#@+node:tom.20230425232153.1: ** << rpcalc: imports >>
 from __future__ import annotations
 import sys
 import os.path
 import webbrowser
 import math
 from pathlib import PurePath
+from typing import Any
 
 from leo.core.leoQt import QtCore, MouseButton
 from leo.core.leoQt import QtGui, FocusPolicy
@@ -25,7 +26,10 @@ from leo.core.leoQt import WindowType, DialogCode
 
 import leo.core.leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
-#@+node:tom.20230428182001.1: *3* Qt Name Assignments
+
+#@-<< rpcalc: imports >>
+#@+<< rpcalc: Qt Name Assignments >>
+#@+node:tom.20230428182001.1: ** << rpcalc: Qt Name Assignments >>
 Qt = QtCore.Qt
 
 QApplication = QtWidgets.QApplication
@@ -74,58 +78,24 @@ QWidget = QtWidgets.QWidget
 
 try:
     SegmentStyle = QLCDNumber.SegmentStyle
-except AttributeError as e:
+except AttributeError:
     SegmentStyle = Qt1
 
 pyqtSignal = QtCore.pyqtSignal
 
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@+node:tom.20230428181007.1: ** annotations
-from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
+#@-<< rpcalc: Qt Name Assignments >>
 
-if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoCommands import Commands as Cmdr
-    # from leo.core.leoGui import LeoKeyEvent as Event
-    # Widget = Any
-#@+node:tom.20230428182922.1: ** declarations
 __version__ = 0.91
 __author__ = 'Douglas W. Bell, Thomas B. Passin'
 
 TABNAME = 'RPCalc'
+LICENSE = 'Unknown'
 
 module_path = PurePath(__file__).parent
 iconPath = module_path / 'rpcalc' / 'icons'
-#@+node:tom.20230429090934.1: *3* LICENSE
-LICENSE = """\
-This program is a modified version of the rpcalc program, a
-Reverse Polish Notation (RPN) calculator.  It has been minimally modified
-by Thomas B. Passin to run in a log frame tab in the Leo editor.  The license
-remains the same as the original, which is reproduced here:
 
-#****************************************************************************
-# rpCalc, an RPN calculator
-# Copyright (C) 2017, Douglas W. Bell
-#
-# This is free software; you can redistribute it and/or modify it under the
-# terms of the GNU General Public License, either Version 2 or any later
-# version.  This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY.  See the included LICENSE file for details.
-#*****************************************************************************
-
-The license for the modified code is:
-
-#****************************************************************************
-# rpCalc, an RPN calculator
-# Copyright (C) 2017, Douglas W. Bell
-# Modified for the Leo Editor by Thomas B. Passin
-# Leo editor modifications Copyright (C) 2023, Thomas B. Passin.
-
-# This is free software; you can redistribute it and/or modify it under the
-# terms of the GNU General Public License (GPL), either Version 2 or any
-# later version.  This program is distributed in the hope that it will be 
-# useful, but WITHOUT ANY WARRANTY.  See the included GPL 2 LICENSE file
-# at rpcalc/docs.
-#****************************************************************************"""
+#@+others
 #@+node:tom.20230424130102.154: **  optiondefaults
 defaultList = [\
     "# Options for the rpCalc program",
@@ -1034,7 +1004,7 @@ class CalcDlg(QWidget): # type: ignore
 
         self.mainLay = QGridLayout()
         topLay.addLayout(self.mainLay)
-        self.mainDict: Dict[int, Any] = {}
+        self.mainDict: dict[int, Any] = {}
         self.addMainButton(0, 'OPT', 0, 0)
         self.addMainButton(Qt.Key.Key_Slash, '/', 0, 1)
         self.addMainButton(Qt.Key.Key_Slash, '/', 0, 1)
