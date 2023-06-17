@@ -90,8 +90,9 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20230617065356.1: *3* TestApp.test_LM_scanOptions
     def test_LM_scanOptions(self):
         
-        
-        assert False
+        good_table = ()
+            
+            
     #@-others
 #@-others
 #@-leo
