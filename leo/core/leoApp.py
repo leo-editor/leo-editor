@@ -2694,8 +2694,8 @@ class LoadManager:
 
         #@+node:ekr.20210927034148.5: *6* function: doLoadTypeOption
         def doLoadTypeOption() -> Optional[str]:
-            """Handle load-type=@(edit|file)"""
-            m = utils.find_complex_option(r'--load-type=(@\w+)')
+            """Handle load-type"""
+            m = utils.find_complex_option(r'--load-type=@(edit|file)')
             return m.group(1).lower() if m else None
         #@+node:ekr.20210927034148.6: *6* function: doScreenShotOption
         def doScreenShotOption() -> str:

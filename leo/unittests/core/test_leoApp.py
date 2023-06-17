@@ -92,10 +92,12 @@ class TestApp(LeoUnitTest):
     def test_LM_scanOptions(self):
         
         bad_table = (
-            # These will raise SystemExit.
             '-h', '--help',
+            '--load-type=@auto', '--load-type=@clean',
             '--script=xyzzy.py',  # The file must exist.
-            '--trace=xxx',
+            '--trace=xxx',  # Invalid option.
+            '--window-size', '--window-size=', '--window-size=100',
+            '--window-spot', '--window-spot=', '--window-spot=50',
             '--yyy',
         )
         good_table = (
