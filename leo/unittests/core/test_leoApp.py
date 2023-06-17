@@ -2,6 +2,7 @@
 #@+node:ekr.20210901170451.1: * @file ../unittests/core/test_leoApp.py
 """Tests of leoApp.py"""
 import os
+import sys
 import zipfile
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -90,9 +91,54 @@ class TestApp(LeoUnitTest):
     #@+node:ekr.20230617065356.1: *3* TestApp.test_LM_scanOptions
     def test_LM_scanOptions(self):
         
-        good_table = ()
-            
-            
+        bad_table = (
+            # These will raise SystemExit.
+            '-h', '--help',
+            '--script=xyzzy.py',  # The file must exist.
+            '--trace=xxx',
+            '--yyy',
+        )
+        good_table = (
+            '-b', '--black-sentinels',
+            '--diff',
+            '--fail-fast',
+            '--fullscreen',
+            '--gui=console', '--gui=curses', '--gui=null', '--gui=qt', '--gui=text',
+            '--ipython',
+            '--listen-to-log',
+            '--load-type=@edit', '--load-type=@file',
+            '--maximized', '--minimized',
+            '--no-plugins', '--no-splash',
+            '--quit',
+            '--screen-shot=xyzzy',
+            '--script-window',
+            '--select=whatever',
+            '--silent',
+            '--theme=whatever',
+            '--trace-binding=whatever',
+            '--trace-setting=whatever',
+            '--trace=coloring',
+            '-v', '--version',
+            '--window-size=100x200',
+            '--window-spot=50x60',
+        )
+        scan = g.app.loadManager.scanOptions
+        
+        # Careful. Restore sys.argv and sys.stdout.
+        old_argv = sys.argv
+        old_stdout = sys.stdout
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            for option in good_table:
+                sys.argv = ['leo', option]
+                scan(None, False)
+            for option in bad_table:
+                with self.assertRaises(SystemExit, msg=option):
+                    sys.argv = ['leo', option]
+                    scan(None, False)
+        finally:
+            sys.argv = old_argv
+            sys.stdout = old_stdout
     #@-others
 #@-others
 #@-leo

@@ -1516,7 +1516,7 @@ class OptionsUtils:
         assert '=' in regex, repr(regex)
         prefix = regex.split('=')[0]
         for arg in sys.argv:
-            if arg.startswith(prefix):
+            if arg.split('=')[0] == prefix:
                 m = re.match(regex, arg)
                 if m:
                     return m
@@ -1525,6 +1525,7 @@ class OptionsUtils:
     #@+node:ekr.20230616075049.1: *4* OptionsUtils.option_error
     def option_error(self, arg: str, message: str) -> None:
         """Print an error message and help message, then exit."""
+        g.trace(g.callers(6))
         message2 = f"Invalid {arg!r} option: {message}"
         print(message2)
         print(self.usage)
