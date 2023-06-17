@@ -93,9 +93,12 @@ class TestApp(LeoUnitTest):
         
         bad_table = (
             '-h', '--help',
+            '--gui', '--gui=xxx',
+            '--listen-to-log=',
             '--load-type=@auto', '--load-type=@clean',
-            '--script=xyzzy.py',  # The file must exist.
-            '--trace=xxx',  # Invalid option.
+            '--script=xyzzy.py',
+            '--trace','--trace-', 'trace=', '--trace=xxx',
+            '--window-',
             '--window-size', '--window-size=', '--window-size=100',
             '--window-spot', '--window-spot=', '--window-spot=50',
             '--yyy',

@@ -1477,7 +1477,7 @@ class OptionsUtils:
                 print(f"Ignoring obsolete option: {arg!r}")
             elif arg.startswith('-'):
                 for option in self.valid_options:
-                    if arg.startswith(option):
+                    if arg.startswith(option) and not arg.endswith('='):
                         break
                 else:
                     for prefix in option_prefixes:
