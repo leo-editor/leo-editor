@@ -487,7 +487,7 @@ class TestGlobals(LeoUnitTest):
             print(path13, g.os.path.abspath(path13))
     #@+node:ekr.20230617065929.1: *3* TestGlobals.test_g_OptionsUtils
     def test_g_OptionsUtils(self):
-        
+
         usage = (
     """
     options:
@@ -510,12 +510,37 @@ class TestGlobals(LeoUnitTest):
             '-?', '-b', '-h',
         ]
         self.assertEqual(x.compute_valid_options(), expected_valid_options)
-        
-        # Test x.option_error.
-        with self.assertRaises(SystemExit):
+
+        # Test x.option_error and x.check_options.
+        bad_options = (
+            '--listen-to-log=',
+            '--load-type=@auto', '--load-type=@clean',
+            '--screen-shot', '--screen-shot=', '--screen-shot-',
+            '--script=xyzzy.py',
+            '--trace','--trace-', 'trace=', '--trace=xxx',
+            '--trace-binding', '--trace-binding-', '--trace-binding=',
+            '--window-', 'window=',
+            '--window-size', '--window-size=', '--window-size=100',
+            '--window-spot', '--window-spot=', '--window-spot=50',
+            '--yyy',
+        )
+        old_argv = sys.argv
+        old_stdout = sys.stdout
+        try:
             sys.stdout = open(os.devnull, 'w')
-            x.option_error('--xyzzy', 'Unknown option')
-            x.option_error('-x', 'Unknown option')
+            for option in obsolete_options:
+                sys.argv = ['leo', option]
+                x.check_options()
+            with self.assertRaises(SystemExit):
+                x.option_error('--xyzzy', 'Unknown option')
+                x.option_error('-x', 'Unknown option')
+            for option in bad_options:
+                with self.assertRaises(SystemExit, msg=option):
+                    sys.argv = ['leo', option]
+                    x.check_options()
+        finally:
+            sys.stdout = old_stdout
+            sys.argv = old_argv
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (
