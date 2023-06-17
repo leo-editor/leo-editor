@@ -487,7 +487,35 @@ class TestGlobals(LeoUnitTest):
             print(path13, g.os.path.abspath(path13))
     #@+node:ekr.20230617065929.1: *3* TestGlobals.test_g_OptionsUtils
     def test_g_OptionsUtils(self):
-        assert False  ###To do
+        
+        usage = (
+    """
+    options:
+      -h, --help            show this help message and exit
+      -b, --black-sentinels write black-compatible sentinel comments
+      --diff                use Leo as an external git diff
+      --fail-fast           stop unit tests after the first failure
+    """)
+
+        # Create the class.
+        obsolete_options = [
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        ]
+        x = g.OptionsUtils(usage, obsolete_options)
+
+        # Test x.compute_valid_options.
+        expected_valid_options = [
+            '--black-sentinels', '--diff', '--fail-fast', '--help',
+            '-?', '-b', '-h',
+        ]
+        self.assertEqual(x.compute_valid_options(), expected_valid_options)
+        
+        # Test x.option_error.
+        with self.assertRaises(SystemExit):
+            sys.stdout = open(os.devnull, 'w')
+            x.option_error('--xyzzy', 'Unknown option')
+            x.option_error('-x', 'Unknown option')
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (
