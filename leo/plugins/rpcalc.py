@@ -88,7 +88,7 @@ if TYPE_CHECKING:  # pragma: no cover
     # from leo.core.leoGui import LeoKeyEvent as Event
     # Widget = Any
 #@+node:tom.20230428182922.1: ** declarations
-__version__ = 0.9
+__version__ = 0.91
 __author__ = 'Douglas W. Bell, Thomas B. Passin'
 
 TABNAME = 'RPCalc'
@@ -847,7 +847,7 @@ class CalcCore:
                 eqn = '({0})^{1}'.format(self.formatNum(self.stack[1]),
                                          self.formatNum(self.stack[0]))
                 self.stack.replaceXY(self.stack[1] ** self.stack[0])
-            elif cmdStr == 'XRT':          # x root of y
+            elif cmdStr == 'XRTY':          # x root of y
                 eqn = '({0})^(1/{1})'.format(self.formatNum(self.stack[1]),
                                              self.formatNum(self.stack[0]))
                 self.stack.replaceXY(self.stack[1] ** (1/self.stack[0]))
@@ -1004,7 +1004,7 @@ class CalcDlg(QWidget): # type: ignore
         self.addCmdButton('x^2', 0, 0)
         self.addCmdButton('sqRT', 0, 1)
         self.addCmdButton('y^X', 0, 2)
-        self.addCmdButton('xRT', 0, 3)
+        self.addCmdButton('xRTy', 0, 3)
         self.addCmdButton('RCIP', 0, 4)
         self.addCmdButton('SIN', 1, 0)
         self.addCmdButton('COS', 1, 1)
@@ -2613,8 +2613,8 @@ partially typed command.  Of course, the mouse may also be used to hit
 any key.</p>
 
 <p>A few keys have unusual labels to allow them to be typed:  "RCIP"
-is 1/X, "tn^X" is 10^X, "R&lt;" rolls the stack back (or down),
-"R&gt;" rolls the stack forward (or up), "x&lt;&gt;y" is exchange,
+is 1/X, "tn^X" is 10^X, "R^" rolls the stack forward (or up),
+"R&gt;" rolls the stack back (or down), "x&lt;&gt;y" is exchange,
 "CLR" clears the registers, and "&lt;-" is backspace.</p>
 
 <p>A few commands ("STO", "RCL" and "PLCS") prompt for a number from
