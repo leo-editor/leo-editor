@@ -100,6 +100,7 @@ This program is a modified version of the rpcalc program, a
 Reverse Polish Notation (RPN) calculator.  It has been minimally modified
 by Thomas B. Passin to run in a log frame tab in the Leo editor.  The license
 remains the same as the original, which is reproduced here:
+
 #****************************************************************************
 # rpCalc, an RPN calculator
 # Copyright (C) 2017, Douglas W. Bell
@@ -109,7 +110,9 @@ remains the same as the original, which is reproduced here:
 # version.  This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY.  See the included LICENSE file for details.
 #*****************************************************************************
+
 The license for the modified code is:
+
 #****************************************************************************
 # rpCalc, an RPN calculator
 # Copyright (C) 2017, Douglas W. Bell
