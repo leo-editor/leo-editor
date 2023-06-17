@@ -117,7 +117,7 @@ The license for the modified code is:
 # Leo editor modifications Copyright (C) 2023, Thomas B. Passin.
 # This is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License (GPL), either Version 2 or any
-# later version.  This program is distributed in the hope that it will be 
+# later version.  This program is distributed in the hope that it will be
 # useful, but WITHOUT ANY WARRANTY.  See the included GPL 2 LICENSE file
 # at rpcalc/docs.
 #****************************************************************************
@@ -594,7 +594,7 @@ class CalcCore:
         self.stack[0] = float(value)
         self.updateXStr()
         self.flag = Mode.saveMode
-        
+
     #@+node:tom.20230424130102.38: *4* numEntry
     def numEntry(self, entStr):
         """Interpret a digit entered depending on mode.
@@ -885,7 +885,7 @@ class CalcCore:
                                     / self.angleConv()
                 elif cmdStr == 'LOG':          # base 10 log
                     self.stack[0] = math.log10(self.stack[0])
-                else:     
+                else:
                     return False
             self.flag = Mode.saveMode
             self.updateXStr()
@@ -2565,8 +2565,8 @@ a Leo plugin.</p>
 
   <li>Options can be set to control the display of numbers and the
   initial window configuration.</li>
-  
-  <li>The calculation result (the number on the bottom of the stack, 
+
+  <li>The calculation result (the number on the bottom of the stack,
   also called the "X" position) can be copied to the clipboard.</li>
 
 </ul>
@@ -2877,7 +2877,7 @@ saved equations in the history list can also be set.</p>
 
   <li>Fixed a problem with the option to display the extra data view
   on startup.</li>
-  
+
 </ul>
 
 <h3>April 30, 2003 - Release 0.4.0</h3>
@@ -3028,7 +3028,7 @@ can periodically check back to <a
 <div>
 
 <div><h3>For issues with the Leo plugin</h3>
-Questions: 
+Questions:
 <a href='https://groups.google.com/g/leo-editor'>Leo-Editor Group site</a><br>
 Issues:
 <a href='https://github.com/leo-editor/leo-editor/issues'>Leo-Editor GitHub site</a>.
@@ -3040,7 +3040,7 @@ Issues:
 #@+node:tom.20230424140347.3: ** toggle_app_tab
 def toggle_app_tab(log, tabname, widget = CalcDlg):
     """Create or remove our app's tab.
-    
+
     ARGUMENTS
     log -- the log panel object for this outline.
     tabname -- a string to use as the display name of our tab.
