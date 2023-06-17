@@ -572,6 +572,7 @@
 <v t="ekr.20090622063842.5264"><vh>@file ../plugins/projectwizard.py</vh></v>
 <v t="ekr.20160928073518.1"><vh>@file ../plugins/pyplot_backend.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file ../plugins/quicksearch.py</vh></v>
+<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file ../plugins/screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
