@@ -485,6 +485,9 @@ class TestGlobals(LeoUnitTest):
         if 0:
             print(path12, g.os.path.abspath(path12))
             print(path13, g.os.path.abspath(path13))
+    #@+node:ekr.20230617065929.1: *3* TestGlobals.test_g_OptionsUtils
+    def test_g_OptionsUtils(self):
+        assert False  ###To do
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (

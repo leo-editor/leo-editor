@@ -87,6 +87,11 @@ class TestApp(LeoUnitTest):
         assert g.os_path_exists(fn), fn
         os.remove(fn)
         assert not g.os_path_exists(fn), fn
+    #@+node:ekr.20230617065356.1: *3* TestApp.test_LM_scanOptions
+    def test_LM_scanOptions(self):
+        
+        
+        assert False
     #@-others
 #@-others
 #@-leo
