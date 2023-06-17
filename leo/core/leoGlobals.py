@@ -1507,11 +1507,10 @@ class OptionsUtils:
         return sorted(list(set(valid)))
     #@+node:ekr.20230615084117.1: *4* OptionsUtils.find_complex_option
     def find_complex_option(self, regex: str) -> Optional[re.Match]:
-        # """Return the complex argument starting with the given prefix."""
         """
-        Handle the common portion of complex arguments.
+        Check arguments that take an argument.
 
-        Exit if the option exists but contains no value.
+        Exit if the option exists but contains argument.
         """
         assert '=' in regex, repr(regex)
         prefix = regex.split('=')[0]
