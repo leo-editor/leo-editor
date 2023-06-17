@@ -471,6 +471,62 @@ class TestGlobals(LeoUnitTest):
         if 0:
             print(path12, g.os.path.abspath(path12))
             print(path13, g.os.path.abspath(path13))
+    #@+node:ekr.20230617065929.1: *3* TestGlobals.test_g_OptionsUtils
+    def test_g_OptionsUtils(self):
+
+        usage = (
+    """
+    options:
+      -h, --help            show this help message and exit
+      -b, --black-sentinels write black-compatible sentinel comments
+      --diff                use Leo as an external git diff
+      --fail-fast           stop unit tests after the first failure
+    """)
+
+        # Create the class.
+        obsolete_options = [
+            '--dock', '--global-docks', '--init-docks', '--no-cache',
+            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+        ]
+        x = g.OptionsUtils(usage, obsolete_options)
+
+        # Test x.compute_valid_options.
+        expected_valid_options = [
+            '--black-sentinels', '--diff', '--fail-fast', '--help',
+            '-?', '-b', '-h',
+        ]
+        self.assertEqual(x.compute_valid_options(), expected_valid_options)
+
+        # Test x.option_error and x.check_options.
+        bad_options = (
+            '--listen-to-log=',
+            '--load-type=@auto', '--load-type=@clean',
+            '--screen-shot', '--screen-shot=', '--screen-shot-',
+            '--script=xyzzy.py',
+            '--trace','--trace-', 'trace=', '--trace=xxx',
+            '--trace-binding', '--trace-binding-', '--trace-binding=',
+            '--window-', 'window=',
+            '--window-size', '--window-size=', '--window-size=100',
+            '--window-spot', '--window-spot=', '--window-spot=50',
+            '--yyy',
+        )
+        old_argv = sys.argv
+        old_stdout = sys.stdout
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            for option in obsolete_options:
+                sys.argv = ['leo', option]
+                x.check_options()
+            with self.assertRaises(SystemExit):
+                x.option_error('--xyzzy', 'Unknown option')
+                x.option_error('-x', 'Unknown option')
+            for option in bad_options:
+                with self.assertRaises(SystemExit, msg=option):
+                    sys.argv = ['leo', option]
+                    x.check_options()
+        finally:
+            sys.stdout = old_stdout
+            sys.argv = old_argv
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (
