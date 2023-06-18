@@ -84,13 +84,13 @@ class TestLeoImport(BaseTestImporter):
         from leo.core import leoImport
         c, root = self.c, self.c.rootPosition()
         dir_ = r'C:/Repos/non-existent-directory/mypy'
+        # minimize_headlines changes only headlines that start with dir_ or @<file> dir_. 
         table = (
             ('root', 'root'),
             (dir_, 'path: mypy'),
             (f"{dir_}/test", 'path: mypy/test'),
             (f"{dir_}/xyzzy/test2", 'path: mypy/xyzzy/test2'),
             (f"@clean {dir_}/x.py", '@clean x.py'),
-            ('@clean x.py', '@clean x.py'),
         )
         x = leoImport.RecursiveImportController(c,
             dir_=dir_,
@@ -104,6 +104,12 @@ class TestLeoImport(BaseTestImporter):
             root.h = h
             x.minimize_headline(root)
             self.assertEqual(root.h, expected, msg=h)
+            
+        # Test that the recursive import only generates @<file> nodes containing absolute paths.
+        for h in ('@file bad1.py', '@edit bad2.py'):
+            with self.assertRaises(AssertionError, msg=h):
+                root.h = h
+                x.minimize_headline(root)
     #@-others
 #@-others
 #@-leo

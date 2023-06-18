@@ -1781,7 +1781,7 @@ class RecursiveImportController:
         Adjust headlines and add @path directives to headlines or body text.
         Create an @path directive in  @<file> nodes.
         """
-        
+
         assert os.path.isabs(self.root_directory)
 
         def relative_path(path: str) -> str:
@@ -1795,7 +1795,7 @@ class RecursiveImportController:
             """Compute the relative path to be used in an @path directive."""
             assert path.startswith(self.root_directory), repr(path)
             assert os.path.isabs(path), repr(path)
-            path = path[len(self.root_directory):]
+            path = path[len(self.root_directory) :]
             if path.startswith('/'):
                 path = path[1:]
             return path
