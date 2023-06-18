@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.01
+About Viewrendered3 V4.02
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,6 +57,13 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+Bug fixes:
+- Quit early if no qt gui.
+- Fix messags with "VR4" to read "VR3".
+
+Previous Recent Changes
+========================
+#@@language plain is equivalent to @language text.
 VR3 can now open either in a pane in the splitter (up until now this is been the
 only location) or in a tab in the log frame.  Two new commands give access to
 the tab: *vr3-tab* and *vr3-toggle-tab*.
@@ -65,9 +72,6 @@ the tab: *vr3-tab* and *vr3-toggle-tab*.
 fix makes them work the same way for all three structured languages: *rest*,
 *md*, and *asciidoc*.
 
-Previous Recent Changes
-========================
-#@@language plain is equivalent to @language text.
 
 For both plain and text, an @language directive at the top of a node is removed.
 
@@ -907,6 +911,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
+
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
@@ -933,15 +938,13 @@ import textwrap
 import webbrowser
 from urllib.request import urlopen
 
-#@+at
-#     import warnings
-#     # Ignore *all* warnings.
-#     warnings.simplefilter("ignore")
-#@@c
-
 # Leo imports...
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
+
+#1946
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
 #@+<< Qt Imports >>
 #@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
@@ -977,10 +980,10 @@ else:
     try:
         qwv = QtWidgets.QTextBrowser
         if not g.unitTesting:
-            print("vr4: *** limited RsT rendering in effect")
-            print('vr4" *** For full rendering capability,')
-            print('vr4:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
-            print('vr4:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
+            print("vr3: *** limited RsT rendering in effect")
+            print('vr3" *** For full rendering capability,')
+            print('vr3:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
+            print('vr3:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
     except Exception as e:
         g.trace(e)
 
@@ -990,9 +993,6 @@ if QtSvg:
     else:
         QtSvg = None
 #@-<< Qt Imports >>
-
-#1946
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # Optional imports...
 try:
@@ -1229,6 +1229,7 @@ latex_template = f'''\
 controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
 layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
+
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
