@@ -1452,6 +1452,85 @@ class MatchBrackets:
         else:
             g.es("unmatched", repr(ch))
     #@-others
+#@+node:ekr.20230616134732.1: *3* class g.OptionsUtils
+class OptionsUtils:
+    """
+    A stateless class for handling command-line options.
+
+    This class *calculates* valid options from the usage message.
+    """
+
+    def __init__(self, usage: str, obsolete_options: list[str] = None) -> None:
+        # This class is essentially stateless because these ivars never change.
+        self.usage = usage
+        self.obsolete_options = obsolete_options
+        self.valid_options = self.compute_valid_options()
+        self.check_options()
+
+    #@+others
+    #@+node:ekr.20230615034937.1: *4* OptionsUtils.check_options
+    def check_options(self) -> None:
+        """Make sure all command-line options pass sanity checks."""
+        option_prefixes = [z[:-1] for z in self.valid_options if z.endswith('=')]
+        for arg in sys.argv:
+            if arg in self.obsolete_options:
+                print(f"Ignoring obsolete option: {arg!r}")
+            elif arg.startswith('-'):
+                for option in self.valid_options:
+                    if arg.startswith(option) and not arg.endswith('='):
+                        break
+                else:
+                    for prefix in option_prefixes:
+                        if arg.startswith(prefix):
+                            self.option_error(arg, 'Missing value')
+                    self.option_error(arg, 'Unknown option')
+            else:
+                # Do a simple check for file arguments.
+                if any(z in arg for z in ',='):
+                    self.option_error(arg, 'Invalid file arg')
+    #@+node:ekr.20230615062610.1: *4* OptionsUtils.compute_valid_options
+    def compute_valid_options(self) -> list[str]:
+        """
+        Return a list of valid options by parsing the given usage message.
+        Options requiring an argument end with '='.
+        """
+        # Abbreviations (-whatever) must appear before full options (--whatever).
+        option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
+        valid = ['-?']
+        for line in g.splitLines(self.usage):
+            m = option_pattern.match(line)
+            if m:
+                if m.group(1):
+                    valid.append(m.group(1))
+                if m.group(2):
+                    valid.append(m.group(2))
+        return sorted(list(set(valid)))
+    #@+node:ekr.20230615084117.1: *4* OptionsUtils.find_complex_option
+    def find_complex_option(self, regex: str) -> Optional[re.Match]:
+        """
+        Check arguments that take an argument.
+
+        Exit if the option exists but contains argument.
+        """
+        assert '=' in regex, repr(regex)
+        prefix = regex.split('=')[0]
+        for arg in sys.argv:
+            if arg.split('=')[0] == prefix:
+                m = re.match(regex, arg)
+                if m:
+                    return m
+                self.option_error(arg, 'Missing or erroneous value')
+        return None
+    #@+node:ekr.20230616075049.1: *4* OptionsUtils.option_error
+    def option_error(self, arg: str, message: str) -> None:
+        """Print an error message and help message, then exit."""
+        g.trace(g.callers(6))
+        message2 = f"Invalid {arg!r} option: {message}"
+        print(message2)
+        print(self.usage)
+        print(message2)
+        sys.exit(1)
+    #@-others
 #@+node:EKR.20040612114220.4: *3* class g.ReadLinesClass
 class ReadLinesClass:
     """A class whose next method provides a readline method for Python's tokenize module."""
@@ -1567,6 +1646,53 @@ def rawPrint(s: str) -> None:
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
+#@+node:ekr.20120129181245.10220: *3* class g.SettingsDict(dict)
+class SettingsDict(dict):
+    """A subclass of dict providing settings-related methods."""
+
+    def __init__(self, name: str) -> None:
+        super().__init__()
+        self._name = name  # For __repr__ only.
+
+    def __repr__(self) -> str:
+        return f"<SettingsDict name:{self._name} "
+
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20120223062418.10422: *4* td.copy
+    def copy(self, name: str = None) -> Any:
+        """Return a new dict with the same contents."""
+        # The result is a g.SettingsDict.
+        return copy.deepcopy(self)
+    #@+node:ekr.20190904052828.1: *4* td.add_to_list
+    def add_to_list(self, key: str, val: Any) -> None:
+        """Update the *list*, self.d [key]"""
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
+        aList = self.get(key, [])
+        if val not in aList:
+            aList.append(val)
+            self[key] = aList
+    #@+node:ekr.20190903181030.1: *4* td.get_setting & get_string_setting
+    def get_setting(self, key: str) -> Any:
+        """Return the canonical setting name."""
+        key = key.replace('-', '').replace('_', '')
+        gs = self.get(key)
+        val = gs and gs.val
+        return val
+
+    def get_string_setting(self, key: str) -> Optional[str]:
+        val = self.get_setting(key)
+        return val if val and isinstance(val, str) else None
+    #@+node:ekr.20190904103552.1: *4* td.name & setName
+    def name(self) -> str:
+        return self._name
+
+    def setName(self, name: str) -> None:
+        self._name = name
+    #@-others
 #@+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
 class SherlockTracer:
     """
@@ -2367,53 +2493,6 @@ def null_object_print(id_: int, kind: Any, *args: Any) -> None:
         # Print each signature once.
         tracing_signatures[signature] = True
         g.pr(f"{s:40} {callers}")
-#@+node:ekr.20120129181245.10220: *3* class g.SettingsDict(dict)
-class SettingsDict(dict):
-    """A subclass of dict providing settings-related methods."""
-
-    def __init__(self, name: str) -> None:
-        super().__init__()
-        self._name = name  # For __repr__ only.
-
-    def __repr__(self) -> str:
-        return f"<SettingsDict name:{self._name} "
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name: str = None) -> Any:
-        """Return a new dict with the same contents."""
-        # The result is a g.SettingsDict.
-        return copy.deepcopy(self)
-    #@+node:ekr.20190904052828.1: *4* td.add_to_list
-    def add_to_list(self, key: str, val: Any) -> None:
-        """Update the *list*, self.d [key]"""
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        aList = self.get(key, [])
-        if val not in aList:
-            aList.append(val)
-            self[key] = aList
-    #@+node:ekr.20190903181030.1: *4* td.get_setting & get_string_setting
-    def get_setting(self, key: str) -> Any:
-        """Return the canonical setting name."""
-        key = key.replace('-', '').replace('_', '')
-        gs = self.get(key)
-        val = gs and gs.val
-        return val
-
-    def get_string_setting(self, key: str) -> Optional[str]:
-        val = self.get_setting(key)
-        return val if val and isinstance(val, str) else None
-    #@+node:ekr.20190904103552.1: *4* td.name & setName
-    def name(self) -> str:
-        return self._name
-
-    def setName(self, name: str) -> None:
-        self._name = name
-    #@-others
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
