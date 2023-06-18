@@ -402,32 +402,34 @@ def slide_show_info_command(event):
     if c:
         sc = ScreenShotController(c)
         sc.slide_show_info_command(c.p)
-#@+node:ekr.20100914090933.5770: *3* g.command(take-screen-shot)
+#@+node:ekr.20100914090933.5770: *3* g.command(take-local/global-screen-shot)
 @g.command('take-screen-shot')
 @g.command('take-local-screen-shot')
 def start_local_screenshot(event):
-    start_screenshot('local')
-    QtCore.QTimer.singleShot(5000, take_local_screenshot)
-    
+    """Wait 5 seconds, then take a screen shot of Leo's main window."""
+    start_screenshot('local', take_local_screenshot)
+
 @g.command('take-global-screen-shot')
 def start_global_screen_shot(event):
-    start_screenshot('global')
-    QtCore.QTimer.singleShot(5000, take_global_screenshot)
+    """Wait 5 seconds, then take a screen shot of the entire screen."""
+    start_screenshot('global', take_global_screenshot)
 
-def start_screenshot(kind):
+def start_screenshot(kind, callback):
+    """Call the callback after 5 seconds."""
     global screenshot_number
     screenshot_number += 1
     print(f"I'll take a {kind} screenshot number {screenshot_number} in 5 seconds")
-    
+    QtCore.QTimer.singleShot(5000, callback)
+
 def take_global_screenshot():
     screenshot_helper(0)
-    
+
 def take_local_screenshot():
     app = g.app.gui.qtApp
     screenshot_helper(app.activeWindow().winId())  # Only Leo's main window.
 
 def screenshot_helper(window_id):
-    """Take a screenshot after 5 seconds."""
+    """Take a screenshot of the given window."""
     global screenshot_number
     app = g.app.gui.qtApp
     screen = app.primaryScreen()
@@ -436,7 +438,7 @@ def screenshot_helper(window_id):
         screenshot = screen.grabWindow(window_id)
         # Save to the home directory.
         screenshot.save(file_name, 'png')
-        print(f"Screenshot saved in home as {file_name}")
+        print(f"Screenshot saved in ~/{file_name}")
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController:
     """A class to take screen shots and control Inkscape.
