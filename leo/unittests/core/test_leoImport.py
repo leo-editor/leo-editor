@@ -83,7 +83,7 @@ class TestLeoImport(BaseTestImporter):
     def test_recursive_import(self):
         from leo.core import leoImport
         c, root = self.c, self.c.rootPosition()
-        dir_ = r'C:/Repos/ekr-mypy2/mypy'
+        dir_ = r'C:/Repos/non-existent-directory/mypy'
         table = (
             ('root', 'root'),
             (dir_, 'path: mypy'),
@@ -103,7 +103,7 @@ class TestLeoImport(BaseTestImporter):
         for h, expected in table:
             root.h = h
             x.minimize_headline(root)
-            self.assertEqual(root.h, expected)
+            self.assertEqual(root.h, expected, msg=h)
     #@-others
 #@-others
 #@-leo

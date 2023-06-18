@@ -1778,31 +1778,24 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headline
     def minimize_headline(self, p: Position) -> None:
         """
+        Adjust headlines and add @path directives to headlines or body text.
         Create an @path directive in  @<file> nodes.
         """
+        
+        assert os.path.isabs(self.root_directory)
 
-        def strip_path(path: str) -> str:
-            if path.startswith(self.root_directory):
-                path = path[len(self.root_directory) :].strip()
-            return path.split('/')[-1] if '/' in path else path
-
-        def body_path(path: str) -> str:
-            """Return the path relative to the root_directory."""
-            if not path.startswith(self.root_directory):
-                return None
-            prefix = '/'.join(self.root_directory.split('/')[:-1])
-            path = path[len(prefix) :].strip()
-            if path.startswith('/'):
-                path = path[1:]
-            path = os.path.dirname(path)
+        def relative_path(path: str) -> str:
+            """Return path relative to the root directory."""
+            assert path.startswith(self.root_directory), repr(path)
+            assert os.path.isabs(path), repr(path)
+            path = path.split('/')[-1] if '/' in path else path
             return path
 
-        def headline_path(path: str) -> str:
-            if not path.startswith(self.root_directory):
-                return None
-            prefix = '/'.join(self.root_directory.split('/')[:-1])
-            assert path.startswith(prefix), prefix
-            path = path[len(prefix) :]
+        def compute_at_path_path(path: str) -> str:
+            """Compute the relative path to be used in an @path directive."""
+            assert path.startswith(self.root_directory), repr(path)
+            assert os.path.isabs(path), repr(path)
+            path = path[len(self.root_directory):]
             if path.startswith('/'):
                 path = path[1:]
             return path
@@ -1813,15 +1806,14 @@ class RecursiveImportController:
             kind = m.group(0)
             path = p.h[len(kind) :].strip().replace('\\', '/')
             # Shorten p.h.
-            p.h = f"{kind} {strip_path(path)}"
-            # Prepend an @path directive to p.b.
-            path = body_path(path)
-            if path:
+            p.h = f"{kind} {relative_path(path)}"
+            # Prepend an @path directive to p.b if it has a directory component.
+            path = compute_at_path_path(path)
+            if path and '/' in path:
                 p.b = f"@path {path}\n{p.b}"
-        else:
-            # p.h is any other node.
-            # Append 'path' the the headline only for paths.
-            h = headline_path(p.h)
+        elif p.h.startswith(self.root_directory):
+            # The importer has created the start of an @path node.
+            h = compute_at_path_path(p.h)
             if h:
                 p.h = f"path: {h}"
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
