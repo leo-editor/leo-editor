@@ -325,7 +325,7 @@ import textwrap
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui
+from leo.core.leoQt import QtCore, QtGui
 # Third-party imports.
 # Warnings are given later.
 try:
@@ -342,10 +342,21 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 got_qt = QtGui is not None
 #@-<< imports >>
 
+screenshot_number = 0
+
 # To do: create _static folder.
 
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
+#@+node:ekr.20100908110845.5606: *3*  init (screenshots.py)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    if not got_qt:
+        print('Can not load screenshots.py')
+        print('pip install PIL')
+        return False
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
 @g.command('help-for-slides')
 def help_for_screen_shots(event):
@@ -391,21 +402,41 @@ def slide_show_info_command(event):
     if c:
         sc = ScreenShotController(c)
         sc.slide_show_info_command(c.p)
-#@+node:ekr.20100908110845.5606: *3* init
-def init():
-    """Return True if the plugin has loaded successfully."""
-    ok = got_qt
-    if ok:
-        g.plugin_signon(__name__)
-    return ok
-#@+node:ekr.20100914090933.5770: *3* make_screen_shot
-def make_screen_shot(path):
-    """Create a screenshot of the present Leo outline and save it to path.
-    This is a callback called from make_screen_shot in runLeo.py"""
+#@+node:ekr.20100914090933.5770: *3* g.command(take-screen-shot)
+@g.command('take-screen-shot')
+@g.command('take-local-screen-shot')
+def start_local_screenshot(event):
+    start_screenshot('local')
+    QtCore.QTimer.singleShot(5000, take_local_screenshot)
+    
+@g.command('take-global-screen-shot')
+def start_global_screen_shot(event):
+    start_screenshot('global')
+    QtCore.QTimer.singleShot(5000, take_global_screenshot)
+
+def start_screenshot(kind):
+    global screenshot_number
+    screenshot_number += 1
+    print(f"I'll take a {kind} screenshot number {screenshot_number} in 5 seconds")
+    
+def take_global_screenshot():
+    screenshot_helper(0)
+    
+def take_local_screenshot():
     app = g.app.gui.qtApp
-    screen = QtGui.QScreen()
-    w = screen.grabWindow(app.activeWindow().winId())
-    w.save(path, 'png')
+    screenshot_helper(app.activeWindow().winId())  # Only Leo's main window.
+
+def screenshot_helper(window_id):
+    """Take a screenshot after 5 seconds."""
+    global screenshot_number
+    app = g.app.gui.qtApp
+    screen = app.primaryScreen()
+    if screen is not None:
+        file_name = f"screenshot-{screenshot_number}.png"
+        screenshot = screen.grabWindow(window_id)
+        # Save to the home directory.
+        screenshot.save(file_name, 'png')
+        print(f"Screenshot saved in home as {file_name}")
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController:
     """A class to take screen shots and control Inkscape.
