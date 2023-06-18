@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.01
+About Viewrendered3 V4.02
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,6 +57,13 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+Bug fixes:
+- Quit early if no qt gui.
+- Fix messags with "VR4" to read "VR3".
+
+Previous Recent Changes
+========================
+#@@language plain is equivalent to @language text.
 VR3 can now open either in a pane in the splitter (up until now this is been the
 only location) or in a tab in the log frame.  Two new commands give access to
 the tab: *vr3-tab* and *vr3-toggle-tab*.
@@ -65,9 +72,6 @@ the tab: *vr3-tab* and *vr3-toggle-tab*.
 fix makes them work the same way for all three structured languages: *rest*,
 *md*, and *asciidoc*.
 
-Previous Recent Changes
-========================
-#@@language plain is equivalent to @language text.
 
 For both plain and text, an @language directive at the top of a node is removed.
 
