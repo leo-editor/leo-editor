@@ -1810,7 +1810,12 @@ class RecursiveImportController:
             # Prepend an @path directive to p.b if it has a directory component.
             path = compute_at_path_path(path)
             if path and '/' in path:
-                p.b = f"@path {path}\n{p.b}"
+                directory = '/'.join(path.split('/')[:-1])
+                p.b = f"@path {directory}\n{p.b}"
+        elif '/' in p.h and p.h == self.root_directory:
+            # Show the last component.
+            directory = p.h.split('/')[-1]
+            p.h = f"path: {directory}"
         elif p.h.startswith(self.root_directory):
             # The importer has created the start of an @path node.
             h = compute_at_path_path(p.h)
