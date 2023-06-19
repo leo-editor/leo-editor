@@ -725,8 +725,7 @@
 <v t="ekr.20160304081437.3"><vh>How do I enable a theme .leo file?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
-<v t="ekr.20110531155858.20564"><vh>How do I set selection colors?</vh></v>
-<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
+<v t="ekr.20110531155858.20564"><vh>How do I set selection colors and fonts?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
 <v t="ekr.20180126190015.1"><vh>Excel</vh>
@@ -7385,12 +7384,6 @@ Here we see Leo's splash screen:
     :scale: 40%
     :alt: Splash Screen
 </t>
-<t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts using the node in leoSettings.leo called::
-
-    @data qt-gui-plugin-style-sheet
-
-As usual, you will probably want to put this node in your myLeoSettings.leo file.
-</t>
 <t tx="ekr.20091111112709.6672">#########
 Glossary
 #########
@@ -11247,29 +11240,7 @@ In short, Leo will never support features that encourage cross-outline clones.</
     for p in c2.all_positions():
         g.es(p.h)
 </t>
-<t tx="ekr.20110531155858.20564">You set most colors in the following settings node::
-
-    @data qt-gui-plugin-style-sheet
-    
-However, settings for colors that can change during Leo's execution are found in the node::
-
-    Body pane colors
-    
-These settings are as follows, with the defaults as shown::
-    
-    @color body_cursor_background_color = None
-    @color body_cursor_foreground_color = None
-    @color body_insertion_cursor_color = None
-    @color body_text_background_color = None
-    @color body_text_foreground_color = None
-    @color command_mode_bg_color = #f2fdff
-    @color command_mode_fg_color = None
-    @color insert_mode_bg_color = #fdf5f5
-    @color insert_mode_fg_color = black
-    @color overwrite_mode_bg_color = azure2
-    @color overwrite_mode_fg_color = black
-    @color unselected_body_bg_color = #ffffef
-    @color unselected_body_fg_color = black
+<t tx="ekr.20110531155858.20564">See the node `@data qt-gui-plugin-style-sheet` in your theme file or `myLeoSettings.leo`.
 </t>
 <t tx="ekr.20110601105631.19349">
 </t>
