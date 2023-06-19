@@ -2,37 +2,32 @@
 #@+node:ekr.20101121031443.5330: * @file ../plugins/screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
+#@@pagewidth 80
 r""" Creates stand-alone slideshows containing screenshots.
 
-This plugin defines five commands. The
-**help-for-slides** command prints this message to
-Leo's log pane. The **slide-show-info** command
-prints the settings in effect.
+This plugin defines the following commands:
+    
+- **help-for-screenshots**: print this message to Leo's log pane.
+- **take-local-screen-shot**: take a screenshot of Leo's main window.
+- **take-global-screen-shot**: take a screenshot of the entire screen.
+- **slide-show-info**: print the settings in effect.
+- **make-slide** and **make-slide-show**, collectively called **slide
+  commands**, create collections of slides from **@slideshow** trees containing
+  **@slide** nodes.
+  
+Slides may link to screenshots. The slide commands can generate screenshots from
+**@screenshot-tree** nodes, but this feature has proven to be clumsy and
+inflexible. It is usually more convenient to use screenshots taken with a
+program such as Wink. The **meld-slides** command creates references to
+externally-generated screenshots within @slide nodes.
 
-The **make-slide** and **make-slide-show**
-commands, collectively called **slide commands**,
-create collections of slides from **@slideshow**
-trees containing **@slide** nodes.
-
-Slides may link to screenshots. The slide commands
-can generate screenshots from **@screenshot-tree**
-nodes, but this feature has proven to be clumsy
-and inflexible. It is usually more convenient to
-use screenshots taken with a program such as Wink.
-The **meld-slides** command creates references to
-externally-generated screenshots within @slide
-nodes.
-
-\@slide nodes may contain **@url nodes**. These @url
-nodes serve two purposes. First, they allow you to
-see various files (slides, initial screenshots,
-working files and final screenshots). Second,
-these @url nodes guide the meld script and the
-four commands defined by this plugin (see below).
-By inserting or deleting these @url nodes you (or
-your scripts) can customize how the commands (and
-meld) work. In effect, the @url nodes become
-per-slide settings.
+\@slide nodes may contain **@url nodes**:
+- @url nodes allow you to see various files (slides, initial screenshots,
+  working files and final screenshots).
+- @url nodes guide the meld script and the commands defined by this plugin By
+  inserting or deleting these @url nodes you (or your scripts) can customize how
+  the commands (and meld) work. In effect, the @url nodes become per-slide
+  settings.
 
 **Prerequisites**
 
@@ -42,6 +37,7 @@ Inkscape (Required)
   Required to create final output (PNG) files.
 
 PIL (Optional but highly recommended)
+  pip install pillow
   The Python Imaging Library,
   http://www.pythonware.com/products/pil/
 
@@ -353,7 +349,7 @@ def init():
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
-@g.command('help-for-slides')
+@g.command('help-for-screenshots')
 def help_for_screen_shots(event):
     # Just print the module's docstring.
     g.es(__doc__)
@@ -429,11 +425,12 @@ def screenshot_helper(window_id):
     app = g.app.gui.qtApp
     screen = app.primaryScreen()
     if screen is not None:
-        file_name = f"screenshot-{screenshot_number}.png"
-        screenshot = screen.grabWindow(window_id)
         # Save to the home directory.
-        screenshot.save(file_name, 'png')
-        print(f"Screenshot saved in ~/{file_name}")
+        file_name = os.path.normpath(os.path.expanduser(
+            f"~/.leo/screenshot-{screenshot_number}.png"))
+        pixmap = screen.grabWindow(window_id)
+        pixmap.save(file_name, 'png')
+        print(f"Screenshot saved in {file_name}")
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController:
     """A class to take screen shots and control Inkscape.
