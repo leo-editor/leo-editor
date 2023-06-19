@@ -1447,6 +1447,7 @@ class ScreenShotController:
                 return im.crop(bbox)
             # found no content
             raise ValueError("cannot trim; image was empty")
+        return None
     #@+node:ekr.20101004082701.5739: *4* make_slide & helpers
     #  Don't call rstCommands.writeToDocutils--we are using sphinx!
 
