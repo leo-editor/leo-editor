@@ -2214,7 +2214,7 @@ class LoadManager:
         g.app.idleTimeManager.start()
         #
         # Phase 3: after loading plugins. Create one or more frames.
-        t3 = time.process_time()
+        t4 = time.process_time()
         if lm.options.get('script') and not self.files:
             ok = True
         else:
@@ -2229,12 +2229,13 @@ class LoadManager:
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
-            t4 = time.process_time()
+            t5 = time.process_time()
             print('')
             g.es_print(f"settings:{t2 - t1:5.2f} sec")
             g.es_print(f" plugins:{t3 - t2:5.2f} sec")
             g.es_print(f"   files:{t4 - t3:5.2f} sec")
-            g.es_print(f"   total:{t4 - t1:5.2f} sec")
+            g.es_print(f"  frames:{t5 - t4:5.2f} sec")
+            g.es_print(f"   total:{t5 - t1:5.2f} sec")
             print('')
         # -- quit
         if g.app.quit_after_load:
