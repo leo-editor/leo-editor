@@ -325,21 +325,20 @@ import textwrap
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui
-# Third-party imports.
-# Warnings are given later.
+from leo.core.leoQt import QtCore
+
+# Third-party imports: Warnings will be given later.
 try:
-    # pylint: disable=import-error
-    from PIL import Image, ImageChops
-    got_pil = True
+    from PIL import Image  # pylint: disable=import-error
+except Exception:
+    Image = None
+try:
+    from PIL import ImageChops  # pylint: disable=import-error
 except ImportError:
-    got_pil = False
-#
+    ImageChops = None
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
-# Alias.
-got_qt = QtGui is not None
 #@-<< imports >>
 
 screenshot_number = 0
@@ -351,10 +350,6 @@ screenshot_number = 0
 #@+node:ekr.20100908110845.5606: *3*  init (screenshots.py)
 def init():
     """Return True if the plugin has loaded successfully."""
-    if not got_qt:
-        print('Can not load screenshots.py')
-        print('pip install PIL')
-        return False
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
@@ -448,13 +443,6 @@ class ScreenShotController:
     #@+node:ekr.20100908110845.5532: *3*  ctor & helpers
     def __init__(self, c):
         self.c = c
-        try:
-            from PIL import Image, ImageChops
-            assert Image, ImageChops  # for pyflakes
-            self.got_pil = True
-        except ImportError:
-            self.got_pil = False
-        self.got_qt = QtGui is not None
         # Defaults.
         self.default_screenshot_height = 700
         self.default_screenshot_width = 900
@@ -1146,13 +1134,11 @@ class ScreenShotController:
         sc = self
         if sc.pil_message_given:
             return  # Warning already given.
-        if sc.got_pil:
+        if Image and ImageChops:
             return  # The best situation
         sc.pil_message_given = True
-        if sc.got_qt:
-            g.warning('PIL not found: images may have transparent borders')
-        else:
-            g.warning('PIL and Qt both not found: images may be less clear')
+        g.warning('PIL not found: images may have transparent borders')
+        print('pip install pillow')
     #@+node:ekr.20100908110845.5592: *4* in_slide_show
     def in_slide_show(self, p):
         """Return True if p is a descendant of an @slideshow node."""
@@ -1446,7 +1432,7 @@ class ScreenShotController:
         proc.communicate()  # Wait for Inkscape to terminate.
         if sc.verbose:
             g.note('wrote:  %s' % g.shortFileName(sc.output_fn))
-        if sc.got_pil:  # trim transparent border
+        if Image:  # trim transparent border
             try:
                 img = Image.open(sc.output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
@@ -1456,13 +1442,14 @@ class ScreenShotController:
         sc.make_at_url_node_for_output_file()
     #@+node:ekr.20100908110845.5555: *5* trim
     def trim(self, im, border):
-        bg = Image.new(im.mode, im.size, border)
-        diff = ImageChops.difference(im, bg)
-        bbox = diff.getbbox()
-        if bbox:
-            return im.crop(bbox)
-        # found no content
-        raise ValueError("cannot trim; image was empty")
+        if Image and ImageChops:
+            bg = Image.new(im.mode, im.size, border)
+            diff = ImageChops.difference(im, bg)
+            bbox = diff.getbbox()
+            if bbox:
+                return im.crop(bbox)
+            # found no content
+            raise ValueError("cannot trim; image was empty")
     #@+node:ekr.20101004082701.5739: *4* make_slide & helpers
     #  Don't call rstCommands.writeToDocutils--we are using sphinx!
 
@@ -1555,7 +1542,7 @@ class ScreenShotController:
         img_element = ids_d.get('co_shot')
         img_element.set(sc.xlink + 'href', sc.screenshot_fn)
         # adjust screen shot dimensions
-        if sc.got_pil:
+        if Image:
             img = Image.open(sc.screenshot_fn)
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))
