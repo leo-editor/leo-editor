@@ -215,13 +215,8 @@ class TestGlobals(LeoUnitTest):
             ('@file', '../plugins/cursesGui2.py'),
         )
         #@-<< define test_data >>
-        absolute_paths: list[str] = [
-            g.os_path_finalize_join(g.app.loadDir, relative_path)
-                for kind, relative_path in test_data
-        ]
         #@+<< define error dicts >>
         #@+node:ekr.20230620170846.1: *4* << define error dicts >>
-
         # m.group(1) is the filename and m.group(2) is the line number.
         error_patterns: dict[str, re.Pattern] = {
             'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
@@ -240,13 +235,19 @@ class TestGlobals(LeoUnitTest):
             'python':   'File "FILE", line LINE',
         }
 
-        # Message lines. Default all lines to 0.
+        # List of absolute paths in the test data.
+        absolute_paths: list[str] = [
+            g.os_path_finalize_join(g.app.loadDir, relative_path)
+                for _, relative_path in test_data
+        ]
+
+        # The error line for each absolute path. Default all lines to 0.
         error_lines: dict[str, int] = {}
         for z in absolute_paths:
             error_lines[z] = 0
         ### g.printObj(error_lines)
 
-        # Create error messages for every tool and every absolute path.
+        # Error messages for every tool and every absolute path.
         error_messages: dict[str, list[str]] = {}
         for path in absolute_paths:
             for tool in tools:
@@ -286,7 +287,7 @@ class TestGlobals(LeoUnitTest):
             kind, relative_path = data
             headline = f"{kind} {relative_path}"
             absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
-            self.assertTrue(os.path.exists(absolute_path), msg=headline)
+            self.assertTrue(absolute_path in absolute_paths, msg=headline)
             make_tree(c, headline)
             test_p = g.findNodeAnywhere(c, headline)
             self.assertTrue(test_p, msg=headline)
