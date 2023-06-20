@@ -226,11 +226,11 @@ class TestGlobals(LeoUnitTest):
         )
         # m.group(1) is the filename and m.group(2) is the line number.
         error_patterns: dict[str, re.Pattern] = {
-            'flake8': g.flake8_pat,    # r'(.+?):([0-9]+):[0-9]+:.*$'
-            'mypy':  g.mypy_pat,       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-            'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
-            'pylint': g.pylint_pat,    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-            'python': g.python_pat,    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+            'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
+            'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+            'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
+            'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+            'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
         }
         error_messages: dict[str, list[str]] = {}
         languages = list(error_patterns.keys())
@@ -246,16 +246,13 @@ class TestGlobals(LeoUnitTest):
 
         # Create error messages for every language and every absolute path.
         for language in languages:
-            messages = []
-            for path in absolute_paths:
-                template = error_templates[language]
-                messages.append(template
-                    .replace('FILE', path)
-                    .replace('LINE', '100')
-                    .replace('COL', '5'))
-            error_messages[language] = messages
+            template = error_templates[language]
+            error_messages[language] = [
+                template.replace('FILE', path).replace('LINE', '100').replace('COL', '5')
+                for path in absolute_paths
+            ]
 
-        # Preliminary test: ensure all given error messages match the languates pattern.
+        # Preliminary test: ensure all generated error messages match the language's pattern.
         for language in languages:
             pattern = error_patterns[language]
             messages = error_messages[language]
