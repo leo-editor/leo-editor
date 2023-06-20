@@ -2224,6 +2224,10 @@ class LoadManager:
             if ok and g.app.diff:
                 lm.doDiff()
         if not ok:
+            # --screen-shot causes an immediate exit.
+            if 'shutdown' in g.app.debug or 'startup' in g.app.debug:
+                print('Can not create a commander')
+            g.app.forceShutdown()
             return
         g.es('')  # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
@@ -2329,17 +2333,7 @@ class LoadManager:
         c.redraw()
         g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
         c.initialFocusHelper()
-        screenshot_fn = lm.options.get('screenshot_fn')
-        if screenshot_fn:
-            lm.make_screen_shot(screenshot_fn)
-            return False  # Force an immediate exit.
         return True
-    #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
-    def make_screen_shot(self, fn: str) -> None:
-        """Create a screenshot of the present Leo outline and save it to path."""
-        if g.app.gui.guiName() == 'qt':
-            m = g.loadOnePlugin('screenshots')
-            m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
     def openEmptyWorkBook(self) -> Cmdr:
         """Open CheatSheet.leo as the workbook. Return the new commander."""
@@ -2657,7 +2651,6 @@ class LoadManager:
           --no-plugins          disable all plugins
           --no-splash           disable the splash screen
           --quit                quit immediately after loading
-          --screen-shot=PATH    take a screen shot and then exit
           --script=PATH         execute a script and then exit
           --script-window       execute script using default gui
           --select=ID           headline or gnx of node to select
@@ -2698,11 +2691,6 @@ class LoadManager:
             """Handle load-type"""
             m = utils.find_complex_option(r'--load-type=@(edit|file)')
             return m.group(1).lower() if m else None
-        #@+node:ekr.20210927034148.6: *6* function: doScreenShotOption
-        def doScreenShotOption() -> str:
-            """Handle --screen-shot=path"""
-            m = utils.find_complex_option(r'--screen-shot=(.+)')
-            return m.group(1).replace('"', '') if m else None
         #@+node:ekr.20210927034148.7: *6* function: doScriptOption
         def doScriptOption() -> Optional[str]:
             """Handle --script=path"""
@@ -2874,7 +2862,7 @@ class LoadManager:
             'gui': doGuiOption(),
             'load_type': doLoadTypeOption(),
             'script': script,
-            'screenshot_fn': doScreenShotOption(),
+            ### 'screenshot_fn': doScreenShotOption(),
             'select': doSelectOption(),
             'theme_path': doThemeOption(),
             'version': any(z in sys.argv for z in ('-v', '--version')),
