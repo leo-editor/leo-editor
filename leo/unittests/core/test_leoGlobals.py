@@ -194,6 +194,7 @@ class TestGlobals(LeoUnitTest):
         #@-others
 
         # Paths to existing files, relative to LeoPyRef.leo (in leo/core).
+        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
         relative_paths = (
             #  __init__.py...
             '../plugins/importers/__init__.py',
