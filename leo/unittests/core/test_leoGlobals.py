@@ -4,6 +4,7 @@
 
 import io
 import os
+import re
 import stat
 import sys
 import textwrap
@@ -142,9 +143,37 @@ class TestGlobals(LeoUnitTest):
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
     #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl
+    #@@nobeautify
     def test_g_findUnl(self):
-        
         c = self.c
+        test_headlines = (
+            # The hard case: __init__.py
+            '@file ../plugins/importers/__init__.py',
+            '@file ../plugins/writers/__init__.py',
+            '@clean ../plugins/leo_babel/__init__.py',
+            '@file ../plugins/editpane/__init__.py',
+            # Other files.
+            '@file leoApp.py',
+            '@file ../commands/abbrevCommands.py',
+            '@edit ../../launchLeo.py',
+            '@file ../external/log_listener.py',
+            '@file ../plugins/cursesGui2.py',
+        )
+        error_patterns: dict[str, re.Pattern] = {
+            'flake8': g.flake8_pat,    # r'(.+?):([0-9]+):[0-9]+:.*$'
+            'mypy':  g.mypy_pat,       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+            'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
+            'pylint': g.pylint_pat,    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+            'python': g.python_pat,    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+        }
+        error_messages: dict[str, str] = {
+            'flake8': '',     # r'(.+?):([0-9]+):[0-9]+:.*$'
+            'mypy': '',       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+            'pyflakes': '',  # r'^(.*):([0-9]+):[0-9]+ .*?$'
+            'pylint': '',    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+            'python': '',    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+        }
+        languages = list(error_patterns.keys())
         
         # Define helper functions.
         #@+others
@@ -192,28 +221,37 @@ class TestGlobals(LeoUnitTest):
             c.selectPosition(c.rootPosition())
         #@-others
         
-        h = '@file ../plugins/writers/__init__.py'
-        make_tree(c, h)
+        # Preliminary test: ensure all given error messages match the pattern
+        for language in languages:
+            pattern = error_patterns[language]
+            message = error_messages[language]
+            self.assertTrue(pattern.match(message), msg=(
+                'Error message does not match error pattern:\n'
+                f"language: {language!r}\n"
+                f" message: {message!r}\n"
+                f" pattern: {pattern!r}"))
         
-        # h = '@file test.py'
-        test_p = g.findNodeAnywhere(c, h)
-        assert(test_p)
-        leo_dir = g.finalize_join(g.app.loadDir, '..')
-        assert os.path.exists(leo_dir), leo_dir
-        writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
-        assert os.path.exists(writers_init), writers_init
-        
-        table = (
-            # (f"{h}", None),
-            # ('test.py', None), 
-            (writers_init, h), ###'@file ../plugins/writers/__init__.py'),
-        )
-        for i, data in enumerate(table):
-            s, expected = data
-            unl = g.computeFileUrl(s, c)
-            result = g.findUNL([unl], c)
-            print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
-            self.assertEqual(result, expected)
+        for language, pattern in error_patterns.items():
+            for headline in test_headlines:
+                make_tree(c, headline)
+                test_p = g.findNodeAnywhere(c, headline)
+                assert(test_p)
+                leo_dir = g.finalize_join(g.app.loadDir, '..')
+                assert os.path.exists(leo_dir), leo_dir
+                writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
+                assert os.path.exists(writers_init), writers_init
+
+                table = (
+                    # (f"{headline}", None),
+                    # ('test.py', None), 
+                    (writers_init, headline), ###'@file ../plugins/writers/__init__.py'),
+                )
+                for i, data in enumerate(table):
+                    s, expected = data
+                    unl = g.computeFileUrl(s, c)
+                    result = g.findUNL([unl], c)
+                    print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
+                    self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
