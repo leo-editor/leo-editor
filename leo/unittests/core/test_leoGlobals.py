@@ -237,10 +237,10 @@ class TestGlobals(LeoUnitTest):
 
         # Error message templates.
         error_templates: dict[str, str] = {
-            'flake8':   'FILE:LINE:COL:flake8 error',
-            'mypy':     'FILE:LINE:error mypy error COL',
-            'pyflakes': 'FILE:LINE:COL pyflakes error',
-            'pylint':   'FILE:LINE:COL: (pylint error)',
+            'flake8':   'FILE:LINE:COL:ERR',
+            'mypy':     'FILE:LINE:error ERR',
+            'pyflakes': 'FILE:LINE:COL ERR',
+            'pylint':   'FILE:LINE:COL: (ERR)',
             'python':   'File "FILE", line LINE',
         }
 
@@ -248,9 +248,13 @@ class TestGlobals(LeoUnitTest):
         for language in languages:
             template = error_templates[language]
             error_messages[language] = [
-                template.replace('FILE', path).replace('LINE', '100').replace('COL', '5')
+                template.replace('FILE', path)
+                .replace('LINE', '100')
+                .replace('COL', '5')
+                .replace('ERR', f"{language} error")
                 for path in absolute_paths
             ]
+        ### g.printObj(error_messages)
 
         # Preliminary test: ensure all generated error messages match the language's pattern.
         for language in languages:
