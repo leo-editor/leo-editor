@@ -7267,7 +7267,11 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     targets.append(target.strip())
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
-    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
+    positions = list(reversed([z for z in c.all_positions() if z.h.strip() in targets]))
+    if 1: ###
+        g.trace(unlList)
+        g.printObj(targets, tag='targets')
+        g.printObj(positions, tag='positions')
     while unlList:
         for p in positions:
             p1 = p.copy()
@@ -7295,6 +7299,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
+        g.trace('NOT FOUND: new list:', unlList)
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
