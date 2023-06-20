@@ -146,35 +146,7 @@ class TestGlobals(LeoUnitTest):
     #@@nobeautify
     def test_g_findUnl(self):
         c = self.c
-        test_headlines = (
-            # The hard case: __init__.py
-            '@file ../plugins/importers/__init__.py',
-            '@file ../plugins/writers/__init__.py',
-            '@clean ../plugins/leo_babel/__init__.py',
-            '@file ../plugins/editpane/__init__.py',
-            # Other files.
-            '@file leoApp.py',
-            '@file ../commands/abbrevCommands.py',
-            '@edit ../../launchLeo.py',
-            '@file ../external/log_listener.py',
-            '@file ../plugins/cursesGui2.py',
-        )
-        error_patterns: dict[str, re.Pattern] = {
-            'flake8': g.flake8_pat,    # r'(.+?):([0-9]+):[0-9]+:.*$'
-            'mypy':  g.mypy_pat,       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-            'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
-            'pylint': g.pylint_pat,    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-            'python': g.python_pat,    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
-        }
-        error_messages: dict[str, str] = {
-            'flake8': '',     # r'(.+?):([0-9]+):[0-9]+:.*$'
-            'mypy': '',       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-            'pyflakes': '',  # r'^(.*):([0-9]+):[0-9]+ .*?$'
-            'pylint': '',    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-            'python': '',    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
-        }
-        languages = list(error_patterns.keys())
-        
+
         # Define helper functions.
         #@+others
         #@+node:ekr.20230330042946.1: *4* function: add_tree
@@ -220,17 +192,80 @@ class TestGlobals(LeoUnitTest):
             # Always start with the root selected.
             c.selectPosition(c.rootPosition())
         #@-others
-        
-        # Preliminary test: ensure all given error messages match the pattern
+
+        # Paths to existing files, relative to LeoPyRef.leo (in leo/core).
+        relative_paths = (
+            #  __init__.py...
+            '../plugins/importers/__init__.py',
+            '../plugins/writers/__init__.py',
+            '../plugins/leo_babel/__init__.py',
+            '../plugins/editpane/__init__.py',
+            # Other files.
+            'leoApp.py',
+            '../commands/abbrevCommands.py',
+            '../../launchLeo.py',
+            '../external/log_listener.py',
+            '../plugins/cursesGui2.py',
+        )
+        absolute_paths = [g.os_path_finalize_join(g.app.loadDir, z) for z in relative_paths]
+        for z in absolute_paths:
+            self.assertTrue(os.path.exists(z), msg=repr(z))
+
+        test_headlines = (
+            # The hard case: __init__.py
+            '@file ../plugins/importers/__init__.py',
+            '@file ../plugins/writers/__init__.py',
+            '@clean ../plugins/leo_babel/__init__.py',
+            '@file ../plugins/editpane/__init__.py',
+            # Other files.
+            '@file leoApp.py',
+            '@file ../commands/abbrevCommands.py',
+            '@edit ../../launchLeo.py',
+            '@file ../external/log_listener.py',
+            '@file ../plugins/cursesGui2.py',
+        )
+        # m.group(1) is the filename and m.group(2) is the line number.
+        error_patterns: dict[str, re.Pattern] = {
+            'flake8': g.flake8_pat,    # r'(.+?):([0-9]+):[0-9]+:.*$'
+            'mypy':  g.mypy_pat,       # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+            'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
+            'pylint': g.pylint_pat,    # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+            'python': g.python_pat,    # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+        }
+        error_messages: dict[str, list[str]] = {}
+        languages = list(error_patterns.keys())
+
+        # Error message templates.
+        error_templates: dict[str, str] = {
+            'flake8': 'FILE:LINE:COL:flake8 error',
+            'mypy':  'FILE:LINE:error mypy error',
+            'pyflakes': 'FILE:LINE:COL pyflakes error',
+            'pylint': 'FILE:LINE:COL: (pylint error)',
+            'python': 'File "FILE", line LINE',
+        }
+
+        # Create error messages for every language and every absolute path.
+        for language in languages:
+            messages = []
+            for path in absolute_paths:
+                template = error_templates[language]
+                messages.append(template
+                    .replace('FILE', path)
+                    .replace('LINE', '100')
+                    .replace('COL', '5'))
+            error_messages[language] = messages
+
+        # Preliminary test: ensure all given error messages match the languates pattern.
         for language in languages:
             pattern = error_patterns[language]
-            message = error_messages[language]
-            self.assertTrue(pattern.match(message), msg=(
-                'Error message does not match error pattern:\n'
-                f"language: {language!r}\n"
-                f" message: {message!r}\n"
-                f" pattern: {pattern!r}"))
-        
+            messages = error_messages[language]
+            for message in messages:
+                self.assertTrue(pattern.match(message), msg=(
+                    'Error message does not match error pattern:\n'
+                    f"language: {language!r}\n"
+                    f" message: {message!r}\n"
+                    f" pattern: {pattern!r}"))
+
         for language, pattern in error_patterns.items():
             for headline in test_headlines:
                 make_tree(c, headline)
