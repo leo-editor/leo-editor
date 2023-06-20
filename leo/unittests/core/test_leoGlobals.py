@@ -237,11 +237,11 @@ class TestGlobals(LeoUnitTest):
 
         # Error message templates.
         error_templates: dict[str, str] = {
-            'flake8': 'FILE:LINE:COL:flake8 error',
-            'mypy':  'FILE:LINE:error mypy error',
+            'flake8':   'FILE:LINE:COL:flake8 error',
+            'mypy':     'FILE:LINE:error mypy error',
             'pyflakes': 'FILE:LINE:COL pyflakes error',
-            'pylint': 'FILE:LINE:COL: (pylint error)',
-            'python': 'File "FILE", line LINE',
+            'pylint':   'FILE:LINE:COL: (pylint error)',
+            'python':   'File "FILE", line LINE',
         }
 
         # Create error messages for every language and every absolute path.
