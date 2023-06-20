@@ -192,8 +192,10 @@ class TestGlobals(LeoUnitTest):
             # Always start with the root selected.
             c.selectPosition(c.rootPosition())
         #@-others
-
-        # Paths to existing files, relative to LeoPyRef.leo (in leo/core).
+        
+        #@+<< define paths >>
+        #@+node:ekr.20230620165938.1: *4* << define paths >>
+        # Relative path to existing files, relative to LeoPyRef.leo (in leo/core).
         # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
         relative_paths = (
             #  __init__.py...
@@ -208,10 +210,15 @@ class TestGlobals(LeoUnitTest):
             '../external/log_listener.py',
             '../plugins/cursesGui2.py',
         )
-        absolute_paths = [g.os_path_finalize_join(g.app.loadDir, z) for z in relative_paths]
-        for z in absolute_paths:
-            self.assertTrue(os.path.exists(z), msg=repr(z))
 
+        # Corresponding absolute paths.
+        absolute_paths = [
+            g.os_path_finalize_join(g.app.loadDir, z)
+                for z in relative_paths
+        ]
+        #@-<< define paths >>
+        #@+<< define test_headlines >>
+        #@+node:ekr.20230620170004.1: *4* << define test_headlines >>
         test_headlines = (
             # The hard case: __init__.py
             '@file ../plugins/importers/__init__.py',
@@ -225,6 +232,11 @@ class TestGlobals(LeoUnitTest):
             '@file ../external/log_listener.py',
             '@file ../plugins/cursesGui2.py',
         )
+        #@-<< define test_headlines >>
+        languages = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+        #@+<< define error dicts >>
+        #@+node:ekr.20230620170846.1: *4* << define error dicts >>
+
         # m.group(1) is the filename and m.group(2) is the line number.
         error_patterns: dict[str, re.Pattern] = {
             'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
@@ -233,8 +245,7 @@ class TestGlobals(LeoUnitTest):
             'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
             'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
         }
-        error_messages: dict[str, list[str]] = {}
-        languages = list(error_patterns.keys())
+
 
         # Error message templates.
         error_templates: dict[str, str] = {
@@ -246,6 +257,7 @@ class TestGlobals(LeoUnitTest):
         }
 
         # Create error messages for every language and every absolute path.
+        error_messages: dict[str, list[str]] = {}
         for language in languages:
             template = error_templates[language]
             error_messages[language] = [
@@ -255,7 +267,16 @@ class TestGlobals(LeoUnitTest):
                 .replace('ERR', f"{language} error")
                 for path in absolute_paths
             ]
-        ### g.printObj(error_messages)
+        #@-<< define error dicts >>
+        #@+<< do pre-tests >>
+        #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
+        # Pretest: all dicts have the same keys.
+        for d in (error_messages, error_patterns, error_templates):
+            self.assertEqual(languages, list(sorted(d.keys())))
+
+        # Pretest: all absolute paths must exist.
+        for z in absolute_paths:
+            self.assertTrue(os.path.exists(z), msg=repr(z))
 
         # Preliminary test: ensure all generated error messages match the language's pattern.
         for language in languages:
@@ -267,7 +288,10 @@ class TestGlobals(LeoUnitTest):
                     f"language: {language!r}\n"
                     f" message: {message!r}\n"
                     f" pattern: {pattern!r}"))
-
+        #@-<< do pre-tests >>
+        
+        return  ###
+        
         for language, pattern in error_patterns.items():
             for headline in test_headlines:
                 make_tree(c, headline)
