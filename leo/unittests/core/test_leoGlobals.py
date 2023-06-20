@@ -192,48 +192,33 @@ class TestGlobals(LeoUnitTest):
             # Always start with the root selected.
             c.selectPosition(c.rootPosition())
         #@-others
-        
-        #@+<< define paths >>
-        #@+node:ekr.20230620165938.1: *4* << define paths >>
-        # Relative path to existing files, relative to LeoPyRef.leo (in leo/core).
-        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
-        relative_paths = (
-            #  __init__.py...
-            '../plugins/importers/__init__.py',
-            '../plugins/writers/__init__.py',
-            '../plugins/leo_babel/__init__.py',
-            '../plugins/editpane/__init__.py',
-            # Other files.
-            'leoApp.py',
-            '../commands/abbrevCommands.py',
-            '../../launchLeo.py',
-            '../external/log_listener.py',
-            '../plugins/cursesGui2.py',
-        )
 
-        # Corresponding absolute paths.
-        absolute_paths = [
-            g.os_path_finalize_join(g.app.loadDir, z)
-                for z in relative_paths
-        ]
-        #@-<< define paths >>
-        #@+<< define test_headlines >>
-        #@+node:ekr.20230620170004.1: *4* << define test_headlines >>
-        test_headlines = (
+        tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+        #@+<< define test_data >>
+        #@+node:ekr.20230620170004.1: *4* << define test_data >>
+        # Define tuples (kind, path)
+        # kind: @clean, @edit, @file,
+        # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
+
+        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
+        test_data: tuple[str, str] = (
             # The hard case: __init__.py
-            '@file ../plugins/importers/__init__.py',
-            '@file ../plugins/writers/__init__.py',
-            '@clean ../plugins/leo_babel/__init__.py',
-            '@file ../plugins/editpane/__init__.py',
+            ('@file', '../plugins/importers/__init__.py'),
+            ('@file',  '../plugins/writers/__init__.py'),
+            ('@clean', '../plugins/leo_babel/__init__.py'),
+            ('@file',  '../plugins/editpane/__init__.py'),
             # Other files.
-            '@file leoApp.py',
-            '@file ../commands/abbrevCommands.py',
-            '@edit ../../launchLeo.py',
-            '@file ../external/log_listener.py',
-            '@file ../plugins/cursesGui2.py',
+            ('@file', 'leoApp.py'),
+            ('@file', '../commands/abbrevCommands.py'),
+            ('@edit', '../../launchLeo.py'),
+            ('@file', '../external/log_listener.py'),
+            ('@file', '../plugins/cursesGui2.py'),
         )
-        #@-<< define test_headlines >>
-        languages = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+        #@-<< define test_data >>
+        absolute_paths: list[str] = [
+            g.os_path_finalize_join(g.app.loadDir, relative_path)
+                for kind, relative_path in test_data
+        ]
         #@+<< define error dicts >>
         #@+node:ekr.20230620170846.1: *4* << define error dicts >>
 
@@ -246,7 +231,6 @@ class TestGlobals(LeoUnitTest):
             'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
         }
 
-
         # Error message templates.
         error_templates: dict[str, str] = {
             'flake8':   'FILE:LINE:COL:ERR',
@@ -256,63 +240,80 @@ class TestGlobals(LeoUnitTest):
             'python':   'File "FILE", line LINE',
         }
 
-        # Create error messages for every language and every absolute path.
+        # Message lines. Default all lines to 0.
+        error_lines: dict[str, int] = {}
+        for z in absolute_paths:
+            error_lines[z] = 0
+        ### g.printObj(error_lines)
+
+        # Create error messages for every tool and every absolute path.
         error_messages: dict[str, list[str]] = {}
-        for language in languages:
-            template = error_templates[language]
-            error_messages[language] = [
-                template.replace('FILE', path)
-                .replace('LINE', '100')
-                .replace('COL', '5')
-                .replace('ERR', f"{language} error")
-                for path in absolute_paths
-            ]
+        for path in absolute_paths:
+            for tool in tools:
+                template = error_templates[tool]
+                error_messages[tool] = [
+                    template.replace('FILE', path)
+                    .replace('LINE', '100')
+                    .replace('COL', f"{error_lines[path]!s}")
+                    .replace('ERR', f"{tool} error")
+                ]
+        ### g.printObj(error_messages)
         #@-<< define error dicts >>
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
         # Pretest: all dicts have the same keys.
         for d in (error_messages, error_patterns, error_templates):
-            self.assertEqual(languages, list(sorted(d.keys())))
+            self.assertEqual(tools, list(sorted(d.keys())))
 
         # Pretest: all absolute paths must exist.
         for z in absolute_paths:
             self.assertTrue(os.path.exists(z), msg=repr(z))
 
-        # Preliminary test: ensure all generated error messages match the language's pattern.
-        for language in languages:
-            pattern = error_patterns[language]
-            messages = error_messages[language]
+        # Preliminary test: ensure all generated error messages match the tool's pattern.
+        for tool in tools:
+            pattern = error_patterns[tool]
+            messages = error_messages[tool]
             for message in messages:
                 self.assertTrue(pattern.match(message), msg=(
                     'Error message does not match error pattern:\n'
-                    f"language: {language!r}\n"
+                    f"    tool: {tool!r}\n"
                     f" message: {message!r}\n"
                     f" pattern: {pattern!r}"))
         #@-<< do pre-tests >>
         
-        return  ###
-        
-        for language, pattern in error_patterns.items():
-            for headline in test_headlines:
-                make_tree(c, headline)
-                test_p = g.findNodeAnywhere(c, headline)
-                assert(test_p)
-                leo_dir = g.finalize_join(g.app.loadDir, '..')
-                assert os.path.exists(leo_dir), leo_dir
-                writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
-                assert os.path.exists(writers_init), writers_init
+        # Test all error messages for all paths.
+        for data in test_data:
+            kind, relative_path = data
+            headline = f"{kind} {relative_path}"
+            absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
+            self.assertTrue(os.path.exists(absolute_path), msg=headline)
+            make_tree(c, headline)
+            test_p = g.findNodeAnywhere(c, headline)
+            self.assertTrue(test_p, msg=headline)
+            for tool in tools:
+                pass
 
-                table = (
-                    # (f"{headline}", None),
-                    # ('test.py', None), 
-                    (writers_init, headline), ###'@file ../plugins/writers/__init__.py'),
-                )
-                for i, data in enumerate(table):
-                    s, expected = data
-                    unl = g.computeFileUrl(s, c)
-                    result = g.findUNL([unl], c)
-                    print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
-                    self.assertEqual(result, expected)
+            # for language, pattern in error_patterns.items():
+                # for headline in test_headlines:
+                    # make_tree(c, headline)
+                    # test_p = g.findNodeAnywhere(c, headline)
+                    # assert(test_p)
+                    # leo_dir = g.finalize_join(g.app.loadDir, '..')
+                    # assert os.path.exists(leo_dir), leo_dir
+                    # writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
+                    # assert os.path.exists(writers_init), writers_init
+
+                    # table = (
+                        # # (f"{headline}", None),
+                        # # ('test.py', None), 
+                        # (writers_init, headline), ###'@file ../plugins/writers/__init__.py'),
+                    # )
+                    # for i, data in enumerate(table):
+                        # s, expected = data
+                        # unl = g.computeFileUrl(s, c)
+                        # result = g.findUNL([unl], c)
+                        # print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
+                        # self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
