@@ -238,7 +238,7 @@ class TestGlobals(LeoUnitTest):
         # Error message templates.
         error_templates: dict[str, str] = {
             'flake8':   'FILE:LINE:COL:flake8 error',
-            'mypy':     'FILE:LINE:error mypy error',
+            'mypy':     'FILE:LINE:error mypy error COL',
             'pyflakes': 'FILE:LINE:COL pyflakes error',
             'pylint':   'FILE:LINE:COL: (pylint error)',
             'python':   'File "FILE", line LINE',
