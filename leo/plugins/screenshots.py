@@ -36,10 +36,9 @@ Inkscape (Required)
   Allows the user to edit screenshots.
   Required to create final output (PNG) files.
 
-PIL (Optional but highly recommended)
+PIL, aka pillow (Optional but highly recommended)
   pip install pillow
-  The Python Imaging Library,
-  http://www.pythonware.com/products/pil/
+  https://python-pillow.org/
 
 Wink (Optional)
   A program that creates slideshows and slides.
