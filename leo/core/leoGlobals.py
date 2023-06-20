@@ -2784,7 +2784,7 @@ def pdb(message: str = '') -> None:
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """Pretty print any Python object to a string."""
-    if isinstance(obj, (list, tuple)) and obj and all(isinstance(z, str) for z in obj):
+    if isinstance(obj, (list, tuple)):
         # Return the enumerated lines of the list.
         result_list = ['[\n' if isinstance(obj, list) else '(\n']
         for i, z in enumerate(obj):
