@@ -2,37 +2,32 @@
 #@+node:ekr.20101121031443.5330: * @file ../plugins/screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
+#@@pagewidth 80
 r""" Creates stand-alone slideshows containing screenshots.
 
-This plugin defines five commands. The
-**help-for-slides** command prints this message to
-Leo's log pane. The **slide-show-info** command
-prints the settings in effect.
+This plugin defines the following commands:
+    
+- **help-for-screenshots**: print this message to Leo's log pane.
+- **take-local-screen-shot**: take a screenshot of Leo's main window.
+- **take-global-screen-shot**: take a screenshot of the entire screen.
+- **slide-show-info**: print the settings in effect.
+- **make-slide** and **make-slide-show**, collectively called **slide
+  commands**, create collections of slides from **@slideshow** trees containing
+  **@slide** nodes.
+  
+Slides may link to screenshots. The slide commands can generate screenshots from
+**@screenshot-tree** nodes, but this feature has proven to be clumsy and
+inflexible. It is usually more convenient to use screenshots taken with a
+program such as Wink. The **meld-slides** command creates references to
+externally-generated screenshots within @slide nodes.
 
-The **make-slide** and **make-slide-show**
-commands, collectively called **slide commands**,
-create collections of slides from **@slideshow**
-trees containing **@slide** nodes.
-
-Slides may link to screenshots. The slide commands
-can generate screenshots from **@screenshot-tree**
-nodes, but this feature has proven to be clumsy
-and inflexible. It is usually more convenient to
-use screenshots taken with a program such as Wink.
-The **meld-slides** command creates references to
-externally-generated screenshots within @slide
-nodes.
-
-\@slide nodes may contain **@url nodes**. These @url
-nodes serve two purposes. First, they allow you to
-see various files (slides, initial screenshots,
-working files and final screenshots). Second,
-these @url nodes guide the meld script and the
-four commands defined by this plugin (see below).
-By inserting or deleting these @url nodes you (or
-your scripts) can customize how the commands (and
-meld) work. In effect, the @url nodes become
-per-slide settings.
+\@slide nodes may contain **@url nodes**:
+- @url nodes allow you to see various files (slides, initial screenshots,
+  working files and final screenshots).
+- @url nodes guide the meld script and the commands defined by this plugin By
+  inserting or deleting these @url nodes you (or your scripts) can customize how
+  the commands (and meld) work. In effect, the @url nodes become per-slide
+  settings.
 
 **Prerequisites**
 
@@ -41,9 +36,9 @@ Inkscape (Required)
   Allows the user to edit screenshots.
   Required to create final output (PNG) files.
 
-PIL (Optional but highly recommended)
-  The Python Imaging Library,
-  http://www.pythonware.com/products/pil/
+PIL, aka pillow (Optional but highly recommended)
+  pip install pillow
+  https://python-pillow.org/
 
 Wink (Optional)
   A program that creates slideshows and slides.
@@ -325,29 +320,35 @@ import textwrap
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtGui
-# Third-party imports.
-# Warnings are given later.
+from leo.core.leoQt import QtCore
+
+# Third-party imports: Warnings will be given later.
 try:
-    # pylint: disable=import-error
-    from PIL import Image, ImageChops
-    got_pil = True
+    from PIL import Image  # pylint: disable=import-error
+except Exception:
+    Image = None
+try:
+    from PIL import ImageChops  # pylint: disable=import-error
 except ImportError:
-    got_pil = False
-#
+    ImageChops = None
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
-# Alias.
-got_qt = QtGui is not None
 #@-<< imports >>
+
+screenshot_number = 0
 
 # To do: create _static folder.
 
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
+#@+node:ekr.20100908110845.5606: *3*  init (screenshots.py)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
-@g.command('help-for-slides')
+@g.command('help-for-screenshots')
 def help_for_screen_shots(event):
     # Just print the module's docstring.
     g.es(__doc__)
@@ -391,21 +392,44 @@ def slide_show_info_command(event):
     if c:
         sc = ScreenShotController(c)
         sc.slide_show_info_command(c.p)
-#@+node:ekr.20100908110845.5606: *3* init
-def init():
-    """Return True if the plugin has loaded successfully."""
-    ok = got_qt
-    if ok:
-        g.plugin_signon(__name__)
-    return ok
-#@+node:ekr.20100914090933.5770: *3* make_screen_shot
-def make_screen_shot(path):
-    """Create a screenshot of the present Leo outline and save it to path.
-    This is a callback called from make_screen_shot in runLeo.py"""
+#@+node:ekr.20100914090933.5770: *3* g.command(take-local/global-screen-shot)
+@g.command('take-screen-shot')
+@g.command('take-local-screen-shot')
+def start_local_screenshot(event):
+    """Wait 5 seconds, then take a screen shot of Leo's main window."""
+    start_screenshot('local', take_local_screenshot)
+
+@g.command('take-global-screen-shot')
+def start_global_screen_shot(event):
+    """Wait 5 seconds, then take a screen shot of the entire screen."""
+    start_screenshot('global', take_global_screenshot)
+
+def start_screenshot(kind, callback):
+    """Call the callback after 5 seconds."""
+    global screenshot_number
+    screenshot_number += 1
+    print(f"I'll take a {kind} screenshot number {screenshot_number} in 5 seconds")
+    QtCore.QTimer.singleShot(5000, callback)
+
+def take_global_screenshot():
+    screenshot_helper(0)
+
+def take_local_screenshot():
     app = g.app.gui.qtApp
-    screen = QtGui.QScreen()
-    w = screen.grabWindow(app.activeWindow().winId())
-    w.save(path, 'png')
+    screenshot_helper(app.activeWindow().winId())  # Only Leo's main window.
+
+def screenshot_helper(window_id):
+    """Take a screenshot of the given window."""
+    global screenshot_number
+    app = g.app.gui.qtApp
+    screen = app.primaryScreen()
+    if screen is not None:
+        # Save to the home directory.
+        file_name = os.path.normpath(os.path.expanduser(
+            f"~/.leo/screenshot-{screenshot_number}.png"))
+        pixmap = screen.grabWindow(window_id)
+        pixmap.save(file_name, 'png')
+        print(f"Screenshot saved in {file_name}")
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController:
     """A class to take screen shots and control Inkscape.
@@ -415,13 +439,6 @@ class ScreenShotController:
     #@+node:ekr.20100908110845.5532: *3*  ctor & helpers
     def __init__(self, c):
         self.c = c
-        try:
-            from PIL import Image, ImageChops
-            assert Image, ImageChops  # for pyflakes
-            self.got_pil = True
-        except ImportError:
-            self.got_pil = False
-        self.got_qt = QtGui is not None
         # Defaults.
         self.default_screenshot_height = 700
         self.default_screenshot_width = 900
@@ -1113,13 +1130,11 @@ class ScreenShotController:
         sc = self
         if sc.pil_message_given:
             return  # Warning already given.
-        if sc.got_pil:
+        if Image and ImageChops:
             return  # The best situation
         sc.pil_message_given = True
-        if sc.got_qt:
-            g.warning('PIL not found: images may have transparent borders')
-        else:
-            g.warning('PIL and Qt both not found: images may be less clear')
+        g.warning('PIL not found: images may have transparent borders')
+        print('pip install pillow')
     #@+node:ekr.20100908110845.5592: *4* in_slide_show
     def in_slide_show(self, p):
         """Return True if p is a descendant of an @slideshow node."""
@@ -1413,7 +1428,7 @@ class ScreenShotController:
         proc.communicate()  # Wait for Inkscape to terminate.
         if sc.verbose:
             g.note('wrote:  %s' % g.shortFileName(sc.output_fn))
-        if sc.got_pil:  # trim transparent border
+        if Image:  # trim transparent border
             try:
                 img = Image.open(sc.output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
@@ -1423,13 +1438,15 @@ class ScreenShotController:
         sc.make_at_url_node_for_output_file()
     #@+node:ekr.20100908110845.5555: *5* trim
     def trim(self, im, border):
-        bg = Image.new(im.mode, im.size, border)
-        diff = ImageChops.difference(im, bg)
-        bbox = diff.getbbox()
-        if bbox:
-            return im.crop(bbox)
-        # found no content
-        raise ValueError("cannot trim; image was empty")
+        if Image and ImageChops:
+            bg = Image.new(im.mode, im.size, border)
+            diff = ImageChops.difference(im, bg)
+            bbox = diff.getbbox()
+            if bbox:
+                return im.crop(bbox)
+            # found no content
+            raise ValueError("cannot trim; image was empty")
+        return None
     #@+node:ekr.20101004082701.5739: *4* make_slide & helpers
     #  Don't call rstCommands.writeToDocutils--we are using sphinx!
 
@@ -1522,7 +1539,7 @@ class ScreenShotController:
         img_element = ids_d.get('co_shot')
         img_element.set(sc.xlink + 'href', sc.screenshot_fn)
         # adjust screen shot dimensions
-        if sc.got_pil:
+        if Image:
             img = Image.open(sc.screenshot_fn)
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))
