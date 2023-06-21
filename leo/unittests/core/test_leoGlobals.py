@@ -256,16 +256,17 @@ class TestGlobals(LeoUnitTest):
 
         # Error messages for every tool and every absolute path.
         error_messages: dict[str, list[str]] = {}
-        for path in absolute_paths:
-            for tool in tools:
+        for tool in tools:
+            error_messages [tool] = []
+            for path in absolute_paths:
                 template = error_templates[tool]
-                error_messages[tool] = [
+                error_messages[tool].append([
                     template.replace('FILE', path)
-                    .replace('LINE', '100')
+                    .replace('LINE', '1')
                     .replace('COL', f"{error_lines[path]!s}")
                     .replace('ERR', f"{tool} error")
-                ]
-        ### g.printObj(error_messages)
+                ])
+        g.printObj(error_messages)
         #@-<< define error dicts >>
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>

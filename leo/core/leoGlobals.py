@@ -7197,7 +7197,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
             path = g.finalize(path)
         url = f"{tag}{path}"
     return url
-#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
+#@+node:ekr.20190608090856.1: *3* g.es_clickable_link (not used)
 def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> None:
     """
     Write a clickable message to the given line number of p.b.
@@ -7205,6 +7205,7 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     Negative line numbers indicate global lines.
 
     """
+    # Not used in Leo's core.
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
@@ -7293,7 +7294,11 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 if n < 0:
                     p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
                     if not p:
-                        g.trace(f"Not found: global line {n}")
+                        g.trace(f"Not found: global line {n}: {p1.h}")
+                        # Fall back to line 0.
+                        p, offset = c.gotoCommands.find_file_line(0, p)  # Calls c.redraw().
+                        if not p:
+                            g.trace(f"Not found: {p1.h}")
                     return p
                 insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
                 c.redraw(p)

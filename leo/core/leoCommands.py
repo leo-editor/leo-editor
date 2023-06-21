@@ -2696,7 +2696,7 @@ class Commands:
         """
         c, log = self, self.frame.log
         #@+others  # Define helper functions
-        #@+node:ekr.20210529142153.1: *5* function: put_line
+        #@+node:ekr.20210529142153.1: *5* function: put_line (c.general_script_helper)
         def put_line(s: str) -> None:
             """
             Put the line, creating a clickable link if the regex matches.
