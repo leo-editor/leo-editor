@@ -145,7 +145,7 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl
     #@@nobeautify
     def test_g_findUnl(self):
-        c = self.c
+        c = self.c    
 
         # Define helper functions.
         #@+others
@@ -236,16 +236,18 @@ class TestGlobals(LeoUnitTest):
         }
 
         # List of absolute paths in the test data.
+        self.assertTrue(c.fileName)
         absolute_paths: list[str] = [
-            g.os_path_finalize_join(g.app.loadDir, relative_path)
+            g.os_path_finalize_join(os.path.dirname(c.fileName()), relative_path)
                 for _, relative_path in test_data
         ]
+        # g.printObj(absolute_paths, tag='absolute_paths')
 
         # The error line for each absolute path. Default all lines to 0.
         error_lines: dict[str, int] = {}
         for z in absolute_paths:
             error_lines[z] = 0
-        ### g.printObj(error_lines)
+        # g.printObj(error_lines)
 
         # Error messages for every tool and every absolute path.
         error_messages: dict[str, list[str]] = {}
@@ -262,7 +264,7 @@ class TestGlobals(LeoUnitTest):
         #@-<< define error dicts >>
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
-        # Pretest: all dicts have the same keys.
+        # Pretest: all dicts must have the same keys.
         for d in (error_messages, error_patterns, error_templates):
             self.assertEqual(tools, list(sorted(d.keys())))
 
@@ -270,7 +272,7 @@ class TestGlobals(LeoUnitTest):
         for z in absolute_paths:
             self.assertTrue(os.path.exists(z), msg=repr(z))
 
-        # Preliminary test: ensure all generated error messages match the tool's pattern.
+        # Pretest: all generated error messages must match the tool's pattern.
         for tool in tools:
             pattern = error_patterns[tool]
             messages = error_messages[tool]

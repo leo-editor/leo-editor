@@ -117,7 +117,8 @@ class LeoUnitTest(unittest.TestCase):
 
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        fileName = g.os_path_finalize_join(g.app.loadDir, 'LeoPyRef.leo')
+        self.c = c = leoCommands.Commands(fileName=fileName, gui=g.app.gui)
 
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()

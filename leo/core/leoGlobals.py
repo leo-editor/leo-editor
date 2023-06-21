@@ -7271,7 +7271,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     if 1: ###
         g.trace(unlList)
         g.printObj(targets, tag='targets')
-        g.printObj(positions, tag='positions')
+        g.printObj([z.h for z in positions], tag='positions')
     while unlList:
         for p in positions:
             p1 = p.copy()
