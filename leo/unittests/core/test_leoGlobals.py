@@ -295,22 +295,24 @@ class TestGlobals(LeoUnitTest):
         # Test all error messages for all paths.
         for data in test_data:
             kind, relative_path = data
-            headline = f"{kind} {relative_path}"
+            headline = msg = f"{kind} {relative_path}"
+            # Pretests...
             absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
-            self.assertTrue(absolute_path in absolute_paths, msg=headline)
+            self.assertTrue(absolute_path in absolute_paths, msg=msg)
+            self.assertTrue(os.path.exists(absolute_path), msg=msg)
             make_tree(c, headline)
             test_p = g.findNodeAnywhere(c, headline)
-            self.assertTrue(test_p, msg=headline)
-            ###for tool in tools:
+            full_path = c.fullPath(test_p)
+            self.assertEqual(full_path, absolute_path, msg=msg)
+            self.assertTrue(test_p, msg=msg)
             file_unl = g.computeFileUrl(absolute_path, c)
-            self.assertEqual(file_unl, f"file://{absolute_path}", msg=headline)
-            self.assertTrue(os.path.exists(absolute_path), msg=headline)
+            self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
+            # The real test of g.findUNL.
             result = g.findUNL([file_unl], c)
-            self.assertTrue(result, msg=headline)
-
+            self.assertTrue(result, msg=msg)
             
-
-            # for language, pattern in error_patterns.items():
+            
+            ###
                 # for headline in test_headlines:
                     # make_tree(c, headline)
                     # test_p = g.findNodeAnywhere(c, headline)
