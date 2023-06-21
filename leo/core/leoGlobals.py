@@ -142,8 +142,8 @@ cmd_instance_dict = {
     'VimCommands':              ['c', 'vimCommands'],
 }
 #@-<< define global decorator dicts >>
-#@+<< define global error regexs >>
-#@+node:ekr.20220412193109.1: ** << define global error regexs >> (leoGlobals.py)
+#@+<< define global error regexes >>
+#@+node:ekr.20220412193109.1: ** << define global error regexes >> (leoGlobals.py)
 # Most code need only know about the *existence* of these patterns.
 
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
@@ -155,7 +155,7 @@ mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
-#@-<< define global error regexs >>
+#@-<< define global error regexes >>
 #@+<< define g.decorators >>
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
@@ -7217,6 +7217,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
 
     # Define the unl patterns.
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    
+    # New style: <absolute path>::<line number> # Negative line numbers are global.
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
 
     #@+others  # Define helper functions
