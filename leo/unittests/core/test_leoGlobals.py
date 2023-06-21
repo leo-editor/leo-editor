@@ -309,7 +309,7 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
             # The real test of g.findUNL.
             result = g.findUNL([file_unl], c)
-            self.assertTrue(result, msg=msg)
+            self.assertEqual(result, absolute_path, msg=msg)
             
             
             ###
