@@ -145,7 +145,12 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl
     #@@nobeautify
     def test_g_findUnl(self):
-        c = self.c    
+        # A thorough test of complex code:
+        # 1. Create error messages for all of Leo's supported tools.
+        #    These messages must refer to real files.
+        # 2. Convert these messages to UNL's.
+        # 3. Test that g.findUNL find's the referenced node.
+        c = self.c
 
         # Define helper functions.
         #@+others
@@ -264,6 +269,9 @@ class TestGlobals(LeoUnitTest):
         #@-<< define error dicts >>
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
+        # Note: At present this unit test does not use the error messages.
+        #       Perhapts these pre-test should be in a separate unit test.
+
         # Pretest: all dicts must have the same keys.
         for d in (error_messages, error_patterns, error_templates):
             self.assertEqual(tools, list(sorted(d.keys())))
@@ -283,7 +291,7 @@ class TestGlobals(LeoUnitTest):
                     f" message: {message!r}\n"
                     f" pattern: {pattern!r}"))
         #@-<< do pre-tests >>
-        
+
         # Test all error messages for all paths.
         for data in test_data:
             kind, relative_path = data
@@ -293,8 +301,14 @@ class TestGlobals(LeoUnitTest):
             make_tree(c, headline)
             test_p = g.findNodeAnywhere(c, headline)
             self.assertTrue(test_p, msg=headline)
-            for tool in tools:
-                pass
+            ###for tool in tools:
+            file_unl = g.computeFileUrl(absolute_path, c)
+            self.assertEqual(file_unl, f"file://{absolute_path}", msg=headline)
+            self.assertTrue(os.path.exists(absolute_path), msg=headline)
+            result = g.findUNL([file_unl], c)
+            self.assertTrue(result, msg=headline)
+
+            
 
             # for language, pattern in error_patterns.items():
                 # for headline in test_headlines:
@@ -308,7 +322,7 @@ class TestGlobals(LeoUnitTest):
 
                     # table = (
                         # # (f"{headline}", None),
-                        # # ('test.py', None), 
+                        # # ('test.py', None),
                         # (writers_init, headline), ###'@file ../plugins/writers/__init__.py'),
                     # )
                     # for i, data in enumerate(table):

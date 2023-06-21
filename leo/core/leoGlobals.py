@@ -7213,6 +7213,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
+    trace = False
+
     # Define the unl patterns.
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
@@ -7268,7 +7270,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
     positions = list(reversed([z for z in c.all_positions() if z.h.strip() in targets]))
-    if 1: ###
+    if trace: ###
         g.trace(unlList)
         g.printObj(targets, tag='targets')
         g.printObj([z.h for z in positions], tag='positions')
@@ -7299,7 +7301,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
-        g.trace('NOT FOUND: new list:', unlList)
+        if trace:
+            g.trace('NOT FOUND: new list:', unlList)
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
