@@ -11947,9 +11947,8 @@ valid values are: normal,bold,100,..,900
 <t tx="tbrown.20140102100730.27778">Number of levels (rows) of hieararchical bookmarks to show.  0 (zero)
 collapse hieracrch and show all bookmarks.  1 or more sets max. levels
 displayed at once, see bookmarks plugin docs.</t>
-<t tx="tbrown.20140505094209.37266">Show close box (the 'X') on outlien tabs - they can be closed with
-Ctrl-W or middle mouse click, so this optionally hides the
-redundant 'X'</t>
+<t tx="tbrown.20140505094209.37266">True: Show the close box [x] on outline tabs.
+</t>
 <t tx="tbrown.20140514191846.42168">These give the width and style of the border surrounding the active pane.
 </t>
 <t tx="tbrown.20140514191846.42169"># Set to None to disable border styling.</t>
