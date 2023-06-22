@@ -817,12 +817,9 @@ class Position:
         Return a UNL representing a clickable link.
         See the section < define global error regexs > for the regexes.
 
-        - unl: //
-        - self.v.context.fileName() #
-        - a list of headlines separated by '-->'
 
         New in Leo 6.6:
-        - Always add unl: // and file name.
+        - The unl consists of unl, //, abspath, '#', '-->'.join([z.h for z in p.self_and_parents()])
         - Never translate '-->' to '--%3E'.
         - Never generate child indices.
         """

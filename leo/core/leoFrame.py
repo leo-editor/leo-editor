@@ -1287,7 +1287,7 @@ class LeoLog:
         error lines.
         """
         c = self.c
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match

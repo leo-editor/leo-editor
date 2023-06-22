@@ -246,13 +246,11 @@ class TestGlobals(LeoUnitTest):
             g.os_path_finalize_join(os.path.dirname(c.fileName()), relative_path)
                 for _, relative_path in test_data
         ]
-        # g.printObj(absolute_paths, tag='absolute_paths')
 
         # The error line for each absolute path. Default all lines to 0.
         error_lines: dict[str, int] = {}
         for z in absolute_paths:
             error_lines[z] = 0
-        # g.printObj(error_lines)
 
         # Error messages for every tool and every absolute path.
         error_messages: dict[str, list[str]] = {}
@@ -260,14 +258,16 @@ class TestGlobals(LeoUnitTest):
             error_messages [tool] = []
             for path in absolute_paths:
                 template = error_templates[tool]
-                error_messages[tool].append([
+                error_messages[tool].append(
                     template.replace('FILE', path)
                     .replace('LINE', '1')
                     .replace('COL', f"{error_lines[path]!s}")
                     .replace('ERR', f"{tool} error")
-                ])
-        g.printObj(error_messages)
+                )
         #@-<< define error dicts >>
+        # g.printObj(absolute_paths, tag='absolute_paths')
+        # g.printObj(error_lines)
+        # g.printObj(error_messages)
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
         # Note: At present this unit test does not use the error messages.
@@ -310,6 +310,7 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
             # The real test of g.findUNL.
             result = g.findUNL([file_unl], c)
+            # g.trace('result:', repr(result))
             self.assertEqual(result, absolute_path, msg=msg)
             
             

@@ -7214,7 +7214,10 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    trace = False
+    trace = True
+    
+    if trace:
+        g.printObj(unlList1, tag='ENTRY')
 
     # Define the unl patterns.
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
@@ -7263,6 +7266,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     #@-others
 
     unlList = convert_unl_list(unlList1)
+    breakpoint()
     if not unlList:
         return None
     # Find all target headlines.
