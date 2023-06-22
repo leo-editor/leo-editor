@@ -7218,7 +7218,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
 
     # Define the unl patterns.
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
-    
+
     # New style: <absolute path>::<line number> # Negative line numbers are global.
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
 
@@ -7273,7 +7273,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
     positions = list(reversed([z for z in c.all_positions() if z.h.strip() in targets]))
-    if trace: ###
+    if trace:  ###
         g.trace(unlList)
         g.printObj(targets, tag='targets')
         g.printObj([z.h for z in positions], tag='positions')
