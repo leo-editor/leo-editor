@@ -3,6 +3,7 @@
 """Tests of leoImport.py"""
 
 import io
+import sys
 import textwrap
 from leo.unittests.test_importers import BaseTestImporter
 StringIO = io.StringIO
@@ -83,7 +84,10 @@ class TestLeoImport(BaseTestImporter):
     def test_recursive_import(self):
         from leo.core import leoImport
         c, root = self.c, self.c.rootPosition()
-        dir_ = r'C:/Repos/non-existent-directory/mypy'
+        if sys.platform.startswith('win'):
+            dir_ = 'C:/Repos/non-existent-directory/mypy'
+        else:
+            dir_ = '/Repos/non-existent-directory/mypy'
         # minimize_headlines changes only headlines that start with dir_ or @<file> dir_. 
         table = (
             ('root', 'root'),

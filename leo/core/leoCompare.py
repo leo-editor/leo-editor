@@ -733,12 +733,22 @@ def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
         defaultextension=".leo",
         multiple=True,
     )
+    if not paths:
+        return
+    if len(paths) == 1:
+        # Prompt for another file.
+        paths2 = g.app.gui.runOpenFileDialog(c,
+            title=title,
+            filetypes=types,
+            defaultextension=".leo",
+            multiple=True,
+        )
+        if not paths2:
+            return
+        paths.extend(paths2)
     c.bringToFront()
-    # paths = [z for z in paths if g.os_path_exists(z)]
-    if len(paths) > 1:
-        CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
-    elif len(paths) == 1:
-        g.es_print('Please pick two or more .leo files')
+    assert len(paths) > 1
+    CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
 #@-others
 #@@language python
 #@@tabwidth -4

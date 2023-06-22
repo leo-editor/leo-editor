@@ -2,6 +2,7 @@
 profile.txt
 __pycache__/
 .mypy_cache/
+mypy_cache/
 .dmypy.json
 .cache/
 *.bak

@@ -1119,6 +1119,10 @@ class TestTOG(BaseTest):
         self.make_data(contents)
     #@+node:ekr.20230616015533.1: *5* test_TryStar
     def test_TryStar(self):
+
+        if py_version < (3, 11):
+            self.skipTest('Python 3.11+ only')
+
         contents = r"""\
     try:
         print('a1')
