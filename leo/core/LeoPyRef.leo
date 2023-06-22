@@ -25,6 +25,7 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20230616024812.1"><vh>@button cover-one</vh></v>
 <v t="ekr.20220306092217.1"><vh>@button test-one</vh>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
@@ -572,7 +573,6 @@
 <v t="ekr.20090622063842.5264"><vh>@file ../plugins/projectwizard.py</vh></v>
 <v t="ekr.20160928073518.1"><vh>@file ../plugins/pyplot_backend.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file ../plugins/quicksearch.py</vh></v>
-<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file ../plugins/screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
@@ -591,6 +591,7 @@
 <v t="EKR.20040517080555.2"><vh>@file ../plugins/plugins_menu.py</vh></v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file ../plugins/redirect_to_log.py</vh></v>
+<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file ../plugins/systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file ../plugins/wikiview.py</vh></v>
 <v t="ekr.20181004143535.1"><vh>@file ../plugins/xdb_pane.py</vh></v>
@@ -2761,16 +2762,16 @@ def do_sec(i, m, s):
 <t tx="ekr.20220306092217.1">g.cls()
 &lt;&lt; prefixes &gt;&gt;
 commands = (
-    # f" {core}.test_leoImport.TestLeoImport.test_parse_body",
-    # f" {importers}.TestCoffeescript",
-    # f" {importers}.TestCython",
-    # f" {importers}.TestPython",
     # f" {importers}",
-    f" {core}.test_leoImport.TestLeoImport.test_recursive_import",
+    # f" {core}.test_leoAst.TestTOG.test_Try",
+    # f" {core}.test_leoAst.TestTOG.test_TryStar",
+    # f" {core}.test_leoApp.TestApp.test_LM_scanOptions",
+    # f" {core}.test_leoGlobals.TestGlobals.test_g_OptionsUtils",
+    # f" {core}.test_leoImport.TestLeoImport.test_recursive_import",
+    f" {core}.test_leoGlobals.TestGlobals.test_g_findUnl",
 )
 commands_s = f"python -m unittest {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
-
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3112,14 +3113,13 @@ top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
 <t tx="ekr.20220823130338.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
-# #2743 is a duplicate of #1789. 
 g.cls()
 import glob
 import os
 join, norm, sep = os.path.join, os.path.normpath, os.sep
 
 # Compute the directories.
-leo_dir = norm(join(g.app.loadDir, '..'))
+leo_dir = norm(join(g.app.loadDir, '..', '..'))
 core_dir = join(leo_dir, 'core')
 commands_dir = join(leo_dir, 'commands')
 external_dir = join(leo_dir, 'external')
@@ -3141,6 +3141,8 @@ at_file_paths = sorted([
             if z.isAnyAtFileNode()
 ])
 
+# g.printObj(at_file_paths, tag='known paths')
+
 excluded_files = (
     r'plugins\qt_main.py',  # Generated automatically.
     r'plugins\baseNativeTree.py',  # No longer used.
@@ -3150,9 +3152,14 @@ def is_excluded(path):
     return any(z in path for z in excluded_files)
 
 # Ensure that @&lt;file&gt; nodes exist for every file on disk.
+missing = []
 for z in core_files + external_files + plugin_files:
     if z not in at_file_paths and not is_excluded(z):
-        print('Missing:', z)
+        missing.append(z)
+if missing:
+    g.printObj(missing, tag='missing')
+else:
+    print('No missing files!')
 print('done')</t>
 <t tx="ekr.20220823195205.1">"""
 Stand alone GUI free index builder for Leo's full text search system::
@@ -3451,5 +3458,6 @@ testColorizer = 'test_leoColorizer.TestColorizer'
 testCommands = 'test_leoCommands.TestCommands'
 testGlobals = 'test_leoGlobals.TestGlobals'
 </t>
+<t tx="ekr.20230616024812.1">g.execute_shell_commands('cover-one')</t>
 </tnodes>
 </leo_file>

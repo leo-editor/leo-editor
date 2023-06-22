@@ -149,10 +149,15 @@ def showFonts(self, event=None):
             font.setFamily(family)
         font.setBold(weight)
         font.setItalic(slant)
-        font.setPointSize(size)
+        try:
+            font.setPointSizeF(float(size))
+        except TypeError:
+            font.setPointSize(int(size))
         picker.setCurrentFont(font)
     except ValueError:
         pass
+    except Exception:
+        g.es_exception()
     result = picker.exec_()
     if not result:
         g.es("No font selected")

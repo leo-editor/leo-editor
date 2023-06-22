@@ -36,8 +36,10 @@ def about(self: Self, event: Event = None) -> None:
 #@+node:vitalije.20170713174950.1: ** c_help.editOneSetting
 @g.commander_command('edit-setting')
 def editOneSetting(self: Self, event: Event = None) -> None:
-    """Opens correct dialog for selected setting type"""
-    c, p = self, self.c.p
+    """
+    Opens dialog for editing @button, @command, @color, @font, or @shortcuts nodes.
+    """
+    c, p = self, self.p
     func = None
     if p.h.startswith('@font'):
         func = c.commandsDict.get('show-fonts')
@@ -47,7 +49,7 @@ def editOneSetting(self: Self, event: Event = None) -> None:
         c.editShortcut()
         return
     else:
-        g.es('not in a setting node')
+        g.es('Please select an @button, @command, @color, @font, or @shortcuts node')
         return
     if func:
         event = g.app.gui.create_key_event(c)
