@@ -7229,7 +7229,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
             # Try to get the line number.
             for m, line_group in (
                 (old_pat.match(s), 4),
-                ### (new_pat.match(s), 3),
+                (new_pat.match(s), 2),
             ):
                 if m:
                     try:
