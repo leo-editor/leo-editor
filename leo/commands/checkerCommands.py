@@ -436,9 +436,7 @@ class MypyCommand:
             fn=fn,
             kind='mypy',
             link_pattern=g.mypy_pat,
-            link_root=root,
         )
-
     #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
     def run(self, p: Position) -> None:
         """Run mypy on all Python @<file> nodes in c.p's tree."""
@@ -707,7 +705,6 @@ class PylintCommand:
             fn=fn,
             kind='pylint',
             link_pattern=g.pylint_pat,
-            link_root=p,
         )
     #@-others
 #@-others

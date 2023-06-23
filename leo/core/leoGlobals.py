@@ -7215,15 +7215,14 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Return the found position, or None.
     """
     trace = True
-    
-    if trace:
-        g.printObj(unlList1, tag='ENTRY')
 
     # Define the unl patterns.
-    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
 
-    # New style: <absolute path>::<line number> # Negative line numbers are global.
-    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+    # <absolute-path>::<line-number>  Negative line numbers are global
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
+
+    # <absolute-path>:<comma-separated list of names>
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 
     #@+others  # Define helper functions
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
@@ -7266,7 +7265,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     #@-others
 
     unlList = convert_unl_list(unlList1)
-    breakpoint()
     if not unlList:
         return None
     # Find all target headlines.

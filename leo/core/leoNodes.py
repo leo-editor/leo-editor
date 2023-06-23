@@ -6,6 +6,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import copy
+import os
 import time
 import uuid
 from typing import Any, Generator, Optional, TYPE_CHECKING
@@ -817,17 +818,19 @@ class Position:
         Return a UNL representing a clickable link.
         See the section < define global error regexs > for the regexes.
 
-
         New in Leo 6.6:
-        - The unl consists of unl, //, abspath, '#', '-->'.join([z.h for z in p.self_and_parents()])
+        - The unl consists of 'unl:', '//', <absolute-file-name>, '#', '-->'.join([z.h for z in p.self_and_parents()])
         - Never translate '-->' to '--%3E'.
         - Never generate child indices.
         """
-        base_unl = (self.v.context.fileName() + '#'
+        file_name = self.v.context.fileName()
+        if not os.path.isabs(file_name):
+            g.trace(f"Warning: not an absolute file name: {file_name!r}")
+        base_unl = (file_name + '#'
             + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
                     )
         encoded = base_unl.replace("'", "%27")
-        return 'unl://' + encoded
+        return 'unl:' + '//' + encoded
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self

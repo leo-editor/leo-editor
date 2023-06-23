@@ -161,7 +161,7 @@ class TestGlobals(LeoUnitTest):
         def make_tree(c, root_h):
             """Make a test tree for other tests"""
             root = c.rootPosition()
-            root.h = root_h  ### '@file test.py'
+            root.h = root_h
             root.b = "def root():\n    pass\n"
             last = root
 
@@ -312,29 +312,6 @@ class TestGlobals(LeoUnitTest):
             result = g.findUNL([file_unl], c)
             # g.trace('result:', repr(result))
             self.assertEqual(result, absolute_path, msg=msg)
-            
-            
-            ###
-                # for headline in test_headlines:
-                    # make_tree(c, headline)
-                    # test_p = g.findNodeAnywhere(c, headline)
-                    # assert(test_p)
-                    # leo_dir = g.finalize_join(g.app.loadDir, '..')
-                    # assert os.path.exists(leo_dir), leo_dir
-                    # writers_init = g.finalize_join(leo_dir, 'plugins', 'writers', '__init__.py')
-                    # assert os.path.exists(writers_init), writers_init
-
-                    # table = (
-                        # # (f"{headline}", None),
-                        # # ('test.py', None),
-                        # (writers_init, headline), ###'@file ../plugins/writers/__init__.py'),
-                    # )
-                    # for i, data in enumerate(table):
-                        # s, expected = data
-                        # unl = g.computeFileUrl(s, c)
-                        # result = g.findUNL([unl], c)
-                        # print(f"exists: {int(os.path.exists(s))} unl{':'} {unl}")
-                        # self.assertEqual(result, expected)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (

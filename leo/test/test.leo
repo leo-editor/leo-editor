@@ -7,6 +7,10 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180311131353.1"><vh>Personal test file</vh></v>
+<v t="ekr.20230622114548.1"><vh>@settings</vh>
+<v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
+<v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
+</v>
 <v t="ekr.20180311131424.1"><vh>Recent</vh>
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
 <v t="ekr.20180311210803.1"><vh>re latex button</vh>
@@ -60,8 +64,8 @@
 </v>
 <v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -960,8 +964,19 @@ This is a comment</t>
 <t tx="ekr.20230622112641.1"></t>
 <t tx="ekr.20230622112649.1"># Exists, non-empty.
 C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
+
 # Exists, empty.
 C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 </t>
+<t tx="ekr.20230622114548.1"></t>
+<t tx="ekr.20230622114556.1">s = """
+# Exists, non-empty.
+C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
+# Exists, empty.
+C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
+"""
+# 
+c.frame.log.put_html_links(s)</t>
+<t tx="ekr.20230623064935.1">copy-test</t>
 </tnodes>
 </leo_file>

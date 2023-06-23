@@ -1276,15 +1276,12 @@ class LeoLog:
         (1, 2, g.python_pat),
     ]
 
-    def put_html_links(self, s: str, link_root: Position = None) -> bool:
+    def put_html_links(self, s: str) -> bool:
         """
         If *any* line in s contains a matches against known error patterns,
         then output *all* lines in s to the log, and return True.
-        Otherwise, return False.
 
-        If link_root is not None, then use it to compute the UNLs for navigation
-        links.  Otherwise, look for external files matching the file in the
-        error lines.
+        Otherwise, return False.
         """
         c = self.c
         trace = True and not g.unitTesting
@@ -1297,9 +1294,6 @@ class LeoLog:
                 return None, None, None
             for filename_i, line_number_i, pattern in self.link_table:
                 m = pattern.match(line)
-                if m and trace:
-                    g.trace(f"Match! {i:2} {m.group(filename_i)}:{m.group(line_number_i)}")
-                    # print('    ', repr(line))
                 if m:
                     return m, filename_i, line_number_i
             return None, None, None
@@ -1330,29 +1324,16 @@ class LeoLog:
             # Strip unprintable chars.
             s = ''.join(ch for ch in s if ch in printables)
         lines = s.split('\n')
-        # Trace lines.
-        if trace:
-            g.trace(c.shortFileName())
-            for i, line in enumerate(lines):
-                print(f"{i:2} {line!r}")
         # Return False if no lines match initially. This is an efficiency measure.
         for line in lines:
             m, junk, junk = find_match(line)
             if m:
                 break
         else:
-            if trace:
-                print('No matches found!')
             return False  # The caller must handle s.
-        if link_root:
-            has_at_file_nodes = False
-            at_file_nodes = []
-            if trace:
-                print('No @<file> nodes')
-        else:
-            # Find all @<file> nodes.
-            has_at_file_nodes = True
-            at_file_nodes = [p for p in c.all_positions() if p.isAnyAtFileNode()]
+
+        # Compute the list of @<file> nodes.
+        at_file_nodes = [z for z in c.all_positions() if z.isAnyAtFileNode()]
 
         # Output each line using log.put, with or without a nodeLink.
         found_matches = 0
@@ -1361,27 +1342,23 @@ class LeoLog:
             if m:
                 filename = m.group(filename_i)
                 line_number = m.group(line_number_i)
-                if has_at_file_nodes:
-                    p = find_at_file_node(filename)  # Find a corresponding @<file> node.
-                else:
-                    p = link_root
+                p = find_at_file_node(filename)
                 if p:
                     unl = p.get_UNL()
                     found_matches += 1
-                    if not has_at_file_nodes:
-                        # filename will be the path of a temporary file
-                        line = 'Node: ' + line.replace(filename, p.h)
+                    if trace:
+                        # LeoQtLog.put writes: f'<a href="{url}" title="{nodeLink}">{s}</a>'
+                        g.trace(f"{unl}::-{line_number}")
                     self.put(line, nodeLink=f"{unl}::-{line_number}")  # Use global line.
                 else:  # An unusual case.
-                    if not g.unitTesting:
-                        print(f"{i:2} p not found! {filename!r}")
+                    message = f"no p for {filename!r}"
+                    if g.unitTesting:
+                        raise ValueError(message)
+                        # g.trace(f"{i:2} p not found! {filename!r}")
+                    g.trace(message)
                     self.put(line)
             else:  # None of the patterns match.
-                if trace:
-                    print(f"{i:2} No match!")
                 self.put(line)
-        if trace:
-            g.trace('Found', found_matches, 'matches')
         return bool(found_matches)
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName: str, newName: str) -> None:
