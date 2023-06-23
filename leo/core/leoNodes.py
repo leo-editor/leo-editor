@@ -814,19 +814,17 @@ class Position:
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
     def get_UNL(self) -> str:
         """
-        Return a UNL representing a clickable link.
-        See the section < define global error regexs > for the regexes.
+        Return a UNL for clickable links and Leo's status area.
 
-        New in Leo 6.6:
-        - The unl consists of 'unl:', '//', <file-name>, '#', '-->'.join([z.h for z in p.self_and_parents()])
-        - Never translate '-->' to '--%3E'.
-        - Never generate child indices.
+        UNL's consists of 'unl:', '//', <file-name>, '#', '-->'.join([z.h for z in p.self_and_parents()])
+
+        UNL's do *not* contain child indices.
         """
         file_name = self.v.context.fileName()
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         base_unl = f"{file_name}#{parts_s}"
-        encoded = base_unl.replace("'", "%27")
-        return 'unl:' + '//' + encoded
+        # Do *not* translate '-->' to '--%3E'.
+        return 'unl:' + '//' + base_unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
