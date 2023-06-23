@@ -7219,17 +7219,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     new_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
 
     #@+others  # Define helper functions
-    #@+node:ekr.20230623091026.1: *4* function: convert_line_number
-    def convert_line_number(line_number: str) -> Optional[int]:
-        """
-        Convert line number to an int.
-        Return None on error.
-        """
-        try:
-            return int(line_number)
-        except(TypeError, ValueError):
-            g.trace('bad line number', line_number)
-            return None
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
     def convert_unl_list(aList: list[str]) -> list[str]:
         """
@@ -7278,7 +7267,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
             p1.moveToParent()
         return not aList
     #@-others
-    
+
     ### g.trace('unlList1', unlList1)
 
     unlList = convert_unl_list(unlList1)
