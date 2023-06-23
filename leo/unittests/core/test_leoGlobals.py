@@ -265,9 +265,6 @@ class TestGlobals(LeoUnitTest):
                     .replace('ERR', f"{tool} error")
                 )
         #@-<< define error dicts >>
-        # g.printObj(absolute_paths, tag='absolute_paths')
-        # g.printObj(error_lines)
-        # g.printObj(error_messages)
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
         # Note: At present this unit test does not use the error messages.
@@ -308,8 +305,8 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(test_p, msg=msg)
             file_unl = g.computeFileUrl(absolute_path, c)
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
-            # The real test of g.findUNL.
-            result = g.findUNL([file_unl], c)
+            # Test g.findUNL.
+            result = g.findUNL([headline], c)
             self.assertEqual(result, test_p, msg=msg)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
