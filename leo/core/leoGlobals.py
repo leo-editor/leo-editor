@@ -7242,14 +7242,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
             result.append(s)
         # Do *not* remove duplicates!
         return result
-    #@+node:ekr.20230623090419.1: *4* function: select_line
-    def select_line(n: int, p: Position) -> None:
-        """select line n of p."""
-        insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
-        c.redraw(p)
-        c.frame.body.wrapper.setInsertPoint(insert_point)
-        c.frame.bringToFront()
-        c.bodyWantsFocusNow()
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
