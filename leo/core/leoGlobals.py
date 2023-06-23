@@ -7218,7 +7218,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
 
     # <headline>::<line-number>  Negative line numbers are global
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
-    
+
     # <path>:<comma-separated list of names>
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 

@@ -825,9 +825,6 @@ class Position:
         file_name = self.v.context.fileName()
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         base_unl = f"{file_name}#{parts_s}"
-        # base_unl = (file_name + '#'
-            # + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-                   #  )
         encoded = base_unl.replace("'", "%27")
         return 'unl:' + '//' + encoded
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
