@@ -64,8 +64,9 @@
 </v>
 <v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230623141357.1"><vh>UNLs: </vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -978,5 +979,10 @@ C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 # 
 c.frame.log.put_html_links(s)</t>
 <t tx="ekr.20230623064935.1">copy-test</t>
+<t tx="ekr.20230623141357.1"># Exists, non-empty.
+unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
+
+# Exists, empty.
+unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py</t>
 </tnodes>
 </leo_file>
