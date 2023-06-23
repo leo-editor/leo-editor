@@ -432,11 +432,7 @@ class MypyCommand:
             return
         command = f"{sys.executable} -m mypy {fn}".split()
         bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command,
-            fn=fn,
-            kind='mypy',
-            link_pattern=g.mypy_pat,
-        )
+        bpm.start_process(c, command, fn=fn, kind='mypy')
     #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
     def run(self, p: Position) -> None:
         """Run mypy on all Python @<file> nodes in c.p's tree."""
@@ -701,11 +697,7 @@ class PylintCommand:
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command,
-            fn=fn,
-            kind='pylint',
-            link_pattern=g.pylint_pat,
-        )
+        bpm.start_process(c, command, fn=fn, kind='pylint')
     #@-others
 #@-others
 #@@language python

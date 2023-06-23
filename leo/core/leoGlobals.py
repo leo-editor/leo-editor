@@ -7218,10 +7218,10 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
 
     # Define the unl patterns.
 
-    # <absolute-path>::<line-number>  Negative line numbers are global
+    # <path>::<line-number>  Negative line numbers are global
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
 
-    # <absolute-path>:<comma-separated list of names>
+    # <path>:<comma-separated list of names>
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 
     #@+others  # Define helper functions
@@ -7294,13 +7294,11 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                     except(TypeError, ValueError):
                         g.trace('bad line number', line)
                 if n < 0:
+                    # Search for global line (1-based).
                     p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
                     if not p:
                         g.trace(f"Not found: global line {n}: {p1.h}")
-                        # Fall back to line 0.
-                        p, offset = c.gotoCommands.find_file_line(0, p)  # Calls c.redraw().
-                        if not p:
-                            g.trace(f"Not found: {p1.h}")
+                       
                     return p
                 insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
                 c.redraw(p)
@@ -7310,8 +7308,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
-        if trace:
-            g.trace('NOT FOUND: new list:', unlList)
+        ### if trace:  g.trace('NOT FOUND: new list:', unlList)
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:

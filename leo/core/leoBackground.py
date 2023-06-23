@@ -5,18 +5,16 @@
 #@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-import re
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    ### from leo.core.leoNodes import Position
     Pattern = Union[Any, str]
 #@-<< leoBackground imports & annotations >>
 
@@ -30,25 +28,12 @@ def bpm_status(event: Event) -> None:
 class ProcessData:
     """A class to hold data about running or queued processes."""
 
-    def __init__(self,
-        c: Cmdr,
-        kind: str,
-        fn: str,
-        link_pattern: Optional[Pattern] = None,
-    ) -> None:
+    def __init__(self, c: Cmdr, kind: str, fn: str) -> None:
         """Ctor for the ProcessData class."""
         self.c = c
         self.callback: Callable = None
         self.fn = fn
         self.kind = kind
-        self.link_pattern = link_pattern
-        # Auto-compile string patterns.
-        if isinstance(link_pattern, str):
-            try:
-                self.link_pattern = re.compile(link_pattern)
-            except Exception:
-                g.trace(f"Invalid link pattern: {link_pattern}")
-                self.link_pattern = None
 
     def __repr__(self) -> str:
         return (
@@ -56,7 +41,6 @@ class ProcessData:
             f"kind: {self.kind} "
             f"callback: {id(self.callback) if self.callback else None} "
             f"fn: {self.fn}\n"
-            # f"link_pattern: {self.link_pattern}"
         )
 
     __str__ = __repr__
@@ -190,9 +174,7 @@ class BackgroundProcessManager:
 
     def put_log(self, s: str) -> None:
         """
-        Put a string to the originating log. This is not what g.es_print does!
-
-        Create clickable links if s matches self.data.link_pattern.
+        Put a string to the originating log. *Not* the same as g.es_print!
         """
 
         # Warning: don't use g.es or g.es_print here!
@@ -242,10 +224,7 @@ class BackgroundProcessManager:
             self.timer.stop()
 
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
-    def start_process(self, c: Cmdr, command: str, kind: str,
-        fn: str = None,
-        link_pattern: Pattern = None,  # None, string, or re.pattern.
-    ) -> None:
+    def start_process(self, c: Cmdr, command: str, kind: str, fn: str = None) -> None:
         """
         Start or queue a process described by command and fn.
         """
@@ -275,7 +254,7 @@ class BackgroundProcessManager:
             thread.start_new_thread(self.thrd_pipe_proc, ())
 
         # Don't set self.data unless we start the process!
-        data = ProcessData(c, kind, fn, link_pattern)
+        data = ProcessData(c, kind, fn)
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().

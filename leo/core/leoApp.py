@@ -2862,7 +2862,6 @@ class LoadManager:
             'gui': doGuiOption(),
             'load_type': doLoadTypeOption(),
             'script': script,
-            ### 'screenshot_fn': doScreenShotOption(),
             'select': doSelectOption(),
             'theme_path': doThemeOption(),
             'version': any(z in sys.argv for z in ('-v', '--version')),
