@@ -310,8 +310,7 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
             # The real test of g.findUNL.
             result = g.findUNL([file_unl], c)
-            # g.trace('result:', repr(result))
-            self.assertEqual(result, absolute_path, msg=msg)
+            self.assertEqual(result, test_p, msg=msg)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (

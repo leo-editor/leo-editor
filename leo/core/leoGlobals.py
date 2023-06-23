@@ -7216,15 +7216,24 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     trace = True
 
-    # Define the unl patterns.
-
-    # <path>::<line-number>  Negative line numbers are global
+    # <headline>::<line-number>  Negative line numbers are global
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
-
+    
     # <path>:<comma-separated list of names>
     old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 
     #@+others  # Define helper functions
+    #@+node:ekr.20230623091026.1: *4* function: convert_line_number
+    def convert_line_number(line_number: str) -> Optional[int]:
+        """
+        Convert line number to an int.
+        Return None on error.
+        """
+        try:
+            return int(line_number)
+        except(TypeError, ValueError):
+            g.trace('bad line number', line_number)
+            return None
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
     def convert_unl_list(aList: list[str]) -> list[str]:
         """
@@ -7235,7 +7244,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
             # Try to get the line number.
             for m, line_group in (
                 (old_pat.match(s), 4),
-                (new_pat.match(s), 3),
+                ### (new_pat.match(s), 3),
             ):
                 if m:
                     try:
@@ -7248,12 +7257,22 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
             result.append(s)
         # Do *not* remove duplicates!
         return result
+    #@+node:ekr.20230623090419.1: *4* function: select_line
+    def select_line(n: int, p: Position) -> None:
+        """select line n of p."""
+        insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
+        c.redraw(p)
+        c.frame.body.wrapper.setInsertPoint(insert_point)
+        c.frame.bringToFront()
+        c.bodyWantsFocusNow()
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList, p1 = unlList[:], p.copy()
+        aList: list[str] = unlList[:]
+        p1 = p.copy()
         while aList and p1:
+            ###
             m = new_pat.match(aList[-1])
             if m and m.group(1).strip() != p1.h.strip():
                 return False
@@ -7264,7 +7283,41 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         return not aList
     #@-others
 
-    unlList = convert_unl_list(unlList1)
+    ### g.trace(g.callers())
+    ### g.printObj(unlList1, tag='unlList1')  ###
+
+    if len(unlList1) == 1:
+        head_path = re.compile(r'@(\w+\s+)(.*)')
+        unl = unlList1[0]
+        if unl.startswith('file://'):
+            path = unl[len('file://') :]
+            line_number = 0
+        else:
+            m = new_pat.match(unl)
+            if not m and '->' not in unl:
+                return None
+            line_number = convert_line_number(m.group(3))
+            if not line_number:
+                return None
+            head = m.group(1)
+            m2 = head_path.match(head)
+            if not m2:
+                return None
+            path = m2.group(2).strip()
+        if not os.path.isabs(path):
+            if not c.fileName():
+                return None
+            dirname = os.path.dirname(c.fileName())
+            path = os.path.normpath(os.path.join(dirname, path)).replace('\\', '/')
+        for p in c.all_positions():
+            if p.isAnyAtFileNode():
+                if c.fullPath(p) == path:
+                    select_line(line_number, p)
+                    return p
+        g.trace('NOT FOUND', path)
+        return None
+
+    unlList: list[str] = convert_unl_list(unlList1)
     if not unlList:
         return None
     # Find all target headlines.
@@ -7286,25 +7339,27 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 assert p == p1, (p, p1)
                 n = 0  # The default line number.
                 # Parse the last target.
-                m = new_pat.match(unlList[-1])
-                if m:
-                    line = m.group(3)
-                    try:
-                        n = int(line)
-                    except(TypeError, ValueError):
-                        g.trace('bad line number', line)
+                if 0:  ###
+                    m = new_pat.match(unlList[-1])
+                    if m:
+                        line = m.group(3)
+                        try:
+                            n = int(line)
+                        except(TypeError, ValueError):
+                            g.trace('bad line number', line)
                 if n < 0:
                     # Search for global line (1-based).
                     p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
                     if not p:
                         g.trace(f"Not found: global line {n}: {p1.h}")
-                       
                     return p
-                insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
-                c.redraw(p)
-                c.frame.body.wrapper.setInsertPoint(insert_point)
-                c.frame.bringToFront()
-                c.bodyWantsFocusNow()
+                select_line(n, p)
+                ###
+                    # insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
+                    # c.redraw(p)
+                    # c.frame.body.wrapper.setInsertPoint(insert_point)
+                    # c.frame.bringToFront()
+                    # c.bodyWantsFocusNow()
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
