@@ -7357,17 +7357,12 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     unl = unl.strip()
     if not unl:
         return None
-    unl = g.unquoteUrl(unl)
     if unl.startswith('unl:gnx:'):
         p = g.findGNX(unl[8:])
-        if p:
-            c.redraw(p)
-            c.bodyWantsFocusNow()
-        return
-    unl = unl.split('#', 1)[1] if '#' in unl else unl
-    if not unl:
-        return
-    p = g.findUNL(unl.split("-->"), c)
+    else:
+        unl = g.unquoteUrl(unl)
+        unl = unl.split('#', 1)[1] if '#' in unl else unl
+        p = g.findUNL(unl.split("-->"), c) if unl else None
     if p:
         c.redraw(p)
         c.bodyWantsFocusNow()
