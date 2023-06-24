@@ -265,6 +265,7 @@ class TestGlobals(LeoUnitTest):
                     .replace('ERR', f"{tool} error")
                 )
         #@-<< define error dicts >>
+        # Test 0: pretests
         #@+<< do pre-tests >>
         #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
         # Note: At present this unit test does not use the error messages.
@@ -290,7 +291,7 @@ class TestGlobals(LeoUnitTest):
                     f" pattern: {pattern!r}"))
         #@-<< do pre-tests >>
         # Test all error messages for all paths.
-        for data in test_data:
+        for data in test_data:  # <@file> <filename>
             kind, relative_path = data
             headline = msg = f"{kind} {relative_path}"
             # Pretests...
@@ -307,6 +308,11 @@ class TestGlobals(LeoUnitTest):
             # Test g.findUNL.
             result = g.findUNL([headline], c)
             self.assertEqual(result, test_p, msg=msg)
+            # Test g.findGNX.
+            result2 = g.findGNX(test_p.gnx, c)
+            self.assertEqual(result2, test_p)
+
+       
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
