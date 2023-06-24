@@ -818,13 +818,17 @@ class Position:
 
         UNL's do *not* contain child indices.
         """
-        parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         if 1:
-            # New in Leo 6.7.4: Just return the list of parts.
-            base_unl = parts_s
+            # New in Leo 6.7.4: Return *only* the gnx.
+            base_unl = self.gnx
         else:
-            # Return <file-name> + `#`.
-            base_unl = f"{self.v.context.fileName()}#{parts_s}"
+            parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+            if 1:
+                # New in Leo 6.7.4: Just return the list of parts.
+                base_unl = parts_s
+            else:
+                # Return <file-name> + `#`.
+                base_unl = f"{self.v.context.fileName()}#{parts_s}"
         # Do *not* translate '-->' to '--%3E'.
         return 'unl:' + '//' + base_unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
