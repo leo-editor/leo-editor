@@ -7337,7 +7337,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
             return s
     return None
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl: str, c: Cmdr) -> Any:
+def handleUnl(unl_s: str, c: Cmdr) -> None:
     """
     Handle a Leo UNL. This must *never* open a browser.
 
@@ -7345,13 +7345,15 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
 
     Redraw the commander if the UNL is found.
     """
-    if not unl:
-        return None
-    unll = unl.lower()
+    if not unl_s:
+        return
+    unll = unl_s.lower()
     if unll.startswith('unl://'):
-        unl = unl[6:]
+        unl = unl_s[6:]
     elif unll.startswith('file://'):
-        unl = unl[7:]
+        unl = unl_s[7:]
+    else:
+        unl = unl_s
     unl = unl.strip()
     if not unl:
         return None
@@ -7360,81 +7362,16 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         p = g.findGNX(unl[8:])
         if p:
             c.redraw(p)
-            ### c.bringToFront()
             c.bodyWantsFocusNow()
-        return c
+        return
     unl = unl.split('#', 1)[1] if '#' in unl else unl
-    if unl:
-        p = g.findUNL(unl.split("-->"), c)
-        if p:
-            c.redraw(p)
-            c.bodyWantsFocusNow()
-    return c
-    
-    # WEIRD code.  To be deleted.
-    
-   
-
-    # Compute path and unl.
-    if '#' not in unl and '-->' not in unl:
-        # The path is the entire unl.
-        path, unl = unl, None
-    elif '#' not in unl:
-        # The path is empty.
-        # Move to the unl in *this* commander.
-        p = g.findUNL(unl.split("-->"), c)
-        if p:
-            c.redraw(p)
-        return c
-    else:
-        path, unl = unl.split('#', 1)
     if not unl:
-        return None  # #2731.
-    if not path:  # #2407
-        # Move to the unl in *this* commander.
-        p = g.findUNL(unl.split("-->"), c)
-        if p:
-            c.redraw(p)
-        return c
-    if c:
-        base = g.os_path_dirname(c.fileName())
-        c_path = g.finalize_join(base, path)
-    else:
-        c_path = None
-    # Look for the file in various places.
-    table = (
-        c_path,
-        g.finalize_join(g.app.loadDir, '..', path),
-        g.finalize_join(g.app.loadDir, '..', '..', path),
-        g.finalize_join(g.app.loadDir, '..', 'core', path),
-        g.finalize_join(g.app.loadDir, '..', 'config', path),
-        g.finalize_join(g.app.loadDir, '..', 'dist', path),
-        g.finalize_join(g.app.loadDir, '..', 'doc', path),
-        g.finalize_join(g.app.loadDir, '..', 'test', path),
-        g.app.loadDir,
-        g.app.homeDir,
-    )
-    for path2 in table:
-        if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
-            path = path2
-            break
-    else:
-        g.es_print('path not found', repr(path))
-        return None
-    # End editing in *this* outline, so typing in the new outline works.
-    c.endEditing()
-    c.redraw()
-    # Open the path.
-    c2 = g.openWithFileName(path, old_c=c)
-    if not c2:
-        return None
-    # Find  and redraw.
-    # #2445: Default to c2.rootPosition().
-    p = g.findUNL(unl.split("-->"), c2) or c2.rootPosition()
-    c2.redraw(p)
-    c2.bringToFront()
-    c2.bodyWantsFocusNow()
-    return c2
+        return
+    p = g.findUNL(unl.split("-->"), c)
+    if p:
+        c.redraw(p)
+        c.bodyWantsFocusNow()
+    return
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
