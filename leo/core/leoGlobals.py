@@ -7208,6 +7208,10 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     # Not used in Leo's core.
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
+#@+node:ekr.20230624015529.1: *3* g.findGNX
+def findGNX(gnx: str) -> Optional[Position]:
+    g.trace(gnx)
+    return None
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
 def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
@@ -7215,9 +7219,9 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Return the found position, or None.
     """
     # Define the unl patterns.
-    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
-    new_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
-
+    parts_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    file_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
+    
     #@+others  # Define helper functions
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
     def convert_unl_list(aList: list[str]) -> list[str]:
@@ -7228,8 +7232,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         for s in aList:
             # Try to get the line number.
             for m, line_group in (
-                (old_pat.match(s), 4),
-                (new_pat.match(s), 2),
+                (parts_pat.match(s), 4),
+                (file_pat.match(s), 2),
             ):
                 if m:
                     try:
@@ -7249,7 +7253,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         aList: list[str] = unlList[:]
         p1 = p.copy()
         while aList and p1:
-            m = new_pat.match(aList[-1])
+            m = file_pat.match(aList[-1])
             if m and m.group(1).strip() != p1.h.strip():
                 return False
             if not m and aList[-1].strip() != p1.h.strip():
@@ -7264,7 +7268,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         return None
     # Find all target headlines.
     targets = []
-    m = new_pat.match(unlList[-1])
+    m = file_pat.match(unlList[-1])
     target = m and m.group(1) or unlList[-1]
     targets.append(target.strip())
     targets.extend(unlList[:-1])
@@ -7277,7 +7281,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 assert p == p1, (p, p1)
                 n = 0  # The default line number.
                 # Parse the last target.
-                m = new_pat.match(unlList[-1])
+                m = file_pat.match(unlList[-1])
                 if m:
                     line = m.group(2)
                     try:
@@ -7352,6 +7356,25 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     if not unl:
         return None
     unl = g.unquoteUrl(unl)
+    if unl.startswith('unl:gnx:'):
+        p = g.findGNX(unl[8:])
+        if p:
+            c.redraw(p)
+            ### c.bringToFront()
+            c.bodyWantsFocusNow()
+        return c
+    unl = unl.split('#', 1)[1] if '#' in unl else unl
+    if unl:
+        p = g.findUNL(unl.split("-->"), c)
+        if p:
+            c.redraw(p)
+            c.bodyWantsFocusNow()
+    return c
+    
+    # WEIRD code.  To be deleted.
+    
+   
+
     # Compute path and unl.
     if '#' not in unl and '-->' not in unl:
         # The path is the entire unl.
@@ -7427,7 +7450,7 @@ def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     if urll.startswith('@url'):
         url = url[4:].lstrip()
     if (
-        urll.startswith(('#', 'unl://')) or
+        urll.startswith(('#', 'unl://', 'unl:gnx:')) or
         urll.startswith('file://') and '-->' in urll
     ):
         return g.handleUnl(url, c)
