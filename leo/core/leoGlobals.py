@@ -7340,7 +7340,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
             return s
     return None
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl_s: str, c: Cmdr) -> Position:
+def handleUnl(unl_s: str, c: Cmdr) -> None:
     """
     Handle a Leo UNL. This must *never* open a browser.
 
@@ -7371,7 +7371,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> Position:
         c.bodyWantsFocusNow()
     else:
         print(f"Not found: {unl_s}")
-    return p  # For unit tests.
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
