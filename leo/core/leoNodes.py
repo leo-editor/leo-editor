@@ -821,7 +821,7 @@ class Position:
         if 1:
             # New in Leo 6.7.4: Return *only* the gnx.
             return f"unl:gnx:{self.gnx}"
-       
+
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         if 1:
             # New in Leo 6.7.4: Just return the list of parts.
