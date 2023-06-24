@@ -7176,61 +7176,81 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #
 # To follow a clickable link, control-click the link.
 #
-# Clickable links have the following syntax.
+# Clickable links have the following four forms:
 #
 # 1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
 #
 #    Some of these tools produce clickable links in the log pane when run
-#    within Leo. Some do not.
+#    *within* Leo. Some do not.
 #
-#    For *all* of these tools, copying an error message from the *console* to
-#    Leo's log pane will create clickable links in the log pane. These links
-#    select the proper node and line provided the outline contains an
-#    `@<file>` node for file mentioned in the error message.
+#    When running these tools *outside of* Leo, copying an error message from
+#    the *console* to Leo's log pane will create clickable links in the log
+#    pane. Control-clicking these links will select the proper node and line
+#    provided the outline contains an `@<file>` node for file mentioned in
+#    the error message.
 #
 # 2. New in Leo 6.7.4: UNLs based on gnx's (global node indices):
 #
-#    Links of the form `unl:gnx:<gnx>`
-#    select the first outline node with the given gnx.
-#    This kind of UNL will work as long as the node exists anywhere in the outline.
+#    Links of the form `unl:gnx:<gnx>` select the first outline node with the
+#    given gnx. These UNLs will work as long as the node exists anywhere in
+#    the outline.
 #
-#    For example this link: `unl:gnx:ekr.20031218072017.2406`
-#    refers to this outline's "Code" node.
+#    For example this link: `unl:gnx:ekr.20031218072017.2406` refers to this
+#    outline's "Code" node. Try it. The links works in this outline.
 #
+#    The `copy-gnx` command (aka `gnx-show` and `show-gnx`) copies the unl to
+#    the clipboard and shows the full unl in the status area. Pasting this
+#    unl to the body pane will create a clickable link.
 #
+# 3. Leo's headline-based UNLs, as shown in the status pane:
 #
+#    Headline-based UNLs consist of `unl://` followed by a `-->`-separated list of
+#    headlines. Leo resolves such UNLs by searching for the given headlines.
 #
-# The section `define global error regexes`: unl:gnx:ekr.20220412193109.1
-# defines the format of these error message.
+#    *Note*: Prior to Leo 6.7.4, headline-based outlines contained a
+#    reference to the outline: Like this:
 #
-# The section `define regex's`: unl:gnx:ekr.20200810093517.1
+#    `unl://` + path + `#` + `-->`-separated list of headlines,
+#
+#    The legacy (more verbose) forms of headline-based UNLs still work:
+#    unl://#Code-->About this file
+#    unl://c:/Repos/leo-editor/leo/core/leoPy.leo#Code-->About this file
+#
+#    The following example work in this outline:
+#
+#    An empty file: unl://@clean ../plugins/leo_babel/__init__.py
+#    The same file, as a gnx: unl:gnx:ekr.20230624114517.1
+#
+#    The LoadManager class: unl://Code-->Core classes-->@file leoApp.py-->class LoadManager
+#    The LoadManager class, as a gnx: unl:gnx:ekr.20120209051836.10242
+#
+# 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
+#
+#    For example, Leo's forum: https://leo-editor.github.io/leo-editor/
+#
+# === LeoQtLog.put writes clickable links in the log pane
+#
+# - **p.get_UNL** `unl:gnx:tbrown.20111010104549.26758` returns a clickable link to p.
+# - **g.es** `unl:gnx:ekr.20070626132332`
+#   and **LeoLog.put_html_links** `unl:gnx:ekr.20220410180439.1`
+#   both call **LeoQtLog.put** `unl:gnx:ekr.20110605121601.18322`.
+# - LeoQtLog.put generates a clickable html link in the log pane as follows::
+#
+#     w.insertHtml(f'<a href="{url}" title="{nodeLink}">{s}</a>')
+#
+# === Leo's syntax colorer makes clickable links in the body pane
+#
+# See **jedit.match_any_url**: `unl:gnx:ekr.20110605121601.18608`.
+#
+# === g.handleUrl `unl:gnx:tbrown.20090219095555.63` handles all clicks.
+#
+# === Regular expressions define UNLs and URLs
+#
+# The section `define global error regexes` `unl:gnx:ekr.20220412193109.1`
+# defines the format of the error messages each tool produces.
+#
+# The section `define regex's` `unl:gnx:ekr.20200810093517.1`
 # defines the format of all other kinds of clickable links.
-#
-# === Example links
-#
-# The top-level code node in leoPy.leo/LeoPyRef.leo
-# unl:gnx:ekr.20031218072017.2406
-#
-#
-#
-# === Example error messages
-#
-# # Exists, non-empty.
-# unl:@file ../plugins/importers/__init__.py
-#
-# unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
-#
-# # Exists, empty.
-# unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
-#
-# # Exists
-# unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
-#
-# # Exists: Recent
-# unl:gnx:ekr.20180311131424.1
-#
-# # Error mssages (copy to log)
-# unl:gnx:ekr.20230622112649.1
 #@-<< About clickable links >>
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:

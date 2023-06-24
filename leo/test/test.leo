@@ -979,7 +979,10 @@ C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 # 
 c.frame.log.put_html_links(s)</t>
 <t tx="ekr.20230623064935.1">copy-test</t>
-<t tx="ekr.20230623141357.1"># Exists, non-empty.
+<t tx="ekr.20230623141357.1"># Shorter UNL:
+unl://Coloring tests--&gt;Syntax coloring template
+
+# Exists, non-empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
 
 # Exists, empty.
