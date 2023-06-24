@@ -209,29 +209,32 @@ class backlinkController:
         :param str url: URL for link
         """
         g.es(url)
-        # UNL detection copied from g.handleUrl()
-        if (
-            url.lower().startswith('unl://') or
-            url.lower().startswith('file://') and url.find('-->') > -1 or
-            url.startswith('#')
-        ):
-            our_unl = 'unl://' + self.c.p.get_UNL()
-            new_c = g.handleUnl(url, self.c)
-            if new_c and hasattr(new_c, 'backlinkController'):
-                unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
-                new_p = g.findUNL(unlList, new_c)
-                if not new_p:
-                    g.es("No perfect match, not creating backlink")
-                    return
-                new_c.backlinkController.initBacklink(new_p.v)
-                if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
-                    new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
-                    new_c.backlinkController.updateTabInt()
-                    new_p.setDirty()
-                    new_c.setChanged()
-                    g.es("NOTE: created back link automatically")
-        else:
-            g.handleUrl(url, c=self.c)
+        g.handleUrl(url, c=self.c)
+        if 0:
+            # This code is won't work as intended.
+            # UNL detection copied from g.handleUrl()
+            if (
+                url.lower().startswith('unl://') or
+                url.lower().startswith('file://') and url.find('-->') > -1 or
+                url.startswith('#')
+            ):
+                our_unl = 'unl://' + self.c.p.get_UNL()
+                new_c = g.handleUnl(url, self.c)
+                if new_c and hasattr(new_c, 'backlinkController'):
+                    unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
+                    new_p = g.findUNL(unlList, new_c)
+                    if not new_p:
+                        g.es("No perfect match, not creating backlink")
+                        return
+                    new_c.backlinkController.initBacklink(new_p.v)
+                    if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
+                        new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
+                        new_c.backlinkController.updateTabInt()
+                        new_p.setDirty()
+                        new_c.setChanged()
+                        g.es("NOTE: created back link automatically")
+            else:
+                g.handleUrl(url, c=self.c)
     #@+node:ekr.20090616105756.3946: *3* bc.initBacklink
     def initBacklink(self, v):
         """set up a vnode to support links"""
