@@ -7166,6 +7166,72 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
+#@+<< About clickable links >>
+#@+node:ekr.20230624100622.1: *3* << About clickable links >>
+#@@language rest
+#@@wrap
+#@+at
+# The code related to clickable links is inherently complex. The goal: create
+# the *illusion* of simplicity and consistency.
+#
+# To follow a clickable link, control-click the link.
+#
+# Clickable links have the following syntax.
+#
+# 1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
+#
+#    Some of these tools produce clickable links in the log pane when run
+#    within Leo. Some do not.
+#
+#    For *all* of these tools, copying an error message from the *console* to
+#    Leo's log pane will create clickable links in the log pane. These links
+#    select the proper node and line provided the outline contains an
+#    `@<file>` node for file mentioned in the error message.
+#
+# 2. New in Leo 6.7.4: UNLs based on gnx's (global node indices):
+#
+#    Links of the form `unl:gnx:<gnx>`
+#    select the first outline node with the given gnx.
+#    This kind of UNL will work as long as the node exists anywhere in the outline.
+#
+#    For example this link: `unl:gnx:ekr.20031218072017.2406`
+#    refers to this outline's "Code" node.
+#
+#
+#
+#
+# The section `define global error regexes`: unl:gnx:ekr.20220412193109.1
+# defines the format of these error message.
+#
+# The section `define regex's`: unl:gnx:ekr.20200810093517.1
+# defines the format of all other kinds of clickable links.
+#
+# === Example links
+#
+# The top-level code node in leoPy.leo/LeoPyRef.leo
+# unl:gnx:ekr.20031218072017.2406
+#
+#
+#
+# === Example error messages
+#
+# # Exists, non-empty.
+# unl:@file ../plugins/importers/__init__.py
+#
+# unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
+#
+# # Exists, empty.
+# unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
+#
+# # Exists
+# unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
+#
+# # Exists: Recent
+# unl:gnx:ekr.20180311131424.1
+#
+# # Error mssages (copy to log)
+# unl:gnx:ekr.20230622112649.1
+#@-<< About clickable links >>
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
     """
