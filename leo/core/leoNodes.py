@@ -815,7 +815,7 @@ class Position:
     def get_GNX_UNL(self) -> str:
         """Return a gnx-oriented UNL for the status line."""
         return f"unl:gnx:{self.gnx}"
-        
+
     def get_UNL(self) -> str:
         """Return a legacy UNL. Required for error messages."""
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))

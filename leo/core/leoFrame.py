@@ -1355,7 +1355,6 @@ class LeoLog:
                     if g.unitTesting:
                         raise ValueError(message)
                         # g.trace(f"{i:2} p not found! {filename!r}")
-                    g.trace(message)
                     self.put(line)
             else:  # None of the patterns match.
                 self.put(line)
