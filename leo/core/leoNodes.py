@@ -816,13 +816,15 @@ class Position:
         """
         Return a UNL for clickable links and Leo's status area.
 
-        UNL's consists of 'unl:', '//', <file-name>, '#', '-->'.join([z.h for z in p.self_and_parents()])
-
         UNL's do *not* contain child indices.
         """
-        file_name = self.v.context.fileName()
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        base_unl = f"{file_name}#{parts_s}"
+        if 1:
+            # New in Leo 6.7.4: Just return the list of parts.
+            base_unl = parts_s
+        else:
+            # Return <file-name> + `#`.
+            base_unl = f"{self.v.context.fileName()}#{parts_s}"
         # Do *not* translate '-->' to '--%3E'.
         return 'unl:' + '//' + base_unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
