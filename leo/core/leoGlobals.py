@@ -7302,39 +7302,15 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             return p
     return None
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
-def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
+def findUNL(unlList: list[str], c: Cmdr) -> Optional[Position]:
     """
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # Define the unl patterns.
-    parts_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    # Define the format of the file-oriented unl <file name>::<line-number>
     file_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
 
     #@+others  # Define helper functions
-    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
-    def convert_unl_list(aList: list[str]) -> list[str]:
-        """
-        Convert old-style UNLs to new UNLs, retaining line numbers if possible.
-        """
-        result = []
-        for s in aList:
-            # Try to get the line number.
-            for m, line_group in (
-                (parts_pat.match(s), 4),
-                (file_pat.match(s), 2),
-            ):
-                if m:
-                    try:
-                        n = int(m.group(line_group))
-                        result.append(f"{m.group(1)}::{n}")
-                        continue
-                    except Exception:
-                        pass
-            # Finally, just add the whole UNL.
-            result.append(s)
-        # Do *not* remove duplicates!
-        return result
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
@@ -7352,7 +7328,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         return not aList
     #@-others
 
-    unlList = convert_unl_list(unlList1)
     if not unlList:
         return None
     # Find all target headlines.
