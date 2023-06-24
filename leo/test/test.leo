@@ -988,7 +988,11 @@ unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
 
-# Doesn't work yet.
-unl:gnx:ekr.20230623141357.1</t>
+# Error mssages (copy to log)
+unl:gnx:ekr.20230622112649.1
+
+# Bad gnx
+unl:gnx:xyzzy.20230622112649.1
+</t>
 </tnodes>
 </leo_file>

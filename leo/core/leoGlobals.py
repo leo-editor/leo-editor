@@ -7209,8 +7209,11 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:ekr.20230624015529.1: *3* g.findGNX
-def findGNX(gnx: str) -> Optional[Position]:
-    g.trace(gnx)
+def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
+    """Return the position with the given gnx."""
+    for p in c.all_unique_positions():
+        if p.gnx == gnx:
+            return p
     return None
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
 def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
@@ -7356,9 +7359,9 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
         unl = unl_s
     unl = unl.strip()
     if not unl:
-        return None
+        return
     if unl.startswith('unl:gnx:'):
-        p = g.findGNX(unl[8:])
+        p = g.findGNX(unl[8:], c)
     else:
         unl = g.unquoteUrl(unl)
         unl = unl.split('#', 1)[1] if '#' in unl else unl
@@ -7366,7 +7369,8 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     if p:
         c.redraw(p)
         c.bodyWantsFocusNow()
-    return
+    else:
+        print(f"Not found: {unl_s}")
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
