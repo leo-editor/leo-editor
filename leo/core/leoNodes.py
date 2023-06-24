@@ -811,17 +811,13 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
+    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL & get.GNX_UNL
+    def get_GNX_UNL(self) -> str:
+        """Return a gnx-oriented UNL for the status line."""
+        return f"unl:gnx:{self.gnx}"
+        
     def get_UNL(self) -> str:
-        """
-        Return a UNL for clickable links and Leo's status area.
-
-        UNL's do *not* contain child indices.
-        """
-        if 1:
-            # New in Leo 6.7.4: Return *only* the gnx.
-            return f"unl:gnx:{self.gnx}"
-
+        """Return a legacy UNL. Required for error messages."""
         parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         if 1:
             # New in Leo 6.7.4: Just return the list of parts.

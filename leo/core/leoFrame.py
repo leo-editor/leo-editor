@@ -1705,7 +1705,7 @@ class LeoTree:
         c.frame.updateStatusLine()  # New in Leo 4.4.1.
         c.frame.clearStatusLine()
         if p and p.v:
-            c.frame.putStatusLine(p.get_UNL())
+            c.frame.putStatusLine(p.get_GNX_UNL())
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:

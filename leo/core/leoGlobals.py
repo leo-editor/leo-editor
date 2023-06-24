@@ -7297,6 +7297,7 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
 #@+node:ekr.20230624015529.1: *3* g.findGNX
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """Return the position with the given gnx."""
+    g.trace(gnx)  ###
     for p in c.all_unique_positions():
         if p.gnx == gnx:
             return p
@@ -7310,6 +7311,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     # Define the unl patterns.
     parts_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
     file_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
+    
+    g.printObj(unlList1, tag='findUNL')
 
     #@+others  # Define helper functions
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
@@ -7437,8 +7440,8 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     if not unl_s:
         return
     unll = unl_s.lower()
-    if unll.startswith('unl://'):
-        unl = unl_s[6:]
+    if unll.startswith('unl:///'):  # See LeoQtLog.put.
+        unl = unl_s[7:]
     elif unll.startswith('file://'):
         unl = unl_s[7:]
     else:
@@ -7460,6 +7463,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
+    g.trace(url)
     if c and not p:
         p = c.p
     # These two special cases should match the hacks in jedit.match_any_url.
@@ -7471,6 +7475,7 @@ def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     urll = url.lower()
     if urll.startswith('@url'):
         url = url[4:].lstrip()
+    g.trace('url', url)
     if (
         urll.startswith(('#', 'unl://', 'unl:gnx:')) or
         urll.startswith('file://') and '-->' in urll
