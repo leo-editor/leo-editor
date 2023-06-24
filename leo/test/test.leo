@@ -983,6 +983,12 @@ c.frame.log.put_html_links(s)</t>
 unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
 
 # Exists, empty.
-unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py</t>
+unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
+
+# Exists
+unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
+
+# Doesn't work yet.
+unl:gnx:ekr.20230623141357.1</t>
 </tnodes>
 </leo_file>

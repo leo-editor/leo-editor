@@ -316,7 +316,7 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
 #@-others
 #@-<< define g.decorators >>
 #@+<< define regex's >>
-#@+node:ekr.20200810093517.1: ** << define regex's >>
+#@+node:ekr.20200810093517.1: ** << define regex's >> (leoGlobals.py)
 # Regex used by this module, and in leoColorizer.py.
 g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
 

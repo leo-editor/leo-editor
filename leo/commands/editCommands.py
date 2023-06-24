@@ -1446,8 +1446,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.245: *3* ec: info
     #@+node:ekr.20210311154956.1: *4* ec.copyGnx
     @cmd('copy-gnx')
+    @cmd('gnx-show')
+    @cmd('show-gnx')
     def copyGnx(self, event: Event) -> None:
-        """Copy c.p.gnx to the clipboard and display it in the status area."""
+        """Copy c.p.gnx to the clipboard and display a gnx-oriented unl in the status area."""
         c = self.c
         if not c:
             return
@@ -1457,7 +1459,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         g.app.gui.replaceClipboardWith(gnx)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
-            status_line.put(f"gnx: {gnx}")
+            status_line.put(f"unl:gnx:{gnx}")
     #@+node:ekr.20150514063305.247: *4* ec.lineNumber
     @cmd('line-number')
     def lineNumber(self, event: Event) -> None:
