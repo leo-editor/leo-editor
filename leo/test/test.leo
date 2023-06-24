@@ -988,6 +988,9 @@ unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
 
+# Exists: Recent
+unl:gnx:ekr.20180311131424.1
+
 # Error mssages (copy to log)
 unl:gnx:ekr.20230622112649.1
 

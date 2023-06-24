@@ -289,7 +289,6 @@ class TestGlobals(LeoUnitTest):
                     f" message: {message!r}\n"
                     f" pattern: {pattern!r}"))
         #@-<< do pre-tests >>
-
         # Test all error messages for all paths.
         for data in test_data:
             kind, relative_path = data
@@ -411,8 +410,13 @@ class TestGlobals(LeoUnitTest):
         for url, expected in table1:
             got = g.handleUrl(c=c, p=c.p, url=url)
             self.assertEqual(expected.lower(), got, msg=url)
+            
         # Part 2: file-oriented urls.
-        if sys.platform.startswith('win'):
+       
+        # g.handleUrl now longer finds urls in other commanders.
+        # I thought it best to remove the Leo-specific hacks that were required.
+
+        if False:  # sys.platform.startswith('win'):
             file_, http, unl1 = 'file://', 'http://', 'unl://'
             fn1 = 'LeoDocs.leo#'
             fn2 = 'doc/LeoDocs.leo#'

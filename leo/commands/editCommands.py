@@ -1456,10 +1456,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         gnx = c.p and c.p.gnx
         if not gnx:
             return
-        g.app.gui.replaceClipboardWith(gnx)
+        url = f"unl:gnx:{gnx}"
+        g.app.gui.replaceClipboardWith(url)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
-            status_line.put(f"unl:gnx:{gnx}")
+            status_line.put(url)
     #@+node:ekr.20150514063305.247: *4* ec.lineNumber
     @cmd('line-number')
     def lineNumber(self, event: Event) -> None:
