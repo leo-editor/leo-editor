@@ -7196,7 +7196,7 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    the outline.
 #
 #    For example this link: `unl:gnx:ekr.20031218072017.2406` refers to this
-#    outline's "Code" node. Try it. The links works in this outline.
+#    outline's "Code" node. Try it. The link works in this outline.
 #
 #    The `copy-gnx` command (aka `gnx-show` and `show-gnx`) copies the unl to
 #    the clipboard and shows the full unl in the status area. Pasting this
