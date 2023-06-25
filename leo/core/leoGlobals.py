@@ -7313,16 +7313,13 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     for c2 in commanders:
         for p in c2.all_unique_positions():
             if p.gnx == gnx:
-                if n is None:
-                    return p
                 if c2 != c:
                     # Switch outlines.
-                    c2.frame.bringToFront()
-                # insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
-                # c.redraw(p)
-                # c.frame.body.wrapper.setInsertPoint(insert_point)
-                # c.bodyWantsFocusNow()
-                p2, offset = c2.gotoCommands.find_file_line(-n, p)  ###, silent=True)  # Don't call redraw.
+                    g.app.selectLeoWindow(c2)
+                    c2.selectPosition(p)
+                if n is None:
+                    return p
+                p2, offset = c2.gotoCommands.find_file_line(-n, p)  # calls c2.redraw.
                 return p2 or p
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
@@ -7374,11 +7371,15 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
         g.trace(f"Invalid unl: {unl!r}")
         return
     p = g.findGNX(unl[8:], c)
-    if p:
-        c.redraw(p)
-        c.bodyWantsFocusNow()
-    else:
-        print(f"Not found: {unl_s}")
+    # Do not assume that p is in c.
+    if not p:
+         print(f"Not found: {unl_s}")
+         
+    # if p:
+        # c.redraw(p)
+        # c.bodyWantsFocusNow()
+    # else:
+        # print(f"Not found: {unl_s}")
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""

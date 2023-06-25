@@ -1606,6 +1606,7 @@ class LeoTree:
         if p.v.context != c:
             # Selecting a foreign position will not be pretty.
             g.trace(f"Wrong context: {p.v.context!r} != {c!r}")
+            g.trace(g.callers())
             return
         old_p = c.p
         call_event_handlers = p != old_p

@@ -1830,7 +1830,7 @@ class Commands:
         else:
             # Don't kill unit tests for this kind of problem.
             c._currentPosition = c.rootPosition()
-            g.trace('Invalid position', repr(p))
+            g.trace('Invalid position', repr(p), repr(c))
             g.trace(g.callers())
 
     # For compatibility with old scripts.

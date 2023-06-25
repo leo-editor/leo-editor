@@ -974,7 +974,7 @@ C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
 C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 
 # Large.
-C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:100:0:flake8 error
+C:/Repos/leo-editor/leo/core/leoGlobals.py:100:0:flake8 error
 </t>
 <t tx="ekr.20230622114548.1"></t>
 <t tx="ekr.20230622114556.1">h = 'Error messages (copy to log)'
@@ -993,6 +993,9 @@ unl:gnx:ekr.20230622112649.1
 
 # Bad gnx
 unl:gnx:xyzzy.20230622112649.1
+
+# Temporty gnx in another file.
+unl:gnx:ekr.20230625135805.2
 </t>
 <t tx="ekr.20230625084119.1"># Shorter UNL:
 unl://Coloring tests--&gt;Syntax coloring template
