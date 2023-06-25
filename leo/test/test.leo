@@ -63,9 +63,10 @@
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
 <v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
-<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20031218072017.3093"><vh>@file ../core/leoGlobals.py</vh></v>
+<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20230625084119.1"><vh>Obsolete UNLs</vh></v>
 <v t="ekr.20230623141357.1"><vh>UNLs: </vh></v>
 </vnodes>
@@ -964,21 +965,25 @@ This is a comment</t>
 # Doesn't play, probably because of https.</t>
 <t tx="ekr.20230622112535.1"></t>
 <t tx="ekr.20230622112641.1"></t>
-<t tx="ekr.20230622112649.1"># Exists, non-empty.
+<t tx="ekr.20230622112649.1"># Absolute file names
+
+# Exists, non-empty.
 C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
 
 # Exists, empty.
 C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
+
+# Large.
+C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:100:0:flake8 error
 </t>
 <t tx="ekr.20230622114548.1"></t>
-<t tx="ekr.20230622114556.1">s = """
-# Exists, non-empty.
-C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
-# Exists, empty.
-C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
-"""
-# 
-c.frame.log.put_html_links(s)</t>
+<t tx="ekr.20230622114556.1">h = 'Error messages (copy to log)'
+p = g.findNodeAnywhere(c, h)
+if p:
+    c.frame.log.put_html_links(p.b)
+else:
+    print('Not found:', h)
+</t>
 <t tx="ekr.20230623064935.1">copy-test</t>
 <t tx="ekr.20230623141357.1"># Exists: Recent
 unl:gnx:ekr.20180311131424.1
