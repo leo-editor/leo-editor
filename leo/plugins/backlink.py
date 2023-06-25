@@ -585,7 +585,7 @@ class backlinkController:
             return  # not our problem
 
         self.updateTabInt()
-    #@+node:ekr.20090616105756.3968: *3* bc.updateTabInt
+    #@+node:ekr.20090616105756.3968: *3* bc.updateTabInt (backlink.py)
     def updateTabInt(self):
         """called on new position (leo hook) and when links added / deleted"""
         c = self.c

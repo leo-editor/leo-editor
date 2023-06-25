@@ -1165,7 +1165,7 @@ class BookMarkDisplayProvider:
     def ns_provides(self):
         return [('Bookmarks', '_leo_bookmarks_show')]
 
-    #@+node:tbrown.20110712121053.19749: *3* ns_provide
+    #@+node:tbrown.20110712121053.19749: *3* ns_provide (bookmarks.py)
     def ns_provide(self, id_):
         if id_.startswith('_leo_bookmarks_show'):
 
