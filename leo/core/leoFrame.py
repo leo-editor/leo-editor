@@ -1344,8 +1344,7 @@ class LeoLog:
                 line_number = m.group(line_number_i)
                 p = find_at_file_node(filename)
                 if p:
-                    ### unl = p.get_UNL()
-                    unl = p.get_GNX_UNL()
+                    unl = p.get_UNL()
                     found_matches += 1
                     if trace:
                         # LeoQtLog.put writes: f'<a href="{url}" title="{nodeLink}">{s}</a>'
@@ -1705,7 +1704,7 @@ class LeoTree:
         c.frame.updateStatusLine()  # New in Leo 4.4.1.
         c.frame.clearStatusLine()
         if p and p.v:
-            c.frame.putStatusLine(p.get_GNX_UNL())
+            c.frame.putStatusLine(p.get_UNL())
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:

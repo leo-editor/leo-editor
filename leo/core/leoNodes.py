@@ -811,22 +811,10 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:ekr.20230624171452.1: *4* p.get_GNX_UNL
-    def get_GNX_UNL(self) -> str:
+    #@+node:ekr.20230624171452.1: *4* p.get_UNL
+    def get_UNL(self) -> str:
         """Return a gnx-oriented UNL for the status line."""
         return f"unl:gnx:{self.gnx}"
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self) -> str:
-        """Return a legacy UNL. Required for error messages."""
-        parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        if 1:
-            # New in Leo 6.7.4: Just return the list of parts.
-            base_unl = parts_s
-        else:
-            # Return <file-name> + `#`.
-            base_unl = f"{self.v.context.fileName()}#{parts_s}"
-        # Do *not* translate '-->' to '--%3E'.
-        return 'unl:' + '//' + base_unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self

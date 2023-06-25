@@ -7313,73 +7313,6 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call redraw.
             return p2 or p
     return None
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helper (deprecated)
-def findUNL(unlList: list[str], c: Cmdr) -> Optional[Position]:
-    """
-    g.findUNL: deprectated. Use g.findGNX instead.
-
-    Find and move to the unl given by the unlList in the commander c.
-    Return the found position, or None.
-    """
-    # Define the format of the file-oriented unl <file name>::<line-number>
-    file_pat = re.compile(r'^(.*?)::([-\d]+)?$')  # '::' is the separator.
-
-    #@+others  # Define helper functions
-    #@+node:ekr.20220213142735.1: *4* function: full_match
-    def full_match(p: Position) -> bool:
-        """Return True if the stripped headlines of p and all p's parents match unlList."""
-        # Careful: make copies.
-        aList: list[str] = unlList[:]
-        p1 = p.copy()
-        while aList and p1:
-            m = file_pat.match(aList[-1])
-            if m and m.group(1).strip() != p1.h.strip():
-                return False
-            if not m and aList[-1].strip() != p1.h.strip():
-                return False
-            aList.pop()
-            p1.moveToParent()
-        return not aList
-    #@-others
-
-    if not unlList:
-        return None
-    # Find all target headlines.
-    targets = []
-    m = file_pat.match(unlList[-1])
-    target = m and m.group(1) or unlList[-1]
-    targets.append(target.strip())
-    targets.extend(unlList[:-1])
-    # Find all target positions. Prefer later positions.
-    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
-    while unlList:
-        for p in positions:
-            p1 = p.copy()
-            if full_match(p):
-                assert p == p1, (p, p1)
-                n = 0  # The default line number.
-                # Parse the last target.
-                m = file_pat.match(unlList[-1])
-                if m:
-                    line = m.group(2)
-                    try:
-                        n = int(line)
-                    except(TypeError, ValueError):
-                        g.trace('bad line number', line)
-                if n < 0:
-                    p, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call c.redraw().
-                    if not p:
-                        g.trace(f"Not found: global line {n}")
-                    return p
-                insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
-                c.redraw(p)
-                c.frame.body.wrapper.setInsertPoint(insert_point)
-                c.frame.bringToFront()
-                c.bodyWantsFocusNow()
-                return p
-        # Not found. Pop the first parent from unlList.
-        unlList.pop(0)
-    return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
     """
@@ -7422,16 +7355,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     """
     if not unl_s:
         return
-    ### g.trace(unl_s)
-    # unll = unl_s.lower()
-    # if unll.startswith('unl:///'):  # See LeoQtLog.put.
-        # unl = unl_s[7:]
-    # elif unll.startswith('unl://'):
-        # unl = unl_s[6:]
-    # elif unll.startswith('file://'):
-        # unl = unl_s[7:]
-    # else:
-        # unl = unl_s
     unl = unl_s.strip()
     if not unl:
         return
@@ -7439,11 +7362,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
         g.trace(f"Invalid unl: {unl!r}")
         return
     p = g.findGNX(unl[8:], c)
-    ###
-        # else:
-            # unl = g.unquoteUrl(unl)
-            # unl = unl.split('#', 1)[1] if '#' in unl else unl
-            # p = g.findUNL(unl.split("-->"), c) if unl else None
     if p:
         c.redraw(p)
         c.bodyWantsFocusNow()

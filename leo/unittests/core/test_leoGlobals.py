@@ -142,14 +142,9 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findUnl
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
     #@@nobeautify
-    def test_g_findUnl(self):
-        # A thorough test of complex code:
-        # 1. Create error messages for all of Leo's supported tools.
-        #    These messages must refer to real files.
-        # 2. Convert these messages to UNL's.
-        # 3. Test that g.findUNL find's the referenced node.
+    def test_g_findGNX(self):
         c = self.c
 
         # Define helper functions.
@@ -305,9 +300,7 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(test_p, msg=msg)
             file_unl = g.computeFileUrl(absolute_path, c)
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
-            # Test g.findUNL.
-            result = g.findUNL([headline], c)
-            self.assertEqual(result, test_p, msg=msg)
+
             # Test g.findGNX.
             result2 = g.findGNX(test_p.gnx, c)
             self.assertEqual(result2, test_p)

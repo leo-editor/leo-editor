@@ -711,7 +711,6 @@ class LeoActions:
             if c:
                 g.es_print("Opened '%s' for bookmarks" % path)
                 if parsed.fragment:
-                    ### g.findUNL(parsed.fragment.split("-->"), c)
                     g.findGNX(parsed.fragment, c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
