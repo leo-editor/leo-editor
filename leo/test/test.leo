@@ -591,6 +591,7 @@
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20230625084119.1"><vh>Obsolete UNLs</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
+<v t="ekr.20230625182213.1"><vh>Conversion script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040504150046.4">def comment_delims_from_extension(filename: str) -&gt; tuple[str, str, str]:
@@ -8899,7 +8900,7 @@ The section `define regex's` `unl:gnx:ekr.20200810093517.1`
 defines the format of all other kinds of clickable links.
 </t>
 <t tx="ekr.20230625084119.1"># Shorter UNL:
-unl://Coloring tests--&gt;Syntax coloring template
+unl://#Coloring tests--&gt;Syntax coloring template
 
 # Exists, non-empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
@@ -8909,6 +8910,35 @@ unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__
 
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
+</t>
+<t tx="ekr.20230625182213.1">import re
+g.cls()
+unl_s = 'unl:'
+old_unl_pat = re.compile(fr'\s*{unl_s}//.*?\#(.*)$')
+
+h = 'Obsolete UNLs'
+p = g.findNodeAnywhere(c, h)
+
+for p in c.all_unique_positions():
+    changed, result = False, []
+    for line in g.splitLines(p.b):
+        m = old_unl_pat.match(line)
+        if m:
+            old_gnx = m.group(1)
+            headline = old_gnx.split('--&gt;')[-1] if '--&gt;' in old_gnx else old_gnx
+            p2 = g.findNodeAnywhere(c, headline)
+            if p2:
+                result.append('# ' + line)
+                result.append(f"{unl_s}:gnx:{p2.gnx}\n")
+                changed = True
+            else:
+                result.append(line)
+        else:
+            result.append(line)
+    if changed:
+        g.printObj(g.splitLines(p.b), tag=f"1: {p.h}")
+        g.printObj(result, tag=f"2: {p.h}")
+        ### p.b = ''.join(result)
 </t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
     """
