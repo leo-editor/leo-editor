@@ -7499,7 +7499,7 @@ def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:
     except Exception:
         g.es_exception()
         return None
-#@+node:ekr.20170216091704.1: *4* g.openUrlHelper (changed)
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
