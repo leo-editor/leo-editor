@@ -66,6 +66,7 @@
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230625084119.1"><vh>Obsolete UNLs</vh></v>
 <v t="ekr.20230623141357.1"><vh>UNLs: </vh></v>
 </vnodes>
 <tnodes>
@@ -979,7 +980,16 @@ C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 # 
 c.frame.log.put_html_links(s)</t>
 <t tx="ekr.20230623064935.1">copy-test</t>
-<t tx="ekr.20230623141357.1"># Shorter UNL:
+<t tx="ekr.20230623141357.1"># Exists: Recent
+unl:gnx:ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx:ekr.20230622112649.1
+
+# Bad gnx
+unl:gnx:xyzzy.20230622112649.1
+</t>
+<t tx="ekr.20230625084119.1"># Shorter UNL:
 unl://Coloring tests--&gt;Syntax coloring template
 
 # Exists, non-empty.
@@ -990,15 +1000,6 @@ unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__
 
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
-
-# Exists: Recent
-unl:gnx:ekr.20180311131424.1
-
-# Error mssages (copy to log)
-unl:gnx:ekr.20230622112649.1
-
-# Bad gnx
-unl:gnx:xyzzy.20230622112649.1
 </t>
 </tnodes>
 </leo_file>

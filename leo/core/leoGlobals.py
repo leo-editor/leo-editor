@@ -7313,9 +7313,11 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call redraw.
             return p2 or p
     return None
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helper (deprecated)
 def findUNL(unlList: list[str], c: Cmdr) -> Optional[Position]:
     """
+    g.findUNL: deprectated. Use g.findGNX instead.
+
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
@@ -7415,30 +7417,33 @@ def getUrlFromNode(p: Position) -> Optional[str]:
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl_s: str, c: Cmdr) -> None:
     """
-    Handle a Leo UNL. This must *never* open a browser.
-
-    Return the commander for the found UNL, or None.
-
-    Redraw the commander if the UNL is found.
+    Select the node given by the unl.
+    This must *never* open a browser.
     """
     if not unl_s:
         return
-    unll = unl_s.lower()
-    if unll.startswith('unl:///'):  # See LeoQtLog.put.
-        unl = unl_s[7:]
-    elif unll.startswith('file://'):
-        unl = unl_s[7:]
-    else:
-        unl = unl_s
-    unl = unl.strip()
+    ### g.trace(unl_s)
+    # unll = unl_s.lower()
+    # if unll.startswith('unl:///'):  # See LeoQtLog.put.
+        # unl = unl_s[7:]
+    # elif unll.startswith('unl://'):
+        # unl = unl_s[6:]
+    # elif unll.startswith('file://'):
+        # unl = unl_s[7:]
+    # else:
+        # unl = unl_s
+    unl = unl_s.strip()
     if not unl:
         return
-    if unl.startswith('unl:gnx:'):
-        p = g.findGNX(unl[8:], c)
-    else:
-        unl = g.unquoteUrl(unl)
-        unl = unl.split('#', 1)[1] if '#' in unl else unl
-        p = g.findUNL(unl.split("-->"), c) if unl else None
+    if not unl.startswith('unl:gnx:'):
+        g.trace(f"Invalid unl: {unl!r}")
+        return
+    p = g.findGNX(unl[8:], c)
+    ###
+        # else:
+            # unl = g.unquoteUrl(unl)
+            # unl = unl.split('#', 1)[1] if '#' in unl else unl
+            # p = g.findUNL(unl.split("-->"), c) if unl else None
     if p:
         c.redraw(p)
         c.bodyWantsFocusNow()

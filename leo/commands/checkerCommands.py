@@ -234,7 +234,7 @@ def flake8_command(event: Event) -> None:
     for root in g.findRootsWithPredicate(c, c.p):
         path = c.fullPath(root)
         if path and os.path.exists(path):
-            g.es_print(f"{tag}: {path}")
+            # g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
         else:
             g.es_print(f"{tag}: file not found:{path}")
@@ -465,7 +465,7 @@ class Flake8Command:
         for root in roots:
             path = c.fullPath(root)
             if path and os.path.exists(path):
-                g.es_print(f"{tag}: {path}")
+                # g.es_print(f"{tag}: {path}")
                 g.execute_shell_commands(f'&"{sys.executable}" -m flake8 "{path}"')
             else:
                 g.es_print(f"{tag}: file not found: {path}")

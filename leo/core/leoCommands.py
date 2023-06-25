@@ -2737,7 +2737,7 @@ class Commands:
                 log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:
                 log.put(s + '\n')
-        #@+node:ekr.20210529164957.1: *5* function: find_line
+        #@+node:ekr.20210529164957.1: *5* function: find_line (c.general_script_helper)
         def find_line(path: str, n: int) -> tuple[Position, int]:
             """
             Return the node corresponding to line n of external file given by path.

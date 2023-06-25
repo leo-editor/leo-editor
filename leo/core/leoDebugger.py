@@ -432,7 +432,7 @@ def make_at_file_node(line, path):
     c.selectPosition(p)
     c.refreshFromDisk()
     return p
-#@+node:ekr.20180701061957.1: *3* function: show_line
+#@+node:ekr.20180701061957.1: *3* function: show_line (leoDebugger.py)
 def show_line(line, fn) -> None:
     """
     Put the cursor on the requested line of the given file.
