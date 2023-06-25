@@ -1344,7 +1344,8 @@ class LeoLog:
                 line_number = m.group(line_number_i)
                 p = find_at_file_node(filename)
                 if p:
-                    unl = p.get_UNL()
+                    ### unl = p.get_UNL()
+                    unl = p.get_GNX_UNL()
                     found_matches += 1
                     if trace:
                         # LeoQtLog.put writes: f'<a href="{url}" title="{nodeLink}">{s}</a>'

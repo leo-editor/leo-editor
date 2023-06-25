@@ -7297,9 +7297,21 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
 #@+node:ekr.20230624015529.1: *3* g.findGNX
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """Return the position with the given gnx."""
+    file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
+    n: int = None  # The line number.
+    m = file_pat.match(gnx)
+    if m:
+        gnx = m.group(1)
+        try:
+            n = int(m.group(2))
+        except(TypeError, ValueError):
+            pass
     for p in c.all_unique_positions():
         if p.gnx == gnx:
-            return p
+            if n is None:
+                return p
+            p2, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call redraw.
+            return p2 or p
     return None
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
 def findUNL(unlList: list[str], c: Cmdr) -> Optional[Position]:
@@ -7353,7 +7365,7 @@ def findUNL(unlList: list[str], c: Cmdr) -> Optional[Position]:
                     except(TypeError, ValueError):
                         g.trace('bad line number', line)
                 if n < 0:
-                    p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    p, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call c.redraw().
                     if not p:
                         g.trace(f"Not found: global line {n}")
                     return p
