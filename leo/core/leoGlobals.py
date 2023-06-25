@@ -7374,12 +7374,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     # Do not assume that p is in c.
     if not p:
         print(f"Not found: {unl_s}")
-
-    # if p:
-        # c.redraw(p)
-        # c.bodyWantsFocusNow()
-    # else:
-        # print(f"Not found: {unl_s}")
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
