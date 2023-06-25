@@ -7296,7 +7296,9 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:ekr.20230624015529.1: *3* g.findGNX
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
-    """Return the position with the given gnx."""
+    """
+    Return the position with the given gnx.
+    """
     file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
     n: int = None  # The line number.
     m = file_pat.match(gnx)
@@ -7306,12 +7308,22 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             n = int(m.group(2))
         except(TypeError, ValueError):
             pass
-    for p in c.all_unique_positions():
-        if p.gnx == gnx:
-            if n is None:
-                return p
-            p2, offset = c.gotoCommands.find_file_line(-n, p, silent=True)  # Don't call redraw.
-            return p2 or p
+    # Search c followed by all other open commanders.
+    commanders = [c] + [z for z in g.app.commanders() if z != c]
+    for c2 in commanders:
+        for p in c2.all_unique_positions():
+            if p.gnx == gnx:
+                if n is None:
+                    return p
+                if c2 != c:
+                    # Switch outlines.
+                    c2.frame.bringToFront()
+                # insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
+                # c.redraw(p)
+                # c.frame.body.wrapper.setInsertPoint(insert_point)
+                # c.bodyWantsFocusNow()
+                p2, offset = c2.gotoCommands.find_file_line(-n, p)  ###, silent=True)  # Don't call redraw.
+                return p2 or p
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
