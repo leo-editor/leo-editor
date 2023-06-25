@@ -7298,6 +7298,7 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     Return the position with the given gnx.
+    Search all open outlines, starting with c.
     """
     file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
     n: int = None  # The line number.
@@ -7314,12 +7315,10 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
         for p in c2.all_unique_positions():
             if p.gnx == gnx:
                 if c2 != c:
-                    # Switch outlines.
-                    g.app.selectLeoWindow(c2)
-                    c2.selectPosition(p)
+                    g.app.selectLeoWindow(c2)  # Switch outlines.
                 if n is None:
                     return p
-                p2, offset = c2.gotoCommands.find_file_line(-n, p)  # calls c2.redraw.
+                p2, offset = c2.gotoCommands.find_file_line(-n, p)
                 return p2 or p
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
@@ -7372,7 +7371,10 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
         return
     p = g.findGNX(unl[8:], c)
     # Do not assume that p is in c.
-    if not p:
+    if p:
+        c2 = p.v.context
+        c2.redraw(p)
+    else:
         print(f"Not found: {unl_s}")
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
