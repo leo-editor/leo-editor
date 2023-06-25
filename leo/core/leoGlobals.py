@@ -7373,8 +7373,8 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     p = g.findGNX(unl[8:], c)
     # Do not assume that p is in c.
     if not p:
-         print(f"Not found: {unl_s}")
-         
+        print(f"Not found: {unl_s}")
+
     # if p:
         # c.redraw(p)
         # c.bodyWantsFocusNow()
