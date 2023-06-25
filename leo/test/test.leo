@@ -590,7 +590,7 @@
 </v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20230625084119.1"><vh>Obsolete UNLs</vh></v>
-<v t="ekr.20230623141357.1"><vh>UNLs: </vh></v>
+<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040504150046.4">def comment_delims_from_extension(filename: str) -&gt; tuple[str, str, str]:
@@ -8759,18 +8759,21 @@ C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
 C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
 
 # Large.
-C:/Repos/leo-editor/leo/core/leoGlobals.py:100:0:flake8 error
+# C:/Repos/leo-editor/leo/core/leoGlobals.py:100:0:flake8 error
 </t>
 <t tx="ekr.20230622114548.1"></t>
 <t tx="ekr.20230622114556.1">h = 'Error messages (copy to log)'
 p = g.findNodeAnywhere(c, h)
 if p:
-    c.frame.log.put_html_links(p.b)
+    lines = [z for z in g.splitLines(p.b) if not z.strip().startswith('#')]
+    c.frame.log.put_html_links(''.join(lines))
 else:
     print('Not found:', h)
 </t>
 <t tx="ekr.20230623064935.1">copy-test</t>
-<t tx="ekr.20230623141357.1"># Exists: Recent
+<t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
+
+# Exists: Recent
 unl:gnx:ekr.20180311131424.1
 
 # Error mssages (copy to log)

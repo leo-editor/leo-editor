@@ -2757,18 +2757,7 @@ class LeoQtLog(leoFrame.LeoLog):
         sb = w.horizontalScrollBar()
         s = self.to_html(color, s)
         if nodeLink:
-            url = nodeLink
-            if 0:  # Experimental: Omit the hack.
-                g.trace('1', url)
-                for scheme in 'file', 'unl':
-                    # QUrl requires paths start with '/'
-                    if (
-                        url.startswith(scheme + '://') and not
-                        url.startswith(scheme + ':///')
-                    ):
-                        url = url.replace('://', ':///', 1)
-                g.trace('2', url)
-            s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
+            s = f'<a href="{nodeLink}" title="{nodeLink}">{s}</a>'
         w.insertHtml(s)
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
