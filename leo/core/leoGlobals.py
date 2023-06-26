@@ -7294,7 +7294,7 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     # Not used in Leo's core.
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
-#@+node:ekr.20230624015529.1: *3* g.findGNX
+#@+node:ekr.20230624015529.1: *3* g.findGNX (new unls)
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     Return the position with the given gnx.
@@ -7321,7 +7321,7 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
                 p2, offset = c2.gotoCommands.find_file_line(-n, p)
                 return p2 or p
     return None
-#@+node:ekr.20230626064652.1: *3* g.findUNL & helpers
+#@+node:ekr.20230626064652.1: *3* g.findUNL & helpers (legacy unls)
 def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     g.findUNL: support for legacy UNLs.
@@ -7458,10 +7458,17 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     unl = unl_s.strip()
     if not unl:
         return
-    if not unl.startswith('unl:gnx:'):
-        g.trace(f"Invalid unl: {unl!r}")
-        return
-    p = g.findGNX(unl[8:], c)
+    if unl.startswith('unl:gnx:'):
+        # Resolve the gnx-based unl.
+        p = g.findGNX(unl[8:], c)
+    else:
+        # Resolve the legacy unl.
+        for prefix in ('unl:' + '//', 'file://'):
+            if unl.startswith(prefix):
+                unl = unl[len(prefix):]
+        # Throw away any file part.
+        unlList = unl.replace('%20', ' ').split('#', 1)[-1].split('-->')
+        p = g.findUNL(unlList, c)
     # Do not assume that p is in c.
     if p:
         c2 = p.v.context

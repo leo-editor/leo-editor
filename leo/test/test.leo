@@ -589,7 +589,7 @@
 </v>
 </v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230625084119.1"><vh>Obsolete UNLs</vh></v>
+<v t="ekr.20230625084119.1"><vh>Legacy UNLs</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 </vnodes>
 <tnodes>

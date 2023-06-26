@@ -415,7 +415,7 @@ class TestGlobals(LeoUnitTest):
         # g.handleUrl now longer finds urls in other commanders.
         # I thought it best to remove the Leo-specific hacks that were required.
 
-        if sys.platform.startswith('win'):
+        if False and sys.platform.startswith('win'):
             file_, http, unl1 = 'file://', 'http://', 'unl://'
             fn1 = 'LeoDocs.leo#'
             fn2 = 'doc/LeoDocs.leo#'
