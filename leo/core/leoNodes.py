@@ -811,10 +811,31 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:ekr.20230624171452.1: *4* p.get_UNL
+    #@+node:ekr.20230624171452.1: *4* p.get_UNL, get_short/legacy_UNL
     def get_UNL(self) -> str:
-        """Return a gnx-oriented UNL for the status line."""
+        """Return a gnx-oriented UNL."""
         return f"unl:gnx:{self.gnx}"
+
+    def get_legacy_UNL(self) -> str:
+        """
+        Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
+
+        Not used in Leo's core or official plugins.
+
+        Note: g.findUNL only uses the headlines!
+        """
+        unl = (self.v.context.fileName() + '#'
+            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)]))))
+        return 'unl://' + unl.replace("'", "%27")
+
+    def get_short_legacy_UNL(self) -> str:
+        """
+        Return a legacy unl without the file-name component.
+
+        Not used in Leo's core or official plugins.
+        """
+        unl = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl://' + unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
