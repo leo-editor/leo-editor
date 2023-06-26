@@ -590,6 +590,13 @@
 </v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
 <v t="ekr.20230625084119.1"><vh>Legacy UNLs</vh></v>
+<v t="ekr.20230626113050.1"><vh>Test outline: copy root to new outline</vh>
+<v t="ekr.20230626113103.1"><vh>root</vh>
+<v t="ekr.20230626113114.1"><vh>child 1</vh>
+<v t="ekr.20230626113118.1"><vh>grandchild 1</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 </vnodes>
 <tnodes>
@@ -8920,7 +8927,16 @@ unl://Viewrendered examples
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
 unl://Viewrendered examples--&gt;Python code
+
+# In new outline
+unl://root
+unl://root--&gt;child 1
+unl://root--&gt;child 1--&gt;grandchild 1
 </t>
+<t tx="ekr.20230626113050.1"></t>
+<t tx="ekr.20230626113103.1"></t>
+<t tx="ekr.20230626113114.1"></t>
+<t tx="ekr.20230626113118.1"></t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the

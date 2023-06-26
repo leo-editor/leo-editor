@@ -7362,7 +7362,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList, p1 = unlList[:], p.copy()
+        aList, p1 = original_unlList[:], p.copy()
         while aList and p1:
             m = new_pat.match(aList[-1])
             if m and m.group(1).strip() != p1.h.strip():
@@ -7383,35 +7383,36 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     target = m and m.group(1) or unlList[-1]
     targets.append(target.strip())
     targets.extend(unlList[:-1])
-    # Find all target positions. Prefer later positions.
-    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
-    while unlList:
-        for p in positions:
-            p1 = p.copy()
-            if full_match(p):
-                assert p == p1, (p, p1)
-                n = 0  # The default line number.
-                # Parse the last target.
-                m = new_pat.match(unlList[-1])
-                if m:
-                    line = m.group(3)
-                    try:
-                        n = int(line)
-                    except(TypeError, ValueError):
-                        g.trace('bad line number', line)
-                if n < 0:
-                    p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
-                    if not p:
-                        g.trace(f"Not found: global line {n}")
+    # Search c followed by all other open commanders.
+    commanders = [c] + [z for z in g.app.commanders() if z != c]
+    original_unlList = unlList[:]
+    for c2 in commanders:
+        # Find all target positions. Prefer later positions.
+        unlList = original_unlList[:]
+        positions = list(reversed(list(z for z in c2.all_positions() if z.h.strip() in targets)))
+        while unlList:
+            for p in positions:
+                p1 = p.copy()
+                if full_match(p):
+                    assert p == p1, (p, p1)
+                    if c2 != c:
+                        g.app.selectLeoWindow(c2)  # Switch outlines.
+                    n = 0  # The default line number.
+                    # Parse the last target.
+                    m = new_pat.match(unlList[-1])
+                    if m:
+                        line = m.group(3)
+                        try:
+                            n = int(line)
+                        except(TypeError, ValueError):
+                            g.trace('bad line number', line)
+                    if n < 0:
+                        p2, offset = c2.gotoCommands.find_file_line(-n, p)  # Calls c2.redraw().
+                        if not p2:
+                            g.trace(f"{p.h}: global line {n} not found")
                     return p
-                insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
-                c.redraw(p)
-                c.frame.body.wrapper.setInsertPoint(insert_point)
-                c.frame.bringToFront()
-                c.bodyWantsFocusNow()
-                return p
-        # Not found. Pop the first parent from unlList.
-        unlList.pop(0)
+            # Not found. Pop the first parent from unlList.
+            unlList.pop(0)
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
