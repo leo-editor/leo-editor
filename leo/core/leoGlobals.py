@@ -7321,6 +7321,98 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
                 p2, offset = c2.gotoCommands.find_file_line(-n, p)
                 return p2 or p
     return None
+#@+node:ekr.20230626064652.1: *3* g.findUNL & helpers
+def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
+    """
+    g.findUNL: support for legacy UNLs.
+    This method must remain for compatibily with plugins.
+
+    Find and move to the unl given by the unlList in the commander c.
+    Return the found position, or None.
+    """
+    # Define the unl patterns.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+
+    #@+others  # Define helper functions
+    #@+node:ekr.20230626064652.2: *4* function: convert_unl_list
+    def convert_unl_list(aList: list[str]) -> list[str]:
+        """
+        Convert old-style UNLs to new UNLs, retaining line numbers if possible.
+        """
+        result = []
+        for s in aList:
+            # Try to get the line number.
+            for m, line_group in (
+                (old_pat.match(s), 4),
+                (new_pat.match(s), 3),
+            ):
+                if m:
+                    try:
+                        n = int(m.group(line_group))
+                        result.append(f"{m.group(1)}::{n}")
+                        continue
+                    except Exception:
+                        pass
+            # Finally, just add the whole UNL.
+            result.append(s)
+        # Do *not* remove duplicates!
+        return result
+    #@+node:ekr.20230626064652.3: *4* function: full_match
+    def full_match(p: Position) -> bool:
+        """Return True if the stripped headlines of p and all p's parents match unlList."""
+        # Careful: make copies.
+        aList, p1 = unlList[:], p.copy()
+        while aList and p1:
+            m = new_pat.match(aList[-1])
+            if m and m.group(1).strip() != p1.h.strip():
+                return False
+            if not m and aList[-1].strip() != p1.h.strip():
+                return False
+            aList.pop()
+            p1.moveToParent()
+        return not aList
+    #@-others
+
+    unlList = convert_unl_list(unlList1)
+    if not unlList:
+        return None
+    # Find all target headlines.
+    targets = []
+    m = new_pat.match(unlList[-1])
+    target = m and m.group(1) or unlList[-1]
+    targets.append(target.strip())
+    targets.extend(unlList[:-1])
+    # Find all target positions. Prefer later positions.
+    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
+    while unlList:
+        for p in positions:
+            p1 = p.copy()
+            if full_match(p):
+                assert p == p1, (p, p1)
+                n = 0  # The default line number.
+                # Parse the last target.
+                m = new_pat.match(unlList[-1])
+                if m:
+                    line = m.group(3)
+                    try:
+                        n = int(line)
+                    except(TypeError, ValueError):
+                        g.trace('bad line number', line)
+                if n < 0:
+                    p, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    if not p:
+                        g.trace(f"Not found: global line {n}")
+                    return p
+                insert_point = sum(len(z) for z in g.splitLines(p.b)[:n])
+                c.redraw(p)
+                c.frame.body.wrapper.setInsertPoint(insert_point)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
+    return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
     """

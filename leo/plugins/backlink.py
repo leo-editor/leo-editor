@@ -211,7 +211,7 @@ class backlinkController:
         g.es(url)
         g.handleUrl(url, c=self.c)
         
-        if 0:  ### Legacy code.
+        if 0:  # Legacy code using g.findUNL.
             # UNL detection copied from g.handleUrl()
             if (
                 url.lower().startswith('unl://') or
