@@ -1218,12 +1218,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     def convert_unls(self, event: Event) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
+        
+        The conversion isn't perfect: the code searches only for the last headline.
         """
-        ### To do:make undoable.
-        c = self.c
-        old_unl_pat = re.compile(fr"\s*{'unl'}://.*?\#(.*)$")
+        c, undo_type = self.c, 'convert-unls'
+        p1 = c.p.copy()
+        u = c.undoer
+        old_unl_pat = re.compile(fr".*?{'unl'}://.*?#(.*)$")
+        u.beforeChangeGroup(p1, undo_type)
+        n_changed, n_changed_nodes = 0, 0
         for p in c.all_unique_positions():
-            changed, result = False, []
+            changed, node_changed, result = False, False, []
+            bunch = u.beforeChangeBody(p)
             for line in g.splitLines(p.b):
                 m = old_unl_pat.match(line)
                 if m:
@@ -1231,17 +1237,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     headline = old_gnx.split('-->')[-1] if '-->' in old_gnx else old_gnx
                     p2 = g.findNodeAnywhere(c, headline)
                     if p2:
+                        # print(f"old: {line.rstrip()}")
+                        # print(f"new: {'unl'}:gnx:{p2.gnx}")
                         result.append('# ' + line)
                         result.append(f"{'unl'}:gnx:{p2.gnx}\n")
                         changed = True
+                        n_changed += 1
+                        if not node_changed:
+                            node_changed = True
+                            n_changed_nodes += 1
+                            print(f"changed {p.h}")
                     else:
                         result.append(line)
                 else:
                     result.append(line)
             if changed:
-                g.printObj(g.splitLines(p.b), tag=f"1: {p.h}")
-                g.printObj(result, tag=f"2: {p.h}")
-                ### p.b = ''.join(result)
+                c.setBodyString(p, ''.join(result))  # Required.
+                u.afterChangeBody(p, undo_type, bunch)
+        if n_changed:
+            g.es_print(
+                f"Changed {n_changed} unl{g.plural(n_changed)} "
+                f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}")
+            u.afterChangeGroup(p1, undo_type)
     #@+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
     def make_stub_files(self, event: Event) -> None:  # pragma: no cover
