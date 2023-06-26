@@ -7362,7 +7362,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList, p1 = original_unlList[:], p.copy()
+        aList: list[str] = original_unlList[:]
+        p1 = p.copy()
         while aList and p1:
             m = new_pat.match(aList[-1])
             if m and m.group(1).strip() != p1.h.strip():
@@ -7385,7 +7386,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     targets.extend(unlList[:-1])
     # Search c followed by all other open commanders.
     commanders = [c] + [z for z in g.app.commanders() if z != c]
-    original_unlList = unlList[:]
+    original_unlList: list[str] = unlList[:]
     for c2 in commanders:
         # Find all target positions. Prefer later positions.
         unlList = original_unlList[:]
