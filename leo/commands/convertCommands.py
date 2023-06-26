@@ -1214,43 +1214,42 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return body
         #@-others
     #@+node:ekr.20230625185133.1: *3* ccc.convert-gnxs
+    old_unl_pat = re.compile(r"(.*?)unl\://.*?#(.*)$")
+
     @cmd('convert-unls')
     def convert_unls(self, event: Event) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
-
-        The conversion isn't perfect: the code searches only for the last headline.
         """
         c, undo_type = self.c, 'convert-unls'
         p1 = c.p.copy()
         u = c.undoer
-        old_unl_pat = re.compile(fr".*?{'unl'}://.*?#(.*)$")
         u.beforeChangeGroup(p1, undo_type)
         n_changed, n_changed_nodes = 0, 0
         for p in c.all_unique_positions():
             changed, node_changed, result = False, False, []
             bunch = u.beforeChangeBody(p)
             for line in g.splitLines(p.b):
-                m = old_unl_pat.match(line)
-                if m:
-                    old_gnx = m.group(1)
-                    headline = old_gnx.split('-->')[-1] if '-->' in old_gnx else old_gnx
-                    p2 = g.findNodeAnywhere(c, headline)
-                    if p2:
-                        # print(f"old: {line.rstrip()}")
-                        # print(f"new: {'unl'}:gnx:{p2.gnx}")
-                        result.append('# ' + line)
-                        result.append(f"{'unl'}:gnx:{p2.gnx}\n")
-                        changed = True
-                        n_changed += 1
-                        if not node_changed:
-                            node_changed = True
-                            n_changed_nodes += 1
-                            print(f"changed {p.h}")
-                    else:
-                        result.append(line)
-                else:
+                m = self.old_unl_pat.match(line)
+                if not m:
                     result.append(line)
+                    continue
+                prefix = m.group(1)
+                unl = m.group(2).replace('%20', ' ')
+                p2 = g.findUNL(unl.split('-->'), c)
+                if not p2:
+                    result.append(line)
+                    continue
+                new_unl = f"{'unl'}:gnx:{p2.gnx}\n"
+                result.append(f"{prefix}{new_unl}")
+                if not node_changed:
+                    node_changed = True
+                    n_changed_nodes += 1
+                    print(f"\nIn {p.h}...")  # not p2.h.
+                print(f"  old: {unl}")
+                print(f"  new: {new_unl.rstrip()}")
+                changed = True
+                n_changed += 1
             if changed:
                 c.setBodyString(p, ''.join(result))  # Required.
                 u.afterChangeBody(p, undo_type, bunch)
@@ -1259,6 +1258,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 f"Changed {n_changed} unl{g.plural(n_changed)} "
                 f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}")
             u.afterChangeGroup(p1, undo_type)
+        g.es('convert-gnxs: done')
     #@+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
     def make_stub_files(self, event: Event) -> None:  # pragma: no cover
