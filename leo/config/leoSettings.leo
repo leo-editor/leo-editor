@@ -8904,9 +8904,9 @@ QLabel#minibufferLabel {
 QPlainTextEdit#screencastcaption {
     background-color:   @screencast-bg;
     font-family:        @screencast-font-family;
-    font-size:          @screencaset-font-size;
+    font-size:          @screencast-font-size;
     font-weight:        @screencast-font-weight;
-    font-style:         @screencaset-font-style;
+    font-style:         @screencast-font-style;
 }
 </t>
 <t tx="ekr.20140915194122.19466">/*  ========== Dialogs (QLabel) ========== 
@@ -11646,10 +11646,10 @@ date;;={|{x=time.asctime()}|}
 # hellow=hello
 
 </t>
-<t tx="ekr.20230316031838.1">screencast_family = Times New Roman
-screencast_size = 18pt
-screencast_weight = normal
-screencaset_style = normal
+<t tx="ekr.20230316031838.1">screencast_font_family = Times New Roman
+screencast_font_size = 18pt
+screencast_font_weight = normal
+screencast_font_style = normal
 </t>
 <t tx="ekr.20230327033157.1">True: expand/contract nodes when the mouse hovers over the outline:
     &lt;CTRL-hover&gt;: expand.

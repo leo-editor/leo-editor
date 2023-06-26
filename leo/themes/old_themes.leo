@@ -1167,9 +1167,9 @@ QTreeView::branch:open:has-children{
 QPlainTextEdit#screencastcaption {
     background-color:   @screencast-bg;
     font-family:        @screencast-font-family;
-    font-size:          @screencaset-font-size;
+    font-size:          @screencast-font-size;
     font-weight:        @screencast-font-weight;
-    font-style:         @screencaset-font-style;
+    font-style:         @screencast-font-style;
 }
 </t>
 <t tx="ekr.20180307015158.127">/* ========== interact.py plugin ========== */
