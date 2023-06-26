@@ -496,7 +496,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
     @cmd('add-mypy-annotations')
-    def addMypyAnnotations(self, event: Event) -> None:  # pragma: no cover
+    def add_mypy_annotations(self, event: Event) -> None:  # pragma: no cover
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
@@ -750,7 +750,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def cToPy(self, event: Event) -> None:  # pragma: no cover
+    def c_to_python(self, event: Event) -> None:  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -1213,7 +1213,36 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += 1
             return body
         #@-others
-    #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
+    #@+node:ekr.20230625185133.1: *3* ccc.convert-gnxs
+    @cmd('convert-unls')
+    def convert_unls(self, event: Event) -> None:  # pragma: no cover
+        """
+        Convert all legacy (headline-based) unls to gnx-based unls.
+        """
+        ### To do:make undoable.
+        c = self.c
+        old_unl_pat = re.compile(fr"\s*{'unl'}://.*?\#(.*)$")
+        for p in c.all_unique_positions():
+            changed, result = False, []
+            for line in g.splitLines(p.b):
+                m = old_unl_pat.match(line)
+                if m:
+                    old_gnx = m.group(1)
+                    headline = old_gnx.split('-->')[-1] if '-->' in old_gnx else old_gnx
+                    p2 = g.findNodeAnywhere(c, headline)
+                    if p2:
+                        result.append('# ' + line)
+                        result.append(f"{'unl'}:gnx:{p2.gnx}\n")
+                        changed = True
+                    else:
+                        result.append(line)
+                else:
+                    result.append(line)
+            if changed:
+                g.printObj(g.splitLines(p.b), tag=f"1: {p.h}")
+                g.printObj(result, tag=f"2: {p.h}")
+                ### p.b = ''.join(result)
+    #@+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
     def make_stub_files(self, event: Event) -> None:  # pragma: no cover
         """
@@ -1475,7 +1504,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def pythonToTypescriptCommand(self, event: Event) -> None:  # pragma: no cover
+    def python_to_typescript(self, event: Event) -> None:  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -2211,7 +2240,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def tsToPy(self, event: Event) -> None:  # pragma: no cover
+    def typescript_to_py(self, event: Event) -> None:  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
