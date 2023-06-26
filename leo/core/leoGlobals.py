@@ -7465,7 +7465,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
         # Resolve the legacy unl.
         for prefix in ('unl:' + '//', 'file://'):
             if unl.startswith(prefix):
-                unl = unl[len(prefix):]
+                unl = unl[len(prefix) :]
         # Throw away any file part.
         unlList = unl.replace('%20', ' ').split('#', 1)[-1].split('-->')
         p = g.findUNL(unlList, c)
