@@ -1214,7 +1214,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return body
         #@-others
     #@+node:ekr.20230625185133.1: *3* ccc.convert-gnxs
-    old_unl_pat = re.compile(r"(.*?)unl\://.*?#(.*)$")
+    old_unl_pat1 = re.compile(r"(.*?)unl\://.*?#(.*)$")  # First test for '#'
+    old_unl_pat2 = re.compile(r"(.*?)unl\://(.*)$")  # Second, assume no '#'.
 
     @cmd('convert-unls')
     def convert_unls(self, event: Event) -> None:  # pragma: no cover
@@ -1230,7 +1231,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             changed, node_changed, result = False, False, []
             bunch = u.beforeChangeBody(p)
             for line in g.splitLines(p.b):
-                m = self.old_unl_pat.match(line)
+                m = self.old_unl_pat1.match(line) or self.old_unl_pat2.match(line)
                 if not m:
                     result.append(line)
                     continue
@@ -1245,9 +1246,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if not node_changed:
                     node_changed = True
                     n_changed_nodes += 1
-                    print(f"\nIn {p.h}...")  # not p2.h.
+                    print(f"Node: {p.h}...")  # not p2.h.
                 print(f"  old: {unl}")
-                print(f"  new: {new_unl.rstrip()}")
+                print(f"  new: {new_unl.rstrip()}\n")
                 changed = True
                 n_changed += 1
             if changed:
@@ -1258,6 +1259,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 f"Changed {n_changed} unl{g.plural(n_changed)} "
                 f"in {n_changed_nodes} node{g.plural(n_changed_nodes)}")
             u.afterChangeGroup(p1, undo_type)
+        c.contractAllHeadlines()
+        c.redraw(p1)
         g.es('convert-gnxs: done')
     #@+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
