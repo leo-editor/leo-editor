@@ -1218,7 +1218,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     def convert_unls(self, event: Event) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
-        
+
         The conversion isn't perfect: the code searches only for the last headline.
         """
         c, undo_type = self.c, 'convert-unls'
