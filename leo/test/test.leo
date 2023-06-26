@@ -8904,12 +8904,22 @@ unl://#Coloring tests--&gt;Syntax coloring template
 
 # Exists, non-empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
+unl://#@file ../plugins/importers/__init__.py
+unl://@file ../plugins/importers/__init__.py
 
 # Exists, empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
+unl://#@clean ../plugins/leo_babel/__init__.py
+unl://@clean ../plugins/leo_babel/__init__.py
 
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
+unl://#Viewrendered examples
+unl://Viewrendered examples
+
+unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
+unl://#Viewrendered examples--&gt;Python code
+unl://Viewrendered examples--&gt;Python code
 </t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
     """
