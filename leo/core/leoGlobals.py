@@ -7450,16 +7450,16 @@ def getUrlFromNode(p: Position) -> Optional[str]:
             return s
     return None
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl_s: str, c: Cmdr) -> None:
+def handleUnl(unl_s: str, c: Cmdr) -> Cmdr:
     """
     Select the node given by the unl.
     This must *never* open a browser.
     """
     if not unl_s:
-        return
+        return c
     unl = unl_s.strip()
     if not unl:
-        return
+        return c
     if unl.startswith('unl:gnx:'):
         # Resolve the gnx-based unl.
         p = g.findGNX(unl[8:], c)
@@ -7475,8 +7475,9 @@ def handleUnl(unl_s: str, c: Cmdr) -> None:
     if p:
         c2 = p.v.context
         c2.redraw(p)
-    else:
-        print(f"Not found: {unl_s}")
+        return c2
+    print(f"Not found: {unl_s}")
+    return c
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
