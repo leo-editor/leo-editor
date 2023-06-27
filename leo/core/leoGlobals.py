@@ -7297,8 +7297,7 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
 #@+node:ekr.20230624015529.1: *3* g.findGNX (new unls)
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """
-    Return the position with the given gnx.
-    Search all open outlines, starting with c.
+    Return the position with the given gnx in c.
     """
     file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
     n: int = None  # The line number.
@@ -7309,17 +7308,12 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             n = int(m.group(2))
         except(TypeError, ValueError):
             pass
-    # Search c followed by all other open commanders.
-    commanders = [c] + [z for z in g.app.commanders() if z != c]
-    for c2 in commanders:
-        for p in c2.all_unique_positions():
-            if p.gnx == gnx:
-                if c2 != c:
-                    g.app.selectLeoWindow(c2)  # Switch outlines.
-                if n is None:
-                    return p
-                p2, offset = c2.gotoCommands.find_file_line(-n, p)
-                return p2 or p
+    for p in c.all_unique_positions():
+        if p.gnx == gnx:
+            if n is None:
+                return p
+            p2, offset = c.gotoCommands.find_file_line(-n, p)
+            return p2 or p
     return None
 #@+node:ekr.20230626064652.1: *3* g.findUNL & helpers (legacy unls)
 def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
@@ -7461,17 +7455,32 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     if not unl:
         return None
     if unl.startswith('unl:gnx:'):
-        # Resolve the gnx-based unl.
-        p = g.findGNX(unl[8:], c)
+        # Resolve a gnx-based unl.
+        unl = unl[8:]
+        file_part = g.getUNLFilePart(unl)
+        tail = unl[len(file_part) :]
+        c2 = g.openUNLFile(c, file_part)
+        g.trace(c2)
+        p = g.findGNX(tail, c2)
     else:
-        # Resolve the legacy unl.
-        for prefix in ('unl:' + '//', 'file://'):
+        # Resolve a file-based unl.
+        for prefix in ('unl:', 'file:'):
             if unl.startswith(prefix):
                 unl = unl[len(prefix) :]
-        # Throw away any file part.
-        unlList = unl.replace('%20', ' ').split('#', 1)[-1].split('-->')
-        p = g.findUNL(unlList, c)
+                break
+        else:
+            print(f"Bad unl: {unl_s}")
+            return None
+        file_part = g.getUNLFilePart(unl)
+        tail = unl[len(file_part) :]
+        c2 = g.openUNLFile(c, file_part)
+        ### unlList = unl.replace('%20', ' ').split('#', 1)[-1].split('-->')
+        unlList = tail.split('-->')
+        p = g.findUNL(unlList, c2)
     # Do not assume that p is in c.
+    # Switch outlines if necessary
+    if c2 != c:
+        g.app.selectLeoWindow(c2)  # Switch outlines.
     if p:
         c2 = p.v.context
         c2.redraw(p)
@@ -7745,6 +7754,52 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
 def unquoteUrl(url: str) -> str:
     """Replace escaped characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
+#@+node:ekr.20230627143007.1: *3* g: file part utils
+file_part_pattern = re.compile(r'(//.*?#)')
+
+def getUNLFilePart(s: str) -> str:
+    """Strip the unl's prefix and return from '//' to '#'"""
+    m = file_part_pattern.match(s)
+    return m.group(1) if m else ''
+
+def openUNLFile(c: Cmdr, s: str) -> Cmdr:
+    """
+    Open the commander s.
+
+    Return c if the file can not be found.
+    """
+    if not s.strip():
+        return c
+    if not (s.startswith('//') and s.endswith('#')):
+        g.trace(f"Can't happen: {s!r}", g.callers())
+        return c
+    s = s[2:-1]
+    if not s:
+        return c
+    if os.path.isabs(s):
+        path = s
+    else:
+        d = g.parsePathData(c)
+        prefix = d.get(os.path.basename(s)) or ''
+        g.trace(prefix)
+        path = os.path.normpath(os.path.join(prefix, s))
+    g.trace(os.path.exists(path), path)
+    if path == c.fileName():
+        g.trace('SAME')
+    return (
+        c if path == c.fileName()
+        else g.openWithFileName(path) if os.path.exists(path)
+        else c
+    )
+
+def parsePathData(c: Cmdr) -> dict[str, str]:
+    """Return a dict giving path prefixes for various files."""
+    ### Testing only.
+    base = 'c:/Repos/leo-editor/leo'
+    return {
+        'test.leo': f"{base}/test",
+        'LeoDocs.leo': f"{base}/doc",
+    }
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')

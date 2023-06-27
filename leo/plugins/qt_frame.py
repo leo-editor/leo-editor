@@ -2695,13 +2695,8 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
-        # see addition of '/' in LeoQtLog.put()
-        url = s = g.toUnicode(link.toString())
-        if platform.system() == 'Windows':
-            for scheme in 'file', 'unl':
-                if s.startswith(scheme + ':///') and s[len(scheme) + 5] == ':':
-                    url = s.replace(':///', '://', 1)
-                    break
+        s = g.toUnicode(link.toString())
+        url = urllib.parse.unquote(s)
         g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx: int) -> None:
@@ -2758,11 +2753,8 @@ class LeoQtLog(leoFrame.LeoLog):
         sb = w.horizontalScrollBar()
         s = self.to_html(color, s)
         if nodeLink:
-            if 1:  ### legacy:
-                s = f'<a href="{nodeLink}" title="{nodeLink}">{s}</a>'
-            else:  ### experimental
-                link = urllib.parse.quote(nodeLink)
-                s = f'<a href="{link}" title="{link}">{s}</a>'
+            link = urllib.parse.quote(nodeLink)
+            s = f'<a href="{link}" title="{link}">{s}</a>'
         w.insertHtml(s)
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.

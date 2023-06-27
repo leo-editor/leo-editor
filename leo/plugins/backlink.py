@@ -696,7 +696,7 @@ if QtWidgets:
 
     class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
-        #@+node:ekr.20140920145803.17987: *3* __init__
+        #@+node:ekr.20140920145803.17987: *3* bc.__init__
         def __init__(self, owner):
             """Ctor for backlinkQtUI class."""
             self.owner = owner

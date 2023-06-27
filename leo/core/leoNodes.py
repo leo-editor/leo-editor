@@ -815,14 +815,13 @@ class Position:
     #@+node:ekr.20230624171452.1: *4* p.get_UNL, get_short/legacy_UNL
     def get_UNL(self) -> str:
         """Return a gnx-oriented UNL"""
-        if 1:
-            return f"unl:gnx:{self.gnx}"
-        ### Experimental.
         p = self
+        if 0:  # Legacy.
+            return f"unl:gnx:{p.gnx}"
         c = p.v.context
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
-        return 'unl:gnx//' + f"{file_part}#{self.gnx}"
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
         ### unl.replace("'", "%27")
 
     def get_legacy_UNL(self) -> str:
@@ -835,9 +834,6 @@ class Position:
         """
         p = self
         c = p.v.context
-        if 1:  ### Temporary
-            return f"unl:gnx:{self.gnx}"
-        ### Experimental.
         path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
