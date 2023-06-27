@@ -11,6 +11,7 @@ import platform
 import string
 import sys
 import time
+import urllib
 from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
@@ -2757,7 +2758,11 @@ class LeoQtLog(leoFrame.LeoLog):
         sb = w.horizontalScrollBar()
         s = self.to_html(color, s)
         if nodeLink:
-            s = f'<a href="{nodeLink}" title="{nodeLink}">{s}</a>'
+            if 1:  ### legacy:
+                s = f'<a href="{nodeLink}" title="{nodeLink}">{s}</a>'
+            else:  ### experimental
+                link = urllib.parse.quote(nodeLink)
+                s = f'<a href="{link}" title="{link}">{s}</a>'
         w.insertHtml(s)
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.

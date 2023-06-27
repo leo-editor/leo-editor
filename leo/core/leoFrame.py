@@ -1701,11 +1701,13 @@ class LeoTree:
     def set_status_line(self, p: Position) -> None:
         """Update the status line."""
         c = self.c
-        c.frame.body.assignPositionToEditor(p)  # New in Leo 4.4.1.
-        c.frame.updateStatusLine()  # New in Leo 4.4.1.
+        c.frame.body.assignPositionToEditor(p)
+        c.frame.updateStatusLine()
         c.frame.clearStatusLine()
         if p and p.v:
-            c.frame.putStatusLine(p.get_UNL())
+            kind = c.config.getString('unl-status-kind') or ''
+            method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
+            c.frame.putStatusLine(method())
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:

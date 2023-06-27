@@ -7743,7 +7743,7 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     return None
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
 def unquoteUrl(url: str) -> str:
-    """Replace special characters (especially %20, by their equivalent)."""
+    """Replace escaped characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@-others
 # set g when the import is about to complete.

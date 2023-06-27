@@ -6,6 +6,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import copy
+import os
 import time
 import uuid
 from typing import Any, Generator, Optional, TYPE_CHECKING
@@ -813,8 +814,16 @@ class Position:
     hasVisNext = visNext
     #@+node:ekr.20230624171452.1: *4* p.get_UNL, get_short/legacy_UNL
     def get_UNL(self) -> str:
-        """Return a gnx-oriented UNL."""
-        return f"unl:gnx:{self.gnx}"
+        """Return a gnx-oriented UNL"""
+        if 1:
+            return f"unl:gnx:{self.gnx}"
+        ### Experimental.
+        p = self
+        c = p.v.context
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:gnx//' + f"{file_part}#{self.gnx}"
+        ### unl.replace("'", "%27")
 
     def get_legacy_UNL(self) -> str:
         """
@@ -824,9 +833,16 @@ class Position:
 
         Note: g.findUNL only uses the headlines!
         """
-        unl = (self.v.context.fileName() + '#'
-            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)]))))
-        return 'unl://' + unl.replace("'", "%27")
+        p = self
+        c = p.v.context
+        if 1:  ### Temporary
+            return f"unl:gnx:{self.gnx}"
+        ### Experimental.
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl://' + f"{file_part}#{path_part}"
+        ### unl.replace("'", "%27")
 
     def get_short_legacy_UNL(self) -> str:
         """
@@ -835,7 +851,8 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         unl = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        return 'unl://' + unl.replace("'", "%27")
+        return 'unl://' + unl
+        ### unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
