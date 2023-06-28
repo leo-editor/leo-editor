@@ -1453,10 +1453,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if not c:
             return
-        gnx = c.p and c.p.gnx
-        if not gnx:
+        p = c.p
+        if not p:
             return
-        url = f"unl:gnx:{gnx}"
+        url = p.get_UNL()
         g.app.gui.replaceClipboardWith(url)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
