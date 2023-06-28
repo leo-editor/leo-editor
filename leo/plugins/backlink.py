@@ -218,7 +218,7 @@ class backlinkController:
             new_c = g.handleUnl(url, self.c)
             if new_c and hasattr(new_c, 'backlinkController'):
                 unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
-                new_p = g.findUNL(unlList, new_c)
+                new_p = g.findUnl(unlList, new_c)
                 if not new_p:
                     g.es("No perfect match, not creating backlink")
                     return

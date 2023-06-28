@@ -1196,7 +1196,7 @@ class BookMarkDisplayProvider:
                                 factory.setTabForCommander(c)
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
-                    other_p = g.findGNX(UNL, other_c)
+                    other_p = g.findAnyUnl(UNL, other_c)
                     if other_p:
                         v = other_p.v
                     else:

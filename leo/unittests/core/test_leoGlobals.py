@@ -301,8 +301,8 @@ class TestGlobals(LeoUnitTest):
             file_unl = g.computeFileUrl(absolute_path, c)
             self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
 
-            # Test g.findGNX.
-            result2 = g.findGNX(test_p.gnx, c)
+            # Test g.findGnx.
+            result2 = g.findGnx(test_p.gnx, c)
             self.assertEqual(result2, test_p)
 
        
@@ -424,14 +424,14 @@ class TestGlobals(LeoUnitTest):
             table2 = (
                 (http + 'writemonkey.com/index.php', ['browser']),
                 (file_ + 'x.py', ['os_startfile']),
-                (file_ + fn1, ['g.findUNL']),
-                (file_ + fn2, ['g.findUNL']),
-                (unl1 + fn1 + unl2, ['g.findUNL']),
-                (unl1 + fn1 + unl3, ['g.findUNL']),
-                (unl1 + '#' + unl2, ['g.findUNL']),
-                (unl1 + '#' + unl3, ['g.findUNL']),
-                (unl1 + unl2, ['g.findUNL']),
-                (unl1 + unl3, ['g.findUNL']),
+                (file_ + fn1, ['g.findUnl']),
+                (file_ + fn2, ['g.findUnl']),
+                (unl1 + fn1 + unl2, ['g.findUnl']),
+                (unl1 + fn1 + unl3, ['g.findUnl']),
+                (unl1 + '#' + unl2, ['g.findUnl']),
+                (unl1 + '#' + unl3, ['g.findUnl']),
+                (unl1 + unl2, ['g.findUnl']),
+                (unl1 + unl3, ['g.findUnl']),
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)

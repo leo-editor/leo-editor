@@ -1237,7 +1237,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     continue
                 prefix = m.group(1)
                 unl = m.group(2).replace('%20', ' ')
-                p2 = g.findUNL(unl.split('-->'), c)
+                p2 = g.findUnl(unl.split('-->'), c)
                 if not p2:
                     result.append(line)
                     continue

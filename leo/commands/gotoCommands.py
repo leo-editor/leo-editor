@@ -238,7 +238,8 @@ class GoToCommands:
         w = c.frame.body.wrapper
         c.selectPosition(root)
         c.redraw()
-        if not g.unitTesting:
+        # Don't warn if there is no line 0.
+        if not g.unitTesting and abs(n) > 0:
             if len(lines) < n:
                 g.warning('only', len(lines), 'lines')
             else:

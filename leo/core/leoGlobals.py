@@ -7262,7 +7262,7 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[len(file_part) :]
         c2 = g.openUNLFile(c, file_part)
-        return g.findGNX(tail, c2)
+        return g.findGnx(tail, c2)
     # Resolve a file-based unl.
     for prefix in ('unl:', 'file:'):
         if unl.startswith(prefix):
@@ -7275,9 +7275,9 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
     tail = unl[len(file_part) :]
     c2 = g.openUNLFile(c, file_part)
     unlList = tail.split('-->')
-    return g.findUNL(unlList, c2)
-#@+node:ekr.20230624015529.1: *3* g.findGNX (new unls)
-def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
+    return g.findUnl(unlList, c2)
+#@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
+def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     Return the position with the given gnx in c.
     """
@@ -7297,10 +7297,10 @@ def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p)
             return p2 or p
     return None
-#@+node:ekr.20230626064652.1: *3* g.findUNL & helpers (legacy unls)
-def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
+#@+node:ekr.20230626064652.1: *3* g.findUnl & helpers (legacy unls)
+def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
-    g.findUNL: support for legacy UNLs.
+    g.findUnl: support for legacy UNLs.
     This method must remain for compatibily with plugins.
 
     Find and move to the unl given by the unlList in the commander c.
@@ -7384,6 +7384,8 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
     return None
+    
+findUNL = findUnl
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
     """
@@ -7517,7 +7519,7 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.netloc', parsed.netloc)
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
-#@+node:ekr.20230628072109.1: *3* g.isValidUnl
+#@+node:ekr.20230628072109.1: *3* g.findAnyUnl
 valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://.*?#.+")
 
 def isValidUnl(unl_s: str) -> bool:
