@@ -7370,7 +7370,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     #@-others
 
     unlList = convert_unl_list(unlList1)
-    original_unlList: list[str] = unlList[:]
     if not unlList:
         return None
     # Find all target headlines.
@@ -7380,7 +7379,6 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     targets.append(target.strip())
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
-    unlList = original_unlList[:]
     positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
     while unlList:
         for p in positions:

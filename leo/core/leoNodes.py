@@ -826,16 +826,13 @@ class Position:
         Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
 
         Not used in Leo's core or official plugins.
-
-        Note: g.findUNL only uses the headlines!
         """
         p = self
         c = p.v.context
         path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
-        return 'unl://' + f"{file_part}#{path_part}"
-        ### unl.replace("'", "%27")
+        return 'unl:' + f"//{file_part}#{path_part}"
 
     def get_short_legacy_UNL(self) -> str:
         """
@@ -845,7 +842,6 @@ class Position:
         """
         unl = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         return 'unl://' + unl
-        ### unl.replace("'", "%27")
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self

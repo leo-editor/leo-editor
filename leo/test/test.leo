@@ -8925,6 +8925,9 @@ unl://#Viewrendered examples
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
 
+# In LeoDocs.leo
+unl://LeoDocs.leo#Web pages
+
 # In new outline
 unl://root
 unl://root--&gt;child 1
