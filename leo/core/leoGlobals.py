@@ -7252,13 +7252,37 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     # Not used in Leo's core.
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
+#@+node:ekr.20230628072620.1: *3* g.findAnyUnl
+def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
+    """Find a either a legacy (path-based) or new (gnx-based) unl."""
+    unl = unl_s
+    if unl.startswith('unl:gnx:'):
+        # Resolve a gnx-based unl.
+        unl = unl[8:]
+        file_part = g.getUNLFilePart(unl)
+        tail = unl[len(file_part) :]
+        c2 = g.openUNLFile(c, file_part)
+        return g.findGNX(tail, c2)
+    # Resolve a file-based unl.
+    for prefix in ('unl:', 'file:'):
+        if unl.startswith(prefix):
+            unl = unl[len(prefix) :]
+            break
+    else:
+        print(f"Bad unl: {unl_s}")
+        return None
+    file_part = g.getUNLFilePart(unl)
+    tail = unl[len(file_part) :]
+    c2 = g.openUNLFile(c, file_part)
+    unlList = tail.split('-->')
+    return g.findUNL(unlList, c2)
 #@+node:ekr.20230624015529.1: *3* g.findGNX (new unls)
 def findGNX(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     Return the position with the given gnx in c.
     """
     file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
-    n: int = None  # The line number.
+    n: int = 0  # The line number.
     m = file_pat.match(gnx)
     if m:
         gnx = m.group(1)
@@ -7394,7 +7418,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
         if s.startswith("#"):
             return s
     return None
-#@+node:ekr.20170221063527.1: *3* g.handleUnl
+#@+node:ekr.20170221063527.1: *3* g.handleUnl & g.findAnyUnl
 def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     """
     Select the node given by the unl.
@@ -7405,37 +7429,16 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     unl = unl_s.strip()
     if not unl:
         return None
-    if unl.startswith('unl:gnx:'):
-        # Resolve a gnx-based unl.
-        unl = unl[8:]
-        file_part = g.getUNLFilePart(unl)
-        tail = unl[len(file_part) :]
-        c2 = g.openUNLFile(c, file_part)
-        p = g.findGNX(tail, c2)
-    else:
-        # Resolve a file-based unl.
-        for prefix in ('unl:', 'file:'):
-            if unl.startswith(prefix):
-                unl = unl[len(prefix) :]
-                break
-        else:
-            print(f"Bad unl: {unl_s}")
-            return None
-        file_part = g.getUNLFilePart(unl)
-        tail = unl[len(file_part) :]
-        c2 = g.openUNLFile(c, file_part)
-        unlList = tail.split('-->')
-        p = g.findUNL(unlList, c2)
+    p = g.findAnyUnl(unl, c)
+    if not p:
+        print(f"Not found: {unl_s}")
+        return None
     # Do not assume that p is in c.
-    # Switch outlines if necessary
+    c2 = p.v.context
     if c2 != c:
         g.app.selectLeoWindow(c2)  # Switch outlines.
-    if p:
-        c2 = p.v.context
-        c2.redraw(p)
-        return c2
-    print(f"Not found: {unl_s}")
-    return None
+    c2.redraw(p)
+    return c2
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
     """Open a url or a unl."""
@@ -7514,6 +7517,12 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.netloc', parsed.netloc)
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
+#@+node:ekr.20230628072109.1: *3* g.isValidUnl
+valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://.*?#.+")
+
+def isValidUnl(unl_s: str) -> bool:
+    """unls must contain '//' and '#' followed by something else."""
+    return unl_s.match(g.valid_unl_gnx_pattern)
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
