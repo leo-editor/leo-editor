@@ -214,14 +214,26 @@ class backlinkController:
             g.handleUrl(url, c=c)
             return
         our_unl = c.p.get_UNL()
-        new_c = g.handleUnl(url, c)
-        if not new_c or not hasattr(new_c, 'backlinkController'):
-            return
-        unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
-        new_p = g.findAnyUnl(unlList, new_c)
+        
+        ### This is too early.
+            # new_c = g.handleUnl(url, c)
+            # if not new_c or not hasattr(new_c, 'backlinkController'):
+                # return
+
+        new_p = g.findAnyUnl(our_unl, c)
         if not new_p:
-            g.es(f"unl not found: {url!r}. not creating backlink")
+            g.es(f"unl not found: {our_unl!r}. not creating backlink")
             return
+        new_c = new_p.v.context
+        if not hasattr(new_c, 'backlinkController'):
+            g.es('No controller. not creating backlink')
+            return
+
+        ### To do: should this code switch outlines???
+            # new_c = new_p.v.context
+            # if new_c != c:
+                # g.app.selectLeoWindow(new_c)  # Switch outlines.
+
         new_c.backlinkController.initBacklink(new_p.v)
         if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
             new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
