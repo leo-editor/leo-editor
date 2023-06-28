@@ -940,6 +940,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
+<v t="ekr.20230628032632.1"><vh>@rst html/clickablelinks.html</vh></v>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
 <v t="ekr.20200909171301.1"><vh>@rst html/leomarkup.html</vh></v>
 <v t="ekr.20050901101608.4"><vh>@rst html/customizing.html</vh>
@@ -14627,6 +14628,7 @@ This is Leo's Users Guide. It covers additional material not covered in the
 .. toctree::
    :maxdepth: 2
 
+   clickablelinks
    leomarkup
    customizing
    plugins
@@ -32594,6 +32596,44 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #3264`_ and `PR #3277`_: Simplify Leo's path-related code.
 
 - 20+ issues and 30+ pull requests.
+</t>
+<t tx="ekr.20230628032632.1">###############
+Clickable links
+###############
+
+Leo syntax colors clickable links in the body pane. They have four forms:
+
+1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
+
+   Some of these tools produce clickable links in the log pane when run
+   *within* Leo. Some do not.
+
+   When running these tools *outside of* Leo, copying an error message from
+   the *console* to Leo's log pane will create clickable links in the log
+   pane. Control-clicking these links will select the proper node and line
+   provided the outline contains an `@&amp;lt;file&amp;gt;` node for file mentioned in
+   the error message.
+
+2. UNLs based on gnxs (global node indices):
+
+   Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
+   outline and select the first outline node with the given gnx. These UNLs
+   will work as long as the node exists anywhere in the outline.
+
+   *Note*: `{outline}` is optional. It can be an absolute path name or
+   a relative path name resolved using `@data unl-path-prefixes`.
+
+3. Leo's headline-based UNLs, as shown in the status pane:
+
+   Headline-based UNLs consist of `unl://` + `//{outline}#{headline_list}`
+   where headline_list is a list of headlines separated by `--&gt;`.
+
+   *Note*: `{outline}` is optional. It can be an absolute path name or
+   a relative path name resolved using `@data unl-path-prefixes`.
+
+4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
+
+   For example, Leo's forum: https://leo-editor.github.io/leo-editor/
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
