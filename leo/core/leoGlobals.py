@@ -7384,7 +7384,7 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
     return None
-    
+
 findUNL = findUnl
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
@@ -7519,11 +7519,12 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.netloc', parsed.netloc)
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
-#@+node:ekr.20230628072109.1: *3* g.findAnyUnl
+#@+node:ekr.20230628072109.1: *3* g.isValidUnl
+# unls must contain a (possible empyt) file part followed by a non-empty gnx.
 valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://.*?#.+")
 
 def isValidUnl(unl_s: str) -> bool:
-    """unls must contain '//' and '#' followed by something else."""
+    """Return true if the given unl is valid."""
     return unl_s.match(g.valid_unl_gnx_pattern)
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
