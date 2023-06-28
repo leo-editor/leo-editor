@@ -7781,25 +7781,31 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     else:
         d = g.parsePathData(c)
         prefix = d.get(os.path.basename(s)) or ''
-        g.trace(prefix)
         path = os.path.normpath(os.path.join(prefix, s))
-    g.trace(os.path.exists(path), path)
-    if path == c.fileName():
-        g.trace('SAME')
+    # g.trace(os.path.exists(path), path)
     return (
         c if path == c.fileName()
         else g.openWithFileName(path) if os.path.exists(path)
         else c
     )
+    
+path_data_pattern = re.compile(r'(.*?):\s*(.*)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
     """Return a dict giving path prefixes for various files."""
-    ### Testing only.
-    base = 'c:/Repos/leo-editor/leo'
-    return {
-        'test.leo': f"{base}/test",
-        'LeoDocs.leo': f"{base}/doc",
-    }
+    lines = c.config.getData('unl_path_prefixes')
+    d: dict[str, str] = {}
+    for line in lines:
+        m = path_data_pattern.match(line)
+        if m:
+            key, val = m.group(1), os.path.normpath(m.group(2))
+            if key in d:
+                g.trace(f"Ignoring duplicate key: {line!r}")
+            else:
+                d [key] = val
+        else:
+            g.trace(f"Ignoring line: {line!r}")
+    return d
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')

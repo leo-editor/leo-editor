@@ -2199,6 +2199,7 @@
 <v t="ekr.20230627131213.1"><vh>UNLs</vh>
 <v t="ekr.20230627130611.1"><vh>@string unl-status-kind = legacy</vh></v>
 <v t="ekr.20230627131227.1"><vh>@bool full-unl-paths = True</vh></v>
+<v t="ekr.20230627202839.1"><vh>@data unl_path_prefixes</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
 <v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
@@ -2284,6 +2285,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20230627130611.1"></v>
+<v t="ekr.20230627131213.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11669,6 +11671,11 @@ legacy: Show legacy (headline-based) uns in the status area.</t>
 <t tx="ekr.20230627131227.1">True: (legacy): Display full path names in the status area.
 False:          Display only the .leo file's name in the status area.
 </t>
+<t tx="ekr.20230627202839.1"># lines have the form:
+# x.leo: path
+
+test.leo:    c:/Repos/leo-editor/leo/test
+LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
