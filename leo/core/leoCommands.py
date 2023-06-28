@@ -598,8 +598,8 @@ class Commands:
         if c.fixedWindowPositionData:
             try:
                 aList = [z.strip() for z in c.fixedWindowPositionData if z.strip()]
-                w, h, l, t = aList
-                c.fixedWindowPosition = int(w), int(h), int(l), int(t)  # type:ignore
+                w, h, left, t = aList
+                c.fixedWindowPosition = int(w), int(h), int(left), int(t)  # type:ignore
             except Exception:
                 g.error('bad @data fixedWindowPosition',
                     repr(self.fixedWindowPosition))
