@@ -7385,7 +7385,7 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         unlList.pop(0)
     return None
 
-findUNL = findUnl
+findUNL = findUnl  # Compatibility.
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
     """
