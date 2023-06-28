@@ -2197,7 +2197,7 @@
 </v>
 </v>
 <v t="ekr.20230627131213.1"><vh>UNLs</vh>
-<v t="ekr.20230627130611.1"><vh>@string unl-status-kind = legacy</vh></v>
+<v t="ekr.20230627130611.1"><vh>@string unl-status-kind = gnx</vh></v>
 <v t="ekr.20230627131227.1"><vh>@bool full-unl-paths = True</vh></v>
 <v t="ekr.20230627202839.1"><vh>@data unl-path-prefixes</vh></v>
 </v>
