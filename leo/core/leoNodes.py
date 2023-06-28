@@ -812,20 +812,37 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:ekr.20230624171452.1: *4* p.get_UNL, get_short/legacy_UNL
-    def get_UNL(self) -> str:
-        """Return a gnx-oriented UNL"""
+    #@+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
+    #@+node:ekr.20230628174317.1: *5* p.get_full_gnx_UNL
+    def get_full_gnx_UNL(self) -> str:
+        """
+        Return a gnx-oriented UNL with a full path component.
+
+        The SessionManager class uses this method.
+        """
         p = self
         c = p.v.context
-        full = c.config.getBool('full-unl-paths', default=False)
-        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        file_part = c.fileName()
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+    #@+node:ekr.20230628173542.2: *5* p.get_full_legacy_UNL
+    def get_full_legacy_UNL(self) -> str:
+        """
+        Return a legacy unl with the full file-name component.
 
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//{c.fileName()}#{path_part}"
+    #@+node:ekr.20230628173542.1: *5* p.get_legacy_UNL
     def get_legacy_UNL(self) -> str:
         """
         Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
 
-        Not used in Leo's core or official plugins.
+        The file part of this UNL depends on the @bool full-unl-paths setting.
+
+        LeoTree.set_status_line will call this method if legacy unls are in effect.
         """
         p = self
         c = p.v.context
@@ -833,15 +850,38 @@ class Position:
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
         return 'unl:' + f"//{file_part}#{path_part}"
+    #@+node:ekr.20230628175148.1: *5* p.get_short_gnx_UNL
+    def get_short_gnx_UNL(self) -> str:
+        """
+        Return a legacy unl without the file-name component.
 
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+    #@+node:ekr.20230628174804.1: *5* p.get_short_legacy_UNL
     def get_short_legacy_UNL(self) -> str:
         """
         Return a legacy unl without the file-name component.
 
         Not used in Leo's core or official plugins.
         """
-        unl = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        return 'unl://' + unl
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//#{path_part}"
+    #@+node:ekr.20230624171452.1: *5* p.get_UNL
+    def get_UNL(self) -> str:
+        """
+        Return a gnx-oriented UNL whose file part depends on the @bool full-unl-paths setting.
+
+        LeoTree.set_status_line will call this method if gnx-based unls are in effect.
+        """
+        p = self
+        c = p.v.context
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
