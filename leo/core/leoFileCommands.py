@@ -2158,8 +2158,8 @@ class FileCommands:
             return
         c.db['body_outline_ratio'] = str(c.frame.ratio)
         c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
-        w, h, l, t = c.frame.get_window_info()
-        c.db['window_position'] = str(t), str(l), str(h), str(w)
+        w, h, left, t = c.frame.get_window_info()
+        c.db['window_position'] = str(t), str(left), str(h), str(w)
         if trace:
             g.trace(f"\nset c.db for {c.shortFileName()}")
             print('window_position:', c.db['window_position'])
