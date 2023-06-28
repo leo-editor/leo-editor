@@ -7782,14 +7782,13 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         d = g.parsePathData(c)
         prefix = d.get(os.path.basename(s)) or ''
         path = os.path.normpath(os.path.join(prefix, s))
-    # g.trace(os.path.exists(path), path)
     return (
-        c if path == c.fileName()
+        c if path == os.path.normpath(c.fileName())
         else g.openWithFileName(path) if os.path.exists(path)
         else c
     )
     
-path_data_pattern = re.compile(r'(.*?):\s*(.*)')
+path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
     """Return a dict giving path prefixes for various files."""
@@ -7798,11 +7797,11 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
     for line in lines:
         m = path_data_pattern.match(line)
         if m:
-            key, val = m.group(1), os.path.normpath(m.group(2))
+            key, path = m.group(1), m.group(2)
             if key in d:
                 g.trace(f"Ignoring duplicate key: {line!r}")
             else:
-                d [key] = val
+                d [key] = os.path.normpath(path)
         else:
             g.trace(f"Ignoring line: {line!r}")
     return d

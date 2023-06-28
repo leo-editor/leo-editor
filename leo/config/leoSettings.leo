@@ -11672,10 +11672,10 @@ legacy: Show legacy (headline-based) uns in the status area.</t>
 False:          Display only the .leo file's name in the status area.
 </t>
 <t tx="ekr.20230627202839.1"># lines have the form:
-# x.leo: path
+# x.leo: &lt;absolute path to x.leo&gt;
 
-test.leo:    c:/Repos/leo-editor/leo/test
-LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
+# test.leo:    c:/Repos/leo-editor/leo/test
+# LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
