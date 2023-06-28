@@ -57,11 +57,19 @@ class SessionManager:
         """Return the path to the session file."""
         for path in (g.app.homeLeoDir, g.app.homeDir):
             if g.os_path_exists(path):
-                return g.finalize_join(path, 'leo.session')
+                path = g.finalize_join(path, 'leo.session')
+                if 'startup' in g.app.debug:
+                    g.trace(f"Using {path}")
+                return path
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
-        """Open a tab for each item in UNLs & select the indicated node in each."""
+        """
+        Open a tab for each item in UNLs & select the indicated node in each.
+
+        unls is the list returned by SessionManager.load_snapshot()
+
+        """
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
