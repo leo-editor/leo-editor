@@ -589,7 +589,6 @@
 </v>
 </v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230625084119.1"><vh>Legacy UNLs</vh></v>
 <v t="ekr.20230626113050.1"><vh>Test outline: copy root to new outline</vh>
 <v t="ekr.20230626113103.1"><vh>root</vh>
 <v t="ekr.20230626113114.1"><vh>child 1</vh>
@@ -597,6 +596,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
+<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 <v t="ekr.20230627150454.1"><vh>New UNLs with file parts</vh></v>
 </vnodes>
@@ -8945,9 +8946,16 @@ unl:gnx://#ekr.20180311131424.1
 unl:gnx://test.leo#ekr.20230622112649.1
 unl:gnx://#ekr.20230622112649.1
 
-# In LeoDocs.leo
+# These links depend on @data unl-path-prefixes.
+
+# In LeoDocs.leo: Leo 6.7.3 release notes
 unl:gnx://LeoDocs.leo#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Read me first **
 unl:gnx://LeoDocs.leo#ekr.20050831195449</t>
+<t tx="ekr.20230628090119.1"># These links depend on @data unl-path-prefixes.
+
+unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes</t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
