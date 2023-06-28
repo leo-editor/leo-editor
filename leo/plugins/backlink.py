@@ -214,7 +214,7 @@ class backlinkController:
             g.handleUrl(url, c=c)
             return
         our_unl = c.p.get_UNL()
-        
+
         ### This is too early.
             # new_c = g.handleUnl(url, c)
             # if not new_c or not hasattr(new_c, 'backlinkController'):
