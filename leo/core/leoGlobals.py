@@ -7356,7 +7356,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList: list[str] = original_unlList[:]
+        aList: list[str] = unlList[:]
         p1 = p.copy()
         while aList and p1:
             m = new_pat.match(aList[-1])
@@ -7370,6 +7370,7 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     #@-others
 
     unlList = convert_unl_list(unlList1)
+    original_unlList: list[str] = unlList[:]
     if not unlList:
         return None
     # Find all target headlines.
@@ -7378,36 +7379,30 @@ def findUNL(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     target = m and m.group(1) or unlList[-1]
     targets.append(target.strip())
     targets.extend(unlList[:-1])
-    # Search c followed by all other open commanders.
-    commanders = [c] + [z for z in g.app.commanders() if z != c]
-    original_unlList: list[str] = unlList[:]
-    for c2 in commanders:
-        # Find all target positions. Prefer later positions.
-        unlList = original_unlList[:]
-        positions = list(reversed(list(z for z in c2.all_positions() if z.h.strip() in targets)))
-        while unlList:
-            for p in positions:
-                p1 = p.copy()
-                if full_match(p):
-                    assert p == p1, (p, p1)
-                    if c2 != c:
-                        g.app.selectLeoWindow(c2)  # Switch outlines.
-                    n = 0  # The default line number.
-                    # Parse the last target.
-                    m = new_pat.match(unlList[-1])
-                    if m:
-                        line = m.group(3)
-                        try:
-                            n = int(line)
-                        except(TypeError, ValueError):
-                            g.trace('bad line number', line)
-                    if n < 0:
-                        p2, offset = c2.gotoCommands.find_file_line(-n, p)  # Calls c2.redraw().
-                        if not p2:
-                            g.trace(f"{p.h}: global line {n} not found")
-                    return p
-            # Not found. Pop the first parent from unlList.
-            unlList.pop(0)
+    # Find all target positions. Prefer later positions.
+    unlList = original_unlList[:]
+    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
+    while unlList:
+        for p in positions:
+            p1 = p.copy()
+            if full_match(p):
+                assert p == p1, (p, p1)
+                n = 0  # The default line number.
+                # Parse the last target.
+                m = new_pat.match(unlList[-1])
+                if m:
+                    line = m.group(3)
+                    try:
+                        n = int(line)
+                    except(TypeError, ValueError):
+                        g.trace('bad line number', line)
+                if n < 0:
+                    p2, offset = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    if not p2:
+                        g.trace(f"{p.h}: global line {n} not found")
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Position) -> Optional[str]:
@@ -7460,7 +7455,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[len(file_part) :]
         c2 = g.openUNLFile(c, file_part)
-        g.trace(c2)
         p = g.findGNX(tail, c2)
     else:
         # Resolve a file-based unl.
@@ -7474,7 +7468,6 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[len(file_part) :]
         c2 = g.openUNLFile(c, file_part)
-        ### unlList = unl.replace('%20', ' ').split('#', 1)[-1].split('-->')
         unlList = tail.split('-->')
         p = g.findUNL(unlList, c2)
     # Do not assume that p is in c.
@@ -7787,7 +7780,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         else g.openWithFileName(path) if os.path.exists(path)
         else c
     )
-    
+
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
@@ -7801,7 +7794,7 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
             if key in d:
                 g.trace(f"Ignoring duplicate key: {line!r}")
             else:
-                d [key] = os.path.normpath(path)
+                d[key] = os.path.normpath(path)
         else:
             g.trace(f"Ignoring line: {line!r}")
     return d

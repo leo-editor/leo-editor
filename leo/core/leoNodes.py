@@ -816,13 +816,10 @@ class Position:
     def get_UNL(self) -> str:
         """Return a gnx-oriented UNL"""
         p = self
-        if 0:  # Legacy.
-            return f"unl:gnx:{p.gnx}"
         c = p.v.context
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-        ### unl.replace("'", "%27")
 
     def get_legacy_UNL(self) -> str:
         """

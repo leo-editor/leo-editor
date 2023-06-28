@@ -8913,21 +8913,17 @@ unl://#Coloring tests--&gt;Syntax coloring template
 # Exists, non-empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
 unl://#@file ../plugins/importers/__init__.py
-unl://@file ../plugins/importers/__init__.py
 
 # Exists, empty.
 unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
 unl://#@clean ../plugins/leo_babel/__init__.py
-unl://@clean ../plugins/leo_babel/__init__.py
 
 # Exists
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
 unl://#Viewrendered examples
-unl://Viewrendered examples
 
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
-unl://Viewrendered examples--&gt;Python code
 
 # In new outline
 unl://root
@@ -8940,9 +8936,11 @@ unl://root--&gt;child 1--&gt;grandchild 1
 <t tx="ekr.20230626113118.1"></t>
 <t tx="ekr.20230627150454.1"># Exists: Recent
 unl:gnx://test.leo#ekr.20180311131424.1
+unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
 unl:gnx://test.leo#ekr.20230622112649.1
+unl:gnx://#ekr.20230622112649.1
 
 # In LeoDocs.leo
 unl:gnx://LeoDocs.leo#ekr.20230409052507.1
