@@ -7420,7 +7420,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
         if s.startswith("#"):
             return s
     return None
-#@+node:ekr.20170221063527.1: *3* g.handleUnl & g.findAnyUnl
+#@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     """
     Select the node given by the unl.
