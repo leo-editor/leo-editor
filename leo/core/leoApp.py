@@ -1844,7 +1844,7 @@ class LoadManager:
         fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
         fn = g.finalize(fn)
         directory = g.finalize(os.path.dirname(fn))
-        # #1415.
+
         return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self) -> None:
@@ -2311,10 +2311,13 @@ class LoadManager:
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1:
-            try:  # #1403.
-                c1 = lm.openEmptyWorkBook()  # Calls LM.loadLocalFile.
+            # Open or create a workbook, but do *not* save it.
+            # The default path is ~/.leo/workbook.leo,
+            # but @string default-leo-file can change the path.
+            try:
+                c1 = lm.openWorkBook()
             except Exception:
-                g.es_print('Can not create empty workbook')
+                g.es_print('Can not create workbook')
                 g.es_exception()
         c = c1
         if not c:
@@ -2336,31 +2339,51 @@ class LoadManager:
         g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
         c.initialFocusHelper()
         return True
-    #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
-    def openEmptyWorkBook(self) -> Cmdr:
-        """Open CheatSheet.leo as the workbook. Return the new commander."""
-        fn = self.computeWorkbookFileName()
-        if not fn:
-            return None  # #1415
-        # Open CheatSheet.leo.
-        fn2 = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-        if not g.os_path_exists(fn2):
+    #@+node:ekr.20131028155339.17098: *5* LM.openWorkBook
+    def openWorkBook(self) -> Cmdr:
+        """Open or create a new workbook. Return the new commander."""
+        # Never create a workbook during unit tests or in batch mode.
+        if g.unitTesting or g.app.batchMode:
             return None
-        c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
-        # Save as the workbook name.
-        c.mFileName = fn
+        fn = self.computeWorkbookFileName()
+        exists = fn and os.path.exists(fn)
+        
+        if not fn:
+            # The usual directory does not exist. Create an empty file.
+            c = self.openEmptyLeoFile(gui=g.app.gui, old_c=None)
+            c.rootPosition().h = 'Workbook'
+        elif 1:
+            # Open the workboook or create an empty file.
+            c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+            if not exists:
+                c.rootPosition().h = 'Workbook'
+        else:
+            # Open CheatSheet.leo.
+            fn2 = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+            if not os.path.exists(fn2):
+                fn2 = fn
+            # if not g.os_path_exists(fn2):
+                # return None
+            c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
+            c.mFileName = fn
+
+        # Create the outline with workbook's name.
+        g.trace(repr(fn))
         c.frame.title = title = c.computeWindowTitle(fn)
         c.frame.setTitle(title)
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, fn)
-        c.fileCommands.saveAs(fn)
-        g.app.recentFilesManager.updateRecentFiles(fn)
+
+        # Do *not* save the file!
+            ### c.fileCommands.saveAs(fn)
+            ### g.app.recentFilesManager.updateRecentFiles(fn)
+
         g.chdir(fn)
         # Finish.
         g.app.already_open_files = []
-        c.target_language = 'rest'
-        c.clearChanged()
+        ### c.target_language = 'rest'
+        c.clearChanged()  # No need to save the notebook even if we just created it.
         c.redraw(c.rootPosition())  # # 1380: Select the root.
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
