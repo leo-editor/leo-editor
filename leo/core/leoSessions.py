@@ -41,7 +41,7 @@ class SessionManager:
     # def error (self,s):
         # # Do not use g.trace or g.es here.
         # print(s)
-    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session
+    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session BUG?
     def get_session(self) -> list[str]:
         """Return a list of UNLs for open tabs."""
         result: list[str] = []
@@ -63,7 +63,7 @@ class SessionManager:
             if g.os_path_exists(path):
                 return g.finalize_join(path, 'leo.session')
         return None
-    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
+    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session BUG!
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
