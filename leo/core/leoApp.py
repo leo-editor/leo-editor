@@ -2374,7 +2374,6 @@ class LoadManager:
         verbose = script is None
         # Init the app.
         lm.initApp(verbose)
-        ### g.app.setGlobalDb()
         if verbose:
             lm.reportDirectories()
         # Read settings *after* setting g.app.config and *before* opening plugins.
@@ -2599,7 +2598,6 @@ class LoadManager:
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
-        ###
         # Leo 7.6.4. Init the global db here, before the session manager.
         g.app.setGlobalDb()
         g.app.sessionManager = leoSessions.SessionManager()
