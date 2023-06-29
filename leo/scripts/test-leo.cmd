@@ -1,5 +1,7 @@
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
+
+call reindent-leo.cmd
 
 echo test-leo
 py -m unittest %*

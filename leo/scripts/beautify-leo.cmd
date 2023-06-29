@@ -1,5 +1,5 @@
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo beautify-leo
 call py -m leo.core.leoAst --orange --recursive leo\core

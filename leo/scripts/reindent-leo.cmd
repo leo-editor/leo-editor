@@ -1,5 +1,5 @@
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 :: Save path to reindent.py to a file .leo\reindent-path.txt
 call py %~dp0\find-reindent.py
@@ -11,13 +11,15 @@ set /P "REINDENT_PATH="< %PATH_FILE%
 
 if "%REINDENT_PATH%"=="" goto no_reindent
 
-echo reindent leo/core
+echo reindent-leo
+
+rem echo reindent leo/core
 call py %REINDENT_PATH% -r leo\core
-echo reindent leo/commands
+rem echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
-echo reindent leo/plugins/importers
+rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
-echo reindent leo/plugins/writers
+rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
 goto done
 
