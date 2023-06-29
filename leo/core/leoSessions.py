@@ -27,6 +27,10 @@ class SessionManager:
     #@+node:ekr.20120420054855.14351: *3* SessionManager.ctor
     def __init__(self) -> None:
         self.path: str = self.get_session_path()
+        if 'cache' in g.app.debug:
+            print('')
+            g.trace(f"(SessionManager) path: {self.path!r}")
+            print('')
     #@+node:ekr.20120420054855.14246: *3* SessionManager.clear_session
     def clear_session(self, c: Cmdr) -> None:
         """Close all tabs except the presently selected tab."""
