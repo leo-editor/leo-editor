@@ -1,8 +1,8 @@
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo ruff leo/core
-call ruff leo/core
+call py -m ruff leo/core
 
 echo ruff leo/commands
-call ruff leo/commands
+call py -m ruff leo/commands

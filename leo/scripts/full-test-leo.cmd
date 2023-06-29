@@ -1,15 +1,15 @@
 @echo off
 cls
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo full-test-leo
-call reindent-leo.cmd
-call beautify-leo.cmd
+rem call reindent-leo.cmd
+rem call beautify-leo.cmd
 call test-leo.cmd
-echo.
+rem echo.
+call ruff-leo.cmd
 call mypy-leo.cmd
-echo.
-call flake8-leo.cmd
-call pylint-leo.cmd
-echo.
+rem call flake8-leo.cmd
+rem call pylint-leo.cmd
+rem echo.
 echo Done!

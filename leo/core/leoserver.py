@@ -5484,7 +5484,9 @@ def main() -> None:  # pragma: no cover (tested in client)
         except OSError as e:
             print(e)
             print("Trying with IPv4 Family", flush=True)
-            server = websockets.serve(ws_handler, wsHost, wsPort, family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
+            server = websockets.serve(
+                ws_handler, wsHost, wsPort,
+                family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
 
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
