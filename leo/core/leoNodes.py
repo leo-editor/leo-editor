@@ -818,7 +818,7 @@ class Position:
         """
         Return a gnx-oriented UNL with a full path component.
 
-        The SessionManager class uses this method.
+        Not used in Leo's core or official plugins.
         """
         p = self
         c = p.v.context
