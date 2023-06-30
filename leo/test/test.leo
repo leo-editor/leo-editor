@@ -8953,7 +8953,8 @@ unl:gnx://LeoDocs.leo#ekr.20230409052507.1
 
 # In LeoDocs.leo: ** Read me first **
 unl:gnx://LeoDocs.leo#ekr.20050831195449</t>
-<t tx="ekr.20230628090119.1"># These links depend on @data unl-path-prefixes.
+<t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
+# contains the proper paths to the viles on your machine.
 
 unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes</t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
