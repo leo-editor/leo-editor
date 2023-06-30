@@ -51,7 +51,8 @@ class SessionManager:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
             result.append(c.p.get_full_gnx_UNL())
-        g.printObj(result, tag='get_session')  ###
+        if 'shutdown' in g.app.debug:
+            g.printObj(result, tag='get_session')
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self) -> Optional[str]:
@@ -70,7 +71,8 @@ class SessionManager:
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
-        g.printObj(unls, tag='load_session')  ###
+        if 'startup' in g.app.debug:
+            g.printObj(unls, tag='load_session')
         for unl in unls:
             if not g.isValidUnl(unl):
                 g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
@@ -109,20 +111,22 @@ class SessionManager:
         """
         Save a snapshot of the present session to the leo.session file.
 
-        Called automatically during shutdown when no files were given on the command line.
+        Called automatically during shutdown.
         """
-        if self.path:
-            session = self.get_session()
-            # #2433 - don't save an empty session
-            if not session:
-                return
-            with open(self.path, 'w') as f:
-                json.dump(session, f)
-                f.close()
-            # Do not use g.trace or g.es here.
-            print(f"wrote {self.path}")
-        else:
+        if g.app.batchMode or g.app.inBridge or g.unitTesting:
+            return
+        if not self.path:
             print('can not save session: no leo.session file')
+            return
+        session = self.get_session()
+        # #2433 - don't save an empty session
+        if not session:
+            return
+        with open(self.path, 'w') as f:
+            json.dump(session, f)
+            f.close()
+        # Do not use g.trace or g.es here.
+        print(f"wrote {self.path}")
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear

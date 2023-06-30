@@ -2822,7 +2822,7 @@ class LoadManager:
                 valid_s = '\n   '.join(valid)
                 print(f"Valid --trace values are:\n   {valid_s}")
                 utils.option_error(arg, 'Invalid value')
-            print(f"Enabling --trace={', '.join(g.app.debug)}")
+            print(f"\nEnabling --trace={', '.join(g.app.debug)}\n")
         #@+node:ekr.20210927034148.10: *6* function: doWindowSizeOption
         def doWindowSizeOption() -> Optional[tuple[int, int]]:
             """Handle --window-size"""
