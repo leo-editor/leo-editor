@@ -7525,7 +7525,7 @@ valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://(.*?)#.+")
 
 def isValidUnl(unl_s: str) -> bool:
     """Return true if the given unl is valid."""
-    return valid_unl_gnx_pattern.match(unl_s)
+    return bool(valid_unl_gnx_pattern.match(unl_s))
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
