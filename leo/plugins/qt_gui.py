@@ -1488,7 +1488,7 @@ class LeoQtGui(leoGui.LeoGui):
         def enableSignalDebugging(self, **kwargs: Any) -> None:
             """Call this to enable Qt Signal debugging. This will trap all
             connect, and disconnect calls."""
-            # f = lambda * args: None
+
             def f(*args):
                 return None
             connectCall: Callable = kwargs.get('connectCall', f)

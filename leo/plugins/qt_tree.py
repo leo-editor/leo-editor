@@ -250,9 +250,10 @@ class LeoQtTree(leoFrame.LeoTree):
             # and is None otherwise
             if isinstance(s, str):
                 # Save the operation
-                ### replacement = lambda item, s: item.setText(0, s)
+
                 def replacement(item, s):
                     return item.setText(0, s)
+
                 # ... and apply it
                 replacement(item, s)
 
