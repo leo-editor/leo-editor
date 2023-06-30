@@ -589,13 +589,6 @@
 </v>
 </v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230626113050.1"><vh>Test outline: copy root to new outline</vh>
-<v t="ekr.20230626113103.1"><vh>root</vh>
-<v t="ekr.20230626113114.1"><vh>child 1</vh>
-<v t="ekr.20230626113118.1"><vh>grandchild 1</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
 <v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
@@ -8784,16 +8777,14 @@ copy-test</t>
 <t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
 
 # Exists: Recent
-unl:gnx:ekr.20180311131424.1
+unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
-unl:gnx:ekr.20230622112649.1
+unl:gnx://#ekr.20230622112649.1
 
 # Bad gnx
-unl:gnx:xyzzy.20230622112649.1
+unl:gnx://#xyzzy.20230622112649.1
 
-# Temporty gnx in another file.
-unl:gnx:ekr.20230625135805.2
 </t>
 <t tx="ekr.20230624015529.1">def findGNX(gnx: str, c: Cmdr) -&gt; Optional[Position]:
     """
@@ -8925,19 +8916,7 @@ unl://#Viewrendered examples
 
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
-
-# In LeoDocs.leo
-unl://LeoDocs.leo#Web pages
-
-# In new outline
-unl://root
-unl://root--&gt;child 1
-unl://root--&gt;child 1--&gt;grandchild 1
 </t>
-<t tx="ekr.20230626113050.1"></t>
-<t tx="ekr.20230626113103.1"></t>
-<t tx="ekr.20230626113114.1"></t>
-<t tx="ekr.20230626113118.1"></t>
 <t tx="ekr.20230627150454.1"># Exists: Recent
 unl:gnx://test.leo#ekr.20180311131424.1
 unl:gnx://#ekr.20180311131424.1
@@ -8956,7 +8935,11 @@ unl:gnx://LeoDocs.leo#ekr.20050831195449</t>
 <t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
 # contains the proper paths to the viles on your machine.
 
-unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes</t>
+unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes
+
+# In LeoDocs.leo
+unl://LeoDocs.leo#Web pages
+</t>
 <t tx="maphew.20171112205129.1">def gitDescribe(path: str = None) -&gt; tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the

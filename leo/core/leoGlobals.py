@@ -7260,8 +7260,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         # Resolve a gnx-based unl.
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
-        tail = unl[len(file_part) :]
         c2 = g.openUNLFile(c, file_part)
+        tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
         return g.findGnx(tail, c2)
     # Resolve a file-based unl.
     for prefix in ('unl:', 'file:'):
@@ -7272,17 +7272,15 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         print(f"Bad unl: {unl_s}")
         return None
     file_part = g.getUNLFilePart(unl)
-    tail = unl[len(file_part) :]
     c2 = g.openUNLFile(c, file_part)
+    tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')
     return g.findUnl(unlList, c2)
 #@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
 file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
 
 def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
-    """
-    Return the position with the given gnx in c.
-    """
+    """Return the position with the given gnx in c."""
     n: int = 0  # The line number.
     m = file_pat.match(gnx)
     if m:
@@ -7436,7 +7434,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
         return None
     p = g.findAnyUnl(unl, c)
     if not p:
-        print(f"Not found: {unl_s}")
+        print(f"Not found: {unl!r}")
         return None
     # Do not assume that p is in c.
     c2 = p.v.context
@@ -7721,12 +7719,12 @@ def unquoteUrl(url: str) -> str:
 #@+node:ekr.20230627143007.1: *3* g: file part utils
 
 #@+node:ekr.20230630132339.1: *4* g.getUNLFilePart
-file_part_pattern = re.compile(r'(//.*?#).+')
+file_part_pattern = re.compile(r'//(.*?)#.+')
 
 def getUNLFilePart(s: str) -> str:
-    """Return the file part of a unl, that is, from '//' to '#', inclusive."""
+    """Return the file part of a unl, that is, everything *between* '//' and '#'."""
     # Strip the prefix if it exists.
-    for prefix in ('unl:gnx', 'unl:', 'file:'):
+    for prefix in ('unl:gnx:', 'unl:', 'file:'):
         if s.startswith(prefix):
             s = s[len(prefix) :]
             break
@@ -7741,20 +7739,19 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     if not s.strip():
         return c
-    if not (s.startswith('//') and s.endswith('#')):
-        g.trace(f"Can't happen: {s!r}", g.callers())
-        return c
-    s = s[2:-1]
-    if not s:
+    if s.startswith('//') and s.endswith('#'):
+        s = s[2:-1]
+    if not s.strip():
         return c
     if os.path.isabs(s):
         path = s
     else:
         d = g.parsePathData(c)
         prefix = d.get(os.path.basename(s)) or ''
+        prefix = os.path.normpath(prefix)
         path = os.path.normpath(os.path.join(prefix, s))
     return (
-        c if path == os.path.normpath(c.fileName())
+        c if path.lower() == os.path.normpath(c.fileName()).lower()
         else g.openWithFileName(path) if os.path.exists(path)
         else c
     )

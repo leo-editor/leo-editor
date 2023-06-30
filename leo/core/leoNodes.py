@@ -813,6 +813,8 @@ class Position:
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
+    # All unls must contain a file part: f"//{file-name}#"
+    # The file-name may be empty.
     #@+node:ekr.20230628174317.1: *5* p.get_full_gnx_UNL
     def get_full_gnx_UNL(self) -> str:
         """
