@@ -59,26 +59,24 @@ class SessionManager:
             if g.os_path_exists(path):
                 return g.finalize_join(path, 'leo.session')
         return None
-    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
+    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session (revised)
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
-        """Open a tab for each item in UNLs & select the indicated node in each."""
+        """
+        Open a tab for each item in UNLs & select the indicated node in each.
+
+        unls is the list returned by SessionManager.load_snapshot()
+        """
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
         for unl in unls:
-            i = unl.find("#")
-            if i > -1:
-                fn, unl = unl[:i], unl[i:]
-                fn_ = fn.split('unl://')  # #2412.
-                if len(fn_) > 1:
-                    fn = fn_[1]
-            else:
-                fn, unl = unl, ''
-            fn = fn.strip()
+            if not g.isValidUnl(unl):
+                g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
+                continue
+            fn = g.getUNLFilePart(unl)
             exists = fn and g.os_path_exists(fn)
             if not exists:
-                if 'startup' in g.app.debug:
-                    g.trace('session file not found:', fn)
+                g.trace(f"File not found in session {'unl'}: {unl!r}")
                 continue
             if 'startup' in g.app.debug:
                 g.trace('loading session file:', fn)
