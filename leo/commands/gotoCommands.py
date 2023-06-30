@@ -284,7 +284,7 @@ class GoToCommands:
         """
         c = self.c
         p1 = p.copy()
-        # Look up the tree @file node.
+        # Look up the tree for the first @file node.
         for p in p.self_and_parents(copy=False):
             if not p.isAtAllNode():
                 fileName = p.anyAtFileNodeName()

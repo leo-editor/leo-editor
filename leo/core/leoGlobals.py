@@ -315,8 +315,8 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
     return _decorator
 #@-others
 #@-<< define g.decorators >>
-#@+<< define regex's >>
-#@+node:ekr.20200810093517.1: ** << define regex's >> (leoGlobals.py)
+#@+<< define regexes >>
+#@+node:ekr.20200810093517.1: ** << define regexes >> (leoGlobals.py)
 # Regex used by this module, and in leoColorizer.py.
 g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
 
@@ -342,7 +342,7 @@ unl_regex = re.compile(r"""\bunl:[^`'"]+""")
 url_leadins = 'fghmnptw'
 url_kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
-#@-<< define regex's >>
+#@-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
 user_dict: dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
 app: Any = None  # The singleton app object. Set by runLeo.py.
@@ -7301,7 +7301,9 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
 def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     g.findUnl: support for legacy UNLs.
-    This method must remain for compatibily with plugins.
+    unlList is a list of headlines.
+
+    This method must remain for compatibility with plugins.
 
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
@@ -7423,7 +7425,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     """
-    Select the node given by the unl.
+    Select the node given by any kind of unl.
     This must *never* open a browser.
     """
     if not unl_s:
@@ -7723,7 +7725,7 @@ def getUNLFilePart(s: str) -> str:
 
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
-    Open the commander s.
+    Open the commander for filename s, the file part of an unl.
 
     Return c if the file can not be found.
     """
@@ -7750,8 +7752,10 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
-    """Return a dict giving path prefixes for various files."""
-    lines = c.config.getData('unl_path_prefixes')
+    """
+    Return a dict giving path prefixes for the files given in @data unl-path-prefixes.
+    """
+    lines = c.config.getData('unl-path-prefixes')
     d: dict[str, str] = {}
     for line in lines:
         m = path_data_pattern.match(line)
