@@ -37,7 +37,7 @@ class SessionManager:
     # def error (self,s):
         # # Do not use g.trace or g.es here.
         # print(s)
-    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session (use full_unl)
+    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session (revised)
     def get_session(self) -> list[str]:
         """Return a list of UNLs for open tabs."""
         result: list[str] = []
