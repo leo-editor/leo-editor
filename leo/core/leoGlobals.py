@@ -7277,11 +7277,12 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
     unlList = tail.split('-->')
     return g.findUnl(unlList, c2)
 #@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
+file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
+
 def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     Return the position with the given gnx in c.
     """
-    file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
     n: int = 0  # The line number.
     m = file_pat.match(gnx)
     if m:
@@ -7718,11 +7719,20 @@ def unquoteUrl(url: str) -> str:
     """Replace escaped characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@+node:ekr.20230627143007.1: *3* g: file part utils
-def getUNLFilePart(s: str) -> str:
-    """Return the file part of a unl, that is, from '//' to '#'"""
-    m = valid_unl_gnx_pattern.match(s)
-    return m.group(2) if m else ''
 
+#@+node:ekr.20230630132339.1: *4* g.getUNLFilePart
+file_part_pattern = re.compile(r'(//.*?#).+')
+
+def getUNLFilePart(s: str) -> str:
+    """Return the file part of a unl, that is, from '//' to '#', inclusive."""
+    # Strip the prefix if it exists.
+    for prefix in ('unl:gnx', 'unl:', 'file:'):
+        if s.startswith(prefix):
+            s = s[len(prefix) :]
+            break
+    m = file_part_pattern.match(s)
+    return m.group(1) if m else ''
+#@+node:ekr.20230630132340.1: *4* g.openUNLFile
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
@@ -7748,7 +7758,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         else g.openWithFileName(path) if os.path.exists(path)
         else c
     )
-
+#@+node:ekr.20230630132341.1: *4* g.parsePathData
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
