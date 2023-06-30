@@ -35,7 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position, VNode
     from leo.core.leoPlugins import PluginsManager
-    ### from leo.core.leoSessions import SessionManager
+    from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
 #@-<< leoApp annotations >>
@@ -123,7 +123,6 @@ class LeoApp:
         self.ipython_inited = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
-        ### self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False  # True: no signon.
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
@@ -195,7 +194,7 @@ class LeoApp:
         self.loadManager: LoadManager = None
         self.nodeIndices: NodeIndices = None
         self.pluginsController: PluginsManager = None
-        ### self.sessionManager: SessionManager = None
+        self.sessionManager: SessionManager = None
 
         # Global status vars for the Commands class...
         self.commandName: str = None  # The name of the command being executed.
@@ -2291,22 +2290,19 @@ class LoadManager:
                 g.es_exception()
                 c = None
 
-            ###
-            # g.app.loaded_session = not lm.files
-            # Load (and save later) a session *only* if the command line contains no files.
-            # if g.app.sessionManager and g.app.loaded_session:
-                # try:  # #1403.
-                    # aList = g.app.sessionManager.load_snapshot()
-                    # if aList:
-                        # g.app.sessionManager.load_session(c1, aList)
-                        # # #659.
-                        # if g.app.windowList:
-                            # c = c1 = g.app.windowList[0].c
-                        # else:
-                            # c = c1 = None
-                # except Exception:
-                    # g.es_print('Can not load session')
-                    # g.es_exception()
+        # Load a session if the command line contains no files.
+        if g.app.sessionManager and not lm.files:
+            try:
+                aList = g.app.sessionManager.load_snapshot()
+                if aList:
+                    g.app.sessionManager.load_session(c1, aList)
+                    if g.app.windowList:
+                        c = c1 = g.app.windowList[0].c
+                    else:
+                        c = c1 = None
+            except Exception:
+                g.es_print('Can not load session')
+                g.es_exception()
 
         # Enable redraws.
         g.app.disable_redraw = False
@@ -2592,7 +2588,7 @@ class LoadManager:
         from leo.core import leoConfig
         from leo.core import leoNodes
         from leo.core import leoPlugins
-        ### from leo.core import leoSessions
+        from leo.core import leoSessions
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
@@ -2610,7 +2606,7 @@ class LoadManager:
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
-        ### g.app.sessionManager = leoSessions.SessionManager()
+        g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers

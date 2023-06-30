@@ -777,12 +777,11 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
-    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
+    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (changed)
     def close_event(self, event: Event) -> None:
 
-        ###
-            # if g.app.sessionManager and g.app.loaded_session:
-                # g.app.sessionManager.save_snapshot()
+        if g.app.sessionManager:
+            g.app.sessionManager.save_snapshot()
         for c in g.app.commanders():
             allow = c.exists and g.app.closeLeoWindow(c.frame)
             if not allow:

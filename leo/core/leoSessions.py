@@ -37,7 +37,7 @@ class SessionManager:
     # def error (self,s):
         # # Do not use g.trace or g.es here.
         # print(s)
-    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session
+    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session (use full_unl)
     def get_session(self) -> list[str]:
         """Return a list of UNLs for open tabs."""
         result: list[str] = []
@@ -50,7 +50,8 @@ class SessionManager:
         else:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
-            result.append(c.p.get_UNL())
+            result.append(c.p.get_full_gnx_UNL())
+        g.printObj(result, tag='get_session')  ###
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self) -> Optional[str]:
@@ -69,6 +70,7 @@ class SessionManager:
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
+        g.printObj(unls, tag='load_session')  ###
         for unl in unls:
             if not g.isValidUnl(unl):
                 g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
@@ -76,7 +78,8 @@ class SessionManager:
             fn = g.getUNLFilePart(unl)
             exists = fn and g.os_path_exists(fn)
             if not exists:
-                g.trace(f"File not found in session {'unl'}: {unl!r}")
+                g.trace('File part does not exist', repr(fn))
+                g.trace(f"Bad unl: {unl!r}")
                 continue
             if 'startup' in g.app.debug:
                 g.trace('loading session file:', fn)

@@ -7521,11 +7521,11 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20230628072109.1: *3* g.isValidUnl
 # unls must contain a (possible empyt) file part followed by a non-empty gnx.
-valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://.*?#.+")
+valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://(.*?)#.+")
 
 def isValidUnl(unl_s: str) -> bool:
     """Return true if the given unl is valid."""
-    return unl_s.match(g.valid_unl_gnx_pattern)
+    return valid_unl_gnx_pattern.match(unl_s)
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
@@ -7716,12 +7716,10 @@ def unquoteUrl(url: str) -> str:
     """Replace escaped characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@+node:ekr.20230627143007.1: *3* g: file part utils
-file_part_pattern = re.compile(r'(//.*?#)')
-
 def getUNLFilePart(s: str) -> str:
-    """Strip the unl's prefix and return from '//' to '#'"""
-    m = file_part_pattern.match(s)
-    return m.group(1) if m else ''
+    """Return the file part of a unl, that is, from '//' to '#'"""
+    m = valid_unl_gnx_pattern.match(s)
+    return m.group(2) if m else ''
 
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
