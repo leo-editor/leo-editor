@@ -8783,7 +8783,7 @@ unl:gnx://#ekr.20180311131424.1
 unl:gnx://#ekr.20230622112649.1
 
 # Bad gnx
-unl:gnx://#xyzzy.20230622112649.1
+unl:gnx://xyzzy.leo#.20230622112649.1
 
 </t>
 <t tx="ekr.20230624015529.1">def findGNX(gnx: str, c: Cmdr) -&gt; Optional[Position]:
@@ -8931,7 +8931,10 @@ unl:gnx://#ekr.20230622112649.1
 unl:gnx://LeoDocs.leo#ekr.20230409052507.1
 
 # In LeoDocs.leo: ** Read me first **
-unl:gnx://LeoDocs.leo#ekr.20050831195449</t>
+unl:gnx://LeoDocs.leo#ekr.20050831195449
+
+# Bad gnx: xyzzy.leo does not exist.
+unl:gnx://xyzzy.leo#.20230622112649.1</t>
 <t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
 # contains the proper paths to the viles on your machine.
 

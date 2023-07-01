@@ -17,13 +17,15 @@ class TestGlobals(LeoUnitTest):
     
     #@+<< TestGlobals: declare all data >>
     #@+node:ekr.20230701083715.1: *3* << TestGlobals: declare all data >>
-    tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
     absolute_paths: list[str]
     error_lines: dict[str, int]
     error_messages: dict[str, list[str]]
     error_patterns: dict[str, re.Pattern]
     error_templates: dict[str, str]
     files_data: tuple[str, str]
+    invalid_unls: tuple[str]
+    tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+    valid_unls: tuple[str]
     #@-<< TestGlobals: declare all data >>
     #@+<< TestGlboals: define unchanging data >>
     #@+node:ekr.20230701083918.1: *3* << TestGlboals: define unchanging data >>
@@ -69,6 +71,38 @@ class TestGlobals(LeoUnitTest):
         'python':   'File "FILE", line LINE',
     }
     #@-<< define error_templates >>
+    #@+<< define invalid_unls >>
+    #@+node:ekr.20230701084443.1: *4* << define invalid_unls >>
+    invalid_unls = (
+        # xyzzy.leo does not exist.
+        'unl:gnx://#xyzzy.20230622112649.1',
+    )
+    #@-<< define invalid_unls >>
+    #@+<< define valid_unls >>
+    #@+node:ekr.20230701084458.1: *4* << define valid_unls >>
+    # These links are functional only if on @data unl-path-prefixes contains the proper file part.
+    valid_unls = (
+
+        'unl:gnx://#ekr.20180311131424.1',
+
+        # test.leo:Error mssages (copy to log)
+        'unl:gnx://#ekr.20230622112649.1',
+        
+        # test.leo:Recent
+        'unl:gnx://test.leo#ekr.20180311131424.1',
+        'unl:gnx://#ekr.20180311131424.1',
+
+        # test.leo: Error mssages (copy to log)
+        'unl:gnx://test.leo#ekr.20230622112649.1',
+        'unl:gnx://#ekr.20230622112649.1',
+
+        # In LeoDocs.leo: Leo 6.7.3 release notes
+        'unl:gnx://LeoDocs.leo#ekr.20230409052507.1'
+
+        # In LeoDocs.leo: ** Read me first **
+        'unl:gnx://LeoDocs.leo#ekr.20050831195449'
+    )
+    #@-<< define valid_unls >>
     #@-<< TestGlboals: define unchanging data >>
 
     #@+others
