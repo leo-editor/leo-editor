@@ -7518,12 +7518,12 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20230628072109.1: *3* g.isValidUnl
-# unls must contain a (possible empyt) file part followed by a non-empty gnx.
-valid_unl_gnx_pattern = re.compile(fr"({'unl'}:gnx|gnx|file)://(.*?)#.+")
+# unls must contain a (possible empty) file part followed by something else.
+valid_unl_pattern = re.compile(r"(unl:gnx|unl|file)://(.*?)#.+")
 
 def isValidUnl(unl_s: str) -> bool:
     """Return true if the given unl is valid."""
-    return bool(valid_unl_gnx_pattern.match(unl_s))
+    return bool(valid_unl_pattern.match(unl_s))
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
