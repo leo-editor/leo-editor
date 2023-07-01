@@ -965,6 +965,35 @@ class TestGlobals(LeoUnitTest):
                 self.assertEqual(None, g.findAnyUnl(unl, c), msg=unl)
         finally:
             sys.stdout = old_stdout
+    #@+node:ekr.20230701113123.1: *3* TestGlobals.test_p_get_star_UNL
+    def test_p_get_star_UNL(self):
+        
+        # The data in the TestGlobals class are useful for this test,
+        # even though this tests Position methods.
+        trace = False
+        c = self.c
+        p = c.rootPosition()
+        
+        if trace:
+            print('')
+
+        # Test all configuration settings.
+        for status_kind in ('legacy', 'gnx'):  # Test both values of `@string unl-status-kind`.
+            for full_paths in (True, False):  # Test both values of `@bool full-unl-paths`
+                c.config.set(p=None, kind='string', name='unl-status-kind', val=status_kind)
+                c.config.set(p=None, kind='bool', name='full-unl-paths', val=full_paths)
+                kind = c.config.getString('unl-status-kind')
+                full = c.config.getBool('full-unl-paths')
+                self.assertEqual(kind, status_kind, msg=status_kind)
+                self.assertEqual(full, full_paths, msg=str(full_paths))
+                if trace:
+                    print(f"\nfull: {full} kind: {kind}")
+                    print('             get_UNL:', p.get_UNL())
+                    print('    get_full_gnx_UNL:', p.get_full_gnx_UNL())
+                    print(' get_full_legacy_UNL:', p.get_full_legacy_UNL())
+                    print('      get_legacy_UNL:', p.get_legacy_UNL())
+                    print('get_short_legacy_UNL:', p.get_short_legacy_UNL())
+                
     #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self):
         
