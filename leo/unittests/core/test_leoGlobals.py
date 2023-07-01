@@ -935,6 +935,17 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(g.isValidUnl(unl), msg=unl)
         for unl in self.invalid_unls:
             self.assertFalse(g.isValidUnl(unl), msg=unl)
+    #@+node:ekr.20230701171707.1: *3* TestGlobals.test_g_getUNLFilePart
+    def test_g_getUNLFilePart(self):
+
+        table = (
+            ('unl:' + 'gnx://a.leo#whatever', 'a.leo'),
+            ('unl:' + '//b.leo#whatever', 'b.leo'),
+            ('file:' + '//c.leo#whatever', 'c.leo'),
+            ('//d.leo#whatever', 'd.leo'),
+        )
+        for unl, expected in table:
+            self.assertEqual(expected, g.getUNLFilePart(unl), msg=unl)
     #@+node:ekr.20230701101300.1: *3* TestGlobals.test_g_isValidUrl
     def test_g_isValidUrl(self):
 
