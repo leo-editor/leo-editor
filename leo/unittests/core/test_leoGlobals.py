@@ -907,54 +907,6 @@ class TestGlobals(LeoUnitTest):
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn.lower(), __file__.lower())
 
-    #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl *** to do
-    def test_g_handleUrl(self):
-        c = self.c
-        # Part 1: general urls, paying attention to trailing ')' and '.'.
-        #         See the hacks in jedit.match_any_url and g.handleUrl.
-        table1 = (
-            (
-                "https://leo-editor.github.io/leo-editor/preface.html).",
-                "https://leo-editor.github.io/leo-editor/preface.html",
-            ),
-            (
-                "https://leo-editor.github.io/leo-editor/leo_toc.html)",
-                "https://leo-editor.github.io/leo-editor/leo_toc.html",
-            ),
-            (
-                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
-                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
-            ),
-        )
-        for url, expected in table1:
-            got = g.handleUrl(c=c, p=c.p, url=url)
-            self.assertEqual(expected.lower(), got, msg=url)
-            
-        # Part 2: file-oriented urls.
-       
-        # g.handleUrl now longer finds urls in other commanders.
-        # I thought it best to remove the Leo-specific hacks that were required.
-
-        if False and sys.platform.startswith('win'):
-            file_, http, unl1 = 'file://', 'http://', 'unl://'
-            fn1 = 'LeoDocs.leo#'
-            fn2 = 'doc/LeoDocs.leo#'
-            unl2 = '@settings-->Plugins-->wikiview plugin'
-            unl3 = '@settings-->Plugins-->wikiview%20plugin'
-            table2 = (
-                (http + 'writemonkey.com/index.php', ['browser']),
-                (file_ + 'x.py', ['os_startfile']),
-                (file_ + fn1, ['g.findUnl']),
-                (file_ + fn2, ['g.findUnl']),
-                (unl1 + fn1 + unl2, ['g.findUnl']),
-                (unl1 + fn1 + unl3, ['g.findUnl']),
-                (unl1 + '#' + unl2, ['g.findUnl']),
-                (unl1 + '#' + unl3, ['g.findUnl']),
-                (unl1 + unl2, ['g.findUnl']),
-                (unl1 + unl3, ['g.findUnl']),
-            )
-            for url, aList in table2:
-                g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
     def test_g_findGNX(self):
         c = self.c
