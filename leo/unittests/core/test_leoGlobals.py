@@ -14,16 +14,168 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
-    #@+others
-    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
-    def test_getLastTracebackFileAndLineNumber(self):
-        fn = ''
-        try:
-            assert False
-        except AssertionError:
-            fn, n = g.getLastTracebackFileAndLineNumber()
-        self.assertEqual(fn.lower(), __file__.lower())
+    
+    def setUp(self) -> None:
+        """
+        Create a commander using g.app.gui.
+        Create the nodes in the commander.
+        """
+        super().setUp()
+        self.tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+        self._make_files_test_data()
+        self._make_errors_dicts()
+        self._pre_test()
 
+    #@+others
+    #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers
+    #@+node:ekr.20230701060241.1: *4* TestGlobals._make_files_data
+    def _make_files_test_data(self):
+        """Return test tuple for files tests."""
+
+        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
+        
+        # kind: @clean, @edit, @file,
+        # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
+        self.files_data: tuple[str, str] = (
+            # The hard case: __init__.py
+            ('@file', '../plugins/importers/__init__.py'),
+            ('@file',  '../plugins/writers/__init__.py'),
+            ('@clean', '../plugins/leo_babel/__init__.py'),
+            ('@file',  '../plugins/editpane/__init__.py'),
+            # Other files.
+            ('@file', 'leoApp.py'),
+            ('@file', '../commands/abbrevCommands.py'),
+            ('@edit', '../../launchLeo.py'),
+            ('@file', '../external/log_listener.py'),
+            ('@file', '../plugins/cursesGui2.py'),
+        )
+    #@+node:ekr.20230701060854.1: *4* TestGlobals._make_errors_dicts
+    def _make_errors_dicts(self):
+        """
+        Create the following ivars: absolute_paths, error_lines,
+        error_messages, error_patterns, error_templates.
+        """
+        c = self.c
+
+        # m.group(1) is the filename and m.group(2) is the line number.
+        self.error_patterns: dict[str, re.Pattern] = {
+            'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
+            'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+            'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
+            'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+            'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+        }
+
+        # Error message templates.
+        self.error_templates: dict[str, str] = {
+            'flake8':   'FILE:LINE:COL:ERR',
+            'mypy':     'FILE:LINE:error ERR',
+            'pyflakes': 'FILE:LINE:COL ERR',
+            'pylint':   'FILE:LINE:COL: (ERR)',
+            'python':   'File "FILE", line LINE',
+        }
+
+        # List of absolute paths in the test data.
+        self.assertTrue(c.fileName)
+        self.absolute_paths: list[str] = [
+            g.os_path_finalize_join(os.path.dirname(c.fileName()), relative_path)
+                ### for _, relative_path in test_data
+                for _, relative_path in self.files_data
+        ]
+
+        # The error line for each absolute path. Default all lines to 0.
+        self.error_lines: dict[str, int] = {}
+        for z in self.absolute_paths:
+            self.error_lines[z] = 0
+
+        # Error messages for every tool and every absolute path.
+        self.error_messages: dict[str, list[str]] = {}
+        for tool in self.tools:
+            self.error_messages [tool] = []
+            for path in self.absolute_paths:
+                template = self.error_templates[tool]
+                self.error_messages[tool].append(
+                    template.replace('FILE', path)
+                    .replace('LINE', '1')
+                    .replace('COL', f"{self.error_lines[path]!s}")
+                    .replace('ERR', f"{tool} error")
+                )
+    #@+node:ekr.20230701061355.1: *4* TestGlobals._pre_tests
+    def _pre_test(self):
+        """Test the test data."""
+        c = self.c
+
+        # All dicts must have the same keys.
+        for d in (self.error_messages, self.error_patterns, self.error_templates):
+            self.assertEqual(self.tools, list(sorted(d.keys())))
+
+        # Pretest: all absolute paths must exist.
+        for z in self.absolute_paths:
+            self.assertTrue(os.path.exists(z), msg=repr(z))
+
+        # Pretest: all generated error messages must match the tool's pattern.
+        for tool in self.tools:
+            pattern = self.error_patterns[tool]
+            messages = self.error_messages[tool]
+            for message in messages:
+                self.assertTrue(pattern.match(message), msg=(
+                    'Error message does not match error pattern:\n'
+                    f"    tool: {tool!r}\n"
+                    f" message: {message!r}\n"
+                    f" pattern: {pattern!r}"))
+                    
+        # More tests...
+        for data in self.files_data:  # <@file> <filename>
+            kind, relative_path = data
+            headline = msg = f"{kind} {relative_path}"
+            absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
+            self.assertTrue(absolute_path in self.absolute_paths, msg=msg)
+            self.assertTrue(os.path.exists(absolute_path), msg=msg)
+            self._make_tree(headline)
+            test_p = g.findNodeAnywhere(c, headline)
+            full_path = c.fullPath(test_p)
+            self.assertEqual(full_path, absolute_path, msg=msg)
+            self.assertTrue(test_p, msg=msg)
+    #@+node:ekr.20230330042647.1: *4* TestGlobals._make_tree
+    def _make_tree(self, root_h):
+        """Make a test tree for other tests"""
+        c = self.c
+        root = c.rootPosition()
+        root.h = root_h
+        root.b = "def root():\n    pass\n"
+        last = root
+
+        def make_child(n, p):
+            p2 = p.insertAsLastChild()
+            p2.h = f"child {n}"
+            p2.b = (
+                f"def child{n}():\n"
+                f"    v{n} = 2\n"
+                f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
+                f"    # node {n} line 2: blabla second blabla bla second ble blu"
+            )
+            return p2
+
+        def make_top(n, sib):
+            p = sib.insertAfter()
+            p.h = f"Node {n}"
+            p.b = (
+                f"def top{n}():\n:"
+                f"    v{n} = 3\n"
+            )
+            return p
+
+        for n in range(0, 4, 3):
+            last = make_top(n + 1, last)
+            child = make_child(n + 2, last)
+            make_child(n + 3, child)
+
+        for p in c.all_positions():
+            p.v.clearDirty()
+            p.v.clearVisited()
+
+        # Always start with the root selected.
+        c.selectPosition(c.rootPosition())
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
         # for condition in ('<','<=','>','>='):
@@ -142,170 +294,6 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
-    #@@nobeautify
-    def test_g_findGNX(self):
-        c = self.c
-
-        # Define helper functions.
-        #@+others
-        #@+node:ekr.20230330042946.1: *4* function: add_tree
-        def add_tree(c):
-            pass
-        #@+node:ekr.20230330042647.1: *4* function: make_tree
-        def make_tree(c, root_h):
-            """Make a test tree for other tests"""
-            root = c.rootPosition()
-            root.h = root_h
-            root.b = "def root():\n    pass\n"
-            last = root
-
-            def make_child(n, p):
-                p2 = p.insertAsLastChild()
-                p2.h = f"child {n}"
-                p2.b = (
-                    f"def child{n}():\n"
-                    f"    v{n} = 2\n"
-                    f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
-                    f"    # node {n} line 2: blabla second blabla bla second ble blu"
-                )
-                return p2
-
-            def make_top(n, sib):
-                p = sib.insertAfter()
-                p.h = f"Node {n}"
-                p.b = (
-                    f"def top{n}():\n:"
-                    f"    v{n} = 3\n"
-                )
-                return p
-
-            for n in range(0, 4, 3):
-                last = make_top(n + 1, last)
-                child = make_child(n + 2, last)
-                make_child(n + 3, child)
-
-            for p in c.all_positions():
-                p.v.clearDirty()
-                p.v.clearVisited()
-
-            # Always start with the root selected.
-            c.selectPosition(c.rootPosition())
-        #@-others
-
-        tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
-        #@+<< define test_data >>
-        #@+node:ekr.20230620170004.1: *4* << define test_data >>
-        # Define tuples (kind, path)
-        # kind: @clean, @edit, @file,
-        # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
-
-        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
-        test_data: tuple[str, str] = (
-            # The hard case: __init__.py
-            ('@file', '../plugins/importers/__init__.py'),
-            ('@file',  '../plugins/writers/__init__.py'),
-            ('@clean', '../plugins/leo_babel/__init__.py'),
-            ('@file',  '../plugins/editpane/__init__.py'),
-            # Other files.
-            ('@file', 'leoApp.py'),
-            ('@file', '../commands/abbrevCommands.py'),
-            ('@edit', '../../launchLeo.py'),
-            ('@file', '../external/log_listener.py'),
-            ('@file', '../plugins/cursesGui2.py'),
-        )
-        #@-<< define test_data >>
-        #@+<< define error dicts >>
-        #@+node:ekr.20230620170846.1: *4* << define error dicts >>
-        # m.group(1) is the filename and m.group(2) is the line number.
-        error_patterns: dict[str, re.Pattern] = {
-            'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
-            'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-            'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
-            'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-            'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
-        }
-
-        # Error message templates.
-        error_templates: dict[str, str] = {
-            'flake8':   'FILE:LINE:COL:ERR',
-            'mypy':     'FILE:LINE:error ERR',
-            'pyflakes': 'FILE:LINE:COL ERR',
-            'pylint':   'FILE:LINE:COL: (ERR)',
-            'python':   'File "FILE", line LINE',
-        }
-
-        # List of absolute paths in the test data.
-        self.assertTrue(c.fileName)
-        absolute_paths: list[str] = [
-            g.os_path_finalize_join(os.path.dirname(c.fileName()), relative_path)
-                for _, relative_path in test_data
-        ]
-
-        # The error line for each absolute path. Default all lines to 0.
-        error_lines: dict[str, int] = {}
-        for z in absolute_paths:
-            error_lines[z] = 0
-
-        # Error messages for every tool and every absolute path.
-        error_messages: dict[str, list[str]] = {}
-        for tool in tools:
-            error_messages [tool] = []
-            for path in absolute_paths:
-                template = error_templates[tool]
-                error_messages[tool].append(
-                    template.replace('FILE', path)
-                    .replace('LINE', '1')
-                    .replace('COL', f"{error_lines[path]!s}")
-                    .replace('ERR', f"{tool} error")
-                )
-        #@-<< define error dicts >>
-        # Test 0: pretests
-        #@+<< do pre-tests >>
-        #@+node:ekr.20230620170316.1: *4* << do pre-tests >>
-        # Note: At present this unit test does not use the error messages.
-        #       Perhapts these pre-test should be in a separate unit test.
-
-        # Pretest: all dicts must have the same keys.
-        for d in (error_messages, error_patterns, error_templates):
-            self.assertEqual(tools, list(sorted(d.keys())))
-
-        # Pretest: all absolute paths must exist.
-        for z in absolute_paths:
-            self.assertTrue(os.path.exists(z), msg=repr(z))
-
-        # Pretest: all generated error messages must match the tool's pattern.
-        for tool in tools:
-            pattern = error_patterns[tool]
-            messages = error_messages[tool]
-            for message in messages:
-                self.assertTrue(pattern.match(message), msg=(
-                    'Error message does not match error pattern:\n'
-                    f"    tool: {tool!r}\n"
-                    f" message: {message!r}\n"
-                    f" pattern: {pattern!r}"))
-        #@-<< do pre-tests >>
-        # Test all error messages for all paths.
-        for data in test_data:  # <@file> <filename>
-            kind, relative_path = data
-            headline = msg = f"{kind} {relative_path}"
-            # Pretests...
-            absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
-            self.assertTrue(absolute_path in absolute_paths, msg=msg)
-            self.assertTrue(os.path.exists(absolute_path), msg=msg)
-            make_tree(c, headline)
-            test_p = g.findNodeAnywhere(c, headline)
-            full_path = c.fullPath(test_p)
-            self.assertEqual(full_path, absolute_path, msg=msg)
-            self.assertTrue(test_p, msg=msg)
-            file_unl = g.computeFileUrl(absolute_path, c)
-            self.assertEqual(file_unl, f"file://{absolute_path}", msg=msg)
-
-            # Test g.findGnx.
-            result2 = g.findGnx(test_p.gnx, c)
-            self.assertEqual(result2, test_p)
-
-       
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
@@ -316,6 +304,20 @@ class TestGlobals(LeoUnitTest):
         for s, word, i, expected in table:
             actual = g.find_word(s, word, i)
             self.assertEqual(actual, expected)
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
+    #@@nobeautify
+    def test_g_findGNX(self):
+        c = self.c
+
+        # Test all error messages for all paths.
+        for data in self.files_data:  # <@file> <filename>
+            kind, relative_path = data
+            headline = msg = f"{kind} {relative_path}"
+            self._make_tree(headline)
+            test_p = g.findNodeAnywhere(c, headline)
+            # Test g.findGnx.
+            result2 = g.findGnx(test_p.gnx, c)
+            self.assertEqual(result2, test_p, msg=msg)
     #@+node:ekr.20210905203541.14: *3* TestGlobals.test_g_fullPath
     def test_g_fullPath(self):
         c = self.c
@@ -387,6 +389,29 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         val = g.guessExternalEditor(c)
         assert val, 'no val'  # This can be different on different platforms.
+    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
+    def test_g_handleScriptException(self):
+
+        c = self.c
+        table = (
+            'test_leoGlobals.py", line',
+            'in test_g_handleScriptException',
+            'print(1/0)',
+            'ZeroDivisionError: division by zero'
+        )
+        with self.assertRaises(ZeroDivisionError):
+            try:
+                print(1/0)
+            except ZeroDivisionError:
+                old_stdout = sys.stdout
+                sys.stdout = io.StringIO()
+                g.handleScriptException(c, c.p)
+                report = sys.stdout.getvalue()
+                for s in table:
+                    assert s in report, repr(s)
+                sys.stdout = old_stdout
+                # print(report)
+                raise
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
@@ -435,29 +460,6 @@ class TestGlobals(LeoUnitTest):
             )
             for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
-    #@+node:ekr.20230221153849.1: *3* TestGlobals.test_g_handleScriptException
-    def test_g_handleScriptException(self):
-
-        c = self.c
-        table = (
-            'test_leoGlobals.py", line',
-            'in test_g_handleScriptException',
-            'print(1/0)',
-            'ZeroDivisionError: division by zero'
-        )
-        with self.assertRaises(ZeroDivisionError):
-            try:
-                print(1/0)
-            except ZeroDivisionError:
-                old_stdout = sys.stdout
-                sys.stdout = io.StringIO()
-                g.handleScriptException(c, c.p)
-                report = sys.stdout.getvalue()
-                for s in table:
-                    assert s in report, repr(s)
-                sys.stdout = old_stdout
-                # print(report)
-                raise
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
@@ -558,16 +560,6 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(isinstance(result, str))
             result2 = g.objToString(data)
             self.assertTrue(isinstance(result2, str))
-    #@+node:ekr.20210905203541.26: *3* TestGlobals.test_g_os_path_finalize_join_with_thumb_drive
-    def test_g_os_path_finalize_join_with_thumb_drive(self):
-        path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
-        path2 = r'\N:Home\PTC_Creo\Creo.wmv'
-        path3 = r'N:\Home\PTC_Creo\Creo.wmv'
-        path12 = os.path.join(path1, path2)
-        path13 = os.path.join(path1, path3)
-        if 0:
-            print(path12, g.os.path.abspath(path12))
-            print(path13, g.os.path.abspath(path13))
     #@+node:ekr.20230617065929.1: *3* TestGlobals.test_g_OptionsUtils
     def test_g_OptionsUtils(self):
 
@@ -624,6 +616,16 @@ class TestGlobals(LeoUnitTest):
         finally:
             sys.stdout = old_stdout
             sys.argv = old_argv
+    #@+node:ekr.20210905203541.26: *3* TestGlobals.test_g_os_path_finalize_join_with_thumb_drive
+    def test_g_os_path_finalize_join_with_thumb_drive(self):
+        path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+        path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+        path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+        path12 = os.path.join(path1, path2)
+        path13 = os.path.join(path1, path3)
+        if 0:
+            print(path12, g.os.path.abspath(path12))
+            print(path13, g.os.path.abspath(path13))
     #@+node:ekr.20210905203541.28: *3* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (
@@ -720,6 +722,14 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(s, '\r\n')  # pragma: no cover
         else:
             self.assertEqual(s, '\n')  # pragma: no cover
+    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
+    def test_g_scanAtPagewidthDirectives_40(self):
+        c = self.c
+        p = c.p
+        p.b = '@pagewidth 40\n'
+        aList = g.get_directives_dict_list(p)
+        n = g.scanAtPagewidthDirectives(aList)
+        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -730,14 +740,6 @@ class TestGlobals(LeoUnitTest):
         # The @pagewidth directive in the parent should control.
         # Depending on how this test is run, the result could be 80 or None.
         assert n in (None, 80), repr(n)
-    #@+node:ekr.20210905203541.42: *3* TestGlobals.test_g_scanAtPagewidthDirectives_40
-    def test_g_scanAtPagewidthDirectives_40(self):
-        c = self.c
-        p = c.p
-        p.b = '@pagewidth 40\n'
-        aList = g.get_directives_dict_list(p)
-        n = g.scanAtPagewidthDirectives(aList)
-        self.assertEqual(n, 40)
     #@+node:ekr.20210905203541.43: *3* TestGlobals.test_g_scanAtTabwidthDirectives_6
     def test_g_scanAtTabwidthDirectives_6(self):
         c = self.c
@@ -887,6 +889,15 @@ class TestGlobals(LeoUnitTest):
             assert fc.read_only
         else:  # pragma: no cover
             fc.warnOnReadOnlyFiles(path)
+    #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
+    def test_getLastTracebackFileAndLineNumber(self):
+        fn = ''
+        try:
+            assert False
+        except AssertionError:
+            fn, n = g.getLastTracebackFileAndLineNumber()
+        self.assertEqual(fn.lower(), __file__.lower())
+
     #@-others
 #@-others
 #@-leo
