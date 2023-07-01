@@ -201,11 +201,11 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(full_path, absolute_path, msg=msg)
             self.assertTrue(test_p, msg=msg)
     #@+node:ekr.20230330042647.1: *4* TestGlobals._make_tree
-    def _make_tree(self, root_h):
+    def _make_tree(self, root_h=None):
         """Make a test tree for other tests"""
         c = self.c
         root = c.rootPosition()
-        root.h = root_h
+        root.h = root_h or 'Root'
         root.b = "def root():\n    pass\n"
         last = root
 
@@ -970,29 +970,68 @@ class TestGlobals(LeoUnitTest):
         
         # The data in the TestGlobals class are useful for this test,
         # even though this tests Position methods.
-        trace = False
         c = self.c
-        p = c.rootPosition()
-        
-        if trace:
-            print('')
+        self._make_tree()
+        # for p in c.all_positions():
+            # print(' '*p.level(), p.h)
 
-        # Test all configuration settings.
-        for status_kind in ('legacy', 'gnx'):  # Test both values of `@string unl-status-kind`.
-            for full_paths in (True, False):  # Test both values of `@bool full-unl-paths`
-                c.config.set(p=None, kind='string', name='unl-status-kind', val=status_kind)
-                c.config.set(p=None, kind='bool', name='full-unl-paths', val=full_paths)
-                kind = c.config.getString('unl-status-kind')
-                full = c.config.getBool('full-unl-paths')
-                self.assertEqual(kind, status_kind, msg=status_kind)
-                self.assertEqual(full, full_paths, msg=str(full_paths))
-                if trace:
-                    print(f"\nfull: {full} kind: {kind}")
-                    print('             get_UNL:', p.get_UNL())
-                    print('    get_full_gnx_UNL:', p.get_full_gnx_UNL())
-                    print(' get_full_legacy_UNL:', p.get_full_legacy_UNL())
-                    print('      get_legacy_UNL:', p.get_legacy_UNL())
-                    print('get_short_legacy_UNL:', p.get_short_legacy_UNL())
+        root = c.rootPosition()
+        p = root.next().firstChild()
+        
+        # Calculate the various kinds of results.
+        gnx = p.gnx
+        path = '-->'.join([root.h, p.h])
+        long_fn = c.fileName()
+        short_fn = os.path.basename(c.fileName())
+
+        empty_gnx = 'unl:' + f"gnx://#{gnx}"
+        empty_path = 'unl:' + f"gnx://#{path}"
+        long_gnx = 'unl:' + f"gnx://{long_fn}#{gnx}"
+        long_legacy = 'unl:' + f"//{long_fn}#{path}"
+        short_gnx = 'unl:' + f"gnx://{short_fn}#{gnx}"
+        short_legacy = 'unl:' + f"//{short_fn}#{path}"
+        all_unls = (empty_gnx, empty_path, long_gnx, long_legacy, short_gnx, short_legacy)
+        
+        # Pre-test.
+        for unl in all_unls:
+            self.assertTrue(g.isValidUnl(unl), msg=unl)
+            
+        def set_config(kind, full):
+            getBool, getString = c.config.getBool, c.config.getString
+            c.config.set(p=None, kind='string', name='unl-status-kind', val=kind)
+            c.config.set(p=None, kind='bool', name='full-unl-paths', val=full)
+            self.assertEqual(full, getBool('full-unl-paths'), msg=full)
+            self.assertEqual(kind, getString('unl-status-kind'), msg=kind)
+
+        # Test g.get_UNL.
+        expected_get_UNL = {
+            'legacy:0': short_gnx,
+            'legacy:1': long_gnx,
+            'gnx:0': short_gnx,
+            'gnx:1': long_gnx,
+        }
+        for kind in ('legacy', 'gnx'):
+            for full in (True, False):
+                set_config(kind, full)
+                unl = p.get_UNL()
+                # g.trace(f"kind: {kind:>6} full: {full:1}", unl)
+                expected = expected_get_UNL[f"{kind}:{str(int(full))}"]
+                self.assertEqual(expected, unl, msg=f"kind: {kind} full: {full}")
+                
+
+        # # Test all configuration settings.
+        # if 0:
+            # print('')
+        # for kind in ('legacy', 'gnx'):  # Test both values of `@string unl-status-kind`.
+            # for full in (True, False):  # Test both values of `@bool full-unl-paths`
+                # set_config(kind, full)
+                # if 0:
+                    # print(f"\nfull: {full} kind: {kind}")
+                    # print('             get_UNL:', p.get_UNL())
+                    # print('    get_full_gnx_UNL:', p.get_full_gnx_UNL())
+                    # print(' get_full_legacy_UNL:', p.get_full_legacy_UNL())
+                    # print('      get_legacy_UNL:', p.get_legacy_UNL())
+                    # print('get_short_legacy_UNL:', p.get_short_legacy_UNL())
                 
     #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self):
