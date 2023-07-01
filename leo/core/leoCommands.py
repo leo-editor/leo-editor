@@ -1414,7 +1414,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool = True) -> Generator:
+    def safe_all_positions(self, copy: bool = True) -> Generator:  # pragma: no cover
         """
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.

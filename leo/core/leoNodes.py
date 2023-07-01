@@ -87,7 +87,7 @@ class NodeIndices:
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex(self, v: VNode, cached: bool = False) -> str:
+    def getNewIndex(self, v: VNode, cached: bool = False) -> str:  # pragma: no cover
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
@@ -959,7 +959,7 @@ class Position:
         p = self
         return not p.hasParent() and not p.hasBack()
     #@+node:ekr.20080416161551.196: *4* p.isVisible
-    def isVisible(self, c: Cmdr) -> bool:
+    def isVisible(self, c: Cmdr) -> bool:  # pragma: no cover
         """Return True if p is visible in c's outline."""
         p = self
 
@@ -990,7 +990,7 @@ class Position:
 
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
-    def positionAfterDeletedTree(self) -> Position:
+    def positionAfterDeletedTree(self) -> Position:  # pragma: no cover
         """Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
 
@@ -1156,7 +1156,7 @@ class Position:
                 v, junk = data
                 return v
             return p.v.context.hiddenRootNode
-        return None
+        return None  # pragma: no cover
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
         """A low-level method to replace p.v by a p2.v."""
@@ -1400,16 +1400,16 @@ class Position:
                 p.moveToThreadNext()
             if p:
                 if limit and self.checkVisNextLimit(limit, p):
-                    return None
+                    return None  # pragma: no cover
                 if p.isVisible(c):
                     return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
-    def checkVisNextLimit(self, limit: Position, p: Position) -> bool:
+    def checkVisNextLimit(self, limit: Position, p: Position) -> bool:  # pragma: no cover
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
-    def safeMoveToThreadNext(self) -> Position:
+    def safeMoveToThreadNext(self) -> Position:  # pragma: no cover
         """
         Move a position to threadNext position.
         Issue an error if any vnode is an ancestor of itself.

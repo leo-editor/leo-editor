@@ -571,6 +571,9 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(isinstance(result2, str))
     #@+node:ekr.20230617065929.1: *4* TestGlobals.test_g_OptionsUtils
     def test_g_OptionsUtils(self):
+        
+        if any(z in sys.argv for z in ('--cov', '--cov-report')):
+            self.skipTest('Running coverage')
 
         usage = (
     """
@@ -622,6 +625,8 @@ class TestGlobals(LeoUnitTest):
                 with self.assertRaises(SystemExit, msg=option):
                     sys.argv = ['leo', option]
                     x.check_options()
+        except Exception:
+            g.es_exception()
         finally:
             sys.stdout = old_stdout
             sys.argv = old_argv

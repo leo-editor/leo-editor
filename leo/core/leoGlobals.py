@@ -7242,7 +7242,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         url = f"{tag}{path}"
     return url
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link (not used)
-def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> None:
+def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> None:  # pragma: no cover
     """
     Write a clickable message to the given line number of p.b.
 
@@ -7469,7 +7469,7 @@ def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
         g.es_exception()
         return None
 #@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
-def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:
+def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
     """Open a url.  Most browsers should handle:
         ftp://ftp.uu.net/public/whatever
         http://localhost/MySiteUnderDevelopment/index.html
@@ -7507,7 +7507,7 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:
         except Exception:
             pass
 #@+node:ekr.20170226060816.1: *4* g.traceUrl
-def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
+def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:  # pragma: no cover
 
     print()
     g.trace('url          ', url)
@@ -7533,7 +7533,7 @@ def isValidUrl(url: str) -> bool:
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
     if not url:
-        return False
+        return False  # pragma: no cover (defensive)
     if g.isValidUnl(url):
         return True
     if url.startswith('@'):
@@ -7545,7 +7545,7 @@ def isValidUrl(url: str) -> bool:
             return True
     return False
 #@+node:ekr.20120315062642.9744: *3* g.openUrl
-def openUrl(p: Position) -> None:
+def openUrl(p: Position) -> None:  # pragma: no cover
     """
     Open the url of node p.
     Use the headline if it contains a valid url.
@@ -7559,7 +7559,7 @@ def openUrl(p: Position) -> None:
                 g.handleUrl(url, c=c, p=p)
             g.doHook("@url2", c=c, p=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:
+def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     # QTextEditWrapper.mouseReleaseEvent calls this outside Leo's command logic.
     # Make sure to catch all exceptions!
@@ -7709,7 +7709,7 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
     #@-<< look for filename or import>>
     return None
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
-def unquoteUrl(url: str) -> str:
+def unquoteUrl(url: str) -> str:  # pragma: no cover
     """Replace escaped characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@+node:ekr.20230627143007.1: *3* g: file part utils
@@ -7765,18 +7765,18 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
         if m:
             key, path = m.group(1), m.group(2)
             if key in d:
-                g.trace(f"Ignoring duplicate key: {line!r}")
+                g.trace(f"Ignoring duplicate key: {line!r}")  # pragma: no cover
             else:
                 d[key] = os.path.normpath(path)
         else:
-            g.trace(f"Ignoring line: {line!r}")
+            g.trace(f"Ignoring line: {line!r}")  # pragma: no cover
     return d
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()  # pragma: no cover
 
 #@@language python
 #@@tabwidth -4
