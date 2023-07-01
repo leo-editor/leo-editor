@@ -86,8 +86,10 @@ class TestGlobals(LeoUnitTest):
     #@+<< define missing_unls >>
     #@+node:ekr.20230701090956.1: *4* << define missing_unls >>
     # Define unls with files parts that refer to non-existent files.
+    # These should be syntactically valid.
     missing_unls = (
         'unl:gnx://xyzzy#.20230622112649.1',
+        'unl://xyzzy#does-->not-->exist',
     )
     #@-<< define missing_unls >>
     #@+<< define valid_unl_templates >>
@@ -972,10 +974,10 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230701085746.1: *3* TestGlobals.test_g_isValidUnl
     def test_g_isValidUnl(self):
 
-        for unl in self.valid_unls:
+        for unl in self.valid_unls + self.missing_unls:
             self.assertTrue(g.isValidUnl(unl), msg=unl)
         for unl in self.invalid_unls:
-            self.assertFalse(g.isValidUnl(unl), msg=repr(unl))
+            self.assertFalse(g.isValidUnl(unl), msg=unl)
     #@-others
 #@-others
 #@-leo
