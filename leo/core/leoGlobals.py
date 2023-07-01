@@ -7475,6 +7475,8 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:
         http://localhost/MySiteUnderDevelopment/index.html
         file:///home/me/todolist.html
     """
+    if g.unitTesting:
+        return
     tag = 'file://'
     original_url = url
     if url.startswith(tag) and not url.startswith(tag + '#'):
@@ -7494,21 +7496,16 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):
         unquote_path = g.unquoteUrl(leo_path)
-        if g.unitTesting:
-            pass
-        elif g.os_path_exists(leo_path):
+        if g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
-        if g.unitTesting:
+        # Mozilla throws a weird exception, then opens the file!
+        try:
+            webbrowser.open(url)
+        except Exception:
             pass
-        else:
-            # Mozilla throws a weird exception, then opens the file!
-            try:
-                webbrowser.open(url)
-            except Exception:
-                pass
 #@+node:ekr.20170226060816.1: *4* g.traceUrl
 def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
 
