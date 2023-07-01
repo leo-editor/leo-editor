@@ -972,11 +972,12 @@ class TestGlobals(LeoUnitTest):
         # even though this tests Position methods.
         c = self.c
         self._make_tree()
-        # for p in c.all_positions():
-            # print(' '*p.level(), p.h)
+        if 0:
+            for p in c.all_positions():
+                print(' '*p.level(), p.h)
 
-        root = c.rootPosition()
-        p = root.next().firstChild()
+        root = c.rootPosition().next()
+        p = root.firstChild()
         
         # Calculate the various kinds of results.
         gnx = p.gnx
@@ -986,17 +987,18 @@ class TestGlobals(LeoUnitTest):
 
         empty_gnx = 'unl:' + f"gnx://#{gnx}"
         empty_path = 'unl:' + f"gnx://#{path}"
-        long_gnx = 'unl:' + f"gnx://{long_fn}#{gnx}"
-        long_legacy = 'unl:' + f"//{long_fn}#{path}"
+        full_gnx = 'unl:' + f"gnx://{long_fn}#{gnx}"
+        full_legacy = 'unl:' + f"//{long_fn}#{path}"
         short_gnx = 'unl:' + f"gnx://{short_fn}#{gnx}"
         short_legacy = 'unl:' + f"//{short_fn}#{path}"
-        all_unls = (empty_gnx, empty_path, long_gnx, long_legacy, short_gnx, short_legacy)
+        all_unls = (empty_gnx, empty_path, full_gnx, full_legacy, short_gnx, short_legacy)
         
         # Pre-test.
         for unl in all_unls:
             self.assertTrue(g.isValidUnl(unl), msg=unl)
             
         def set_config(kind, full):
+            """Set c.config settings from the args."""
             getBool, getString = c.config.getBool, c.config.getString
             c.config.set(p=None, kind='string', name='unl-status-kind', val=kind)
             c.config.set(p=None, kind='bool', name='full-unl-paths', val=full)
@@ -1006,33 +1008,45 @@ class TestGlobals(LeoUnitTest):
         # Test g.get_UNL.
         expected_get_UNL = {
             'legacy:0': short_gnx,
-            'legacy:1': long_gnx,
+            'legacy:1': full_gnx,
             'gnx:0': short_gnx,
-            'gnx:1': long_gnx,
+            'gnx:1': full_gnx,
         }
+        f = p.get_UNL
         for kind in ('legacy', 'gnx'):
             for full in (True, False):
                 set_config(kind, full)
-                unl = p.get_UNL()
-                # g.trace(f"kind: {kind:>6} full: {full:1}", unl)
                 expected = expected_get_UNL[f"{kind}:{str(int(full))}"]
-                self.assertEqual(expected, unl, msg=f"kind: {kind} full: {full}")
-                
+                self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
+        
+        # Test g.get_legacy_UNL.
+        expected_get_legacy_UNL = {
+            'legacy:0': short_legacy,
+            'legacy:1': full_legacy,
+            'gnx:0': short_legacy,
+            'gnx:1': full_legacy,
+        }
+        f = p.get_legacy_UNL
+        for kind in ('legacy', 'gnx'):
+            for full in (True, False):
+                set_config(kind, full)
+                expected = expected_get_legacy_UNL[f"{kind}:{str(int(full))}"]
+                self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
 
-        # # Test all configuration settings.
-        # if 0:
-            # print('')
-        # for kind in ('legacy', 'gnx'):  # Test both values of `@string unl-status-kind`.
-            # for full in (True, False):  # Test both values of `@bool full-unl-paths`
-                # set_config(kind, full)
-                # if 0:
-                    # print(f"\nfull: {full} kind: {kind}")
-                    # print('             get_UNL:', p.get_UNL())
-                    # print('    get_full_gnx_UNL:', p.get_full_gnx_UNL())
-                    # print(' get_full_legacy_UNL:', p.get_full_legacy_UNL())
-                    # print('      get_legacy_UNL:', p.get_legacy_UNL())
-                    # print('get_short_legacy_UNL:', p.get_short_legacy_UNL())
-                
+        # Test the p.get_*_UNL methods whose returned values do not depend on settings.
+        for kind in ('legacy', 'gnx'):
+            for full in (True, False):
+                set_config(kind, full)
+                for expected, f in (
+                    # Test g.get_full_gnx_UNL and g.get_short_gnx_UNL.
+                    (full_gnx, p.get_full_gnx_UNL),
+                    (short_gnx, p.get_short_gnx_UNL),
+                    # Test g.get_full_legacy_UNL and g.get_short_legacy_UNL.
+                    (full_legacy, p.get_full_legacy_UNL),
+                    (short_legacy, p.get_short_legacy_UNL),
+                ):
+                    msg = f"{f.__name__}: kind: {kind} full: {full}"
+                    self.assertEqual(expected, f(), msg=msg)
     #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self):
         

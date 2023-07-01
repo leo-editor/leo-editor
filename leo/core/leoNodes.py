@@ -866,12 +866,15 @@ class Position:
     #@+node:ekr.20230628174804.1: *5* p.get_short_legacy_UNL
     def get_short_legacy_UNL(self) -> str:
         """
-        Return a legacy unl without the file-name component.
+        Return a legacy unl with a short file-name component.
 
         Not used in Leo's core or official plugins.
         """
+        p = self
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
         path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        return 'unl:' + f"//#{path_part}"
+        return 'unl:' + f"//{file_part}#{path_part}"
     #@+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
         """
