@@ -907,8 +907,8 @@ class TestGlobals(LeoUnitTest):
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn.lower(), __file__.lower())
 
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
-    def test_g_findGNX(self):
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx
+    def test_g_findGnx(self):
         c = self.c
 
         # Define per-commander data.
@@ -965,6 +965,33 @@ class TestGlobals(LeoUnitTest):
                 self.assertEqual(None, g.findAnyUnl(unl, c), msg=unl)
         finally:
             sys.stdout = old_stdout
+    #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
+    def test_g_parsePathData(self):
+        
+        c = self.c
+        
+        # Set @data unl-path-prefixes
+        
+        s = textwrap.dedent("""
+            # lines have the form:
+            # x.leo: <absolute path to x.leo>
+
+            test.leo:    c:/Repos/leo-editor/leo/test
+            LeoDocs.leo: c:/Repos/leo-editor/leo/doc
+        """)
+        lines = g.splitLines(s)
+        # p: Position, kind: str, name: str, val: Any, warn: bool = True) -> None:
+        c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        lines2 = c.config.getData('unl-path-prefixes')
+        expected_lines = [
+            'test.leo:    c:/Repos/leo-editor/leo/test',
+            'LeoDocs.leo: c:/Repos/leo-editor/leo/doc',
+        ]
+        self.assertEqual(lines2, expected_lines)
+        d = g.parsePathData(c)
+        paths = ['c:/Repos/leo-editor/leo/test', 'c:/Repos/leo-editor/leo/doc']
+        expected_paths = [os.path.normpath(z) for z in paths]
+        self.assertTrue(sorted(list(d.values())), expected_paths)
     #@-others
 #@-others
 #@-leo
