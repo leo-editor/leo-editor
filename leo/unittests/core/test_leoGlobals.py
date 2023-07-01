@@ -15,81 +15,81 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
     
+    tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+    absolute_paths: list[str]
+    error_lines: dict[str, int]
+    error_messages: dict[str, list[str]]
+    #@+<< define files data >>
+    #@+node:ekr.20230701060241.1: *3* << define files data >>
+    # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
+
+    # kind: @clean, @edit, @file,
+    # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
+    files_data: tuple[str, str] = (
+        # The hard case: __init__.py
+        ('@file', '../plugins/importers/__init__.py'),
+        ('@file',  '../plugins/writers/__init__.py'),
+        ('@clean', '../plugins/leo_babel/__init__.py'),
+        ('@file',  '../plugins/editpane/__init__.py'),
+        # Other files.
+        ('@file', 'leoApp.py'),
+        ('@file', '../commands/abbrevCommands.py'),
+        ('@edit', '../../launchLeo.py'),
+        ('@file', '../external/log_listener.py'),
+        ('@file', '../plugins/cursesGui2.py'),
+    )
+    #@-<< define files data >>
+    #@+<< define unchanging error data >>
+    #@+node:ekr.20230701060854.1: *3* << define unchanging error data >>
+    # m.group(1) is the filename and m.group(2) is the line number.
+    error_patterns: dict[str, re.Pattern] = {
+        'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
+        'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+        'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
+        'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+        'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+    }
+
+    # Error message templates.
+    error_templates: dict[str, str] = {
+        'flake8':   'FILE:LINE:COL:ERR',
+        'mypy':     'FILE:LINE:error ERR',
+        'pyflakes': 'FILE:LINE:COL ERR',
+        'pylint':   'FILE:LINE:COL: (ERR)',
+        'python':   'File "FILE", line LINE',
+    }
+    #@-<< define unchanging error data >>
+    
     def setUp(self) -> None:
         """
         Create a commander using g.app.gui.
         Create the nodes in the commander.
         """
         super().setUp()
-        self.tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
-        self._make_files_test_data()
-        self._make_errors_dicts()
-        self._pre_test()
+        self._define_per_commander_data()
+        self._test_per_commander_data()
 
     #@+others
     #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers
-    #@+node:ekr.20230701060241.1: *4* TestGlobals._make_files_data
-    def _make_files_test_data(self):
-        """Return test tuple for files tests."""
-
-        # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
-        
-        # kind: @clean, @edit, @file,
-        # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
-        self.files_data: tuple[str, str] = (
-            # The hard case: __init__.py
-            ('@file', '../plugins/importers/__init__.py'),
-            ('@file',  '../plugins/writers/__init__.py'),
-            ('@clean', '../plugins/leo_babel/__init__.py'),
-            ('@file',  '../plugins/editpane/__init__.py'),
-            # Other files.
-            ('@file', 'leoApp.py'),
-            ('@file', '../commands/abbrevCommands.py'),
-            ('@edit', '../../launchLeo.py'),
-            ('@file', '../external/log_listener.py'),
-            ('@file', '../plugins/cursesGui2.py'),
-        )
-    #@+node:ekr.20230701060854.1: *4* TestGlobals._make_errors_dicts
-    def _make_errors_dicts(self):
-        """
-        Create the following ivars: absolute_paths, error_lines,
-        error_messages, error_patterns, error_templates.
-        """
+    #@+node:ekr.20230701065318.1: *4* TestGlobals._define_per_commander_data
+    def _define_per_commander_data(self):
+        """Define data that depends on c."""
         c = self.c
-
-        # m.group(1) is the filename and m.group(2) is the line number.
-        self.error_patterns: dict[str, re.Pattern] = {
-            'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
-            'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-            'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
-            'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-            'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
-        }
-
-        # Error message templates.
-        self.error_templates: dict[str, str] = {
-            'flake8':   'FILE:LINE:COL:ERR',
-            'mypy':     'FILE:LINE:error ERR',
-            'pyflakes': 'FILE:LINE:COL ERR',
-            'pylint':   'FILE:LINE:COL: (ERR)',
-            'python':   'File "FILE", line LINE',
-        }
-
+        
         # List of absolute paths in the test data.
         self.assertTrue(c.fileName)
-        self.absolute_paths: list[str] = [
+        self.absolute_paths = [
             g.os_path_finalize_join(os.path.dirname(c.fileName()), relative_path)
-                ### for _, relative_path in test_data
                 for _, relative_path in self.files_data
         ]
 
         # The error line for each absolute path. Default all lines to 0.
-        self.error_lines: dict[str, int] = {}
+        self.error_lines = {}
         for z in self.absolute_paths:
             self.error_lines[z] = 0
 
         # Error messages for every tool and every absolute path.
-        self.error_messages: dict[str, list[str]] = {}
+        self.error_messages = {}
         for tool in self.tools:
             self.error_messages [tool] = []
             for path in self.absolute_paths:
@@ -100,8 +100,8 @@ class TestGlobals(LeoUnitTest):
                     .replace('COL', f"{self.error_lines[path]!s}")
                     .replace('ERR', f"{tool} error")
                 )
-    #@+node:ekr.20230701061355.1: *4* TestGlobals._pre_tests
-    def _pre_test(self):
+    #@+node:ekr.20230701061355.1: *4* TestGlobals._test_per_commander_data
+    def _test_per_commander_data(self):
         """Test the test data."""
         c = self.c
 
