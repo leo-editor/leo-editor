@@ -19,13 +19,17 @@ class TestGlobals(LeoUnitTest):
     absolute_paths: list[str]
     error_lines: dict[str, int]
     error_messages: dict[str, list[str]]
+    error_patterns: dict[str, re.Pattern]
+    error_templates: dict[str, str]
+    files_data: tuple[str, str]
+    # Define unchanging data.
     #@+<< define files data >>
     #@+node:ekr.20230701060241.1: *3* << define files data >>
     # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
 
     # kind: @clean, @edit, @file,
     # path: path to an existing file, relative to LeoPyRef.leo (in leo/core).
-    files_data: tuple[str, str] = (
+    files_data = (
         # The hard case: __init__.py
         ('@file', '../plugins/importers/__init__.py'),
         ('@file',  '../plugins/writers/__init__.py'),
@@ -39,35 +43,28 @@ class TestGlobals(LeoUnitTest):
         ('@file', '../plugins/cursesGui2.py'),
     )
     #@-<< define files data >>
-    #@+<< define unchanging error data >>
-    #@+node:ekr.20230701060854.1: *3* << define unchanging error data >>
+    #@+<< define error_patterns >>
+    #@+node:ekr.20230701060854.1: *3* << define error_patterns >>
     # m.group(1) is the filename and m.group(2) is the line number.
-    error_patterns: dict[str, re.Pattern] = {
+    error_patterns = {
         'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
         'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
         'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
         'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
         'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
     }
-
+    #@-<< define error_patterns >>
+    #@+<< define error_templates >>
+    #@+node:ekr.20230701071240.1: *3* << define error_templates >>
     # Error message templates.
-    error_templates: dict[str, str] = {
+    error_templates = {
         'flake8':   'FILE:LINE:COL:ERR',
         'mypy':     'FILE:LINE:error ERR',
         'pyflakes': 'FILE:LINE:COL ERR',
         'pylint':   'FILE:LINE:COL: (ERR)',
         'python':   'File "FILE", line LINE',
     }
-    #@-<< define unchanging error data >>
-    
-    def setUp(self) -> None:
-        """
-        Create a commander using g.app.gui.
-        Create the nodes in the commander.
-        """
-        super().setUp()
-        self._define_per_commander_data()
-        self._test_per_commander_data()
+    #@-<< define error_templates >>
 
     #@+others
     #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers
@@ -304,10 +301,14 @@ class TestGlobals(LeoUnitTest):
         for s, word, i, expected in table:
             actual = g.find_word(s, word, i)
             self.assertEqual(actual, expected)
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX *** Add more tests
     #@@nobeautify
     def test_g_findGNX(self):
         c = self.c
+        
+        # Define and test the per-commander data.
+        self._define_per_commander_data()
+        self._test_per_commander_data()
 
         # Test all error messages for all paths.
         for data in self.files_data:  # <@file> <filename>
@@ -315,7 +316,7 @@ class TestGlobals(LeoUnitTest):
             headline = msg = f"{kind} {relative_path}"
             self._make_tree(headline)
             test_p = g.findNodeAnywhere(c, headline)
-            # Test g.findGnx.
+            self.assertTrue(test_p)
             result2 = g.findGnx(test_p.gnx, c)
             self.assertEqual(result2, test_p, msg=msg)
     #@+node:ekr.20210905203541.14: *3* TestGlobals.test_g_fullPath
@@ -412,7 +413,7 @@ class TestGlobals(LeoUnitTest):
                 sys.stdout = old_stdout
                 # print(report)
                 raise
-    #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
+    #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl *** to do
     def test_g_handleUrl(self):
         c = self.c
         # Part 1: general urls, paying attention to trailing ')' and '.'.
