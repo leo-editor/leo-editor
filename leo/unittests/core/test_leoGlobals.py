@@ -15,6 +15,8 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
     
+    #@+<< TestGlobals: declare all data >>
+    #@+node:ekr.20230701083715.1: *3* << TestGlobals: declare all data >>
     tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
     absolute_paths: list[str]
     error_lines: dict[str, int]
@@ -22,9 +24,11 @@ class TestGlobals(LeoUnitTest):
     error_patterns: dict[str, re.Pattern]
     error_templates: dict[str, str]
     files_data: tuple[str, str]
-    # Define unchanging data.
+    #@-<< TestGlobals: declare all data >>
+    #@+<< TestGlboals: define unchanging data >>
+    #@+node:ekr.20230701083918.1: *3* << TestGlboals: define unchanging data >>
     #@+<< define files data >>
-    #@+node:ekr.20230701060241.1: *3* << define files data >>
+    #@+node:ekr.20230701060241.1: *4* << define files data >>
     # All these paths appear in @file or @clean nodes in LeoPyRef.leo.
 
     # kind: @clean, @edit, @file,
@@ -44,7 +48,7 @@ class TestGlobals(LeoUnitTest):
     )
     #@-<< define files data >>
     #@+<< define error_patterns >>
-    #@+node:ekr.20230701060854.1: *3* << define error_patterns >>
+    #@+node:ekr.20230701060854.1: *4* << define error_patterns >>
     # m.group(1) is the filename and m.group(2) is the line number.
     error_patterns = {
         'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
@@ -55,7 +59,7 @@ class TestGlobals(LeoUnitTest):
     }
     #@-<< define error_patterns >>
     #@+<< define error_templates >>
-    #@+node:ekr.20230701071240.1: *3* << define error_templates >>
+    #@+node:ekr.20230701071240.1: *4* << define error_templates >>
     # Error message templates.
     error_templates = {
         'flake8':   'FILE:LINE:COL:ERR',
@@ -65,9 +69,10 @@ class TestGlobals(LeoUnitTest):
         'python':   'File "FILE", line LINE',
     }
     #@-<< define error_templates >>
+    #@-<< TestGlboals: define unchanging data >>
 
     #@+others
-    #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers
+    #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers and related test
     #@+node:ekr.20230701065318.1: *4* TestGlobals._define_per_commander_data
     def _define_per_commander_data(self):
         """Define data that depends on c."""
@@ -173,6 +178,12 @@ class TestGlobals(LeoUnitTest):
 
         # Always start with the root selected.
         c.selectPosition(c.rootPosition())
+    #@+node:ekr.20230701084035.1: *4* TestGlobals.test_per_commander_data
+    def test_per_commander_data(self):
+        
+        # Test the data only here.
+        self._define_per_commander_data()
+        self._test_per_commander_data()
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
         # for condition in ('<','<=','>','>='):
@@ -291,6 +302,54 @@ class TestGlobals(LeoUnitTest):
             result = g.ensureTrailingNewlines(s, i)
             val = s2 + ('\n' * i)
             self.assertEqual(result, val)
+    #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl *** to do
+    def test_g_handleUrl(self):
+        c = self.c
+        # Part 1: general urls, paying attention to trailing ')' and '.'.
+        #         See the hacks in jedit.match_any_url and g.handleUrl.
+        table1 = (
+            (
+                "https://leo-editor.github.io/leo-editor/preface.html).",
+                "https://leo-editor.github.io/leo-editor/preface.html",
+            ),
+            (
+                "https://leo-editor.github.io/leo-editor/leo_toc.html)",
+                "https://leo-editor.github.io/leo-editor/leo_toc.html",
+            ),
+            (
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+            ),
+        )
+        for url, expected in table1:
+            got = g.handleUrl(c=c, p=c.p, url=url)
+            self.assertEqual(expected.lower(), got, msg=url)
+            
+        # Part 2: file-oriented urls.
+       
+        # g.handleUrl now longer finds urls in other commanders.
+        # I thought it best to remove the Leo-specific hacks that were required.
+
+        if False and sys.platform.startswith('win'):
+            file_, http, unl1 = 'file://', 'http://', 'unl://'
+            fn1 = 'LeoDocs.leo#'
+            fn2 = 'doc/LeoDocs.leo#'
+            unl2 = '@settings-->Plugins-->wikiview plugin'
+            unl3 = '@settings-->Plugins-->wikiview%20plugin'
+            table2 = (
+                (http + 'writemonkey.com/index.php', ['browser']),
+                (file_ + 'x.py', ['os_startfile']),
+                (file_ + fn1, ['g.findUnl']),
+                (file_ + fn2, ['g.findUnl']),
+                (unl1 + fn1 + unl2, ['g.findUnl']),
+                (unl1 + fn1 + unl3, ['g.findUnl']),
+                (unl1 + '#' + unl2, ['g.findUnl']),
+                (unl1 + '#' + unl3, ['g.findUnl']),
+                (unl1 + unl2, ['g.findUnl']),
+                (unl1 + unl3, ['g.findUnl']),
+            )
+            for url, aList in table2:
+                g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20210905203541.12: *3* TestGlobals.test_g_find_word
     def test_g_find_word(self):
         table = (
@@ -302,13 +361,11 @@ class TestGlobals(LeoUnitTest):
             actual = g.find_word(s, word, i)
             self.assertEqual(actual, expected)
     #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGNX *** Add more tests
-    #@@nobeautify
     def test_g_findGNX(self):
         c = self.c
-        
-        # Define and test the per-commander data.
+
+        # Define per-commander data.
         self._define_per_commander_data()
-        self._test_per_commander_data()
 
         # Test all error messages for all paths.
         for data in self.files_data:  # <@file> <filename>
@@ -413,54 +470,6 @@ class TestGlobals(LeoUnitTest):
                 sys.stdout = old_stdout
                 # print(report)
                 raise
-    #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl *** to do
-    def test_g_handleUrl(self):
-        c = self.c
-        # Part 1: general urls, paying attention to trailing ')' and '.'.
-        #         See the hacks in jedit.match_any_url and g.handleUrl.
-        table1 = (
-            (
-                "https://leo-editor.github.io/leo-editor/preface.html).",
-                "https://leo-editor.github.io/leo-editor/preface.html",
-            ),
-            (
-                "https://leo-editor.github.io/leo-editor/leo_toc.html)",
-                "https://leo-editor.github.io/leo-editor/leo_toc.html",
-            ),
-            (
-                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
-                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
-            ),
-        )
-        for url, expected in table1:
-            got = g.handleUrl(c=c, p=c.p, url=url)
-            self.assertEqual(expected.lower(), got, msg=url)
-            
-        # Part 2: file-oriented urls.
-       
-        # g.handleUrl now longer finds urls in other commanders.
-        # I thought it best to remove the Leo-specific hacks that were required.
-
-        if False and sys.platform.startswith('win'):
-            file_, http, unl1 = 'file://', 'http://', 'unl://'
-            fn1 = 'LeoDocs.leo#'
-            fn2 = 'doc/LeoDocs.leo#'
-            unl2 = '@settings-->Plugins-->wikiview plugin'
-            unl3 = '@settings-->Plugins-->wikiview%20plugin'
-            table2 = (
-                (http + 'writemonkey.com/index.php', ['browser']),
-                (file_ + 'x.py', ['os_startfile']),
-                (file_ + fn1, ['g.findUnl']),
-                (file_ + fn2, ['g.findUnl']),
-                (unl1 + fn1 + unl2, ['g.findUnl']),
-                (unl1 + fn1 + unl3, ['g.findUnl']),
-                (unl1 + '#' + unl2, ['g.findUnl']),
-                (unl1 + '#' + unl3, ['g.findUnl']),
-                (unl1 + unl2, ['g.findUnl']),
-                (unl1 + unl3, ['g.findUnl']),
-            )
-            for url, aList in table2:
-                g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
