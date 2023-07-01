@@ -930,6 +930,41 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(g.isValidUnl(unl), msg=unl)
         for unl in self.invalid_unls:
             self.assertFalse(g.isValidUnl(unl), msg=unl)
+    #@+node:ekr.20230701101300.1: *3* TestGlobals.test_g_isValidUrl
+    def test_g_isValidUrl(self):
+
+        bad_table = ('@whatever',)
+        good_table = (
+            'http://leo-editor.github.io/leo-editor/preface.html',
+            'https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+',
+        )
+        for unl in self.valid_unls + self.missing_unls + good_table:
+            self.assertTrue(g.isValidUrl(unl), msg=unl)
+        for unl in self.invalid_unls + bad_table:
+            self.assertFalse(g.isValidUrl(unl), msg=unl)
+    #@+node:ekr.20230701095636.1: *3* TestGlobals.test_g_findAnyUnl
+    def test_g_findAnyUnl(self):
+        
+        # g.findAnyUnl returns a Position or None.
+        
+        ### To do: resolve all valid unls to a real position.
+        
+        c = self.c
+        self._make_tree(root_h='root')
+        
+        if 0:  ### Not yet.
+            for unl in self.valid_unls + self.missing_unls:
+                p = c.rootPosition()
+                self.assertEqual(p, g.findAnyUnl(unl, c), msg=unl)
+                
+        # Suppress warnings.
+        old_stdout = sys.stdout
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            for unl in self.invalid_unls:
+                self.assertEqual(None, g.findAnyUnl(unl, c), msg=unl)
+        finally:
+            sys.stdout = old_stdout
     #@-others
 #@-others
 #@-leo

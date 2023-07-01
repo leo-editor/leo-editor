@@ -7534,8 +7534,7 @@ def isValidUrl(url: str) -> bool:
     )
     if not url:
         return False
-    if url.lower().startswith('unl://') or url.startswith('#'):
-        # All Leo UNL's.
+    if g.isValidUnl(url):
         return True
     if url.startswith('@'):
         return False
