@@ -968,14 +968,9 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230701113123.1: *3* TestGlobals.test_p_get_star_UNL
     def test_p_get_star_UNL(self):
         
-        # The data in the TestGlobals class are useful for this test,
-        # even though this tests Position methods.
+        # Test 11 p.get_*_UNL methods.
         c = self.c
         self._make_tree()
-        if 0:
-            for p in c.all_positions():
-                print(' '*p.level(), p.h)
-
         root = c.rootPosition().next()
         p = root.firstChild()
         
@@ -1005,43 +1000,39 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(full, getBool('full-unl-paths'), msg=full)
             self.assertEqual(kind, getString('unl-status-kind'), msg=kind)
 
-        # Test g.get_UNL.
+        # Test g.get_UNL and g.get_legacy_UNL.
         expected_get_UNL = {
             'legacy:0': short_gnx,
             'legacy:1': full_gnx,
             'gnx:0': short_gnx,
             'gnx:1': full_gnx,
         }
-        f = p.get_UNL
-        for kind in ('legacy', 'gnx'):
-            for full in (True, False):
-                set_config(kind, full)
-                expected = expected_get_UNL[f"{kind}:{str(int(full))}"]
-                self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
-        
-        # Test g.get_legacy_UNL.
         expected_get_legacy_UNL = {
             'legacy:0': short_legacy,
             'legacy:1': full_legacy,
             'gnx:0': short_legacy,
             'gnx:1': full_legacy,
         }
-        f = p.get_legacy_UNL
         for kind in ('legacy', 'gnx'):
             for full in (True, False):
                 set_config(kind, full)
-                expected = expected_get_legacy_UNL[f"{kind}:{str(int(full))}"]
-                self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
-
-        # Test the p.get_*_UNL methods whose returned values do not depend on settings.
+                for d, f in (
+                    (expected_get_UNL, p.get_UNL),
+                    (expected_get_legacy_UNL, p.get_legacy_UNL),
+                ):
+                    expected = d[f"{kind}:{str(int(full))}"]
+                    self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
+        
+        # Test all other p.get_*_UNL methods.
+        # Their returned values should not depend on settings, but change the settings to make sure.
         for kind in ('legacy', 'gnx'):
             for full in (True, False):
                 set_config(kind, full)
                 for expected, f in (
-                    # Test g.get_full_gnx_UNL and g.get_short_gnx_UNL.
+                    # Test g.get_full/short_gnx_UNL.
                     (full_gnx, p.get_full_gnx_UNL),
                     (short_gnx, p.get_short_gnx_UNL),
-                    # Test g.get_full_legacy_UNL and g.get_short_legacy_UNL.
+                    # Test g.get_full/short_legacy_UNL.
                     (full_legacy, p.get_full_legacy_UNL),
                     (short_legacy, p.get_short_legacy_UNL),
                 ):
