@@ -1,5 +1,5 @@
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 rem: See leo-editor/setup.cfg for defaults.
 

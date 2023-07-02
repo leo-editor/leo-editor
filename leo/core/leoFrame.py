@@ -1250,7 +1250,13 @@ class LeoLog:
     #@+node:ekr.20070302101304: *3* LeoLog.put, putnl & helper
     # All output to the log stream eventually comes here.
 
-    def put(self, s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False, nodeLink: str = None) -> None:
+    def put(self,
+        s: str,
+        color: str = None,
+        tabName: str = 'Log',
+        from_redirect: bool = False,
+        nodeLink: str = None,
+    ) -> None:
         print(s)
 
     def putnl(self, tabName: str = 'Log') -> None:

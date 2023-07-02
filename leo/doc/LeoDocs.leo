@@ -25350,10 +25350,12 @@ In detail:
 
 1. Create a new git branch for the work.
 
-2. Create a **global master switch**that separates and marks the old and new versions of the code. This is a boolean.  It selects the new code if True and the old code otherwise.  We say the switch is either in the "**new**" position or the "**legacy**" position.
+2. Create a **global master switch** (a boolean) that separates and
+   marks the old and new versions of the code. The switch selects the
+   new code if True and the old code otherwise.
 
-- **All unit tests should continue to pass when the switch selects legacy code.**
-- **All pushes should have the legacy code selected until every works.**
+- All unit tests should continue to pass when the switch selects legacy code.
+- All pushes should have the legacy code selected until every works.
 
 These two requirements make it safe to pause work on the project.
 
@@ -25512,7 +25514,6 @@ Here is how to use c.recursiveImport::
     c.recursiveImport(
         dir_ = &lt;&lt; path to root directory &gt;&gt;,
             # You must expand ~ yourself
-        add_path=True,
         kind = '@clean', # '@clean', @nosent','@auto','@file'
         recursive = True,
         safe_at_file = False,
