@@ -29,7 +29,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree, TopFrame
     from leo.plugins.qt_frame import DynamicWindow
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
@@ -702,14 +701,14 @@ class LeoFrame:
         self.iconBarClass = NullIconBarClass
         self.statusLineClass = NullStatusLineClass
         # Objects attached to this frame...
-        self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
+        self.body: Union[LeoBody, NullBody, LeoQtBody] = None
         self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
-        self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
-        self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None
+        self.log: Union[LeoLog, NullLog, LeoQtLog] = None
+        self.menu: Union[LeoMenu, LeoQtMenu, NullMenu] = None
         self.miniBufferWidget: Widget = None
-        self.statusLine: Union[CoreStatusLine, "NullStatusLineClass", g.NullObject] = g.NullObject()
-        self.top: Union[TopFrame, DynamicWindow] = None
-        self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None
+        self.statusLine: Union[NullStatusLineClass, g.NullObject] = g.NullObject()
+        self.top: DynamicWindow = None
+        self.tree: Union[LeoTree, NullTree, LeoQtTree] = None
         self.useMiniBufferWidget = False
         # Other ivars...
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
@@ -881,7 +880,7 @@ class LeoFrame:
         if self.iconBar:
             self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
-    def createStatusLine(self) -> Union[CoreStatusLine, NullStatusLineClass, g.NullObject]:
+    def createStatusLine(self) -> Union[NullStatusLineClass, g.NullObject]:
         if not self.statusLine:
             self.statusLine = self.statusLineClass(self.c, None)
         return self.statusLine
@@ -898,7 +897,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> Union[CoreStatusLine, NullStatusLineClass, g.NullObject]:
+    def getStatusLine(self) -> Union[NullStatusLineClass, g.NullObject]:
         return self.statusLine
 
     getStatusObject = getStatusLine
