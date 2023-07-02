@@ -240,12 +240,66 @@ class TestGlobals(LeoUnitTest):
 
         # Always start with the root selected.
         c.selectPosition(c.rootPosition())
+    #@+node:ekr.20230702165040.1: *4* TestGlobals._patch_at_data_unl_path_prefixes
+    def _patch_at_data_unl_path_prefixes(self):
+        """
+        Create a new outline, linked into g.app.windowList.
+        
+        Patch @data unl-path-prefixes so that g.findAnyUnl will find nodes in
+        the new commander.
+        
+        Return the commander for the new outline.
+        """
+        from leo.core.leoCommands import Commands
+        c = self.c
+        
+        # Create the new commander, linked into g.app.windowList.
+        c2 = Commands(fileName=None, gui=g.app.gui)
+        self.assertTrue(c2.frame)
+        g.app.windowList.append(c2.frame)
+        
+        # Give both commanders new (non-existent) names.
+        c1_name = 'test_outline1.leo'
+        c2_name = 'test_outline2.leo'
+        directory = os.path.dirname(c.fileName())
+        c.mFileName = os.path.normpath(os.path.join(directory, c1_name))
+        c2.mFileName = os.path.normpath(os.path.join(directory, c2_name))
+        self.assertEqual(c1_name, os.path.basename(c.fileName()))
+        self.assertEqual(c2_name, os.path.basename(c2.fileName()))
+        
+        def make_line(c):
+            file_name = c.fileName()
+            key = os.path.basename(file_name)
+            value = os.path.normpath(file_name)
+            # print(f"{key:17} {value}")
+            return f"{key}: {value}"
+        
+        # Init the @data unl-path-prefixes.
+        lines = [make_line(z) for z in (c, c2)]
+        c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        lines2 = c.config.getData('unl-path-prefixes')
+        self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
+        d = g.parsePathData(c)
+        if 0:
+            for key in d:
+                print(f"{key:17} {d.get(key)}")
+        return c2
     #@+node:ekr.20230701084035.1: *4* TestGlobals.test_per_commander_data
     def test_per_commander_data(self):
         
         # Test the data only here.
         self._define_per_commander_data()
         self._test_per_commander_data()
+    #@+node:ekr.20230702165813.1: *4* TestGlobals.test_patch_at_data_unl_path_prefixes
+    def test_patch_at_data_unl_path_prefixes(self):
+        # Test the helper, _patch_at_data_unl_path_prefixes.
+        c = self.c
+        c2 = self._patch_at_data_unl_path_prefixes()
+        self.assertTrue(c2)
+        self.assertTrue(c.fileName())
+        self.assertFalse(c == c2)
+        self.assertTrue(c2 in g.app.commanders())
+        self.assertTrue(c2.frame in g.app.windowList)
     #@+node:ekr.20230701085717.1: *3* --- legacy tests
     #@+node:ekr.20210905203541.4: *4* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
