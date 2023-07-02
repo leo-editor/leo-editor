@@ -2357,8 +2357,6 @@ class FileCommands:
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
-            self.expanded_gnxs: set[str] = set()
-            self.marked_gnxs: set[str] = set()
             self.put_v_element(self.currentPosition)  # Write only current tree.
         else:
             for p in c.rootPosition().self_and_siblings():
