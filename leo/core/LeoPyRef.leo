@@ -159,7 +159,6 @@
 <v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
 <v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
 <v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
-<v t="ekr.20230322121316.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
 </v>
@@ -3290,7 +3289,9 @@ viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
 <t tx="ekr.20221201043917.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
+
+call reindent-leo.cmd
 
 echo test-leo
 py -m unittest %*
@@ -3320,7 +3321,7 @@ black.main()
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo pylint-leo
 time /T
@@ -3329,7 +3330,7 @@ time /T
 </t>
 <t tx="ekr.20221204071146.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
@@ -3340,7 +3341,7 @@ py -m mypy --debug-cache leo %*
 <t tx="ekr.20221204071220.1">@language batch
 @echo off
 cls
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo test-one-leo
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
@@ -3348,23 +3349,23 @@ call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handle
 <t tx="ekr.20221204071554.1">@language batch
 @echo off
 cls
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo full-test-leo
-call reindent-leo.cmd
-call beautify-leo.cmd
+rem call reindent-leo.cmd
+rem call beautify-leo.cmd
 call test-leo.cmd
-echo.
+rem echo.
+call ruff-leo.cmd
 call mypy-leo.cmd
-echo.
-call flake8-leo.cmd
-call pylint-leo.cmd
-echo.
+rem call flake8-leo.cmd
+rem call pylint-leo.cmd
+rem echo.
 echo Done!
 </t>
 <t tx="ekr.20221204072154.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 :: Save path to reindent.py to a file .leo\reindent-path.txt
 call py %~dp0\find-reindent.py
@@ -3376,13 +3377,15 @@ set /P "REINDENT_PATH="&lt; %PATH_FILE%
 
 if "%REINDENT_PATH%"=="" goto no_reindent
 
-echo reindent leo/core
+echo reindent-leo
+
+rem echo reindent leo/core
 call py %REINDENT_PATH% -r leo\core
-echo reindent leo/commands
+rem echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
-echo reindent leo/plugins/importers
+rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
-echo reindent leo/plugins/writers
+rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
 goto done
 
@@ -3393,7 +3396,7 @@ echo Cannot find reindent.py, skipping reindentation
 </t>
 <t tx="ekr.20221204072456.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo beautify-leo
 call py -m leo.core.leoAst --orange --recursive leo\core
@@ -3405,7 +3408,7 @@ rem call py -m leo.core.leoAst --orange --recursive leo\modes
 </t>
 <t tx="ekr.20221204074235.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 rem: See leo-editor/setup.cfg for defaults.
 
@@ -3414,31 +3417,22 @@ py -m flake8 %*
 </t>
 <t tx="ekr.20230115020533.1">@language batch
 @echo off
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
-
-rem echo.
-rem echo black leo.commands
-rem call python -m black --skip-string-normalization leo\commands
 </t>
 <t tx="ekr.20230206004301.1">@language batch
 @echo off
 cls
 rem -a: write all files  (make clean)
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 cd leo\doc\html
 
 echo.
 echo sphinx-build -a (make clean)
 echo.
 sphinx-build -M html . _build -a
-</t>
-<t tx="ekr.20230322121316.1">@language batch
-:: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
-@echo off
-cd %~dp0..\..
 </t>
 <t tx="ekr.20230508145335.1"># These tests load (once) all files in leo/core, leo/commands and leo/plugins/qt_*.py.
 g.execute_shell_commands(
