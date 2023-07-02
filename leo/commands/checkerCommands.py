@@ -541,7 +541,7 @@ class PyflakesCommand:
                     errorStream=self.LogStream(i, roots),
                     warningStream=self.LogStream(i, roots),
                 )
-                errors = api.check(s, sfn, r)
+                errors = api.check(g.toUnicode(s), sfn, r)
                 total_errors += errors
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
