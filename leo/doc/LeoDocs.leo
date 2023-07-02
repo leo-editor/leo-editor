@@ -25514,7 +25514,6 @@ Here is how to use c.recursiveImport::
     c.recursiveImport(
         dir_ = &lt;&lt; path to root directory &gt;&gt;,
             # You must expand ~ yourself
-        add_path=True,
         kind = '@clean', # '@clean', @nosent','@auto','@file'
         recursive = True,
         safe_at_file = False,
