@@ -1168,7 +1168,6 @@
 <v t="ekr.20150318110552.30"><vh>Loading, saving &amp; reverting files</vh></v>
 <v t="ekr.20150318110552.31"><vh>Closing outlines &amp; quitting Leo</vh></v>
 <v t="ekr.20150318110552.32"><vh>Importing &amp; exporting files</vh></v>
-<v t="ekr.20150318110552.33"><vh>Using sessions</vh></v>
 <v t="ekr.20150318110552.34"><vh>Communicating with external editors </vh></v>
 <v t="ekr.20150318110552.35"><vh>Creating &amp; deleting directories &amp; files</vh></v>
 <v t="ekr.20150318110552.36"><vh>Managing recent files</vh></v>
@@ -18429,21 +18428,6 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Formats the selected text and writes it to a file. 
 ``write-file-from-node``
     Writes the body text of the selected node to a file. The command prompts for a file name if the node is not an @&lt;file&gt; node.
-</t>
-<t tx="ekr.20150318110552.33">``session-clear``
-    Closes all tabs except the presently selected tab. 
-``session-create``
-    Creates a new @session node. 
-``session-refresh``
-    Refreshes the current @session node. 
-``session-restore``
-    Opens a tab for each item the selected @session node.
-``session-snapshot-load``
-    Loads a snapshot of a session from the leo.session file. 
-``session-snapshot-save``
-    Saves a snapshot of the present session to the leo.session file.
-
-A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments *don't* contain any file names.
 </t>
 <t tx="ekr.20150318110552.34">.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
 .. _`Open Office`: https://www.openoffice.org/
