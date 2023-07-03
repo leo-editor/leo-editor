@@ -39,7 +39,7 @@ def reloadSettings(self: Self, event: Event = None) -> None:
         c.initConfigSettings()
         # Reload settings in all configurable classes
         c.reloadConfigurableSettings()
-#@+node:ekr.20200422075655.1: ** c_file.restartLeo (changed)
+#@+node:ekr.20200422075655.1: ** c_file.restartLeo
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: Event = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
@@ -60,7 +60,7 @@ def restartLeo(self: Self, event: Event = None) -> None:
                 g.es_print('Cancelling restart-leo command')
                 return
     # Officially begin the restart process. A flag for efc.ask.
-    g.app.restarting = True  # #1240.
+    g.app.restarting = True
     # Save session data.
     g.app.saveSession()
     # Close all unsaved outlines.
