@@ -2674,11 +2674,11 @@ class LoadManager:
                 importers, ipython, keys, layouts, plugins, save, select, sections,
                 shutdown, size, speed, startup, themes, undo, verbose, zoom.
 
-          --trace-binding=KEY   trace commands bound to a key
-          --trace-setting=NAME  trace where named setting is set
-          --window-size=SIZE    initial window size: (height x width)
-          --window-spot=SPOT    initial window position: (top x left)
-          -v, --version         print version number and exit
+          --trace-binding=KEY           trace commands bound to a key
+          --trace-setting=NAME          trace where named setting is set
+          --window-size=SIZE            initial window size: (height x width)
+          --window-spot=SPOT            initial window position: (top x left)
+          -v, --version                 print version number and exit
         """)
         #@+node:ekr.20210927034148.4: *6* function: doGuiOption
         def doGuiOption() -> str:
