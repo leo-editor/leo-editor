@@ -37,7 +37,7 @@ class SessionManager:
     # def error (self,s):
         # # Do not use g.trace or g.es here.
         # print(s)
-    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session (revised)
+    #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session
     def get_session(self) -> list[str]:
         """Return a list of UNLs for open tabs."""
         result: list[str] = []
@@ -51,8 +51,6 @@ class SessionManager:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
             result.append(c.p.get_full_gnx_UNL())
-        if 'shutdown' in g.app.debug:
-            g.printObj(result, tag='get_session')
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self) -> Optional[str]:
@@ -61,7 +59,7 @@ class SessionManager:
             if g.os_path_exists(path):
                 return g.finalize_join(path, 'leo.session')
         return None
-    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session (revised)
+    #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
         """
         Open a tab for each item in UNLs & select the indicated node in each.
@@ -71,8 +69,6 @@ class SessionManager:
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
-        if 'startup' in g.app.debug:
-            g.printObj(unls, tag='load_session')
         for unl in unls:
             if not g.isValidUnl(unl):
                 g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
@@ -99,6 +95,8 @@ class SessionManager:
             try:
                 with open(fn) as f:
                     session = json.loads(f.read())
+                if 'startup' in g.app.debug:
+                    g.printObj(session, tag='load_snapshot: session data')
                 return session
             except Exception:
                 pass
@@ -119,6 +117,8 @@ class SessionManager:
             print('can not save session: no leo.session file')
             return
         session = self.get_session()
+        if 'shutdown' in g.app.debug:
+            g.printObj(session, tag='save_snapshot: session data')
         # #2433 - don't save an empty session
         if not session:
             return
