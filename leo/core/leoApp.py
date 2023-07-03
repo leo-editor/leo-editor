@@ -2647,31 +2647,33 @@ class LoadManager:
         usage: launchLeo.py [options] file1, file2, ...
 
         options:
-          -h, --help            show this help message and exit
-          --always-write-session-data  always write session data when Leo closes
-          -b, --black-sentinels write black-compatible sentinel comments
-          --diff                use Leo as an external git diff
-          --fail-fast           stop unit tests after the first failure
-          --fullscreen          start fullscreen
-          --ipython             enable ipython support
-          --gui=GUI             specify gui: browser,console,curses,qt,text,null
-          --listen-to-log       start log_listener.py on startup
-          --load-type=TYPE      @<file> type for non-outlines: @edit or @file
-          --maximized           start maximized
-          --minimized           start minimized
-          --no-plugins          disable all plugins
-          --no-splash           disable the splash screen
-          --quit                quit immediately after loading
-          --script=PATH         execute a script and then exit
-          --script-window       execute script using default gui
-          --select=ID           headline or gnx of node to select
-          --silent              disable all log messages
-          --theme=NAME          use the named theme file
-          --trace=LIST          add one or more strings to g.app.debug.
-                                A comma-separated list of one or more of:
-                                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-                                importers, ipython, keys, layouts, plugins, save, select, sections,
-                                shutdown, size, speed, startup, themes, undo, verbose, zoom
+          -h, --help                    show this help message and exit
+          --always-write-session-data   always write session data when Leo closes
+          -b, --black-sentinels         write black-compatible sentinel comments
+          --diff                        use Leo as an external git diff
+          --fail-fast                   stop unit tests after the first failure
+          --fullscreen                  start fullscreen
+          --ipython                     enable ipython support
+          --gui=GUI                     specify gui: browser,console,curses,qt,text,null
+          --listen-to-log               start log_listener.py on startup
+          --load-type=TYPE              @<file> type for non-outlines: @edit or @file
+          --maximized                   start maximized
+          --minimized                   start minimized
+          --no-plugins                  disable all plugins
+          --no-splash                   disable the splash screen
+          --quit                        quit immediately after loading
+          --script=PATH                 execute a script and then exit
+          --script-window               execute script using default gui
+          --select=ID                   headline or gnx of node to select
+          --silent                      disable all log messages
+          --theme=NAME                  use the named theme file
+          --trace=LIST                  add one or more strings to g.app.debug.
+
+                A comma-separated list. Valid values are:
+                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+                importers, ipython, keys, layouts, plugins, save, select, sections,
+                shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
           --trace-binding=KEY   trace commands bound to a key
           --trace-setting=NAME  trace where named setting is set
           --window-size=SIZE    initial window size: (height x width)
