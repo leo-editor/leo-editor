@@ -2648,7 +2648,7 @@ class LoadManager:
 
         options:
           -h, --help                    show this help message and exit
-          --always-write-session-data   always write session data when Leo closes
+          -a, --always-write-session-data  always write session data when Leo closes
           -b, --black-sentinels         write black-compatible sentinel comments
           --diff                        use Leo as an external git diff
           --fail-fast                   stop unit tests after the first failure
@@ -2770,6 +2770,7 @@ class LoadManager:
             #@-<< define scanArgv helpers >>
 
             options_dict: dict[str, Callable] = {
+                '-a': _always_write_session_data,
                 '--always-write-session-data': _always_write_session_data,
                 '-b': _black,
                 '--black-sentinels': _black,
