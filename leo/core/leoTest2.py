@@ -146,9 +146,10 @@ class LeoUnitTest(unittest.TestCase):
         finally:
             sys.stdout = old_stdout
     #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
-    def test_set_setting(self):
-        
+    def test_set_setting(self) -> None:
+
         c = self.c
+        val: Any
         for val in (True, False):
             name = 'test-bool-setting'
             self._set_setting(c, kind='bool', name=name, val=val)
@@ -156,7 +157,6 @@ class LeoUnitTest(unittest.TestCase):
         val = 'aString'
         self._set_setting(c, kind='string', name=name, val=val)
         self.assertTrue(c.config.getString(name) == val)
-        
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p

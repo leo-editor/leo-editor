@@ -1109,7 +1109,7 @@ class TestGlobals(LeoUnitTest):
                     msg = f"{f.__name__}: kind: {kind} full: {full}"
                     self.assertEqual(expected, f(), msg=msg)
     #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
-    def test_g_parsePathData(self):
+    def test_g_parsePathData(self) -> None:
 
         c = self.c
 
