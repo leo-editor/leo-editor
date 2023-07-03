@@ -62,7 +62,9 @@ def restartLeo(self: Self, event: Event = None) -> None:
     # Officially begin the restart process. A flag for efc.ask.
     g.app.restarting = True  # #1240.
     # Save session data.
-    if g.app.sessionManager:
+    if g.app.sessionManager and (
+        g.app.loaded_session or g.app.always_write_session_data
+    ):
         g.app.sessionManager.save_snapshot()
     # Close all unsaved outlines.
     g.app.setLog(None)  # Kill the log.

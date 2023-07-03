@@ -113,6 +113,7 @@ class LeoApp:
         """
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
+        self.always_write_session_data = True  # A hook for the modify_sessions plugin.
         self.batchMode = False  # True: run in batch mode.
         self.debug: list[str] = []  # A list of switches to be enabled.
         self.diff = False  # True: run Leo in diff mode.

@@ -780,7 +780,9 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (changed)
     def close_event(self, event: Event) -> None:
 
-        if g.app.sessionManager:
+        if g.app.sessionManager and (
+            g.app.loaded_session or g.app.always_write_session_data
+        ):
             g.app.sessionManager.save_snapshot()
         for c in g.app.commanders():
             allow = c.exists and g.app.closeLeoWindow(c.frame)
