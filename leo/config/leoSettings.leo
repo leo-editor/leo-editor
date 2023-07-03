@@ -549,7 +549,7 @@
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
-<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
+<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d/%Y %H:%M:%S</vh></v>
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files settings</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
