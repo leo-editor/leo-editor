@@ -14,7 +14,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
-    
+
     #@+<< TestGlobals: declare all data >>
     #@+node:ekr.20230701083715.1: *3* << TestGlobals: declare all data >>
     absolute_paths: list[str]
@@ -101,7 +101,7 @@ class TestGlobals(LeoUnitTest):
 
         # test.leo:Error mssages (copy to log)
         'unl:gnx://#ekr.20230622112649.1',
-        
+
         # test.leo:Recent
         'unl:gnx://test.leo#ekr.20180311131424.1',
         'unl:gnx://#ekr.20180311131424.1',
@@ -115,7 +115,7 @@ class TestGlobals(LeoUnitTest):
 
         # In LeoDocs.leo: ** Read me first **
         'unl:gnx://LeoDocs.leo#ekr.20050831195449',
-        
+
         # Legacy unls in test.leo.
         'unl://#Coloring tests-->Syntax coloring template',
         'unl://#@file ../plugins/importers/__init__.py',
@@ -125,7 +125,7 @@ class TestGlobals(LeoUnitTest):
         'unl://#Viewrendered examples',
         'unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples-->Python code',
         'unl://#Viewrendered examples-->Python code',
-        
+
         # Absolute file: valid, but can't be resolved in a unit test.
         'unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py',
 
@@ -139,7 +139,7 @@ class TestGlobals(LeoUnitTest):
     def _define_per_commander_data(self):
         """Define data that depends on c."""
         c = self.c
-        
+
         # List of absolute paths in the test data.
         self.assertTrue(c.fileName)
         self.absolute_paths = [
@@ -187,7 +187,7 @@ class TestGlobals(LeoUnitTest):
                     f"    tool: {tool!r}\n"
                     f" message: {message!r}\n"
                     f" pattern: {pattern!r}"))
-                    
+
         # More tests...
         for data in self.files_data:  # <@file> <filename>
             kind, relative_path = data
@@ -244,20 +244,20 @@ class TestGlobals(LeoUnitTest):
     def _patch_at_data_unl_path_prefixes(self):
         """
         Create a new outline, linked into g.app.windowList.
-        
+
         Patch @data unl-path-prefixes so that g.findAnyUnl will find nodes in
         the new commander.
-        
+
         Return the commander for the new outline.
         """
         from leo.core.leoCommands import Commands
         c = self.c
-        
+
         # Create the new commander, linked into g.app.windowList.
         c2 = Commands(fileName=None, gui=g.app.gui)
         self.assertTrue(c2.frame)
         g.app.windowList.append(c2.frame)
-        
+
         # Give both commanders new (non-existent) names.
         c1_name = 'test_outline1.leo'
         c2_name = 'test_outline2.leo'
@@ -266,17 +266,22 @@ class TestGlobals(LeoUnitTest):
         c2.mFileName = os.path.normpath(os.path.join(directory, c2_name))
         self.assertEqual(c1_name, os.path.basename(c.fileName()))
         self.assertEqual(c2_name, os.path.basename(c2.fileName()))
-        
+
         def make_line(c):
             file_name = c.fileName()
             key = os.path.basename(file_name)
             value = os.path.normpath(file_name)
             # print(f"{key:17} {value}")
             return f"{key}: {value}"
-        
+
         # Init the @data unl-path-prefixes.
         lines = [make_line(z) for z in (c, c2)]
-        c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        finally:
+            sys.stdout = old_stdout
         lines2 = c.config.getData('unl-path-prefixes')
         self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
         d = g.parsePathData(c)
@@ -286,7 +291,7 @@ class TestGlobals(LeoUnitTest):
         return c2
     #@+node:ekr.20230701084035.1: *4* TestGlobals.test_per_commander_data
     def test_per_commander_data(self):
-        
+
         # Test the data only here.
         self._define_per_commander_data()
         self._test_per_commander_data()
@@ -625,7 +630,7 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(isinstance(result2, str))
     #@+node:ekr.20230617065929.1: *4* TestGlobals.test_g_OptionsUtils
     def test_g_OptionsUtils(self):
-        
+
         if any(z in sys.argv for z in ('--cov', '--cov-report')):
             self.skipTest('Running coverage')
 
@@ -1014,19 +1019,19 @@ class TestGlobals(LeoUnitTest):
             self.assertFalse(g.isValidUrl(unl), msg=unl)
     #@+node:ekr.20230701095636.1: *3* TestGlobals.test_g_findAnyUnl
     def test_g_findAnyUnl(self):
-        
+
         # g.findAnyUnl returns a Position or None.
-        
+
         ### To do: resolve all valid unls to a real position.
-        
+
         c = self.c
         self._make_tree(root_h='root')
-        
+
         if 0:  ### Not yet.
             for unl in self.valid_unls + self.missing_unls:
                 p = c.rootPosition()
                 self.assertEqual(p, g.findAnyUnl(unl, c), msg=unl)
-                
+
         # Suppress warnings.
         old_stdout = sys.stdout
         try:
@@ -1037,13 +1042,13 @@ class TestGlobals(LeoUnitTest):
             sys.stdout = old_stdout
     #@+node:ekr.20230701113123.1: *3* TestGlobals.test_p_get_star_UNL
     def test_p_get_star_UNL(self):
-        
+
         # Test 11 p.get_*_UNL methods.
         c = self.c
         self._make_tree()
         root = c.rootPosition().next()
         p = root.firstChild()
-        
+
         # Calculate the various kinds of results.
         gnx = p.gnx
         path = '-->'.join([root.h, p.h])
@@ -1057,11 +1062,11 @@ class TestGlobals(LeoUnitTest):
         short_gnx = 'unl:' + f"gnx://{short_fn}#{gnx}"
         short_legacy = 'unl:' + f"//{short_fn}#{path}"
         all_unls = (empty_gnx, empty_path, full_gnx, full_legacy, short_gnx, short_legacy)
-        
+
         # Pre-test.
         for unl in all_unls:
             self.assertTrue(g.isValidUnl(unl), msg=unl)
-            
+
         def set_config(kind, full):
             """Set c.config settings from the args."""
             getBool, getString = c.config.getBool, c.config.getString
@@ -1092,7 +1097,7 @@ class TestGlobals(LeoUnitTest):
                 ):
                     expected = d[f"{kind}:{str(int(full))}"]
                     self.assertEqual(expected, f(), msg=f"{f.__name__}: kind: {kind} full: {full}")
-        
+
         # Test all other p.get_*_UNL methods.
         # Their returned values should not depend on settings, but change the settings to make sure.
         for kind in ('legacy', 'gnx'):
@@ -1110,11 +1115,11 @@ class TestGlobals(LeoUnitTest):
                     self.assertEqual(expected, f(), msg=msg)
     #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self):
-        
+
         c = self.c
-        
+
         # Set @data unl-path-prefixes
-        
+
         s = textwrap.dedent("""
             # lines have the form:
             # x.leo: <absolute path to x.leo>
@@ -1124,7 +1129,12 @@ class TestGlobals(LeoUnitTest):
         """)
         lines = g.splitLines(s)
         # p: Position, kind: str, name: str, val: Any, warn: bool = True) -> None:
-        c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
+        finally:
+            sys.stdout = old_stdout
         lines2 = c.config.getData('unl-path-prefixes')
         expected_lines = [
             'test.leo:    c:/Repos/leo-editor/leo/test',
