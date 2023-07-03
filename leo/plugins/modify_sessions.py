@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20230703052325.1: * @file modify_sessions.py
+#@+node:ekr.20230703052325.1: * @file ../plugins/modify_sessions.py
 """
 This plugin changes when Leo writes session data, the list of open outlines.
 
@@ -10,7 +10,7 @@ When this plugin is active Leo writes session data only if no files appear on th
 
 from leo.core import leoGlobals as g
 
-def init():
+def init() -> bool:
     g.app.always_write_session_data = False
     return True
 #@-leo
