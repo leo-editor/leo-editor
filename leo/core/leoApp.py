@@ -123,6 +123,7 @@ class LeoApp:
         self.ipython_inited = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
+        self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False  # True: no signon.
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
@@ -2277,6 +2278,7 @@ class LoadManager:
         g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.Show it and all queued messages.
         c = c1 = fn = None
+        g.app.loaded_session = bool(lm.files)
         if lm.files:
             try:
                 for n, fn in enumerate(lm.files):
