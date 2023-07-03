@@ -1358,6 +1358,13 @@ class LeoApp:
             g.trace()
         # #2433 - use the same method as clicking on the close box.
         g.app.gui.close_event(QCloseEvent())  # type:ignore
+    #@+node:ekr.20230703100758.1: *4* app.saveSession
+    def saveSession(self):
+        """Save session data depending on command-line arguments."""
+        if self.sessionManager and (
+            self.loaded_session or self.always_write_session_data
+        ):
+            self.sessionManager.save_snapshot()
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self) -> list[Cmdr]:
         """Return list of currently active commanders."""
