@@ -134,7 +134,7 @@ class TestGlobals(LeoUnitTest):
     #@-<< TestGlboals: define unchanging data >>
 
     #@+others
-    #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers and related test
+    #@+node:ekr.20230701061343.1: *3*  TestGlobals: setup helpers and related tests
     #@+node:ekr.20230701065318.1: *4* TestGlobals._define_per_commander_data
     def _define_per_commander_data(self):
         """Define data that depends on c."""
@@ -276,12 +276,7 @@ class TestGlobals(LeoUnitTest):
 
         # Init the @data unl-path-prefixes.
         lines = [make_line(z) for z in (c, c2)]
-        try:
-            old_stdout = sys.stdout
-            sys.stdout = open(os.devnull, 'w')
-            c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
-        finally:
-            sys.stdout = old_stdout
+        self._set_setting(c, kind='data', name='unl-path-prefixes', val=lines)
         lines2 = c.config.getData('unl-path-prefixes')
         self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
         d = g.parsePathData(c)
@@ -1128,13 +1123,7 @@ class TestGlobals(LeoUnitTest):
             LeoDocs.leo: c:/Repos/leo-editor/leo/doc
         """)
         lines = g.splitLines(s)
-        # p: Position, kind: str, name: str, val: Any, warn: bool = True) -> None:
-        try:
-            old_stdout = sys.stdout
-            sys.stdout = open(os.devnull, 'w')
-            c.config.set(p=None, kind='data', name='unl-path-prefixes', val=lines)
-        finally:
-            sys.stdout = old_stdout
+        self._set_setting(c, kind='data', name='unl-path-prefixes', val=lines)
         lines2 = c.config.getData('unl-path-prefixes')
         expected_lines = [
             'test.leo:    c:/Repos/leo-editor/leo/test',

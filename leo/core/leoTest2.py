@@ -12,6 +12,8 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 #@+<< leoTest2 imports & annotations >>
 #@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
 from __future__ import annotations
+import os
+import sys
 import time
 import unittest
 import warnings
@@ -131,6 +133,30 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
+    #@+node:ekr.20230703103430.1: *3* LeoUnitTest: setup helpers and related tests
+    #@+node:ekr.20230703103458.1: *4* LeoUnitTest._set_setting
+    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
+        """
+        Call c.config.set with the given args, suppressing stdout.
+        """
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind=kind, name=name, val=val)
+        finally:
+            sys.stdout = old_stdout
+    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
+    def test_set_setting(self):
+        
+        c = self.c
+        for val in (True, False):
+            name = 'test-bool-setting'
+            self._set_setting(c, kind='bool', name=name, val=val)
+            self.assertTrue(c.config.getBool(name) == val)
+        val = 'aString'
+        self._set_setting(c, kind='string', name=name, val=val)
+        self.assertTrue(c.config.getString(name) == val)
+        
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
