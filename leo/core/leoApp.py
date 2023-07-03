@@ -113,7 +113,7 @@ class LeoApp:
         """
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
-        self.always_write_session_data = True  # A hook for the modify_sessions plugin.
+        self.always_write_session_data = False  # Default: write session data only if no files on command line.
         self.batchMode = False  # True: run in batch mode.
         self.debug: list[str] = []  # A list of switches to be enabled.
         self.diff = False  # True: run Leo in diff mode.
@@ -2648,6 +2648,7 @@ class LoadManager:
 
         options:
           -h, --help            show this help message and exit
+          --always-write-session-data  always write session data when Leo closes
           -b, --black-sentinels write black-compatible sentinel comments
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
@@ -2725,6 +2726,9 @@ class LoadManager:
             """Handle options without arguments."""
             #@+<< define scanArgv helpers >>
             #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
+            def _always_write_session_data() -> None:
+                g.app.always_write_session_data = True
+
             def _black() -> None:
                 g.app.write_black_sentinels = True
 
@@ -2764,6 +2768,7 @@ class LoadManager:
             #@-<< define scanArgv helpers >>
 
             options_dict: dict[str, Callable] = {
+                '--always-write-session-data': _always_write_session_data,
                 '-b': _black,
                 '--black-sentinels': _black,
                 '--diff': _diff,
