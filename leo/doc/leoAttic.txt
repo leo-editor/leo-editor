@@ -10138,6 +10138,9 @@ def tupleToString(obj: Any, indent: str='', tag: str=None) -> str:
 #@+node:ekr.20230702203021.1: *3* Using sessions (deprecated)
 @language rest
 
+.. Note: All these commands are deprecated.
+..       Using these commands is no longer necessary.
+
 ``session-clear``
     Closes all tabs except the presently selected tab. 
 ``session-create``
