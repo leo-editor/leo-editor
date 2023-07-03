@@ -2667,7 +2667,7 @@ class LoadManager:
           --select=ID                   headline or gnx of node to select
           --silent                      disable all log messages
           --theme=NAME                  use the named theme file
-          --trace=LIST                  add one or more strings to g.app.debug.
+          --trace=LIST                  add one or more strings to g.app.debug
 
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
