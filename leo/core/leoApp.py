@@ -2279,7 +2279,7 @@ class LoadManager:
         g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.Show it and all queued messages.
         c = c1 = fn = None
-        g.app.loaded_session = not(lm.files)
+        g.app.loaded_session = not (lm.files)
         if lm.files:
             try:
                 for n, fn in enumerate(lm.files):
