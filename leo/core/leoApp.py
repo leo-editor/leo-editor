@@ -2647,38 +2647,38 @@ class LoadManager:
         usage: launchLeo.py [options] file1, file2, ...
 
         options:
-          -h, --help                    show this help message and exit
-          -a, --always-write-session-data  always write session data when Leo closes
-          -b, --black-sentinels         write black-compatible sentinel comments
-          --diff                        use Leo as an external git diff
-          --fail-fast                   stop unit tests after the first failure
-          --fullscreen                  start fullscreen
-          --ipython                     enable ipython support
-          --gui=GUI                     specify gui: browser,console,curses,qt,text,null
-          --listen-to-log               start log_listener.py on startup
-          --load-type=TYPE              @<file> type for non-outlines: @edit or @file
-          --maximized                   start maximized
-          --minimized                   start minimized
-          --no-plugins                  disable all plugins
-          --no-splash                   disable the splash screen
-          --quit                        quit immediately after loading
-          --script=PATH                 execute a script and then exit
-          --script-window               execute script using default gui
-          --select=ID                   headline or gnx of node to select
-          --silent                      disable all log messages
-          --theme=NAME                  use the named theme file
-          --trace=LIST                  add one or more strings to g.app.debug
+          -h, --help            show this help message and exit
+          -b, --black-sentinels write black-compatible sentinel comments
+          --diff                use Leo as an external git diff
+          --fail-fast           stop unit tests after the first failure
+          --fullscreen          start fullscreen
+          --ipython             enable ipython support
+          --gui=GUI             specify gui: browser,console,curses,qt,text,null
+          --listen-to-log       start log_listener.py on startup
+          --load-type=TYPE      @<file> type for non-outlines: @edit or @file
+          --maximized           start maximized
+          --minimized           start minimized
+          --no-plugins          disable all plugins
+          --no-splash           disable the splash screen
+          --quit                quit immediately after loading
+          --save-session        always save session data when Leo closes
+          --script=PATH         execute a script and then exit
+          --script-window       execute script using default gui
+          --select=ID           headline or gnx of node to select
+          --silent              disable all log messages
+          --theme=NAME          use the named theme file
+          --trace=LIST          add one or more strings to g.app.debug
 
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
                 importers, ipython, keys, layouts, plugins, save, select, sections,
                 shutdown, size, speed, startup, themes, undo, verbose, zoom.
 
-          --trace-binding=KEY           trace commands bound to a key
-          --trace-setting=NAME          trace where named setting is set
-          --window-size=SIZE            initial window size: (height x width)
-          --window-spot=SPOT            initial window position: (top x left)
-          -v, --version                 print version number and exit
+          --trace-binding=KEY   trace commands bound to a key
+          --trace-setting=NAME  trace where named setting is set
+          --window-size=SIZE    initial window size: (height x width)
+          --window-spot=SPOT    initial window position: (top x left)
+          -v, --version         print version number and exit
         """)
         #@+node:ekr.20210927034148.4: *6* function: doGuiOption
         def doGuiOption() -> str:
@@ -2728,9 +2728,6 @@ class LoadManager:
             """Handle options without arguments."""
             #@+<< define scanArgv helpers >>
             #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
-            def _always_write_session_data() -> None:
-                g.app.always_write_session_data = True
-
             def _black() -> None:
                 g.app.write_black_sentinels = True
 
@@ -2764,14 +2761,15 @@ class LoadManager:
 
             def _quit() -> None:
                 g.app.quit_after_load = True
+                
+            def _save_session() -> None:
+                g.app.always_write_session_data = True
 
             def _silent() -> None:
                 g.app.silentMode = True
             #@-<< define scanArgv helpers >>
 
             options_dict: dict[str, Callable] = {
-                '-a': _always_write_session_data,
-                '--always-write-session-data': _always_write_session_data,
                 '-b': _black,
                 '--black-sentinels': _black,
                 '--diff': _diff,
@@ -2784,6 +2782,7 @@ class LoadManager:
                 '--no-plugins': _no_plugins,
                 '--no-splash': _no_splash,
                 '--quit': _quit,
+                '--save-session': _save_session,
                 '--silent': _silent,
             }
             for option, helper in options_dict.items():
