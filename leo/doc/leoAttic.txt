@@ -10903,7 +10903,7 @@ def leoHelp(self, event: Event=None) -> None:
                 if 0:
                     g.es("exception downloading", "sbooks.chm")
                     g.es_exception()
-#@+node:ekr.20221108101907.1: ** Old scripts
+#@+node:ekr.20221108101907.1: ** Old scripts and plugins
 #@+node:ekr.20221108101925.1: *3* script: make leo (from leoDist.leo)
 # Was an @button node in leoDist.leo
 
@@ -11364,6 +11364,20 @@ def unlink (self,fn):
 
     # print('command: unlink: %s' % fn)
     os.remove(fn)
+#@+node:ekr.20230703052325.1: *3* modify_sessions.py
+"""
+This plugin changes when Leo writes session data, the list of open outlines.
+
+By default, Leo *always* writes sesion data.
+
+When this plugin is active Leo writes session data only if no files appear on the command line.
+"""
+
+from leo.core import leoGlobals as g
+
+def init() -> bool:
+    g.app.always_write_session_data = False
+    return True
 #@+node:ekr.20230701095410.1: ** Old tests
 #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl (not used)
 # g.handleUrl should not be tested!
