@@ -1359,7 +1359,7 @@ class LeoApp:
         # #2433 - use the same method as clicking on the close box.
         g.app.gui.close_event(QCloseEvent())  # type:ignore
     #@+node:ekr.20230703100758.1: *4* app.saveSession
-    def saveSession(self):
+    def saveSession(self) -> None:
         """Save session data depending on command-line arguments."""
         if self.sessionManager and (
             self.loaded_session or self.always_write_session_data
@@ -2768,7 +2768,7 @@ class LoadManager:
 
             def _quit() -> None:
                 g.app.quit_after_load = True
-                
+
             def _save_session() -> None:
                 g.app.always_write_session_data = True
 
