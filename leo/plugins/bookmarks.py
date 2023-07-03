@@ -162,8 +162,6 @@ all the time.
 Other notes
 -----------
 
-The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
-
 The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.

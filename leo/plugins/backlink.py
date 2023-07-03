@@ -76,6 +76,9 @@ where the extra information is the name of the linked node's parent.
 # - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB. Revised for Qt6 by EKR.
+
+# EKR: gnx-based unls make this plugin obsolete.
+
 from leo.core import leoGlobals as g
 try:  # #2343
     from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic

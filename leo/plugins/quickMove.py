@@ -131,6 +131,8 @@ Tags
 
 # By Terry Brown, 2007-01-12
 
+# EKR: gnx-based unls make this plugin obsolete.
+
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
