@@ -994,10 +994,17 @@ class TestGlobals(LeoUnitTest):
         for p in c.all_positions():
             for gnx in (f"{p.gnx}", f"{p.gnx}::0"):
                 self.assertEqual(p, g.findGnx(gnx, c), msg=gnx)
-    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (to do)
+    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl
     def test_g_findUnl(self):
         
-        pass  ###
+        c = self.c
+
+        # Create the test tree.
+        self._make_tree(c, 'Root')
+        # Test all positions.
+        for p in c.all_positions():
+            headlines = list(reversed([z.h for z in p.self_and_parents()]))
+            self.assertEqual(p, g.findUnl(headlines, c), msg=','.join(headlines))
     #@+node:ekr.20230701085746.1: *3* TestGlobals.test_g_isValidUnl
     def test_g_isValidUnl(self):
 
