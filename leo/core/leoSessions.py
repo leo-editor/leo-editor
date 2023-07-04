@@ -17,6 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class LeoSessionException(Exception):
     pass
 #@-<< leoSessions exception classes>>
+NEW = True  ###
 #@+others
 #@+node:ekr.20120420054855.14349: ** class SessionManager
 # These were top-level nodes of leotools.py
@@ -25,8 +26,10 @@ class LeoSessionException(Exception):
 class SessionManager:
     #@+others
     #@+node:ekr.20120420054855.14351: *3* SessionManager.ctor
-    def __init__(self) -> None:
-        self.path: str = self.get_session_path()
+    if not NEW:
+
+        def __init__(self) -> None:
+            self.path: str = self.get_session_path()
     #@+node:ekr.20120420054855.14246: *3* SessionManager.clear_session
     def clear_session(self, c: Cmdr) -> None:
         """Close all tabs except the presently selected tab."""
@@ -90,17 +93,24 @@ class SessionManager:
 
         Called when --restore-session is in effect.
         """
-        fn = self.path
-        if fn and g.os_path_exists(fn):
+        if NEW:  ### new:
             try:
-                with open(fn) as f:
-                    session = json.loads(f.read())
-                if 'startup' in g.app.debug:
-                    g.printObj(session, tag='load_snapshot: session data')
-                return session
+                session = g.app.db['session']
             except Exception:
-                pass
-        #
+                g.trace(g.callers())
+                g.es_exception()
+        else:  ### Legacy
+            fn = self.path
+            if fn and g.os_path_exists(fn):
+                try:
+                    with open(fn) as f:
+                        session = json.loads(f.read())
+                    if 'startup' in g.app.debug:
+                        g.printObj(session, tag='load_snapshot: session data')
+                    return session
+                except Exception:
+                    pass
+
         # #1107: No need for this message.
             # print('can not load session: no leo.session file')
         return None
@@ -113,20 +123,29 @@ class SessionManager:
         """
         if g.app.batchMode or g.app.inBridge or g.unitTesting:
             return
-        if not self.path:
-            print('can not save session: no leo.session file')
-            return
-        session = self.get_session()
-        if 'shutdown' in g.app.debug:
-            g.printObj(session, tag='save_snapshot: session data')
-        # #2433 - don't save an empty session
-        if not session:
-            return
-        with open(self.path, 'w') as f:
-            json.dump(session, f)
-            f.close()
-        # Do not use g.trace or g.es here.
-        print(f"wrote {self.path}")
+
+        if NEW:  ###
+            try:
+                g.app.db['session'] = self.get_session()
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception()
+
+        else:  ### Legacy
+            if not self.path:
+                print('can not save session: no leo.session file')
+                return
+            session = self.get_session()
+            if 'shutdown' in g.app.debug:
+                g.printObj(session, tag='save_snapshot: session data')
+            # #2433 - don't save an empty session
+            if not session:
+                return
+            with open(self.path, 'w') as f:
+                json.dump(session, f)
+                f.close()
+            # Do not use g.trace or g.es here.
+            print(f"wrote {self.path}")
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear
