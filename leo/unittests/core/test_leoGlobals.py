@@ -994,7 +994,7 @@ class TestGlobals(LeoUnitTest):
         for p in c.all_positions():
             for gnx in (f"{p.gnx}", f"{p.gnx}::0"):
                 self.assertEqual(p, g.findGnx(gnx, c), msg=gnx)
-    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl
+    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (legacy)
     def test_g_findUnl(self):
         
         c = self.c
@@ -1003,8 +1003,16 @@ class TestGlobals(LeoUnitTest):
         self._make_tree(c, 'Root')
         # Test all positions.
         for p in c.all_positions():
+            # Plain headlines.
             headlines = list(reversed([z.h for z in p.self_and_parents()]))
             self.assertEqual(p, g.findUnl(headlines, c), msg=','.join(headlines))
+            # Headlines with new-style line numbers:
+            aList1 = [f"{z}::0" for z in headlines]
+            self.assertEqual(p, g.findUnl(aList1, c), msg=','.join(aList1))
+            # Headlines with old-style child offsets.
+            if 0:  # I don't understand the old-style format!
+                aList2 = [f"{z}:0" for z in headlines]
+                self.assertEqual(p, g.findUnl(aList2, c), msg=','.join(aList2))
     #@+node:ekr.20230701085746.1: *3* TestGlobals.test_g_isValidUnl
     def test_g_isValidUnl(self):
 
