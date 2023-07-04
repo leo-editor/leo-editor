@@ -1146,12 +1146,14 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230703175447.1: *3* TestGlobals.test_g_openUNLFile
     def test_g_openUNLFile(self):
 
-        # Create a new commander and change c.fileName().
+        # Create a new commander
         c1 = self.c
         c2 = self._patch_at_data_unl_path_prefixes()
+        # Change both filenames.
         file_name1 = os.path.basename(c1.fileName())
         file_name2 = os.path.basename(c2.fileName())
-        c3 = g.openUNLFile(c1, file_name2)  # Cross-file.
+        # Cross-file tests.
+        c3 = g.openUNLFile(c1, file_name2)
         self.assertEqual(c3, c2)
         c4 = g.openUNLFile(c2, file_name1)
         self.assertEqual(c4, c1)
