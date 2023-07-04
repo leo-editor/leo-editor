@@ -5292,10 +5292,6 @@ def toPythonIndex(s: str, index: str) -> int:
     g.trace(f"bad string index: {index}")
     return 0
 #@+node:ekr.20140526144610.17601: *3* g.Strings
-#@+node:ekr.20190503145501.1: *4* g.isascii
-def isascii(s: str) -> bool:
-    # s.isascii() is defined in Python 3.7.
-    return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20031218072017.3106: *4* g.angleBrackets & virtual_event_name
 def angleBrackets(s: str) -> str:
     """Returns < < s > >"""
@@ -5312,6 +5308,10 @@ def ensureLeadingNewlines(s: str, n: int) -> str:
 def ensureTrailingNewlines(s: str, n: int) -> str:
     s = g.removeTrailing(s, '\t\n\r ')
     return s + '\n' * n
+#@+node:ekr.20190503145501.1: *4* g.isascii
+def isascii(s: str) -> bool:
+    # s.isascii() is defined in Python 3.7.
+    return all(ord(ch) < 128 for ch in s)
 #@+node:ekr.20050920084036.4: *4* g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix(s1: str, s2: str) -> str:
     """Find the longest prefix common to strings s1 and s2."""
@@ -5340,6 +5340,10 @@ def itemsMatchingPrefixInList(s: str, aList: list[str], matchEmptyPrefix: bool =
     else:
         common_prefix = ''
     return pmatches, common_prefix
+#@+node:ekr.20230704030847.1: *4* g.pad
+def pad(s: str, width: int) -> str:
+    """Return a string of blanks to pad string s to the given width."""
+    return ' ' * max(0, width - len(s))
 #@+node:ekr.20090516135452.5776: *4* g.removeLeading/Trailing
 # Warning: g.removeTrailingWs already exists.
 # Do not change it!
