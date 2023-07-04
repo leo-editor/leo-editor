@@ -1,32 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120420054855.14241: * @file leoSessions.py
 """Support for sessions in Leo."""
-#@+<< leoSessions imports  & annotations >>
-#@+node:ekr.20120420054855.14344: ** << leoSessions imports & annotations >>
 from __future__ import annotations
-import json
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-#@-<< leoSessions imports  & annotations >>
-#@+<< leoSessions exception classes>>
-#@+node:ekr.20120420054855.14357: ** << leoSessions exception classes >>
-class LeoSessionException(Exception):
-    pass
-#@-<< leoSessions exception classes>>
+
 #@+others
 #@+node:ekr.20120420054855.14349: ** class SessionManager
-# These were top-level nodes of leotools.py
-
-
 class SessionManager:
+    """A class managing session data and related commands."""
     #@+others
-    #@+node:ekr.20120420054855.14351: *3* SessionManager.ctor
-    def __init__(self) -> None:
-        self.path: str = self.get_session_path()
     #@+node:ekr.20120420054855.14246: *3* SessionManager.clear_session
     def clear_session(self, c: Cmdr) -> None:
         """Close all tabs except the presently selected tab."""
@@ -87,22 +74,17 @@ class SessionManager:
     def load_snapshot(self) -> str:
         """
         Load a snapshot of a session from the leo.session file.
-
-        Called when --restore-session is in effect.
         """
-        fn = self.path
-        if fn and g.os_path_exists(fn):
-            try:
-                with open(fn) as f:
-                    session = json.loads(f.read())
-                if 'startup' in g.app.debug:
-                    g.printObj(session, tag='load_snapshot: session data')
-                return session
-            except Exception:
-                pass
-        #
-        # #1107: No need for this message.
-            # print('can not load session: no leo.session file')
+        try:
+            session = g.app.db['session']
+            if 'startup' in g.app.debug:
+                g.printObj(session, tag='load_snapshot: session data')
+            return session
+        except KeyError:
+            print('SessionManager.load_snapshot: no previous session')
+        except Exception:
+            g.trace('Unexpected exception in SessionManager.load_snapshot')
+            g.es_exception()
         return None
     #@+node:ekr.20120420054855.14249: *3* SessionManager.save_snapshot
     def save_snapshot(self) -> None:
@@ -113,20 +95,16 @@ class SessionManager:
         """
         if g.app.batchMode or g.app.inBridge or g.unitTesting:
             return
-        if not self.path:
-            print('can not save session: no leo.session file')
-            return
-        session = self.get_session()
-        if 'shutdown' in g.app.debug:
-            g.printObj(session, tag='save_snapshot: session data')
-        # #2433 - don't save an empty session
-        if not session:
-            return
-        with open(self.path, 'w') as f:
-            json.dump(session, f)
-            f.close()
-        # Do not use g.trace or g.es here.
-        print(f"wrote {self.path}")
+        try:
+            session = self.get_session()
+            if 'shutdown' in g.app.debug:
+                g.printObj(session, tag='save_snapshot: session data')
+            if not session:
+                return  # #2433: don't save an empty session.
+            g.app.db['session'] = session
+        except Exception:
+            g.trace('Unexpected exception in SessionManager.save_snapshot')
+            g.es_exception()
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear
