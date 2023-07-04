@@ -6,6 +6,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import copy
+import os
 import time
 import uuid
 from typing import Any, Generator, Optional, TYPE_CHECKING
@@ -86,7 +87,7 @@ class NodeIndices:
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex(self, v: VNode, cached: bool = False) -> str:
+    def getNewIndex(self, v: VNode, cached: bool = False) -> str:  # pragma: no cover
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
@@ -811,28 +812,81 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
+    #@+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
+    # All unls must contain a file part: f"//{file-name}#"
+    # The file-name may be empty.
+    #@+node:ekr.20230628174317.1: *5* p.get_full_gnx_UNL
+    def get_full_gnx_UNL(self) -> str:
+        """
+        Return a gnx-oriented UNL with a full path component.
+
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        file_part = c.fileName()
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+    #@+node:ekr.20230628173542.2: *5* p.get_full_legacy_UNL
+    def get_full_legacy_UNL(self) -> str:
+        """
+        Return a legacy unl with the full file-name component.
+
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//{c.fileName()}#{path_part}"
+    #@+node:ekr.20230628173542.1: *5* p.get_legacy_UNL
+    def get_legacy_UNL(self) -> str:
+        """
+        Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
+
+        The file part of this UNL depends on the @bool full-unl-paths setting.
+
+        LeoTree.set_status_line will call this method if legacy unls are in effect.
+        """
+        p = self
+        c = p.v.context
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:' + f"//{file_part}#{path_part}"
+    #@+node:ekr.20230628175148.1: *5* p.get_short_gnx_UNL
+    def get_short_gnx_UNL(self) -> str:
+        """
+        Return a legacy unl without the file-name component.
+
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+    #@+node:ekr.20230628174804.1: *5* p.get_short_legacy_UNL
+    def get_short_legacy_UNL(self) -> str:
+        """
+        Return a legacy unl with a short file-name component.
+
+        Not used in Leo's core or official plugins.
+        """
+        p = self
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//{file_part}#{path_part}"
+    #@+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
         """
-        Return a UNL representing a clickable link.
-        See the section < define global error regexs > for the regexes.
+        Return a gnx-oriented UNL whose file part depends on the @bool full-unl-paths setting.
 
-        New in Leo 6.6: Use a single, simplified format for UNL's:
-
-        - unl: //
-        - self.v.context.fileName() #
-        - a list of headlines separated by '-->'
-
-        New in Leo 6.6:
-        - Always add unl: // and file name.
-        - Never translate '-->' to '--%3E'.
-        - Never generate child indices.
+        LeoTree.set_status_line will call this method if gnx-based unls are in effect.
         """
-        base_unl = (self.v.context.fileName() + '#'
-            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-                    )
-        encoded = base_unl.replace("'", "%27")
-        return 'unl://' + encoded
+        p = self
+        c = p.v.context
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
@@ -905,7 +959,7 @@ class Position:
         p = self
         return not p.hasParent() and not p.hasBack()
     #@+node:ekr.20080416161551.196: *4* p.isVisible
-    def isVisible(self, c: Cmdr) -> bool:
+    def isVisible(self, c: Cmdr) -> bool:  # pragma: no cover
         """Return True if p is visible in c's outline."""
         p = self
 
@@ -936,7 +990,7 @@ class Position:
 
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
-    def positionAfterDeletedTree(self) -> Position:
+    def positionAfterDeletedTree(self) -> Position:  # pragma: no cover
         """Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
 
@@ -1102,7 +1156,7 @@ class Position:
                 v, junk = data
                 return v
             return p.v.context.hiddenRootNode
-        return None
+        return None  # pragma: no cover
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
         """A low-level method to replace p.v by a p2.v."""
@@ -1346,16 +1400,16 @@ class Position:
                 p.moveToThreadNext()
             if p:
                 if limit and self.checkVisNextLimit(limit, p):
-                    return None
+                    return None  # pragma: no cover
                 if p.isVisible(c):
                     return p
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
-    def checkVisNextLimit(self, limit: Position, p: Position) -> bool:
+    def checkVisNextLimit(self, limit: Position, p: Position) -> bool:  # pragma: no cover
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
-    def safeMoveToThreadNext(self) -> Position:
+    def safeMoveToThreadNext(self) -> Position:  # pragma: no cover
         """
         Move a position to threadNext position.
         Issue an error if any vnode is an ancestor of itself.

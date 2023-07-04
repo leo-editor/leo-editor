@@ -77,9 +77,13 @@ hilite_doc = r'''
 Changing The Current Line Highlighting Color
 --------------------------------------------
 
-The highlight color will be computed based on the Leo theme in effect, unless the `line-highlight-color` setting is set to a non-blank string.
+The highlight color will be computed based on the Leo theme in effect,
+unless the `line-highlight-color` setting is set to a non-blank
+string.
 
-The setting will always override the color computation.  If the setting is changed, after the settings are reloaded the new color will take effect the next time the cursor is moved.
+The setting will always override the color computation. If the setting
+is changed, after the settings are reloaded the new color will take
+effect the next time the cursor is moved.
 
 Settings for Current Line Highlighting
 ---------------------------------------

@@ -162,8 +162,6 @@ all the time.
 Other notes
 -----------
 
-The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
-
 The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
@@ -909,7 +907,7 @@ class BookMarkDisplay:
 
         return result
 
-    #@+node:tbrown.20140103082018.24102: *3* get_unl
+    #@+node:tbrown.20140103082018.24102: *3* get_unl (bookmarks.py)
     def get_unl(self, p=None):
         """get_unl - Return a UNL which is local (with_file=False)
         if self.c == self.v.context, otherwise includes the file path.
@@ -1165,7 +1163,7 @@ class BookMarkDisplayProvider:
     def ns_provides(self):
         return [('Bookmarks', '_leo_bookmarks_show')]
 
-    #@+node:tbrown.20110712121053.19749: *3* ns_provide
+    #@+node:tbrown.20110712121053.19749: *3* ns_provide (bookmarks.py)
     def ns_provide(self, id_):
         if id_.startswith('_leo_bookmarks_show'):
 
@@ -1196,8 +1194,7 @@ class BookMarkDisplayProvider:
                                 factory.setTabForCommander(c)
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
-
-                    other_p = g.findUNL(UNL.split('-->'), other_c)
+                    other_p = g.findAnyUnl(UNL, other_c)
                     if other_p:
                         v = other_p.v
                     else:

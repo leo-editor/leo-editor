@@ -5,18 +5,16 @@
 #@+node:ekr.20220410202718.1: ** << leoBackground imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-import re
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
     Pattern = Union[Any, str]
 #@-<< leoBackground imports & annotations >>
 
@@ -30,27 +28,12 @@ def bpm_status(event: Event) -> None:
 class ProcessData:
     """A class to hold data about running or queued processes."""
 
-    def __init__(self,
-        c: Cmdr,
-        kind: str,
-        fn: str,
-        link_pattern: Optional[Pattern] = None,
-        link_root: Optional[Position] = None,
-    ) -> None:
+    def __init__(self, c: Cmdr, kind: str, fn: str) -> None:
         """Ctor for the ProcessData class."""
         self.c = c
         self.callback: Callable = None
         self.fn = fn
         self.kind = kind
-        self.link_pattern = link_pattern
-        self.link_root = link_root
-        # Auto-compile string patterns.
-        if isinstance(link_pattern, str):
-            try:
-                self.link_pattern = re.compile(link_pattern)
-            except Exception:
-                g.trace(f"Invalid link pattern: {link_pattern}")
-                self.link_pattern = None
 
     def __repr__(self) -> str:
         return (
@@ -58,7 +41,6 @@ class ProcessData:
             f"kind: {self.kind} "
             f"callback: {id(self.callback) if self.callback else None} "
             f"fn: {self.fn}\n"
-            # f"link_pattern: {self.link_pattern}, link_root: {self.link_root.h}"
         )
 
     __str__ = __repr__
@@ -113,7 +95,6 @@ class BackgroundProcessManager:
         self.pid: str = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: list[str] = None
-        self.link_root: Position = None
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         if QtCore:
@@ -181,36 +162,24 @@ class BackgroundProcessManager:
             # in case another is launched before we expect it.
             self.lock.acquire()
             result_lines = self.process_return_data
-            link_root = self.link_root
             self.process_return_data = []
-            self.link_root = None
             self.lock.release()
             # Put the lines!
             for s in result_lines:
-                self.put_log(s, link_root)
+                self.put_log(s)
             self.end()  # End this process.
             self.start_next()  # Start the next process.
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     unknown_path_names: list[str] = []
 
-    def put_log(self, s: str, link_root: Position = None) -> None:
+    def put_log(self, s: str) -> None:
         """
-        Put a string to the originating log.
-        This is not what g.es_print does!
-
-        Create clickable links if s matches self.data.link_pattern.
-        See p.get_UNL.
-
-        link_root is the root position of a subtree which was processed
-        to produce this data.  It may or may not be the root of an
-        external file.
-
-        New in Leo 6.4: get the filename from link_pattern if link_root is None.
+        Put a string to the originating log. *Not* the same as g.es_print!
         """
-        tag = 'BPM.put_log'
-        #
+
         # Warning: don't use g.es or g.es_print here!
-        #
+
+        tag = 'BPM.put_log'
         s = s and s.rstrip()
         if not s:
             return
@@ -222,11 +191,13 @@ class BackgroundProcessManager:
         if not c or not c.exists:
             print(f"{tag} NO C")
             return
+
         # Always print the message.
         print(s)
+
         # Let log.put_html_links do all the work!
         log = c.frame.log
-        if not log.put_html_links(s, link_root):
+        if not log.put_html_links(s):
             log.put(s)
     #@+node:ekr.20220415161133.1: *3* bpm.show_status
     def show_status(self) -> None:
@@ -253,11 +224,7 @@ class BackgroundProcessManager:
             self.timer.stop()
 
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
-    def start_process(self, c: Cmdr, command: str, kind: str,
-        fn: str = None,
-        link_pattern: Pattern = None,  # None, string, or re.pattern.
-        link_root: Position = None,
-    ) -> None:
+    def start_process(self, c: Cmdr, command: str, kind: str, fn: str = None) -> None:
         """
         Start or queue a process described by command and fn.
         """
@@ -272,7 +239,6 @@ class BackgroundProcessManager:
         def open_process(data: Any) -> Any:
             g.es_print(f'{data.kind}: {g.shortFileName(data.fn)}')
             self.process_return_data = []
-            self.link_root = data.link_root
             proc = subprocess.Popen(
                 command,
                 shell=False,
@@ -288,7 +254,7 @@ class BackgroundProcessManager:
             thread.start_new_thread(self.thrd_pipe_proc, ())
 
         # Don't set self.data unless we start the process!
-        data = ProcessData(c, kind, fn, link_pattern, link_root)
+        data = ProcessData(c, kind, fn)
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().

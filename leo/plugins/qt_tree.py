@@ -250,7 +250,10 @@ class LeoQtTree(leoFrame.LeoTree):
             # and is None otherwise
             if isinstance(s, str):
                 # Save the operation
-                replacement = lambda item, s: item.setText(0, s)
+
+                def replacement(item, s):
+                    return item.setText(0, s)
+
                 # ... and apply it
                 replacement(item, s)
 
@@ -942,7 +945,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if isQt6:
             item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
             ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
+            item.setChildIndicatorPolicy(
+                ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
         else:
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
         try:

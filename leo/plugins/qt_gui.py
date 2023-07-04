@@ -27,9 +27,9 @@ from leo.plugins import qt_idle_time
 from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
-assert qt_commands
 from leo.core.leoTips import UserTip
 from time import sleep
+assert qt_commands
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
@@ -780,8 +780,10 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
     def close_event(self, event: Event) -> None:
 
-        if g.app.sessionManager and g.app.loaded_session:
-            g.app.sessionManager.save_snapshot()
+        # Save session data.
+        g.app.saveSession()
+        
+        # Attempt to close all windows.
         for c in g.app.commanders():
             allow = c.exists and g.app.closeLeoWindow(c.frame)
             if not allow:
@@ -1394,8 +1396,8 @@ class LeoQtGui(leoGui.LeoGui):
                                    QImage.Format(Format_RGB32))
                     image.fill(0xffffffff)  # MUST fill background
                     painter = QPainter(image)
-                    renderer.render(painter);
-                    painter.end();
+                    renderer.render(painter)
+                    painter.end()
 
                     pixmap = QPixmap.fromImage(image)
                 else:
@@ -1488,7 +1490,9 @@ class LeoQtGui(leoGui.LeoGui):
         def enableSignalDebugging(self, **kwargs: Any) -> None:
             """Call this to enable Qt Signal debugging. This will trap all
             connect, and disconnect calls."""
-            f = lambda * args: None
+
+            def f(*args):
+                return None
             connectCall: Callable = kwargs.get('connectCall', f)
             disconnectCall: Callable = kwargs.get('disconnectCall', f)
             emitCall: Callable = kwargs.get('emitCall', f)

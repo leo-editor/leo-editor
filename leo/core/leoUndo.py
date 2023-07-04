@@ -1282,13 +1282,14 @@ class Undoer:
         c = self.c
         if g.isTextWrapper(w):
             # An important, ever-present unit test.
-            all = w.getAllText()
-            if g.unitTesting:
-                assert p.b == all, (w, g.callers())
-            elif p.b != all:
-                g.trace(
-                    f"\np.b != w.getAllText() p: {p.h} \n"
-                    f"w: {w!r} \n{g.callers()}\n")
+            if p == c.p:
+                all = w.getAllText()
+                if g.unitTesting:
+                    assert p.b == all, (w, g.callers())
+                elif p.b != all:
+                    g.trace(
+                        f"\np.b != w.getAllText() p: {p.h} \n"
+                        f"w: {w!r} \n{g.callers()}\n")
             p.v.insertSpot = ins = w.getInsertPoint()
             # From u.doTyping.
             newSel = w.getSelectionRange()
@@ -1313,10 +1314,11 @@ class Undoer:
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-        # Recolor the body.
-        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor()
-        w.setFocus()
+        if p == c.p:
+            # Recolor the body.
+            c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+            c.recolor()
+            w.setFocus()
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event: Event = None) -> None:

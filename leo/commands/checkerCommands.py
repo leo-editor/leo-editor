@@ -234,7 +234,7 @@ def flake8_command(event: Event) -> None:
     for root in g.findRootsWithPredicate(c, c.p):
         path = c.fullPath(root)
         if path and os.path.exists(path):
-            g.es_print(f"{tag}: {path}")
+            # g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
         else:
             g.es_print(f"{tag}: file not found:{path}")
@@ -432,13 +432,7 @@ class MypyCommand:
             return
         command = f"{sys.executable} -m mypy {fn}".split()
         bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command,
-            fn=fn,
-            kind='mypy',
-            link_pattern=g.mypy_pat,
-            link_root=root,
-        )
-
+        bpm.start_process(c, command, fn=fn, kind='mypy')
     #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
     def run(self, p: Position) -> None:
         """Run mypy on all Python @<file> nodes in c.p's tree."""
@@ -471,7 +465,7 @@ class Flake8Command:
         for root in roots:
             path = c.fullPath(root)
             if path and os.path.exists(path):
-                g.es_print(f"{tag}: {path}")
+                # g.es_print(f"{tag}: {path}")
                 g.execute_shell_commands(f'&"{sys.executable}" -m flake8 "{path}"')
             else:
                 g.es_print(f"{tag}: file not found: {path}")
@@ -703,12 +697,7 @@ class PylintCommand:
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command,
-            fn=fn,
-            kind='pylint',
-            link_pattern=g.pylint_pat,
-            link_root=p,
-        )
+        bpm.start_process(c, command, fn=fn, kind='pylint')
     #@-others
 #@-others
 #@@language python

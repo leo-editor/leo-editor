@@ -113,6 +113,7 @@ class LeoApp:
         """
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
+        self.always_write_session_data = False  # Default: write session data only if no files on command line.
         self.batchMode = False  # True: run in batch mode.
         self.debug: list[str] = []  # A list of switches to be enabled.
         self.diff = False  # True: run Leo in diff mode.
@@ -1357,6 +1358,13 @@ class LeoApp:
             g.trace()
         # #2433 - use the same method as clicking on the close box.
         g.app.gui.close_event(QCloseEvent())  # type:ignore
+    #@+node:ekr.20230703100758.1: *4* app.saveSession
+    def saveSession(self) -> None:
+        """Save session data depending on command-line arguments."""
+        if self.sessionManager and (
+            self.loaded_session or self.always_write_session_data
+        ):
+            self.sessionManager.save_snapshot()
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self) -> list[Cmdr]:
         """Return list of currently active commanders."""
@@ -1844,7 +1852,7 @@ class LoadManager:
         fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
         fn = g.finalize(fn)
         directory = g.finalize(os.path.dirname(fn))
-        # #1415.
+
         return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self) -> None:
@@ -2278,26 +2286,26 @@ class LoadManager:
         g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.Show it and all queued messages.
         c = c1 = fn = None
+        g.app.loaded_session = not lm.files
         if lm.files:
-            try:  # #1403.
+            try:
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
                     # Returns None if the file is open in another instance of Leo.
                     c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                    if c and not c1:  # #1416:
+                    if c and not c1:
                         c1 = c
             except Exception:
                 g.es_print(f"Unexpected exception reading {fn!r}")
                 g.es_exception()
                 c = None
-        # Load (and save later) a session *only* if the command line contains no files.
-        g.app.loaded_session = not lm.files
-        if g.app.sessionManager and g.app.loaded_session:
-            try:  # #1403.
+
+        # Load a session if the command line contains no files.
+        if g.app.sessionManager and not lm.files:
+            try:
                 aList = g.app.sessionManager.load_snapshot()
                 if aList:
                     g.app.sessionManager.load_session(c1, aList)
-                    # #659.
                     if g.app.windowList:
                         c = c1 = g.app.windowList[0].c
                     else:
@@ -2309,10 +2317,11 @@ class LoadManager:
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1:
-            try:  # #1403.
-                c1 = lm.openEmptyWorkBook()  # Calls LM.loadLocalFile.
+            # Open or create a workbook.
+            try:
+                c1 = lm.openWorkBook()
             except Exception:
-                g.es_print('Can not create empty workbook')
+                g.es_print('Can not create workbook')
                 g.es_exception()
         c = c1
         if not c:
@@ -2334,32 +2343,40 @@ class LoadManager:
         g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
         c.initialFocusHelper()
         return True
-    #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
-    def openEmptyWorkBook(self) -> Cmdr:
-        """Open CheatSheet.leo as the workbook. Return the new commander."""
-        fn = self.computeWorkbookFileName()
-        if not fn:
-            return None  # #1415
-        # Open CheatSheet.leo.
-        fn2 = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-        if not g.os_path_exists(fn2):
+    #@+node:ekr.20131028155339.17098: *5* LM.openWorkBook
+    def openWorkBook(self) -> Cmdr:
+        """
+        Open or create a new workbook.
+
+        @string default-leo-file gives the path, defaulting to ~/.leo/workbook.leo.
+
+        Return the new commander.
+        """
+        # Never create a workbook during unit tests or in batch mode.
+        if g.unitTesting or g.app.batchMode:
             return None
-        c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
-        # Save as the workbook name.
-        c.mFileName = fn
+        fn = self.computeWorkbookFileName()
+        exists = fn and os.path.exists(fn)
+        if not fn:
+            # The usual directory does not exist. Create an empty file.
+            c = self.openEmptyLeoFile(gui=g.app.gui, old_c=None)
+            c.rootPosition().h = 'Workbook'
+        else:
+            # Open the workboook or create an empty file.
+            c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+            if not exists:
+                c.rootPosition().h = 'Workbook'
+        # Create the outline with workbook's name.
         c.frame.title = title = c.computeWindowTitle(fn)
         c.frame.setTitle(title)
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, fn)
-        c.fileCommands.saveAs(fn)
-        g.app.recentFilesManager.updateRecentFiles(fn)
+        # Finish: Do *not* save the file!
         g.chdir(fn)
-        # Finish.
         g.app.already_open_files = []
-        c.target_language = 'rest'
         c.clearChanged()
-        c.redraw(c.rootPosition())  # # 1380: Select the root.
+        # Do not redraw. Do not set c.p.
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName: str, pymacs: bool) -> None:
@@ -2651,16 +2668,19 @@ class LoadManager:
           --no-plugins          disable all plugins
           --no-splash           disable the splash screen
           --quit                quit immediately after loading
+          --save-session        always save session data when Leo closes
           --script=PATH         execute a script and then exit
           --script-window       execute script using default gui
           --select=ID           headline or gnx of node to select
           --silent              disable all log messages
           --theme=NAME          use the named theme file
-          --trace=LIST          add one or more strings to g.app.debug.
-                                A comma-separated list of one or more of:
-                                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-                                importers, ipython, keys, layouts, plugins, save, select, sections,
-                                shutdown, size, speed, startup, themes, undo, verbose, zoom
+          --trace=LIST          add one or more strings to g.app.debug
+
+                A comma-separated list. Valid values are:
+                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+                importers, ipython, keys, layouts, plugins, save, select, sections,
+                shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
           --trace-binding=KEY   trace commands bound to a key
           --trace-setting=NAME  trace where named setting is set
           --window-size=SIZE    initial window size: (height x width)
@@ -2749,6 +2769,9 @@ class LoadManager:
             def _quit() -> None:
                 g.app.quit_after_load = True
 
+            def _save_session() -> None:
+                g.app.always_write_session_data = True
+
             def _silent() -> None:
                 g.app.silentMode = True
             #@-<< define scanArgv helpers >>
@@ -2766,6 +2789,7 @@ class LoadManager:
                 '--no-plugins': _no_plugins,
                 '--no-splash': _no_splash,
                 '--quit': _quit,
+                '--save-session': _save_session,
                 '--silent': _silent,
             }
             for option, helper in options_dict.items():
@@ -2815,7 +2839,7 @@ class LoadManager:
                 valid_s = '\n   '.join(valid)
                 print(f"Valid --trace values are:\n   {valid_s}")
                 utils.option_error(arg, 'Invalid value')
-            print(f"Enabling --trace={', '.join(g.app.debug)}")
+            print(f"\nEnabling --trace={', '.join(g.app.debug)}\n")
         #@+node:ekr.20210927034148.10: *6* function: doWindowSizeOption
         def doWindowSizeOption() -> Optional[tuple[int, int]]:
             """Handle --window-size"""
@@ -2862,7 +2886,6 @@ class LoadManager:
             'gui': doGuiOption(),
             'load_type': doLoadTypeOption(),
             'script': script,
-            ### 'screenshot_fn': doScreenShotOption(),
             'select': doSelectOption(),
             'theme_path': doThemeOption(),
             'version': any(z in sys.argv for z in ('-v', '--version')),

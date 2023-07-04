@@ -42,6 +42,9 @@ class GoToCommands:
         #         even if the actual external file actually contains no sentinels.
         sentinels = root.isAtFileNode()
         s = self.get_external_file_with_sentinels(root)
+        # Special case empty files.
+        if not s.strip():
+            return p, 0
         lines = g.splitLines(s)
         # Step 2: scan the lines for line n.
         if sentinels:
@@ -235,7 +238,8 @@ class GoToCommands:
         w = c.frame.body.wrapper
         c.selectPosition(root)
         c.redraw()
-        if not g.unitTesting:
+        # Don't warn if there is no line 0.
+        if not g.unitTesting and abs(n) > 0:
             if len(lines) < n:
                 g.warning('only', len(lines), 'lines')
             else:
@@ -280,20 +284,16 @@ class GoToCommands:
         """
         c = self.c
         p1 = p.copy()
-        # First look for ancestor @file node.
+        # Look up the tree for the first @file node.
         for p in p.self_and_parents(copy=False):
-            # fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
-            # if fileName:
-                # return p2.copy(), fileName
             if not p.isAtAllNode():
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     return p.copy(), fileName
-        # Search the entire tree for joined nodes.
-        # Bug fix: Leo 4.5.1: *must* search *all* positions.
+        # Search the entire tree for cloned nodes.
         for p in c.all_positions():
             if p.v == p1.v and p != p1:
-                # Found a joined position.
+                # Found a cloned position.
                 for p2 in p.self_and_parents():
                     if not p2.isAtAllNode():
                         fileName = p2.anyAtFileNodeName()

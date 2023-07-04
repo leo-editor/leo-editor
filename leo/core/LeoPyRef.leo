@@ -159,6 +159,7 @@
 <v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
 <v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
 <v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
+<v t="ekr.20230628105236.1"><vh>@clean ../scripts/ruff-leo.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
 </v>
@@ -202,6 +203,7 @@
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241"></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -239,6 +241,7 @@
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
+<v t="ekr.20230702120645.1"><vh>@@edit ../../.dmypy.ini</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
@@ -388,7 +391,6 @@
 <v t="TL.20090225102340.32"><vh>@file ../plugins/nodeActions.py</vh></v>
 <v t="edream.110203113231.720"><vh>@file ../plugins/outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file ../plugins/paste_as_headlines.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file ../plugins/setHomeDirectory.py</vh></v>
 <v t="ajones.20070122160142"><vh>@file ../plugins/textnode.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file ../plugins/word_count.py</vh></v>
@@ -412,13 +414,14 @@
 <v t="ekr.20180119164431.1"><vh>@file ../plugins/patch_python_colorizer.py</vh></v>
 <v t="ekr.20210329114352.1"><vh>@file ../plugins/example_rst_filter.py</vh></v>
 </v>
-<v t="ekr.20101110150056.9457"><vh>Experimental</vh>
+<v t="ekr.20101110150056.9457"><vh>Experimental/Obsolete</vh>
+<v t="tbrown.20081223111325.3"><vh>@file ../plugins/backlink.py</vh></v>
 <v t="ekr.20090704103932.5160"><vh>@file ../plugins/leo_pdf.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file ../plugins/leo_to_rtf.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file ../plugins/mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file ../plugins/mod_speedups.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
-<v t="ekr.20170313020320.1"><vh>@file ../plugins/settings_finder.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file ../plugins/mod_leo2ascd.py</vh></v>
@@ -442,7 +445,6 @@
 <v t="ekr.20040915085351"><vh>@file ../plugins/at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file ../plugins/at_view.py</vh></v>
 <v t="ekr.20170619151859.2"><vh>@file ../plugins/auto_colorize2_0.py</vh></v>
-<v t="tbrown.20081223111325.3"><vh>@file ../plugins/backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file ../plugins/bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file ../plugins/datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@file ../plugins/expfolder.py</vh></v>
@@ -497,7 +499,7 @@
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20180504191650.34"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
@@ -1187,6 +1189,8 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @language python
 </t>
 <t tx="ekr.20150425145248.1">test-one
+goto-prev-history-node
+goto-next-history-node
 beautify-files
 expand-all-subheads
 pylint
@@ -1736,7 +1740,6 @@ if s.strip():
 else:
     g.es_print('no text selected')
 </t>
-<t tx="ekr.20180504191650.34"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
@@ -1866,9 +1869,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='6.6.4', # old branch/rev
-    branch2='ekr-index', # new branch/rev
-    fn='leo/plugins/qt_text.py',  # Don't use back slashes.
+    branch1='devel', # old branch/rev
+    branch2='ekr-3181-mypy-links', # new branch/rev
+    fn='leo/core/leoNodes.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -1877,7 +1880,7 @@ efc.GitDiffController(c).diff_two_branches(
 
 efc.GitDiffController(c).diff_two_revs(
     rev1='devel',               # Old
-    rev2='ekr-archived-positions',   # New
+    rev2='ekr-3181-mypy-links',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2762,12 +2765,13 @@ def do_sec(i, m, s):
 &lt;&lt; prefixes &gt;&gt;
 commands = (
     # f" {importers}",
-    # f" {core}.test_leoAst.TestTOG.test_Try",
-    # f" {core}.test_leoAst.TestTOG.test_TryStar",
+    # f" {core}.test_leoAst.TestTOG"
     # f" {core}.test_leoApp.TestApp.test_LM_scanOptions",
-    # f" {core}.test_leoGlobals.TestGlobals.test_g_OptionsUtils",
     # f" {core}.test_leoImport.TestLeoImport.test_recursive_import",
-    f" {core}.test_leoGlobals.TestGlobals.test_g_findUnl",
+    f" {core}.test_leoGlobals.TestGlobals",
+        #.test_patch_at_data_unl_path_prefixes",
+        #.test_p_get_star_UNL",
+        #.test_g_parsePathData",
 )
 commands_s = f"python -m unittest {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
@@ -3453,5 +3457,25 @@ testCommands = 'test_leoCommands.TestCommands'
 testGlobals = 'test_leoGlobals.TestGlobals'
 </t>
 <t tx="ekr.20230616024812.1">g.execute_shell_commands('cover-one')</t>
+<t tx="ekr.20230624114517.1"></t>
+<t tx="ekr.20230628105236.1">@language batch
+@echo off
+cd %~dp0..\..
+
+echo ruff leo/core
+call py -m ruff leo/core
+
+echo ruff leo/commands
+call py -m ruff leo/commands
+
+rem qt_main.py is auto generated.
+rem call py -m ruff leo/plugins/qt*.py
+
+echo ruff leo/plugins/qt...
+call py -m ruff leo/plugins/qt_gui.py
+call py -m ruff leo/plugins/qt_text.py
+call py -m ruff leo/plugins/qt_tree.py
+</t>
+<t tx="ekr.20230702120645.1"></t>
 </tnodes>
 </leo_file>

@@ -393,8 +393,7 @@ class GlobalSearch:
         parts = unl.split("#", 1)
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
-            segs = parts[1].split("-->")
-            g.findUNL(segs, c)
+            g.findAnyUnl(parts[1], c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""
