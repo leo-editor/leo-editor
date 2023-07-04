@@ -971,7 +971,7 @@ class TestGlobals(LeoUnitTest):
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn.lower(), __file__.lower())
 
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx (to do)
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx
     def test_g_findGnx(self):
         c = self.c
 
@@ -987,6 +987,13 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(test_p)
             result2 = g.findGnx(test_p.gnx, c)
             self.assertEqual(result2, test_p, msg=msg)
+            
+        # Create the test tree.
+        self._make_tree(c, 'Root')
+        # Test all positions.
+        for p in c.all_positions():
+            for gnx in (f"{p.gnx}", f"{p.gnx}::0"):
+                self.assertEqual(p, g.findGnx(gnx, c), msg=gnx)
     #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (to do)
     def test_g_findUnl(self):
         
