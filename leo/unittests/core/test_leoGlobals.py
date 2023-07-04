@@ -195,15 +195,15 @@ class TestGlobals(LeoUnitTest):
             absolute_path = g.os_path_finalize_join(g.app.loadDir, relative_path)
             self.assertTrue(absolute_path in self.absolute_paths, msg=msg)
             self.assertTrue(os.path.exists(absolute_path), msg=msg)
-            self._make_tree(headline)
+            self._make_tree(c, headline)
             test_p = g.findNodeAnywhere(c, headline)
             full_path = c.fullPath(test_p)
             self.assertEqual(full_path, absolute_path, msg=msg)
             self.assertTrue(test_p, msg=msg)
     #@+node:ekr.20230330042647.1: *4* TestGlobals._make_tree
-    def _make_tree(self, root_h=None):
-        """Make a test tree for other tests"""
-        c = self.c
+    def _make_tree(self, c, root_h=None):
+        """Make a test tree for c."""
+        ### c = self.c
         root = c.rootPosition()
         root.h = root_h or 'Root'
         root.b = "def root():\n    pass\n"
@@ -251,11 +251,12 @@ class TestGlobals(LeoUnitTest):
         Return the commander for the new outline.
         """
         from leo.core.leoCommands import Commands
-        c = self.c
+        c = c1 = self.c
 
         # Create the new commander, linked into g.app.windowList.
         c2 = Commands(fileName=None, gui=g.app.gui)
         self.assertTrue(c2.frame)
+        g.app.windowList.append(c1.frame)
         g.app.windowList.append(c2.frame)
 
         # Give both commanders new (non-existent) names.
@@ -270,7 +271,8 @@ class TestGlobals(LeoUnitTest):
         def make_line(c):
             file_name = c.fileName()
             key = os.path.basename(file_name)
-            value = os.path.normpath(file_name)
+            # Values must be directories.
+            value = os.path.normpath(os.path.dirname(file_name))
             # print(f"{key:17} {value}")
             return f"{key}: {value}"
 
@@ -293,12 +295,15 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230702165813.1: *4* TestGlobals.test_patch_at_data_unl_path_prefixes
     def test_patch_at_data_unl_path_prefixes(self):
         # Test the helper, _patch_at_data_unl_path_prefixes.
-        c = self.c
+        c1 = self.c
         c2 = self._patch_at_data_unl_path_prefixes()
         self.assertTrue(c2)
-        self.assertTrue(c.fileName())
-        self.assertFalse(c == c2)
+        self.assertTrue(c1.fileName())
+        self.assertTrue(c2.fileName())
+        self.assertFalse(c1 == c2)
+        self.assertTrue(c1 in g.app.commanders())
         self.assertTrue(c2 in g.app.commanders())
+        self.assertTrue(c1.frame in g.app.windowList)
         self.assertTrue(c2.frame in g.app.windowList)
     #@+node:ekr.20230701085717.1: *3* --- legacy tests
     #@+node:ekr.20210905203541.4: *4* TestGlobals.test_g_checkVersion
@@ -966,7 +971,7 @@ class TestGlobals(LeoUnitTest):
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn.lower(), __file__.lower())
 
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx
+    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx (to do)
     def test_g_findGnx(self):
         c = self.c
 
@@ -977,11 +982,15 @@ class TestGlobals(LeoUnitTest):
         for data in self.files_data:  # <@file> <filename>
             kind, relative_path = data
             headline = msg = f"{kind} {relative_path}"
-            self._make_tree(headline)
+            self._make_tree(c, headline)
             test_p = g.findNodeAnywhere(c, headline)
             self.assertTrue(test_p)
             result2 = g.findGnx(test_p.gnx, c)
             self.assertEqual(result2, test_p, msg=msg)
+    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (to do)
+    def test_g_findUnl(self):
+        
+        pass  ###
     #@+node:ekr.20230701085746.1: *3* TestGlobals.test_g_isValidUnl
     def test_g_isValidUnl(self):
 
@@ -1020,7 +1029,7 @@ class TestGlobals(LeoUnitTest):
         ### To do: resolve all valid unls to a real position.
 
         c = self.c
-        self._make_tree(root_h='root')
+        self._make_tree(c, root_h='root')
 
         if 0:  ### Not yet.
             for unl in self.valid_unls + self.missing_unls:
@@ -1040,7 +1049,7 @@ class TestGlobals(LeoUnitTest):
 
         # Test 11 p.get_*_UNL methods.
         c = self.c
-        self._make_tree()
+        self._make_tree(c)
         root = c.rootPosition().next()
         p = root.firstChild()
 
@@ -1134,6 +1143,18 @@ class TestGlobals(LeoUnitTest):
         paths = ['c:/Repos/leo-editor/leo/test', 'c:/Repos/leo-editor/leo/doc']
         expected_paths = [os.path.normpath(z) for z in paths]
         self.assertTrue(sorted(list(d.values())), expected_paths)
+    #@+node:ekr.20230703175447.1: *3* TestGlobals.test_g_openUNLFile (new)
+    def test_g_openUNLFile(self):
+
+        # Create a new commander and change c.fileName().
+        c1 = self.c
+        c2 = self._patch_at_data_unl_path_prefixes()
+        file_name1 = os.path.basename(c1.fileName())
+        file_name2 = os.path.basename(c2.fileName())
+        c3 = g.openUNLFile(c1, file_name2)  # Cross-file.
+        self.assertEqual(c3, c2)
+        c4 = g.openUNLFile(c2, file_name1)
+        self.assertEqual(c4, c1)
     #@-others
 #@-others
 #@-leo

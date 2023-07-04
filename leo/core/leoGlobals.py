@@ -7733,6 +7733,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
 
     Return c if the file can not be found.
     """
+    trace = False and g.unitTesting
     if not s.strip():
         return c
     if s.startswith('//') and s.endswith('#'):
@@ -7740,17 +7741,46 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if not s.strip():
         return c
     if os.path.isabs(s):
-        path = s
+        path = os.path.normpath(s).lower()
     else:
+        # Values of d should be directories.
         d = g.parsePathData(c)
-        prefix = d.get(os.path.basename(s)) or ''
-        prefix = os.path.normpath(prefix)
-        path = os.path.normpath(os.path.join(prefix, s))
-    return (
-        c if path.lower() == os.path.normpath(c.fileName()).lower()
-        else g.openWithFileName(path) if os.path.exists(path)
-        else c
-    )
+        if trace:
+            print('')
+            print('d...')
+            for key, value in d.items():
+                print(f"{key:>20}: {value}")
+            print('')
+        base = os.path.basename(s)
+        directory = d.get(base)
+        if not directory:
+            g.trace(f"No directory for {s!r}")
+            return c
+        if not os.path.exists(directory):
+            g.trace(f"Directory found: {directory!r}")
+            return c
+        path = os.path.normpath(os.path.join(directory, base)).lower()
+        if trace:
+            g.trace('   directory:', directory.lower())
+            g.trace('        path:', path.lower())
+            g.trace('c.fileName():', os.path.normpath(c.fileName()).lower())
+    if path == os.path.normpath(c.fileName()).lower():
+        return c
+    # Search all open commanders.
+    # This is a good shortcut, and it helps unit tests.
+    for c2 in g.app.commanders():
+        if path == os.path.normpath(c2.fileName()).lower():
+            if trace:
+                g.trace(f"       Found: {os.path.normpath(c2.fileName())}")
+            return c2
+    # Open the file if possible.
+    if not os.path.exists(path):
+        if trace:
+            g.trace(f"   Not found: {path}")
+        return c
+    if trace:
+        g.trace(f"Opening {path}")
+    return g.openWithFileName(path)
 #@+node:ekr.20230630132341.1: *4* g.parsePathData
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 

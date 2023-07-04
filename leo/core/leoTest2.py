@@ -148,6 +148,10 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
     def test_set_setting(self) -> None:
 
+        if not hasattr(self, 'c'):
+            # TestLeoServer.
+            self.skipTest(f"{self.__class__.__name__} has no 'c' ivar")
+
         c = self.c
         val: Any
         for val in (True, False):
@@ -205,17 +209,16 @@ class LeoUnitTest(unittest.TestCase):
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest._dump_headlines
+    def _dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
         """
         Dump root's headlines, or all headlines if root is None.
         """
         print('')
-        if tag:
-            print(tag)
-        _iter = root.self_and_subtree if root else self.c.all_positions
-        for p in _iter():
-            print('level:', p.level(), repr(p.h))
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            print(f"{p.gnx:10}: {' '*p.level()}{p.h}")
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
         """
