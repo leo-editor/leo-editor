@@ -7752,6 +7752,9 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         s = s[2:-1]
     if not s.strip():
         return c
+    # Always match within the present file.
+    if os.path.basename(s) == os.path.basename(c.fileName()):
+        return c
     if os.path.isabs(s):
         path = os.path.normpath(s).lower()
     else:
