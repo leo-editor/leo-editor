@@ -81,7 +81,7 @@ class SessionManager:
                 g.printObj(session, tag='load_snapshot: session data')
             return session
         except KeyError:
-            pass  # Not a user error.
+            print('SessionManager.load_snapshot: no previous session')
         except Exception:
             g.trace('Unexpected exception in SessionManager.load_snapshot')
             g.es_exception()
