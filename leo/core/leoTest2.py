@@ -12,6 +12,8 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 #@+<< leoTest2 imports & annotations >>
 #@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
 from __future__ import annotations
+import os
+import sys
 import time
 import unittest
 import warnings
@@ -117,7 +119,8 @@ class LeoUnitTest(unittest.TestCase):
 
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        fileName = g.os_path_finalize_join(g.app.loadDir, 'LeoPyRef.leo')
+        self.c = c = leoCommands.Commands(fileName=fileName, gui=g.app.gui)
 
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()
@@ -130,6 +133,34 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
+    #@+node:ekr.20230703103430.1: *3* LeoUnitTest: setup helpers and related tests
+    #@+node:ekr.20230703103458.1: *4* LeoUnitTest._set_setting
+    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
+        """
+        Call c.config.set with the given args, suppressing stdout.
+        """
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind=kind, name=name, val=val)
+        finally:
+            sys.stdout = old_stdout
+    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
+    def test_set_setting(self) -> None:
+
+        if not hasattr(self, 'c'):
+            # TestLeoServer.
+            self.skipTest(f"{self.__class__.__name__} has no 'c' ivar")
+
+        c = self.c
+        val: Any
+        for val in (True, False):
+            name = 'test-bool-setting'
+            self._set_setting(c, kind='bool', name=name, val=val)
+            self.assertTrue(c.config.getBool(name) == val)
+        val = 'aString'
+        self._set_setting(c, kind='string', name=name, val=val)
+        self.assertTrue(c.config.getString(name) == val)
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
@@ -178,17 +209,16 @@ class LeoUnitTest(unittest.TestCase):
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest._dump_headlines
+    def _dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
         """
         Dump root's headlines, or all headlines if root is None.
         """
         print('')
-        if tag:
-            print(tag)
-        _iter = root.self_and_subtree if root else self.c.all_positions
-        for p in _iter():
-            print('level:', p.level(), repr(p.h))
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            print(f"{p.gnx:10}: {' '*p.level()}{p.h}")
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
         """

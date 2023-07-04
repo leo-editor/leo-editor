@@ -940,6 +940,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
+<v t="ekr.20230628032632.1"><vh>@rst html/clickablelinks.html</vh></v>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
 <v t="ekr.20200909171301.1"><vh>@rst html/leomarkup.html</vh></v>
 <v t="ekr.20050901101608.4"><vh>@rst html/customizing.html</vh>
@@ -1818,6 +1819,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20230703101804.1"><vh>Leo 6.7.4 release notes</vh></v>
 <v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
@@ -2510,7 +2512,7 @@
 </v>
 </v>
 <v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
-<v t="ekr.20230409052507.1"></v>
+<v t="ekr.20230703101804.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14627,6 +14629,7 @@ This is Leo's Users Guide. It covers additional material not covered in the
 .. toctree::
    :maxdepth: 2
 
+   clickablelinks
    leomarkup
    customizing
    plugins
@@ -32595,6 +32598,73 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #3264`_ and `PR #3277`_: Simplify Leo's path-related code.
 
 - 20+ issues and 30+ pull requests.
+</t>
+<t tx="ekr.20230628032632.1">###############
+Clickable links
+###############
+
+Leo syntax colors clickable links in the body pane. They have four forms:
+
+1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
+
+   Some of these tools produce clickable links in the log pane when run
+   *within* Leo. Some do not.
+
+   When running these tools *outside of* Leo, copying an error message from
+   the *console* to Leo's log pane will create clickable links in the log
+   pane. Control-clicking these links will select the proper node and line
+   provided the outline contains an `@&amp;lt;file&amp;gt;` node for file mentioned in
+   the error message.
+
+2. UNLs based on gnxs (global node indices):
+
+   Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
+   outline and select the first outline node with the given gnx. These UNLs
+   will work as long as the node exists anywhere in the outline.
+
+   *Note*: `{outline}` is optional. It can be an absolute path name or
+   a relative path name resolved using `@data unl-path-prefixes`.
+
+3. Leo's headline-based UNLs, as shown in the status pane:
+
+   Headline-based UNLs consist of `unl://` + `//{outline}#{headline_list}`
+   where headline_list is a list of headlines separated by `--&gt;`.
+
+   *Note*: `{outline}` is optional. It can be an absolute path name or
+   a relative path name resolved using `@data unl-path-prefixes`.
+
+4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
+
+   For example, Leo's forum: https://leo-editor.github.io/leo-editor/
+</t>
+<t tx="ekr.20230703101804.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.4 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.4**
+
+*** To do ***
+
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.4 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.4+)
+- [6.7.4 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.4)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

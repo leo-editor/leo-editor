@@ -2134,9 +2134,9 @@ class AtFile:
         ok = True
         if at.checkPythonCodeOnWrite:
             ok = at.checkPythonSyntax(root, contents)
-        if ok and at.runPyFlakesOnWrite:
+        if ok and at.runPyFlakesOnWrite:  # Creates clickable links.
             ok = self.runPyflakes(root)
-        if ok and at.runFlake8OnWrite:
+        if ok and at.runFlake8OnWrite:  # Does *not* create clickable links.
             ok = self.runFlake8(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180311131353.1"><vh>Personal test file</vh></v>
+<v t="ekr.20230622114548.1"><vh>@settings</vh>
+<v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
+<v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
+</v>
 <v t="ekr.20180311131424.1"><vh>Recent</vh>
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
 <v t="ekr.20180311210803.1"><vh>re latex button</vh>
@@ -58,6 +62,14 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
+<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
+<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
+<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
+<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
+<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
+<v t="ekr.20230627150454.1"><vh>New UNLs with file parts</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -952,5 +964,87 @@ This is a comment</t>
 <t tx="ekr.20180319044254.9">https://www.youtube.com/watch?v=EB3IokHelRk
 
 # Doesn't play, probably because of https.</t>
+<t tx="ekr.20230622112535.1"></t>
+<t tx="ekr.20230622112641.1"></t>
+<t tx="ekr.20230622112649.1"># These links will be active only if the @&lt;file&gt; node exists.
+
+# Absolute file names
+
+# Exists, non-empty.
+C:/Repos/leo-editor/leo/plugins/importers/__init__.py:1:0:flake8 error
+
+# Exists, empty.
+C:/Repos/leo-editor/leo/plugins/leo_babel/__init__.py:1:0:flake8 error
+
+# Large.
+# C:/Repos/leo-editor/leo/core/leoGlobals.py:100:0:flake8 error
+</t>
+<t tx="ekr.20230622114548.1"></t>
+<t tx="ekr.20230622114556.1">h = 'Error messages (copy to log)'
+p = g.findNodeAnywhere(c, h)
+if p:
+    lines = [z for z in g.splitLines(p.b) if not z.strip().startswith('#')]
+    c.frame.log.put_html_links(''.join(lines))
+else:
+    print('Not found:', h)
+</t>
+<t tx="ekr.20230623064935.1">convert-unls
+copy-test</t>
+<t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
+
+# Exists: Recent
+unl:gnx://#ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx://#ekr.20230622112649.1
+
+# Bad gnx
+unl:gnx://xyzzy.leo#.20230622112649.1
+
+</t>
+<t tx="ekr.20230625084119.1"># Shorter UNL:
+unl://#Coloring tests--&gt;Syntax coloring template
+
+# Exists, non-empty.
+unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py
+unl://#@file ../plugins/importers/__init__.py
+
+# Exists, empty.
+unl://C:/Repos/leo-editor/leo/test/test.leo#@clean ../plugins/leo_babel/__init__.py
+unl://#@clean ../plugins/leo_babel/__init__.py
+
+# Exists
+unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples
+unl://#Viewrendered examples
+
+unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
+unl://#Viewrendered examples--&gt;Python code
+</t>
+<t tx="ekr.20230627150454.1"># Exists: Recent
+unl:gnx://test.leo#ekr.20180311131424.1
+unl:gnx://#ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx://test.leo#ekr.20230622112649.1
+unl:gnx://#ekr.20230622112649.1
+
+# These links depend on @data unl-path-prefixes.
+
+# In LeoDocs.leo: Leo 6.7.3 release notes
+unl:gnx://LeoDocs.leo#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Read me first **
+unl:gnx://LeoDocs.leo#ekr.20050831195449
+
+# Bad gnx: xyzzy.leo does not exist.
+unl:gnx://xyzzy.leo#.20230622112649.1</t>
+<t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
+# contains the proper paths to the viles on your machine.
+
+unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes
+
+# In LeoDocs.leo
+unl://LeoDocs.leo#Web pages
+</t>
 </tnodes>
 </leo_file>

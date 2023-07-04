@@ -276,7 +276,7 @@ def show_clone_ancestors(event: Event = None) -> None:
     g.es(f"Ancestors of {p.h}...")
     for clone in c.all_positions():
         if clone.v == p.v:
-            unl = message = clone.get_UNL()
+            unl = message = clone.get_legacy_UNL()
             # Drop the file part.
             i = unl.find('#')
             if i > 0:
@@ -298,7 +298,7 @@ def show_clones(event: Event = None) -> None:
         parent = clone.parent()
         if parent and parent not in seen:
             seen.append(parent)
-            unl = message = parent.get_UNL()
+            unl = message = parent.get_legacy_UNL()
             # Drop the file part.
             i = unl.find('#')
             if i > 0:
@@ -1446,18 +1446,21 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.245: *3* ec: info
     #@+node:ekr.20210311154956.1: *4* ec.copyGnx
     @cmd('copy-gnx')
+    @cmd('gnx-show')
+    @cmd('show-gnx')
     def copyGnx(self, event: Event) -> None:
-        """Copy c.p.gnx to the clipboard and display it in the status area."""
+        """Copy c.p.gnx to the clipboard and display a gnx-oriented unl in the status area."""
         c = self.c
         if not c:
             return
-        gnx = c.p and c.p.gnx
-        if not gnx:
+        p = c.p
+        if not p:
             return
-        g.app.gui.replaceClipboardWith(gnx)
+        url = p.get_UNL()
+        g.app.gui.replaceClipboardWith(url)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
-            status_line.put(f"gnx: {gnx}")
+            status_line.put(url)
     #@+node:ekr.20150514063305.247: *4* ec.lineNumber
     @cmd('line-number')
     def lineNumber(self, event: Event) -> None:

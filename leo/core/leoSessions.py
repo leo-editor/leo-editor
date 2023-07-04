@@ -50,7 +50,7 @@ class SessionManager:
         else:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
-            result.append(c.p.get_UNL())
+            result.append(c.p.get_full_gnx_UNL())
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self) -> Optional[str]:
@@ -61,24 +61,23 @@ class SessionManager:
         return None
     #@+node:ekr.20120420054855.14247: *3* SessionManager.load_session
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
-        """Open a tab for each item in UNLs & select the indicated node in each."""
+        """
+        Open a tab for each item in UNLs & select the indicated node in each.
+
+        unls is the list returned by SessionManager.load_snapshot()
+        """
         if not unls:
             return
         unls = [z.strip() for z in unls or [] if z.strip()]
         for unl in unls:
-            i = unl.find("#")
-            if i > -1:
-                fn, unl = unl[:i], unl[i:]
-                fn_ = fn.split('unl://')  # #2412.
-                if len(fn_) > 1:
-                    fn = fn_[1]
-            else:
-                fn, unl = unl, ''
-            fn = fn.strip()
+            if not g.isValidUnl(unl):
+                g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
+                continue
+            fn = g.getUNLFilePart(unl)
             exists = fn and g.os_path_exists(fn)
             if not exists:
-                if 'startup' in g.app.debug:
-                    g.trace('session file not found:', fn)
+                g.trace('File part does not exist', repr(fn))
+                g.trace(f"Bad unl: {unl!r}")
                 continue
             if 'startup' in g.app.debug:
                 g.trace('loading session file:', fn)
@@ -96,6 +95,8 @@ class SessionManager:
             try:
                 with open(fn) as f:
                     session = json.loads(f.read())
+                if 'startup' in g.app.debug:
+                    g.printObj(session, tag='load_snapshot: session data')
                 return session
             except Exception:
                 pass
@@ -108,20 +109,24 @@ class SessionManager:
         """
         Save a snapshot of the present session to the leo.session file.
 
-        Called automatically during shutdown when no files were given on the command line.
+        Called automatically during shutdown.
         """
-        if self.path:
-            session = self.get_session()
-            # #2433 - don't save an empty session
-            if not session:
-                return
-            with open(self.path, 'w') as f:
-                json.dump(session, f)
-                f.close()
-            # Do not use g.trace or g.es here.
-            print(f"wrote {self.path}")
-        else:
+        if g.app.batchMode or g.app.inBridge or g.unitTesting:
+            return
+        if not self.path:
             print('can not save session: no leo.session file')
+            return
+        session = self.get_session()
+        if 'shutdown' in g.app.debug:
+            g.printObj(session, tag='save_snapshot: session data')
+        # #2433 - don't save an empty session
+        if not session:
+            return
+        with open(self.path, 'w') as f:
+            json.dump(session, f)
+            f.close()
+        # Do not use g.trace or g.es here.
+        print(f"wrote {self.path}")
     #@-others
 #@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear

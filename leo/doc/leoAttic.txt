@@ -5893,6 +5893,266 @@ def walk_tree(node, vns=None, seq=None):
     for n in node.children:
         walk_tree(n, vns, seq)
     return vns, seq
+#@+node:ekr.20170313020320.1: *3* ../plugins/settings_finder.py
+"""
+Let the user pick settings from a menu, find the relevant @settings nodes and open them.
+"""
+# This plugin out of date and can be dangerous. It is not recommended.
+from copy import deepcopy
+from leo.core import leoGlobals as g
+from leo.core.leoNodes import VNode
+#
+# #2030: Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+@others
+#@+node:ekr.20170313021118.1: *4* init (settings_finder.py)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
+
+#@+node:ekr.20170313021152.1: *4* onCreate (settings_finder.py)
+def onCreate(tag, key):
+
+    c = key.get('c')
+    if c:
+        sf = SettingsFinder(c)
+        sf.build_menu()
+
+#@+node:tbrown.20150818161651.1: *4* class SettingsFinder
+class SettingsFinder:
+    """SettingsFinder - Let the user pick settings from a menu and then
+    find the relevant @settings nodes and open them.
+    """
+
+    def __init__(self, c):
+        """bind to a controller
+
+        :param controller c: outline to bind to
+        """
+        self.c = c
+        self.callbacks = {}  # keep track of callbacks made already
+    @others
+#@+node:tbrown.20150818161651.2: *5* sf._outline_data_build_tree
+@classmethod
+def _outline_data_build_tree(cls, node, element, body):
+    """see _outline_data_to_python, this just recursively
+    copies info. from xml to VNode tree"""
+    node.h = element.find('vh').text
+    node.b = ''
+    body[element.get('t')] = node
+    for sub in element.findall('v'):
+        cls._outline_data_build_tree(node.insertAsLastChild(), sub, body)
+#@+node:tbrown.20150818161651.3: *5* sf._outline_data_to_python
+def _outline_data_to_python(self, xml):
+    """_outline_data_to_python - make xml from c.config.getOutlineData()
+    into a detached VNode tree.
+
+    FIXME this should be elsewhere, just here to allow build_menu() to
+    wortk for now.
+
+    :param str xml: xml returned by c.config.getOutlineData()
+    :return: VNode tree representing outline data
+    :rtype: VNode
+    """
+    from xml.etree import ElementTree
+    # FIXME, probably shouldn't be going @settings tree -> xml -> VNode tree,
+    # but @settings tree -> VNode tree, xml + paste to use is cumbersome
+    body = {}  # node ID to node mapping to fill in body text later
+    top = VNode(self.c)
+    dom = ElementTree.fromstring(xml)
+    self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
+    for t in dom.find('tnodes').findall('t'):
+        if t.text is not None:
+            body[t.get('tx')].b = t.text
+    return top
+#@+node:tbrown.20150818161651.4: *5* sf.build_menu
+def build_menu(self):
+    """build_menu - build the menu of settings, called from handleSpecialMenus()
+    """
+    menu = self.c.frame.menu
+    # Create the Edit Settings menu at the end of the Settings menu.
+    settings_menu = menu.getMenu('Settings')
+    menu.add_separator(settings_menu)
+    menu.createNewMenu('Edit Settings', 'Settings')
+    finder_menu = self._outline_data_to_python(
+        self.c.config.getOutlineData("settings-finder-menu"))
+    aList = []
+    self.tree_to_menulist(aList, finder_menu)
+    # #1144: Case must match.
+    # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
+    # so aList[0][1] is the list of submenus
+    menu.createMenuFromConfigList("Edit Settings", aList[0][1])
+    return aList
+#@+node:tbrown.20150818162156.1: *5* sf.copy_recursively
+@staticmethod
+def copy_recursively(nd0, nd1):
+    """Recursively copy subtree
+    """
+    nd1.h = nd0.h
+    nd1.b = nd0.b
+    nd1.v.u = deepcopy(nd0.v.u)
+    for child in nd0.children():
+        SettingsFinder.copy_recursively(child, nd1.insertAsLastChild())
+#@+node:tbrown.20150818161651.5: *5* sf.copy_to_my_settings
+def copy_to_my_settings(self, unl, which):
+    """copy_to_my_settings - copy setting from leoSettings.leo
+
+    :param str unl: Leo UNL to copy from
+    :param int which: 1-3, leaf, leaf's parent, leaf's grandparent
+    :return: unl of leaf copy in myLeoSettings.leo
+    :rtype: str
+    """
+    path, unl = unl.split('#', 1)
+    # Undo the replacements made in p.getUNL.
+    path = path.replace("file://", "")
+    path = path.replace("unl://", "")  # #434: Potential bug in settings
+    unl = unl.replace('%20', ' ').split("-->")
+    tail = []
+    if which > 1:  # copying parent or grandparent but select leaf later
+        tail = unl[-(which - 1) :]
+    unl = unl[: len(unl) + 1 - which]
+    my_settings_c = self.c.openMyLeoSettings()
+    my_settings_c.save()  # if it didn't exist before, save required
+    settings = g.findNodeAnywhere(my_settings_c, '@settings')
+    c2 = g.app.loadManager.openSettingsFile(path)
+    if not c2:
+        return ''  # Fix 434.
+    maxp = g.findUNL(unl, c2)
+    if not maxp:
+        return ''  # 2022/01/30
+    nd = settings.insertAsLastChild()
+    dest = nd.get_UNL()
+    self.copy_recursively(maxp, nd)
+    my_settings_c.setChanged()
+    my_settings_c.redraw()
+    shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
+    self.c.config.settingsDict.update(settingsDict)
+    my_settings_c.config.settingsDict.update(settingsDict)
+    return '-->'.join([dest] + tail)
+#@+node:tbrown.20150818161651.6: *5* sf.find_setting
+def find_setting(self, setting):
+    # g.es("Settings finder: find %s" % setting)
+    key = g.app.config.canonicalizeSettingName(setting)
+    value = self.c.config.settingsDict.get(key)
+    which = None
+    while value and isinstance(value.val, str) and value.val.startswith('@'):
+        msg = ("The relevant setting, '@{specific}', is using the value of "
+        "a more general setting, '{general}'.  Would you like to edit the "
+        "more specific setting, '@{specific}', or the more general setting, "
+        "'{general}'?  The more general setting may alter appearance / "
+        "behavior in more places, which may or may not be what you prefer."
+        ).format(specific=setting, general=value.val)
+        which = g.app.gui.runAskYesNoCancelDialog(self.c, "Which setting?",
+            message=msg, yesMessage='Edit Specific', noMessage='Edit General')
+        if which != 'no':
+            break
+        setting = value.val
+        key = g.app.config.canonicalizeSettingName(setting[1:])
+        value = self.c.config.settingsDict.get(key)
+    if which == 'cancel' or not value:
+        return
+    unl = value and value.unl
+    if (
+        g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
+        g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')
+    )):
+
+        msg = ("The setting '@{specific}' is in the Leo global configuration "
+        "file 'leoSettings.leo'\nand should be copied to "
+        "'myLeoSettings.leo' before editing.\n"
+        "It may make more sense to copy a group or category of settings.\nIf "
+        "'myLeoSettings.leo' contains duplicate settings, the last definition "
+        "is used."
+        "\n\nChoice:\n"
+        "1. just select the node in 'leoSettings.leo', I will decide how much\n"
+        "   to copy into 'myLeoSettings.leo' (Recommended).\n"
+        "2. copy the one setting, '@{specific}'\n")
+
+        # get the settings already defined in myLeoSettings
+        my_settings_c = self.c.openMyLeoSettings()
+        _, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
+        # find this setting's node
+        path, src_unl = unl.split('#', 1)
+        path = path.replace("file://", "").replace("unl://", "")
+        src_unl = src_unl.replace('%20', ' ').split("-->")
+        c2 = g.app.loadManager.openSettingsFile(path)
+        maxp = g.findUNL(src_unl, c2)
+        if not maxp:
+            return  # 2022/01/30
+        # scan this setting's group and category for conflicts
+        up = maxp.parent()
+        if up and self.no_conflict(up, settingsDict):
+            msg += "3. copy the setting group, '{group}'\n"
+            up = up.parent()
+            if up and self.no_conflict(up, settingsDict):
+                msg += "4. copy the whole setting category, '{category}'\n"
+
+        msg = msg.format(specific=setting.lstrip('@'),
+            group=unl.split('-->')[-2].split(':', 1)[0].replace('%20', ' '),
+            category=unl.split('-->')[-3].split(':', 1)[0].replace('%20', ' '))
+        which = g.app.gui.runAskOkCancelNumberDialog(
+            self.c, "Copy setting?", message=msg)
+        if which is None:
+            return
+        which = int(which)
+        if which > 1:
+            unl = self.copy_to_my_settings(unl, which - 1)
+    if unl:
+        g.handleUnl(unl, c=self.c)
+#@+node:tbrown.20150818161651.7: *5* sf.get_command
+def get_command(self, node):
+    """return the name of a command to find the relevant setting,
+    creating the command if needed
+    """
+    if not node.b.strip():
+        return "settings-find-undefined"
+    setting = node.b.strip()
+    name = "settings-find-%s" % setting
+    if name in self.callbacks:
+        return name
+
+    def f(event, setting=setting, self=self):
+        self.find_setting(setting)
+
+    g.command(name)(f)
+    self.callbacks[name] = f
+    return name
+#@+node:tbnorth.20170313094519.1: *5* sf.no_conflict
+def no_conflict(self, p, settings):
+    """no_conflict - check for settings defined under p already in settings
+
+    :param position p: node in settings tree
+    :param SettingsDict settings: settings already defined
+    :return: True if no conflicts
+    """
+    keys = settings.keys()
+    for nd in p.subtree_iter():
+        if nd.h.startswith('@') and not nd.h.startswith('@@'):
+            name = nd.h.split()
+            if len(name) > 1:
+                name = g.app.config.canonicalizeSettingName(name[1])
+                if name in keys:
+                    return False
+    return True
+#@+node:tbrown.20150818161651.8: *5* sf.settings_find_undefined
+@g.command("settings-find-undefined")
+def settings_find_undefined(self, event):
+    g.es("Settings finder: no setting defined")
+#@+node:tbrown.20150818161651.9: *5* sf.tree_to_menulist
+def tree_to_menulist(self, aList, node):
+    """recursive helper for build_menu(), copies VNode tree data
+    to list format used by c.frame.menu.createMenuFromConfigList()
+    """
+    if node.children:
+        child_list = []
+        aList.append(["@menu " + node.h, child_list, None])
+        for child in node.children:
+            self.tree_to_menulist(child_list, child)
+    else:
+        aList.append(["@item", self.get_command(node), node.h])
 #@+node:ekr.20190412154439.1: ** Abandoned projects
 #@+node:ekr.20211226081112.1: *3* script: iterative traverse
 # See ENB: Recent studies and thoughts.
@@ -10134,6 +10394,18 @@ def tupleToString(obj: Any, indent: str='', tag: str=None) -> str:
     result.append(')')
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
+#@+node:tbrown.20111010104549.26758: *3* LEGACY: p.get_UNL
+def get_UNL(self) -> str:
+    """Return a legacy UNL. Required for error messages."""
+    parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+    if 1:
+        # New in Leo 6.7.4: Just return the list of parts.
+        base_unl = parts_s
+    else:
+        # Return <file-name> + `#`.
+        base_unl = f"{self.v.context.fileName()}#{parts_s}"
+    # Do *not* translate '-->' to '--%3E'.
+    return 'unl:' + '//' + base_unl.replace("'", "%27")
 #@+node:ekr.20220917052540.1: ** Old commands
 #@+node:ekr.20150514063305.281: *3* ec.flushLines (doesn't work)
 @cmd('flush-lines')
@@ -10631,7 +10903,7 @@ def leoHelp(self, event: Event=None) -> None:
                 if 0:
                     g.es("exception downloading", "sbooks.chm")
                     g.es_exception()
-#@+node:ekr.20221108101907.1: ** Old scripts
+#@+node:ekr.20221108101907.1: ** Old scripts and plugins
 #@+node:ekr.20221108101925.1: *3* script: make leo (from leoDist.leo)
 # Was an @button node in leoDist.leo
 
@@ -11092,6 +11364,71 @@ def unlink (self,fn):
 
     # print('command: unlink: %s' % fn)
     os.remove(fn)
+#@+node:ekr.20230703052325.1: *3* modify_sessions.py
+"""
+This plugin changes when Leo writes session data, the list of open outlines.
+
+By default, Leo *always* writes sesion data.
+
+When this plugin is active Leo writes session data only if no files appear on the command line.
+"""
+
+from leo.core import leoGlobals as g
+
+def init() -> bool:
+    g.app.always_write_session_data = False
+    return True
+#@+node:ekr.20230701095410.1: ** Old tests
+#@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl (not used)
+# g.handleUrl should not be tested!
+
+def test_g_handleUrl(self):
+    c = self.c
+    # Part 1: general urls, paying attention to trailing ')' and '.'.
+    #         See the hacks in jedit.match_any_url and g.handleUrl.
+    table1 = (
+        (
+            "https://leo-editor.github.io/leo-editor/preface.html).",
+            "https://leo-editor.github.io/leo-editor/preface.html",
+        ),
+        (
+            "https://leo-editor.github.io/leo-editor/leo_toc.html)",
+            "https://leo-editor.github.io/leo-editor/leo_toc.html",
+        ),
+        (
+            "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+            "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+        ),
+    )
+    for url, expected in table1:
+        got = g.handleUrl(c=c, p=c.p, url=url)
+        self.assertEqual(expected.lower(), got, msg=url)
+        
+    # Part 2: file-oriented urls.
+   
+    # g.handleUrl now longer finds urls in other commanders.
+    # I thought it best to remove the Leo-specific hacks that were required.
+
+    if False and sys.platform.startswith('win'):
+        file_, http, unl1 = 'file://', 'http://', 'unl://'
+        fn1 = 'LeoDocs.leo#'
+        fn2 = 'doc/LeoDocs.leo#'
+        unl2 = '@settings-->Plugins-->wikiview plugin'
+        unl3 = '@settings-->Plugins-->wikiview%20plugin'
+        table2 = (
+            (http + 'writemonkey.com/index.php', ['browser']),
+            (file_ + 'x.py', ['os_startfile']),
+            (file_ + fn1, ['g.findUnl']),
+            (file_ + fn2, ['g.findUnl']),
+            (unl1 + fn1 + unl2, ['g.findUnl']),
+            (unl1 + fn1 + unl3, ['g.findUnl']),
+            (unl1 + '#' + unl2, ['g.findUnl']),
+            (unl1 + '#' + unl3, ['g.findUnl']),
+            (unl1 + unl2, ['g.findUnl']),
+            (unl1 + unl3, ['g.findUnl']),
+        )
+        for url, aList in table2:
+            g.handleUrl(c=c, p=c.p, url=url)
 #@-all
 #@@nosearch
 #@-leo

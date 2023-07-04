@@ -131,6 +131,8 @@ Tags
 
 # By Terry Brown, 2007-01-12
 
+# EKR: gnx-based unls make this plugin obsolete.
+
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
@@ -756,7 +758,7 @@ class quickMove:
             path, unl = full_path.split('#', 1)
             c2 = g.openWithFileName(path, old_c=self.c)
             self.c.bringToFront(c2=self.c)
-            maxp = g.findUNL(unl.split('-->'), c2)
+            maxp = g.findAnyUnl(unl, c2)
             if maxp:
                 if not bookmark and (for_p == maxp or for_p.isAncestorOf(maxp)):
                     g.es("Invalid move")

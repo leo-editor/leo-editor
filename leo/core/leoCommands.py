@@ -1414,7 +1414,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool = True) -> Generator:
+    def safe_all_positions(self, copy: bool = True) -> Generator:  # pragma: no cover
         """
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -1830,7 +1830,7 @@ class Commands:
         else:
             # Don't kill unit tests for this kind of problem.
             c._currentPosition = c.rootPosition()
-            g.trace('Invalid position', repr(p))
+            g.trace('Invalid position', repr(p), repr(c))
             g.trace(g.callers())
 
     # For compatibility with old scripts.
@@ -2696,7 +2696,7 @@ class Commands:
         """
         c, log = self, self.frame.log
         #@+others  # Define helper functions
-        #@+node:ekr.20210529142153.1: *5* function: put_line
+        #@+node:ekr.20210529142153.1: *5* function: put_line (c.general_script_helper)
         def put_line(s: str) -> None:
             """
             Put the line, creating a clickable link if the regex matches.
@@ -2737,7 +2737,7 @@ class Commands:
                 log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:
                 log.put(s + '\n')
-        #@+node:ekr.20210529164957.1: *5* function: find_line
+        #@+node:ekr.20210529164957.1: *5* function: find_line (c.general_script_helper)
         def find_line(path: str, n: int) -> tuple[Position, int]:
             """
             Return the node corresponding to line n of external file given by path.

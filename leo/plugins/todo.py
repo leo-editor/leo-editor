@@ -1323,7 +1323,7 @@ class todoController:
         path, unl = full_path.split('#', 1)
         c2 = g.openWithFileName(path, old_c=self.c)
         self.c.bringToFront(c2=self.c)
-        maxp = g.findUNL(unl.split('-->'), c2)
+        maxp = g.findAnyUnl(unl, c2)
         if maxp:
             if (for_p == maxp or for_p.isAncestorOf(maxp)):
                 g.es("Invalid move")
