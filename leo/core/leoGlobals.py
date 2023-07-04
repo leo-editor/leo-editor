@@ -2784,7 +2784,15 @@ def pdb(message: str = '') -> None:
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """Pretty print any Python object to a string."""
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, dict):
+        result_list = ['{\n']
+        pad = max([len(key) for key in obj])
+        for key in sorted(obj):
+            pad_s = ' ' * max(0, pad - len(key))
+            result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
+        result_list.append('}')
+        result = ''.join(result_list)
+    elif isinstance(obj, (list, tuple)):
         # Return the enumerated lines of the list.
         result_list = ['[\n' if isinstance(obj, list) else '(\n']
         for i, z in enumerate(obj):
@@ -7747,10 +7755,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         d = g.parsePathData(c)
         if trace:
             print('')
-            print('d...')
-            for key, value in d.items():
-                print(f"{key:>20}: {value}")
-            print('')
+            g.printObj(d, tag='d')
         base = os.path.basename(s)
         directory = d.get(base)
         if not directory:

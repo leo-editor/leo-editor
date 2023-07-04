@@ -283,8 +283,8 @@ class TestGlobals(LeoUnitTest):
         self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
         d = g.parsePathData(c)
         if 0:
-            for key in d:
-                print(f"{key:17} {d.get(key)}")
+            print('')
+            g.printObj(d)
         return c2
     #@+node:ekr.20230701084035.1: *4* TestGlobals.test_per_commander_data
     def test_per_commander_data(self):
