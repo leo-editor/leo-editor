@@ -534,9 +534,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20230705082509.1: *3* efc.gitNodeHistory (git-node-history)
     @cmd('git-node-history')
     def gitNodeHistory(self, event: Event = None) -> None:
-        """
-        Produce a Leonine history of the node c.p.
-        """
+        """Produce a Leonine history of the node c.p."""
         GitDiffController(c=self.c).node_history()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
