@@ -884,12 +884,53 @@ class GitDiffController:
             u.afterChangeGroup(c.p, undoType=undoType)
             self.finish()
         return bool(files)
-    #@+node:ekr.20230705082614.1: *4* gdc.node_history
+    #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
     def node_history(self) -> None:
-
+        """Produce a Leonine history of the node c.p."""
         c = self.c
         p = c.p
-        g.trace(p.h)
+        aList = self.get_node_history(p)
+        g.printObj(aList[:200], tag='node_history')
+    #@+node:ekr.20230705084709.1: *5* gdc._get_node_history
+    def _get_node_history(self, p) -> list[str]:
+        """Get the raw node history list for p from git."""
+        
+        # Execute commands from the leo-editor directory.
+        directory = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        filename = r'leo/core/leoGlobals.py'
+
+        # command = 'git log -L:ekr\.20230626064652\.1:leo/core/leoGlobals.py'  # no match`
+        # command = 'git log -L:ekr.20230626064652.1:leo/core/leoGlobals.py'  # no match`
+        command = 'git log -L:findUnl:leo/core/leoGlobals.py' # works
+
+
+        # git log -L/start/,/end/:filename.
+        ### regex1 = r'@\+node:ekr\.20230626064652\.1'  # g.findUnl
+        regex1 = r'@\+node:ekr\.20230630132341.1'  # g.parsePathData (last def in the file).
+
+        # regex1 = r'leoPy\.leo\#ekr\.20230626064652\.1' # works
+
+        # Warning: do *not* rely on raw strings.
+        regex2 = r'(#@\\+|#@\\-)'  # Fails
+        regex2 = r'#@(\+|\-)'  # Fails
+        regex2 = r'#@(+|-)'  # Fails
+        regex2 = r'(#@(+|-))'  # Fails
+
+        regex2 = r'#@+'  # Works if there is a following node.
+        regex3 = r'#@-'  # Works if there is no following node.
+
+        command1 = fr"git log -L/{regex1}/,/{regex2}/:{filename}"
+        command2 = fr"git log -L/{regex1}/,/{regex3}/:{filename}"
+        aList = []
+        for command in (command1, command2):
+            aList = g.execGitCommand(command, directory)
+            print(f"command: `{command}`  {len(aList)} lines\n")
+            if aList:
+                break
+        return aList
+    #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history
+    def _parse_node_history(self, aList: list[str]) -> list:
+        g.printObj(aList, tag='_parse_node_history')
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,

@@ -16,6 +16,13 @@ class TestEditFileCommands(LeoUnitTest):
 
         c = self.c
         g.trace(c.p.h)
+        
+        # g.findUnl:        unl:gnx://#ekr.20230626064652.1
+        # g.parsePathData:  unl:gnx://leoPy.leo#ekr.20230630132341.1
+
+        # git log -L/start/,/end/:filename.
+        regex1 = r'@\+node:ekr\.20230626064652\.1'  # g.findUnl
+        regex1 = r'@\+node:ekr\.20230630132341.1'  # g.parsePathData (last def in the file).
     #@-others
 
 #@-others
