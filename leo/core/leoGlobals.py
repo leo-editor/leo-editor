@@ -7798,7 +7798,8 @@ path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
     """
-    Return a dict giving path prefixes for the files given in @data unl-path-prefixes.
+    Return a dict giving path prefixes for the files given in @data
+    unl-path-prefixes.
     """
     lines = c.config.getData('unl-path-prefixes')
     d: dict[str, str] = {}

@@ -1101,13 +1101,6 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(full, getBool('full-unl-paths'), msg=full)
             self.assertEqual(kind, getString('unl-status-kind'), msg=kind)
 
-        # Test g.get_UNL and g.get_legacy_UNL.
-        expected_get_UNL = {
-            'legacy:0': short_gnx,
-            'legacy:1': full_gnx,
-            'gnx:0': short_gnx,
-            'gnx:1': full_gnx,
-        }
         expected_get_legacy_UNL = {
             'legacy:0': short_legacy,
             'legacy:1': full_legacy,
@@ -1118,7 +1111,6 @@ class TestGlobals(LeoUnitTest):
             for full in (True, False):
                 set_config(kind, full)
                 for d, f in (
-                    (expected_get_UNL, p.get_UNL),
                     (expected_get_legacy_UNL, p.get_legacy_UNL),
                 ):
                     expected = d[f"{kind}:{str(int(full))}"]
@@ -1130,6 +1122,8 @@ class TestGlobals(LeoUnitTest):
             for full in (True, False):
                 set_config(kind, full)
                 for expected, f in (
+                    # Test g.getUnl.
+                    (short_gnx, p.get_UNL),
                     # Test g.get_full/short_gnx_UNL.
                     (full_gnx, p.get_full_gnx_UNL),
                     (short_gnx, p.get_short_gnx_UNL),

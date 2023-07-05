@@ -878,14 +878,13 @@ class Position:
     #@+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
         """
-        Return a gnx-oriented UNL whose file part depends on the @bool full-unl-paths setting.
+        Return a gnx-oriented UNL with a short file name.
 
-        LeoTree.set_status_line will call this method if gnx-based unls are in effect.
+        LeoTree.set_status_line calls this method if gnx-based unls are in effect.
         """
         p = self
         c = p.v.context
-        full = c.config.getBool('full-unl-paths', default=False)
-        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        file_part = os.path.basename(c.fileName())
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
