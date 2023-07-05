@@ -887,48 +887,47 @@ class GitDiffController:
         """Produce a Leonine history of the node c.p."""
         c = self.c
         p = c.p
-        aList = self.get_node_history(p)
-        g.printObj(aList[:200], tag='node_history')
-    #@+node:ekr.20230705084709.1: *5* gdc._get_node_history
-    def _get_node_history(self, p) -> list[str]:
+        raw_history_list = self._get_node_history(c, p)
+        # g.printObj(raw_history_list, tag='raw_history_list')
+        parsed_history_list = self._parse_node_history(c, p, raw_history_list)
+        g.printObj(parsed_history_list, tag='parsed_history_list')
+
+    #@+node:ekr.20230705084709.1: *5* gdc._get_node_history  (finish)
+    def _get_node_history(self, c: Cmdr, p: Position) -> list[str]:
         """Get the raw node history list for p from git."""
-        
+
         # Execute commands from the leo-editor directory.
         directory = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-        filename = r'leo/core/leoGlobals.py'
 
-        # command = 'git log -L:ekr\.20230626064652\.1:leo/core/leoGlobals.py'  # no match`
-        # command = 'git log -L:ekr.20230626064652.1:leo/core/leoGlobals.py'  # no match`
-        command = 'git log -L:findUnl:leo/core/leoGlobals.py' # works
+        # Find the nearest ancestor @file node of p.
+        roots = list(p.nearest_unique_roots())
+        g.printObj(roots, tag='nearest_roots')
+        return []  ###
 
+        file_name = os.path.normpath(os.path.basename(c.fileName()))
 
-        # git log -L/start/,/end/:filename.
-        ### regex1 = r'@\+node:ekr\.20230626064652\.1'  # g.findUnl
-        regex1 = r'@\+node:ekr\.20230630132341.1'  # g.parsePathData (last def in the file).
-
-        # regex1 = r'leoPy\.leo\#ekr\.20230626064652\.1' # works
-
-        # Warning: do *not* rely on raw strings.
-        regex2 = r'(#@\\+|#@\\-)'  # Fails
-        regex2 = r'#@(\+|\-)'  # Fails
-        regex2 = r'#@(+|-)'  # Fails
-        regex2 = r'(#@(+|-))'  # Fails
-
+        # Create the commands: `git log -L/start/,/end/:filename`.
+        regex1 = fr"@\+node:{p.gnx}"
         regex2 = r'#@+'  # Works if there is a following node.
         regex3 = r'#@-'  # Works if there is no following node.
+        command1 = fr"git log -L/{regex1}/,/{regex2}/:{file_name}"
+        command2 = fr"git log -L/{regex1}/,/{regex3}/:{file_name}"
 
-        command1 = fr"git log -L/{regex1}/,/{regex2}/:{filename}"
-        command2 = fr"git log -L/{regex1}/,/{regex3}/:{filename}"
-        aList = []
+        # Run the two commands.
         for command in (command1, command2):
             aList = g.execGitCommand(command, directory)
-            print(f"command: `{command}`  {len(aList)} lines\n")
+            print(f"command: `{command}`: {len(aList)} lines\n")
             if aList:
-                break
-        return aList
-    #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history
-    def _parse_node_history(self, aList: list[str]) -> list:
-        g.printObj(aList, tag='_parse_node_history')
+                return aList
+        return []
+    #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history (to do)
+    def _parse_node_history(self, c: Cmdr, p: Position, aList: list[str]) -> list[tuple]:
+        """
+        Create a list of tuples by parsing aList,
+        a list of raw lines from `git log`.
+        """
+        result: list[tuple] = []
+        return result
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
