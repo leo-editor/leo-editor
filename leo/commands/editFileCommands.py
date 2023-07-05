@@ -531,6 +531,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         Produce a Leonine diff of pull request in the current branch.
         """
         GitDiffController(c=self.c).diff_pull_request()
+    #@+node:ekr.20230705082509.1: *3* efc.gitNodeHistory (git-node-history)
+    @cmd('git-node-history')
+    def gitNodeHistory(self, event: Event = None) -> None:
+        """
+        Produce a Leonine history of the node c.p.
+        """
+        GitDiffController(c=self.c).node_history()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event: Event) -> None:
@@ -877,6 +884,12 @@ class GitDiffController:
             u.afterChangeGroup(c.p, undoType=undoType)
             self.finish()
         return bool(files)
+    #@+node:ekr.20230705082614.1: *4* gdc.node_history
+    def node_history(self) -> None:
+
+        c = self.c
+        p = c.p
+        g.trace(p.h)
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
