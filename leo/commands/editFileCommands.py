@@ -531,11 +531,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         Produce a Leonine diff of pull request in the current branch.
         """
         GitDiffController(c=self.c).diff_pull_request()
-    #@+node:ekr.20230705082509.1: *3* efc.gitNodeHistory (git-node-history)
-    @cmd('git-node-history')
-    def gitNodeHistory(self, event: Event = None) -> None:
-        """Produce a Leonine history of the node c.p."""
-        GitDiffController(c=self.c).node_history()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event: Event) -> None:
@@ -715,7 +710,6 @@ class GitDiffController:
         """
         # Common code.
         c = self.c
-        # #1781, #2143
         directory = self.get_directory()
         if not directory:
             return
@@ -883,35 +877,26 @@ class GitDiffController:
             self.finish()
         return bool(files)
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
-    def node_history(self) -> None:
-        """Produce a Leonine history of the node c.p."""
-        c = self.c
-        p = c.p
-        raw_history_list = self._get_node_history(c, p)
+    def node_history(self, path: str, gnx: str) -> None:
+        """Produce a Leonine history of the node whose file name and gnx are given."""
+        raw_history_list = self._get_node_history(path, gnx)
         # g.printObj(raw_history_list, tag='raw_history_list')
-        parsed_history_list = self._parse_node_history(c, p, raw_history_list)
+        parsed_history_list = self._parse_node_history(gnx, raw_history_list)
         g.printObj(parsed_history_list, tag='parsed_history_list')
-
     #@+node:ekr.20230705084709.1: *5* gdc._get_node_history  (finish)
-    def _get_node_history(self, c: Cmdr, p: Position) -> list[str]:
-        """Get the raw node history list for p from git."""
-
-        # Execute commands from the leo-editor directory.
-        directory = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-
-        # Find the nearest ancestor @file node of p.
-        roots = list(p.nearest_unique_roots())
-        g.printObj(roots, tag='nearest_roots')
-        return []  ###
-
-        file_name = os.path.normpath(os.path.basename(c.fileName()))
+    def _get_node_history(self, path: str, gnx: str) -> list[str]:
+        """
+        Get the raw node history list for the node with the given gnx from the
+        given absolute path
+        """
+        directory = os.path.dirname(path)
 
         # Create the commands: `git log -L/start/,/end/:filename`.
-        regex1 = fr"@\+node:{p.gnx}"
+        regex1 = fr"@\+node:{gnx}"
         regex2 = r'#@+'  # Works if there is a following node.
         regex3 = r'#@-'  # Works if there is no following node.
-        command1 = fr"git log -L/{regex1}/,/{regex2}/:{file_name}"
-        command2 = fr"git log -L/{regex1}/,/{regex3}/:{file_name}"
+        command1 = fr"git log -L/{regex1}/,/{regex2}/:{path}"
+        command2 = fr"git log -L/{regex1}/,/{regex3}/:{path}"
 
         # Run the two commands.
         for command in (command1, command2):
@@ -921,7 +906,7 @@ class GitDiffController:
                 return aList
         return []
     #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history (to do)
-    def _parse_node_history(self, c: Cmdr, p: Position, aList: list[str]) -> list[tuple]:
+    def _parse_node_history(self, gnx: str, aList: list[str]) -> list[tuple]:
         """
         Create a list of tuples by parsing aList,
         a list of raw lines from `git log`.
