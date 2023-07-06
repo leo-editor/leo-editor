@@ -102,7 +102,7 @@ def pasteOutline(
         pasted = fc.getLeoOutlineFromClipboard(s)
     else:
         g.trace('No clashes', candidate.h)
-        pasted = fc.getLeoOutlineFromClipboard(s)
+        pasted = fc.getLeoOutlineFromClipboardRetainingClones(s)
     if not pasted:
         return None
     # Validate.
