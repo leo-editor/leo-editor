@@ -10,7 +10,8 @@ outline node.
 Provides a free-floating window tied to one node in an outline.
 The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.  A Freewin window
-will remain open even if the user changes to another outline.
+is node-locked - that is, it always shows a view of its original host node
+no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
 :Version: 2.01
