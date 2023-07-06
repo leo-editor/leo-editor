@@ -882,6 +882,7 @@ class FileCommands:
             return None
         # Create the position.
         p = leoNodes.Position(v)
+
         # Do *not* adjust links when linking v.
         if current.hasChildren() and current.isExpanded():
             p._linkCopiedAsNthChild(current, 0)
