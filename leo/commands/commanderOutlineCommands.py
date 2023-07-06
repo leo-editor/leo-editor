@@ -104,7 +104,7 @@ def pasteOutline(
         # # # pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
         # # # if not pasted:
             # # # return None  # Should never happen.
-    
+
     # Get *position* to be pasted.
     pasted = fc.getLeoOutlineFromClipboard(s)
     ### g.trace(c.positionExists(pasted), pasted.h)
@@ -115,7 +115,7 @@ def pasteOutline(
     c.validateOutline()
     c.checkOutline()
     # Delete and retry retaining nodes if no nodes in the pasted outline exist within the outline.
-    if False and not anyGnxClashes(c, pasted):   ###
+    if False and not anyGnxClashes(c, pasted):  ###
         pasted.doDelete()  ### Experimental.
         pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
         if not pasted:

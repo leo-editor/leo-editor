@@ -837,7 +837,7 @@ class FileCommands:
         p = leoNodes.Position(v)
         self.gnxDict = oldGnxDict
         return p
-        
+
         ###
             # # Do *not* adjust links when linking v.
             # if current.hasChildren() and current.isExpanded():
