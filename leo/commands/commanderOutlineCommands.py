@@ -57,7 +57,7 @@ def cutOutline(self: Self, event: Event = None) -> None:
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline & helper (changed)
 @g.commander_command('paste-node')
 def pasteOutline(
     self: Self,
@@ -67,9 +67,26 @@ def pasteOutline(
 ) -> Optional[Position]:
     """
     Paste an outline into the present outline from the clipboard.
-    Nodes do *not* retain their original identify.
+    Nodes retain their original identify if there are no gnx clashes.
     """
-    c = self
+    # Define helper.
+    #@+others
+    #@+node:ekr.20230706125618.1: *4* function: anyGnxClashes
+    def anyGnxClashes(c: Cmdr, pasted: Position) -> bool:
+        """Return True if there are any gnx clashes within c's outline."""
+        c = self
+        # Make *sure* p is not already in the outline.
+        for p in c.all_positions():
+            if p == pasted:
+                g.trace(f"Can not happen: pasted in outline: {pasted!r}")
+                return True
+        for p in c.all_positions():
+            if p.v.gnx == pasted.gnx:
+                # g.trace(f"Gnx clash: {pasted!r}, {p!r}")
+                return True
+        return False
+    #@-others
+    c, fc = self, self.fileCommands
     if s is None:
         s = g.app.gui.getTextFromClipboard()
     c.endEditing()
@@ -78,14 +95,31 @@ def pasteOutline(
     isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
+    # Pre-read the ouline.
+    candidate = fc.preReadLeoOutlineFromClipboard(s)
+    clashes = anyGnxClashes(c, candidate)
+    print('')
+    g.trace('clashes', clashes, candidate.h)
+        # # # pasted.doDelete()  ### Experimental.
+        # # # pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
+        # # # if not pasted:
+            # # # return None  # Should never happen.
+    
     # Get *position* to be pasted.
-    pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
+    pasted = fc.getLeoOutlineFromClipboard(s)
+    ### g.trace(c.positionExists(pasted), pasted.h)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
     c.validateOutline()
     c.checkOutline()
+    # Delete and retry retaining nodes if no nodes in the pasted outline exist within the outline.
+    if False and not anyGnxClashes(c, pasted):   ###
+        pasted.doDelete()  ### Experimental.
+        pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
+        if not pasted:
+            return None  # Should never happen.
     # Handle the "before" data for undo.
     if undoFlag:
         undoData = c.undoer.beforeInsertNode(c.p,

@@ -801,6 +801,57 @@ class FileCommands:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
+    #@+node:ekr.20230706132550.1: *5* fc.preReadLeoOutlineFromClipboard
+    def preReadLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
+        """
+        Read a Leo outline from string s in clipboard format.
+        Return the newly-created position, but do *not* link it into the outline.
+        """
+        ### Based on getLeoOutlineFromClipboard
+        c = self.c
+        current = c.p
+        if not current:
+            g.trace('no c.p')
+            return None
+        self.initReadIvars()
+        # Save the hidden root's children.
+        old_children = c.hiddenRootNode.children
+        # Save and clear gnxDict.
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+        if s.lstrip().startswith("{"):
+            # Maybe JSON
+            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+        else:
+            # This encoding must match the encoding used in outline_to_clipboard_string.
+            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
+        v = hidden_v.children[0]
+        v.parents = []
+        # Restore the hidden root's children
+        c.hiddenRootNode.children = old_children
+        if not v:
+            g.es("the clipboard is not valid ", color="blue")
+            return None
+        # Create the position.
+        p = leoNodes.Position(v)
+        self.gnxDict = oldGnxDict
+        return p
+        
+        ###
+            # # Do *not* adjust links when linking v.
+            # if current.hasChildren() and current.isExpanded():
+                # p._linkCopiedAsNthChild(current, 0)
+            # else:
+                # p._linkCopiedAfter(current)
+            # assert not p.isCloned(), g.objToString(p.v.parents)
+            # self.gnxDict = oldGnxDict
+            # self.reassignAllIndices(p)
+            # c.selectPosition(p)
+            # self.initReadIvars()
+            # return p
+
+
     #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
