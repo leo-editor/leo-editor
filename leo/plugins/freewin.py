@@ -9,10 +9,12 @@ outline node.
 
 Provides a free-floating window tied to one node in an outline.
 The window functions as a plain text editor, and can also be
-switched to render the node with Restructured Text.
+switched to render the node with Restructured Text.  A Freewin window
+is node-locked - that is, it always shows a view of its original host node
+no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.0
+:Version: 2.01
 :Date: 6 Apr 2022
 
 #@+others
@@ -89,11 +91,10 @@ Two types of rendering views are available, and can be chosen by a setting in th
 
 1. A well-rendered view with all the features of Restructured Text rendered
    in an appealing way (depending on the stylesheet used). This view can be
-   zoomed in or out using the standard browser keys: CTRL-+ and CTRL--
-   (Currently this feature does not work with Qt6). A light or dark themed
-   stylesheet is selected based on the dark or light character of your Leo
-   theme. You can supply your own stylesheet to use instead of the built-in
-   ones.
+   zoomed in or out using the standard browser keys: CTRL-+ and CTRL--.
+   A light or dark themed stylesheet is selected based on the dark or light
+   character of your Leo theme. You can supply your own stylesheet to use
+   instead of the built-in ones.
 
 2. A less fully-rendered view that has the ability to cause the host
    outline to navigate to a node with a selected gnx - see the section on
@@ -103,8 +104,8 @@ Two types of rendering views are available, and can be chosen by a setting in th
    be changed. Automatic switching between light and dark themes is still
    done.
 
-View 1 is the default view, except when using PyQt6, which does not
-currently support its features. To use View 2 instead, add the following
+View 1 is the default view. View2 is mainly used when the QtWebEngineView
+library package is not available. To use View 2 instead, add the following
 setting to the setting tree of an outline or to myLeoSettings.leo:
 
     @string fw-render-pane = nav-view

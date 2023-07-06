@@ -1078,7 +1078,7 @@ class GitDiffController:
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
-        """Return the abbreviated hash the given revision spec."""
+        """Return the abbreviated hash for the given revision spec."""
         if not revspec:
             return 'uncommitted'
         # Return only the abbreviated hash for the revspec.
