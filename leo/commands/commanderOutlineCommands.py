@@ -57,7 +57,7 @@ def cutOutline(self: Self, event: Event = None) -> None:
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline (generalized) & helper 
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline (generalized) & helper
 @g.commander_command('paste-node')
 def pasteOutline(
     self: Self,

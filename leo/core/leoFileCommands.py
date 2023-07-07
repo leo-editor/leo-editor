@@ -856,7 +856,7 @@ class FileCommands:
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """
         Read a Leo outline from string s in clipboard format.
-        
+
         Reassign all gnxs.
         """
         c = self.c
