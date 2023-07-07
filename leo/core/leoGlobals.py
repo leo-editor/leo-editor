@@ -7757,7 +7757,6 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         """Standardize the path for easy comparison."""
         return norm(path).lower()
 
-    trace = False and not g.unitTesting
     if not s.strip():
         return None
     if s.startswith('//') and s.endswith('#'):
@@ -7766,52 +7765,31 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         return None
     # Always match within the present file.
     if os.path.isabs(s) and standard(s) == standard(c_name):
-        if trace:
-            g.trace('Quick full match:', s)
         return c
     if not os.path.isabs(s) and standard(s) == standard(base(c_name)):
-        if trace:
-            g.trace('Quick short match:', s, base(c_name))
         return c
-    if trace:
-        g.trace('No quick match', s)
     if os.path.isabs(s):
         path = standard(s)
     else:
         # Values of d should be directories.
         d = g.parsePathData(c)
-        if trace:
-            print('')
-            g.printObj(d, tag='d')
         base_s = base(s)
         directory = d.get(base_s)
         if not directory:
-            g.trace(f"No directory for {s!r}")
             return None
         if not os.path.exists(directory):
-            g.trace(f"Directory found: {directory!r}")
             return None
         path = standard(os.path.join(directory, base_s))
-        if trace:
-            g.trace('   directory:', directory.lower())
-            g.trace('        path:', path.lower())
-            g.trace('c.fileName():', standard(c_name))
     if path == standard(c_name):
         return c
     # Search all open commanders.
     # This is a good shortcut, and it helps unit tests.
     for c2 in g.app.commanders():
         if path == standard(c2.fileName()):
-            if trace:
-                g.trace(f"       Found: {norm(c2.fileName())}")
             return c2
     # Open the file if possible.
     if not os.path.exists(path):
-        if trace:
-            g.trace(f"   Not found: {path}")
         return None
-    if trace:
-        g.trace(f"Opening {path}")
     return g.openWithFileName(path)
 #@+node:ekr.20230630132341.1: *4* g.parsePathData
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
