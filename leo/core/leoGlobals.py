@@ -7273,6 +7273,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
         c2 = g.openUNLFile(c, file_part)
+        if not c2:
+            return None
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
         return g.findGnx(tail, c2)
     # Resolve a file-based unl.
@@ -7285,6 +7287,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
+    if not c2:
+        return None
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')
     return g.findUnl(unlList, c2)
@@ -7743,20 +7747,32 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
 
-    Return c if the file can not be found.
+    Return None if the file can not be found.
     """
-    trace = False and g.unitTesting
+    def standardize(path: str) -> str:
+        """Standardize the path for easy comparison."""
+        return os.path.normpath(path).lower()
+
+    trace = False and not g.unitTesting
     if not s.strip():
-        return c
+        return None
     if s.startswith('//') and s.endswith('#'):
         s = s[2:-1]
     if not s.strip():
-        return c
+        return None
     # Always match within the present file.
-    if os.path.basename(s) == os.path.basename(c.fileName()):
+    if os.path.isabs(s) and standardize(s) == standardize(c.fileName()):
+        if trace:
+            g.trace('Quick full match:', s)
         return c
+    if not os.path.isabs(s) and standardize(s) == standardize(c.fileName()):
+        if trace:
+            g.trace('Quick short match:', s, os.path.basename(c.fileName()))
+        return c
+    if trace:
+        g.trace('No quick match', s)
     if os.path.isabs(s):
-        path = os.path.normpath(s).lower()
+        path = standardize(s)
     else:
         # Values of d should be directories.
         d = g.parsePathData(c)
@@ -7767,21 +7783,21 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         directory = d.get(base)
         if not directory:
             g.trace(f"No directory for {s!r}")
-            return c
+            return None
         if not os.path.exists(directory):
             g.trace(f"Directory found: {directory!r}")
-            return c
-        path = os.path.normpath(os.path.join(directory, base)).lower()
+            return None
+        path = standardize(os.path.join(directory, base))
         if trace:
             g.trace('   directory:', directory.lower())
             g.trace('        path:', path.lower())
-            g.trace('c.fileName():', os.path.normpath(c.fileName()).lower())
-    if path == os.path.normpath(c.fileName()).lower():
+            g.trace('c.fileName():', standardize(c.fileName()))
+    if path == standardize(c.fileName()):
         return c
     # Search all open commanders.
     # This is a good shortcut, and it helps unit tests.
     for c2 in g.app.commanders():
-        if path == os.path.normpath(c2.fileName()).lower():
+        if path == standardize(c2.fileName()):
             if trace:
                 g.trace(f"       Found: {os.path.normpath(c2.fileName())}")
             return c2
@@ -7789,7 +7805,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if not os.path.exists(path):
         if trace:
             g.trace(f"   Not found: {path}")
-        return c
+        return None
     if trace:
         g.trace(f"Opening {path}")
     return g.openWithFileName(path)
