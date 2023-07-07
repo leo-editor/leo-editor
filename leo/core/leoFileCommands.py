@@ -854,7 +854,11 @@ class FileCommands:
 
     #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
-        """Read a Leo outline from string s in clipboard format."""
+        """
+        Read a Leo outline from string s in clipboard format.
+        
+        Reassign all gnxs.
+        """
         c = self.c
         current = c.p
         if not current:

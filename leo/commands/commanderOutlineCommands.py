@@ -103,7 +103,7 @@ def pasteOutline(
         kind = 'allocating new' if clashes else 'retaining'
         g.es_print(f"paste-node: {kind} gnxs")
     if clashes:
-        pasted = fc.getLeoOutlineFromClipboard(s)
+        pasted = fc.getLeoOutlineFromClipboard(s)  # Reassigns gnxs.
     else:
         pasted = fc.getLeoOutlineFromClipboardRetainingClones(s)
     if not pasted:
@@ -131,7 +131,7 @@ def pasteOutline(
     c.recolor()
     return pasted
 #@+node:ekr.20230706192145.1: *3* c_oc.pasteOutlineAllocatingGnxs
-@g.commander_command('paste-node-allocating gnxs')
+@g.commander_command('paste-node-allocating-gnxs')
 def pasteOutlineAllocatingGnxs(
     self: Self,
     event: Event = None,
@@ -155,7 +155,7 @@ def pasteOutlineAllocatingGnxs(
     if not isLeo:
         return None
     # Get *position* to be pasted.
-    pasted = fc.getLeoOutlineFromClipboard(s)
+    pasted = fc.getLeoOutlineFromClipboard(s)  # Reassigns gnxs.
     if not pasted:
         return None
     # Validate.
@@ -190,7 +190,7 @@ def pasteOutlineRetainingClones(
 ) -> Optional[Position]:
     """
     Paste an outline into the present outline from the clipboard.
-    Nodes *retain* their original identify.
+    Do *not* reassign gnxs.
     """
     c = self
     if s is None:
