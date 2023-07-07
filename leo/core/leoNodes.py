@@ -826,7 +826,7 @@ class Position:
         c = p.v.context
         file_part = c.fileName()
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-    #@+node:ekr.20230628173542.2: *5* p.get_full_legacy_UNL
+    #@+node:tbrown.20111010104549.26758: *5* p.get_full_legacy_UNL
     def get_full_legacy_UNL(self) -> str:
         """
         Return a legacy unl with the full file-name component.
@@ -884,7 +884,8 @@ class Position:
         """
         p = self
         c = p.v.context
-        file_part = os.path.basename(c.fileName())
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
