@@ -1100,7 +1100,9 @@ class TestGlobals(LeoUnitTest):
             c.config.set(p=None, kind='bool', name='full-unl-paths', val=full)
             self.assertEqual(full, getBool('full-unl-paths'), msg=full)
             self.assertEqual(kind, getString('unl-status-kind'), msg=kind)
-            
+
+        # Test g.get_UNL and g.get_legacy_UNL.
+
         expected_get_UNL = {
             'legacy:0': short_gnx,
             'legacy:1': full_gnx,
