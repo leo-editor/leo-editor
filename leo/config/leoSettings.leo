@@ -11667,11 +11667,7 @@ False: do nothing when the mouse hovers over nodes.</t>
 <t tx="ekr.20230627130611.1">gnx:    Show gnx-based unls in the status area.
 legacy: Show legacy (headline-based) uns in the status area.</t>
 <t tx="ekr.20230627131213.1"></t>
-<t tx="ekr.20230627131227.1">This setting has effect only when `@string unl-status-kind = legacy`.
-
-Regardless of this setting, Leo will resolve unls using `@data unl-path-prefixes`.
-
-True: (legacy): Display full path names in the status area.
+<t tx="ekr.20230627131227.1">True: (legacy): Display full path names in the status area.
 False:          Display only the .leo file's name in the status area.
 </t>
 <t tx="ekr.20230627202839.1"># lines have the form:
