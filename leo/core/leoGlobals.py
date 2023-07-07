@@ -7749,9 +7749,13 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
 
     Return None if the file can not be found.
     """
-    def standardize(path: str) -> str:
+    base = os.path.basename
+    norm = os.path.normpath
+    c_name = c.fileName()
+
+    def standard(path: str) -> str:
         """Standardize the path for easy comparison."""
-        return os.path.normpath(path).lower()
+        return norm(path).lower()
 
     trace = False and not g.unitTesting
     if not s.strip():
@@ -7761,48 +7765,45 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if not s.strip():
         return None
     # Always match within the present file.
-    if os.path.isabs(s) and standardize(s) == standardize(c.fileName()):
+    if os.path.isabs(s) and standard(s) == standard(c_name):
         if trace:
             g.trace('Quick full match:', s)
         return c
-    if (
-        not os.path.isabs(s)
-        and standardize(s) == standardize(os.path.basename(c.fileName()))
-    ):
+    if not os.path.isabs(s) and standard(s) == standard(base(c_name)):
         if trace:
-            g.trace('Quick short match:', s, os.path.basename(c.fileName()))
+            g.trace('Quick short match:', s, base(c_name))
         return c
     if trace:
         g.trace('No quick match', s)
     if os.path.isabs(s):
-        path = standardize(s)
+        path = standard(s)
     else:
         # Values of d should be directories.
         d = g.parsePathData(c)
         if trace:
             print('')
             g.printObj(d, tag='d')
-        base = os.path.basename(s)
-        directory = d.get(base)
+        base_s = base(s)
+        directory = d.get(base_s)
         if not directory:
             g.trace(f"No directory for {s!r}")
             return None
         if not os.path.exists(directory):
             g.trace(f"Directory found: {directory!r}")
             return None
-        path = standardize(os.path.join(directory, base))
+        path = standard(os.path.join(directory, base_s))
         if trace:
             g.trace('   directory:', directory.lower())
             g.trace('        path:', path.lower())
-            g.trace('c.fileName():', standardize(c.fileName()))
-    if path == standardize(c.fileName()):
+            g.trace('c.fileName():', standard(c_name))
+    if path == standard(c_name):
         return c
     # Search all open commanders.
     # This is a good shortcut, and it helps unit tests.
     for c2 in g.app.commanders():
-        if path == standardize(c2.fileName()):
+        if path == standard(c2.fileName()):
             if trace:
-                g.trace(f"       Found: {os.path.normpath(c2.fileName())}")
+                g.trace(f"       Found: {norm(c2.fileName())}")
             return c2
     # Open the file if possible.
     if not os.path.exists(path):
