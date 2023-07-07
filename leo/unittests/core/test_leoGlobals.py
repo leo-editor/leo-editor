@@ -1102,7 +1102,6 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(kind, getString('unl-status-kind'), msg=kind)
 
         # Test g.get_UNL and g.get_legacy_UNL.
-
         expected_get_UNL = {
             'legacy:0': short_gnx,
             'legacy:1': full_gnx,
