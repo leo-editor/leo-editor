@@ -7765,7 +7765,10 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         if trace:
             g.trace('Quick full match:', s)
         return c
-    if not os.path.isabs(s) and standardize(s) == standardize(c.fileName()):
+    if (
+        not os.path.isabs(s)
+        and standardize(s) == standardize(os.path.basename(c.fileName()))
+    ):
         if trace:
             g.trace('Quick short match:', s, os.path.basename(c.fileName()))
         return c
