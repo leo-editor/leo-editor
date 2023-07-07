@@ -57,7 +57,7 @@ def cutOutline(self: Self, event: Event = None) -> None:
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline & helper (changed)
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline (generalized) & helper 
 @g.commander_command('paste-node')
 def pasteOutline(
     self: Self,
@@ -98,11 +98,64 @@ def pasteOutline(
     # Pre-read the ouline.
     candidate = fc.preReadLeoOutlineFromClipboard(s)
     # Get *position* to be pasted.
-    if anyGnxClashes(c, candidate):
+    clashes = anyGnxClashes(c, candidate)
+    if not g.unitTesting:
+        kind = 'allocating new' if clashes else 'retaining'
+        g.es_print(f"paste-node: {kind} gnxs")
+    if clashes:
         pasted = fc.getLeoOutlineFromClipboard(s)
     else:
-        g.trace('No clashes', candidate.h)
         pasted = fc.getLeoOutlineFromClipboardRetainingClones(s)
+    if not pasted:
+        return None
+    # Validate.
+    c.validateOutline()
+    c.checkOutline()
+    # Handle the "before" data for undo.
+    if undoFlag:
+        undoData = c.undoer.beforeInsertNode(c.p,
+            pasteAsClone=not clashes,
+            copiedBunchList=[],
+        )
+    # Paste the node into the outline.
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged()
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        pasted.moveToNthChildOf(back, 0)
+    # Finish the command.
+    if undoFlag:
+        c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
+    c.redraw(pasted)
+    c.recolor()
+    return pasted
+#@+node:ekr.20230706192145.1: *3* c_oc.pasteOutlineAllocatingGnxs
+@g.commander_command('paste-node-allocating gnxs')
+def pasteOutlineAllocatingGnxs(
+    self: Self,
+    event: Event = None,
+    s: str = None,
+    undoFlag: bool = True,
+) -> Optional[Position]:
+    """
+    Paste an outline into the present outline from the clipboard.
+    Always allocate new gnxs.
+    """
+    # Define helper.
+    #@+others
+    #@-others
+    c, fc = self, self.fileCommands
+    if s is None:
+        s = g.app.gui.getTextFromClipboard()
+    c.endEditing()
+    if not s or not c.canPasteOutline(s):
+        return None  # This should never happen.
+    isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
+    if not isLeo:
+        return None
+    # Get *position* to be pasted.
+    pasted = fc.getLeoOutlineFromClipboard(s)
     if not pasted:
         return None
     # Validate.
@@ -123,7 +176,7 @@ def pasteOutline(
         pasted.moveToNthChildOf(back, 0)
     # Finish the command.
     if undoFlag:
-        c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
+        c.undoer.afterInsertNode(pasted, 'Paste Node Allocating Gnxs', undoData)
     c.redraw(pasted)
     c.recolor()
     return pasted
