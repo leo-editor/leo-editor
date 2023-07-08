@@ -7308,7 +7308,7 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p)
             return p2 or p
     return None
-#@+node:ekr.20230626064652.1: *3* g.findUnl & helpers (legacy unls)
+#@+node:ekr.20230626064652.1: *3* g.findUnl (legacy unls)
 def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     g.findUnl: support for legacy UNLs.
@@ -7319,34 +7319,9 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # Define the unl patterns.
-    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
 
-    #@+others  # Define helper functions
-    #@+node:ekr.20230626064652.2: *4* function: convert_unl_list
-    def convert_unl_list(aList: list[str]) -> list[str]:
-        """
-        Convert old-style UNLs to new UNLs, retaining line numbers if possible.
-        """
-        result = []
-        for s in aList:
-            # Try to get the line number.
-            for m, line_group in (
-                (old_pat.match(s), 4),
-                (new_pat.match(s), 3),
-            ):
-                if m:
-                    try:
-                        n = int(m.group(line_group))
-                        result.append(f"{m.group(1)}::{n}")
-                        continue
-                    except Exception:
-                        pass
-            # Finally, just add the whole UNL.
-            result.append(s)
-        # Do *not* remove duplicates!
-        return result
+    #@+others  # Define helper.
     #@+node:ekr.20230626064652.3: *4* function: full_match
     def full_match(p: Position) -> bool:
         """Return True if the stripped headlines of p and all p's parents match unlList."""
@@ -7364,9 +7339,9 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
         return not aList
     #@-others
 
-    unlList = convert_unl_list(unlList1)
-    if not unlList:
+    if not unlList1:
         return None
+    unlList = unlList1[:]
     # Find all target headlines.
     targets = []
     m = new_pat.match(unlList[-1])
