@@ -842,7 +842,7 @@ class Position:
         """
         Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
 
-        The file part of this UNL depends on the @bool full-unl-paths setting.
+        @bool full-unl-paths determines the size of the file part.
 
         LeoTree.set_status_line will call this method if legacy unls are in effect.
         """
@@ -878,7 +878,9 @@ class Position:
     #@+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
         """
-        Return a gnx-oriented UNL with a short file name.
+        Return a gnx-oriented UNL.
+
+        @bool full-unl-paths determines the size of the file part.
 
         LeoTree.set_status_line calls this method if gnx-based unls are in effect.
         """
