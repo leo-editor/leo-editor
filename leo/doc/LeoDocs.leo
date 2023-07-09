@@ -32668,6 +32668,10 @@ New setting for clickable links:
 - @string unl-status-kind = gnx
 - @bool full-unl-paths = True
 - @data unl-path-prefixes
+
+Minor changes to Leo's api:
+
+- PR #3433: Remove the "fn" positional arg from at.readOneAtEditNode and at.readOneAtAsisNode.
   
 Minor improvements:
   
@@ -32865,11 +32869,20 @@ PR: https://github.com/leo-editor/leo-editor/pull/3422
         g.trace('Unexpected exception in SessionManager.save_snapshot')
         g.es_exception()
 </t>
-<t tx="ekr.20230709070852.1">.. _`PR #3215`: https://github.com/leo-editor/leo-editor/pull/3215
+<t tx="ekr.20230709070852.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3215`: https://github.com/leo-editor/leo-editor/pull/3215
 .. _`PR #3424`: https://github.com/leo-editor/leo-editor/pull/3424
+
 
 - `PR #3215`_ and `PR #3424`_: gnx-based unls (clickable links).
   These links will break only if the original node is deleted.
+  
+Minor changes to Leo's api:
+
+.. _`PR #3433`: https://github.com/leo-editor/leo-editor/pull/3433
+
+- PR `#3433`_: Remove the "fn" positional arg from at.readOneAtEditNode and at.readOneAtAsisNode.
   
 New settings:
  
