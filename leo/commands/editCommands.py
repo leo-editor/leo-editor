@@ -131,7 +131,6 @@ def mark_first_parents(event: Event) -> list[Position]:
 def merge_node_with_next_node(event: Event = None) -> None:
     """
     Merge p.b into p.next().b and delete p, *provided* that p has no children.
-    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
     """
     c = event.get('c')
     if not c:
@@ -162,7 +161,6 @@ def merge_node_with_next_node(event: Event = None) -> None:
 def merge_node_with_prev_node(event: Event = None) -> None:
     """
     Merge p.b into p.back().b and delete p, *provided* that p has no children.
-    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
     """
     c = event.get('c')
     if not c:
