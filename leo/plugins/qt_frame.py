@@ -3569,7 +3569,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         at = c.atFileCommands
         # Use the full @edit logic, so dragging will be
         # exactly the same as reading.
-        at.readOneAtEditNode(fn, p)
+        at.readOneAtEditNode(p)
         fn2 = fn.replace('\\', '/')
         p.h = f"@edit {fn2}"
         p.clearDirty()  # Don't automatically rewrite this node.
