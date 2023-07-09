@@ -305,14 +305,13 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     """Refresh an @<file> node from disk."""
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
-    fn = p.anyAtFileNodeName()
     shouldDelete = c.sqlite_connection is None
-    if not fn:
+    if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
     full_path = c.fullPath(p)
     if os.path.isdir(full_path):
-        g.warning(f"not a file: {fn!r}")
+        g.warning(f"not a file: {full_path!r}")
         return
     b = u.beforeChangeTree(p)
     redraw_flag = True
