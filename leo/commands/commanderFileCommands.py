@@ -305,14 +305,13 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     """Refresh an @<file> node from disk."""
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
-    fn = p.anyAtFileNodeName()
     shouldDelete = c.sqlite_connection is None
-    if not fn:
+    if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
-    # #1603.
-    if os.path.isdir(fn):
-        g.warning(f"not a file: {fn!r}")
+    full_path = c.fullPath(p)
+    if os.path.isdir(full_path):
+        g.warning(f"not a file: {full_path!r}")
         return
     b = u.beforeChangeTree(p)
     redraw_flag = True
@@ -343,10 +342,10 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
             p.v._deleteAllChildren()
         at.read(p)
     elif word == '@edit':
-        at.readOneAtEditNode(fn, p)  # Always deletes children.
+        at.readOneAtEditNode(p)  # Always deletes children.
     elif word == '@asis':
         # Fix #1067.
-        at.readOneAtAsisNode(fn, p)  # Always deletes children.
+        at.readOneAtAsisNode(p)  # Always deletes children.
     else:
         g.es_print(f"can not refresh from disk\n{p.h!r}")
         redraw_flag = False
