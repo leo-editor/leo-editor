@@ -7266,7 +7266,11 @@ def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> N
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:ekr.20230628072620.1: *3* g.findAnyUnl
 def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
-    """Find a either a legacy (path-based) or new (gnx-based) unl."""
+    """
+    Find the Position corresponding to an UNL.
+
+    The UNL may be either a legacy (path-based) or new (gnx-based) unl.
+    """
     unl = unl_s
     if unl.startswith('unl:gnx:'):
         # Resolve a gnx-based unl.
@@ -7293,13 +7297,21 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
     unlList = tail.split('-->')
     return g.findUnl(unlList, c2)
 #@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
-file_pat = re.compile(r'^(.*)::([-\d]+)?$')  # '::' is the separator.
+find_gnx_pat = re.compile(r'^(.*)::([-\d]+)?$')
 
 def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
-    """Return the position with the given gnx in c."""
+    """
+    gnx: the gnx part of a gnx-based unl.
+
+    The gnx part may be the actual gnx or <actual-gnx>::<line-number>
+
+    Return the first position in c with the actual gnx.
+    """
+    # Get the actual gnx and line number.
     n: int = 0  # The line number.
-    m = file_pat.match(gnx)
+    m = find_gnx_pat.match(gnx)
     if m:
+        # Get the actual gnx and line number.
         gnx = m.group(1)
         try:
             n = int(m.group(2))
