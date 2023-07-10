@@ -304,8 +304,10 @@ def open_outline(self: Self, event: Event = None) -> None:
 def refreshFromDisk(self: Self, event: Event = None) -> None:
     """Refresh an @<file> node from disk."""
     c, p, u = self, self.p, self.undoer
+    at = c.atFileCommands
     c.nodeConflictList = []
-    shouldDelete = c.sqlite_connection is None
+    ### What is this?
+    ### shouldDelete = c.sqlite_connection is None
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
@@ -314,48 +316,52 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
         g.warning(f"not a file: {full_path!r}")
         return
     b = u.beforeChangeTree(p)
-    redraw_flag = True
-    at = c.atFileCommands
     # Fix bug 1090950 refresh from disk: cut node resurrection.
     c.recreateGnxDict()
-    i = g.skip_id(p.h, 0, chars='@')
-    word = p.h[0:i]
-    if word == '@auto':
-        # This includes @auto-*
-        if shouldDelete:
-            p.v._deleteAllChildren()
-        # Fix #451: refresh-from-disk selects wrong node.
+    ### i = g.skip_id(p.h, 0, chars='@')
+    ### word = p.h[0:i]
+    ### if word == '@auto':
+    if p.h.startswith(('@auto', '@auto-')):
+        # # # if shouldDelete:
+            # # # p.v._deleteAllChildren()
+        p.v._deleteAllChildren()
+        p = at.readOneAtAutoNode(p)  # Changes p!
+    ### elif word in ('@thin', '@file'):
+    elif p.h.startswith(('@thin', '@file')):
+        # # # if shouldDelete:
+            # # # p.v._deleteAllChildren()
+        p.v._deleteAllChildren()
+        at.read(p)
+    ### elif word == '@clean':
+    elif p.h.startswith('@clean'):
+        at.readOneAtCleanNode(p)
+        ### Huh???
+            # if p.b.strip() or p.hasChildren():
+                # at.readOneAtCleanNode(p)
+            # else:
+                # p = at.readOneAtAutoNode(p)
+    elif p.h.startwith('@auto'):
         p = at.readOneAtAutoNode(p)
-    elif word in ('@thin', '@file'):
-        if shouldDelete:
-            p.v._deleteAllChildren()
+    ### elif word == '@shadow':
+    elif p.h.startwith('@shadow'):
+        # # # if shouldDelete:
+            # # # p.v._deleteAllChildren()
+        p.v._deleteAllChildren()
         at.read(p)
-    elif word == '@clean':
-        # Wishlist 148: use @auto parser if the node is empty.
-        if p.b.strip() or p.hasChildren():
-            at.readOneAtCleanNode(p)
-        else:
-            # Fix #451: refresh-from-disk selects wrong node.
-            p = at.readOneAtAutoNode(p)
-    elif word == '@shadow':
-        if shouldDelete:
-            p.v._deleteAllChildren()
-        at.read(p)
-    elif word == '@edit':
+    ### elif word == '@edit':
+    elif p.h.startwith('@edit'):
         at.readOneAtEditNode(p)  # Always deletes children.
-    elif word == '@asis':
-        # Fix #1067.
+    ### elif word == '@asis':
+    elif p.h.startswith('@asis'):
         at.readOneAtAsisNode(p)  # Always deletes children.
     else:
         g.es_print(f"can not refresh from disk\n{p.h!r}")
-        redraw_flag = False
-    if redraw_flag:
-        # Fix #451: refresh-from-disk selects wrong node.
-        c.selectPosition(p)
-        u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
-        # Create the 'Recovered Nodes' tree.
-        c.fileCommands.handleNodeConflicts()
-        c.redraw()
+        return
+    c.selectPosition(p)
+    u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
+    # Create the 'Recovered Nodes' tree.
+    c.fileCommands.handleNodeConflicts()
+    c.redraw()
 #@+node:ekr.20210610083257.1: *3* c_file.pwd
 @g.commander_command('pwd')
 def pwd_command(self: Self, event: Event = None) -> None:
