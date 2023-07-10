@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Slides &#8212; Leo 6.7.4 documentation</title>
+    <title>Clickable links &#8212; Leo 6.7.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
@@ -19,8 +19,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Clones and views" href="slides/clones-and-views/clones-and-views.html" />
-    <link rel="prev" title="Leo’s Cheat Sheet" href="cheatsheet.html" /> 
+    <link rel="next" title="Leo’s Markup Language" href="leomarkup.html" />
+    <link rel="prev" title="Leo’s Users Guide" href="usersguide.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -29,14 +29,14 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="slides/clones-and-views/clones-and-views.html" title="Clones and views"
+          <a href="leomarkup.html" title="Leo’s Markup Language"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="cheatsheet.html" title="Leo’s Cheat Sheet"
+          <a href="usersguide.html" title="Leo’s Users Guide"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="toc-more-links.html" accesskey="U">More Leo Links</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Slides</a></li> 
+          <li class="nav-item nav-item-1"><a href="usersguide.html" accesskey="U">Leo’s Users Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Clickable links</a></li> 
       </ul>
     </div>  
 
@@ -45,18 +45,36 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="slides">
-<h1>Slides<a class="headerlink" href="#slides" title="Permalink to this heading">¶</a></h1>
-<p>This is the front page for various slide shows about Leo.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="slides/clones-and-views/clones-and-views.html">Clones and views</a></li>
-<li class="toctree-l1"><a class="reference internal" href="slides/external-files/external-files.html">Using external files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="slides/basics/basics.html">Leo’s Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="slides/scripting-leo/scripting-leo.html">Scripting Leo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="slides/minibuffer/minibuffer.html">Using the minibuffer</a></li>
-</ul>
-</div>
+  <section id="clickable-links">
+<h1>Clickable links<a class="headerlink" href="#clickable-links" title="Permalink to this heading">¶</a></h1>
+<p>Leo syntax colors clickable links in the body pane. They have four forms:</p>
+<ol class="arabic">
+<li><p>Error messages produced by flake8, mypy, pyflakes, pylint, python:</p>
+<p>Some of these tools produce clickable links in the log pane when run
+<em>within</em> Leo. Some do not.</p>
+<p>When running these tools <em>outside of</em> Leo, copying an error message from
+the <em>console</em> to Leo’s log pane will create clickable links in the log
+pane. Control-clicking these links will select the proper node and line
+provided the outline contains an <cite>&#64;&amp;lt;file&amp;gt;</cite> node for file mentioned in
+the error message.</p>
+</li>
+<li><p>UNLs based on gnxs (global node indices):</p>
+<p>Links of the form <cite>unl:gnx:</cite> + <cite>//{outline}#{gnx}</cite> open the given
+outline and select the first outline node with the given gnx. These UNLs
+will work as long as the node exists anywhere in the outline.</p>
+<p><em>Note</em>: <cite>{outline}</cite> is optional. It can be an absolute path name or
+a relative path name resolved using <cite>&#64;data unl-path-prefixes</cite>.</p>
+</li>
+<li><p>Leo’s headline-based UNLs, as shown in the status pane:</p>
+<p>Headline-based UNLs consist of <cite>unl://</cite> + <cite>//{outline}#{headline_list}</cite>
+where headline_list is a list of headlines separated by <cite>–&gt;</cite>.</p>
+<p><em>Note</em>: <cite>{outline}</cite> is optional. It can be an absolute path name or
+a relative path name resolved using <cite>&#64;data unl-path-prefixes</cite>.</p>
+</li>
+<li><p>Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.</p>
+<p>For example, Leo’s forum: <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p>
+</li>
+</ol>
 </section>
 
 
@@ -71,13 +89,13 @@
             </a></p>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="cheatsheet.html"
-                          title="previous chapter">Leo’s Cheat Sheet</a></p>
+    <p class="topless"><a href="usersguide.html"
+                          title="previous chapter">Leo’s Users Guide</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="slides/clones-and-views/clones-and-views.html"
-                          title="next chapter">Clones and views</a></p>
+    <p class="topless"><a href="leomarkup.html"
+                          title="next chapter">Leo’s Markup Language</a></p>
   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
@@ -104,14 +122,14 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="slides/clones-and-views/clones-and-views.html" title="Clones and views"
+          <a href="leomarkup.html" title="Leo’s Markup Language"
              >next</a> |</li>
         <li class="right" >
-          <a href="cheatsheet.html" title="Leo’s Cheat Sheet"
+          <a href="usersguide.html" title="Leo’s Users Guide"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="toc-more-links.html" >More Leo Links</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Slides</a></li> 
+          <li class="nav-item nav-item-1"><a href="usersguide.html" >Leo’s Users Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Clickable links</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
