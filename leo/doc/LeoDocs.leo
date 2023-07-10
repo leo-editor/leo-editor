@@ -32481,6 +32481,9 @@ Leo's beautify command differs from `Black`_ as follows:
 </t>
 <t tx="ekr.20230303064647.1">def copy_files(from_directory, to_directory, last_timestamp):
     """Copy only *changed* html files from `from_directory` to `to_directory`."""
+    if not os.path.exists(to_directory):
+        print(f"Directory not found: {to_directory!r}")
+        return
     files = glob.glob(f"{from_directory}{os.sep}*")
     written = 0
     for f in files:
