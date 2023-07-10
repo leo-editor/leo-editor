@@ -69,7 +69,8 @@
 <v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
 <v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
-<v t="ekr.20230627150454.1"><vh>New UNLs with file parts</vh></v>
+<v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
+<v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -1046,5 +1047,25 @@ unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes
 # In LeoDocs.leo
 unl://LeoDocs.leo#Web pages
 </t>
+<t tx="ekr.20230707065449.1"># These unls will work only on EKR's machine.
+# They are a test of absolute matches in g.openUNLFile.
+
+# Exists: Recent
+unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20230622112649.1
+
+# Should fail
+unl:gnx://c:\Repos\leo-editor\leo\doc\test.leo#ekr.20230622112649.1
+
+# In LeoDocs.leo: Leo 6.7.3 release notes
+unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Read me first **
+unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20050831195449
+
+# Bad gnx: xyzzy.leo does not exist.
+unl:gnx://xyzzy.leo#.20230622112649.1</t>
 </tnodes>
 </leo_file>

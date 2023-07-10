@@ -396,7 +396,7 @@ class AtFile:
         elif p.isAtAutoNode():
             at.readOneAtAutoNode(p)
         elif p.isAtEditNode():
-            at.readOneAtEditNode(fileName, p)
+            at.readOneAtEditNode(p)
         elif p.isAtShadowFileNode():
             at.readOneAtShadowNode(fileName, p)
         elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
@@ -471,11 +471,10 @@ class AtFile:
             g.doHook('after-auto', c=c, p=p)
         return p  # For #451: return p.
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
-    def readOneAtEditNode(self, fn: str, p: Position) -> None:  # pragma: no cover
+    def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
         at = self
         c = at.c
         ic = c.importCommands
-        # #1521
         fn = c.fullPath(p)
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
@@ -503,7 +502,7 @@ class AtFile:
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
-    def readOneAtAsisNode(self, fn: str, p: Position) -> None:  # pragma: no cover
+    def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
         fn = c.fullPath(p)
