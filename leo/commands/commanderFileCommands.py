@@ -298,7 +298,7 @@ def open_outline(self: Self, event: Event = None) -> None:
     )
     open_completer(c, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
-# refresh_pattern = re.compile(r'^(@[\w-]+)')
+### refresh_pattern = re.compile(r'^(@[\w-]+)')
 
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:
@@ -321,41 +321,39 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     ### i = g.skip_id(p.h, 0, chars='@')
     ### word = p.h[0:i]
     ### if word == '@auto':
-    if p.h.startswith(('@auto', '@auto-')):
+    if p.isAtAutoNode() or p.atAutoRstNodeName():
         # # # if shouldDelete:
             # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!
     ### elif word in ('@thin', '@file'):
-    elif p.h.startswith(('@thin', '@file')):
+    elif p.atFileNodeName():
         # # # if shouldDelete:
             # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         at.read(p)
     ### elif word == '@clean':
-    elif p.h.startswith('@clean'):
+    elif p.isAtCleanNode():
         at.readOneAtCleanNode(p)
         ### Huh???
             # if p.b.strip() or p.hasChildren():
                 # at.readOneAtCleanNode(p)
             # else:
                 # p = at.readOneAtAutoNode(p)
-    elif p.h.startwith('@auto'):
-        p = at.readOneAtAutoNode(p)
     ### elif word == '@shadow':
-    elif p.h.startwith('@shadow'):
+    elif p.isAtShadowFileNode():
         # # # if shouldDelete:
             # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         at.read(p)
     ### elif word == '@edit':
-    elif p.h.startwith('@edit'):
+    elif p.isAtEditNode():
         at.readOneAtEditNode(p)  # Always deletes children.
     ### elif word == '@asis':
-    elif p.h.startswith('@asis'):
+    elif p.isAtAsisFileNode():
         at.readOneAtAsisNode(p)  # Always deletes children.
     else:
-        g.es_print(f"can not refresh from disk\n{p.h!r}")
+        g.es_print(f"Unknown @<file> node: {p.h!r}")
         return
     c.selectPosition(p)
     u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
