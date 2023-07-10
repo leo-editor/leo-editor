@@ -61,7 +61,6 @@ class ConvertAtRoot:
                 return False
         return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
-    @cmd('convert-at-root')
     def convert_file(self, c: Cmdr) -> None:
         """Convert @root to @clean in the the .leo file at the given path."""
         self.find_all_units(c)
