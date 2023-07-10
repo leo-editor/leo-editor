@@ -880,6 +880,8 @@ class Position:
         """
         Return a gnx-oriented UNL.
 
+        Breaking change to Leo's API: returned a path-oriented UNL previously.
+
         @bool full-unl-paths determines the size of the file part.
 
         LeoTree.set_status_line calls this method if gnx-based unls are in effect.
