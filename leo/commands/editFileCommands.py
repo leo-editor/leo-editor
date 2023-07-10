@@ -114,8 +114,6 @@ class ConvertAtRoot:
                 return p
         return None
     #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
-    section_pat = re.compile(r'\s*<\<(.*)>\>')
-
     def make_clones(self, p: Position) -> None:
         """Make clones for all undefined sections in p.b."""
         for s in g.splitLines(p.b):
