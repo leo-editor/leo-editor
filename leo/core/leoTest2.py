@@ -148,6 +148,11 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
     def test_set_setting(self) -> None:
 
+        class_name = self.__class__.__name__
+
+        if class_name != 'LeoUnitTest':
+            self.skipTest(f"{class_name} is not 'LeoUnitTest'")
+
         if not hasattr(self, 'c'):
             # TestLeoServer.
             self.skipTest(f"{self.__class__.__name__} has no 'c' ivar")

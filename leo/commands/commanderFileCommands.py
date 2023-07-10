@@ -313,7 +313,7 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     c.nodeConflictList = []
     bunch = u.beforeChangeTree(p)
     c.recreateGnxDict()
-    if p.isAtAutoNode() or p.atAutoRstNodeName():
+    if p.isAtAutoNode() or p.isAtAutoRstNode():
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!
     elif p.atFileNodeName():
