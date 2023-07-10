@@ -32707,6 +32707,7 @@ See the first comment of PR #3424 for full details.
 
 .. _`PR #3215`: https://github.com/leo-editor/leo-editor/pull/3215
 .. _`PR #3424`: https://github.com/leo-editor/leo-editor/pull/3424
+.. _`PR #3433`: https://github.com/leo-editor/leo-editor/pull/3433
 
 **Warning: breaking changes to Leo's api**
 
