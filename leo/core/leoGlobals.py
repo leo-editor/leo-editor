@@ -7273,6 +7273,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
         c2 = g.openUNLFile(c, file_part)
+        if not c2:
+            return None
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
         return g.findGnx(tail, c2)
     # Resolve a file-based unl.
@@ -7285,6 +7287,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
+    if not c2:
+        return None
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')
     return g.findUnl(unlList, c2)
@@ -7743,62 +7747,57 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
 
-    Return c if the file can not be found.
+    Return None if the file can not be found.
     """
-    trace = False and g.unitTesting
+    base = os.path.basename
+    norm = os.path.normpath
+    c_name = c.fileName()
+
+    def standard(path: str) -> str:
+        """Standardize the path for easy comparison."""
+        return norm(path).lower()
+
     if not s.strip():
-        return c
+        return None
     if s.startswith('//') and s.endswith('#'):
         s = s[2:-1]
     if not s.strip():
-        return c
+        return None
     # Always match within the present file.
-    if os.path.basename(s) == os.path.basename(c.fileName()):
+    if os.path.isabs(s) and standard(s) == standard(c_name):
+        return c
+    if not os.path.isabs(s) and standard(s) == standard(base(c_name)):
         return c
     if os.path.isabs(s):
-        path = os.path.normpath(s).lower()
+        path = standard(s)
     else:
         # Values of d should be directories.
         d = g.parsePathData(c)
-        if trace:
-            print('')
-            g.printObj(d, tag='d')
-        base = os.path.basename(s)
-        directory = d.get(base)
+        base_s = base(s)
+        directory = d.get(base_s)
         if not directory:
-            g.trace(f"No directory for {s!r}")
-            return c
+            return None
         if not os.path.exists(directory):
-            g.trace(f"Directory found: {directory!r}")
-            return c
-        path = os.path.normpath(os.path.join(directory, base)).lower()
-        if trace:
-            g.trace('   directory:', directory.lower())
-            g.trace('        path:', path.lower())
-            g.trace('c.fileName():', os.path.normpath(c.fileName()).lower())
-    if path == os.path.normpath(c.fileName()).lower():
+            return None
+        path = standard(os.path.join(directory, base_s))
+    if path == standard(c_name):
         return c
     # Search all open commanders.
     # This is a good shortcut, and it helps unit tests.
     for c2 in g.app.commanders():
-        if path == os.path.normpath(c2.fileName()).lower():
-            if trace:
-                g.trace(f"       Found: {os.path.normpath(c2.fileName())}")
+        if path == standard(c2.fileName()):
             return c2
     # Open the file if possible.
     if not os.path.exists(path):
-        if trace:
-            g.trace(f"   Not found: {path}")
-        return c
-    if trace:
-        g.trace(f"Opening {path}")
+        return None
     return g.openWithFileName(path)
 #@+node:ekr.20230630132341.1: *4* g.parsePathData
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
 def parsePathData(c: Cmdr) -> dict[str, str]:
     """
-    Return a dict giving path prefixes for the files given in @data unl-path-prefixes.
+    Return a dict giving path prefixes for the files given in @data
+    unl-path-prefixes.
     """
     lines = c.config.getData('unl-path-prefixes')
     d: dict[str, str] = {}

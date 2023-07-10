@@ -1646,6 +1646,8 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20230709070852.1"><vh>What's new in Leo 6.7.4</vh></v>
+<v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
@@ -2511,8 +2513,23 @@
 </v>
 </v>
 </v>
-<v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
+<v t="ekr.20230409053106.1"></v>
+<v t="ekr.20230709070852.1"></v>
 <v t="ekr.20230703101804.1"></v>
+<v t="ekr.20230709064651.1"><vh>6.7.4: Completed</vh>
+<v t="ekr.20230709064651.1038"><vh>=== PR #3418: annotations for console gui</vh>
+<v t="ekr.20230709064651.1039"><vh>&lt;&lt; leoFrame annotations &gt;&gt;</vh></v>
+<v t="ekr.20230709064651.1040"><vh>LeoFrame.__init__ &amp; reloadSettings</vh>
+<v t="ekr.20230709064651.1041"><vh>frame.createFirstTreeNode</vh></v>
+</v>
+<v t="ekr.20230709064651.1042"><vh>LeoFrame.Status line convenience methods</vh></v>
+</v>
+<v t="ekr.20230709064651.1043"><vh>=== PR #3421: insert-headline-time</vh></v>
+<v t="ekr.20230709064651.1044"><vh>=== PR #3422: save/restore sessions to global cache</vh>
+<v t="ekr.20230709064651.1045"><vh>SessionManager.load_snapshot</vh></v>
+<v t="ekr.20230709064651.1046"><vh>SessionManager.save_snapshot</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -32643,8 +32660,34 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.4**
 
-*** To do ***
+- PR #3215 and #3424: gnx-based unls (clickable links).
+  These links will break only if the original node is deleted.
+  
+New setting for clickable links:
+  
+- @string unl-status-kind = gnx
+- @bool full-unl-paths = True
+- @data unl-path-prefixes
 
+Minor changes to Leo's api:
+
+- PR #3433: Remove the "fn" positional arg from at.readOneAtEditNode and at.readOneAtAsisNode.
+  
+Minor improvements:
+  
+- PR #3330: Improve importers for C, C++, and cython.
+- PR #3345: Improve importer architecture.
+- PR #3363 &amp; #3379: Improve c.recursiveImport.
+- PR #3376: Improve python importer.
+
+Large code changes:
+
+- PR #3365: Simplify mypy annotations (128 files).
+- PR #3367: Import Callable from collections.abc insead of typing (50 files).
+
+Retire three plugins:
+
+- PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
 **Links**
 
@@ -32666,6 +32709,211 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 @nowrap
 @language rest
 </t>
+<t tx="ekr.20230709064651.1"></t>
+<t tx="ekr.20230709064651.1038">@language rest
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3413
+PR: https://github.com/leo-editor/leo-editor/pull/3418
+
+@language python
+</t>
+<t tx="ekr.20230709064651.1039">if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoChapters import ChapterController
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
+    from leo.core.leoMenu import LeoMenu, NullMenu
+    from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_frame import DynamicWindow
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
+    from leo.plugins.notebook import NbController
+    Widget = Any
+</t>
+<t tx="ekr.20230709064651.1040">def __init__(self, c: Cmdr, gui: LeoGui) -&gt; None:
+    self.c = c
+    self.gui = gui
+    # Types...
+    self.iconBarClass = NullIconBarClass
+    self.statusLineClass = NullStatusLineClass
+    # Objects attached to this frame...
+    self.body: Union[LeoBody, NullBody, LeoQtBody] = None
+    self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
+    self.log: Union[LeoLog, NullLog, LeoQtLog] = None
+    self.menu: Union[LeoMenu, LeoQtMenu, NullMenu] = None
+    self.miniBufferWidget: Widget = None
+    self.statusLine: Union[NullStatusLineClass, g.NullObject] = g.NullObject()
+    self.top: DynamicWindow = None
+    self.tree: Union[LeoTree, NullTree, LeoQtTree] = None
+    self.useMiniBufferWidget = False
+    # Other ivars...
+    self.cursorStay = True  # May be overridden in subclass.reloadSettings.
+    self.es_newlines = 0  # newline count for this log stream.
+    self.isNullFrame = False
+    self.openDirectory = ""
+    self.saved = False  # True if ever saved
+    self.splitVerticalFlag = True  # Set by initialRatios later.
+    self.stylesheet: str = None  # The contents of &lt;?xml-stylesheet...?&gt; line.
+    self.tab_width = 0  # The tab width in effect in this pane.
+    self.title: str = None  # Must be created by subclasses.
+</t>
+<t tx="ekr.20230709064651.1041">def createFirstTreeNode(self) -&gt; VNode:
+    c = self.c
+    #
+    # #1631: Initialize here, not in p._linkAsRoot.
+    c.hiddenRootNode.children = []
+    #
+    # #1817: Clear the gnxDict.
+    c.fileCommands.gnxDict = {}
+    #
+    # Create the first node.
+    v = leoNodes.VNode(context=c)
+    p = leoNodes.Position(v)
+    v.initHeadString("newHeadline")
+    #
+    # New in Leo 4.5: p.moveToRoot would be wrong:
+    #                 the node hasn't been linked yet.
+    p._linkAsRoot()
+    return v
+</t>
+<t tx="ekr.20230709064651.1042">def createStatusLine(self) -&gt; Union[NullStatusLineClass, g.NullObject]:
+    if not self.statusLine:
+        self.statusLine = self.statusLineClass(self.c, None)
+    return self.statusLine
+
+def clearStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.clear()
+
+def disableStatusLine(self, background: str = None) -&gt; None:
+    if self.statusLine:
+        self.statusLine.disable(background)
+
+def enableStatusLine(self, background: str = "white") -&gt; None:
+    if self.statusLine:
+        self.statusLine.enable(background)
+
+def getStatusLine(self) -&gt; Union[NullStatusLineClass, g.NullObject]:
+    return self.statusLine
+
+getStatusObject = getStatusLine
+
+def putStatusLine(self, s: str, bg: str = None, fg: str = None) -&gt; None:
+    if self.statusLine:
+        self.statusLine.put(s, bg, fg)
+
+def setFocusStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.setFocus()
+
+def statusLineIsEnabled(self) -&gt; bool:
+    if self.statusLine:
+        return self.statusLine.isEnabled()
+    return False
+
+def updateStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.update()
+</t>
+<t tx="ekr.20230709064651.1043">@language rest
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3420
+PR: https://github.com/leo-editor/leo-editor/pull/3421
+
+The fix was to change a setting.
+
+@language python
+</t>
+<t tx="ekr.20230709064651.1044">@language rest
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3409
+PR: https://github.com/leo-editor/leo-editor/pull/3422
+
+@language python
+</t>
+<t tx="ekr.20230709064651.1045">def load_snapshot(self) -&gt; str:
+    """
+    Load a snapshot of a session from the leo.session file.
+    """
+    try:
+        session = g.app.db['session']
+        if 'startup' in g.app.debug:
+            g.printObj(session, tag='load_snapshot: session data')
+        return session
+    except KeyError:
+        print('SessionManager.load_snapshot: no previous session')
+    except Exception:
+        g.trace('Unexpected exception in SessionManager.load_snapshot')
+        g.es_exception()
+    return None
+</t>
+<t tx="ekr.20230709064651.1046">def save_snapshot(self) -&gt; None:
+    """
+    Save a snapshot of the present session to the leo.session file.
+
+    Called automatically during shutdown.
+    """
+    if g.app.batchMode or g.app.inBridge or g.unitTesting:
+        return
+    try:
+        session = self.get_session()
+        if 'shutdown' in g.app.debug:
+            g.printObj(session, tag='save_snapshot: session data')
+        if not session:
+            return  # #2433: don't save an empty session.
+        g.app.db['session'] = session
+    except Exception:
+        g.trace('Unexpected exception in SessionManager.save_snapshot')
+        g.es_exception()
+</t>
+<t tx="ekr.20230709070852.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3215`: https://github.com/leo-editor/leo-editor/pull/3215
+.. _`PR #3424`: https://github.com/leo-editor/leo-editor/pull/3424
+
+
+- `PR #3215`_ and `PR #3424`_: gnx-based unls (clickable links).
+  These links will break only if the original node is deleted.
+  
+Minor changes to Leo's api:
+
+.. _`PR #3433`: https://github.com/leo-editor/leo-editor/pull/3433
+
+- PR `#3433`_: Remove the "fn" positional arg from at.readOneAtEditNode and at.readOneAtAsisNode.
+  
+New settings:
+ 
+- @string unl-status-kind = gnx
+- @bool full-unl-paths = True
+- @data unl-path-prefixes
+  
+Minor improvements:
+
+.. _`PR #3330`: https://github.com/leo-editor/leo-editor/pull/3330
+.. _`PR #3345`: https://github.com/leo-editor/leo-editor/pull/3345
+.. _`PR #3363`: https://github.com/leo-editor/leo-editor/pull/3363
+.. _`PR #3379`: https://github.com/leo-editor/leo-editor/pull/3379
+.. _`PR #3376`: https://github.com/leo-editor/leo-editor/pull/3376
+  
+- `PR #3330`_: Improve importers for C, C++, and cython.
+- `PR #3345`_: Improve importer architecture.
+- `PR #3363`_ &amp; `PR #3379`_: Improve c.recursiveImport.
+- `PR #3376`_: Improve python importer.
+
+Large code changes:
+
+.. _`PR #3365`: https://github.com/leo-editor/leo-editor/pull/3365
+.. _`PR #3367`: https://github.com/leo-editor/leo-editor/pull/3367
+
+- `PR #3365`_: Simplify all mypy annotations (128 files).
+- `PR #3367`_: Import Callable from collections.abc insead of typing (50 files).
+
+Retire three plugins:
+
+- `PR #3215`_: Retire the settings_finder, backlink, and quickMove plugins.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
