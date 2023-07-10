@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>What’s New in Leo &#8212; Leo 6.7.2 documentation</title>
+    <title>What’s New in Leo &#8212; Leo 6.7.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" accesskey="U">More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">What’s New in Leo</a></li> 
       </ul>
@@ -50,16 +50,79 @@
 <nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-2" id="id72">What’s new in Leo 6.7.2</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-1" id="id73">What’s new in Leo 6.7.1</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-0" id="id74">What’s new in Leo 6.7.0</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-and-earlier" id="id75">What’s new in Leo 6.6 and earlier</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id76">What’s new in Leo 5.x</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id77">What’s new in Leo 4.x</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-4" id="id72">What’s new in Leo 6.7.4</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-3" id="id73">What’s new in Leo 6.7.3</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-2" id="id74">What’s new in Leo 6.7.2</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-1" id="id75">What’s new in Leo 6.7.1</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7-0" id="id76">What’s new in Leo 6.7.0</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-and-earlier" id="id77">What’s new in Leo 6.6 and earlier</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id78">What’s new in Leo 5.x</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id79">What’s new in Leo 4.x</a></p></li>
 </ul>
 </nav>
+<section id="what-s-new-in-leo-6-7-4">
+<h2><a class="toc-backref" href="#id72" role="doc-backlink">What’s new in Leo 6.7.4</a><a class="headerlink" href="#what-s-new-in-leo-6-7-4" title="Permalink to this heading">¶</a></h2>
+<p><strong>Warning: breaking changes to Leo’s api</strong></p>
+<p>p.get_UNL returns gnx-based unls. Previously it returned path-based gnxs.
+See the first comment of <a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3424">PR #3424</a> for full details.</p>
+<p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3433">PR #3433</a>: Callers must remove the “fn” positional arg from
+at.readOneAtEditNode and at.readOneAtAsisNode.</p>
+<p><strong>gnx-based unls</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3215">PR #3215</a> and <a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3424">PR #3424</a>: gnx-based unls (clickable links).
+These links will break only if the original node is deleted.</p></li>
+</ul>
+<p><strong>New settings</strong></p>
+<ul class="simple">
+<li><p>&#64;string unl-status-kind = gnx</p></li>
+<li><p>&#64;bool full-unl-paths = True</p></li>
+<li><p>&#64;data unl-path-prefixes</p></li>
+</ul>
+<p><strong>Other improvements</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3330">PR #3330</a>: Improve importers for C, C++, and cython.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3345">PR #3345</a>: Improve importer architecture.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3363">PR #3363</a> &amp; <a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3379">PR #3379</a>: Improve c.recursiveImport.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3376">PR #3376</a>: Improve python importer.</p></li>
+</ul>
+<p><strong>Large code changes</strong>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3365">PR #3365</a>: Simplify all mypy annotations (128 files).</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3367">PR #3367</a>: Import Callable from collections.abc instead of typing (50 files).</p></li>
+</ul>
+<p><strong>Retire three plugins</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3215">PR #3215</a>: Retire the settings_finder, backlink, and quickMove plugins.
+The first was dangerous. gnx-based unls obsolete the other two.</p></li>
+<li><p>40+ issues and about 50 pull requests.</p></li>
+</ul>
+</section>
+<section id="what-s-new-in-leo-6-7-3">
+<h2><a class="toc-backref" href="#id73" role="doc-backlink">What’s new in Leo 6.7.3</a><a class="headerlink" href="#what-s-new-in-leo-6-7-3" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3260">PR #3260</a>:  Improved and safer handling of paths in <cite>&#64;&lt;file&gt;</cite> nodes.
+Leo supports Python’s standard os.path expansions.
+Leo no longer supports {{python-expression}} in headlines.</p></li>
+<li><p>Several large code cleanups: 460+ files changed.</p></li>
+</ul>
+<p><strong>Commands</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3227">PR #3227</a>: Add commands to add/remove numbers from headlines.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3255">PR #3255</a>: Add write-zip-archive command.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3192">PR #3192</a>: Add show-color-settings and the show-font-settings commands.</p></li>
+</ul>
+<p><strong>Other changes</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3208">PR #3208</a>: Add ‘reload-settings’ hook.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3214">PR #3214</a>: Optionally expand headlines on mouse-over.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3224">PR #3224</a>: Improve mod_autosave plugin.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3241">PR #3241</a>: Simplify Leo’s path wrappers.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3264">PR #3264</a> and <a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3277">PR #3277</a>: Simplify Leo’s path-related code.</p></li>
+<li><p>20+ issues and 30+ pull requests.</p></li>
+</ul>
+</section>
 <section id="what-s-new-in-leo-6-7-2">
-<h2><a class="toc-backref" href="#id72" role="doc-backlink">What’s new in Leo 6.7.2</a><a class="headerlink" href="#what-s-new-in-leo-6-7-2" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id74" role="doc-backlink">What’s new in Leo 6.7.2</a><a class="headerlink" href="#what-s-new-in-leo-6-7-2" title="Permalink to this heading">¶</a></h2>
 <p>Leo’s website has moved to Github Pages: <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3019">PR #3019</a>: Host Leo’s website using GitHub pages.</p></li>
@@ -87,7 +150,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-7-1">
-<h2><a class="toc-backref" href="#id73" role="doc-backlink">What’s new in Leo 6.7.1</a><a class="headerlink" href="#what-s-new-in-leo-6-7-1" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id75" role="doc-backlink">What’s new in Leo 6.7.1</a><a class="headerlink" href="#what-s-new-in-leo-6-7-1" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Several enhancements to leoserver.py.</p></li>
 <li><p>Add support for ocaml syntax coloring.</p></li>
@@ -98,7 +161,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-7-0">
-<h2><a class="toc-backref" href="#id74" role="doc-backlink">What’s new in Leo 6.7.0</a><a class="headerlink" href="#what-s-new-in-leo-6-7-0" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id76" role="doc-backlink">What’s new in Leo 6.7.0</a><a class="headerlink" href="#what-s-new-in-leo-6-7-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Leo now requires Python 3.9 or later.</p></li>
 <li><p>Enhance leoserver.py to support leoInteg and leoJS.</p></li>
@@ -118,7 +181,7 @@
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-6-and-earlier">
-<h2><a class="toc-backref" href="#id75" role="doc-backlink">What’s new in Leo 6.6 and earlier</a><a class="headerlink" href="#what-s-new-in-leo-6-6-and-earlier" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id77" role="doc-backlink">What’s new in Leo 6.6 and earlier</a><a class="headerlink" href="#what-s-new-in-leo-6-6-and-earlier" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-6-6-4">
 <h3>What’s new in Leo 6.6.4<a class="headerlink" href="#what-s-new-in-leo-6-6-4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
@@ -279,7 +342,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </section>
 </section>
 <section id="what-s-new-in-leo-5-x">
-<h2><a class="toc-backref" href="#id76" role="doc-backlink">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id78" role="doc-backlink">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-5-9">
 <h3>What’s new in Leo 5.9<a class="headerlink" href="#what-s-new-in-leo-5-9" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
@@ -1040,7 +1103,7 @@ Added g.getLanguageAtPosition. Should have been done long ago.
 </section>
 </section>
 <section id="what-s-new-in-leo-4-x">
-<h2><a class="toc-backref" href="#id77" role="doc-backlink">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id79" role="doc-backlink">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Permalink to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-4-11">
 <h3>What’s new in Leo 4.11<a class="headerlink" href="#what-s-new-in-leo-4-11" title="Permalink to this heading">¶</a></h3>
 <section id="id26">
@@ -1897,14 +1960,14 @@ New settings:
         <li class="right" >
           <a href="glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" >More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">What’s New in Leo</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on April 07, 2023.
+      Last updated on July 10, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
