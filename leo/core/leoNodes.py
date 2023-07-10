@@ -826,7 +826,7 @@ class Position:
         c = p.v.context
         file_part = c.fileName()
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-    #@+node:ekr.20230628173542.2: *5* p.get_full_legacy_UNL
+    #@+node:tbrown.20111010104549.26758: *5* p.get_full_legacy_UNL
     def get_full_legacy_UNL(self) -> str:
         """
         Return a legacy unl with the full file-name component.
@@ -842,7 +842,7 @@ class Position:
         """
         Return a headline-oriented UNL, as in legacy versions of p.get_UNL.
 
-        The file part of this UNL depends on the @bool full-unl-paths setting.
+        @bool full-unl-paths determines the size of the file part.
 
         LeoTree.set_status_line will call this method if legacy unls are in effect.
         """
@@ -878,9 +878,11 @@ class Position:
     #@+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
         """
-        Return a gnx-oriented UNL whose file part depends on the @bool full-unl-paths setting.
+        Return a gnx-oriented UNL.
 
-        LeoTree.set_status_line will call this method if gnx-based unls are in effect.
+        @bool full-unl-paths determines the size of the file part.
+
+        LeoTree.set_status_line calls this method if gnx-based unls are in effect.
         """
         p = self
         c = p.v.context

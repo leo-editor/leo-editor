@@ -2197,8 +2197,8 @@
 </v>
 </v>
 <v t="ekr.20230627131213.1"><vh>UNLs</vh>
-<v t="ekr.20230627130611.1"><vh>@string unl-status-kind = legacy</vh></v>
-<v t="ekr.20230627131227.1"><vh>@bool full-unl-paths = True</vh></v>
+<v t="ekr.20230627130611.1"><vh>@string unl-status-kind = gnx</vh></v>
+<v t="ekr.20230627131227.1"><vh>@bool full-unl-paths = False</vh></v>
 <v t="ekr.20230627202839.1"><vh>@data unl-path-prefixes</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
@@ -11669,7 +11669,6 @@ legacy: Show legacy (headline-based) uns in the status area.</t>
 <t tx="ekr.20230627131213.1"></t>
 <t tx="ekr.20230627131227.1">True: (legacy): Display full path names in the status area.
 False:          Display only the .leo file's name in the status area.
-                Use @data unl-path-prefixes to resolve names.
 </t>
 <t tx="ekr.20230627202839.1"># lines have the form:
 # x.leo: &lt;absolute path to x.leo&gt;
