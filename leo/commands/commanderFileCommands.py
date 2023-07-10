@@ -298,16 +298,10 @@ def open_outline(self: Self, event: Event = None) -> None:
     )
     open_completer(c, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
-### refresh_pattern = re.compile(r'^(@[\w-]+)')
-
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:
     """Refresh an @<file> node from disk."""
     c, p, u = self, self.p, self.undoer
-    at = c.atFileCommands
-    c.nodeConflictList = []
-    ### What is this?
-    ### shouldDelete = c.sqlite_connection is None
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
@@ -315,48 +309,31 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     if os.path.isdir(full_path):
         g.warning(f"not a file: {full_path!r}")
         return
-    b = u.beforeChangeTree(p)
-    # Fix bug 1090950 refresh from disk: cut node resurrection.
+    at = c.atFileCommands
+    c.nodeConflictList = []
+    bunch = u.beforeChangeTree(p)
     c.recreateGnxDict()
-    ### i = g.skip_id(p.h, 0, chars='@')
-    ### word = p.h[0:i]
-    ### if word == '@auto':
     if p.isAtAutoNode() or p.atAutoRstNodeName():
-        # # # if shouldDelete:
-            # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!
-    ### elif word in ('@thin', '@file'):
     elif p.atFileNodeName():
-        # # # if shouldDelete:
-            # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         at.read(p)
-    ### elif word == '@clean':
     elif p.isAtCleanNode():
+        # Don't delete children!
         at.readOneAtCleanNode(p)
-        ### Huh???
-            # if p.b.strip() or p.hasChildren():
-                # at.readOneAtCleanNode(p)
-            # else:
-                # p = at.readOneAtAutoNode(p)
-    ### elif word == '@shadow':
     elif p.isAtShadowFileNode():
-        # # # if shouldDelete:
-            # # # p.v._deleteAllChildren()
         p.v._deleteAllChildren()
         at.read(p)
-    ### elif word == '@edit':
     elif p.isAtEditNode():
         at.readOneAtEditNode(p)  # Always deletes children.
-    ### elif word == '@asis':
     elif p.isAtAsisFileNode():
         at.readOneAtAsisNode(p)  # Always deletes children.
     else:
         g.es_print(f"Unknown @<file> node: {p.h!r}")
         return
     c.selectPosition(p)
-    u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
+    u.afterChangeTree(p, command='refresh-from-disk', bunch=bunch)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
     c.redraw()
