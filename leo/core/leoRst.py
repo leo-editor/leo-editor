@@ -2,13 +2,14 @@
 #@+node:ekr.20090502071837.3: * @file leoRst.py
 #@+<< leoRst docstring >>
 #@+node:ekr.20090502071837.4: ** << leoRst docstring >>
-"""Support for restructured text (rST), adapted from rst3 plugin.
+"""
+Support for restructured text (rST).
 
-For full documentation, see: https://leo-editor.github.io/leo-editor/tutorial-rst3.html
+Documentation: https://leo-editor.github.io/leo-editor/tutorial-rst3.html
 
-To generate documents from rST files, Python's docutils_ module must be
-installed. The code will use the SilverCity_ syntax coloring package if is is
-available."""
+Requires python's docutils_ module to generate documents from rST files.
+https://pypi.org/project/docutils/
+"""
 #@-<< leoRst docstring >>
 #@+<< leoRst imports >>
 #@+node:ekr.20100908120927.5971: ** << leoRst imports >>

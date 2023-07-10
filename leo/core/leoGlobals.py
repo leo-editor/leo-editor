@@ -7335,9 +7335,16 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # Define the unl patterns.
-    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
-    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+    # Define two *optional* unl patterns.
+
+    # old_pat: ':' followed by a list of node indices.
+    #          Deprecated and probably does not work.
+    #          This pattern will remain for compatibility.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+
+    # new_pat: '::' followed by a line number.
+    #          Negative line numbers denote global line numbers.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
 
     #@+others  # Define helper functions
     #@+node:ekr.20230626064652.2: *4* function: convert_unl_list
