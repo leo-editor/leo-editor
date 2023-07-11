@@ -36,7 +36,7 @@ class TestRefreshFromDisk (LeoUnitTest):
                 at.precheck = dummy_precheck  # Force the write.
                 at.writeOneAtFileNode(p)
                 contents = ''.join(at.outputList)
-            g.printObj(contents, tag=kind)
+            # g.printObj(contents, tag=kind)
             with open(file_name, 'w') as f:
                 f.write(contents)
             with open(file_name, 'r') as f:
@@ -44,6 +44,7 @@ class TestRefreshFromDisk (LeoUnitTest):
             refresh(event=None)
             self.assertEqual(contents, contents2)
             # Remove the file.
+            self.assertTrue(os.path.exists(file_name))
             os.remove(file_name)
             self.assertFalse(os.path.exists(file_name))
     #@-others
