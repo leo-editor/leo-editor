@@ -41,8 +41,11 @@ class TestRefreshFromDisk (LeoUnitTest):
                 f.write(contents)
             with open(file_name, 'r') as f:
                 contents2 = f.read()
-            self.assertEqual(contents, contents2)
             refresh(event=None)
+            self.assertEqual(contents, contents2)
+            # Remove the file.
+            os.remove(file_name)
+            self.assertFalse(os.path.exists(file_name))
     #@-others
 #@-others
 #@-leo
