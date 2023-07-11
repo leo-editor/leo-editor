@@ -4,10 +4,11 @@
 import os
 import tempfile
 import textwrap
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
-assert textwrap  ###
+assert textwrap
 
 #@+others
 #@+node:ekr.20230710105810.1: ** class TestRefreshFromDisk (LeoUnitTest)
@@ -18,11 +19,9 @@ class TestRefreshFromDisk (LeoUnitTest):
         c = self.c
         at = c.atFileCommands
         p = c.p
-        
-        # Monkey-patch at.preCheck.
-        from typing import Any
 
         def dummy_precheck(fileName: str, root: Any) -> bool:
+            """A version of at.precheck that always returns True."""
             return True
             
         refresh = c.refreshFromDisk
