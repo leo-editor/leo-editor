@@ -399,13 +399,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         class CompareTreesController:
             #@+others
             #@+node:ekr.20170806094318.18: *4* ct.compare
-            def compare(self,
-                d1: dict,
-                d2: dict,
-                p1: Position,
-                p2: Position,
-                root: Position,
-            ) -> Position:
+            def compare(self, d1: dict, d2: dict, root: Position) -> Position:
                 """Compare dicts d1 and d2."""
                 for h in sorted(d1.keys()):
                     p1, p2 = d1.get(h), d2.get(h)
@@ -439,7 +433,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 root.h = tag
                 d1 = self.scan(p1)
                 d2 = self.scan(p2)
-                self.compare(d1, d2, p1, p2, root)
+                self.compare(d1, d2, root)
                 c.p.contract()
                 root.expand()
                 c.selectPosition(root)
@@ -463,6 +457,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         d[h] = p.copy()
                 return d
             #@-others
+
         CompareTreesController().run(self.c, p1, p2, tag)
     #@+node:ekr.20170806094318.1: *3* efc.deleteFile
     @cmd('file-delete')
