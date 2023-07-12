@@ -24,25 +24,38 @@ class TestRefreshFromDisk (LeoUnitTest):
             """A version of at.precheck that always returns True."""
             return True
             
-        refresh = c.refreshFromDisk
+        at.precheck = dummy_precheck  # Force all writes.
+        
+        # Define data.
         raw_contents = '"""Test File"""\n'
-        directory = tempfile.gettempdir()  # A writable directory.
+        altered_raw_contents = '"""Test File (changed)"""\n'
+        
+        # Create a writable directory.
+        directory = tempfile.gettempdir()
+        
+        # Run the tests.
         for kind in ('clean', 'file'):
             file_name = f"{directory}{os.sep}test_at_{kind}.py"
             p.h = f"@{kind} {file_name}"
-            p.b = contents = raw_contents
-            if kind == 'file':
-                # Create the sentinels.
-                at.precheck = dummy_precheck  # Force the write.
-                at.writeOneAtFileNode(p)
-                contents = ''.join(at.outputList)
-            # g.printObj(contents, tag=kind)
-            with open(file_name, 'w') as f:
-                f.write(contents)
-            with open(file_name, 'r') as f:
-                contents2 = f.read()
-            refresh(event=None)
-            self.assertEqual(contents, contents2)
+            for pass_number, contents in (
+                (0, raw_contents),
+                (1, altered_raw_contents),
+            ):
+                p.b = contents
+                # Create the file (with sentinels for @file).
+                if kind  == 'file':
+                    at.writeOneAtFileNode(p)
+                    file_contents = ''.join(at.outputList)
+                else:
+                    file_contents = contents
+                # g.printObj(file_contents, tag=f"file_contents: {pass_number}, {kind}")
+                with open(file_name, 'w') as f:
+                    f.write(file_contents)
+                with open(file_name, 'r') as f:
+                    contents2 = f.read()
+                self.assertEqual(contents2, file_contents)
+                c.refreshFromDisk(event=None)
+                self.assertEqual(p.b, contents)
             # Remove the file.
             self.assertTrue(os.path.exists(file_name))
             os.remove(file_name)
