@@ -526,7 +526,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event: Event) -> None:
-        """Prompt for the name of a file and put the selected text into it."""
+        """
+        Prompt for the name of a file.
+        Insert the file's contents in the body at the insertion point.
+        """
         w = self.editWidget(event)
         if not w:
             return
