@@ -311,93 +311,6 @@ class Undoer:
         else:
             u.setRedoType("Can't Redo")
         u.cutStack()
-    #@+node:EKR.20040530121329: *4* u.restoreTree & helper
-    def restoreTree(self, treeInfo: list[g.Bunch]) -> None:
-        """Use the tree info to restore all VNode data, including all links."""
-        u = self
-        # This effectively relinks all vnodes.
-        for vInfo in treeInfo:
-            u.restoreVnodeUndoInfo(vInfo)
-    #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
-    def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:
-        """Restore all ivars saved in the bunch."""
-        v = bunch.v
-        v.statusBits = bunch.statusBits
-        v.children = bunch.children
-        v.parents = bunch.parents
-        uA = bunch.get('unknownAttributes')
-        if uA is not None:
-            v.unknownAttributes = uA
-            v._p_changed = True
-    #@+node:EKR.20040528075307: *4* u.saveTree & helpers
-    def saveTree(self, p: Position, treeInfo: list[g.Bunch] = None) -> list[g.Bunch]:
-        """Return a list of tuples with all info needed to handle a general undo operation."""
-        # WARNING: read this before doing anything "clever"
-        #@+<< about u.saveTree >>
-        #@+node:EKR.20040530114124: *5* << about u.saveTree >>
-        #@@language rest
-        #@+at
-        # The old code made a free-standing copy of the tree using v.copy and t.copy.
-        # This looks "elegant" and is WRONG: it can not handle clones properly,
-        # especially when some clones are in the "undo" tree and some are not.
-        # Moreover, it required complex adjustments to t.vnodeLists.
-        #
-        # Instead of creating new nodes, the new code creates all information needed
-        # to properly restore the vnodes: a list of tuples, one tuple for each VNode
-        # in the tree.
-        #
-        # Each tuple has the form (v, vnodeInfo), where vnodeInfo is a dict
-        # containing all info needed to recreate v. The v.createUndoInfoDict
-        # method corresponds to the old v.copy method.
-        #
-        #@-<< about u.saveTree >>
-        trace = True and not g.unitTesting
-        u = self
-        topLevel = (treeInfo is None)
-        if topLevel:
-            treeInfo = []
-        # Add info for p.v.  Duplicate info is harmless.
-        data = u.createVnodeUndoInfo(p.v)
-        treeInfo.append(data)
-        # Recursively add info for the subtree.
-        child = p.firstChild()
-        while child:
-            self.saveTree(child, treeInfo)
-            child = child.next()
-        if trace and topLevel:
-            u.dumpVnodeUndoInfo(treeInfo, tag=g.caller())
-        return treeInfo
-    #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
-    def createVnodeUndoInfo(self, v: VNode) -> g.Bunch:
-        """Create a bunch containing all info needed to recreate a VNode for undo."""
-        return g.Bunch(
-            v=v,
-            statusBits=v.statusBits,
-            parents=v.parents[:],
-            children=v.children[:],
-            unknownAttributes=getattr(v, 'unknownAttributes', None)
-        )
-    #@+node:ekr.20230712194306.1: *5* u.dumpVnodeUndoInfo
-    def dumpVnodeUndoInfo(self, info: g.Bunch, tag: str = None) -> None:
-        """
-        Dump a VnodeUndoInfor, a list of g.Bunches of the form:
-
-            g.Bunch(
-                v=v,
-                statusBits=v.statusBits,
-                parents=v.parents[:],
-                children=v.children[:],
-                unknownAttributes=getattr(v, 'unknownAttributes', None)
-            )
-        """
-        tag_s = f"**{tag}**" if tag else ''
-        print('')
-        print(f"Dump of VnodeUndoInfo: {tag_s}")
-        for i, bunch in enumerate(info):
-            v = bunch.v
-            print('')
-            print(f"Bunch {i + 1} of {len(info)} {v.gnx} headline: {v.h}")
-            g.printObj(v.b, tag=f"Body {i}")
     #@+node:ekr.20050525151449: *4* u.trace
     def trace(self) -> None:  # pragma: no cover
         ivars = ('kind', 'undoType')
@@ -564,24 +477,6 @@ class Undoer:
         u.pushBead(bunch)
 
     afterChangeMultiHead = afterChangeMultiHeadline
-    #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
-    def afterChangeTree(self, p: Position, command: str, bunch: g.Bunch) -> None:
-        """Create an undo node for general tree operations using d created by beforeChangeTree"""
-        u = self
-        c = self.c
-        w = c.frame.body.wrapper
-        if u.redoing or u.undoing:
-            return  # pragma: no cover
-        # Set the types & helpers.
-        bunch.kind = 'tree'
-        bunch.undoType = command
-        bunch.undoHelper = u.undoTree
-        bunch.redoHelper = u.redoTree
-        # Set by beforeChangeTree: changed, oldSel, oldText, oldTree, p
-        bunch.newSel = w.getSelectionRange()
-        bunch.newText = w.getAllText()
-        bunch.newTree = u.saveTree(p)
-        u.pushBead(bunch)
     #@+node:ekr.20050424161505: *5* u.afterClearRecentFiles
     def afterClearRecentFiles(self, bunch: g.Bunch) -> None:
         u = self
@@ -843,15 +738,6 @@ class Undoer:
         bunch.oldHead = p.h
         # #1413: Always restore yScroll if possible.
         bunch.oldYScroll = w.getYScrollPosition() if w else 0
-        return bunch
-    #@+node:ekr.20050315134017.6: *5* u.beforeChangeTree
-    def beforeChangeTree(self, p: Position) -> None:
-        c, u = self.c, self
-        w = c.frame.body.wrapper
-        bunch = u.createCommonBunch(p)
-        bunch.oldSel = w.getSelectionRange()
-        bunch.oldText = w.getAllText()
-        bunch.oldTree = u.saveTree(p)
         return bunch
     #@+node:ekr.20050424161505.1: *5* u.beforeClearRecentFiles
     def beforeClearRecentFiles(self) -> None:
@@ -1636,18 +1522,6 @@ class Undoer:
                     break
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-    #@+node:ekr.20050318085432.8: *4* u.redoTree
-    def redoTree(self) -> None:
-        """Redo replacement of an entire tree."""
-        g.trace('*****')
-        c, u = self.c, self
-        u.p = self.undoRedoTree(u.oldTree, u.newTree)
-        u.p.setDirty()
-        c.selectPosition(u.p)  # Does full recolor.
-        if u.newSel:
-            i, j = u.newSel
-            c.frame.body.wrapper.setSelectionRange(i, j)
-        c.redraw()  ### Experimental.
     #@+node:EKR.20040526075238.5: *4* u.redoTyping
     def redoTyping(self) -> None:
         c, u = self.c, self
@@ -2032,21 +1906,6 @@ class Undoer:
             w.setSelectionRange(i, j, insert=j)
         c.frame.body.recolor(p)
         w.seeInsertPoint()  # 2009/12/21
-    #@+node:ekr.20050408100042: *4* u.undoRedoTree
-    def undoRedoTree(self, new_data: g.Bunch, old_data: g.Bunch) -> Position:
-        """Replace p and its subtree using old_data during undo."""
-        # Same as undoReplace except uses g.Bunch.
-        c, p, u = self.c, self.c.p, self
-        if new_data is None:
-            # This is the first time we have undone the operation.
-            # Put the new data in the bead.
-            bunch = u.beads[u.bead]
-            bunch.newTree = u.saveTree(p.copy())
-            u.beads[u.bead] = bunch
-        # Replace data in tree with old data.
-        u.restoreTree(old_data)
-        c.setBodyString(p, p.b)  # This is not a do-nothing.
-        return p  # Nothing really changes.
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self) -> None:
         c, u = self.c, self
@@ -2063,18 +1922,6 @@ class Undoer:
                     break
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-    #@+node:ekr.20050318085713.2: *4* u.undoTree
-    def undoTree(self) -> None:
-        """Redo replacement of an entire tree."""
-        g.trace('*****')
-        c, u = self.c, self
-        u.p = self.undoRedoTree(u.newTree, u.oldTree)
-        u.p.setAllAncestorAtFileNodesDirty()
-        c.selectPosition(u.p)  # Does full recolor.
-        if u.oldSel:
-            i, j = u.oldSel
-            c.frame.body.wrapper.setSelectionRange(i, j)
-        c.redraw()  ### Experimental.
     #@+node:EKR.20040526090701.4: *4* u.undoTyping
     def undoTyping(self) -> None:
         c, u = self.c, self
