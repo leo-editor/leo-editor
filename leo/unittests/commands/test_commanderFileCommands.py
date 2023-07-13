@@ -42,24 +42,28 @@ class TestRefreshFromDisk (LeoUnitTest):
                 (1, altered_raw_contents),
             ):
                 p.b = contents
+                msg = f"{pass_number}, {kind}"
                 # Create the file (with sentinels for @file).
                 if kind  == 'file':
                     at.writeOneAtFileNode(p)
                     file_contents = ''.join(at.outputList)
                 else:
                     file_contents = contents
-                # g.printObj(file_contents, tag=f"file_contents: {pass_number}, {kind}")
+                # g.printObj(file_contents, tag=f"file_contents: {msg}")
+                
+                #### Test Undo/redo  ###
+
                 with open(file_name, 'w') as f:
                     f.write(file_contents)
                 with open(file_name, 'r') as f:
                     contents2 = f.read()
-                self.assertEqual(contents2, file_contents)
+                self.assertEqual(contents2, file_contents, msg=msg)
                 c.refreshFromDisk(event=None)
-                self.assertEqual(p.b, contents)
+                self.assertEqual(p.b, contents, msg=msg)
             # Remove the file.
-            self.assertTrue(os.path.exists(file_name))
+            self.assertTrue(os.path.exists(file_name), msg=file_name)
             os.remove(file_name)
-            self.assertFalse(os.path.exists(file_name))
+            self.assertFalse(os.path.exists(file_name), msg=file_name)
     #@-others
 #@-others
 #@-leo

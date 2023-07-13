@@ -6,14 +6,11 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180311131353.1"><vh>Personal test file</vh></v>
+<v t="ekr.20180311131353.1"><vh>test.leo: semi-official tests</vh></v>
 <v t="ekr.20230622114548.1"><vh>@settings</vh>
 <v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
 <v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
-</v>
-<v t="ekr.20180311131424.1"><vh>Recent</vh>
-<v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
-<v t="ekr.20180311210803.1"><vh>re latex button</vh>
+<v t="ekr.20180311210803.1"><vh>Latex buttons</vh>
 <v t="ekr.20180311195905.1"><vh>@@button Create LaTeX</vh></v>
 <v t="ekr.20180311200239.1"><vh>@@clean c:\test\latex_test.tex</vh>
 <v t="ekr.20180311200312.1"><vh>level 1</vh>
@@ -21,12 +18,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180312050315.1"><vh>print cwd</vh></v>
-</v>
-<v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
-<v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
-<v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
-<v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180319044254.1"><vh>Viewrendered examples</vh>
 <v t="ekr.20180319044254.2"><vh>Python code</vh></v>
@@ -62,7 +53,9 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
-<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
+<v t="ekr.20180311131424.1"><vh>Recent</vh>
+<v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
+<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
@@ -71,6 +64,16 @@
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 <v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
 <v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
+</v>
+<v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
+<v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
+<v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
+<v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
+</v>
+</v>
+<v t="ekr.20230712190622.1"><vh>tests of refresh-from-disk</vh></v>
+<v t="ekr.20230712190642.1"><vh>@file c:/test/test_refresh_from_disk.py</vh></v>
+<v t="ekr.20230712190949.1"><vh>@edit c:/test/test_refresh_from_disk.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -171,8 +174,6 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312050315.1">import os
-print(g.os_path_abspath(os.curdir))</t>
 <t tx="ekr.20180319044254.1"></t>
 <t tx="ekr.20180319044254.10">C:\Users\edreamleo\SampleVideo_1280x720_1mb.mp4
 </t>
@@ -1067,5 +1068,6 @@ unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20050831195449
 
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
+<t tx="ekr.20230712190622.1"></t>
 </tnodes>
 </leo_file>

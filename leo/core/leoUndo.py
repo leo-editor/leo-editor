@@ -335,7 +335,8 @@ class Undoer:
         v.h = bunch.headString
         v.b = bunch.bodyString
         v.statusBits = bunch.statusBits
-        uA = bunch.get('unknownAttributes')
+        ### uA = bunch.get('unknownAttributes')
+        uA = bunch.unknownAttributes
         if uA is not None:
             v.unknownAttributes = uA
             v._p_changed = True
@@ -347,20 +348,19 @@ class Undoer:
         #@+node:EKR.20040530114124: *5* << about u.saveTree >>
         #@@language rest
         #@+at
-        # The old code made a free-standing copy of the tree using v.copy and
-        # t.copy. This looks "elegant" and is WRONG. The problem is that it can
-        # not handle clones properly, especially when some clones were in the
-        # "undo" tree and some were not. Moreover, it required complex
-        # adjustments to t.vnodeLists.
+        # The old code made a free-standing copy of the tree using v.copy and t.copy.
+        # This looks "elegant" and is WRONG: it can not handle clones properly,
+        # especially when some clones are in the "undo" tree and some are not.
+        # Moreover, it required complex adjustments to t.vnodeLists.
         #
         # Instead of creating new nodes, the new code creates all information needed
-        # to properly restore the vnodes. It creates a list of tuples, on tuple for
-        # each VNode in the tree. Each tuple has the form (v, vnodeInfo), where
-        # vnodeInfo is a dict containing all info needed to recreate the nodes. The
-        # v.createUndoInfoDict method corresponds to the old v.copy method.
+        # to properly restore the vnodes: a list of tuples, one tuple for each VNode
+        # in the tree.
         #
-        # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
-        # createUndoInfoDict info, but quite a bit uglier.
+        # Each tuple has the form (v, vnodeInfo), where vnodeInfo is a dict
+        # containing all info needed to recreate v. The v.createUndoInfoDict
+        # method corresponds to the old v.copy method.
+        #
         #@-<< about u.saveTree >>
         u = self
         topLevel = (treeInfo is None)
@@ -374,19 +374,43 @@ class Undoer:
         while child:
             self.saveTree(child, treeInfo)
             child = child.next()
+        ### g.printObj(treeInfo, tag=p.h)
+        u.dumpVnodeUndoInfo(treeInfo)
         return treeInfo
     #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
     def createVnodeUndoInfo(self, v: VNode) -> g.Bunch:
         """Create a bunch containing all info needed to recreate a VNode for undo."""
-        bunch = g.Bunch(
+        return g.Bunch(
             v=v,
             statusBits=v.statusBits,
             parents=v.parents[:],
             children=v.children[:],
+            unknownAttributes=getattr(v, 'unknownAttributes', None)
         )
-        if hasattr(v, 'unknownAttributes'):
-            bunch.unknownAttributes = v.unknownAttributes
-        return bunch
+    #@+node:ekr.20230712194306.1: *5* u.dumpVnodeUndoInfo
+    def dumpVnodeUndoInfo(self, info):
+        """
+        Dump a VnodeUndoInfor, a list of g.Bunches of the form:
+
+            g.Bunch(
+                v=v,
+                statusBits=v.statusBits,
+                parents=v.parents[:],
+                children=v.children[:],
+                unknownAttributes=getattr(v, 'unknownAttributes', None)
+            )
+        """
+        print('Dump of VnodeUndoInfo...')
+        for i, bunch in enumerate(info):
+            print('')
+            v = bunch.v
+            print(f"Bunch {i + 1} of {len(info)} {v.gnx} headline: {v.h}")
+            # print(f"Parents: {v.parents}")
+            # print(f"Headline: {v.h}")
+            g.printObj(v.b, tag=f"Body {i}")
+        
+
+        
     #@+node:ekr.20050525151449: *4* u.trace
     def trace(self) -> None:  # pragma: no cover
         ivars = ('kind', 'undoType')
