@@ -233,6 +233,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Not a command.  Expand abbreviations in event.widget.
 
         Words start with '@'.
+        
+        This code is not undoable.
         """
         # Trace for *either* 'abbrev' or 'keys'
         trace = any(z in g.app.debug for z in ('abbrev', 'keys'))
@@ -541,17 +543,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self) -> None:
         """The post pass: make script substitutions in all headlines."""
-        ### c = self.c
         if self.root:
-            ### bunch = c.undoer.beforeChangeTree(c.p)
-            ### changed = False
             for p in self.root.self_and_subtree():
                 self.make_script_substitutions_in_headline(p)
-                ### changed2 = self.make_script_substitutions_in_headline(p)
-                ### changed = changed or changed2
-            ###
-            # if changed:
-                # c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w: Wrapper, i: int, j: int, s: str) -> None:
         """Replace w[i:j] by s."""

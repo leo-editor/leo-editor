@@ -1083,13 +1083,13 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body (restore undo??)
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body (restore undo?)
     def parse_body(self, p: Position) -> None:
         """
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
 
-        This command (yet) is not undoable.
+        This command is not (yet) undoable.
         """
         c = self.c
         d = g.app.language_extension_dict
