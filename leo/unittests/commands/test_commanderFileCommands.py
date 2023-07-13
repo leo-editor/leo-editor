@@ -49,10 +49,6 @@ class TestRefreshFromDisk (LeoUnitTest):
                     file_contents = ''.join(at.outputList)
                 else:
                     file_contents = contents
-                # g.printObj(file_contents, tag=f"file_contents: {msg}")
-                
-                #### Test Undo/redo  ###
-
                 with open(file_name, 'w') as f:
                     f.write(file_contents)
                 with open(file_name, 'r') as f:

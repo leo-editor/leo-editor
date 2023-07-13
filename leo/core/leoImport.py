@@ -1617,7 +1617,6 @@ class RecursiveImportController:
             p1 = self.root = c.p
             t1 = time.time()
             g.app.disable_redraw = True
-            ### bunch = c.undoer.beforeChangeTree(p1)
             bunch = u.beforeInsertNode(p1)
             # Always create a new last top-level node.
             last = c.lastTopLevel()
@@ -1632,7 +1631,6 @@ class RecursiveImportController:
             else:
                 self.import_dir(dir_, parent)
             self.post_process(parent)
-            ### c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
             u.afterInsertNode(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')

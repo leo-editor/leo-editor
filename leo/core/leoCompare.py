@@ -488,9 +488,7 @@ class CompareLeoOutlines:
             path1 = aList[0]
             aList = aList[1:]
             for path2 in aList:
-                ### undoData = u.beforeChangeTree(self.root)
                 self.diff_two_files(path1, path2)  # adds to self.root
-                ### u.afterChangeTree(self.root, undoType, undoData)
         u.afterInsertNode(p, undoType, undoData)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
@@ -580,13 +578,11 @@ class CompareLeoOutlines:
     def create_root(self, aList: list[str]) -> tuple[Position, g.Bunch]:
         """Create the top-level organizer node describing all the diffs."""
         c, u = self.c, self.c.undoer
-        ### undoType = 'Create diff root node'
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
         undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
-        ### u.afterInsertNode(p, undoType, undoData)
         return p, undoData
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self) -> None:

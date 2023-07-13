@@ -233,8 +233,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Not a command.  Expand abbreviations in event.widget.
 
         Words start with '@'.
-
-        This code is not undoable.
         """
         # Trace for *either* 'abbrev' or 'keys'
         trace = any(z in g.app.debug for z in ('abbrev', 'keys'))
@@ -332,16 +330,15 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
-
-        This command is not (yet) undoable.
         """
         c = self.c
-        ### u = c.undoer
+        u = c.undoer
         if not c.canPasteOutline(tree_s):
             g.trace(f"bad copied outline: {tree_s}")
             return
         old_p = c.p.copy()
         ### bunch = u.beforeChangeTree(old_p)
+        bunch = u.beforeChangeGroup(old_p)  ###
         self.replace_selection(w, i, j, None)
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
@@ -357,6 +354,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if self.find_place_holder(p, do_placeholder):
                 break
         ### u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
+        u.afterChangeGroup(old_p, 'tree-abbreviation', bunch)
     #@+node:ekr.20150514043850.17: *5* abbrev.paste_tree
     def paste_tree(self, old_p: Position, s: str) -> None:
         """Paste the tree corresponding to s (xml) into the tree."""

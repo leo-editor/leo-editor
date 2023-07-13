@@ -250,7 +250,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return
         # pylint: disable=undefined-loop-variable
         # p is certainly defined here.
-        ### bunch = c.undoer.beforeChangeTree(p)
         n = 0
         undoType = 'clean-@clean-tree'
         for p2 in p.subtree():
@@ -258,7 +257,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 n += 1
         if n > 0:
             c.setChanged()
-            ### c.undoer.afterChangeTree(p, undoType, bunch)
         g.es_print(f"{n} node{g.plural(n)} cleaned")
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')
@@ -804,7 +802,7 @@ class GitDiffController:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
-    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs (experimental undo)
+    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
@@ -862,16 +860,14 @@ class GitDiffController:
         p, u = c.p, c.undoer
         undoType = 'git-diff-revs'
         files = self.get_files(rev1, rev2)
-        if files:
-            self.root, undoData = self.create_root(rev1, rev2)
-            for fn in files:
-                ### undoData = u.beforeChangeTree(self.root)
-                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-                ### u.afterChangeTree(self.root, undoType, undoData)
-            ### u.afterChangeGroup(c.p, undoType=undoType)
-            u.afterInsertNode(p, undoType, undoData)
-            self.finish()
-        return bool(files)
+        if not files:
+            return False
+        self.root, undoData = self.create_root(rev1, rev2)
+        for fn in files:
+            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+        u.afterInsertNode(p, undoType, undoData)
+        self.finish()
+        return True
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
@@ -946,7 +942,6 @@ class GitDiffController:
     def create_root(self, rev1: str, rev2: str) -> tuple[Position, g.Bunch]:
         """Create the top-level organizer node describing the git diff."""
         c, u = self.c, self.c.undoer
-        ### undoType = 'Git Diff'
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
         undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
 
@@ -960,8 +955,6 @@ class GitDiffController:
                 f"{r2}={self.get_revno(r2)}")
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
-
-        ### u.afterInsertNode(p, undoType, undoData)
         return p, undoData
     #@+node:ekr.20170806094320.7: *4* gdc.find_file
     def find_file(self, fn: str) -> Optional[Position]:
