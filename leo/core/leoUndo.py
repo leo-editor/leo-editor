@@ -321,7 +321,6 @@ class Undoer:
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
     def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:
         """Restore all ivars saved in the bunch."""
-        c = self.c
         v = bunch.v
         v.statusBits = bunch.statusBits
         v.children = bunch.children
@@ -330,8 +329,6 @@ class Undoer:
         if uA is not None:
             v.unknownAttributes = uA
             v._p_changed = True
-        if c.p.v == v:
-            g.printObj(v.b, tag=f"To do: update v.b for {v.h}")
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
     def saveTree(self, p: Position, treeInfo: list[g.Bunch] = None) -> list[g.Bunch]:
         """Return a list of tuples with all info needed to handle a general undo operation."""
@@ -1642,6 +1639,7 @@ class Undoer:
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self) -> None:
         """Redo replacement of an entire tree."""
+        g.trace('*****')
         c, u = self.c, self
         u.p = self.undoRedoTree(u.oldTree, u.newTree)
         u.p.setDirty()
@@ -1649,6 +1647,7 @@ class Undoer:
         if u.newSel:
             i, j = u.newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
+        c.redraw()  ### Experimental.
     #@+node:EKR.20040526075238.5: *4* u.redoTyping
     def redoTyping(self) -> None:
         c, u = self.c, self
@@ -2067,6 +2066,7 @@ class Undoer:
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self) -> None:
         """Redo replacement of an entire tree."""
+        g.trace('*****')
         c, u = self.c, self
         u.p = self.undoRedoTree(u.newTree, u.oldTree)
         u.p.setAllAncestorAtFileNodesDirty()
@@ -2074,6 +2074,7 @@ class Undoer:
         if u.oldSel:
             i, j = u.oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
+        c.redraw()  ### Experimental.
     #@+node:EKR.20040526090701.4: *4* u.undoTyping
     def undoTyping(self) -> None:
         c, u = self.c, self
