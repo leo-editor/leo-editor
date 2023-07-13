@@ -1109,12 +1109,12 @@ class LeoImportCommands:
         if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
             return
-        bunch = c.undoer.beforeChangeTree(p)
+        ### bunch = c.undoer.beforeChangeTree(p)
         s = p.b
         p.b = ''
         try:
             parser(c, p, s)
-            c.undoer.afterChangeTree(p, 'parse-body', bunch)
+            ### c.undoer.afterChangeTree(p, 'parse-body', bunch)
             p.expand()
             c.selectPosition(p)
             c.redraw()

@@ -300,8 +300,12 @@ def open_outline(self: Self, event: Event = None) -> None:
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:
-    """Refresh an @<file> node from disk."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Refresh an @<file> node from disk.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
@@ -311,7 +315,6 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
         return
     at = c.atFileCommands
     c.nodeConflictList = []
-    bunch = u.beforeChangeTree(p)
     c.recreateGnxDict()
     if p.isAtAutoNode() or p.isAtAutoRstNode():
         p.v._deleteAllChildren()
@@ -333,7 +336,6 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
         g.es_print(f"Unknown @<file> node: {p.h!r}")
         return
     c.selectPosition(p)
-    u.afterChangeTree(p, command='refresh-from-disk', bunch=bunch)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
     c.redraw()
