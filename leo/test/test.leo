@@ -84,7 +84,7 @@
 </v>
 </v>
 <v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
-<v t="ekr.20230713145630.1"><vh>COPY: test of parse-body</vh></v>
+<v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -1094,11 +1094,6 @@ unl:gnx://xyzzy.leo#.20230622112649.1</t>
 def eggs():
     pass
 </t>
-<t tx="ekr.20230713145630.1">def spam():
-    pass
-
-def eggs():
-    pass
-</t>
+<t tx="ekr.20230713173540.1"></t>
 </tnodes>
 </leo_file>
