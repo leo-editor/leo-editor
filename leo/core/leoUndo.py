@@ -640,6 +640,22 @@ class Undoer:
         bunch.newParent_v = p._parentVnode()
         bunch.newP = p.copy()
         u.pushBead(bunch)
+    #@+node:ekr.20230713151537.1: *5* u.afterParseBody
+    def afterParseBody(self, p: Position, command: str, bunch: g.Bunch) -> None:
+        """
+        Create an undo node using d created by u.beforeParseBody
+        """
+        c = self.c
+        u, w = self, c.frame.body.wrapper
+        if u.redoing or u.undoing:
+            return  # pragma: no cover
+        # Set the type & helpers.
+        bunch.kind = 'parse-body'
+        bunch.undoType = command
+        bunch.undoHelper = u.undoParseBody
+        bunch.redoHelper = u.redoParseBody
+        u.pushBead(bunch)
+        u.updateAfterTyping(p, w)
     #@+node:ekr.20080425060424.12: *5* u.afterPromote
     def afterPromote(self, p: Position, children: list[VNode]) -> None:
         """Create an undo node for demote operations."""
@@ -786,6 +802,12 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
+        return bunch
+    #@+node:ekr.20230713145834.1: *5* u.beforeParseBody
+    def beforeParseBody(self, p: Position) -> None:
+        u = self
+        bunch = u.createCommonBunch(p)
+        bunch.oldBody = p.b
         return bunch
     #@+node:ekr.20080425060424.3: *5* u.beforeSort
     def beforeSort(self,
@@ -1484,6 +1506,16 @@ class Undoer:
             w.setYScrollPosition(u.newYScroll)
         u.updateMarks('new')
         u.p.setDirty()
+    #@+node:ekr.20230713150847.1: *4* u.redoParseBody
+    def redoParseBody(self) -> None:
+        """Redo the parse-body command."""
+        u = self
+        c = u.c
+        ic = c.importCommands
+        p = u.p
+        if c.p != p:
+            c.selectPosition(p)
+        ic.parse_body(p)
     #@+node:ekr.20080425060424.13: *4* u.redoPromote
     def redoPromote(self) -> None:
         c, u = self.c, self
@@ -1836,6 +1868,20 @@ class Undoer:
         if u.groupCount == 0 and u.oldYScroll is not None:
             w.setYScrollPosition(u.oldYScroll)
         u.updateMarks('old')
+    #@+node:ekr.20230713150109.1: *4* u.undoParseBody
+    def undoParseBody(self) -> None:
+        """Restore p.b and delete all children."""
+        u = self
+        c = u.c
+        p = u.p
+        w = c.frame.body.wrapper
+        p.deleteAllChildren()
+        c.selectPosition(p)
+        p.setDirty()
+        p.b = u.oldBody
+        w.setAllText(u.oldBody)
+        w.setSelectionRange(0, 0, insert=0)
+        w.setYScrollPosition(0)
     #@+node:ekr.20080425060424.14: *4* u.undoPromote
     def undoPromote(self) -> None:
         c, u = self.c, self

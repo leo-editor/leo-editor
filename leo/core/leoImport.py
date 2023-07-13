@@ -1083,16 +1083,15 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body (restore undo?)
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
     def parse_body(self, p: Position) -> None:
         """
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
-
-        This command is not (yet) undoable.
         """
         c = self.c
         d = g.app.language_extension_dict
+        u, undoType = c.undoer, 'parse-body'
         if not p:
             return
         if p.hasChildren():
@@ -1112,12 +1111,12 @@ class LeoImportCommands:
         if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
             return
-        ### bunch = c.undoer.beforeChangeTree(p)
-        s = p.b
-        p.b = ''
         try:
+            bunch = u.beforeParseBody(p)
+            s = p.b
+            p.b = ''
             parser(c, p, s)
-            ### c.undoer.afterChangeTree(p, 'parse-body', bunch)
+            u.afterParseBody(p, undoType, bunch)
             p.expand()
             c.selectPosition(p)
             c.redraw()

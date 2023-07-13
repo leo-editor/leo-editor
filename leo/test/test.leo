@@ -75,13 +75,16 @@
 <v t="ekr.20230712190642.1"><vh>@file c:/test/test_refresh_from_disk.py</vh></v>
 <v t="ekr.20230712190949.1"><vh>@edit c:/test/test_refresh_from_disk.py</vh></v>
 </v>
-<v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh></v>
+<v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh>
 <v t="ekr.20230713144317.1"><vh>node 1</vh>
 <v t="ekr.20230713144328.1"><vh>child 1</vh></v>
 </v>
 <v t="ekr.20230713144405.1"><vh>node 1a</vh>
 <v t="ekr.20230713144405.2"><vh>child 1</vh></v>
 </v>
+</v>
+<v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
+<v t="ekr.20230713145630.1"><vh>COPY: test of parse-body</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -998,7 +1001,8 @@ if p:
 else:
     print('Not found:', h)
 </t>
-<t tx="ekr.20230623064935.1">diff-marked-nodes
+<t tx="ekr.20230623064935.1">parse-body
+diff-marked-nodes
 refresh-from-disk
 convert-unls
 copy-test</t>
@@ -1084,5 +1088,17 @@ unl:gnx://xyzzy.leo#.20230622112649.1</t>
 <t tx="ekr.20230713144328.1"># Child 1.</t>
 <t tx="ekr.20230713144405.1"># Node 1.</t>
 <t tx="ekr.20230713144405.2"># Child 1a.</t>
+<t tx="ekr.20230713145509.1">def spam():
+    pass
+
+def eggs():
+    pass
+</t>
+<t tx="ekr.20230713145630.1">def spam():
+    pass
+
+def eggs():
+    pass
+</t>
 </tnodes>
 </leo_file>
