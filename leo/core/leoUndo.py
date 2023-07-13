@@ -311,7 +311,7 @@ class Undoer:
         else:
             u.setRedoType("Can't Redo")
         u.cutStack()
-    #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
+    #@+node:EKR.20040530121329: *4* u.restoreTree & helper
     def restoreTree(self, treeInfo: list[g.Bunch]) -> None:
         """Use the tree info to restore all VNode data, including all links."""
         u = self
@@ -321,6 +321,7 @@ class Undoer:
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
     def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:
         """Restore all ivars saved in the bunch."""
+        c = self.c
         v = bunch.v
         v.statusBits = bunch.statusBits
         v.children = bunch.children
@@ -329,17 +330,8 @@ class Undoer:
         if uA is not None:
             v.unknownAttributes = uA
             v._p_changed = True
-    #@+node:ekr.20050415170812.2: *5* u.restoreTnodeUndoInfo
-    def restoreTnodeUndoInfo(self, bunch: g.Bunch) -> None:
-        v = bunch.v
-        v.h = bunch.headString
-        v.b = bunch.bodyString
-        v.statusBits = bunch.statusBits
-        ### uA = bunch.get('unknownAttributes')
-        uA = bunch.unknownAttributes
-        if uA is not None:
-            v.unknownAttributes = uA
-            v._p_changed = True
+        if c.p.v == v:
+            g.printObj(v.b, tag=f"To do: update v.b for {v.h}")
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
     def saveTree(self, p: Position, treeInfo: list[g.Bunch] = None) -> list[g.Bunch]:
         """Return a list of tuples with all info needed to handle a general undo operation."""
@@ -401,7 +393,9 @@ class Undoer:
                 unknownAttributes=getattr(v, 'unknownAttributes', None)
             )
         """
-        print(f"Dump of VnodeUndoInfo: {tag or ''}")
+        tag_s = f"**{tag}**" if tag else ''
+        print('')
+        print(f"Dump of VnodeUndoInfo: {tag_s}")
         for i, bunch in enumerate(info):
             v = bunch.v
             print('')

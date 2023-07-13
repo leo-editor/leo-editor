@@ -316,7 +316,7 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     if p.isAtAutoNode() or p.isAtAutoRstNode():
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!
-    elif p.atFileNodeName():
+    elif p.isAtFileNode():
         p.v._deleteAllChildren()
         at.read(p)
     elif p.isAtCleanNode():
