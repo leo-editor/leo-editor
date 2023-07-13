@@ -362,6 +362,7 @@ class Undoer:
         # method corresponds to the old v.copy method.
         #
         #@-<< about u.saveTree >>
+        trace = True and not g.unitTesting
         u = self
         topLevel = (treeInfo is None)
         if topLevel:
@@ -374,8 +375,8 @@ class Undoer:
         while child:
             self.saveTree(child, treeInfo)
             child = child.next()
-        ### g.printObj(treeInfo, tag=p.h)
-        u.dumpVnodeUndoInfo(treeInfo)
+        if trace and topLevel:
+            u.dumpVnodeUndoInfo(treeInfo, tag=g.caller())
         return treeInfo
     #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
     def createVnodeUndoInfo(self, v: VNode) -> g.Bunch:
@@ -388,7 +389,7 @@ class Undoer:
             unknownAttributes=getattr(v, 'unknownAttributes', None)
         )
     #@+node:ekr.20230712194306.1: *5* u.dumpVnodeUndoInfo
-    def dumpVnodeUndoInfo(self, info):
+    def dumpVnodeUndoInfo(self, info: g.Bunch, tag: str = None) -> None:
         """
         Dump a VnodeUndoInfor, a list of g.Bunches of the form:
 
@@ -400,17 +401,12 @@ class Undoer:
                 unknownAttributes=getattr(v, 'unknownAttributes', None)
             )
         """
-        print('Dump of VnodeUndoInfo...')
+        print(f"Dump of VnodeUndoInfo: {tag or ''}")
         for i, bunch in enumerate(info):
-            print('')
             v = bunch.v
+            print('')
             print(f"Bunch {i + 1} of {len(info)} {v.gnx} headline: {v.h}")
-            # print(f"Parents: {v.parents}")
-            # print(f"Headline: {v.h}")
             g.printObj(v.b, tag=f"Body {i}")
-        
-
-        
     #@+node:ekr.20050525151449: *4* u.trace
     def trace(self) -> None:  # pragma: no cover
         ivars = ('kind', 'undoType')
