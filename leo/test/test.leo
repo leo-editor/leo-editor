@@ -71,9 +71,17 @@
 <v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
 </v>
 </v>
-<v t="ekr.20230712190622.1"><vh>tests of refresh-from-disk</vh></v>
+<v t="ekr.20230712190622.1"><vh>tests of refresh-from-disk</vh>
 <v t="ekr.20230712190642.1"><vh>@file c:/test/test_refresh_from_disk.py</vh></v>
 <v t="ekr.20230712190949.1"><vh>@edit c:/test/test_refresh_from_disk.py</vh></v>
+</v>
+<v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh></v>
+<v t="ekr.20230713144317.1"><vh>node 1</vh>
+<v t="ekr.20230713144328.1"><vh>child 1</vh></v>
+</v>
+<v t="ekr.20230713144405.1"><vh>node 1a</vh>
+<v t="ekr.20230713144405.2"><vh>child 1</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -990,7 +998,8 @@ if p:
 else:
     print('Not found:', h)
 </t>
-<t tx="ekr.20230623064935.1">refresh-from-disk
+<t tx="ekr.20230623064935.1">diff-marked-nodes
+refresh-from-disk
 convert-unls
 copy-test</t>
 <t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
@@ -1070,5 +1079,10 @@ unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20050831195449
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
 <t tx="ekr.20230712190622.1"></t>
+<t tx="ekr.20230713144259.1"></t>
+<t tx="ekr.20230713144317.1"># Node 1.</t>
+<t tx="ekr.20230713144328.1"># Child 1.</t>
+<t tx="ekr.20230713144405.1"># Node 1.</t>
+<t tx="ekr.20230713144405.2"># Child 1a.</t>
 </tnodes>
 </leo_file>

@@ -233,7 +233,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Not a command.  Expand abbreviations in event.widget.
 
         Words start with '@'.
-        
+
         This code is not undoable.
         """
         # Trace for *either* 'abbrev' or 'keys'
