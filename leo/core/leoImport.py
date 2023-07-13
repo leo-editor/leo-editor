@@ -1083,15 +1083,18 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body (restore undo??)
     def parse_body(self, p: Position) -> None:
         """
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
+
+        This command (yet) is not undoable.
         """
+        c = self.c
+        d = g.app.language_extension_dict
         if not p:
             return
-        c, d, ic = self.c, g.app.language_extension_dict, self
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
@@ -1102,10 +1105,10 @@ class LeoImportCommands:
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
-            ic.methodName, ic.fileType = g.os_path_splitext(fn)
+            self.methodName, self.fileType = g.os_path_splitext(fn)
         else:
             fileType = d.get(language, 'py')
-            ic.methodName, ic.fileType = p.h, fileType
+            self.methodName, self.fileType = p.h, fileType
         if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
             return
@@ -1609,12 +1612,14 @@ class RecursiveImportController:
         """
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
+            return
         try:
-            c = self.c
+            c, u = self.c, self.c.undoer
             p1 = self.root = c.p
             t1 = time.time()
             g.app.disable_redraw = True
-            bunch = c.undoer.beforeChangeTree(p1)
+            ### bunch = c.undoer.beforeChangeTree(p1)
+            bunch = u.beforeInsertNode(p1)
             # Always create a new last top-level node.
             last = c.lastTopLevel()
             parent = last.insertAfter()
@@ -1628,7 +1633,8 @@ class RecursiveImportController:
             else:
                 self.import_dir(dir_, parent)
             self.post_process(parent)
-            c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
+            ### c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
+            u.afterInsertNode(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
             g.es_exception()

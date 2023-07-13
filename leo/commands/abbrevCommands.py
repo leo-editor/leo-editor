@@ -330,13 +330,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
+
+        This command is not (yet) undoable.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
+        ### u = c.undoer
         if not c.canPasteOutline(tree_s):
             g.trace(f"bad copied outline: {tree_s}")
             return
         old_p = c.p.copy()
-        bunch = u.beforeChangeTree(old_p)
+        ### bunch = u.beforeChangeTree(old_p)
         self.replace_selection(w, i, j, None)
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
@@ -351,7 +354,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         for p in old_p.subtree():
             if self.find_place_holder(p, do_placeholder):
                 break
-        u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
+        ### u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
     #@+node:ekr.20150514043850.17: *5* abbrev.paste_tree
     def paste_tree(self, old_p: Position, s: str) -> None:
         """Paste the tree corresponding to s (xml) into the tree."""
@@ -538,15 +541,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self) -> None:
         """The post pass: make script substitutions in all headlines."""
-        c = self.c
+        ### c = self.c
         if self.root:
-            bunch = c.undoer.beforeChangeTree(c.p)
-            changed = False
+            ### bunch = c.undoer.beforeChangeTree(c.p)
+            ### changed = False
             for p in self.root.self_and_subtree():
-                changed2 = self.make_script_substitutions_in_headline(p)
-                changed = changed or changed2
-            if changed:
-                c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
+                self.make_script_substitutions_in_headline(p)
+                ### changed2 = self.make_script_substitutions_in_headline(p)
+                ### changed = changed or changed2
+            ###
+            # if changed:
+                # c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w: Wrapper, i: int, j: int, s: str) -> None:
         """Replace w[i:j] by s."""

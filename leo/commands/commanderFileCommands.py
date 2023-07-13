@@ -784,38 +784,45 @@ def weave(self: Self, event: Event = None) -> None:
 #@+node:ekr.20070806105721.1: *3* c_file.readAtAutoNodes
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self: Self, event: Event = None) -> None:
-    """Read all @auto nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @auto nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c = self
     c.endEditing()
     c.init_error_dialogs()
-    undoData = u.beforeChangeTree(p)
     c.importCommands.readAtAutoNodes()
-    u.afterChangeTree(p, 'Read @auto Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
 #@+node:ekr.20031218072017.1839: *3* c_file.readAtFileNodes
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self: Self, event: Event = None) -> None:
-    """Read all @file nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @file nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     c.endEditing()
-    undoData = u.beforeChangeTree(p)
     c.endEditing()
     c.atFileCommands.readAllSelected(p)
+
     # Force an update of the body pane.
     c.setBodyString(p, p.b)  # Not a do-nothing!
-    u.afterChangeTree(p, 'Read @file Nodes', undoData)
     c.redraw()
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self: Self, event: Event = None) -> None:
-    """Read all @shadow nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @shadow nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     c.endEditing()
     c.init_error_dialogs()
-    undoData = u.beforeChangeTree(p)
     c.atFileCommands.readAtShadowNodes(p)
-    u.afterChangeTree(p, 'Read @shadow Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
 #@+node:ekr.20070915134101: *3* c_file.readFileIntoNode
