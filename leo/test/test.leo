@@ -85,6 +85,7 @@
 <v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
 <v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
 </v>
+<v t="ekr.20230714023025.1"><vh>script: diff-branches/revs (one file)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -1099,6 +1100,22 @@ importer;
 mdfile;
 new-unit-test;
 new-unit-test;
+</t>
+<t tx="ekr.20230714023025.1">g.cls()
+import os
+import leo.commands.editFileCommands as efc
+path = g.finalize_join(g.app.loadDir, '..', '..')
+print('path:', path)
+os.chdir(path)
+
+# Any revspec is valid as an argument to the "branch1" and "branch2" args.
+# See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+
+efc.GitDiffController(c).diff_two_branches(
+    branch1='devel', # old branch/rev
+    branch2='ekr-3435-undo-for-refresh-from-disk', # new branch/rev
+    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
+)
 </t>
 </tnodes>
 </leo_file>

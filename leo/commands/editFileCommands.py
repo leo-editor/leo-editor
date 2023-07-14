@@ -776,8 +776,11 @@ class GitDiffController:
     def diff_two_branches(self, branch1: str, branch2: str, fn: str) -> None:
         """Create an outline describing the git diffs for fn."""
         c = self.c
+        u, undoType = c.undoer, 'diff-two-branches'
         if not self.get_directory():
             return
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = f"git-diff-branches {branch1} {branch2}"
         s1 = self.get_file_from_branch(branch1, fn)
@@ -800,6 +803,7 @@ class GitDiffController:
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '') -> None:
