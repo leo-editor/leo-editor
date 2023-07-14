@@ -274,6 +274,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.root = p.copy()
             self.last_hit = p.copy()
             self.expand_tree(w, i, j, val, word)
+            c.undoer.clearAndWarn('tree-abbreviation')
         else:
             # Never expand a search for text matches.
             place_holder = '__NEXT_PLACEHOLDER' in val
@@ -325,6 +326,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 p.moveToThreadNext()
         else:
             self.find_place_holder(p, do_placeholder)
+
     #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
     def expand_tree(self, w: Wrapper, i: int, j: int, tree_s: str, word: str) -> None:
         """

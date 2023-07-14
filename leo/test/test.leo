@@ -53,7 +53,7 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
-<v t="ekr.20180311131424.1"><vh>Recent</vh>
+<v t="ekr.20180311131424.1"><vh>Recent tests</vh>
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
 <v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
@@ -70,7 +70,6 @@
 <v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
 <v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
 </v>
-</v>
 <v t="ekr.20230712190622.1"><vh>tests of refresh-from-disk</vh>
 <v t="ekr.20230712190642.1"><vh>@file c:/test/test_refresh_from_disk.py</vh></v>
 <v t="ekr.20230712190949.1"><vh>@edit c:/test/test_refresh_from_disk.py</vh></v>
@@ -85,6 +84,7 @@
 </v>
 <v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
 <v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -1094,6 +1094,11 @@ unl:gnx://xyzzy.leo#.20230622112649.1</t>
 def eggs():
     pass
 </t>
-<t tx="ekr.20230713173540.1"></t>
+<t tx="ekr.20230713173540.1">demo;
+importer;
+mdfile;
+new-unit-test;
+new-unit-test;
+</t>
 </tnodes>
 </leo_file>

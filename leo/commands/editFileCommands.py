@@ -522,7 +522,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: Event = None) -> None:  # 2020/07/18, for leoInteg.
+    def gitDiff(self, event: Event = None) -> None:
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
@@ -710,9 +710,7 @@ class GitDiffController:
         """
         Create an outline describing the git diffs for fn.
         """
-        # Common code.
         c = self.c
-        # #1781, #2143
         directory = self.get_directory()
         if not directory:
             return
@@ -858,15 +856,16 @@ class GitDiffController:
     def diff_revs(self, rev1: str, rev2: str) -> bool:
         """Diff all files given by rev1 and rev2."""
         c = self.c
-        p, u = c.p, c.undoer
+        u = c.undoer
         undoType = 'git-diff-revs'
         files = self.get_files(rev1, rev2)
         if not files:
             return False
         self.root, undoData = self.create_root(rev1, rev2)
+        g.trace(self.root.h)
         for fn in files:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-        u.afterInsertNode(p, undoType, undoData)
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
         return True
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
@@ -943,9 +942,9 @@ class GitDiffController:
     def create_root(self, rev1: str, rev2: str) -> tuple[Position, g.Bunch]:
         """Create the top-level organizer node describing the git diff."""
         c, u = self.c, self.c.undoer
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-
+        # Preselect the last top-level node.
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
         p.h = f"git diff {r1} {r2}"
