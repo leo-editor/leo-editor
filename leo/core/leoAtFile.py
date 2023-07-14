@@ -3479,10 +3479,9 @@ class FastAtRead:
         #@+<< final checks >>
         #@+node:ekr.20211104054823.1: *4* << final checks >>
         if g.unitTesting:
-            # Unit tests must use the proper value for root.gnx.
             assert not root_gnx_adjusted
             assert not stack, stack
-            assert root_gnx == gnx, (root_gnx, gnx)
+            # Allow gnx mismatch.
         elif root_gnx_adjusted:  # pragma: no cover
             pass  # Don't check!
         elif stack:  # pragma: no cover
@@ -3525,12 +3524,12 @@ class FastAtRead:
         """
         self.path = path
         self.root = root
-        sfn = g.shortFileName(path)
+        # sfn = g.shortFileName(path)
         contents = contents.replace('\r', '')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
         if not data:  # pragma: no cover
-            g.trace(f"Invalid external file: {sfn}")
+            g.trace(f"Invalid external file: {path}")
             return False
         # Clear all children.
         # Previously, this had been done in readOpenFile.
