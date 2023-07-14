@@ -83,6 +83,27 @@ class TestEditFileCommands(LeoUnitTest):
         self.assertEqual(c.lastTopLevel(), root)
         u.redo()
         self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
+    #@+node:ekr.20230714160049.1: *3* TestEditFileCommands.test_diff_two_revs
+    def test_diff_two_revs(self):
+        c = self.c
+        u = c.undoer
+        x = GitDiffController(c=c)
+        
+        # Setup the outline.
+        root = c.rootPosition()
+        while root.hasNext():
+            root.next().doDelete()
+        c.selectPosition(root)
+
+        # Run the command.
+        expected_last_headline = 'git diff revs: HEAD'
+        x.diff_two_revs()
+        self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
+        # Test undo/redo.
+        u.undo()
+        self.assertEqual(c.lastTopLevel(), root)
+        u.redo()
+        self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
     #@-others
 
 #@-others

@@ -819,9 +819,10 @@ class GitDiffController:
         files = self.get_files(rev1, rev2)
         n = len(files)
         message = f"diffing {n} file{g.plural(n)}"
-        if n > 5:
-            message += ". This may take awhile..."
-        g.es_print(message)
+        if not g.unitTesting:
+            if n > 5:
+                message += ". This may take awhile..."
+            g.es_print(message)
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
 
         # Create the root node.
