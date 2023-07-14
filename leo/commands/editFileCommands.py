@@ -858,7 +858,11 @@ class GitDiffController:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
     #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
     def diff_revs(self, rev1: str, rev2: str) -> bool:
-        """Diff all files given by rev1 and rev2."""
+        """
+        A helper for Leo's git-diff command
+
+        Diff all files given by rev1 and rev2.
+        """
         c = self.c
         u = c.undoer
         undoType = 'git-diff-revs'

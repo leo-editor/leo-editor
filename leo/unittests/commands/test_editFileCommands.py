@@ -27,7 +27,7 @@ class TestEditFileCommands(LeoUnitTest):
         findUnl_gnx = 'ekr.20230626064652.1'
         x = GitDiffController(c=self.c)
         x.node_history(path, gnx=findUnl_gnx)
-    #@+node:ekr.20230714143451.1: *3* TestEditFileCommands.diff_two_branches
+    #@+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
     def test_diff_two_branches(self):
         c = self.c
         u = c.undoer
@@ -62,6 +62,27 @@ class TestEditFileCommands(LeoUnitTest):
             self.assertEqual(c.lastTopLevel().h, expected_last_headline)
         finally:
             os.chdir(old_dir)
+    #@+node:ekr.20230714154706.1: *3* TestEditFileCommands.test_git_diff
+    def test_git_diff(self):
+        c = self.c
+        u = c.undoer
+        x = GitDiffController(c=c)
+        
+        # Setup the outline.
+        root = c.rootPosition()
+        while root.hasNext():
+            root.next().doDelete()
+        c.selectPosition(root)
+
+        # Run the command.
+        expected_last_headline = 'git diff HEAD'
+        x.git_diff()
+        self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
+        # Test undo/redo.
+        u.undo()
+        self.assertEqual(c.lastTopLevel(), root)
+        u.redo()
+        self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
     #@-others
 
 #@-others
