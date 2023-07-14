@@ -1593,7 +1593,7 @@ class RecursiveImportController:
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
-        self.root = None
+        self.root: Position = None
         self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
         # Adjust the root directory.
         assert dir_ and self.root_directory, dir_
@@ -1614,13 +1614,13 @@ class RecursiveImportController:
             return
         try:
             c, u = self.c, self.c.undoer
-            p1 = self.root = c.p
             t1 = time.time()
             g.app.disable_redraw = True
-            bunch = u.beforeInsertNode(p1)
-            # Always create a new last top-level node.
             last = c.lastTopLevel()
-            parent = last.insertAfter()
+            c.selectPosition(last)
+            undoData = u.beforeInsertNode(last)
+            # Always create a new last top-level node.
+            self.root = parent = last.insertAfter()
             parent.v.h = 'imported files'
             # Special case for a single file.
             self.n_files = 0
@@ -1631,7 +1631,7 @@ class RecursiveImportController:
             else:
                 self.import_dir(dir_, parent)
             self.post_process(parent)
-            u.afterInsertNode(p1, 'recursive-import', bunch)
+            u.afterInsertNode(parent, 'recursive-import', undoData)
         except Exception:
             g.es_print('Exception in recursive import')
             g.es_exception()
@@ -1671,7 +1671,6 @@ class RecursiveImportController:
                 g.es_print('Exception computing', path)
                 g.es_exception()
         if files or dirs:
-            assert parent and parent.v != self.root.v, g.callers()
             parent = parent.insertAsLastChild()
             parent.v.h = dir_
             if files2:
@@ -1687,7 +1686,6 @@ class RecursiveImportController:
         """Import one file to the last top-level node."""
         c = self.c
         self.n_files += 1
-        assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
             p.v.h = '@edit ' + path.replace('\\', '/')
