@@ -135,8 +135,8 @@ class TestPlugins(LeoUnitTest):
         files = self.get_plugins()
         for filename in files:
             self.check_syntax(filename)
-    #@+node:ekr.20210909165720.1: *3* TestPlugins.xx_test_import_all_plugins
-    def xx_test_import_of_all_plugins(self):  # pragma: no cover
+    #@+node:ekr.20210909165720.1: *3* TestPlugins.slow_test_import_all_plugins
+    def slow_test_import_of_all_plugins(self):  # pragma: no cover
         # This works, but is slow.
         files = self.get_plugins()
         for filename in files:
