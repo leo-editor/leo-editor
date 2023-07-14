@@ -862,7 +862,6 @@ class GitDiffController:
         if not files:
             return False
         self.root, undoData = self.create_root(rev1, rev2)
-        g.trace(self.root.h)
         for fn in files:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         u.afterInsertNode(self.root, undoType, undoData)
