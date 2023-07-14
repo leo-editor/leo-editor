@@ -257,6 +257,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 n += 1
         if n > 0:
             c.setChanged()
+            c.undoer.clearAndWarn('clean-at-clean-tree')
         g.es_print(f"{n} node{g.plural(n)} cleaned")
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')

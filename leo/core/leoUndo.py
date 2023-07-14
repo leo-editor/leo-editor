@@ -856,11 +856,20 @@ class Undoer:
     def canUndo(self) -> None:
         u = self
         return u.undoMenuLabel != "Can't Undo"
+    #@+node:ekr.20230714012821.1: *4* u.clearAndWarn
+    def clearAndWarn(self, command_name: str) -> None:
+        """
+        Clear all undo state and issue a warning.
+
+        All non-undoable commands should call this method.
+        """
+        if not g.unitTesting:
+            g.es(f"not undoable: {command_name}", color='red')
+            g.es('clearing the undo stack', color='red')
+        self.clearUndoState()
     #@+node:ekr.20031218072017.3609: *4* u.clearUndoState
     def clearUndoState(self) -> None:
-        """Clears the entire Undo state.
-
-        All non-undoable commands should call this method."""
+        """Clears the entire Undo state."""
         u = self
         u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")

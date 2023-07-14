@@ -339,6 +339,7 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
     c.redraw()
+    c.undoer.clearAndWarn('refresh-from-disk')
 #@+node:ekr.20210610083257.1: *3* c_file.pwd
 @g.commander_command('pwd')
 def pwd_command(self: Self, event: Event = None) -> None:
@@ -795,6 +796,7 @@ def readAtAutoNodes(self: Self, event: Event = None) -> None:
     c.importCommands.readAtAutoNodes()
     c.redraw()
     c.raise_error_dialogs(kind='read')
+    c.undoer.clearAndWarn('read-at-auto-nodes')
 #@+node:ekr.20031218072017.1839: *3* c_file.readAtFileNodes
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self: Self, event: Event = None) -> None:
@@ -811,6 +813,7 @@ def readAtFileNodes(self: Self, event: Event = None) -> None:
     # Force an update of the body pane.
     c.setBodyString(p, p.b)  # Not a do-nothing!
     c.redraw()
+    c.undoer.clearAndWarn('read-at-file-nodes')
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self: Self, event: Event = None) -> None:
@@ -825,6 +828,7 @@ def readAtShadowNodes(self: Self, event: Event = None) -> None:
     c.atFileCommands.readAtShadowNodes(p)
     c.redraw()
     c.raise_error_dialogs(kind='read')
+    c.undoer.clearAndWarn('read-at-shadow-nodes')
 #@+node:ekr.20070915134101: *3* c_file.readFileIntoNode
 @g.commander_command('read-file-into-node')
 def readFileIntoNode(self: Self, event: Event = None) -> None:
