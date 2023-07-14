@@ -476,7 +476,6 @@ class CompareLeoOutlines:
         The main entry point for scripts.
         """
         c = self.c
-        p = c.p
         u = c.undoer
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
@@ -489,7 +488,7 @@ class CompareLeoOutlines:
             aList = aList[1:]
             for path2 in aList:
                 self.diff_two_files(path1, path2)  # adds to self.root
-        u.afterInsertNode(p, undoType, undoData)
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
