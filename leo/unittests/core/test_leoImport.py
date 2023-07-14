@@ -43,10 +43,12 @@ class TestLeoImport(BaseTestImporter):
     def test_parse_body(self):
 
         c = self.c
+        u = c.undoer
         x = c.importCommands
         target = c.p.insertAfter()
         target.h = 'target'
-        target.b = textwrap.dedent(
+        
+        body_1 = textwrap.dedent(
         """
             import os
 
@@ -55,6 +57,7 @@ class TestLeoImport(BaseTestImporter):
                     raise RuntimeError('blah blah blah')
             return new_func
         """).strip() + '\n'
+        target.b = body_1
         x.parse_body(target)
 
         expected_results = (
@@ -79,6 +82,14 @@ class TestLeoImport(BaseTestImporter):
             ),
         )
         # Don't call run_test.
+        self.check_outline(target, expected_results)
+        
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(),  msg='undo test')
+        # Test redo
+        u.redo()
         self.check_outline(target, expected_results)
     #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_recursive_import
     def test_recursive_import(self):
