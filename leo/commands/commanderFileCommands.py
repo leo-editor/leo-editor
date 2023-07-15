@@ -298,14 +298,14 @@ def open_outline(self: Self, event: Event = None) -> None:
     )
     open_completer(c, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
-# refresh_pattern = re.compile(r'^(@[\w-]+)')
-
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:
-    """Refresh an @<file> node from disk."""
-    c, p, u = self, self.p, self.undoer
-    c.nodeConflictList = []
-    shouldDelete = c.sqlite_connection is None
+    """
+    Refresh an @<file> node from disk.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
@@ -313,49 +313,33 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
     if os.path.isdir(full_path):
         g.warning(f"not a file: {full_path!r}")
         return
-    b = u.beforeChangeTree(p)
-    redraw_flag = True
     at = c.atFileCommands
-    # Fix bug 1090950 refresh from disk: cut node resurrection.
+    c.nodeConflictList = []
     c.recreateGnxDict()
-    i = g.skip_id(p.h, 0, chars='@')
-    word = p.h[0:i]
-    if word == '@auto':
-        # This includes @auto-*
-        if shouldDelete:
-            p.v._deleteAllChildren()
-        # Fix #451: refresh-from-disk selects wrong node.
-        p = at.readOneAtAutoNode(p)
-    elif word in ('@thin', '@file'):
-        if shouldDelete:
-            p.v._deleteAllChildren()
+    if p.isAtAutoNode() or p.isAtAutoRstNode():
+        p.v._deleteAllChildren()
+        p = at.readOneAtAutoNode(p)  # Changes p!
+    elif p.isAtFileNode():
+        p.v._deleteAllChildren()
         at.read(p)
-    elif word == '@clean':
-        # Wishlist 148: use @auto parser if the node is empty.
-        if p.b.strip() or p.hasChildren():
-            at.readOneAtCleanNode(p)
-        else:
-            # Fix #451: refresh-from-disk selects wrong node.
-            p = at.readOneAtAutoNode(p)
-    elif word == '@shadow':
-        if shouldDelete:
-            p.v._deleteAllChildren()
+    elif p.isAtCleanNode():
+        # Don't delete children!
+        at.readOneAtCleanNode(p)
+    elif p.isAtShadowFileNode():
+        p.v._deleteAllChildren()
         at.read(p)
-    elif word == '@edit':
+    elif p.isAtEditNode():
         at.readOneAtEditNode(p)  # Always deletes children.
-    elif word == '@asis':
-        # Fix #1067.
+    elif p.isAtAsisFileNode():
         at.readOneAtAsisNode(p)  # Always deletes children.
     else:
-        g.es_print(f"can not refresh from disk\n{p.h!r}")
-        redraw_flag = False
-    if redraw_flag:
-        # Fix #451: refresh-from-disk selects wrong node.
-        c.selectPosition(p)
-        u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
-        # Create the 'Recovered Nodes' tree.
-        c.fileCommands.handleNodeConflicts()
-        c.redraw()
+        g.es_print(f"Unknown @<file> node: {p.h!r}")
+        return
+    c.selectPosition(p)
+    # Create the 'Recovered Nodes' tree.
+    c.fileCommands.handleNodeConflicts()
+    c.redraw()
+    c.undoer.clearAndWarn('refresh-from-disk')
 #@+node:ekr.20210610083257.1: *3* c_file.pwd
 @g.commander_command('pwd')
 def pwd_command(self: Self, event: Event = None) -> None:
@@ -801,40 +785,50 @@ def weave(self: Self, event: Event = None) -> None:
 #@+node:ekr.20070806105721.1: *3* c_file.readAtAutoNodes
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self: Self, event: Event = None) -> None:
-    """Read all @auto nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @auto nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c = self
     c.endEditing()
     c.init_error_dialogs()
-    undoData = u.beforeChangeTree(p)
     c.importCommands.readAtAutoNodes()
-    u.afterChangeTree(p, 'Read @auto Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
+    c.undoer.clearAndWarn('read-at-auto-nodes')
 #@+node:ekr.20031218072017.1839: *3* c_file.readAtFileNodes
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self: Self, event: Event = None) -> None:
-    """Read all @file nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @file nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     c.endEditing()
-    undoData = u.beforeChangeTree(p)
     c.endEditing()
     c.atFileCommands.readAllSelected(p)
+
     # Force an update of the body pane.
     c.setBodyString(p, p.b)  # Not a do-nothing!
-    u.afterChangeTree(p, 'Read @file Nodes', undoData)
     c.redraw()
+    c.undoer.clearAndWarn('read-at-file-nodes')
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self: Self, event: Event = None) -> None:
-    """Read all @shadow nodes in the presently selected outline."""
-    c, p, u = self, self.p, self.undoer
+    """
+    Read all @shadow nodes in the presently selected outline.
+
+    This command is not undoable.
+    """
+    c, p = self, self.p
     c.endEditing()
     c.init_error_dialogs()
-    undoData = u.beforeChangeTree(p)
     c.atFileCommands.readAtShadowNodes(p)
-    u.afterChangeTree(p, 'Read @shadow Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
+    c.undoer.clearAndWarn('read-at-shadow-nodes')
 #@+node:ekr.20070915134101: *3* c_file.readFileIntoNode
 @g.commander_command('read-file-into-node')
 def readFileIntoNode(self: Self, event: Event = None) -> None:

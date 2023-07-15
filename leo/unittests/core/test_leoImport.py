@@ -3,9 +3,12 @@
 """Tests of leoImport.py"""
 
 import io
+import os
 import sys
 import textwrap
 from leo.unittests.test_importers import BaseTestImporter
+from leo.core import leoImport
+from leo.core import leoGlobals as g
 StringIO = io.StringIO
 
 #@+others
@@ -43,10 +46,12 @@ class TestLeoImport(BaseTestImporter):
     def test_parse_body(self):
 
         c = self.c
+        u = c.undoer
         x = c.importCommands
         target = c.p.insertAfter()
         target.h = 'target'
-        target.b = textwrap.dedent(
+        
+        body_1 = textwrap.dedent(
         """
             import os
 
@@ -55,6 +60,7 @@ class TestLeoImport(BaseTestImporter):
                     raise RuntimeError('blah blah blah')
             return new_func
         """).strip() + '\n'
+        target.b = body_1
         x.parse_body(target)
 
         expected_results = (
@@ -80,9 +86,16 @@ class TestLeoImport(BaseTestImporter):
         )
         # Don't call run_test.
         self.check_outline(target, expected_results)
-    #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_recursive_import
-    def test_recursive_import(self):
-        from leo.core import leoImport
+        
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(),  msg='undo test')
+        # Test redo
+        u.redo()
+        self.check_outline(target, expected_results)
+    #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_ric_minimize_headlines
+    def test_ric_minimize_headlines(self):
         c, root = self.c, self.c.rootPosition()
         if sys.platform.startswith('win'):
             dir_ = 'C:/Repos/non-existent-directory/mypy'
@@ -114,6 +127,45 @@ class TestLeoImport(BaseTestImporter):
             with self.assertRaises(AssertionError, msg=h):
                 root.h = h
                 x.minimize_headline(root)
+    #@+node:ekr.20230715004610.1: *3* TestLeoImport.slow_test_ric_run
+    def slow_test_ric_run(self):
+        c = self.c
+        u = c.undoer
+        
+        # Setup.
+        root = c.rootPosition()
+        root.deleteAllChildren()
+        while root.hasNext():
+            root.next().doDelete()
+        c.selectPosition(root)
+        self.assertEqual(c.lastTopLevel(), root)
+        if 1:
+            # 0.9 sec to import only leoGlobals.py
+            dir_ = g.os_path_finalize_join(g.app.loadDir, 'leoGlobals.py')
+        else:
+            # 4.1 sec. to import leo/core/*.py.
+            dir_ = os.path.normpath(g.app.loadDir)
+        self.assertTrue(os.path.exists(dir_), msg=dir_)
+        
+        # Run the tests.
+        expected_headline = 'imported files'
+        for kind in ('@clean', '@file'):
+            x = leoImport.RecursiveImportController(c,
+                dir_=dir_,
+                kind='@clean',
+                recursive=True,
+                safe_at_file = True,
+                theTypes=['.py'],
+                verbose=False,
+            )
+            x.run(dir_)
+            self.assertEqual(c.lastTopLevel().h, expected_headline)
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertEqual(c.lastTopLevel().h, expected_headline)
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
     #@-others
 #@-others
 #@-leo

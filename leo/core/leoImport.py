@@ -1089,9 +1089,11 @@ class LeoImportCommands:
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
         """
+        c = self.c
+        d = g.app.language_extension_dict
+        u, undoType = c.undoer, 'parse-body'
         if not p:
             return
-        c, d, ic = self.c, g.app.language_extension_dict, self
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
@@ -1102,19 +1104,19 @@ class LeoImportCommands:
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
-            ic.methodName, ic.fileType = g.os_path_splitext(fn)
+            self.methodName, self.fileType = g.os_path_splitext(fn)
         else:
             fileType = d.get(language, 'py')
-            ic.methodName, ic.fileType = p.h, fileType
+            self.methodName, self.fileType = p.h, fileType
         if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
             return
-        bunch = c.undoer.beforeChangeTree(p)
-        s = p.b
-        p.b = ''
         try:
+            bunch = u.beforeParseBody(p)
+            s = p.b
+            p.b = ''
             parser(c, p, s)
-            c.undoer.afterChangeTree(p, 'parse-body', bunch)
+            u.afterParseBody(p, undoType, bunch)
             p.expand()
             c.selectPosition(p)
             c.redraw()
@@ -1591,7 +1593,7 @@ class RecursiveImportController:
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
-        self.root = None
+        self.root: Position = None
         self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
         # Adjust the root directory.
         assert dir_ and self.root_directory, dir_
@@ -1609,15 +1611,16 @@ class RecursiveImportController:
         """
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
+            return
         try:
-            c = self.c
-            p1 = self.root = c.p
+            c, u = self.c, self.c.undoer
             t1 = time.time()
             g.app.disable_redraw = True
-            bunch = c.undoer.beforeChangeTree(p1)
-            # Always create a new last top-level node.
             last = c.lastTopLevel()
-            parent = last.insertAfter()
+            c.selectPosition(last)
+            undoData = u.beforeInsertNode(last)
+            # Always create a new last top-level node.
+            self.root = parent = last.insertAfter()
             parent.v.h = 'imported files'
             # Special case for a single file.
             self.n_files = 0
@@ -1628,7 +1631,7 @@ class RecursiveImportController:
             else:
                 self.import_dir(dir_, parent)
             self.post_process(parent)
-            c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
+            u.afterInsertNode(parent, 'recursive-import', undoData)
         except Exception:
             g.es_print('Exception in recursive import')
             g.es_exception()
@@ -1637,12 +1640,13 @@ class RecursiveImportController:
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
             c.redraw(parent)
-        t2 = time.time()
-        n = len(list(parent.self_and_subtree()))
-        g.es_print(
-            f"imported {n} node{g.plural(n)} "
-            f"in {self.n_files} file{g.plural(self.n_files)} "
-            f"in {t2 - t1:2.2f} seconds")
+        if not g.unitTesting:
+            t2 = time.time()
+            n = len(list(parent.self_and_subtree()))
+            g.es_print(
+                f"imported {n} node{g.plural(n)} "
+                f"in {self.n_files} file{g.plural(self.n_files)} "
+                f"in {t2 - t1:2.2f} seconds")
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_: str, parent: Position) -> None:
         """Import selected files from dir_, a directory."""
@@ -1668,7 +1672,6 @@ class RecursiveImportController:
                 g.es_print('Exception computing', path)
                 g.es_exception()
         if files or dirs:
-            assert parent and parent.v != self.root.v, g.callers()
             parent = parent.insertAsLastChild()
             parent.v.h = dir_
             if files2:
@@ -1684,7 +1687,6 @@ class RecursiveImportController:
         """Import one file to the last top-level node."""
         c = self.c
         self.n_files += 1
-        assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
             p.v.h = '@edit ' + path.replace('\\', '/')

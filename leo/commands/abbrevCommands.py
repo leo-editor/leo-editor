@@ -274,6 +274,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.root = p.copy()
             self.last_hit = p.copy()
             self.expand_tree(w, i, j, val, word)
+            c.undoer.clearAndWarn('tree-abbreviation')
         else:
             # Never expand a search for text matches.
             place_holder = '__NEXT_PLACEHOLDER' in val
@@ -325,18 +326,18 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 p.moveToThreadNext()
         else:
             self.find_place_holder(p, do_placeholder)
+
     #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
     def expand_tree(self, w: Wrapper, i: int, j: int, tree_s: str, word: str) -> None:
         """
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
         if not c.canPasteOutline(tree_s):
             g.trace(f"bad copied outline: {tree_s}")
             return
         old_p = c.p.copy()
-        bunch = u.beforeChangeTree(old_p)
         self.replace_selection(w, i, j, None)
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
@@ -351,7 +352,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         for p in old_p.subtree():
             if self.find_place_holder(p, do_placeholder):
                 break
-        u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
     #@+node:ekr.20150514043850.17: *5* abbrev.paste_tree
     def paste_tree(self, old_p: Position, s: str) -> None:
         """Paste the tree corresponding to s (xml) into the tree."""
@@ -373,7 +373,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         """
-        c, u = self.c, self.c.undoer
+        c = self.c
         # Do #438: Search for placeholder in headline.
         s = p.h
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
@@ -391,7 +391,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if i is None:
                 return False
             w = c.frame.body.wrapper
-            bunch = u.beforeChangeBody(c.p)
             switch = p != c.p
             if switch:
                 c.selectPosition(p)
@@ -399,7 +398,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 scroll = w.getYScrollPosition()
             w.setAllText(new_s)
             p.v.b = new_s
-            u.afterChangeBody(p, 'find-place-holder', bunch)
             if switch:
                 c.redraw()
             w.setSelectionRange(i, j, insert=j)
@@ -418,14 +416,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i: int, j: int, val: str) -> tuple[str, bool]:
         """Make scripting substitutions in node p."""
-        c, u, w = self.c, self.c.undoer, self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         if not c.abbrev_subst_start:
             return val, False
         # Nothing to undo.
         if c.abbrev_subst_start not in val:
             return val, False
-        # The *before* snapshot.
-        bunch = u.beforeChangeBody(c.p)
+
         # Perform all scripting substitutions.
         self.save_ins = None
         self.save_sel = None
@@ -452,19 +450,18 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_ins = w.getInsertPoint()
             self.save_sel = w.getSelectionRange()
         if val == "__NEXT_PLACEHOLDER":
-            # user explicitly called for next placeholder in an abbrev.
-            # inserted previously
+            # user explicitly called for next placeholder in an abbreviation inserted previously
             val = ''
             do_placeholder = True
         else:
             do_placeholder = False
             c.p.v.b = w.getAllText()
-            u.afterChangeBody(c.p, 'make-script-substitution', bunch)
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p: Position) -> bool:
         """Make scripting substitutions in p.h."""
         c = self.c
+        p = c.p
         pattern = re.compile(r'^(.*)%s(.+)%s(.*)$' % (
             re.escape(c.abbrev_subst_start),
             re.escape(c.abbrev_subst_end),
@@ -538,15 +535,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self) -> None:
         """The post pass: make script substitutions in all headlines."""
-        c = self.c
         if self.root:
-            bunch = c.undoer.beforeChangeTree(c.p)
-            changed = False
             for p in self.root.self_and_subtree():
-                changed2 = self.make_script_substitutions_in_headline(p)
-                changed = changed or changed2
-            if changed:
-                c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
+                self.make_script_substitutions_in_headline(p)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w: Wrapper, i: int, j: int, s: str) -> None:
         """Replace w[i:j] by s."""
