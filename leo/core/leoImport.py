@@ -1640,12 +1640,13 @@ class RecursiveImportController:
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
             c.redraw(parent)
-        t2 = time.time()
-        n = len(list(parent.self_and_subtree()))
-        g.es_print(
-            f"imported {n} node{g.plural(n)} "
-            f"in {self.n_files} file{g.plural(self.n_files)} "
-            f"in {t2 - t1:2.2f} seconds")
+        if not g.unitTesting:
+            t2 = time.time()
+            n = len(list(parent.self_and_subtree()))
+            g.es_print(
+                f"imported {n} node{g.plural(n)} "
+                f"in {self.n_files} file{g.plural(self.n_files)} "
+                f"in {t2 - t1:2.2f} seconds")
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_: str, parent: Position) -> None:
         """Import selected files from dir_, a directory."""
