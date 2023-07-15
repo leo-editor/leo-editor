@@ -49,13 +49,17 @@ class TestEditFileCommands(LeoUnitTest):
             old_dir = os.getcwd()
             os.chdir(new_dir)
 
-            # Run the command.
+            # Run the command, suppressing output from git.
             expected_last_headline = 'git-diff-branches master devel'
-            x.diff_two_branches(
-                branch1='master',
-                branch2='devel',
-                fn='leo/core/leoGlobals.py'  # Don't use backslashes.
-            )
+            try:
+                sys.stdout = open(os.devnull, 'w')
+                x.diff_two_branches(
+                    branch1='master',
+                    branch2='devel',
+                    fn='leo/core/leoGlobals.py'  # Don't use backslashes.
+                )
+            finally:
+                sys.stdout = sys.__stdout__
             self.assertEqual(c.lastTopLevel().h, expected_last_headline)
             u.undo()
             self.assertEqual(c.lastTopLevel(), root)
@@ -103,7 +107,11 @@ class TestEditFileCommands(LeoUnitTest):
 
         # Run the command.
         expected_last_headline = 'git diff revs: HEAD'
-        x.diff_two_revs()
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            x.diff_two_revs()
+        finally:
+            sys.stdout = sys.__stdout__
         self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
         # Test undo/redo.
         u.undo()
