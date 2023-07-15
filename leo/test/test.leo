@@ -6,14 +6,11 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180311131353.1"><vh>Personal test file</vh></v>
+<v t="ekr.20180311131353.1"><vh>test.leo: semi-official tests</vh></v>
 <v t="ekr.20230622114548.1"><vh>@settings</vh>
 <v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
 <v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
-</v>
-<v t="ekr.20180311131424.1"><vh>Recent</vh>
-<v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
-<v t="ekr.20180311210803.1"><vh>re latex button</vh>
+<v t="ekr.20180311210803.1"><vh>Latex buttons</vh>
 <v t="ekr.20180311195905.1"><vh>@@button Create LaTeX</vh></v>
 <v t="ekr.20180311200239.1"><vh>@@clean c:\test\latex_test.tex</vh>
 <v t="ekr.20180311200312.1"><vh>level 1</vh>
@@ -21,12 +18,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180312050315.1"><vh>print cwd</vh></v>
-</v>
-<v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
-<v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
-<v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
-<v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180319044254.1"><vh>Viewrendered examples</vh>
 <v t="ekr.20180319044254.2"><vh>Python code</vh></v>
@@ -62,7 +53,9 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
-<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh></v>
+<v t="ekr.20180311131424.1"><vh>Recent tests</vh>
+<v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
+<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
@@ -71,6 +64,24 @@
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 <v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
 <v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
+</v>
+<v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
+<v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
+<v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
+<v t="ekr.20180311212134.3"><vh>g.error/note/warning test</vh></v>
+</v>
+<v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
+<v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
+<v t="ekr.20230714023025.1"><vh>script: diff-branches/revs (one file)</vh></v>
+</v>
+<v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh>
+<v t="ekr.20230713144317.1"><vh>node 1</vh>
+<v t="ekr.20230713144328.1"><vh>child 1</vh></v>
+</v>
+<v t="ekr.20230713144405.1"><vh>node 1a</vh>
+<v t="ekr.20230713144405.2"><vh>child 1</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -171,8 +182,6 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312050315.1">import os
-print(g.os_path_abspath(os.curdir))</t>
 <t tx="ekr.20180319044254.1"></t>
 <t tx="ekr.20180319044254.10">C:\Users\edreamleo\SampleVideo_1280x720_1mb.mp4
 </t>
@@ -989,7 +998,10 @@ if p:
 else:
     print('Not found:', h)
 </t>
-<t tx="ekr.20230623064935.1">convert-unls
+<t tx="ekr.20230623064935.1">parse-body
+diff-marked-nodes
+refresh-from-disk
+convert-unls
 copy-test</t>
 <t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
 
@@ -1067,5 +1079,38 @@ unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20050831195449
 
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
+<t tx="ekr.20230713144259.1"></t>
+<t tx="ekr.20230713144317.1"># Node 1.</t>
+<t tx="ekr.20230713144328.1"># Child 1.</t>
+<t tx="ekr.20230713144405.1"># Node 1.</t>
+<t tx="ekr.20230713144405.2"># Child 1a.</t>
+<t tx="ekr.20230713145509.1">def spam():
+    pass
+
+def eggs():
+    pass
+</t>
+<t tx="ekr.20230713173540.1">demo;
+importer;
+mdfile;
+new-unit-test;
+new-unit-test;
+</t>
+<t tx="ekr.20230714023025.1">g.cls()
+import os
+import leo.commands.editFileCommands as efc
+path = g.finalize_join(g.app.loadDir, '..', '..')
+print('path:', path)
+os.chdir(path)
+
+# Any revspec is valid as an argument to the "branch1" and "branch2" args.
+# See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+
+efc.GitDiffController(c).diff_two_branches(
+    branch1='devel', # old branch/rev
+    branch2='ekr-3435-undo-for-refresh-from-disk', # new branch/rev
+    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
+)
+</t>
 </tnodes>
 </leo_file>

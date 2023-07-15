@@ -472,26 +472,25 @@ class CompareLeoOutlines:
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
     def diff_list_of_files(self, aList: list[str], visible: bool = True) -> None:
-        """The main entry point for scripts."""
+        """
+        The main entry point for scripts.
+        """
+        c = self.c
+        u = c.undoer
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
-        c, u = self.c, self.c.undoer
-        undoType = 'Diff Leo files'
-        u.beforeChangeGroup(c.p, undoType)
-
-        self.root = self.create_root(aList)  # creates it's own undo bead
-
+        undoType = 'diff-files'
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
+        self.root = self.create_root(aList)
         self.visible = visible
         while len(aList) > 1:
             path1 = aList[0]
             aList = aList[1:]
             for path2 in aList:
-                undoData = u.beforeChangeTree(self.root)
                 self.diff_two_files(path1, path2)  # adds to self.root
-                u.afterChangeTree(self.root, undoType, undoData)
-
-        u.afterChangeGroup(c.p, undoType=undoType)
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
@@ -579,16 +578,10 @@ class CompareLeoOutlines:
     #@+node:ekr.20180211170333.8: *4* loc.create_root
     def create_root(self, aList: list[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
-        c, u = self.c, self.c.undoer
-        undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-
+        c = self.c
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
-
-        u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self) -> None:
@@ -674,49 +667,35 @@ def diffMarkedNodes(event: Event) -> None:
     if not c:
         return
     u = c.undoer
-    undoType = 'Diff marked nodes'  # Same undoType is reused for all inner undos
-
+    undoType = 'diff-marked-nodes'
     aList = [z for z in c.all_unique_positions() if z.isMarked()]
-    n = 0
-    if len(aList) >= 2:
-        u.beforeChangeGroup(c.p, undoType)  # going to perform many operations
-
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        root = c.lastTopLevel().insertAfter()
-        root.h = 'diff marked nodes'
-        root.b = '\n'.join([z.h for z in aList]) + '\n'
-        u.afterInsertNode(root, 'Create diff root node', undoData)
-
-        while len(aList) > 1:
-            n += 1
-            p1, p2 = aList[0], aList[1]
-            aList = aList[1:]
-            lines = difflib.Differ().compare(
-                g.splitLines(p1.b.rstrip() + '\n'),
-                g.splitLines(p2.b.rstrip() + '\n'))
-
-            undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-            p = root.insertAsLastChild()
-            # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.h = f"diff {n}"
-            p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
-            u.afterInsertNode(p, undoType, undoData)
-
-            undoData = u.beforeChangeTree(p)
-            for p3 in (p1, p2):
-                clone = p3.clone()
-                clone.moveToLastChildOf(p)
-            u.afterChangeTree(p, undoType, undoData)
-
-        root.expand()
-        # c.unmarkAll()
-        c.selectPosition(root)
-        # Add the changes to the outer undo group.
-        u.afterChangeGroup(c.p, undoType=undoType)
-        c.redraw()
-    else:
+    if len(aList) < 2:
         g.es_print('Please mark at least 2 nodes')
+        return
+    c.selectPosition(c.lastTopLevel())
+    undoData = u.beforeInsertNode(c.p)
+    root = c.lastTopLevel().insertAfter()
+    root.h = 'diff marked nodes'
+    root.b = '\n'.join([z.h for z in aList]) + '\n'
+    n = 0
+    while len(aList) > 1:
+        n += 1
+        p1, p2 = aList[0], aList[1]
+        aList = aList[1:]
+        lines = difflib.Differ().compare(
+            g.splitLines(p1.b.rstrip() + '\n'),
+            g.splitLines(p2.b.rstrip() + '\n'))
+        p = root.insertAsLastChild()
+        p.h = f"diff {n}"
+        p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
+        u.afterInsertNode(p, undoType, undoData)
+        for p3 in (p1, p2):
+            clone = p3.clone()
+            clone.moveToLastChildOf(p)
+    u.afterInsertNode(root, undoType, undoData)
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
     """Prompt for a list of Leo files to open."""

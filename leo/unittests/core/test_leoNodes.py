@@ -942,7 +942,6 @@ class TestNodes(LeoUnitTest):
         #     child clone a
         #       node clone 1
         c, u = self.c, self.c.undoer
-        p = c.p.next()
         child_b = g.findNodeAnywhere(c, 'child b')
         self.assertTrue(child_b)
         self.assertTrue(child_b.isCloned())
@@ -953,9 +952,7 @@ class TestNodes(LeoUnitTest):
         self.assertFalse(child_c.isCloned())
         #
         # Change the tree.
-        bunch = u.beforeChangeTree(p)
         child_c._relinkAsCloneOf(child_b)
-        u.afterChangeTree(p, 'relink-clone', bunch)
         # self.dump_tree('Before...')
         u.undo()
         # self.dump_tree('After...')
