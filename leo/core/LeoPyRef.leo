@@ -655,8 +655,10 @@
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
 <v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
 <v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20230705083159.1"><vh>@file ../unittests/commands/test_editFileCommands.py</vh></v>
 <v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
 <v t="ekr.20211013081056.1"><vh>@file ../unittests/commands/test_convertCommands.py</vh></v>
+<v t="ekr.20230710105542.1"><vh>@file ../unittests/commands/test_commanderFileCommands.py</vh></v>
 </v>
 <v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
 <v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
@@ -665,6 +667,7 @@
 <v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
 <v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
 <v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
+<v t="ekr.20230714131540.1"><vh>@file ../unittests/core/test_leoCompare.py</vh></v>
 <v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
 <v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
 <v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
@@ -1189,6 +1192,7 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @language python
 </t>
 <t tx="ekr.20150425145248.1">test-one
+execute-script
 goto-prev-history-node
 goto-next-history-node
 beautify-files
@@ -1862,7 +1866,7 @@ precede the node's line that have not already been returned.
 import os
 import leo.commands.editFileCommands as efc
 path = g.finalize_join(g.app.loadDir, '..', '..')
-print('path:', path)
+print(f"os.chdir({path})")
 os.chdir(path)
 
 # Any revspec is valid as an argument to the "branch1" and "branch2" args.
@@ -1870,8 +1874,8 @@ os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
     branch1='devel', # old branch/rev
-    branch2='ekr-3181-mypy-links', # new branch/rev
-    fn='leo/core/leoNodes.py',  # Don't use back slashes.
+    branch2='ekr-3435-undo-for-refresh-from-disk', # new branch/rev
+    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -2767,11 +2771,22 @@ commands = (
     # f" {importers}",
     # f" {core}.test_leoAst.TestTOG"
     # f" {core}.test_leoApp.TestApp.test_LM_scanOptions",
-    # f" {core}.test_leoImport.TestLeoImport.test_recursive_import",
-    f" {core}.test_leoGlobals.TestGlobals",
-        #.test_patch_at_data_unl_path_prefixes",
-        #.test_p_get_star_UNL",
-        #.test_g_parsePathData",
+    # f" {core}.test_leoImport.TestLeoImport",
+    # f" {core}.test_leoGlobals.TestGlobals",
+    
+    # Also runs LeoUnitTest.test_set_setting
+    # f" {commands}.test_editFileCommands.TestEditFileCommands",
+    # f" {commands}.test_commanderFileCommands.TestEditFileCommands.test_gdc_node_history",
+    # f" {commands}.test_commanderFileCommands.TestRefreshFromDisk",
+    # f" {core}.test_leoImport.TestLeoImport.test_parse_body",
+
+    # f" {core}.test_leoCompare.TestCompare",
+    # f" {commands}.test_editFileCommands.TestEditFileCommands.test_diff_two_branches",
+    # f" {commands}.test_editFileCommands.TestEditFileCommands.test_git_diff",
+    #f" {commands}.test_editFileCommands.TestEditFileCommands.test_diff_two_revs",
+
+    # f" {core}.test_leoCompare.TestCompare.test_diff_list_of_files",
+    f" {core}.test_leoImport.TestLeoImport.slow_test_ric_run",
 )
 commands_s = f"python -m unittest {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
@@ -3439,13 +3454,18 @@ echo.
 sphinx-build -M html . _build -a
 </t>
 <t tx="ekr.20230508145335.1"># These tests load (once) all files in leo/core, leo/commands and leo/plugins/qt_*.py.
+g.cls()
 g.execute_shell_commands(
     'python -m unittest '
-    'leo.unittests.test_design.TestAnnotations.slow_test_all_paths '
-    'leo.unittests.test_design.TestChains.slow_test_all_paths'
+    # 'leo.unittests.test_design.TestAnnotations.slow_test_all_paths '
+    # 'leo.unittests.test_design.TestChains.slow_test_all_paths'
+
+    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history',
+    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.test_diff_two_branches',
 )
 </t>
-<t tx="ekr.20230511074046.1">core = 'leo.unittests.core'
+<t tx="ekr.20230511074046.1">commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
 design = 'leo.unittests.test_design'
 gui = 'leo.unittests.test_gui'
 importers = 'leo.unittests.test_importers'
