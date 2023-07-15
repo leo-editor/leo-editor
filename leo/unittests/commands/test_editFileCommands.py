@@ -2,6 +2,7 @@
 #@+node:ekr.20230705083159.1: * @file ../unittests/commands/test_editFileCommands.py
 """Tests for leo.commands.editFileCommands."""
 import os
+import sys
 from leo.core import leoGlobals as g
 from leo.commands.editFileCommands import GitDiffController
 from leo.core.leoTest2 import LeoUnitTest
@@ -64,6 +65,7 @@ class TestEditFileCommands(LeoUnitTest):
             os.chdir(old_dir)
     #@+node:ekr.20230714154706.1: *3* TestEditFileCommands.test_git_diff
     def test_git_diff(self):
+
         c = self.c
         u = c.undoer
         x = GitDiffController(c=c)
@@ -74,9 +76,13 @@ class TestEditFileCommands(LeoUnitTest):
             root.next().doDelete()
         c.selectPosition(root)
 
-        # Run the command.
         expected_last_headline = 'git diff HEAD'
-        x.git_diff()
+        # Run the command, suppressing git messages.
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            x.git_diff()
+        finally:
+            sys.stdout = sys.__stdout__
         self.assertTrue(c.lastTopLevel().h.startswith(expected_last_headline))
         # Test undo/redo.
         u.undo()
