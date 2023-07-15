@@ -69,7 +69,8 @@ class TestEditFileCommands(LeoUnitTest):
             os.chdir(old_dir)
     #@+node:ekr.20230714154706.1: *3* TestEditFileCommands.verbose_test_git_diff
     def verbose_test_git_diff(self):
-
+        # Don't run this test by default.
+        # It can spew random git messages depending on the state of the repo.
         c = self.c
         u = c.undoer
         x = GitDiffController(c=c)
