@@ -151,10 +151,11 @@ class LeoUnitTest(unittest.TestCase):
         class_name = self.__class__.__name__
 
         if class_name != 'LeoUnitTest':
-            self.skipTest(f"Don't test subclasses of LeoUnitTest: {class_name!r}")
+            self.skipTest(f"{class_name} is not 'LeoUnitTest'")
+
         if not hasattr(self, 'c'):
             # TestLeoServer.
-            self.skipTest(f"{class_name!r} has no 'c' ivar")
+            self.skipTest(f"{self.__class__.__name__} has no 'c' ivar")
 
         c = self.c
         val: Any
