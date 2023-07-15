@@ -199,7 +199,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith(('py', 'pyw')):
+            if p.isAtCleanNode():
                 n = 0
                 for p2 in p.subtree():
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
