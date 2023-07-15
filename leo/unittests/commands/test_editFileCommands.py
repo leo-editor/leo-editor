@@ -67,8 +67,8 @@ class TestEditFileCommands(LeoUnitTest):
             self.assertEqual(c.lastTopLevel().h, expected_last_headline)
         finally:
             os.chdir(old_dir)
-    #@+node:ekr.20230714154706.1: *3* TestEditFileCommands.test_git_diff
-    def test_git_diff(self):
+    #@+node:ekr.20230714154706.1: *3* TestEditFileCommands.verbose_test_git_diff
+    def verbose_test_git_diff(self):
 
         c = self.c
         u = c.undoer
@@ -82,6 +82,7 @@ class TestEditFileCommands(LeoUnitTest):
 
         expected_last_headline = 'git diff HEAD'
         # Run the command, suppressing git messages.
+        # Alas, this suppression does not work.
         try:
             sys.stdout = open(os.devnull, 'w')
             x.git_diff()
