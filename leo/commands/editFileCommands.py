@@ -870,7 +870,9 @@ class GitDiffController:
         files = self.get_files(rev1, rev2)
         if not files:
             return False
-        self.root, undoData = self.create_root(rev1, rev2)
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
+        self.root = self.create_root(rev1, rev2)
         for fn in files:
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         u.afterInsertNode(self.root, undoType, undoData)
@@ -947,12 +949,9 @@ class GitDiffController:
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
-    def create_root(self, rev1: str, rev2: str) -> tuple[Position, g.Bunch]:
+    def create_root(self, rev1: str, rev2: str) -> Position:
         """Create the top-level organizer node describing the git diff."""
-        c, u = self.c, self.c.undoer
-        # Preselect the last top-level node.
-        c.selectPosition(c.lastTopLevel())
-        undoData = u.beforeInsertNode(c.p)
+        c = self.c
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
         p.h = f"git diff {r1} {r2}"
@@ -963,7 +962,7 @@ class GitDiffController:
                 f"{r2}={self.get_revno(r2)}")
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
-        return p, undoData
+        return p
     #@+node:ekr.20170806094320.7: *4* gdc.find_file
     def find_file(self, fn: str) -> Optional[Position]:
         """Return the @<file> node matching fn."""

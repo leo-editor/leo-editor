@@ -481,7 +481,9 @@ class CompareLeoOutlines:
             g.trace('Not enough files in', repr(aList))
             return
         undoType = 'diff-files'
-        self.root, undoData = self.create_root(aList)
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
+        self.root = self.create_root(aList)
         self.visible = visible
         while len(aList) > 1:
             path1 = aList[0]
@@ -574,15 +576,13 @@ class CompareLeoOutlines:
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root
-    def create_root(self, aList: list[str]) -> tuple[Position, g.Bunch]:
+    def create_root(self, aList: list[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
-        c, u = self.c, self.c.undoer
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
+        c = self.c
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
-        return p, undoData
+        return p
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self) -> None:
         """Finish execution of this command."""
