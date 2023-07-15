@@ -3524,7 +3524,6 @@ class FastAtRead:
         """
         self.path = path
         self.root = root
-        # sfn = g.shortFileName(path)
         contents = contents.replace('\r', '')
         lines = g.splitLines(contents)
         data = self.scan_header(lines)
