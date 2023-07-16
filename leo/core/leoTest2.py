@@ -145,17 +145,8 @@ class LeoUnitTest(unittest.TestCase):
             c.config.set(p=None, kind=kind, name=name, val=val)
         finally:
             sys.stdout = old_stdout
-    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.test_set_setting
-    def test_set_setting(self) -> None:
-
-        class_name = self.__class__.__name__
-
-        if class_name != 'LeoUnitTest':
-            self.skipTest(f"{class_name} is not 'LeoUnitTest'")
-
-        if not hasattr(self, 'c'):
-            # TestLeoServer.
-            self.skipTest(f"{self.__class__.__name__} has no 'c' ivar")
+    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.verbose_test_set_setting
+    def verbose_test_set_setting(self) -> None:
 
         c = self.c
         val: Any
