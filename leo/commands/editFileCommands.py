@@ -195,15 +195,15 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def cleanAtCleanFiles(self, event: Event) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
-        undoType = 'clean-@clean-files'
+        undoType = 'clean-at-clean-files'
         c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith(('py', 'pyw')):
+            if p.isAtCleanNode():
                 n = 0
                 for p2 in p.subtree():
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
-                    if self.cleanAtCleanNode(p2, undoType):
+                    if self.cleanAtCleanNode(p2):
                         n += 1
                         total += 1
                         c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
@@ -214,7 +214,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.es("Command did not find any whitespace to adjust")
         g.es_print(f"{total} total node{g.plural(total)}")
     #@+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
-    def cleanAtCleanNode(self, p: Position, undoType: str) -> bool:
+    def cleanAtCleanNode(self, p: Position) -> bool:
         """Adjust whitespace in p, part of an @clean tree."""
         s = p.b.strip()
         if not s or p.h.strip().startswith('<<'):
@@ -237,20 +237,16 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c = self.c
         # Look for an @clean node.
         for p in c.p.self_and_parents(copy=False):
-            if (
-                g.match_word(p.h, 0, '@clean')
-                and p.h.rstrip().endswith(('py', 'pyw'))
-            ):
+            if p.isAtCleanNode():
                 break
         else:
-            g.es_print('no an @clean node found', p.h, color='blue')
+            g.es_print('no @clean node found', p.h, color='blue')
             return
         # pylint: disable=undefined-loop-variable
         # p is certainly defined here.
         n = 0
-        undoType = 'clean-@clean-tree'
         for p2 in p.subtree():
-            if self.cleanAtCleanNode(p2, undoType):
+            if self.cleanAtCleanNode(p2):
                 n += 1
         if n > 0:
             c.setChanged()
