@@ -38,7 +38,7 @@ class ConvertAtRoot:
     errors = 0
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
-    section_pat = re.compile(r'\s*<\<.+>\>')
+    section_pat = re.compile(r'\s*<\<(.+)>\>')
     units: list[Position] = []  # List of positions containing @unit.
 
     #@+others
