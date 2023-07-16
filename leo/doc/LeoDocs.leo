@@ -32626,19 +32626,19 @@ Leo syntax colors clickable links in the body pane. They have four forms:
 
 2. UNLs based on gnxs (global node indices):
 
-   Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
+   Links of the form `unl:gnx:` + `//outline#gnx` open the given
    outline and select the first outline node with the given gnx. These UNLs
    will work as long as the node exists anywhere in the outline.
 
-   *Note*: `{outline}` is optional. It can be an absolute path name or
+   *Note*: `outline` is optional. It can be an absolute path name or
    a relative path name resolved using `@data unl-path-prefixes`.
 
 3. Leo's headline-based UNLs, as shown in the status pane:
 
-   Headline-based UNLs consist of `unl://` + `//{outline}#{headline_list}`
-   where headline_list is a list of headlines separated by `--&gt;`.
+   Headline-based UNLs consist of `unl://` + `//outline#headline-list`
+   where headline-list is a list of headlines separated by `--&gt;`.
 
-   *Note*: `{outline}` is optional. It can be an absolute path name or
+   *Note*: `outline` is optional. It can be an absolute path name or
    a relative path name resolved using `@data unl-path-prefixes`.
 
 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
@@ -32683,7 +32683,7 @@ See the first comment of PR #3424 for full details.
 
 - PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
-- 40+ issues and about 50 pull requests.
+- 40+ issues and 50+ pull requests.
 
 **Links**
 
