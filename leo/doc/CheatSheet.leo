@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -106,6 +106,7 @@
 <v t="ekr.20180405093127.30"><vh>reStructuredText docstring example</vh></v>
 <v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
+<v t="ekr.20230716045242.1"><vh>Clickable links</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.</t>
@@ -286,7 +287,7 @@ This overrides the following default binding in leoSettings.leo::
 - todo.py: Manages to-do lists and simple project management.
 - valuespace.py: Creates an outline-oriented spreadsheet.
 - viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
-</t>
+- viewrendered3.py: An alternate version of viewrendered.py.</t>
 <t tx="ekr.20131019184243.16693">@&lt;file&gt; nodes create external files:
 
     @asis &lt;filename&gt;        write only, no sentinels, exact line endings
@@ -1746,6 +1747,23 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
         u.afterChangeGroup(c.p, undoType,
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
+</t>
+<t tx="ekr.20230716045242.1">Leo syntax colors clickable links in the body pane. For example:
+
+Leo's home page: https://leo-editor.github.io/leo-editor/
+
+The status area shows the UNL (*Universal Node Locator*) for each node.
+
+Control-clicking a UNL will take you to its target node, even if the target is in another Leo file!
+gnx-based UNLs won't break even if you move or rename the target node.
+
+Try these examples!
+
+The "Key bindings" node in this file:
+unl:gnx://CheatSheet.leo#ekr.20131019184243.16685
+
+The "6.7.4 release notes" node in LeoDocs.leo.
+unl:gnx://LeoDocs.leo#ekr.20230703101804.1
 </t>
 <t tx="mhw.20181210130732.1">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
