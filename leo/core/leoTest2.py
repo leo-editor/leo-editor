@@ -147,7 +147,8 @@ class LeoUnitTest(unittest.TestCase):
             sys.stdout = old_stdout
     #@+node:ekr.20230703103514.1: *4* LeoUnitTest.verbose_test_set_setting
     def verbose_test_set_setting(self) -> None:
-
+        # Not run by default. To run:
+        # python -m unittest leo.core.leoTest2.LeoUnitTest.verbose_test_set_setting
         c = self.c
         val: Any
         for val in (True, False):
