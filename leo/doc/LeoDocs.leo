@@ -1529,6 +1529,7 @@
 <v t="ekr.20181015144118.39"><vh>Leo University</vh></v>
 <v t="ekr.20181015144118.40"><vh>Architecture</vh></v>
 </v>
+<v t="ekr.20230716051446.1"><vh>Clickable links</vh></v>
 </v>
 </v>
 <v t="ekr.20230123101622.1"><vh>More TOC links</vh>
@@ -2516,6 +2517,7 @@
 <v t="ekr.20230409053106.1"></v>
 <v t="ekr.20230709070852.1"></v>
 <v t="ekr.20230703101804.1"></v>
+<v t="ekr.20230628032632.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -32619,24 +32621,24 @@ Leo syntax colors clickable links in the body pane. They have four forms:
    When running these tools *outside of* Leo, copying an error message from
    the *console* to Leo's log pane will create clickable links in the log
    pane. Control-clicking these links will select the proper node and line
-   provided the outline contains an `@&amp;lt;file&amp;gt;` node for file mentioned in
+   provided the outline contains an `@&lt;file&gt;;` node for file mentioned in
    the error message.
 
 2. UNLs based on gnxs (global node indices):
 
-   Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
+   Links of the form `unl:gnx:` + `//outline#gnx` open the given
    outline and select the first outline node with the given gnx. These UNLs
    will work as long as the node exists anywhere in the outline.
 
-   *Note*: `{outline}` is optional. It can be an absolute path name or
+   *Note*: `outline` is optional. It can be an absolute path name or
    a relative path name resolved using `@data unl-path-prefixes`.
 
 3. Leo's headline-based UNLs, as shown in the status pane:
 
-   Headline-based UNLs consist of `unl://` + `//{outline}#{headline_list}`
-   where headline_list is a list of headlines separated by `--&gt;`.
+   Headline-based UNLs consist of `unl://` + `//outline#headline-list`
+   where headline-list is a list of headlines separated by `--&gt;`.
 
-   *Note*: `{outline}` is optional. It can be an absolute path name or
+   *Note*: `outline` is optional. It can be an absolute path name or
    a relative path name resolved using `@data unl-path-prefixes`.
 
 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
@@ -32681,7 +32683,7 @@ See the first comment of PR #3424 for full details.
 
 - PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
-- 40+ issues and about 50 pull requests.
+- 40+ issues and 50+ pull requests.
 
 **Links**
 
@@ -32721,6 +32723,8 @@ at.readOneAtEditNode and at.readOneAtAsisNode.
 
 - `PR #3215`_ and `PR #3424`_: gnx-based unls (clickable links).
   These links will break only if the original node is deleted.
+  See: https://leo-editor.github.io/leo-editor/clickablelinks.html
+  
   
 **New settings**
  
@@ -32755,6 +32759,23 @@ at.readOneAtEditNode and at.readOneAtAsisNode.
   The first was dangerous. gnx-based unls obsolete the other two.
   
 - 40+ issues and about 50 pull requests.</t>
+<t tx="ekr.20230716051446.1">Leo syntax colors clickable links in the body pane. For example:
+
+Leo's home page: https://leo-editor.github.io/leo-editor/
+
+The status area shows the UNL (*Universal Node Locator*) for each node.
+
+Control-clicking a UNL will take you to its target node, even if the target is in another Leo file!
+gnx-based UNLs won't break even if you move or rename the target node.
+
+Try these examples!
+
+The "Key bindings" node in this file:
+unl:gnx://CheatSheet.leo#ekr.20131019184243.16685
+
+The "6.7.4 release notes" node in LeoDocs.leo.
+unl:gnx://LeoDocs.leo#ekr.20230703101804.1
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
