@@ -3316,7 +3316,7 @@ if pygments:
     # Monkeypatch!
 
     if pygments:
-        RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
+        RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed  # type:ignore
     #@+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
