@@ -91,6 +91,7 @@
 <v t="ekr.20211209060458.1"><vh>@@bool put-class-in-imported-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 </v>
+<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -629,7 +630,6 @@
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
-<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>

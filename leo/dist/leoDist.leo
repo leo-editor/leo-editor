@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -201,7 +201,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.3
+Version: 6.7.4
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -220,39 +220,52 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.4 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.3**
+**The highlights of Leo 6.7.4**
 
-- PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
-            Leo supports Python's standard os.path expansions.
-            Leo no longer supports {{python-expression}} in headlines.
-            
-- Several large code cleanups: 460+ files changed.
+**Warning: breaking changes to Leo's api**
 
-**Commands**
+p.get_UNL returns gnx-based unls. Previously it returned path-based gnxs.
+See the first comment of PR #3424 for full details.
 
-- PR #3227: Add commands to add/remove numbers from headlines.
-- PR #3255: Add write-zip-archive command.
-- PR #3192: Add show-color-settings and the show-font-settings commands.
+**gnx-based unls**
 
-**Other changes**
+- PR #3215 and #3424: gnx-based unls (clickable links).
+  These links will break only if the original node is deleted.
+  
+**New settings**
+  
+- @string unl-status-kind = gnx
+- @bool full-unl-paths = True
+- @data unl-path-prefixes
+  
+**Other improvements**
+  
+- PR #3330: Improve importers for C, C++, and cython.
+- PR #3345: Improve importer architecture.
+- PR #3363 &amp; #3379: Improve c.recursiveImport.
+- PR #3376: Improve python importer.
 
-- PR #3208: Add 'reload-settings' hook.
-- PR #3214: Optionally expand headlines on mouse-over.
-- PR #3224: Improve mod_autosave plugin.
-- PR #3241: Simplify Leo's path wrappers.
-- PRs #3264 and #3277: Simplify Leo's path-related code.
-- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
+**Large code changes**
+
+- PR #3365: Simplify mypy annotations (128 files).
+- PR #3367: Import Callable from collections.abc instead of typing (50 files).
+
+**Retire three plugins**
+
+- PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
+
+- 40+ issues and 50+ pull requests.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
-- [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
+- [6.7.4 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.4+)
+- [6.7.4 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.4)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -1477,7 +1490,7 @@ About merges:
 
 - Make sure Leo runs with Python 3.9.
 
-- Run the full-tests script. See #2867:
+- Run the full-test-leo script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
@@ -1787,6 +1800,9 @@ requires = ["setuptools&gt;=38.6.0",
     "twine&gt;=1.11.0"]
     
 build-backend = 'setuptools.build_meta'
+
+[tool.ruff]
+line-length = 120
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 
