@@ -873,11 +873,15 @@ class GitDiffController:
     def node_history(self, path: str, gnxs: list[str]) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
         n = 5
+        # The path must be absolute.
+        if not os.path.isabs(path):
+            g.trace(f"Not absolute: {path!r}")
+            return
         history_list = self._get_file_history(path)
         message = f"raw_history_list: first {n} (of {len(history_list)})"
         g.printObj(history_list[:5], tag=message)
 
-        nodes_list = self._parse_history(path, gnxs, history_list[:5])
+        nodes_list = self._parse_history(path, gnxs, history_list)
         g.printObj(nodes_list, tag='parsed_history_list')
     #@+node:ekr.20230705084709.1: *5* gdc._get_file_history
     def _get_file_history(self, path: str) -> list[str]:
@@ -887,19 +891,33 @@ class GitDiffController:
         # Run the command itself in the leo-editor, the parent of the .git directory.
         git_parent_directory = self.get_parent_of_git_directory()
 
-        if 0:  # Human readable summary.
-            # %h (%an %cs %s): Abbreviated hash, author, date, commit message
-            args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
-        else:
-            args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
+        # Human readable summary.
+        # %h (%an %cs %s): Abbreviated hash, author, date, commit message
+        # args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
+        args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
         command = fr"git log {args_s} -- {path}"
-        return g.execGitCommand(command, git_parent_directory)
-    #@+node:ekr.20230705085430.1: *5* gdc._parse_history (to do)
-    def _parse_history(self, path: str, gnxs: str, history: list[str]) -> list[tuple]:
+        aList = g.execGitCommand(command, git_parent_directory)
+        return [z.strip() for z in aList]
+    #@+node:ekr.20230705085430.1: *5* gdc._parse_history
+    def _parse_history(self, path: str, gnxs: list[str], history: list[str]) -> list[tuple]:
         """
-        Search for nodes corresponding to all gnxs.
+        For each rev in history:
+        - Load the file.
+        - Find all nodes with any of the given gnxs.
+        - Perform a diff???
         """
+        # Run the command itself in the leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+        
+        # Compute the path relative to the parent.
+        relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
+        
         result: list[tuple] = []
+        for i, rev in enumerate(history[:5]): ### Just show first 5.
+            args_s = ''
+            command = fr"git show {args_s} {rev}:{relative_path}"
+            source = g.execGitCommand(command, git_parent_directory)
+            g.printObj(source[:10], tag=f"{i} of {len(history)}: {rev[:7]}")
         return result
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
