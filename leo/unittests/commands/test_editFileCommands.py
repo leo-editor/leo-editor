@@ -25,17 +25,12 @@ class TestEditFileCommands(LeoUnitTest):
         self.assertTrue(os.path.exists(path), msg=msg)
         self.assertTrue(os.path.isabs(path), msg=msg)
         self.assertTrue(os.path.isfile(path), msg=msg)
-        # ekr.20230626064652.1  # EKR's replacement gnx
-        # tbrown.20140311095634.15188
-        # This is part of a regex.
-        gnx1 = 'ekr\.20230626064652\.1'
-        gnx2 = 'tbrown.20140311095634.15188'  # Fails.
-        gnx = '(ekr\.20230626064652\.1)'  # Fails.
-        gnx = '(tbrown\.20140311095634\.15188|ekr\.20230626064652\.1)'  # Fails.
-        gnx = '(?:tbrown\.20140311095634\.15188|ekr\.20230626064652\.1)'  # Failes. Non-capturing group.
-        assert gnx
         x = GitDiffController(c=self.c)
-        x.node_history(path, gnx1, gnx2)
+        gnxs = (
+            'ekr.20230626064652.1',  # EKR's replacement gnx
+            'tbrown.20140311095634.15188',  # Terry's original node.
+        )
+        x.node_history(path, gnxs)
     #@+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
     def test_diff_two_branches(self):
         c = self.c

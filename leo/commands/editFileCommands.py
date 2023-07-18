@@ -870,62 +870,34 @@ class GitDiffController:
         self.finish()
         return True
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
-    def node_history(self, path: str, gnx: str, gnx2: str = None) -> None:
+    def node_history(self, path: str, gnxs: list[str]) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
-        all = True
-        limit = None if all else 100
-        limit_s = f"first {limit}" if limit else 'all'
-        raw_history_list = self._get_node_history(path, gnx, gnx2)
-        parsed_history_list = self._parse_node_history(gnx, raw_history_list)
+        n = 5
+        history_list = self._get_file_history(path)
+        message = f"raw_history_list: first {n} (of {len(history_list)})"
+        g.printObj(history_list[:5], tag=message)
 
-        g.printObj(raw_history_list[:limit], tag=f"raw_history_list ({limit_s} lines)")
-        g.printObj(parsed_history_list, tag='parsed_history_list')
-    #@+node:ekr.20230705084709.1: *5* gdc._get_node_history  (finish)
-    def _get_node_history(self, path: str, gnx1: str, gnx2: str=None) -> list[str]:
+        nodes_list = self._parse_history(path, gnxs, history_list[:5])
+        g.printObj(nodes_list, tag='parsed_history_list')
+    #@+node:ekr.20230705084709.1: *5* gdc._get_file_history
+    def _get_file_history(self, path: str) -> list[str]:
         """
-        Get the raw node history list for the node with the given gnx from the
-        given absolute path
+        Return the list hashes for all commits to the given absolute path.
         """
         # Run the command itself in the leo-editor, the parent of the .git directory.
         git_parent_directory = self.get_parent_of_git_directory()
 
-        # Create the commands: `git log -L/start/,/end/:filename`.
-        regex1 = fr"#@\+node:{gnx1}:"  # Works.
-        # regex1 = fr"(#@\+node:{gnx})"
-        regex2 = r'#@\+'  # Works if there is a following node.
-        regex3 = r'#@-'  # Works if there is no following node.
-        
-        # %h: Abbreviated hash.
-        # %an: Author name.
-        # %cs: Short date.
-        # %s: Commit message.
-        args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
-
-        # -L/regex1/,/regex2/:<file>
-        command1 = fr"git log {args_s} -L/{regex1}/,/{regex2}/:{path}"
-        command2 = fr"git log {args_s} -L/{regex1}/,/{regex3}/:{path}"
-        command3 = command4 = None
-        
-        if gnx2:
-            regex1_2 = fr"#@\+node:{gnx2}:" if gnx2 else None # Works.
-            command3 = fr"git log {args_s} -L/{regex1_2}/,/{regex2}/:{path}"
-            command4 = fr"git log {args_s} -L/{regex1_2}/,/{regex3}/:{path}"
-
-        # Run the commands.
-        combined_list = []
-        for command in (command1, command2, command3, command4):
-            if command:
-                inner_list = g.execGitCommand(command, git_parent_directory)
-                print('command:', command)
-                print(f"returned {len(inner_list)} lines\n")
-                if inner_list:
-                    combined_list.extend(inner_list)
-        return combined_list
-    #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history (to do)
-    def _parse_node_history(self, gnx: str, aList: list[str]) -> list[tuple]:
+        if 0:  # Human readable summary.
+            # %h (%an %cs %s): Abbreviated hash, author, date, commit message
+            args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
+        else:
+            args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
+        command = fr"git log {args_s} -- {path}"
+        return g.execGitCommand(command, git_parent_directory)
+    #@+node:ekr.20230705085430.1: *5* gdc._parse_history (to do)
+    def _parse_history(self, path: str, gnxs: str, history: list[str]) -> list[tuple]:
         """
-        Create a list of tuples by parsing aList,
-        a list of raw lines from `git log`.
+        Search for nodes corresponding to all gnxs.
         """
         result: list[tuple] = []
         return result
