@@ -893,8 +893,16 @@ class GitDiffController:
         regex1 = fr"#@\+node:{gnx}"
         regex2 = r'#@\+'  # Works if there is a following node.
         regex3 = r'#@-'  # Works if there is no following node.
-        command1 = fr"git log -L/{regex1}/,/{regex2}/:{path}"
-        command2 = fr"git log -L/{regex1}/,/{regex3}/:{path}"
+        
+        # %h: Abbreviated hash.
+        # %an: Author name.
+        # %cs: Short date.
+        # %s: Commit message.
+        args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
+
+        # -L/regex1/,/regex2/:<file>
+        command1 = fr"git log {args_s} -L/{regex1}/,/{regex2}/:{path}"
+        command2 = fr"git log {args_s} -L/{regex1}/,/{regex3}/:{path}"
 
         # Run the two commands.
         for command in (command1, command2):
