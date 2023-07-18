@@ -870,18 +870,18 @@ class GitDiffController:
         self.finish()
         return True
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
-    def node_history(self, path: str, gnx: str) -> None:
+    def node_history(self, path: str, gnx: str, gnx2: str = None) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
         all = True
         limit = None if all else 100
         limit_s = f"first {limit}" if limit else 'all'
-        raw_history_list = self._get_node_history(path, gnx)
+        raw_history_list = self._get_node_history(path, gnx, gnx2)
         parsed_history_list = self._parse_node_history(gnx, raw_history_list)
 
         g.printObj(raw_history_list[:limit], tag=f"raw_history_list ({limit_s} lines)")
         g.printObj(parsed_history_list, tag='parsed_history_list')
     #@+node:ekr.20230705084709.1: *5* gdc._get_node_history  (finish)
-    def _get_node_history(self, path: str, gnx: str) -> list[str]:
+    def _get_node_history(self, path: str, gnx1: str, gnx2: str=None) -> list[str]:
         """
         Get the raw node history list for the node with the given gnx from the
         given absolute path
@@ -890,7 +890,8 @@ class GitDiffController:
         git_parent_directory = self.get_parent_of_git_directory()
 
         # Create the commands: `git log -L/start/,/end/:filename`.
-        regex1 = fr"#@\+node:{gnx}"
+        regex1 = fr"#@\+node:{gnx1}:"  # Works.
+        # regex1 = fr"(#@\+node:{gnx})"
         regex2 = r'#@\+'  # Works if there is a following node.
         regex3 = r'#@-'  # Works if there is no following node.
         
@@ -903,15 +904,23 @@ class GitDiffController:
         # -L/regex1/,/regex2/:<file>
         command1 = fr"git log {args_s} -L/{regex1}/,/{regex2}/:{path}"
         command2 = fr"git log {args_s} -L/{regex1}/,/{regex3}/:{path}"
+        command3 = command4 = None
+        
+        if gnx2:
+            regex1_2 = fr"#@\+node:{gnx2}:" if gnx2 else None # Works.
+            command3 = fr"git log {args_s} -L/{regex1_2}/,/{regex2}/:{path}"
+            command4 = fr"git log {args_s} -L/{regex1_2}/,/{regex3}/:{path}"
 
-        # Run the two commands.
-        for command in (command1, command2):
-            aList = g.execGitCommand(command, git_parent_directory)
-            print('command:', command)
-            print(f"returned {len(aList)} lines\n")
-            if aList:
-                return aList
-        return []
+        # Run the commands.
+        combined_list = []
+        for command in (command1, command2, command3, command4):
+            if command:
+                inner_list = g.execGitCommand(command, git_parent_directory)
+                print('command:', command)
+                print(f"returned {len(inner_list)} lines\n")
+                if inner_list:
+                    combined_list.extend(inner_list)
+        return combined_list
     #@+node:ekr.20230705085430.1: *5* gdc._parse_node_history (to do)
     def _parse_node_history(self, gnx: str, aList: list[str]) -> list[tuple]:
         """
