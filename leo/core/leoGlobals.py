@@ -4679,7 +4679,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
     """Execute the given git command in the given directory."""
     git_dir = g.finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
-        g.trace('not found:', git_dir, g.callers())
+        g.trace('.git directory not found:', git_dir, g.callers())
         return []
     if '\n' in command:
         g.trace('removing newline from', command)
@@ -4687,12 +4687,14 @@ def execGitCommand(command: str, directory: str) -> list[str]:
     # #1777: Save/restore os.curdir
     old_dir = os.getcwd()
     if directory:
+        # g.trace(f"os.chdir({directory})")
         os.chdir(directory)
     try:
         p = subprocess.Popen(
             shlex.split(command),
             stdout=subprocess.PIPE,
             stderr=None,  # Shows error traces.
+            # stderr=subprocess.PIPE,
             shell=False,
         )
         out, err = p.communicate()

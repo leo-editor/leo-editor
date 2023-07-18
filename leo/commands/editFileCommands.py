@@ -702,7 +702,7 @@ class GitDiffController:
         Create an outline describing the git diffs for fn.
         """
         c = self.c
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         s1 = self.get_file_from_rev(rev1, fn)
@@ -749,7 +749,7 @@ class GitDiffController:
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         aList = g.execGitCommand("git rev-parse devel", directory)
@@ -768,7 +768,7 @@ class GitDiffController:
         """Create an outline describing the git diffs for fn."""
         c = self.c
         u, undoType = c.undoer, 'diff-two-branches'
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         c.selectPosition(c.lastTopLevel())
         undoData = u.beforeInsertNode(c.p)
@@ -804,7 +804,7 @@ class GitDiffController:
         """
         c, u = self.c, self.c.undoer
 
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
@@ -831,7 +831,7 @@ class GitDiffController:
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """The main line of the git diff command."""
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Diff the given revs.
         ok = self.diff_revs(rev1, rev2)
@@ -872,9 +872,13 @@ class GitDiffController:
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
     def node_history(self, path: str, gnx: str) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
+        all = True
+        limit = None if all else 100
+        limit_s = f"first {limit}" if limit else 'all'
         raw_history_list = self._get_node_history(path, gnx)
-        # g.printObj(raw_history_list, tag='raw_history_list')
         parsed_history_list = self._parse_node_history(gnx, raw_history_list)
+
+        g.printObj(raw_history_list[:limit], tag=f"raw_history_list ({limit_s} lines)")
         g.printObj(parsed_history_list, tag='parsed_history_list')
     #@+node:ekr.20230705084709.1: *5* gdc._get_node_history  (finish)
     def _get_node_history(self, path: str, gnx: str) -> list[str]:
@@ -882,19 +886,21 @@ class GitDiffController:
         Get the raw node history list for the node with the given gnx from the
         given absolute path
         """
-        directory = os.path.dirname(path)
+        # Run the command itself in the leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
 
         # Create the commands: `git log -L/start/,/end/:filename`.
-        regex1 = fr"@\+node:{gnx}"
-        regex2 = r'#@+'  # Works if there is a following node.
+        regex1 = fr"#@\+node:{gnx}"
+        regex2 = r'#@\+'  # Works if there is a following node.
         regex3 = r'#@-'  # Works if there is no following node.
         command1 = fr"git log -L/{regex1}/,/{regex2}/:{path}"
         command2 = fr"git log -L/{regex1}/,/{regex3}/:{path}"
 
         # Run the two commands.
         for command in (command1, command2):
-            aList = g.execGitCommand(command, directory)
-            print(f"command: `{command}`: {len(aList)} lines\n")
+            aList = g.execGitCommand(command, git_parent_directory)
+            print('command:', command)
+            print(f"returned {len(aList)} lines\n")
             if aList:
                 return aList
         return []
@@ -1028,8 +1034,8 @@ class GitDiffController:
         self.root.expand()
         c.redraw(self.root)
         c.treeWantsFocusNow()
-    #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self) -> Optional[str]:
+    #@+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
+    def get_parent_of_git_directory(self) -> Optional[str]:
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.
@@ -1057,7 +1063,7 @@ class GitDiffController:
     def get_file_from_branch(self, branch: str, fn: str) -> str:
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -1068,7 +1074,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         path = g.finalize_join(directory, fn)
@@ -1090,7 +1096,7 @@ class GitDiffController:
     def get_files(self, rev1: str, rev2: str) -> list[str]:
         """Return a list of changed files."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return []
         command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
@@ -1107,7 +1113,7 @@ class GitDiffController:
         # Return only the abbreviated hash for the revspec.
         format_s = 'h' if abbreviated else 'H'
         command = f"git show --format=%{format_s} --no-patch {revspec}"
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         lines = g.execGitCommand(command, directory=directory)
         return ''.join(lines).strip()
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
