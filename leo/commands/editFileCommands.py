@@ -913,11 +913,31 @@ class GitDiffController:
         relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
         
         result: list[tuple] = []
+        n_history = len(history)
         for i, rev in enumerate(history[:5]): ### Just show first 5.
-            args_s = ''
-            command = fr"git show {args_s} {rev}:{relative_path}"
-            source = g.execGitCommand(command, git_parent_directory)
-            g.printObj(source[:10], tag=f"{i} of {len(history)}: {rev[:7]}")
+            if 0:
+                # Get full file contents.
+                command = fr"git show {rev}:{relative_path}"
+                source = g.execGitCommand(command, git_parent_directory)
+                g.printObj(source[:10], tag=f"source {i} of {n_history}: {rev[:7]}")
+            # Get diffs of the file.
+            rev1 = rev
+            rev2 = history[i + 1] if i + 1 < len(history) else None
+            # Get the diffs from difflib.
+            s1 = self.get_file_from_rev(rev1, relative_path)
+            s2 = self.get_file_from_rev(rev2, relative_path)
+            lines1 = g.splitLines(s1)
+            lines2 = g.splitLines(s2)
+            diff_list = list(difflib.unified_diff(
+                lines1, lines2, rev1 or 'uncommitted', rev2 or 'uncommitted'))
+            for gnx in gnxs:
+                if any(gnx in line for line in diff_list):
+                    g.trace(f"Found {gnx}")
+                    g.printObj(diff_list, tag=f"diff {i} of {n_history}: {rev[:7]}")
+                    break
+            else:
+                g.trace(f"Not found {gnxs}")
+                g.printObj(diff_list, tag=f"diff {i} of {n_history}: {rev[:7]}")
         return result
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
