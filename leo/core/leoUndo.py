@@ -82,6 +82,7 @@ class Undoer:
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
+        self.last_undoable_command_name = None  # Name of last undoable command.
         self.redoMenuLabel = "Can't Redo"
         self.undoMenuLabel = "Can't Undo"
         self.realRedoMenuLabel = "Can't Redo"
@@ -228,7 +229,7 @@ class Undoer:
         return "Redo " + name
 
     def undoMenuName(self, name: str) -> str:
-        if name == "Can't Undo":
+        if name.startswith("Can't Undo"):
             return name
         return "Undo " + name
     #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
@@ -303,7 +304,11 @@ class Undoer:
         if bunch:
             u.setUndoType(bunch.undoType)
         else:
-            u.setUndoType("Can't Undo")
+            if u.last_undoable_command_name:
+                undoType = f"Can't Undo {u.last_undoable_command_name}"
+            else:
+                undoType = "Can't Undo"
+            u.setUndoType(undoType)
         # Set only the redo menu label.
         bunch = u.peekBead(u.bead + 1)
         if bunch:
@@ -863,17 +868,20 @@ class Undoer:
 
         All non-undoable commands should call this method.
         """
-        if not g.unitTesting:
-            g.es(f"not undoable: {command_name}", color='red')
-            g.es('clearing the undo stack', color='red')
-        self.clearUndoState()
+        u = self
+        u.last_undoable_command_name = command_name
+        u.clearUndoState()
     #@+node:ekr.20031218072017.3609: *4* u.clearUndoState
     def clearUndoState(self) -> None:
         """Clears the entire Undo state."""
         u = self
         u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")
-        u.setUndoType("Can't Undo")
+        if u.last_undoable_command_name:
+            undoType = f"Can't Undo {u.last_undoable_command_name}"
+        else:
+            undoType = "Can't Undo"
+        u.setUndoType(undoType)
         u.beads = []  # List of undo nodes.
         u.bead = -1  # Index of the present bead: -1:len(beads)
     #@+node:ekr.20031218072017.1490: *4* u.doTyping & helper
