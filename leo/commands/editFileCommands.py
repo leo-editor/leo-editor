@@ -870,57 +870,121 @@ class GitDiffController:
         self.finish()
         return True
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
-    def node_history(self, path: str, gnxs: list[str]) -> None:
+    def node_history(self, path: str, gnxs: list[str], limit: int = None) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
         # The path must be absolute.
         if not os.path.isabs(path):
             g.trace(f"Not absolute: {path!r}")
             return
-        
+
         # Get all the revs.
         rev_list = self._get_revs_for_path(path)
 
-        # message = f"rev_list: first 5 (of {len(rev_list)})"
-        # g.printObj(rev_list[:5], tag=message)
+        # Get the files.
+        contents_list = self._get_contents_for_revs(path, rev_list, limit)
 
-        contents_list = self._get_contents_for_revs(path, rev_list)
-        g.trace(len(contents_list))
-        # assert len(rev_list) == len(contents_list)
-        # g.printObj(contents_list, tag='parsed_history_list')
-    #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
-    def _get_revs_for_path(self, path: str) -> list[str]:
-        """
-        Return the list hashes for all commits to the given absolute path.
-        """
-        # Run the command itself in the leo-editor, the parent of the .git directory.
-        git_parent_directory = self.get_parent_of_git_directory()
+        # Truncate revs_list so it has the same length as contents_list.
+        truncated_revs_list = rev_list[: len(contents_list)]
 
-        # Human readable summary.
-        # %h (%an %cs %s): Abbreviated hash, author, date, commit message
-        args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
-        command = fr"git log {args_s} -- {path}"
-        aList = g.execGitCommand(command, git_parent_directory)
-        result = [z.strip() for z in aList]
-        return result
+        # Find changed nodes.
+        diff_list: list[g.Bunch] = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
+        g.printObj(diff_list, tag='diff_list')
+
+        # To do: create diff nodes.
+
+    #@+node:ekr.20230719161306.1: *5* gdc._find_diffs
+    def _find_diffs(self,
+        i: int,  # The index into contents_list and revs_list
+        path: str,
+        contents_list: list[list[str]],  # Lines for each contents.
+        node_patterns: list[tuple[str, re.Pattern]],  # Patterns matching @+node sentinels for each gnx.
+        revs_list: list[str]
+    ) -> list[g.Bunch]:
+        """
+        Return a list of g.Bunches describing the nodes to be diffed.
+        """
+        assert len(contents_list) == len(revs_list)
+        if i + 1 >= len(revs_list):
+            return []  # Can't diff past this rev.
+
+        # Step 1: Find all nodes matching one of the gnx's in contents[i], contents[i+1]
+        nodes = []
+        for rev_i in (i, i + 1):
+            for aTuple in node_patterns:
+                gnx, pattern = aTuple
+                node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
+                if node_info:
+                    nodes.append((rev_i, gnx, node_info))
+        g.printObj(nodes, tag=f"nodes: {i} (rev_i, gnx, (i1, i2))")
+
+        # Step 2: Create the diffs.
+        diff_list: list[g.Bunch] = []
+        return diff_list
+
+    #@+node:ekr.20230719170046.1: *5* gdc._find_node
+    node_ending_patterns = (
+        re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
+        re.compile(r'^\s*#@\-others'),  # A -others sentinel
+        re.compile('^\s*#@\-leo'),  # A -leo sentinel.
+    )
+
+    def _find_node(self,
+        contents: list[str],  # The list of lines.
+        pattern: re.Pattern,
+        # For debugging only.
+        gnx: str,  # gnx being matched.
+        rev: str,  # Full hash.
+        ) -> Optional[tuple[int, int]]:
+        """
+        Return (i1, i2) the range of lines of the node, or None.
+        i1: The index of the line matching pattern.
+        i2: The index of the line ending the node.
+
+
+        The lines start at the first line matching the pattern.
+
+        The lines end at the first line matching one of the ending patterns.
+        """
+        for i, line in enumerate(contents):
+            if pattern.match(line):
+                break
+        else:
+            return None
+        i1 = i
+        i += 1
+        while i < len(contents):
+            line = contents[i]
+            i += 1
+            if any(z.match(line) for z in self.node_ending_patterns):
+                # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
+                return (i1, i)
+        return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
-    def _get_contents_for_revs(self, path: str, rev_list: list[str]) -> list[list[str]]:
+    def _get_contents_for_revs(self,
+        path: str,
+        rev_list: list[str],
+        limit: Optional[int] = None,
+    ) -> list[list[str]]:
         """
         Return the contents of the file as a list of lines.
         path: the full path to the file.
         rev_list: the list of full git hashes for each rev.
+        limit: None (no limit), the number revs to search.
         """
         # Note: the time module excludes sleep time. It's inaccurate here.
 
         # Run the command itself in the leo-editor, the parent of the .git directory.
         git_parent_directory = self.get_parent_of_git_directory()
-        
+
         # Compute the path relative to the parent.
         relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
-        
+
         # Get full file contents of rev.
         result: list[list[str]] = []
-        print(f"Reading {len(rev_list)} files! This will take a few minutes.")
-        for i, rev in enumerate(rev_list):
+        of_s = '' if limit is None else f" of {len(rev_list)}"
+        n = len(rev_list) if limit is None else min(limit, len(rev_list))
+        print(f"Reading {n}{of_s} files ! This will take a few minutes.")
+        for i, rev in enumerate(rev_list[:limit]):
             command = fr"git show {rev}:{relative_path}"
             aList = g.execGitCommand(command, git_parent_directory)
             result.append(aList)
@@ -929,7 +993,38 @@ class GitDiffController:
             if i > 250:
                 print('Quitting after 250 files')
                 break
-        print(f"Done! {len(rev_list)} files")
+        print(f"Done! {n}{of_s} files")
+        return result
+    #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
+    def _get_diff_list(self,
+        contents_list: list[list[str]],  # List of lines for each file.
+        gnxs: list[str],
+        path: str,
+        revs_list: list[str],
+    ) -> list[g.Bunch]:
+        """Return a list of tuples describing the nodes to be diffed."""
+        assert len(contents_list) == len(revs_list)
+        node_data_list: list[g.Bunch] = []
+        node_patterns = [
+            (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
+        ]
+        for i in range(len(contents_list)):
+            node_data_list.extend(self._find_diffs(i, path, contents_list, node_patterns, revs_list))
+        return node_data_list
+    #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
+    def _get_revs_for_path(self, path: str) -> list[str]:
+        """
+        Return the list of full hashes for all commits to the given absolute path.
+        """
+        # Run the command itself in leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+
+        # Human readable summary.
+        # %h (%an %cs %s): Abbreviated hash, author, date, commit message
+        args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
+        command = fr"git log {args_s} -- {path}"
+        aList = g.execGitCommand(command, git_parent_directory)
+        result = [z.strip() for z in aList]
         return result
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node

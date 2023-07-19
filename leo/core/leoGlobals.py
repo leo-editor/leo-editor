@@ -4676,7 +4676,11 @@ def backupGitIssues(c: Cmdr, base_url: str = None) -> None:
     g.trace('done')
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command: str, directory: str) -> list[str]:
-    """Execute the given git command in the given directory."""
+    """
+    Execute the given git command in the given directory.
+
+    Return a list of lines, with newlines stripped off.
+    """
     git_dir = g.finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('.git directory not found:', git_dir, g.callers())

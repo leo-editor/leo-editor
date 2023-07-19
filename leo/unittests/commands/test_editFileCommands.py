@@ -30,7 +30,7 @@ class TestEditFileCommands(LeoUnitTest):
             'ekr.20230626064652.1',  # EKR's replacement gnx
             'tbrown.20140311095634.15188',  # Terry's original node.
         )
-        x.node_history(path, gnxs)
+        x.node_history(path, gnxs, limit=50)
     #@+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
     def test_diff_two_branches(self):
         c = self.c
