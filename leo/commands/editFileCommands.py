@@ -872,19 +872,23 @@ class GitDiffController:
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
     def node_history(self, path: str, gnxs: list[str]) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
-        n = 5
         # The path must be absolute.
         if not os.path.isabs(path):
             g.trace(f"Not absolute: {path!r}")
             return
-        history_list = self._get_file_history(path)
-        message = f"raw_history_list: first {n} (of {len(history_list)})"
-        g.printObj(history_list[:5], tag=message)
+        
+        # Get all the revs.
+        rev_list = self._get_revs_for_path(path)
 
-        nodes_list = self._parse_history(path, gnxs, history_list)
-        g.printObj(nodes_list, tag='parsed_history_list')
-    #@+node:ekr.20230705084709.1: *5* gdc._get_file_history
-    def _get_file_history(self, path: str) -> list[str]:
+        # message = f"rev_list: first 5 (of {len(rev_list)})"
+        # g.printObj(rev_list[:5], tag=message)
+
+        contents_list = self._get_contents_for_revs(path, rev_list)
+        g.trace(len(contents_list))
+        # assert len(rev_list) == len(contents_list)
+        # g.printObj(contents_list, tag='parsed_history_list')
+    #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
+    def _get_revs_for_path(self, path: str) -> list[str]:
         """
         Return the list hashes for all commits to the given absolute path.
         """
@@ -893,51 +897,39 @@ class GitDiffController:
 
         # Human readable summary.
         # %h (%an %cs %s): Abbreviated hash, author, date, commit message
-        # args_s = "--no-patch --pretty='format:%h (%an %cs %s)'"
         args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
         command = fr"git log {args_s} -- {path}"
         aList = g.execGitCommand(command, git_parent_directory)
-        return [z.strip() for z in aList]
-    #@+node:ekr.20230705085430.1: *5* gdc._parse_history
-    def _parse_history(self, path: str, gnxs: list[str], history: list[str]) -> list[tuple]:
+        result = [z.strip() for z in aList]
+        return result
+    #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
+    def _get_contents_for_revs(self, path: str, rev_list: list[str]) -> list[list[str]]:
         """
-        For each rev in history:
-        - Load the file.
-        - Find all nodes with any of the given gnxs.
-        - Perform a diff???
+        Return the contents of the file as a list of lines.
+        path: the full path to the file.
+        rev_list: the list of full git hashes for each rev.
         """
+        # Note: the time module excludes sleep time. It's inaccurate here.
+
         # Run the command itself in the leo-editor, the parent of the .git directory.
         git_parent_directory = self.get_parent_of_git_directory()
         
         # Compute the path relative to the parent.
         relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
         
-        result: list[tuple] = []
-        n_history = len(history)
-        for i, rev in enumerate(history[:5]): ### Just show first 5.
-            if 0:
-                # Get full file contents.
-                command = fr"git show {rev}:{relative_path}"
-                source = g.execGitCommand(command, git_parent_directory)
-                g.printObj(source[:10], tag=f"source {i} of {n_history}: {rev[:7]}")
-            # Get diffs of the file.
-            rev1 = rev
-            rev2 = history[i + 1] if i + 1 < len(history) else None
-            # Get the diffs from difflib.
-            s1 = self.get_file_from_rev(rev1, relative_path)
-            s2 = self.get_file_from_rev(rev2, relative_path)
-            lines1 = g.splitLines(s1)
-            lines2 = g.splitLines(s2)
-            diff_list = list(difflib.unified_diff(
-                lines1, lines2, rev1 or 'uncommitted', rev2 or 'uncommitted'))
-            for gnx in gnxs:
-                if any(gnx in line for line in diff_list):
-                    g.trace(f"Found {gnx}")
-                    g.printObj(diff_list, tag=f"diff {i} of {n_history}: {rev[:7]}")
-                    break
-            else:
-                g.trace(f"Not found {gnxs}")
-                g.printObj(diff_list, tag=f"diff {i} of {n_history}: {rev[:7]}")
+        # Get full file contents of rev.
+        result: list[list[str]] = []
+        print(f"Reading {len(rev_list)} files! This will take a few minutes.")
+        for i, rev in enumerate(rev_list):
+            command = fr"git show {rev}:{relative_path}"
+            aList = g.execGitCommand(command, git_parent_directory)
+            result.append(aList)
+            if i > 0 and (i % 100) == 0:
+                print(f"Progress: {i} files")
+            if i > 250:
+                print('Quitting after 250 files')
+                break
+        print(f"Done! {len(rev_list)} files")
         return result
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
