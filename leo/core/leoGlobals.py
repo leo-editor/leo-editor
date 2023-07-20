@@ -7330,7 +7330,7 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p)
             return p2 or p
     return None
-#@+node:ekr.20230626064652.1: *3* g.findUnl & helpers (legacy unls)
+#@+node:tbrown.20140311095634.15188: *3* g.findUnl & helpers (legacy unls)
 def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     g.findUnl: support for legacy UNLs.
