@@ -889,33 +889,8 @@ class GitDiffController:
         # Find changed nodes.
         diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
 
-        if 1:  # Verbose.
-            for bunch in diff_list:
-                result = []
-                for key in ('i', 'kind', 'body0', 'body1', 'range0', 'range1'):
-                    val = bunch.get(key)
-                    if val is not None:
-                        if key == 'i':
-                            pad_s = ' ' * max(0, 4 - len(str(val)))
-                            result.append(f"{key}:{pad_s} {val}")
-                        elif key == 'kind':
-                            result.append(f"{key}: {val:<6}")
-                        elif key.startswith(('body', 'contents')):
-                            result.append(f"{key}: {len(val):<3}")
-                        else:
-                            result.append(f"{key}: {val}")
-                print(' '.join(result))
-            # g.printObj(diff_list, tag='diff_list')
-        elif 1:  # Brief.
-            for z in diff_list:
-                n0 = 'None' if z.contents0 is None else len(z.contents0)
-                n1 = 'None' if z.contents1 is None else len(z.contents1)
-                print(
-                    f"{z.i:>4} {z.rev[:7]} {z.kind:>7} "
-                    f"len(contents1/2): {n0} {n1} range0/1: {z.range0} {z.range1}\n")
-
-        # To do: create diff nodes.
-
+        # Generate the diffs and nodes.
+        self._generate_history_diffs(diff_list)
     #@+node:ekr.20230719161306.1: *5* gdc._get_action
     def _get_action(self,
         i: int,  # The index into contents_list and revs_list
@@ -954,38 +929,8 @@ class GitDiffController:
             body0 = contents0[range0[0]:range0[1]]
             body1 = contents1[range1[0]:range1[1]]
             skip_flag = body0 == body1
-            if False and not skip_flag:
-                # Show the diff.
-                aList = list(difflib.unified_diff(
-                    body0, body1, revs_list[i][:7], revs_list[i + 1][:7]))
-                g.printObj(body0, tag=f"Body: {revs_list[i][:7]}")
-                g.printObj(aList, tag=f"Diff: {revs_list[i][:7]}")
         else:
             skip_flag = False
-
-        # Trace what is to be done.
-        if 0:
-            tag = f"{i:>4}: {revs_list[i][:7]}"
-            if 0:  # A longer trace.
-                g.printObj(nodes, tag=tag)
-            else:  # A brief trace.
-                if not nodes[0] and not nodes[1]:
-                    if 0:  # Avoid clutter.
-                        print(f"{tag}:   Skip")
-                elif skip_flag:
-                    if 0:  # Avoid clutter.
-                        if 1:  # Brief is better.
-                            print(f"{tag}: Equal")
-                        else:
-                            pad_s = ' ' * (8 + len(tag))
-                            print(f"{tag}: Equal {nodes[0]}\n{pad_s}{nodes[1]}")
-                elif not nodes[0]:
-                    print(f"{tag}:    Add {nodes[1]}")
-                elif not nodes[1]:
-                    print(f"{tag}: Delete {nodes[0]}")
-                else:
-                    pad_s = ' ' * (9 + len(tag))
-                    print(f"{tag}:   Diff {nodes[0]}\n{pad_s}{nodes[1]}")
 
         # Return if there is nothing to diff.
         if skip_flag:
@@ -1049,6 +994,17 @@ class GitDiffController:
                 # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
                 return (i1, i - 1)
         return None
+    #@+node:ekr.20230720085415.1: *5* gdc._generate_history_diffs
+    def _generate_history_diffs(self, diff_list: list[g.Bunch]) -> Position:
+        
+         self._trace_diff_list(diff_list)
+                # # Show the diff.
+                # aList = list(difflib.unified_diff(
+                    # body0, body1, revs_list[i][:7], revs_list[i + 1][:7]))
+                # g.printObj(body0, tag=f"Body: {revs_list[i][:7]}")
+                # g.printObj(aList, tag=f"Diff: {revs_list[i][:7]}")
+         
+         return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
     def _get_contents_for_revs(self,
         path: str,
@@ -1120,6 +1076,34 @@ class GitDiffController:
         aList = g.execGitCommand(command, git_parent_directory)
         result = [z.strip() for z in aList]
         return result
+    #@+node:ekr.20230720085122.1: *5* gdc._trace_diff_list
+    def _trace_diff_list(self, diff_list: list[g.Bunch]) -> None:
+        """Trace the diff_list."""
+        if 1:  # Brief.
+            for z in diff_list:
+                n0 = 'None' if z.contents0 is None else len(z.contents0)
+                n1 = 'None' if z.contents1 is None else len(z.contents1)
+                print(
+                    f"{z.i:>4} {z.rev[:7]} {z.kind:>7} "
+                    f"len(contents1/2): {n0} {n1} range0/1: {z.range0} {z.range1}")
+        elif 0:  # Too verbose.
+            g.printObj(diff_list, tag='diff_list')
+        else:  # Verbose.
+            for bunch in diff_list:
+                result = []
+                for key in ('i', 'kind', 'body0', 'body1', 'range0', 'range1'):
+                    val = bunch.get(key)
+                    if val is not None:
+                        if key == 'i':
+                            pad_s = ' ' * max(0, 4 - len(str(val)))
+                            result.append(f"{key}:{pad_s} {val}")
+                        elif key == 'kind':
+                            result.append(f"{key}: {val:<6}")
+                        elif key.startswith(('body', 'contents')):
+                            result.append(f"{key}: {len(val):<3}")
+                        else:
+                            result.append(f"{key}: {val}")
+                print(' '.join(result))
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
