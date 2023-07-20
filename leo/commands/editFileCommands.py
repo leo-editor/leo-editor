@@ -890,7 +890,7 @@ class GitDiffController:
         # Create the root node.
         self.root = p = c.lastTopLevel().insertAfter()
         limit_s = 'None' if limit is None else limit
-        p.h = f"node_history {path}"
+        p.h = f"node_history: {g.shortFileName(path)}"
         p.b = f"@ignore\n@nosearch\n\n# gnxs: {', '.join(gnxs)}\n# limit: {limit_s}"
         # Generate the diffs and nodes.
         self._generate_history_diffs(diff_list, truncated_revs_list)
@@ -944,19 +944,22 @@ class GitDiffController:
         kind = 'add' if not nodes[0] else 'delete' if not nodes[1] else 'diff'
         nodes0, nodes1 = nodes[0], nodes[1]
         if nodes0:
+            gnx0 = nodes0[0][1]
             range0 = nodes0[0][2]
             contents0 = contents_list[i]
             body0 = contents0[range0[0]:range0[1]]
         else:
-            range0 = contents0 = body0 = None
+            gnx0 = range0 = contents0 = body0 = None
         if nodes1:
+            gnx1 = nodes1[0][1]
             range1 = nodes1[0][2]
             contents1 = contents_list[i + 1]
             body1 = contents1[range1[0]:range1[1]]
         else:
-            range1 = contents1 = body1 = None
+            gnx1 = range1 = contents1 = body1 = None
         return g.Bunch(
             i=i, kind=kind,
+            gnx0=gnx0, gnx1=gnx1,
             rev0=revs_list[i], rev1=revs_list[i + 1],
             body0=body0, body1=body1,
             # Optional debugging info.
@@ -1008,12 +1011,15 @@ class GitDiffController:
         """
         # self._trace_diff_list(diff_list)
         for b in diff_list:
-            self._trace_kind(b, revs_list)
+            # self._trace_kind(b, revs_list)
             p = self.root.insertAsLastChild()
-            p.h = b.kind
+            gnx0_s = b.gnx0 or ''
+            gnx1_s = b.gnx1 or ''
+            gnxs_s = gnx0_s if b.gnx0 == b.gnx1 else f"{gnx0_s} {gnx1_s}"
+            p.h = f"{b.i:>4} {b.kind}"  # {gnx0_s} {gnx1_s}"
             if b.kind == 'diff':
                 diff = list(difflib.unified_diff(b.body0 or [], b.body1 or [], b.rev0, b.rev1))
-                p.b = ''.join(diff)
+                p.b = f"diff {gnxs_s}\n\n{''.join(diff)}"
                 child1 = p.insertAsLastChild()
                 child1.h = 'old'
                 child1.b = ''.join(b.body0 or [])
@@ -1021,9 +1027,9 @@ class GitDiffController:
                 child2.h = 'new'
                 child2.b = ''.join(b.body1 or [])
             elif b.kind == 'add':
-                p.b = ''.join(b.body1 or [])
+                p.b = f"add {gnxs_s}\n\n{''.join(b.body1 or [])}"
             elif b.kind == 'delete':
-                p.b = ''.join(b.body0 or [])
+                p.b = f"delete {gnxs_s}\n\n{''.join(b.body0 or [])}"
             else:
                 g.trace(f"Bad b.kind: {b.kind!r}")
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
@@ -1050,14 +1056,14 @@ class GitDiffController:
         result: list[list[str]] = []
         of_s = '' if limit is None else f" of {len(rev_list)}"
         n = len(rev_list) if limit is None else min(limit, len(rev_list))
-        print(f"Reading {n}{of_s} revs ! This will take a few minutes.")
+        g.es_print(f"Reading {n}{of_s} revs!\nThis will take a few minutes.")
         for i, rev in enumerate(rev_list[:limit]):
             command = fr"git show {rev}:{relative_path}"
             aList = g.execGitCommand(command, git_parent_directory)
             result.append(aList)
             if i > 0 and (i % 100) == 0:
-                print(f"Progress: {i} revs")
-        print(f"Done! {n}{of_s} revs")
+                g.es_print(f"Progress: {i} revs")
+        g.es_print(f"Done! {n}{of_s} revs")
         return result
     #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
     def _get_diff_list(self,
