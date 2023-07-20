@@ -887,7 +887,7 @@ class GitDiffController:
         truncated_revs_list = rev_list[: len(contents_list)]
 
         # Find changed nodes.
-        diff_list: list[g.Bunch] = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
+        diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
 
         if 1:  # Verbose.
             for bunch in diff_list:
@@ -1099,7 +1099,7 @@ class GitDiffController:
         ]
 
         # Create the list of g.Bunches.
-        node_data_list: list[g.Bunch] = []
+        node_data_list = []
         for i in range(len(contents_list)):
             bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
             if bunch:
