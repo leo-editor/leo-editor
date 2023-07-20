@@ -872,25 +872,30 @@ class GitDiffController:
     #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
     def node_history(self, path: str, gnxs: list[str], limit: int = None) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
+        c = self.c
         # The path must be absolute.
         if not os.path.isabs(path):
             g.trace(f"Not absolute: {path!r}")
             return
-
         # Get all the revs.
         rev_list = self._get_revs_for_path(path)
-
         # Get the files.
         contents_list = self._get_contents_for_revs(path, rev_list, limit)
-
         # Truncate revs_list so it has the same length as contents_list.
         truncated_revs_list = rev_list[: len(contents_list)]
-
         # Find changed nodes.
         diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
-
+        # self._trace_diff_list(diff_list)
+        if not diff_list:
+            return
+        # Create the root node.
+        self.root = p = c.lastTopLevel().insertAfter()
+        limit_s = 'None' if limit is None else limit
+        p.h = f"node_history {path}"
+        p.b = f"@ignore\n@nosearch\n\n# gnxs: {', '.join(gnxs)}\n# limit: {limit_s}"
         # Generate the diffs and nodes.
         self._generate_history_diffs(diff_list, truncated_revs_list)
+        self.finish()
     #@+node:ekr.20230719161306.1: *5* gdc._get_action
     def _get_action(self,
         i: int,  # The index into contents_list and revs_list
@@ -952,7 +957,7 @@ class GitDiffController:
         else:
             range1 = contents1 = body1 = None
         return g.Bunch(
-            i=i, rev=revs_list[i], kind=kind,
+            i=i, kind=kind, rev0=revs_list[i], rev1=revs_list[i + 1],
             nodes0=nodes0, body0=body0, contents0=contents0, range0=range0,
             nodes1=nodes1, body1=body1, contents1=contents1, range1=range1,
         )
@@ -996,18 +1001,33 @@ class GitDiffController:
         return None
     #@+node:ekr.20230720085415.1: *5* gdc._generate_history_diffs
     def _generate_history_diffs(self, diff_list: list[g.Bunch], revs_list: list[str]) -> Position:
+        """
+        Generate all diff nodes from the diff_list, a list of g.Bunches with the following fields:
 
-        if not diff_list:
-            return None
-
-        # Trace.
-        # self._trace_diff_list(diff_list)
-
-        # Generate root node.
+        i=i, rev=revs_list[i], kind=kind,
+        nodes0=nodes0, body0=body0, contents0=contents0, range0=range0,
+        nodes1=nodes1, body1=body1, contents1=contents1, range1=range1,
+        """
 
         # Add nodes for each element of the diff_list.
         for bunch in diff_list:
             self._trace_kind(bunch, revs_list)
+
+            # diff_list = list(difflib.unified_diff(
+                # bunch.body1 or [], bunch.body2 or [],
+                # lines2, bunch.rev1, bunch.rev2
+            # ))
+
+        ###
+        # diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+        # self.file_node = self.create_file_node(diff_list, fn)
+        # # #1777: The file node will contain the entire added/deleted file.
+        # if not s1:
+            # self.file_node.h = f"Added: {self.file_node.h}"
+            # return
+        # if not s2:
+            # self.file_node.h = f"Deleted: {self.file_node.h}"
+            # return
 
         return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
@@ -1089,31 +1109,35 @@ class GitDiffController:
                 n0 = 'None' if z.contents0 is None else len(z.contents0)
                 n1 = 'None' if z.contents1 is None else len(z.contents1)
                 print(
-                    f"{z.i:>4} {z.rev[:7]} {z.kind:>7} "
+                    f"{z.i:>4} {z.kind:>7} {z.rev0[:7]} {z.rev1[:7]} "
                     f"len(contents1/2): {n0} {n1} range0/1: {z.range0} {z.range1}")
         elif 0:  # Too verbose.
             g.printObj(diff_list, tag='diff_list')
         else:  # Verbose.
             for bunch in diff_list:
                 result = []
-                for key in ('i', 'kind', 'body0', 'body1', 'range0', 'range1'):
+                for key in ('i', 'kind', 'rev0', 'rev1', 'body0', 'body1', 'range0', 'range1'):
                     val = bunch.get(key)
-                    if val is not None:
-                        if key == 'i':
-                            pad_s = ' ' * max(0, 4 - len(str(val)))
-                            result.append(f"{key}:{pad_s} {val}")
-                        elif key == 'kind':
-                            result.append(f"{key}: {val:<6}")
-                        elif key.startswith(('body', 'contents')):
-                            result.append(f"{key}: {len(val):<3}")
-                        else:
-                            result.append(f"{key}: {val}")
+                    if val is None:
+                        continue
+                    if key == 'i':
+                        pad_s = ' ' * max(0, 4 - len(str(val)))
+                        result.append(f"{key}:{pad_s} {val}")
+                    elif key == 'kind':
+                        result.append(f"{key}: {val:<6}")
+                    elif key.startswith(('body', 'contents')):
+                        result.append(f"{key}: {len(val):<3}")
+                    elif key.startswith('rev'):
+                        result.append(f"{key}: {val[:7]}")
+                    else:
+                        result.append(f"{key}: {val}")
                 print(' '.join(result))
     #@+node:ekr.20230720091027.1: *5* gdc._trace_kind
     def _trace_kind(self, bunch: g.Bunch, revs_list: list[str]) -> None:
 
         i, kind, nodes0, nodes1 = bunch.i, bunch.kind, bunch.nodes0, bunch.nodes1
-        tag = f"{i:>4}: {revs_list[i][:7]}"
+        rev0, rev1 = bunch.rev0, bunch.rev1
+        tag = f"{i:>4}: {rev0[:7]} {rev1[:7]}"
         if kind == 'add':
             print(f"{tag}:    add {nodes1}")
         elif kind == 'delete':
@@ -1123,27 +1147,6 @@ class GitDiffController:
             print(f"{tag}:   diff {nodes0}\n{pad_s}{nodes1}")
         else:
             g.trace('Unknown kind', repr(kind))
-
-        # if 0:  # A longer trace.
-            # g.printObj(nodes, tag=tag)
-        # else:  # A brief trace.
-            # if not nodes[0] and not nodes[1]:
-                # if 0:  # Avoid clutter.
-                    # print(f"{tag}:   Skip")
-            # elif skip_flag:
-                # if 0:  # Avoid clutter.
-                    # if 1:  # Brief is better.
-                        # print(f"{tag}: Equal")
-                    # else:
-                        # pad_s = ' ' * (8 + len(tag))
-                        # print(f"{tag}: Equal {nodes[0]}\n{pad_s}{nodes[1]}")
-            # elif not nodes[0]:
-                # print(f"{tag}:    Add {nodes[1]}")
-            # elif not nodes[1]:
-                # print(f"{tag}: Delete {nodes[0]}")
-            # else:
-                # pad_s = ' ' * (9 + len(tag))
-                # print(f"{tag}:   Diff {nodes[0]}\n{pad_s}{nodes[1]}")
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
