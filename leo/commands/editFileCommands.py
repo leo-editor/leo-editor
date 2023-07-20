@@ -890,7 +890,7 @@ class GitDiffController:
         diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
 
         # Generate the diffs and nodes.
-        self._generate_history_diffs(diff_list)
+        self._generate_history_diffs(diff_list, truncated_revs_list)
     #@+node:ekr.20230719161306.1: *5* gdc._get_action
     def _get_action(self,
         i: int,  # The index into contents_list and revs_list
@@ -900,7 +900,7 @@ class GitDiffController:
         revs_list: list[str]
     ) -> Optional[g.Bunch]:
         """
-        Return a g.Bunches describing the action to be taken at rev i.
+        Return a g.Bunch describing the action to be taken at rev i.
         """
         assert len(contents_list) == len(revs_list)
         if i + 1 >= len(revs_list):
@@ -995,16 +995,21 @@ class GitDiffController:
                 return (i1, i - 1)
         return None
     #@+node:ekr.20230720085415.1: *5* gdc._generate_history_diffs
-    def _generate_history_diffs(self, diff_list: list[g.Bunch]) -> Position:
-        
-         self._trace_diff_list(diff_list)
-                # # Show the diff.
-                # aList = list(difflib.unified_diff(
-                    # body0, body1, revs_list[i][:7], revs_list[i + 1][:7]))
-                # g.printObj(body0, tag=f"Body: {revs_list[i][:7]}")
-                # g.printObj(aList, tag=f"Diff: {revs_list[i][:7]}")
-         
-         return None
+    def _generate_history_diffs(self, diff_list: list[g.Bunch], revs_list: list[str]) -> Position:
+
+        if not diff_list:
+            return None
+
+        # Trace.
+        # self._trace_diff_list(diff_list)
+
+        # Generate root node.
+
+        # Add nodes for each element of the diff_list.
+        for bunch in diff_list:
+            self._trace_kind(bunch, revs_list)
+
+        return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
     def _get_contents_for_revs(self,
         path: str,
@@ -1104,6 +1109,41 @@ class GitDiffController:
                         else:
                             result.append(f"{key}: {val}")
                 print(' '.join(result))
+    #@+node:ekr.20230720091027.1: *5* gdc._trace_kind
+    def _trace_kind(self, bunch: g.Bunch, revs_list: list[str]) -> None:
+
+        i, kind, nodes0, nodes1 = bunch.i, bunch.kind, bunch.nodes0, bunch.nodes1
+        tag = f"{i:>4}: {revs_list[i][:7]}"
+        if kind == 'add':
+            print(f"{tag}:    add {nodes1}")
+        elif kind == 'delete':
+            print(f"{tag}: delete {nodes0}")
+        elif kind == 'diff':
+            pad_s = ' ' * (9 + len(tag))
+            print(f"{tag}:   diff {nodes0}\n{pad_s}{nodes1}")
+        else:
+            g.trace('Unknown kind', repr(kind))
+
+        # if 0:  # A longer trace.
+            # g.printObj(nodes, tag=tag)
+        # else:  # A brief trace.
+            # if not nodes[0] and not nodes[1]:
+                # if 0:  # Avoid clutter.
+                    # print(f"{tag}:   Skip")
+            # elif skip_flag:
+                # if 0:  # Avoid clutter.
+                    # if 1:  # Brief is better.
+                        # print(f"{tag}: Equal")
+                    # else:
+                        # pad_s = ' ' * (8 + len(tag))
+                        # print(f"{tag}: Equal {nodes[0]}\n{pad_s}{nodes[1]}")
+            # elif not nodes[0]:
+                # print(f"{tag}:    Add {nodes[1]}")
+            # elif not nodes[1]:
+                # print(f"{tag}: Delete {nodes[0]}")
+            # else:
+                # pad_s = ' ' * (9 + len(tag))
+                # print(f"{tag}:   Diff {nodes[0]}\n{pad_s}{nodes[1]}")
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
