@@ -888,24 +888,28 @@ class GitDiffController:
 
         # Find changed nodes.
         diff_list: list[g.Bunch] = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
-        g.printObj(diff_list, tag='diff_list')
+
+        if 1:
+            for z in diff_list:
+                print(f"{z.i:>4} {z.rev[:7]} {z.kind:>7} {z.nodes0!s:>55} : {z.nodes1}")
+            # g.printObj(diff_list, tag='diff_list')
 
         # To do: create diff nodes.
 
-    #@+node:ekr.20230719161306.1: *5* gdc._find_diffs
-    def _find_diffs(self,
+    #@+node:ekr.20230719161306.1: *5* gdc._get_action
+    def _get_action(self,
         i: int,  # The index into contents_list and revs_list
         path: str,
         contents_list: list[list[str]],  # Lines for each contents.
         node_patterns: list[tuple[str, re.Pattern]],  # Patterns matching @+node sentinels for each gnx.
         revs_list: list[str]
-    ) -> list[g.Bunch]:
+    ) -> Optional[g.Bunch]:
         """
-        Return a list of g.Bunches describing the nodes to be diffed.
+        Return a g.Bunches describing the action to be taken at rev i.
         """
         assert len(contents_list) == len(revs_list)
         if i + 1 >= len(revs_list):
-            return []  # Can't diff past this rev.
+            return None  # Can't diff past this rev.
 
         # Step 1: Find all nodes matching one of the gnx's in contents[i], contents[i+1]
         nodes: list[list[tuple]] = [
@@ -939,8 +943,8 @@ class GitDiffController:
         else:
             skip_flag = False
 
-        # Trace what is to be done. Probably useful even in production.
-        if 1:
+        # Trace what is to be done.
+        if 0:
             tag = f"{i:>4}: {revs_list[i][:7]}"
             if 0:  # A longer trace.
                 g.printObj(nodes, tag=tag)
@@ -965,11 +969,11 @@ class GitDiffController:
 
         # Return if there is nothing to diff.
         if skip_flag:
-            return []
+            return None
 
         # Step 2: Create the diffs.
-        diff_list: list[g.Bunch] = []
-        return diff_list
+        kind = 'add' if not nodes[0] else 'delete' if not nodes[1] else 'diff'
+        return g.Bunch(i=i, rev=revs_list[i], kind=kind, nodes0=nodes[0], nodes1=nodes[1])
     #@+node:ekr.20230719170046.1: *5* gdc._find_node
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
@@ -1039,9 +1043,6 @@ class GitDiffController:
             result.append(aList)
             if i > 0 and (i % 100) == 0:
                 print(f"Progress: {i} files")
-            if i > 250:
-                print('Quitting after 250 files')
-                break
         print(f"Done! {n}{of_s} revs")
         return result
     #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
@@ -1058,7 +1059,9 @@ class GitDiffController:
             (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
         ]
         for i in range(len(contents_list)):
-            node_data_list.extend(self._find_diffs(i, path, contents_list, node_patterns, revs_list))
+            bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
+            if bunch:
+                node_data_list.append(bunch)
         return node_data_list
     #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
     def _get_revs_for_path(self, path: str) -> list[str]:
