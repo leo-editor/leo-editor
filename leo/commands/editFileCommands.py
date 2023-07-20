@@ -925,18 +925,18 @@ class GitDiffController:
 
         # Trace what is to be done.
         if 1:
+            print('')
             tag = f"{i:>4}: {revs_list[i][:7]}"
-            pad_s = ' ' * (21 + len(tag))
-            if 1:  # A brief trace.
-                if not nodes[0]:
-                    g.trace(f"{tag}:    ADD {nodes[1]}")
-                elif not nodes[1]:
-                    g.trace(f"{tag}: DELETE {nodes[0]}")
-                else:
-                    g.trace(f"{tag}:   DIFF {nodes[0]}\n{pad_s}{nodes[1]}")
-            elif 1:  # A longer trace.
-                # tag=f"nodes: {i} (rev_i, gnx, (i1, i2))"
+            pad_s = ' ' * (9 + len(tag))
+            if 0:  # A longer trace.
                 g.printObj(nodes, tag=tag)
+            else:  # A brief trace.
+                if not nodes[0]:
+                    print(f"{tag}:    ADD {nodes[1]}")
+                elif not nodes[1]:
+                    print(f"{tag}: DELETE {nodes[0]}")
+                else:
+                    print(f"{tag}:   DIFF {nodes[0]}\n{pad_s}{nodes[1]}")
 
         # Step 2: Create the diffs.
         diff_list: list[g.Bunch] = []
