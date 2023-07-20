@@ -932,10 +932,10 @@ class GitDiffController:
             skip_flag = body0 == body1
             if False and not skip_flag:
                 # Show the diff.
-                diff_list = list(difflib.unified_diff(
-                    body0, body1, revs_list[i][:7], revs_list[i+1][:7]))
+                aList = list(difflib.unified_diff(
+                    body0, body1, revs_list[i][:7], revs_list[i + 1][:7]))
                 g.printObj(body0, tag=f"Body: {revs_list[i][:7]}")
-                g.printObj(diff_list, tag=f"Diff: {revs_list[i][:7]}")
+                g.printObj(aList, tag=f"Diff: {revs_list[i][:7]}")
         else:
             skip_flag = False
 
@@ -1006,7 +1006,7 @@ class GitDiffController:
             i += 1
             if any(z.match(line) for z in self.node_ending_patterns):
                 # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
-                return (i1, i-1)
+                return (i1, i - 1)
         return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
     def _get_contents_for_revs(self,
