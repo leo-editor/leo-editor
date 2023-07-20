@@ -912,7 +912,7 @@ class GitDiffController:
             [],  # Tuples describing nodes in rev i.
             [],  # Tuples describing nodes in rev i + 1
         ]
-        for index in (0,1):
+        for index in (0, 1):
             rev_i = i + index
             for gnx, pattern in node_patterns:
                 node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
