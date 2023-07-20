@@ -889,10 +889,30 @@ class GitDiffController:
         # Find changed nodes.
         diff_list: list[g.Bunch] = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
 
-        if 1:
-            for z in diff_list:
-                print(f"{z.i:>4} {z.rev[:7]} {z.kind:>7} {z.nodes0!s:>55} : {z.nodes1}")
+        if 1:  # Verbose.
+            for bunch in diff_list:
+                result = []
+                for key in ('i', 'kind', 'body0', 'body1', 'range0', 'range1'):
+                    val = bunch.get(key)
+                    if val is not None:
+                        if key == 'i':
+                            pad_s = ' ' * max(0, 4 - len(str(val)))
+                            result.append(f"{key}:{pad_s} {val}")
+                        elif key == 'kind':
+                            result.append(f"{key}: {val:<6}")
+                        elif key.startswith(('body', 'contents')):
+                            result.append(f"{key}: {len(val):<3}")
+                        else:
+                            result.append(f"{key}: {val}")
+                print(' '.join(result))
             # g.printObj(diff_list, tag='diff_list')
+        elif 1:  # Brief.
+            for z in diff_list:
+                n0 = 'None' if z.contents0 is None else len(z.contents0)
+                n1 = 'None' if z.contents1 is None else len(z.contents1)
+                print(
+                    f"{z.i:>4} {z.rev[:7]} {z.kind:>7} "
+                    f"len(contents1/2): {n0} {n1} range0/1: {z.range0} {z.range1}\n")
 
         # To do: create diff nodes.
 
@@ -971,9 +991,26 @@ class GitDiffController:
         if skip_flag:
             return None
 
-        # Step 2: Create the diffs.
+        # Step 2: Create the g.Bunch
         kind = 'add' if not nodes[0] else 'delete' if not nodes[1] else 'diff'
-        return g.Bunch(i=i, rev=revs_list[i], kind=kind, nodes0=nodes[0], nodes1=nodes[1])
+        nodes0, nodes1 = nodes[0], nodes[1]
+        if nodes0:
+            range0 = nodes0[0][2]
+            contents0 = contents_list[i]
+            body0 = contents0[range0[0]:range0[1]]
+        else:
+            range0 = contents0 = body0 = None
+        if nodes1:
+            range1 = nodes1[0][2]
+            contents1 = contents_list[i + 1]
+            body1 = contents1[range1[0]:range1[1]]
+        else:
+            range1 = contents1 = body1 = None
+        return g.Bunch(
+            i=i, rev=revs_list[i], kind=kind,
+            nodes0=nodes0, body0=body0, contents0=contents0, range0=range0,
+            nodes1=nodes1, body1=body1, contents1=contents1, range1=range1,
+        )
     #@+node:ekr.20230719170046.1: *5* gdc._find_node
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
