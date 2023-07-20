@@ -1002,23 +1002,18 @@ class GitDiffController:
     #@+node:ekr.20230720085415.1: *5* gdc._generate_history_diffs
     def _generate_history_diffs(self, diff_list: list[g.Bunch], revs_list: list[str]) -> Position:
         """
-        Generate all diff nodes from the diff_list, a list of g.Bunches with the following fields:
-
-        i=i, rev=revs_list[i], kind=kind,
-        nodes0=nodes0, body0=body0, contents0=contents0, range0=range0,
-        nodes1=nodes1, body1=body1, contents1=contents1, range1=range1,
+        Generate all diff nodes from diff_list, a list of g.Bunches returned from _get_action.
         """
-
-        # Add nodes for each element of the diff_list.
+        g.trace('\n')
         for bunch in diff_list:
             self._trace_kind(bunch, revs_list)
+            if 0:
+                one_diff = list(difflib.unified_diff(
+                    bunch.body0 or [], bunch.body1 or [],
+                    bunch.rev0, bunch.rev1))
+                print('')
+                g.printObj(one_diff, bunch.kind)
 
-            # diff_list = list(difflib.unified_diff(
-                # bunch.body1 or [], bunch.body2 or [],
-                # lines2, bunch.rev1, bunch.rev2
-            # ))
-
-        ###
         # diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
         # self.file_node = self.create_file_node(diff_list, fn)
         # # #1777: The file node will contain the entire added/deleted file.
@@ -1060,7 +1055,7 @@ class GitDiffController:
             aList = g.execGitCommand(command, git_parent_directory)
             result.append(aList)
             if i > 0 and (i % 100) == 0:
-                print(f"Progress: {i} files")
+                print(f"Progress: {i} revs")
         print(f"Done! {n}{of_s} revs")
         return result
     #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
