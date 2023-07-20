@@ -919,24 +919,51 @@ class GitDiffController:
                 if node_info:
                     nodes[index].append((rev_i, gnx, node_info))
 
-        # Return if there is nothing to diff.
+        # Quick test: are both sets of lines the same?
         if not nodes[0] and not nodes[1]:
-            return []
+            skip_flag = True
+        elif nodes[0] and nodes[1]:
+            range0 = nodes[0][0][2]
+            range1 = nodes[1][0][2]
+            contents0 = contents_list[i]
+            contents1 = contents_list[i + 1]
+            body0 = contents0[range0[0]:range0[1]]
+            body1 = contents1[range1[0]:range1[1]]
+            skip_flag = body0 == body1
+            if False and not skip_flag:
+                g.trace('Not equal')
+                g.printObj(body0, tag=f"body0 {i}: {revs_list[i][:7]}")
+                g.printObj(body1, tag=f"body1 {i}: {revs_list[i][:7]}")
+        else:
+            skip_flag = False
 
         # Trace what is to be done.
         if 1:
-            print('')
             tag = f"{i:>4}: {revs_list[i][:7]}"
-            pad_s = ' ' * (9 + len(tag))
             if 0:  # A longer trace.
                 g.printObj(nodes, tag=tag)
             else:  # A brief trace.
-                if not nodes[0]:
+                if not nodes[0] and not nodes[1]:
+                    if 0:
+                        print(f"{tag}:   SKIP")
+                elif skip_flag:
+                    if 0:  # Nothing is best.
+                        if 1:  # Brief is better.
+                            print(f"{tag}: EQUAL")
+                        else:
+                            pad_s = ' ' * (8 + len(tag))
+                            print(f"{tag}: EQUAL {nodes[0]}\n{pad_s}{nodes[1]}")
+                elif not nodes[0]:
                     print(f"{tag}:    ADD {nodes[1]}")
                 elif not nodes[1]:
                     print(f"{tag}: DELETE {nodes[0]}")
                 else:
+                    pad_s = ' ' * (9 + len(tag))
                     print(f"{tag}:   DIFF {nodes[0]}\n{pad_s}{nodes[1]}")
+
+        # Return if there is nothing to diff.
+        if skip_flag:
+            return []
 
         # Step 2: Create the diffs.
         diff_list: list[g.Bunch] = []
@@ -1003,7 +1030,7 @@ class GitDiffController:
         result: list[list[str]] = []
         of_s = '' if limit is None else f" of {len(rev_list)}"
         n = len(rev_list) if limit is None else min(limit, len(rev_list))
-        print(f"Reading {n}{of_s} files ! This will take a few minutes.")
+        print(f"Reading {n}{of_s} revs ! This will take a few minutes.")
         for i, rev in enumerate(rev_list[:limit]):
             command = fr"git show {rev}:{relative_path}"
             aList = g.execGitCommand(command, git_parent_directory)
@@ -1013,7 +1040,7 @@ class GitDiffController:
             if i > 250:
                 print('Quitting after 250 files')
                 break
-        print(f"Done! {n}{of_s} files")
+        print(f"Done! {n}{of_s} revs")
         return result
     #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
     def _get_diff_list(self,
