@@ -1052,12 +1052,17 @@ class GitDiffController:
         path: str,
         revs_list: list[str],
     ) -> list[g.Bunch]:
-        """Return a list of tuples describing the nodes to be diffed."""
+        """Return a list of Bunches describing the nodes to be diffed."""
+
         assert len(contents_list) == len(revs_list)
-        node_data_list: list[g.Bunch] = []
+
+        # Compile the patterns once.
         node_patterns = [
             (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
         ]
+        
+        # Create the list of g.Bunches.
+        node_data_list: list[g.Bunch] = []
         for i in range(len(contents_list)):
             bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
             if bunch:
