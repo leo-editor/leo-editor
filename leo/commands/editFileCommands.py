@@ -908,13 +908,16 @@ class GitDiffController:
             return []  # Can't diff past this rev.
 
         # Step 1: Find all nodes matching one of the gnx's in contents[i], contents[i+1]
-        nodes = []
-        for rev_i in (i, i + 1):
-            for aTuple in node_patterns:
-                gnx, pattern = aTuple
+        nodes: list[list[tuple]] = [
+            [],  # Tuples describing nodes in rev i.
+            [],  # Tuples describing nodes in rev i + 1
+        ]
+        for index in (0,1):
+            rev_i = i + index
+            for gnx, pattern in node_patterns:
                 node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
                 if node_info:
-                    nodes.append((rev_i, gnx, node_info))
+                    nodes[index].append((rev_i, gnx, node_info))
         g.printObj(nodes, tag=f"nodes: {i} (rev_i, gnx, (i1, i2))")
 
         # Step 2: Create the diffs.
