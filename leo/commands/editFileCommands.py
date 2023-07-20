@@ -892,8 +892,8 @@ class GitDiffController:
         limit_s = 'None' if limit is None else limit
         p.h = f"node_history: {g.shortFileName(path)}"
         p.b = f"@ignore\n@nosearch\n\n# gnxs: {', '.join(gnxs)}\n# limit: {limit_s}"
-        # Generate the diffs and nodes.
-        self._generate_history_diffs(diff_list, truncated_revs_list)
+        # Generate all other nodes.
+        self._generate_nodes(diff_list, truncated_revs_list)
         self.finish()
     #@+node:ekr.20230719161306.1: *5* gdc._get_action
     def _get_action(self,
@@ -1004,8 +1004,8 @@ class GitDiffController:
                 # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
                 return (i1, i - 1)
         return None
-    #@+node:ekr.20230720085415.1: *5* gdc._generate_history_diffs
-    def _generate_history_diffs(self, diff_list: list[g.Bunch], revs_list: list[str]) -> None:
+    #@+node:ekr.20230720085415.1: *5* gdc._generate_nodes
+    def _generate_nodes(self, diff_list: list[g.Bunch], revs_list: list[str]) -> None:
         """
         Generate all diff nodes from diff_list, a list of g.Bunches returned from _get_action.
         """
