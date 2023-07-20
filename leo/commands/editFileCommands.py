@@ -918,12 +918,29 @@ class GitDiffController:
                 node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
                 if node_info:
                     nodes[index].append((rev_i, gnx, node_info))
-        g.printObj(nodes, tag=f"nodes: {i} (rev_i, gnx, (i1, i2))")
+
+        # Return if there is nothing to diff.
+        if not nodes[0] and not nodes[1]:
+            return []
+
+        # Trace what is to be done.
+        if 1:
+            tag = f"{i:>4}: {revs_list[i][:7]}"
+            pad_s = ' ' * (21 + len(tag))
+            if 1:  # A brief trace.
+                if not nodes[0]:
+                    g.trace(f"{tag}:    ADD {nodes[1]}")
+                elif not nodes[1]:
+                    g.trace(f"{tag}: DELETE {nodes[0]}")
+                else:
+                    g.trace(f"{tag}:   DIFF {nodes[0]}\n{pad_s}{nodes[1]}")
+            elif 1:  # A longer trace.
+                # tag=f"nodes: {i} (rev_i, gnx, (i1, i2))"
+                g.printObj(nodes, tag=tag)
 
         # Step 2: Create the diffs.
         diff_list: list[g.Bunch] = []
         return diff_list
-
     #@+node:ekr.20230719170046.1: *5* gdc._find_node
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
