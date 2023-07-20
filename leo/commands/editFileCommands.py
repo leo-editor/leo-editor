@@ -931,35 +931,37 @@ class GitDiffController:
             body1 = contents1[range1[0]:range1[1]]
             skip_flag = body0 == body1
             if False and not skip_flag:
-                g.trace('Not equal')
-                g.printObj(body0, tag=f"body0 {i}: {revs_list[i][:7]}")
-                g.printObj(body1, tag=f"body1 {i}: {revs_list[i][:7]}")
+                # Show the diff.
+                diff_list = list(difflib.unified_diff(
+                    body0, body1, revs_list[i][:7], revs_list[i+1][:7]))
+                g.printObj(body0, tag=f"Body: {revs_list[i][:7]}")
+                g.printObj(diff_list, tag=f"Diff: {revs_list[i][:7]}")
         else:
             skip_flag = False
 
-        # Trace what is to be done.
+        # Trace what is to be done. Probably useful even in production.
         if 1:
             tag = f"{i:>4}: {revs_list[i][:7]}"
             if 0:  # A longer trace.
                 g.printObj(nodes, tag=tag)
             else:  # A brief trace.
                 if not nodes[0] and not nodes[1]:
-                    if 0:
-                        print(f"{tag}:   SKIP")
+                    if 0:  # Avoid clutter.
+                        print(f"{tag}:   Skip")
                 elif skip_flag:
-                    if 0:  # Nothing is best.
+                    if 0:  # Avoid clutter.
                         if 1:  # Brief is better.
-                            print(f"{tag}: EQUAL")
+                            print(f"{tag}: Equal")
                         else:
                             pad_s = ' ' * (8 + len(tag))
-                            print(f"{tag}: EQUAL {nodes[0]}\n{pad_s}{nodes[1]}")
+                            print(f"{tag}: Equal {nodes[0]}\n{pad_s}{nodes[1]}")
                 elif not nodes[0]:
-                    print(f"{tag}:    ADD {nodes[1]}")
+                    print(f"{tag}:    Add {nodes[1]}")
                 elif not nodes[1]:
-                    print(f"{tag}: DELETE {nodes[0]}")
+                    print(f"{tag}: Delete {nodes[0]}")
                 else:
                     pad_s = ' ' * (9 + len(tag))
-                    print(f"{tag}:   DIFF {nodes[0]}\n{pad_s}{nodes[1]}")
+                    print(f"{tag}:   Diff {nodes[0]}\n{pad_s}{nodes[1]}")
 
         # Return if there is nothing to diff.
         if skip_flag:
@@ -1004,7 +1006,7 @@ class GitDiffController:
             i += 1
             if any(z.match(line) for z in self.node_ending_patterns):
                 # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
-                return (i1, i)
+                return (i1, i-1)
         return None
     #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
     def _get_contents_for_revs(self,
