@@ -1060,7 +1060,7 @@ class GitDiffController:
         node_patterns = [
             (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
         ]
-        
+
         # Create the list of g.Bunches.
         node_data_list: list[g.Bunch] = []
         for i in range(len(contents_list)):
