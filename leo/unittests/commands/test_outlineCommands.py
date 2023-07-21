@@ -35,7 +35,7 @@ class TestOutlineCommands(LeoUnitTest):
     def test_sort_children(self):
         c, u = self.c, self.c.undoer
         assert self.root_p.h == 'root'
-        self.create_test_sort_outline()  ###
+        self.create_test_sort_outline()
         original_children = [z.h for z in self.root_p.v.children]
         sorted_children = sorted(original_children)
         c.sortChildren()
@@ -54,7 +54,7 @@ class TestOutlineCommands(LeoUnitTest):
     def test_sort_siblings(self):
         c, u = self.c, self.c.undoer
         assert self.root_p.h == 'root'
-        self.create_test_sort_outline()  ###
+        self.create_test_sort_outline()
         original_children = [z.h for z in self.root_p.v.children]
         sorted_children = sorted(original_children)
         c.selectPosition(self.root_p.firstChild())
