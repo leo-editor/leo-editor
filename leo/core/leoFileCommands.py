@@ -897,7 +897,8 @@ class FileCommands:
         Populate the parent links in all children of p.
         """
         for child in p.children():
-            if not child.v.parents:
+            ### if not child.v.parents:
+            if p.v not in child.v.parents:  ### Experimental.
                 child.v.parents.append(p.v)
             self.linkChildrenToParents(child)
     #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
