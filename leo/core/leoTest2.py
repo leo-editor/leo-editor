@@ -149,7 +149,10 @@ class LeoUnitTest(unittest.TestCase):
         print('')
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
-            print(f"clone? {int(p.isCloned())} {p.gnx:10}: {head_s:<10} parents: {p.v.parents}")
+            print(
+                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:10}: "
+                f"{head_s:<10} parents: {p.v.parents}"
+            )
     #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
     def dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
         """Dump all headlines."""
