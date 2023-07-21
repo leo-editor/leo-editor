@@ -73,13 +73,13 @@
 <v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
 <v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
 <v t="ekr.20230714023025.1"><vh>script: diff-branches/revs (one file)</vh></v>
-</v>
 <v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh>
 <v t="ekr.20230713144317.1"><vh>node 1</vh>
 <v t="ekr.20230713144328.1"><vh>child 1</vh></v>
 </v>
 <v t="ekr.20230713144405.1"><vh>node 1a</vh>
 <v t="ekr.20230713144405.2"><vh>child 1</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
