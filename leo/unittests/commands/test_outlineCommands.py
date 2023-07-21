@@ -106,17 +106,20 @@ class TestOutlineCommands(LeoUnitTest):
         cc = clone.next()
         cc_gnx = cc.gnx
         assert cc.h == 'cc'
-        self.dump_headlines(c)
+
         # Cut node cc
+        # self.dump_headlines(c)
+        # self.dump_clone_info(c)
         c.selectPosition(cc)
-        self.dump_clone_info(c)
         c.cutOutline()
         assert not clone.isCloned()
         assert c.p == clone
         assert c.p.h == 'child1'
-        # paste-retaining-clones
+
+        # Execute paste-retaining-clones
         c.pasteOutlineRetainingClones()
-        self.dump_clone_info(c)
+        # self.dump_clone_info(c)
+
         # Recreate the positions.
         clone = bb.next()
         cc = clone.next()
