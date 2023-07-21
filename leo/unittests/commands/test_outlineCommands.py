@@ -75,6 +75,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
         p = c.p
+        u = c.undoer
         assert p == self.root_p
         assert p.h == 'root'
         p.deleteAllChildren()
@@ -104,6 +105,7 @@ class TestOutlineCommands(LeoUnitTest):
         assert clone.v == child1.v
         # Careful: position cc has changed.
         cc = clone.next()
+        clone_v = clone.v
         cc_gnx = cc.gnx
         assert cc.h == 'cc'
 
@@ -119,11 +121,23 @@ class TestOutlineCommands(LeoUnitTest):
         # Execute paste-retaining-clones
         c.pasteOutlineRetainingClones()
         # self.dump_clone_info(c)
+        
+        # The quick test.
+        for p in c.all_positions():
+            if p.h == 'child1':
+                assert p.isCloned(), p.h
+                # The vnode never changes *and* all positions share the same vnode.
+                assert p.v == clone_v, p.h
+            else:
+                assert not p.isCloned(), p.h
+
+        # Other tests.
 
         # Recreate the positions.
         clone = bb.next()
         cc = clone.next()
         child1 = cc.firstChild()
+        assert clone.v == clone_v
         assert cc.gnx == cc_gnx
         assert child1.gnx == clone.gnx
         self.assertEqual(id(child1.v), id(clone.v))
@@ -131,6 +145,25 @@ class TestOutlineCommands(LeoUnitTest):
         assert cc.firstChild().next().gnx == child2_gnx
         assert clone.isCloned()  # Fails.
         assert cc.firstChild().isCloned()
+        
+        # Undo paste-retaining.clones
+        u.undo()
+        for p in c.all_positions():
+            assert not p.isCloned(), p.h
+            if p.h == 'child1':
+                # The vnode never changes!
+                assert p.v == clone_v, p.h
+            
+        # Redo paste-retaining-clones.
+        u.redo()
+        # self.dump_clone_info(c)
+        for p in c.all_positions():
+            if p.h == 'child1':
+                assert p.isCloned(), p.h
+                # The vnode never changes *and* all positions share the same vnode.
+                assert p.v == clone_v, p.h
+            else:
+                assert not p.isCloned(), p.h
     #@-others
 #@-others
 #@-leo
