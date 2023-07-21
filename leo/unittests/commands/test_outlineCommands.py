@@ -146,24 +146,27 @@ class TestOutlineCommands(LeoUnitTest):
         assert clone.isCloned()  # Fails.
         assert cc.firstChild().isCloned()
         
-        # Undo paste-retaining.clones
-        u.undo()
-        for p in c.all_positions():
-            assert not p.isCloned(), p.h
-            if p.h == 'child1':
-                # The vnode never changes!
-                assert p.v == clone_v, p.h
-            
-        # Redo paste-retaining-clones.
-        u.redo()
-        # self.dump_clone_info(c)
-        for p in c.all_positions():
-            if p.h == 'child1':
-                assert p.isCloned(), p.h
-                # The vnode never changes *and* all positions share the same vnode.
-                assert p.v == clone_v, p.h
-            else:
+        # Test multiple undo/redo cycles.
+        for i in range(3):
+
+            # Undo paste-retaining-clones.
+            u.undo()
+            for p in c.all_positions():
                 assert not p.isCloned(), p.h
+                if p.h == 'child1':
+                    # The vnode never changes!
+                    assert p.v == clone_v, p.h
+
+            # Redo paste-retaining-clones.
+            u.redo()
+            # self.dump_clone_info(c)
+            for p in c.all_positions():
+                if p.h == 'child1':
+                    assert p.isCloned(), p.h
+                    # The vnode never changes *and* all positions share the same vnode.
+                    assert p.v == clone_v, p.h
+                else:
+                    assert not p.isCloned(), p.h
     #@-others
 #@-others
 #@-leo
