@@ -1308,11 +1308,17 @@ class GitDiffController:
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
-        # #2143
         directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         path = g.finalize_join(directory, fn)
+
+        # Find all the files in the rev.
+        command = f"git ls-tree -r {rev} --name-only"
+        lines = g.execGitCommand(command, directory)
+        if not any([fn in z for z in lines]):
+            # g.trace(f"{fn} not in {rev}")
+            return ''
         if rev:
             # Get the file using git.
             # Use the file name, not the path.
