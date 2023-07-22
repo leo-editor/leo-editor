@@ -3252,6 +3252,11 @@ class Commands:
 
         from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).git_diff(rev1, rev2)
+    #@+node:ekr.20230705190130.1: *4* c.git_node_history
+    def git_node_history(self, file_name: str, gnx: str) -> None:
+
+        from leo.commands import editFileCommands as efc
+        efc.GitDiffController(c=self).node_history(file_name, [gnx])
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
     #@+node:ekr.20110510052422.14618: *5* c.alert

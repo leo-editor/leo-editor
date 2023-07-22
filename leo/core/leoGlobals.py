@@ -4676,10 +4676,14 @@ def backupGitIssues(c: Cmdr, base_url: str = None) -> None:
     g.trace('done')
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
 def execGitCommand(command: str, directory: str) -> list[str]:
-    """Execute the given git command in the given directory."""
+    """
+    Execute the given git command in the given directory.
+
+    Return a list of lines, with newlines stripped off.
+    """
     git_dir = g.finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
-        g.trace('not found:', git_dir, g.callers())
+        g.trace('.git directory not found:', git_dir, g.callers())
         return []
     if '\n' in command:
         g.trace('removing newline from', command)
@@ -4687,12 +4691,14 @@ def execGitCommand(command: str, directory: str) -> list[str]:
     # #1777: Save/restore os.curdir
     old_dir = os.getcwd()
     if directory:
+        # g.trace(f"os.chdir({directory})")
         os.chdir(directory)
     try:
         p = subprocess.Popen(
             shlex.split(command),
             stdout=subprocess.PIPE,
             stderr=None,  # Shows error traces.
+            # stderr=subprocess.PIPE,
             shell=False,
         )
         out, err = p.communicate()
@@ -7324,7 +7330,7 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
             p2, offset = c.gotoCommands.find_file_line(-n, p)
             return p2 or p
     return None
-#@+node:ekr.20230626064652.1: *3* g.findUnl & helpers (legacy unls)
+#@+node:tbrown.20140311095634.15188: *3* g.findUnl & helpers (legacy unls)
 def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
     """
     g.findUnl: support for legacy UNLs.
