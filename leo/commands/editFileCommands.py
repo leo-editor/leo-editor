@@ -702,7 +702,7 @@ class GitDiffController:
         Create an outline describing the git diffs for fn.
         """
         c = self.c
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         s1 = self.get_file_from_rev(rev1, fn)
@@ -749,7 +749,7 @@ class GitDiffController:
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         aList = g.execGitCommand("git rev-parse devel", directory)
@@ -768,7 +768,7 @@ class GitDiffController:
         """Create an outline describing the git diffs for fn."""
         c = self.c
         u, undoType = c.undoer, 'diff-two-branches'
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         c.selectPosition(c.lastTopLevel())
         undoData = u.beforeInsertNode(c.p)
@@ -804,7 +804,7 @@ class GitDiffController:
         """
         c, u = self.c, self.c.undoer
 
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
@@ -831,7 +831,7 @@ class GitDiffController:
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """The main line of the git diff command."""
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Diff the given revs.
         ok = self.diff_revs(rev1, rev2)
@@ -869,6 +869,284 @@ class GitDiffController:
         u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
         return True
+    #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
+    def node_history(self, path: str, gnxs: list[str], limit: int = None) -> None:
+        """Produce a Leonine history of the node whose file name and gnx are given."""
+        c = self.c
+        # The path must be absolute.
+        if not os.path.isabs(path):
+            g.trace(f"Not absolute: {path!r}")
+            return
+        # Get all the revs.
+        rev_list = self._get_revs_for_path(path)
+        # Get the files.
+        contents_list = self._get_contents_for_revs(path, rev_list, limit)
+        # Truncate revs_list so it has the same length as contents_list.
+        truncated_revs_list = rev_list[: len(contents_list)]
+        # Find changed nodes.
+        diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
+        if not diff_list:
+            return
+        # Create the root node.
+        self.root = p = c.lastTopLevel().insertAfter()
+        limit_s = 'None' if limit is None else limit
+        p.h = f"node_history: {g.shortFileName(path)}"
+        p.b = f"@ignore\n@nosearch\n\n# gnxs: {', '.join(gnxs)}\n# limit: {limit_s}"
+        # Generate all other nodes.
+        self._generate_nodes(diff_list, truncated_revs_list)
+        self.finish()
+    #@+node:ekr.20230719161306.1: *5* gdc._get_action
+    def _get_action(self,
+        i: int,  # The index into contents_list and revs_list
+        path: str,
+        contents_list: list[list[str]],  # Lines for each contents.
+        node_patterns: list[tuple[str, re.Pattern]],  # Patterns matching @+node sentinels for each gnx.
+        revs_list: list[str]
+    ) -> Optional[g.Bunch]:
+        """
+        Return a g.Bunch describing the action to be taken at rev i.
+        """
+        assert len(contents_list) == len(revs_list)
+        if i + 1 >= len(revs_list):
+            return None  # Can't diff past this rev.
+
+        # Step 1: Find all nodes matching one of the gnx's in contents[i], contents[i+1]
+        nodes: list[list[tuple]] = [
+            [],  # Tuples describing nodes in rev i.
+            [],  # Tuples describing nodes in rev i + 1
+        ]
+        for index in (0, 1):
+            rev_i = i + index
+            for gnx, pattern in node_patterns:
+                node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
+                if node_info:
+                    nodes[index].append((rev_i, gnx, node_info))
+
+        # Quick test: are both sets of lines the same?
+        if not nodes[0] and not nodes[1]:
+            skip_flag = True
+        elif nodes[0] and nodes[1]:
+            range0 = nodes[0][0][2]
+            range1 = nodes[1][0][2]
+            contents0 = contents_list[i]
+            contents1 = contents_list[i + 1]
+            body0 = contents0[range0[0]:range0[1]]
+            body1 = contents1[range1[0]:range1[1]]
+            skip_flag = body0 == body1
+        else:
+            skip_flag = False
+
+        # Return if there is nothing to diff.
+        if skip_flag:
+            return None
+
+        # Step 2: Create the g.Bunch
+        kind = 'add' if not nodes[0] else 'delete' if not nodes[1] else 'diff'
+        nodes0, nodes1 = nodes[0], nodes[1]
+        if nodes0:
+            gnx0 = nodes0[0][1]
+            range0 = nodes0[0][2]
+            contents0 = contents_list[i]
+            body0 = contents0[range0[0]:range0[1]]
+        else:
+            gnx0 = range0 = contents0 = body0 = None
+        if nodes1:
+            gnx1 = nodes1[0][1]
+            range1 = nodes1[0][2]
+            contents1 = contents_list[i + 1]
+            body1 = contents1[range1[0]:range1[1]]
+        else:
+            gnx1 = range1 = contents1 = body1 = None
+        return g.Bunch(
+            i=i, kind=kind,
+            gnx0=gnx0, gnx1=gnx1,
+            rev0=revs_list[i], rev1=revs_list[i + 1],
+            body0=body0, body1=body1,
+            # Optional debugging info.
+            nodes0=nodes0, contents0=contents0, range0=range0,
+            nodes1=nodes1, contents1=contents1, range1=range1,
+        )
+    #@+node:ekr.20230719170046.1: *5* gdc._find_node
+    node_ending_patterns = (
+        re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
+        re.compile(r'^\s*#@\-others'),  # A -others sentinel
+        re.compile('^\s*#@\-leo'),  # A -leo sentinel.
+    )
+
+    def _find_node(self,
+        contents: list[str],  # The list of lines.
+        pattern: re.Pattern,
+        # For debugging only.
+        gnx: str,  # gnx being matched.
+        rev: str,  # Full hash.
+        ) -> Optional[tuple[int, int]]:
+        """
+        Return (i1, i2) the range of lines of the node, or None.
+        i1: The index of the line matching pattern.
+        i2: The index of the line ending the node.
+
+
+        The lines start at the first line matching the pattern.
+
+        The lines end at the first line matching one of the ending patterns.
+        """
+        for i, line in enumerate(contents):
+            if pattern.match(line):
+                break
+        else:
+            return None
+        i1 = i
+        i += 1
+        while i < len(contents):
+            line = contents[i]
+            i += 1
+            if any(z.match(line) for z in self.node_ending_patterns):
+                # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
+                return (i1, i - 1)
+        return None
+    #@+node:ekr.20230720085415.1: *5* gdc._generate_nodes
+    def _generate_nodes(self, diff_list: list[g.Bunch], revs_list: list[str]) -> None:
+        """
+        Generate all diff nodes from diff_list, a list of g.Bunches returned from _get_action.
+        """
+        # self._trace_diff_list(diff_list)
+        for b in diff_list:
+            # self._trace_kind(b, revs_list)
+            p = self.root.insertAsLastChild()
+            gnx0_s = b.gnx0 or ''
+            gnx1_s = b.gnx1 or ''
+            gnxs_s = gnx0_s if b.gnx0 == b.gnx1 else f"{gnx0_s} {gnx1_s}"
+            p.h = f"{b.i:>4} {b.kind}"  # {gnx0_s} {gnx1_s}"
+            if b.kind == 'diff':
+                diff = list(difflib.unified_diff(b.body0 or [], b.body1 or [], b.rev0, b.rev1))
+                p.b = f"diff {gnxs_s}\n\n{''.join(diff)}"
+                child1 = p.insertAsLastChild()
+                child1.h = 'old'
+                child1.b = ''.join(b.body0 or [])
+                child2 = p.insertAsLastChild()
+                child2.h = 'new'
+                child2.b = ''.join(b.body1 or [])
+            elif b.kind == 'add':
+                p.b = f"add {gnxs_s}\n\n{''.join(b.body1 or [])}"
+            elif b.kind == 'delete':
+                p.b = f"delete {gnxs_s}\n\n{''.join(b.body0 or [])}"
+            else:
+                g.trace(f"Bad b.kind: {b.kind!r}")
+    #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
+    def _get_contents_for_revs(self,
+        path: str,
+        rev_list: list[str],
+        limit: Optional[int] = None,
+    ) -> list[list[str]]:
+        """
+        Return the contents of the file as a list of lines.
+        path: the full path to the file.
+        rev_list: the list of full git hashes for each rev.
+        limit: None (no limit), the number revs to search.
+        """
+        # Note: the time module excludes sleep time. It's inaccurate here.
+
+        # Run the command itself in the leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+
+        # Compute the path relative to the parent.
+        relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
+
+        # Get full file contents of rev.
+        result: list[list[str]] = []
+        of_s = '' if limit is None else f" of {len(rev_list)}"
+        n = len(rev_list) if limit is None else min(limit, len(rev_list))
+        g.es_print(f"Reading {n}{of_s} revs!\nThis will take a few minutes.")
+        for i, rev in enumerate(rev_list[:limit]):
+            command = fr"git show {rev}:{relative_path}"
+            aList = g.execGitCommand(command, git_parent_directory)
+            result.append(aList)
+            if i > 0 and (i % 100) == 0:
+                g.es_print(f"Progress: {i} revs")
+        g.es_print(f"Done! {n}{of_s} revs")
+        return result
+    #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
+    def _get_diff_list(self,
+        contents_list: list[list[str]],  # List of lines for each file.
+        gnxs: list[str],
+        path: str,
+        revs_list: list[str],
+    ) -> list[g.Bunch]:
+        """Return a list of Bunches describing the nodes to be diffed."""
+
+        assert len(contents_list) == len(revs_list)
+
+        # Compile the patterns once.
+        node_patterns = [
+            (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
+        ]
+
+        # Create the list of g.Bunches.
+        node_data_list = []
+        for i in range(len(contents_list)):
+            bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
+            if bunch:
+                node_data_list.append(bunch)
+        return node_data_list
+    #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
+    def _get_revs_for_path(self, path: str) -> list[str]:
+        """
+        Return the list of full hashes for all commits to the given absolute path.
+        """
+        # Run the command itself in leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+
+        # Human readable summary.
+        # %h (%an %cs %s): Abbreviated hash, author, date, commit message
+        args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
+        command = fr"git log {args_s} -- {path}"
+        aList = g.execGitCommand(command, git_parent_directory)
+        result = [z.strip() for z in aList]
+        return result
+    #@+node:ekr.20230720085122.1: *5* gdc._trace_diff_list
+    def _trace_diff_list(self, diff_list: list[g.Bunch]) -> None:
+        """Trace the diff_list."""
+        if 1:  # Brief.
+            for z in diff_list:
+                body_n0 = 'None' if z.body0 is None else len(z.body0)
+                body_n1 = 'None' if z.body1 is None else len(z.body1)
+                print(
+                    f"{z.i:>4} {z.kind:>7} {z.rev0[:7]} {z.rev1[:7]} "
+                    # f"len(contents0/1: {n0} {n1} range0/1: {z.range0} {z.range1}")
+                    f"len(body0/1): {body_n0} {body_n1}")
+        elif 0:  # Too verbose.
+            g.printObj(diff_list, tag='diff_list')
+        else:  # Verbose.
+            for bunch in diff_list:
+                result = []
+                for key in ('i', 'kind', 'rev0', 'rev1', 'body0', 'body1', 'range0', 'range1'):
+                    val = bunch.get(key)
+                    if val is None:
+                        continue
+                    if key == 'i':
+                        pad_s = ' ' * max(0, 4 - len(str(val)))
+                        result.append(f"{key}:{pad_s} {val}")
+                    elif key == 'kind':
+                        result.append(f"{key}: {val:<6}")
+                    elif key.startswith(('body', 'contents')):
+                        result.append(f"{key}: {len(val):<3}")
+                    elif key.startswith('rev'):
+                        result.append(f"{key}: {val[:7]}")
+                    else:
+                        result.append(f"{key}: {val}")
+                print(' '.join(result))
+    #@+node:ekr.20230720091027.1: *5* gdc._trace_kind
+    def _trace_kind(self, b: g.Bunch, revs_list: list[str]) -> None:
+        tag = f"{b.i:>4}: {b.rev0[:7]} {b.rev1[:7]}"
+        if b.kind == 'add':
+            print(f"{tag}:    add len(body1):   {len(b.body1)}")
+        elif b.kind == 'delete':
+            print(f"{tag}: delete len(body0):   {len(b.body0)}")
+        elif b.kind == 'diff':
+            # pad_s = ' ' * (9 + len(tag))
+            print(f"{tag}:   diff len(body0/2): {len(b.body0)} {len(b.nodes1)}")
+        else:
+            g.trace('Unknown kind', repr(b.kind))
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
@@ -991,8 +1269,8 @@ class GitDiffController:
         self.root.expand()
         c.redraw(self.root)
         c.treeWantsFocusNow()
-    #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self) -> Optional[str]:
+    #@+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
+    def get_parent_of_git_directory(self) -> Optional[str]:
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.
@@ -1020,7 +1298,7 @@ class GitDiffController:
     def get_file_from_branch(self, branch: str, fn: str) -> str:
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -1031,7 +1309,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         path = g.finalize_join(directory, fn)
@@ -1053,7 +1331,7 @@ class GitDiffController:
     def get_files(self, rev1: str, rev2: str) -> list[str]:
         """Return a list of changed files."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return []
         command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
@@ -1070,7 +1348,7 @@ class GitDiffController:
         # Return only the abbreviated hash for the revspec.
         format_s = 'h' if abbreviated else 'H'
         command = f"git show --format=%{format_s} --no-patch {revspec}"
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         lines = g.execGitCommand(command, directory=directory)
         return ''.join(lines).strip()
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline

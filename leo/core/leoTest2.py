@@ -97,7 +97,54 @@ class LeoUnitTest(unittest.TestCase):
 
     Contains setUp/tearDown methods and various utilites.
     """
+
+    @classmethod
+    def setUpClass(cls: Any) -> None:
+        create_app(gui_name='null')
+
     #@+others
+    #@+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
+    def setUp(self) -> None:
+        """
+        Create a commander using g.app.gui.
+        Create the nodes in the commander.
+        """
+        # Do the import here to avoid circular dependencies.
+        from leo.core import leoCommands
+
+        # Set g.unitTesting *early*, for guards.
+        g.unitTesting = True
+
+        # Default.
+        g.app.write_black_sentinels = False
+
+        # Create a new commander for each test.
+        # This is fast, because setUpClass has done all the imports.
+        fileName = g.os_path_finalize_join(g.app.loadDir, 'LeoPyRef.leo')
+        self.c = c = leoCommands.Commands(fileName=fileName, gui=g.app.gui)
+
+        # Init the 'root' and '@settings' nodes.
+        self.root_p = c.rootPosition()
+        self.root_p.h = 'root'
+        self.settings_p = self.root_p.insertAfter()
+        self.settings_p.h = '@settings'
+
+        # Select the 'root' node.
+        c.selectPosition(self.root_p)
+
+    def tearDown(self) -> None:
+        self.c = None
+    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
+    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
+        """
+        Call c.config.set with the given args, suppressing stdout.
+        """
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind=kind, name=name, val=val)
+        finally:
+            sys.stdout = old_stdout
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
@@ -180,66 +227,6 @@ class LeoUnitTest(unittest.TestCase):
             print('')
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))
-    #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
-    @classmethod
-    def setUpClass(cls: Any) -> None:
-        create_app(gui_name='null')
-
-    def setUp(self) -> None:
-        """
-        Create a commander using g.app.gui.
-        Create the nodes in the commander.
-        """
-        # Do the import here to avoid circular dependencies.
-        from leo.core import leoCommands
-
-        # Set g.unitTesting *early*, for guards.
-        g.unitTesting = True
-
-        # Default.
-        g.app.write_black_sentinels = False
-
-        # Create a new commander for each test.
-        # This is fast, because setUpClass has done all the imports.
-        fileName = g.os_path_finalize_join(g.app.loadDir, 'LeoPyRef.leo')
-        self.c = c = leoCommands.Commands(fileName=fileName, gui=g.app.gui)
-
-        # Init the 'root' and '@settings' nodes.
-        self.root_p = c.rootPosition()
-        self.root_p.h = 'root'
-        self.settings_p = self.root_p.insertAfter()
-        self.settings_p.h = '@settings'
-
-        # Select the 'root' node.
-        c.selectPosition(self.root_p)
-
-    def tearDown(self) -> None:
-        self.c = None
-    #@+node:ekr.20230703103430.1: *3* LeoUnitTest: setup helpers and related tests
-    #@+node:ekr.20230703103458.1: *4* LeoUnitTest._set_setting
-    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
-        """
-        Call c.config.set with the given args, suppressing stdout.
-        """
-        try:
-            old_stdout = sys.stdout
-            sys.stdout = open(os.devnull, 'w')
-            c.config.set(p=None, kind=kind, name=name, val=val)
-        finally:
-            sys.stdout = old_stdout
-    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.verbose_test_set_setting
-    def verbose_test_set_setting(self) -> None:
-        # Not run by default. To run:
-        # python -m unittest leo.core.leoTest2.LeoUnitTest.verbose_test_set_setting
-        c = self.c
-        val: Any
-        for val in (True, False):
-            name = 'test-bool-setting'
-            self._set_setting(c, kind='bool', name=name, val=val)
-            self.assertTrue(c.config.getBool(name) == val)
-        val = 'aString'
-        self._set_setting(c, kind='string', name=name, val=val)
-        self.assertTrue(c.config.getString(name) == val)
     #@-others
 #@-others
 #@-leo
