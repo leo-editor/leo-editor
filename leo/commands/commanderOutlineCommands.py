@@ -427,14 +427,11 @@ def restoreFromCopiedTree(self: Self, p: Position, s: str) -> None:
     hidden_v = FastRead(c, fc.gnxDict).readFileFromClipboard(s_bytes)
     fc.initReadIvars()
 
-    # The big switcharoo. There is no need to link or unlink p!
-    new_v = hidden_v.children[0]
-    assert new_v
+    # The big switcharoo:
+    # There is no need to link or unlink p! Its position does not change.
+    p.v = hidden_v.children[0]
 
-    ### To do: fix p.v.parents.
-
-    ### To do:
-    ### p.v = new_v
+    ### Do we need to fix v.parents in the pasted tree???
 
     # All pasted nodes should have unique gnx's.
     ni = g.app.nodeIndices
