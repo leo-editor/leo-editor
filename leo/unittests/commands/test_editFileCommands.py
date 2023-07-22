@@ -10,7 +10,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20230714143317.2: ** class TestEditFileCommands(LeoUnitTest)
 class TestEditFileCommands(LeoUnitTest):
-    """Unit tests for leo/commands/editCommands.py."""
+    """Unit tests for leo/commands/editFileCommands.py."""
 
     #@+others
     #@+node:ekr.20230714143317.3: *3* TestEditFileCommands.slow_test_gdc_node_history
