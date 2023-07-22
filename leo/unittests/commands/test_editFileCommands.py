@@ -10,7 +10,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20230714143317.2: ** class TestEditFileCommands(LeoUnitTest)
 class TestEditFileCommands(LeoUnitTest):
-    """Unit tests for leo/commands/editCommands.py."""
+    """Unit tests for leo/commands/editFileCommands.py."""
 
     #@+others
     #@+node:ekr.20230714143317.3: *3* TestEditFileCommands.slow_test_gdc_node_history
@@ -25,9 +25,13 @@ class TestEditFileCommands(LeoUnitTest):
         self.assertTrue(os.path.exists(path), msg=msg)
         self.assertTrue(os.path.isabs(path), msg=msg)
         self.assertTrue(os.path.isfile(path), msg=msg)
-        findUnl_gnx = 'ekr.20230626064652.1'
         x = GitDiffController(c=self.c)
-        x.node_history(path, gnx=findUnl_gnx)
+        gnxs = (
+            'ekr.20230626064652.1',  # EKR's replacement gnx
+            'tbrown.20140311095634.15188',  # Terry's original node.
+        )
+        x.node_history(path, gnxs, limit=30)
+        # self.dump_tree(tag='slow_test_gdc_node_history')
     #@+node:ekr.20230714143451.1: *3* TestEditFileCommands.test_diff_two_branches
     def test_diff_two_branches(self):
         c = self.c

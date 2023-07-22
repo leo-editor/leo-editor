@@ -226,7 +226,6 @@ class LeoUnitTest(unittest.TestCase):
             print(tag)
         _iter = root.self_and_subtree if root else self.c.all_positions
         for p in _iter():
-            print('')
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))
     #@-others

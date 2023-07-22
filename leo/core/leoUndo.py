@@ -82,6 +82,7 @@ class Undoer:
         self.bead = -1  # Index of the present bead: -1:len(beads)
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
+        self.last_undoable_command_name = None  # Name of last undoable command.
         self.redoMenuLabel = "Can't Redo"
         self.undoMenuLabel = "Can't Undo"
         self.realRedoMenuLabel = "Can't Redo"
@@ -228,7 +229,7 @@ class Undoer:
         return "Redo " + name
 
     def undoMenuName(self, name: str) -> str:
-        if name == "Can't Undo":
+        if name.startswith("Can't Undo"):
             return name
         return "Undo " + name
     #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
@@ -303,7 +304,11 @@ class Undoer:
         if bunch:
             u.setUndoType(bunch.undoType)
         else:
-            u.setUndoType("Can't Undo")
+            if u.last_undoable_command_name:
+                undoType = f"Can't Undo {u.last_undoable_command_name}"
+            else:
+                undoType = "Can't Undo"
+            u.setUndoType(undoType)
         # Set only the redo menu label.
         bunch = u.peekBead(u.bead + 1)
         if bunch:
@@ -683,7 +688,7 @@ class Undoer:
         u.setUndoTypes()
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
     #@+node:ekr.20201109074740.1: *5* u.beforeChangeBody
-    def beforeChangeBody(self, p: Position) -> None:
+    def beforeChangeBody(self, p: Position) -> g.Bunch:
         """Return data that gets passed to afterChangeBody."""
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
@@ -716,7 +721,7 @@ class Undoer:
         u.bead += 1
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20201107145859.1: *5* u.beforeChangeHeadline
-    def beforeChangeHeadline(self, p: Position) -> None:
+    def beforeChangeHeadline(self, p: Position) -> g.Bunch:
         """
         Return data that gets passed to afterChangeNode.
 
@@ -729,7 +734,7 @@ class Undoer:
 
     beforeChangeHead = beforeChangeHeadline
     #@+node:felix.20230326230839.1: *5* u.beforeChangeMultiHeadline
-    def beforeChangeMultiHeadline(self, p: Position) -> None:
+    def beforeChangeMultiHeadline(self, p: Position) -> g.Bunch:
         """
         Return data that gets passed to afterChangeMultiHeadline.
         p is used to select position after undo/redo multiple headline changes is done
@@ -745,7 +750,7 @@ class Undoer:
 
     beforeChangeMultiHead = beforeChangeMultiHeadline
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
-    def beforeChangeNodeContents(self, p: Position) -> None:
+    def beforeChangeNodeContents(self, p: Position) -> g.Bunch:
         """Return data that gets passed to afterChangeNode."""
         c, u = self.c, self
         w = c.frame.body.wrapper
@@ -756,19 +761,19 @@ class Undoer:
         bunch.oldYScroll = w.getYScrollPosition() if w else 0
         return bunch
     #@+node:ekr.20050424161505.1: *5* u.beforeClearRecentFiles
-    def beforeClearRecentFiles(self) -> None:
+    def beforeClearRecentFiles(self) -> g.Bunch:
         u = self
         p = u.c.p
         bunch = u.createCommonBunch(p)
         bunch.oldRecentFiles = g.app.config.recentFiles[:]
         return bunch
     #@+node:ekr.20050412080354: *5* u.beforeCloneNode
-    def beforeCloneNode(self, p: Position) -> None:
+    def beforeCloneNode(self, p: Position) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         return bunch
     #@+node:ekr.20050411193627.3: *5* u.beforeDeleteNode
-    def beforeDeleteNode(self, p: Position) -> None:
+    def beforeDeleteNode(self, p: Position) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         bunch.oldBack = p.back()
@@ -779,7 +784,7 @@ class Undoer:
         p: Position,
         pasteAsClone: bool = False,
         copiedBunchList: list[g.Bunch] = None,
-    ) -> None:
+    ) -> g.Bunch:
         u = self
         if copiedBunchList is None:
             copiedBunchList = []
@@ -790,21 +795,21 @@ class Undoer:
             bunch.beforeTree = copiedBunchList
         return bunch
     #@+node:ekr.20050526131252: *5* u.beforeMark
-    def beforeMark(self, p: Position, command: str) -> None:
+    def beforeMark(self, p: Position, command: str) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         bunch.kind = 'mark'
         bunch.undoType = command
         return bunch
     #@+node:ekr.20050410110215: *5* u.beforeMoveNode
-    def beforeMoveNode(self, p: Position) -> None:
+    def beforeMoveNode(self, p: Position) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
         return bunch
     #@+node:ekr.20230713145834.1: *5* u.beforeParseBody
-    def beforeParseBody(self, p: Position) -> None:
+    def beforeParseBody(self, p: Position) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         bunch.oldBody = p.b
@@ -816,7 +821,7 @@ class Undoer:
         oldChildren: list[VNode],
         newChildren: list[VNode],
         sortChildren: bool,
-    ) -> None:
+    ) -> g.Bunch:
         """Create an undo node for sort operations."""
         u = self
         if sortChildren:
@@ -836,7 +841,7 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
         return bunch
     #@+node:ekr.20050318085432.2: *5* u.createCommonBunch
-    def createCommonBunch(self, p: Position) -> None:
+    def createCommonBunch(self, p: Position) -> g.Bunch:
         """Return a bunch containing all common undo info.
         This is mostly the info for recreating an empty node at position p."""
         c = self.c
@@ -863,17 +868,20 @@ class Undoer:
 
         All non-undoable commands should call this method.
         """
-        if not g.unitTesting:
-            g.es(f"not undoable: {command_name}", color='red')
-            g.es('clearing the undo stack', color='red')
-        self.clearUndoState()
+        u = self
+        u.last_undoable_command_name = command_name
+        u.clearUndoState()
     #@+node:ekr.20031218072017.3609: *4* u.clearUndoState
     def clearUndoState(self) -> None:
         """Clears the entire Undo state."""
         u = self
         u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")
-        u.setUndoType("Can't Undo")
+        if u.last_undoable_command_name:
+            undoType = f"Can't Undo {u.last_undoable_command_name}"
+        else:
+            undoType = "Can't Undo"
+        u.setUndoType(undoType)
         u.beads = []  # List of undo nodes.
         u.bead = -1  # Index of the present bead: -1:len(beads)
     #@+node:ekr.20031218072017.1490: *4* u.doTyping & helper
