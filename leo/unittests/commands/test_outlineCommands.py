@@ -170,8 +170,112 @@ class TestOutlineCommands(LeoUnitTest):
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 
-        from leo.core import leoGlobals as g ###
-        g.trace('****')
+        ###from leo.core import leoGlobals as g ###
+
+        # Clean the tree.
+        c = self.c
+        fc = c.fileCommands
+        p = c.p
+        u = c.undoer
+        assert p == self.root_p
+        assert p.h == 'root'
+        
+        #@+<< create test tree >>
+        #@+node:ekr.20230722084237.1: *4* << create test tree >>
+        p.deleteAllChildren()
+        while p.hasNext():
+            p.next().doDelete()
+
+        # aa
+        # bb
+        # child1 (clone)
+        # cc
+        #   child1 (clone)
+        #   child2
+        aa = p.insertAfter()
+        aa.h = 'aa'
+        bb = aa.insertAfter()
+        bb.h = 'bb'
+        cc = bb.insertAfter()
+        cc.h = 'cc'
+        child1 = cc.insertAsLastChild()
+        child1.h = 'child1'
+        child1_gnx = child1.gnx
+        child2 = child1.insertAfter()
+        child2.h = 'child2'
+        child2_gnx = child2.gnx
+        clone = child1.clone()
+        clone.moveAfter(bb)
+        assert clone.v == child1.v
+        # Careful: position cc has changed.
+        cc = clone.next()
+        clone_v = clone.v
+        cc_gnx = cc.gnx
+        assert cc.h == 'cc'
+        #@-<< create test tree >>
+        
+        assert fc  ###
+        
+        return ###
+
+        # Cut node cc
+        # self.dump_headlines(c)
+        # self.dump_clone_info(c)
+        c.selectPosition(cc)
+        c.cutOutline()
+        assert not clone.isCloned()
+        assert c.p == clone
+        assert c.p.h == 'child1'
+
+        # Execute paste-retaining-clones
+        c.pasteOutlineRetainingClones()
+        # self.dump_clone_info(c)
+        
+        # The quick test.
+        for p in c.all_positions():
+            if p.h == 'child1':
+                assert p.isCloned(), p.h
+                # The vnode never changes *and* all positions share the same vnode.
+                assert p.v == clone_v, p.h
+            else:
+                assert not p.isCloned(), p.h
+
+        # Other tests.
+
+        # Recreate the positions.
+        clone = bb.next()
+        cc = clone.next()
+        child1 = cc.firstChild()
+        assert clone.v == clone_v
+        assert cc.gnx == cc_gnx
+        assert child1.gnx == clone.gnx
+        self.assertEqual(id(child1.v), id(clone.v))
+        assert cc.firstChild().gnx == child1_gnx
+        assert cc.firstChild().next().gnx == child2_gnx
+        assert clone.isCloned()  # Fails.
+        assert cc.firstChild().isCloned()
+        
+        # Test multiple undo/redo cycles.
+        for i in range(3):
+
+            # Undo paste-retaining-clones.
+            u.undo()
+            for p in c.all_positions():
+                assert not p.isCloned(), p.h
+                if p.h == 'child1':
+                    # The vnode never changes!
+                    assert p.v == clone_v, p.h
+
+            # Redo paste-retaining-clones.
+            u.redo()
+            # self.dump_clone_info(c)
+            for p in c.all_positions():
+                if p.h == 'child1':
+                    assert p.isCloned(), p.h
+                    # The vnode never changes *and* all positions share the same vnode.
+                    assert p.v == clone_v, p.h
+                else:
+                    assert not p.isCloned(), p.h
     #@-others
 #@-others
 #@-leo
