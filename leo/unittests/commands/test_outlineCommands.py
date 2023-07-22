@@ -167,7 +167,7 @@ class TestOutlineCommands(LeoUnitTest):
                     assert p.v == clone_v, p.h
                 else:
                     assert not p.isCloned(), p.h
-    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
+    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (new)
     def test_restoreFromCopiedTree(self):
 
         ###from leo.core import leoGlobals as g ###
@@ -276,6 +276,10 @@ class TestOutlineCommands(LeoUnitTest):
                     assert p.v == clone_v, p.h
                 else:
                     assert not p.isCloned(), p.h
+    #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_fc_getLeoOutlineFromClipBoardRetainingClones (new)
+    def test_fc_getLeoOutlineFromClipBoardRetainingClones(self):
+        # self.fail('Not ready yet')
+        pass
     #@-others
 #@-others
 #@-leo
