@@ -994,68 +994,6 @@ def writeEditedRecentFiles(self: Self, event: Event = None) -> None:
     """
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
-#@+node:vitalije.20170831154859.1: ** Reference outline commands
-#@+node:vitalije.20170831154830.1: *3* c_file.updateRefLeoFile
-@g.commander_command('update-ref-file')
-def updateRefLeoFile(self: Self, event: Event = None) -> None:
-    """
-    Saves only the **public part** of this outline to the reference Leo
-    file. The public part consists of all nodes above the **special
-    separator node**, a top-level node whose headline is
-    `---begin-private-area---`.
-
-    Below this special node is **private area** where one can freely make
-    changes that should not be copied (published) to the reference Leo file.
-
-    **Note**: Use the set-reference-file command to create the separator node.
-    """
-    c = self
-    c.fileCommands.save_ref()
-#@+node:vitalije.20170831154840.1: *3* c_file.readRefLeoFile
-@g.commander_command('read-ref-file')
-def readRefLeoFile(self: Self, event: Event = None) -> None:
-    """
-    This command *completely replaces* the **public part** of this outline
-    with the contents of the reference Leo file. The public part consists
-    of all nodes above the top-level node whose headline is
-    `---begin-private-area---`.
-
-    Below this special node is **private area** where one can freely make
-    changes that should not be copied (published) to the reference Leo file.
-
-    **Note**: Use the set-reference-file command to create the separator node.
-    """
-    c = self
-    c.fileCommands.updateFromRefFile()
-#@+node:vitalije.20170831154850.1: *3* c_file.setReferenceFile
-@g.commander_command('set-reference-file')
-def setReferenceFile(self: Self, event: Event = None) -> None:
-    """
-    Shows a file open dialog allowing you to select a **reference** Leo
-    document to which this outline will be connected.
-
-    This command creates a **special separator node**, a top-level node
-    whose headline is `---begin-private-area---` and whose body is the path
-    to reference Leo file.
-
-    The separator node splits the outline into two parts. The **public
-    part** consists of all nodes above the separator node. The **private
-    part** consists of all nodes below the separator node.
-
-    The update-ref-file and read-ref-file commands operate on the **public
-    part** of the outline. The update-ref-file command saves *only* the
-    public part of the outline to reference Leo file. The read-ref-file
-    command *completely replaces* the public part of the outline with the
-    contents of reference Leo file.
-    """
-    c = self
-    fileName = g.app.gui.runOpenFileDialog(c,
-            title="Select reference Leo file",
-            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-            defaultextension=g.defaultLeoFileExtension(c))
-    if not fileName:
-        return
-    c.fileCommands.setReferenceFile(fileName)
 #@+node:ekr.20180312043352.1: ** Themes
 #@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
