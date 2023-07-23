@@ -970,7 +970,7 @@ class GitDiffController:
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
         re.compile(r'^\s*#@\-others'),  # A -others sentinel
-        re.compile('^\s*#@\-leo'),  # A -leo sentinel.
+        re.compile(r'^\s*#@\-leo'),  # A -leo sentinel.
     )
 
     def _find_node(self,
@@ -1317,7 +1317,7 @@ class GitDiffController:
         if rev:
             command = f"git ls-tree -r {rev} --name-only"
             lines = g.execGitCommand(command, directory)
-            if not any([fn in z for z in lines]):
+            if not any(fn in z for z in lines):
                 # g.trace(f"{fn} not in {rev}")
                 return ''
             # Get the file using git.
