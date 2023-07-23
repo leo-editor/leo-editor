@@ -1818,7 +1818,9 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
-            # Don't kill unit tests for this kind of problem.
+            if g.unitTesting:
+                # New in Leo 6.7.4: *Do* raise an exception.
+                raise TypeError(f"Invalid position: {p!r}")
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p), repr(c))
             g.trace(g.callers())
