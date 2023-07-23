@@ -888,6 +888,9 @@ class FileCommands:
             p._linkCopiedAfter(current)
         # Fix #862: paste-retaining-clones can corrupt the outline.
         self.linkChildrenToParents(p)
+        n = c.checkOutline()
+        if n > 0:
+            return None
         c.selectPosition(p)
         self.initReadIvars()
         return p

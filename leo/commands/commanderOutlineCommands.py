@@ -86,7 +86,9 @@ def pasteOutline(
         return None
     # Validate.
     c.validateOutline()
-    c.checkOutline()
+    n = c.checkOutline()
+    if n > 0:
+        return None
     # Handle the "before" data for undo.
     if undoFlag:
         undoData = c.undoer.beforeInsertNode(c.p,
@@ -131,7 +133,9 @@ def pasteOutlineRetainingClones(
         return None
     # Validate.
     c.validateOutline()
-    c.checkOutline()
+    n = c.checkOutline()
+    if n > 0:
+        return None
     # Handle the "before" data for undo.
     if undoFlag:
         vnodeInfoDict = computeVnodeInfoDict(c)
@@ -696,12 +700,7 @@ def expandPrevLevel(self: Self, event: Event = None) -> None:
 #@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
 @g.commander_command('check-outline')
 def fullCheckOutline(self: Self, event: Event = None) -> None:
-    """
-    Performs a full check of the consistency of a .leo file.
-
-    As of Leo 5.1, Leo performs checks of gnx's and outline structure
-    before writes and after reads, pastes and undo/redo.
-    """
+    """Do a full check of the consistency of a .leo file."""
     c = self
     t1 = time.process_time()
     n = c.checkOutline()
