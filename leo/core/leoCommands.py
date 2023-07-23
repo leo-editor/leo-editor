@@ -2105,7 +2105,7 @@ class Commands:
         errors = 0
         for f in (c.checkVnodeLinks, c.checkGnxs, c.checkLinks):
             errors += f()
-        return 0
+        return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline
     # Makes sure all nodes are valid.
 
