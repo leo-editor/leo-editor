@@ -86,8 +86,8 @@ def pasteOutline(
         return None
     # Validate.
     c.validateOutline()
-    n = c.checkOutline()
-    if n > 0:
+    errors = c.checkOutline()
+    if errors > 0:
         return None
     # Handle the "before" data for undo.
     if undoFlag:
@@ -133,8 +133,8 @@ def pasteOutlineRetainingClones(
         return None
     # Validate.
     c.validateOutline()
-    n = c.checkOutline()
-    if n > 0:
+    errors = c.checkOutline()
+    if errors > 0:
         return None
     # Handle the "before" data for undo.
     if undoFlag:
@@ -703,9 +703,9 @@ def fullCheckOutline(self: Self, event: Event = None) -> None:
     """Do a full check of the consistency of a .leo file."""
     c = self
     t1 = time.process_time()
-    n = c.checkOutline()
+    errors = c.checkOutline()
     t2 = time.time()
-    g.es_print(f"check-outline: {n} error{g.plural(n)} in {t2 - t1:4.2f} sec.")
+    g.es_print(f"check-outline: {errors} error{g.plural(errors)} in {t2 - t1:4.2f} sec.")
 #@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
 #@+node:ekr.20071213123942: *3* c_oc.findNextClone
 @g.commander_command('find-next-clone')

@@ -888,8 +888,8 @@ class FileCommands:
             p._linkCopiedAfter(current)
         # Fix #862: paste-retaining-clones can corrupt the outline.
         self.linkChildrenToParents(p)
-        n = c.checkOutline()
-        if n > 0:
+        errors = c.checkOutline()
+        if errors > 0:
             return None
         c.selectPosition(p)
         self.initReadIvars()
@@ -1814,7 +1814,8 @@ class FileCommands:
         """
         Write all external files and the .leo file itself."""
         c, fc = self.c, self
-        if c.checkOutline():
+        errors = c.checkOutline()
+        if errors:
             g.error('Structural errors in outline! outline not written')
             return False
         g.app.recentFilesManager.writeRecentFilesFile(c)
@@ -2046,7 +2047,8 @@ class FileCommands:
     def writeOutline(self, fileName: str) -> bool:
 
         c = self.c
-        if c.checkOutline():
+        errors = c.checkOutline()
+        if errors:
             g.error('Structure errors in outline! outline not written')
             return False
         if self.isReadOnly(fileName):
