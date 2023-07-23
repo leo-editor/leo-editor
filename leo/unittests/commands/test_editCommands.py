@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
-"""Tests for leo.commands.editCommands."""
+"""Tests of leo.commands.editCommands."""
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
