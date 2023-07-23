@@ -79,7 +79,7 @@ class ConvertAtRoot:
                 self.root = None
         #
         # Check the results.
-        link_errors = c.checkOutline(check_links=True)
+        link_errors = c.checkOutline()
         self.errors += link_errors
         print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
         c.redraw()

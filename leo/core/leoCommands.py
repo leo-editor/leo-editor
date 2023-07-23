@@ -1944,11 +1944,9 @@ class Commands:
     def checkLinks(self) -> int:
         """Check the consistency of all links in the outline."""
         c = self
-        t1 = time.time()
         count, errors = 0, 0
         for p in c.all_positions():
             count += 1
-            # try:
             if not c.checkThreadLinks(p):
                 errors += 1
                 break
@@ -1958,14 +1956,6 @@ class Commands:
             if not c.checkParentAndChildren(p):
                 errors += 1
                 break
-            # except AssertionError:
-                # errors += 1
-                # junk, value, junk = sys.exc_info()
-                # g.error("test failed at position %s\n%s" % (repr(p), value))
-        t2 = time.time()
-        g.es_print(
-            f"check-links: {t2 - t1:4.2f} sec. "
-            f"{c.shortFileName()} {count} nodes", color='blue')
         return errors
     #@+node:ekr.20040314035615.2: *5* c.checkParentAndChildren
     def checkParentAndChildren(self, p: Position) -> bool:
@@ -1982,8 +1972,6 @@ class Commands:
                 print('<no p.v>')
             else:
                 print('<no p>')
-            if g.unitTesting:
-                assert False, g.callers()  # noqa
 
         if p.hasParent():
             n = p.childIndex()
@@ -2095,16 +2083,15 @@ class Commands:
                 return False
         return True
     #@+node:ekr.20031218072017.2072: *4* c.checkOutline
-    def checkOutline(self, event: Event = None, check_links: bool = False) -> int:
+    def checkOutline(self) -> int:
         """
         Check for errors in the outline.
-        Return the count of serious structure errors.
+        Return the count of structure errors.
         """
-        # The check-outline command sets check_links = True.
         c = self
         g.app.structure_errors = 0
         structure_errors = c.checkGnxs()
-        if check_links and not structure_errors:
+        if not structure_errors:
             structure_errors += c.checkLinks()
         return structure_errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline

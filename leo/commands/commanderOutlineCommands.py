@@ -8,6 +8,7 @@ from collections.abc import Callable
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
+import time
 from typing import Any, Generator, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
@@ -694,7 +695,7 @@ def expandPrevLevel(self: Self, event: Event = None) -> None:
     self.expandToLevel(max(1, c.expansionLevel - 1))
 #@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
 @g.commander_command('check-outline')
-def fullCheckOutline(self: Self, event: Event = None) -> int:
+def fullCheckOutline(self: Self, event: Event = None) -> None:
     """
     Performs a full check of the consistency of a .leo file.
 
@@ -702,7 +703,10 @@ def fullCheckOutline(self: Self, event: Event = None) -> int:
     before writes and after reads, pastes and undo/redo.
     """
     c = self
-    return c.checkOutline(check_links=True)
+    t1 = time.process_time()
+    n = c.checkOutline()
+    t2 = time.time()
+    g.es_print(f"check-outline: {n} error{g.plural(n)} in {t2 - t1:4.2f} sec.")
 #@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
 #@+node:ekr.20071213123942: *3* c_oc.findNextClone
 @g.commander_command('find-next-clone')
