@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20220911163718.1: * @file ../unittests/core/test_leoQt6.py
 #@@first
-"""Test of Qt6 methods and attributes."""
+"""Tests of Qt6 methods and attributes."""
 
 from leo.unittests.test_importers import BaseTestImporter
 from leo.core import leoGlobals as g
