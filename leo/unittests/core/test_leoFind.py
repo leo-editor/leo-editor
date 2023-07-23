@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
-"""Tests for leo.core.leoFind"""
+"""Tests of leoFind.py"""
 
 import re
 from leo.core import leoGlobals as g

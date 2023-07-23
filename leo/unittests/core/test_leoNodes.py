@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
-"""Tests for leo.core.leoNodes"""
+"""Tests of leoNodes.py"""
 
 # pylint has troubles finding Commands methods.
 # pylint: disable=no-member

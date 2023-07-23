@@ -1,10 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210910065135.1: * @file ../unittests/core/test_leoFileCommands.py
-"""
-Tests of leoFileCommands.py.
-
-test-file-commands runs these tests.
-"""
+"""Tests of leoFileCommands.py."""
 
 import leo.core.leoFileCommands as leoFileCommands
 from leo.core.leoTest2 import LeoUnitTest

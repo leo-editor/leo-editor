@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210902055206.1: * @file ../unittests/core/test_leoRst.py
-"""Tests of leo/core/leoRst.py"""
+"""Tests of leoRst.py"""
 
 import textwrap
 try:
