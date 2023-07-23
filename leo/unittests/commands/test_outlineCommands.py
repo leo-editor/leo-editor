@@ -6,6 +6,9 @@ New unit tests for Leo's outline commands.
 Older tests are in unittests/core/test_leoNodes.py
 """
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core import leoGlobals as g
+assert g
+
 #@+others
 #@+node:ekr.20221113062938.1: ** class TestOutlineCommands(LeoUnitTest)
 class TestOutlineCommands(LeoUnitTest):
@@ -76,12 +79,18 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
+        
+        # Clear everything but the root node.
         assert p == self.root_p
         assert p.h == 'root'
         p.deleteAllChildren()
         while p.hasNext():
             p.next().doDelete()
-        # cut cc and paste-as-clone again. cc's child1 is surprisingly not a clone!
+            
+        #@+<< Create the test tree >>
+        #@+node:ekr.20230723085648.1: *4* << Create the test tree >>
+            
+        # Create the following tree:
         # aa
         # bb
         # child1 (clone)
@@ -108,10 +117,9 @@ class TestOutlineCommands(LeoUnitTest):
         clone_v = clone.v
         cc_gnx = cc.gnx
         assert cc.h == 'cc'
+        #@-<< Create the test tree >>
 
         # Cut node cc
-        # self.dump_headlines(c)
-        # self.dump_clone_info(c)
         c.selectPosition(cc)
         c.cutOutline()
         assert not clone.isCloned()
@@ -120,7 +128,6 @@ class TestOutlineCommands(LeoUnitTest):
 
         # Execute paste-retaining-clones
         c.pasteOutlineRetainingClones()
-        # self.dump_clone_info(c)
         
         # Quick tests.
         self.assertFalse(c.checkOutline())
@@ -161,7 +168,6 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Redo paste-retaining-clones.
             u.redo()
-            # self.dump_clone_info(c)
             self.assertFalse(c.checkOutline())
             for p in c.all_positions():
                 if p.h == 'child1':
@@ -284,8 +290,116 @@ class TestOutlineCommands(LeoUnitTest):
                     assert not p.isCloned(), p.h
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_fc_getLeoOutlineFromClipBoardRetainingClones (new)
     def test_fc_getLeoOutlineFromClipBoardRetainingClones(self):
-        # self.fail('Not ready yet')
-        pass
+
+        c = self.c
+        p = c.p
+        u = c.undoer
+        
+        def clone_test(pasted, tag):
+            """A quick tests that clones are as expected."""
+            cloned_headlines = ('cc', 'child1',) if pasted else ('child1')
+            try:
+                for p in c.all_positions():
+                    if p.h in cloned_headlines:
+                        assert p.isCloned(), tag
+                    else:
+                        assert not p.isCloned(), tag
+                    assert gnx_dict.get(p.h) == p.gnx, \
+                        f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
+            except AssertionError:
+                print(f"\nclone_test failed! {tag} {p!r}")
+                self.dump_clone_info(c)
+                raise
+
+        # Clear everything but the root node.
+        assert p == self.root_p
+        assert p.h == 'root'
+        p.deleteAllChildren()
+        while p.hasNext():
+            p.next().doDelete()
+            
+        #@+<< Create the test tree >>
+        #@+node:ekr.20230723085723.1: *4* << Create the test tree >>
+
+        # Create the following tree:
+        # aa
+        # bb
+        # child1 (clone)
+        # cc
+        #   child1 (clone)
+        #   child2
+        aa = p.insertAfter().copy()
+        aa.h = 'aa'
+        bb = aa.insertAfter().copy()
+        bb.h = 'bb'
+        cc = bb.insertAfter()
+        cc.h = 'cc'
+        child1 = cc.insertAsLastChild().copy()
+        child1.h = 'child1'
+        child2 = child1.insertAfter().copy()
+        child2.h = 'child2'
+        clone = child1.clone().copy()
+        clone.moveAfter(bb)
+        assert clone.v == child1.v
+        # Careful: position cc has changed.
+        cc = clone.next().copy()
+        assert cc.h == 'cc'
+        #@-<< Create the test tree >>
+        
+        # Create a *local* gnx dict.
+        vnodes = list(set(list(c.all_nodes())))
+        gnx_dict = {z.h: z.gnx for z in vnodes}
+        if 0:
+            # self.dump_headlines(c)
+            g.printObj(gnx_dict, tag='gnx_dict')
+            self.dump_clone_info(c)
+            
+        # print(f"start: c.p: {c.p.h}\n")
+        self.assertFalse(c.checkOutline())
+        clone_test(pasted=False, tag=f"start: c.p: {c.p}")
+        
+        if 0:  # Passes
+            print("select cc.firstChild()")
+            first_child = cc.firstChild()
+            assert c.positionExists(first_child), repr(first_child)
+            assert first_child.isCloned(), repr(first_child)
+
+        # *Copy*  node cc
+        c.selectPosition(cc)
+        if 1:  # The content of c.copyOutline, w/o setting unused g.app.paste_c
+            s = c.fileCommands.outline_to_clipboard_string()
+            g.app.gui.replaceClipboardWith(s)
+        else:
+            c.copyOutline()
+        
+        # Select cc.
+        assert c.positionExists(cc), repr(cc)
+        assert not cc.isCloned(), repr(cc)
+        self.assertFalse(c.checkOutline())
+        clone_test(pasted=False, tag=f"copy-node: {c.p.h}")
+        
+        # Pretest: select all positions in the tree.
+        for p in c.all_positions():
+            c.selectPosition(p)
+
+        # Execute paste-retaining-clones several position in reverse order.
+        for target_p in (cc.firstChild(), cc.firstChild().next()):
+            print(f"\nTEST: target: {target_p.h}\n")
+            c.selectPosition(target_p)
+            c.pasteOutlineRetainingClones()
+            self.assertFalse(c.checkOutline())
+            clone_test(pasted=True, tag='paste-retaining-clones')
+
+            # Test multiple undo/redo cycles.
+            for i in range(3):
+                print(f"undo {i}")
+                u.undo()
+                self.assertFalse(c.checkOutline())
+                clone_test(pasted=False, tag=f"undo {i}")
+                print(f"redo {i}")
+                u.redo()
+                self.assertFalse(c.checkOutline())
+                clone_test(pasted=True, tag=f"redo {i}")
     #@-others
 #@-others
 #@-leo
