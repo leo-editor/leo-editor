@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210902164946.1: * @file ../unittests/core/test_leoGlobals.py
-"""Tests for leo.core.leoGlobals"""
+"""Test of leoGlobals.py"""
 
 import io
 import os
