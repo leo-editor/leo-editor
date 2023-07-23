@@ -296,6 +296,7 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
+        trace = False
         
         # define helper functions
         #@+others
@@ -426,10 +427,12 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Execute paste-retaining-clones several position in reverse order.
             for target_p in valid_paste_positions:
-                print(f"Select: {target_p.h}")
+                if trace:
+                    print(f"Select: {target_p.h}")
                 c.selectPosition(target_p)
                 
-                print(f"Paste: {target_p.h}")
+                if trace:
+                    print(f"Paste: {target_p.h}")
                 c.pasteOutlineRetainingClones()
         
                 self.assertFalse(c.checkOutline())
@@ -437,20 +440,13 @@ class TestOutlineCommands(LeoUnitTest):
 
                 # Test multiple undo/redo cycles.
                 for i in range(3):
-                    # print(f"undo {i}")
                     u.undo()
                     self.assertFalse(c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
-                    # print(f"redo {i}")
+                   
                     u.redo()
                     self.assertFalse(c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
-
-        # except Exception:
-            # # g.es_exception()
-            # # g.es_exception_type()
-            # exctype, value = sys.exc_info()[:2]
-            # self.fail(f"Unexpected exception: {exctype.__name__}, {value}")
     #@-others
 #@-others
 #@-leo
