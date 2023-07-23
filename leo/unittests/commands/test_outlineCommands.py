@@ -5,9 +5,11 @@ New unit tests for Leo's outline commands.
 
 Older tests are in unittests/core/test_leoNodes.py
 """
+import sys
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 assert g
+assert sys
 
 #@+others
 #@+node:ekr.20221113062938.1: ** class TestOutlineCommands(LeoUnitTest)
@@ -295,111 +297,160 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
         
-        def clone_test(pasted, tag):
-            """A quick tests that clones are as expected."""
-            cloned_headlines = ('cc', 'child1',) if pasted else ('child1')
+        # define helper functions
+        #@+others
+        #@+node:ekr.20230723160526.1: *4* function: clean_tree
+        def clean_tree() -> None:
+            """Clear everything but the root node."""
+            p = self.root_p
+            assert p.h == 'root'
+            p.deleteAllChildren()
+            while p.hasNext():
+                p.next().doDelete()
+        #@+node:ekr.20230723161726.1: *4* function: copy_node
+        def copy_node():
+            """Copy c.p to the clipboard."""
+            if 1:  # The content of c.copyOutline, w/o setting unused g.app.paste_c
+                s = c.fileCommands.outline_to_clipboard_string()
+                g.app.gui.replaceClipboardWith(s)
+            else:
+                c.copyOutline()
+        #@+node:ekr.20230723161026.1: *4* function: create_gnx_dict
+        def create_gnx_dict() -> dict[str, str]:
+            """Return a *local* gnx dict"""
+            vnodes = list(set(list(c.all_nodes())))
+            return {z.h: z.gnx for z in vnodes}
+        #@+node:ekr.20230723160812.1: *4* function: test_tree
+        def test_tree(pasted_flag: bool, tag: str) -> None:
+            """A quick test that clones are as expected."""
+            if test_kind == 'cut':
+                cloned_headlines = ('cc:child1',) if pasted_flag else ()
+            else:
+                cloned_headlines = ('cc:child1', 'cc') if pasted_flag else ('cc:child1',)
             try:
+                clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
+                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} expecting {clones_s}"
                 for p in c.all_positions():
                     if p.h in cloned_headlines:
-                        assert p.isCloned(), f"{tag}: not cloned: {p.h}"
+                        assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
                     else:
-                        assert not p.isCloned(), f"{tag}: is cloned: {p.h}"
+                        assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
                     message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
                     assert gnx_dict.get(p.h) == p.gnx, message
-            except AssertionError:
-                print(f"\nclone_test failed! {tag} {p!r}")
+            except Exception:
+                message = f"clone_test failed! {tag} {p!r}"
+                print(f"\n{message}\n")
                 self.dump_clone_info(c)
-                raise
-
-        # Clear everything but the root node.
-        assert p == self.root_p
-        assert p.h == 'root'
-        p.deleteAllChildren()
-        while p.hasNext():
-            p.next().doDelete()
-            
-        #@+<< Create the test tree >>
-        #@+node:ekr.20230723085723.1: *4* << Create the test tree >>
-
-        # Create the following tree:
-        # aa
-        # bb
-        # child1 (clone)
-        # cc
-        #   child1 (clone)
-        #   child2
-        aa = p.insertAfter().copy()
-        aa.h = 'aa'
-        bb = aa.insertAfter().copy()
-        bb.h = 'bb'
-        cc = bb.insertAfter()
-        cc.h = 'cc'
-        child1 = cc.insertAsLastChild().copy()
-        child1.h = 'child1'
-        child2 = child1.insertAfter().copy()
-        child2.h = 'child2'
-        clone = child1.clone().copy()
-        clone.moveAfter(bb)
-        assert clone.v == child1.v
-        # Careful: position cc has changed.
-        cc = clone.next().copy()
-        assert cc.h == 'cc'
-        #@-<< Create the test tree >>
+                g.printObj(gnx_dict, tag='gnx_dict')
+                self.fail(message)
+        #@-others
         
-        # Create a *local* gnx dict.
-        vnodes = list(set(list(c.all_nodes())))
-        gnx_dict = {z.h: z.gnx for z in vnodes}
-        if 0:
-            # self.dump_headlines(c)
-            g.printObj(gnx_dict, tag='gnx_dict')
-            self.dump_clone_info(c)
-            
-        # print(f"start: c.p: {c.p.h}\n")
-        self.assertFalse(c.checkOutline())
-        clone_test(pasted=False, tag=f"start: c.p: {c.p}")
-        
-        if 0:  # Passes
-            print("select cc.firstChild()")
-            first_child = cc.firstChild()
-            assert c.positionExists(first_child), repr(first_child)
-            assert first_child.isCloned(), repr(first_child)
+        for test_kind in ('cut', 'copy'):
 
-        # *Copy*  node cc
-        c.selectPosition(cc)
-        if 1:  # The content of c.copyOutline, w/o setting unused g.app.paste_c
-            s = c.fileCommands.outline_to_clipboard_string()
-            g.app.gui.replaceClipboardWith(s)
-        else:
-            c.copyOutline()
-        
-        # Select cc.
-        assert c.positionExists(cc), repr(cc)
-        assert not cc.isCloned(), repr(cc)
-        self.assertFalse(c.checkOutline())
-        clone_test(pasted=False, tag=f"copy-node: {c.p.h}")
-        
-        # Pretest: select all positions in the tree.
-        for p in c.all_positions():
-            c.selectPosition(p)
+            # Create the tree and gnx_dict.
+            clean_tree()
+            #@+<< create tree >>
+            #@+node:ekr.20230723085723.1: *4* << create tree >>
+            """
+            Create the following tree:
 
-        # Execute paste-retaining-clones several position in reverse order.
-        for target_p in (cc.firstChild(), cc.firstChild().next()):
-            print(f"\nTEST: target: {target_p.h}\n")
-            c.selectPosition(target_p)
-            c.pasteOutlineRetainingClones()
+                aa
+                    aa:child1
+                bb
+                cc:child1 (clone)
+                cc
+                  cc:child1 (clone)
+                  cc:child2
+                dd
+                  dd:child1
+                    dd:child1:child1
+                  dd:child2
+                ee
+                
+            Define valid_postions as the tuple of those those positions after which cc may be pasted.
+            """
+            root = c.rootPosition()
+            aa = root.insertAfter()
+            aa.h = 'aa'
+            aa_child1 = aa.insertAsLastChild()
+            aa_child1.h = 'aa:child1'
+            bb = aa.insertAfter()
+            bb.h = 'bb'
+            cc = bb.insertAfter()
+            cc.h = 'cc'
+            cc_child1 = cc.insertAsLastChild()
+            cc_child1.h = 'cc:child1'
+            cc_child2 = cc_child1.insertAfter()
+            cc_child2.h = 'cc:child2'
+            dd = cc.insertAfter()
+            dd.h = 'dd'
+            dd_child1 = dd.insertAsLastChild()
+            dd_child1.h = 'dd:child1'
+            dd_child2 = dd.insertAsLastChild()
+            dd_child2.h = 'dd:child2'
+            dd_child1_child1 = dd_child1.insertAsLastChild()
+            dd_child1_child1.h = 'dd:child1:child1'
+            ee = dd.insertAfter()
+            ee.h = 'ee'
+            clone = cc_child1.clone()
+            clone.moveAfter(bb)
+            assert clone.v == cc_child1.v
+            # Careful: position cc has changed.
+            cc = clone.next().copy()
+            assert cc.h == 'cc'
+            if 0:  # A short list for initial testing.
+                valid_paste_positions = (aa,)
+            else:  # The full list.
+                valid_paste_positions = (root, aa, aa_child1, bb, dd, dd_child1, dd_child1_child1, dd_child2, ee)
+            #@-<< create tree >>
+            gnx_dict = create_gnx_dict()
             self.assertFalse(c.checkOutline())
-            clone_test(pasted=True, tag='paste-retaining-clones')
 
-            # Test multiple undo/redo cycles.
-            for i in range(3):
-                print(f"undo {i}")
-                u.undo()
+            # Cut or copy cc.
+            if test_kind == 'cut':
+                c.selectPosition(cc)
+                copy_node()
+                back = cc.threadBack()
+                assert back
+                cc.doDelete()
+                c.selectPosition(back)
+            else:
+                # *Copy*  node cc
+                c.selectPosition(cc)
+                copy_node()
+            self.assertFalse(c.checkOutline())
+
+            # Pretest: select all positions in the tree.
+            for p in c.all_positions():
+                c.selectPosition(p)
+
+            # Execute paste-retaining-clones several position in reverse order.
+            for target_p in valid_paste_positions:
+                print(f"Select: {target_p.h}")
+                c.selectPosition(target_p)
+                
+                print(f"Paste: {target_p.h}")
+                c.pasteOutlineRetainingClones()
+        
                 self.assertFalse(c.checkOutline())
-                clone_test(pasted=False, tag=f"undo {i}")
-                print(f"redo {i}")
-                u.redo()
-                self.assertFalse(c.checkOutline())
-                clone_test(pasted=True, tag=f"redo {i}")
+                test_tree(pasted_flag=True, tag='paste-retaining-clones')
+
+                # Test multiple undo/redo cycles.
+                for i in range(3):
+                    # print(f"undo {i}")
+                    u.undo()
+                    self.assertFalse(c.checkOutline())
+                    test_tree(pasted_flag=False, tag=f"undo {i}")
+                    # print(f"redo {i}")
+                    u.redo()
+                    self.assertFalse(c.checkOutline())
+                    test_tree(pasted_flag=True, tag=f"redo {i}")
+
+        # except Exception:
+            # # g.es_exception()
+            # # g.es_exception_type()
+            # exctype, value = sys.exc_info()[:2]
+            # self.fail(f"Unexpected exception: {exctype.__name__}, {value}")
     #@-others
 #@-others
 #@-leo
