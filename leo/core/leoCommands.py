@@ -1890,7 +1890,7 @@ class Commands:
         """
         Check the consistency of all gnx's.
         Reallocate gnx's for duplicates or empty gnx's.
-        Return the number of structure_errors found.
+        Return the number of errors found.
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
@@ -1924,29 +1924,24 @@ class Commands:
                     gnx_errors += 1
                     g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
                     new_gnx(v)
-        ok = not gnx_errors and not g.app.structure_errors
+        ok = not gnx_errors
         t2 = time.time()
         if not ok:
             g.es_print(
                 f"check-outline ERROR! {c.shortFileName()} "
-                f"{count} nodes, "
-                f"{gnx_errors} gnx errors, "
-                f"{g.app.structure_errors} "
-                f"structure errors",
+                f"{count} nodes, {gnx_errors} gnx errors, ",
                 color='red'
             )
         elif c.verbose_check_outline and not g.unitTesting:
             print(
                 f"check-outline OK: {t2 - t1:4.2f} sec. "
                 f"{c.shortFileName()} {count} nodes")
-        return g.app.structure_errors
+        return gnx_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self) -> int:
         """Check the consistency of all links in the outline."""
         c = self
         count, errors = 0, 0
-        # if not c.checkVnodeLinks():
-            # errors += 1
         for p in c.all_positions():
             count += 1
             if not c.checkThreadLinks(p):
@@ -2055,12 +2050,18 @@ class Commands:
     def checkVnodeLinks(self) -> int:
         """Directly check all vnode links."""
         c = self
-        hidden_v = c.hiddenRootNode
-        # for p in c.all_positions():
-        if not hidden_v:
+        try:
+            hidden_v = c.hiddenRootNode
+        except AttributeError:
             return 1
+        for p in c.all_positions():
+            child_i = p._childIndex
+            parent_v = p.stack[-1][0] if p.stack else hidden_v
+            if not parent_v:
+                return 1
+            if parent_v.children[child_i] != p.v:
+                return 1
         return 0
-
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
@@ -2098,14 +2099,13 @@ class Commands:
     def checkOutline(self) -> int:
         """
         Check for errors in the outline.
-        Return the count of structure errors.
+        Return the number of errors.
         """
         c = self
-        g.app.structure_errors = 0
-        structure_errors = c.checkGnxs()
-        if not structure_errors:
-            structure_errors += c.checkLinks()
-        return structure_errors
+        errors = 0
+        for f in (c.checkVnodeLinks, c.checkGnxs, c.checkLinks):
+            errors += f()
+        return 0
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline
     # Makes sure all nodes are valid.
 

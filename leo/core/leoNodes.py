@@ -1412,53 +1412,6 @@ class Position:
     def checkVisNextLimit(self, limit: Position, p: Position) -> bool:  # pragma: no cover
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
-    #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
-    def safeMoveToThreadNext(self) -> Position:  # pragma: no cover
-        """
-        Move a position to threadNext position.
-        Issue an error if any vnode is an ancestor of itself.
-        """
-        p = self
-        if p.v:
-            child_v = p.v.children and p.v.children[0]
-            if child_v:
-                for parent in p.self_and_parents(copy=False):
-                    if child_v == parent.v:
-                        g.app.structure_errors += 1
-                        g.error(f"vnode: {child_v} is its own parent")
-                        # Allocating a new vnode would be difficult.
-                        # Just remove child_v from parent.v.children.
-                        parent.v.children = [
-                            v2 for v2 in parent.v.children if not v2 == child_v]
-                        if parent.v in child_v.parents:
-                            child_v.parents.remove(parent.v)
-                        # Try not to hang.
-                        p.moveToParent()
-                        break
-                    elif child_v.fileIndex == parent.v.fileIndex:
-                        g.app.structure_errors += 1
-                        g.error(
-                            f"duplicate gnx: {child_v.fileIndex!r} "
-                            f"v: {child_v} parent: {parent.v}")
-                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
-                        assert child_v.gnx != parent.v.gnx
-                        # Should be ok to continue.
-                        p.moveToFirstChild()
-                        break
-                else:
-                    p.moveToFirstChild()
-            elif p.hasNext():
-                p.moveToNext()
-            else:
-                p.moveToParent()
-                while p:
-                    if p.hasNext():
-                        p.moveToNext()
-                        break  # found
-                    p.moveToParent()
-                # not found.
-        return p
-    #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20040303175026: *3* p.Moving, Inserting, Deleting, Cloning, Sorting
     #@+node:ekr.20040303175026.8: *4* p.clone
     def clone(self) -> Position:
