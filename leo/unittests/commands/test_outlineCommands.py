@@ -122,7 +122,8 @@ class TestOutlineCommands(LeoUnitTest):
         c.pasteOutlineRetainingClones()
         # self.dump_clone_info(c)
         
-        # The quick test.
+        # Quick tests.
+        self.assertFalse(c.checkOutline())
         for p in c.all_positions():
             if p.h == 'child1':
                 assert p.isCloned(), p.h
@@ -151,6 +152,7 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Undo paste-retaining-clones.
             u.undo()
+            self.assertFalse(c.checkOutline())
             for p in c.all_positions():
                 assert not p.isCloned(), p.h
                 if p.h == 'child1':
@@ -160,6 +162,7 @@ class TestOutlineCommands(LeoUnitTest):
             # Redo paste-retaining-clones.
             u.redo()
             # self.dump_clone_info(c)
+            self.assertFalse(c.checkOutline())
             for p in c.all_positions():
                 if p.h == 'child1':
                     assert p.isCloned(), p.h
@@ -167,7 +170,7 @@ class TestOutlineCommands(LeoUnitTest):
                     assert p.v == clone_v, p.h
                 else:
                     assert not p.isCloned(), p.h
-    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (new)
+    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (revise)
     def test_restoreFromCopiedTree(self):
 
         ###from leo.core import leoGlobals as g ###
@@ -231,7 +234,8 @@ class TestOutlineCommands(LeoUnitTest):
         c.pasteOutlineRetainingClones()
         # self.dump_clone_info(c)
         
-        # The quick test.
+        # Quick tests.
+        self.assertFalse(c.checkOutline())
         for p in c.all_positions():
             if p.h == 'child1':
                 assert p.isCloned(), p.h
@@ -260,6 +264,7 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Undo paste-retaining-clones.
             u.undo()
+            self.assertFalse(c.checkOutline())
             for p in c.all_positions():
                 assert not p.isCloned(), p.h
                 if p.h == 'child1':
@@ -269,6 +274,7 @@ class TestOutlineCommands(LeoUnitTest):
             # Redo paste-retaining-clones.
             u.redo()
             # self.dump_clone_info(c)
+            self.assertFalse(c.checkOutline())
             for p in c.all_positions():
                 if p.h == 'child1':
                     assert p.isCloned(), p.h
