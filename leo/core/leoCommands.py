@@ -1308,6 +1308,7 @@ class Commands:
 
     all_positions_iter = all_positions
     allNodes_iter = all_positions
+    safe_all_positions = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
     def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
         """
@@ -1413,17 +1414,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool = True) -> Generator:  # pragma: no cover
-        """
-        A generator returning all positions of the outline. This generator does
-        *not* assume that vnodes are never their own ancestors.
-        """
-        c = self
-        p = c.rootPosition()  # Make one copy.
-        while p:
-            yield p.copy() if copy else p
-            p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
@@ -1913,7 +1903,7 @@ class Commands:
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions(copy=False):
+        for p in c.all_positions(copy=False):
             count += 1
             v = p.v
             gnx = v.fileIndex
@@ -1956,7 +1946,7 @@ class Commands:
         c = self
         t1 = time.time()
         count, errors = 0, 0
-        for p in c.safe_all_positions():
+        for p in c.all_positions():
             count += 1
             # try:
             if not c.checkThreadLinks(p):

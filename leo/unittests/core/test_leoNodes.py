@@ -126,12 +126,6 @@ class TestNodes(LeoUnitTest):
         for p in c.all_positions():
             self.assertTrue(c.positionExists(p))
                 # 2012/03/08: If a root is given, the search is confined to that root only.
-    #@+node:ekr.20210830095545.8: *5* TestNodes.test_c_safe_all_positions
-    def test_c_safe_all_positions(self):
-        c = self.c
-        aList1 = list(c.all_positions())
-        aList2 = list(c.safe_all_positions())
-        self.assertEqual(len(aList1), len(aList2))
     #@+node:ekr.20220306073547.1: *4* TestNodes: File operations
     #@+node:ekr.20210830095545.58: *5* TestNodes.test_at_others_directive
     def test_at_others_directive(self):
