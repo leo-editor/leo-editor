@@ -8,6 +8,7 @@ Older tests are in unittests/core/test_leoNodes.py
 import sys
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 assert g
 assert sys
 
@@ -296,7 +297,6 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        trace = False
         
         # define helper functions
         #@+others
@@ -321,37 +321,8 @@ class TestOutlineCommands(LeoUnitTest):
             """Return a *local* gnx dict"""
             vnodes = list(set(list(c.all_nodes())))
             return {z.h: z.gnx for z in vnodes}
-        #@+node:ekr.20230723160812.1: *4* function: test_tree
-        def test_tree(pasted_flag: bool, tag: str) -> None:
-            """A quick test that clones are as expected."""
-            if test_kind == 'cut':
-                cloned_headlines = ('cc:child1',) if pasted_flag else ()
-            else:
-                cloned_headlines = ('cc:child1', 'cc') if pasted_flag else ('cc:child1',)
-            try:
-                clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
-                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} expecting {clones_s}"
-                for p in c.all_positions():
-                    if p.h in cloned_headlines:
-                        assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
-                    else:
-                        assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
-                    message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
-                    assert gnx_dict.get(p.h) == p.gnx, message
-            except Exception:
-                message = f"clone_test failed! {tag} {p!r}"
-                print(f"\n{message}\n")
-                self.dump_clone_info(c)
-                g.printObj(gnx_dict, tag='gnx_dict')
-                self.fail(message)
-        #@-others
-        
-        for test_kind in ('cut', 'copy'):
-
-            # Create the tree and gnx_dict.
-            clean_tree()
-            #@+<< create tree >>
-            #@+node:ekr.20230723085723.1: *4* << create tree >>
+        #@+node:ekr.20230723085723.1: *4* function: create_tree
+        def create_tree() -> Position:
             """
             Create the following tree:
 
@@ -368,7 +339,7 @@ class TestOutlineCommands(LeoUnitTest):
                   dd:child2
                 ee
                 
-            Define valid_postions as the tuple of those those positions after which cc may be pasted.
+            return cc.
             """
             root = c.rootPosition()
             aa = root.insertAfter()
@@ -399,51 +370,81 @@ class TestOutlineCommands(LeoUnitTest):
             # Careful: position cc has changed.
             cc = clone.next().copy()
             assert cc.h == 'cc'
-            if 0:  # A short list for initial testing.
-                valid_paste_positions = (aa,)
-            else:  # The full list.
-                valid_paste_positions = (root, aa, aa_child1, bb, dd, dd_child1, dd_child1_child1, dd_child2, ee)
-            #@-<< create tree >>
-            gnx_dict = create_gnx_dict()
-            self.assertFalse(c.checkOutline())
-
-            # Cut or copy cc.
+            return cc
+        #@+node:ekr.20230723160812.1: *4* function: test_tree
+        def test_tree(pasted_flag: bool, tag: str) -> None:
+            """A quick test that clones are as expected."""
             if test_kind == 'cut':
-                c.selectPosition(cc)
-                copy_node()
-                back = cc.threadBack()
-                assert back
-                cc.doDelete()
-                c.selectPosition(back)
+                cloned_headlines = ('cc:child1',) if pasted_flag else ()
             else:
-                # *Copy*  node cc
-                c.selectPosition(cc)
-                copy_node()
-            self.assertFalse(c.checkOutline())
-
-            # Pretest: select all positions in the tree.
-            for p in c.all_positions():
-                c.selectPosition(p)
-
-            # Execute paste-retaining-clones several position in reverse order.
-            for target_p in valid_paste_positions:
-                if trace:
-                    print(f"Select: {target_p.h}")
-                c.selectPosition(target_p)
-                
-                if trace:
-                    print(f"Paste: {target_p.h}")
-                c.pasteOutlineRetainingClones()
+                cloned_headlines = ('cc:child1', 'cc') if pasted_flag else ('cc:child1',)
+            try:
+                clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
+                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} expecting {clones_s}"
+                for p in c.all_positions():
+                    if p.h in cloned_headlines:
+                        assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
+                    else:
+                        assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
+                    message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
+                    assert gnx_dict.get(p.h) == p.gnx, message
+            except Exception:
+                message = f"clone_test failed! {tag} {p!r}"
+                print(f"\n{message}\n")
+                self.dump_clone_info(c)
+                g.printObj(gnx_dict, tag='gnx_dict')
+                self.fail(message)
+        #@-others
         
+        # Every paste will invalidate positions, so search for headlines instead.
+        valid_target_headlines = (
+            'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
+        )
+        
+        for target_headline in valid_target_headlines:
+            for test_kind in ('cut', 'copy'):
+
+                # Create the tree and gnx_dict.
+                clean_tree()
+                cc = create_tree()
+                gnx_dict = create_gnx_dict()
+                self.assertFalse(c.checkOutline())
+
+                # Cut or copy cc.
+                if test_kind == 'cut':
+                    c.selectPosition(cc)
+                    copy_node()
+                    back = cc.threadBack()
+                    assert back
+                    cc.doDelete()
+                    c.selectPosition(back)
+                else:
+                    # *Copy*  node cc
+                    c.selectPosition(cc)
+                    copy_node()
+                self.assertFalse(c.checkOutline())
+
+                # Pretest: select all positions in the tree.
+                for p in c.all_positions():
+                    c.selectPosition(p)
+
+                # Find the target position by headline.
+                target_p = g.findNodeAnywhere(c, target_headline)
+                self.assertTrue(target_p, msg=target_headline)
+
+                # Paste after the target.
+                c.selectPosition(target_p)
+                c.pasteOutlineRetainingClones()
+
+                # Check the paste.
                 self.assertFalse(c.checkOutline())
                 test_tree(pasted_flag=True, tag='paste-retaining-clones')
 
-                # Test multiple undo/redo cycles.
+                # Check multiple undo/redo cycles.
                 for i in range(3):
                     u.undo()
                     self.assertFalse(c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
-                   
                     u.redo()
                     self.assertFalse(c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
