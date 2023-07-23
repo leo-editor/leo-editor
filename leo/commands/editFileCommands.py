@@ -1314,17 +1314,19 @@ class GitDiffController:
         path = g.finalize_join(directory, fn)
 
         # Find all the files in the rev.
-        command = f"git ls-tree -r {rev} --name-only"
-        lines = g.execGitCommand(command, directory)
-        if not any([fn in z for z in lines]):
-            # g.trace(f"{fn} not in {rev}")
-            return ''
         if rev:
+            command = f"git ls-tree -r {rev} --name-only"
+            lines = g.execGitCommand(command, directory)
+            if not any([fn in z for z in lines]):
+                # g.trace(f"{fn} not in {rev}")
+                return ''
             # Get the file using git.
             # Use the file name, not the path.
             command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, directory)
             return g.toUnicode(''.join(lines)).replace('\r', '')
+
+        # Read the file.
         try:
             with open(path, 'rb') as f:
                 b = f.read()
