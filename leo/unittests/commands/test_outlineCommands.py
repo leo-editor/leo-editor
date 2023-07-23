@@ -301,11 +301,11 @@ class TestOutlineCommands(LeoUnitTest):
             try:
                 for p in c.all_positions():
                     if p.h in cloned_headlines:
-                        assert p.isCloned(), tag
+                        assert p.isCloned(), f"{tag}: not cloned: {p.h}"
                     else:
-                        assert not p.isCloned(), tag
-                    assert gnx_dict.get(p.h) == p.gnx, \
-                        f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
+                        assert not p.isCloned(), f"{tag}: is cloned: {p.h}"
+                    message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
+                    assert gnx_dict.get(p.h) == p.gnx, message
             except AssertionError:
                 print(f"\nclone_test failed! {tag} {p!r}")
                 self.dump_clone_info(c)
