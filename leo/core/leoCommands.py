@@ -1945,6 +1945,8 @@ class Commands:
         """Check the consistency of all links in the outline."""
         c = self
         count, errors = 0, 0
+        # if not c.checkVnodeLinks():
+            # errors += 1
         for p in c.all_positions():
             count += 1
             if not c.checkThreadLinks(p):
@@ -2049,6 +2051,16 @@ class Commands:
                 g.trace("p!=p.threadNext().threadBack()")
                 return False
         return True
+    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
+    def checkVnodeLinks(self) -> int:
+        """Directly check all vnode links."""
+        c = self
+        hidden_v = c.hiddenRootNode
+        # for p in c.all_positions():
+        if not hidden_v:
+            return 1
+        return 0
+
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
