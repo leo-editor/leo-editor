@@ -298,7 +298,7 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
         
-        # define helper functions
+        # Define helper functions.
         #@+others
         #@+node:ekr.20230723160526.1: *4* function: clean_tree
         def clean_tree() -> None:
@@ -400,7 +400,6 @@ class TestOutlineCommands(LeoUnitTest):
         valid_target_headlines = (
             'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
         )
-        
         for target_headline in valid_target_headlines:
             for test_kind in ('cut', 'copy'):
 
