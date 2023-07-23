@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210820203000.1: * @file ../unittests/core/test_leoserver.py
-"""Unit tests for leo/core/leoserver.py"""
+"""Tests of leoserver.py"""
 
 import json
 import os

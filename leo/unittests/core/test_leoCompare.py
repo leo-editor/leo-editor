@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230714131540.1: * @file ../unittests/core/test_leoCompare.py
-"""Tests of leoCommands.py"""
+"""Tests of leoCompare.py"""
 import os
 import tempfile
 import textwrap
