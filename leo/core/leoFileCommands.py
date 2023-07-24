@@ -172,6 +172,7 @@ class FastRead:
         t_elements = xroot.find('tnodes')
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+        self.updateBodies(gnx2body, self.gnx2vnode)
         self.handleBits()
         return hidden_v, g_element
     #@+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
@@ -385,6 +386,13 @@ class FastRead:
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
+    #@+node:ekr.20230724092804.1: *4* fast.updateBodies
+    def updateBodies(self, gnx2body: dict[str, str], gnx2vnode: dict[str, VNode]) -> None:
+        """Update bodies to enforce the "pasted wins" policy."""
+        for gnx in gnx2body:
+            body = gnx2body[gnx]
+            v = gnx2vnode[gnx]
+            v.b = body
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
     def readFileFromJsonClipboard(self, s: str) -> VNode:
         """

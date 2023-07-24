@@ -272,12 +272,12 @@ class TestOutlineCommands(LeoUnitTest):
             else:
                 cloned_headlines = ('cc:child1', 'cc') if pasted_flag else ('cc:child1',)
             try:
-                clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
-                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} expecting {clones_s}"
+                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)}"
                 for p in c.all_positions():
                     seen.add(p.v)
                     if p.h in cloned_headlines:
                         assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
+                        assert p.b, f"{tag_s} {p.h}: unexpected empty body text: {p.b!r}"
                     else:
                         assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
                     message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
@@ -304,9 +304,10 @@ class TestOutlineCommands(LeoUnitTest):
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
                 self.dump_clone_info(c)
-                g.printObj(gnx_dict, tag='gnx_dict')
-                g.printObj(vnodes, tag='vnodes')
-                self.fail(message)
+                # g.printObj(gnx_dict, tag='gnx_dict')
+                # g.printObj(vnodes, tag='vnodes')
+                # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
+                self.fail(message)  # This throws another exception!
         #@-others
         
         # Every paste will invalidate positions, so search for headlines instead.
@@ -315,6 +316,8 @@ class TestOutlineCommands(LeoUnitTest):
         )
         for target_headline in valid_target_headlines:
             for test_kind in ('cut', 'copy'):
+                
+                # print(f"TEST {test_kind} {target_headline}")
 
                 # Create the tree and gnx_dict.
                 clean_tree()
@@ -323,6 +326,12 @@ class TestOutlineCommands(LeoUnitTest):
                 vnodes = list(set(list(c.all_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertFalse(c.checkOutline())
+                
+                # Change the body text of cc and cc:child1, the two cloned nodes.
+                cc.b = 'cc body: changed'
+                cc_child1 = cc.firstChild()
+                assert cc_child1.h == 'cc:child1', repr(cc_child1.h)
+                cc_child1.b = 'cc:child1 body: changed'
 
                 # Cut or copy cc.
                 if test_kind == 'cut':
@@ -337,6 +346,10 @@ class TestOutlineCommands(LeoUnitTest):
                     # *Copy*  node cc
                     c.selectPosition(cc)
                     copy_node()
+                    
+                    # Restore the empty bodies of cc and cc:child1 before the paste.
+                    cc.b = cc_child1.b = ''  # Copy does not change these positions.
+                
                 self.assertFalse(c.checkOutline())
 
                 # Pretest: select all positions in the tree.
