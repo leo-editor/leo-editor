@@ -808,8 +808,13 @@ class FileCommands:
             g.trace('no c.p')
             return None
         self.initReadIvars()
-        # Save the hidden root's children.
-        old_children = c.hiddenRootNode.children
+
+        # Save the hidden root's children to protect against changes
+        # that fc.retrieveVnodesFromDb and its helper fc.initNewDb make.
+        # I'm not sure this hack is necessary.
+
+        ### old_children = c.hiddenRootNode.children
+
         # Save and clear gnxDict.
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
@@ -822,8 +827,10 @@ class FileCommands:
             hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
         v = hidden_v.children[0]
         v.parents = []
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = old_children
+
+        # Restore the hidden root's children *before* creating the new position.
+        #### c.hiddenRootNode.children = old_children
+
         if not v:
             g.es("the clipboard is not valid ", color="blue")
             return None
@@ -851,8 +858,13 @@ class FileCommands:
             g.trace('no c.p')
             return None
         self.initReadIvars()
-        # Save the hidden root's children.
-        old_children = c.hiddenRootNode.children
+
+        # Save the hidden root's children to protect against changes
+        # that fc.retrieveVnodesFromDb and its helper fc.initNewDb make.
+        # I'm not sure this hack is necessary.
+
+        ### old_children = c.hiddenRootNode.children
+
         # All pasted nodes should already have unique gnx's.
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
@@ -868,11 +880,14 @@ class FileCommands:
 
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = old_children
+
+        # Restore the hidden root's children *before* creating the new position.
+        ### c.hiddenRootNode.children = old_children
+
         if not v:
             g.es("the clipboard is not valid ", color="blue")
             return None
+
         # Create the position.
         p = leoNodes.Position(v)
         # Do *not* adjust links when linking v.
@@ -884,6 +899,7 @@ class FileCommands:
             if not self.checkPaste(current.parent(), p):
                 return None
             p._linkCopiedAfter(current)
+
         # Fix #862: paste-retaining-clones can corrupt the outline.
         self.linkChildrenToParents(p)
         errors = c.checkOutline()
