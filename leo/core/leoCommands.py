@@ -1820,7 +1820,7 @@ class Commands:
         else:
             if g.unitTesting:
                 # New in Leo 6.7.4: *Do* raise an exception.
-                raise TypeError(f"Invalid position: {p!r}")
+                raise ValueError(f"Invalid position: {p!r}")
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p), repr(c))
             g.trace(g.callers())
