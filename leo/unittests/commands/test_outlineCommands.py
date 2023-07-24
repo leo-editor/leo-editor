@@ -76,109 +76,6 @@ class TestOutlineCommands(LeoUnitTest):
         u.undo()
         result_children = [z.h for z in self.root_p.v.children]
         self.assertEqual(result_children, original_children)
-    #@+node:ekr.20230720202352.1: *3* TestOutlineCommands.test_paste_retaining_clones
-    def test_paste_retaining_clones(self):
-
-        c = self.c
-        p = c.p
-        u = c.undoer
-        
-        # Clear everything but the root node.
-        assert p == self.root_p
-        assert p.h == 'root'
-        p.deleteAllChildren()
-        while p.hasNext():
-            p.next().doDelete()
-            
-        #@+<< Create the test tree >>
-        #@+node:ekr.20230723085648.1: *4* << Create the test tree >>
-            
-        # Create the following tree:
-        # aa
-        # bb
-        # child1 (clone)
-        # cc
-        #   child1 (clone)
-        #   child2
-        aa = p.insertAfter()
-        aa.h = 'aa'
-        bb = aa.insertAfter()
-        bb.h = 'bb'
-        cc = bb.insertAfter()
-        cc.h = 'cc'
-        child1 = cc.insertAsLastChild()
-        child1.h = 'child1'
-        child1_gnx = child1.gnx
-        child2 = child1.insertAfter()
-        child2.h = 'child2'
-        child2_gnx = child2.gnx
-        clone = child1.clone()
-        clone.moveAfter(bb)
-        assert clone.v == child1.v
-        # Careful: position cc has changed.
-        cc = clone.next()
-        clone_v = clone.v
-        cc_gnx = cc.gnx
-        assert cc.h == 'cc'
-        #@-<< Create the test tree >>
-
-        # Cut node cc
-        c.selectPosition(cc)
-        c.cutOutline()
-        assert not clone.isCloned()
-        assert c.p == clone
-        assert c.p.h == 'child1'
-
-        # Execute paste-retaining-clones
-        c.pasteOutlineRetainingClones()
-        
-        # Quick tests.
-        self.assertFalse(c.checkOutline())
-        for p in c.all_positions():
-            if p.h == 'child1':
-                assert p.isCloned(), p.h
-                # The vnode never changes *and* all positions share the same vnode.
-                assert p.v == clone_v, p.h
-            else:
-                assert not p.isCloned(), p.h
-
-        # Other tests.
-
-        # Recreate the positions.
-        clone = bb.next()
-        cc = clone.next()
-        child1 = cc.firstChild()
-        assert clone.v == clone_v
-        assert cc.gnx == cc_gnx
-        assert child1.gnx == clone.gnx
-        self.assertEqual(id(child1.v), id(clone.v))
-        assert cc.firstChild().gnx == child1_gnx
-        assert cc.firstChild().next().gnx == child2_gnx
-        assert clone.isCloned()  # Fails.
-        assert cc.firstChild().isCloned()
-        
-        # Test multiple undo/redo cycles.
-        for i in range(3):
-
-            # Undo paste-retaining-clones.
-            u.undo()
-            self.assertFalse(c.checkOutline())
-            for p in c.all_positions():
-                assert not p.isCloned(), p.h
-                if p.h == 'child1':
-                    # The vnode never changes!
-                    assert p.v == clone_v, p.h
-
-            # Redo paste-retaining-clones.
-            u.redo()
-            self.assertFalse(c.checkOutline())
-            for p in c.all_positions():
-                if p.h == 'child1':
-                    assert p.isCloned(), p.h
-                    # The vnode never changes *and* all positions share the same vnode.
-                    assert p.v == clone_v, p.h
-                else:
-                    assert not p.isCloned(), p.h
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (revise)
     def test_restoreFromCopiedTree(self):
 
@@ -291,8 +188,8 @@ class TestOutlineCommands(LeoUnitTest):
                     assert p.v == clone_v, p.h
                 else:
                     assert not p.isCloned(), p.h
-    #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_fc_getLeoOutlineFromClipBoardRetainingClones (new)
-    def test_fc_getLeoOutlineFromClipBoardRetainingClones(self):
+    #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
+    def test_paste_retaining_clones(self):
 
         c = self.c
         p = c.p
@@ -316,11 +213,6 @@ class TestOutlineCommands(LeoUnitTest):
                 g.app.gui.replaceClipboardWith(s)
             else:
                 c.copyOutline()
-        #@+node:ekr.20230723161026.1: *4* function: create_gnx_dict
-        def create_gnx_dict() -> dict[str, str]:
-            """Return a *local* gnx dict"""
-            vnodes = list(set(list(c.all_nodes())))
-            return {z.h: z.gnx for z in vnodes}
         #@+node:ekr.20230723085723.1: *4* function: create_tree
         def create_tree() -> Position:
             """
@@ -374,6 +266,7 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230723160812.1: *4* function: test_tree
         def test_tree(pasted_flag: bool, tag: str) -> None:
             """A quick test that clones are as expected."""
+            seen = set()
             if test_kind == 'cut':
                 cloned_headlines = ('cc:child1',) if pasted_flag else ()
             else:
@@ -382,17 +275,37 @@ class TestOutlineCommands(LeoUnitTest):
                 clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
                 tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} expecting {clones_s}"
                 for p in c.all_positions():
+                    seen.add(p.v)
                     if p.h in cloned_headlines:
                         assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
                     else:
                         assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
                     message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
                     assert gnx_dict.get(p.h) == p.gnx, message
-            except Exception:
-                message = f"clone_test failed! {tag} {p!r}"
+
+                # Test that all and *only* the expected nodes exist.
+                if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
+                    for z in seen:
+                        assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
+                    for z in vnodes:
+                        assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
+                else:
+                    assert test_kind == 'cut' and tag.startswith('undo')
+                    # All seen nodes should exist in vnodes.
+                    for z in seen:
+                        assert z in vnodes, f"{z.h} not in vnodes"
+                    # All vnodes should be seen except cc and cc:child2.
+                    for z in vnodes:
+                        if z.h in ('cc', 'cc:child2'):
+                            assert z not in seen, f"{z.h} in seen after undo"
+                        else:
+                            assert z in seen, f"{z.h} not seen after undo"
+            except Exception as e:
+                message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
                 self.dump_clone_info(c)
                 g.printObj(gnx_dict, tag='gnx_dict')
+                g.printObj(vnodes, tag='vnodes')
                 self.fail(message)
         #@-others
         
@@ -406,11 +319,14 @@ class TestOutlineCommands(LeoUnitTest):
                 # Create the tree and gnx_dict.
                 clean_tree()
                 cc = create_tree()
-                gnx_dict = create_gnx_dict()
+                # Calculate vnodes and gnx_dict for test_node, before any changes.
+                vnodes = list(set(list(c.all_nodes())))
+                gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertFalse(c.checkOutline())
 
                 # Cut or copy cc.
                 if test_kind == 'cut':
+                    # Delete cc *without* undo.
                     c.selectPosition(cc)
                     copy_node()
                     back = cc.threadBack()
