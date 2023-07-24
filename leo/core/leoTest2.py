@@ -197,9 +197,19 @@ class LeoUnitTest(unittest.TestCase):
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
             print(
-                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:10}: "
+                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:25}: "
                 f"{head_s:<10} parents: {p.v.parents}"
             )
+    #@+node:ekr.20230724174102.1: *3* LeoUnitTest.dump_bodies
+    def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()} {p.h}"
+            print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
+
     #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
     def dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
         """Dump all headlines."""
@@ -207,7 +217,7 @@ class LeoUnitTest(unittest.TestCase):
         g.trace(c.fileName())
         print('')
         for p in c.all_positions():
-            print(f"{p.gnx:10}: {' '*p.level()}{p.h}")
+            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
 
     #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:

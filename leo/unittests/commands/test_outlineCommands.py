@@ -492,38 +492,47 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230724130959.5: *4* function: test_tree (test_paste_as_template)
         def test_tree(pasted_flag: bool, tag: str) -> None:
             """Test that clones are as expected."""
-            seen = set()
-            cloned_headline = 'cc:child1'
-            # if test_kind == 'cut':
-                # cloned_headlines = ('cc:child1',) if pasted_flag else ()
-            # else:
-                # cloned_headlines = ('cc:child1', 'cc') if pasted_flag else ('cc:child1',)
+            
+            tag_s = f"kind: {test_kind} is_json? {int(is_json)} pasted? {int(pasted_flag)} {target_p.h}"
             try:
-                tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)} {target_p.h}"
+                # Test clone status and gnx. Set seen.
+                seen = set()
                 for p in c.all_positions():
                     seen.add(p.v)
-                    if p.h == cloned_headline:
+                    if p.h == 'cc:child1':
                         assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
-                        ### assert p.b, f"{tag_s} {p.h}: unexpected empty body text: {p.b!r}"
                     else:
                         assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
-                    if 0:
-                        message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
-                        assert gnx_dict.get(p.h) == p.gnx, message
-                    
-                return  ###
+                
+                # Test bodies.
+                for p in c.all_positions():
+                    if p.h in ('cc', 'cc:child1', 'cc:child2'):
+                        assert p.b, f"{tag_s} unexpected empty body: {p.h}"
+                    else:
+                        assert not p.b, f"{tag_s} unexpected body: {p.h}"
+                        
+                # Test gnxs.
+                for p in c.all_positions():
+                    if p.h in ('cc', 'cc:child2'):
+                        pass  # The pasted copies will have new gnxs.
+                    else:
+                        message = f"{tag_s}: p.gnx: {p.gnx} !=  {gnx_dict.get(p.h)}"
+                        assert p.gnx == gnx_dict.get(p.h), message
 
                 # Test that all and *only* the expected nodes exist.
                 if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
                     for z in seen:
-                        assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
+                        if z.h not in ('cc', 'cc:child2'):
+                            assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
                     for z in vnodes:
-                        assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
+                        if z.h not in ('cc', 'cc:child2'):
+                            assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
                 else:
                     assert test_kind == 'cut' and tag.startswith('undo')
                     # All seen nodes should exist in vnodes.
                     for z in seen:
-                        assert z in vnodes, f"{z.h} not in vnodes"
+                        if z.h not in ('cc', 'cc:child2'):
+                            assert z in vnodes, f"{z.h} not in vnodes"
                     # All vnodes should be seen except cc and cc:child2.
                     for z in vnodes:
                         if z.h in ('cc', 'cc:child2'):
@@ -533,8 +542,9 @@ class TestOutlineCommands(LeoUnitTest):
             except Exception as e:
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
-                self.dump_clone_info(c)
-                # g.printObj(gnx_dict, tag='gnx_dict')
+                # self.dump_clone_info(c)
+                self.dump_bodies(c)
+                g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
                 # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
                 self.fail(message)  # This throws another exception!
@@ -546,7 +556,8 @@ class TestOutlineCommands(LeoUnitTest):
         )
         for target_headline in valid_target_headlines:
             for test_kind, is_json in (
-                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+                # ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+                ('cut', False), ('copy', False),  ###
             ):
                 
                 # print(f"TEST {test_kind} {target_headline}")
@@ -559,11 +570,16 @@ class TestOutlineCommands(LeoUnitTest):
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertFalse(c.checkOutline())
                 
-                # Change the body text of cc and cc:child1, the two cloned nodes.
+                # Change the body text of all the to-be-copied nodes.
                 cc.b = 'cc body: changed'
                 cc_child1 = cc.firstChild()
+                cc_child2 = cc_child1.next()
+                assert cc.h == 'cc', repr(cc)
                 assert cc_child1.h == 'cc:child1', repr(cc_child1.h)
+                assert cc_child2.h == 'cc:child2', repr(cc_child2.h)
+                cc.b = 'cc body: changed'
                 cc_child1.b = 'cc:child1 body: changed'
+                cc_child2.b = 'cc:child2 body: changed'
 
                 # Cut or copy cc.
                 if test_kind == 'cut':
@@ -579,8 +595,9 @@ class TestOutlineCommands(LeoUnitTest):
                     c.selectPosition(cc)
                     self.copy_node(is_json)
                     
-                    # Restore the empty bodies of cc and cc:child1 before the paste.
-                    cc.b = cc_child1.b = ''  # Copy does not change these positions.
+                    # Restore the empty bodies of cc and cc:child1.
+                    # Copy does not change these positions.
+                    ### cc.b = cc_child1.b = cc_child2.b = ''
                 
                 self.assertFalse(c.checkOutline())
 
