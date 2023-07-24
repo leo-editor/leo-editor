@@ -425,6 +425,7 @@ class FastRead:
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+            self.updateBodies(gnx2body, self.gnx2vnode)
             self.handleBits()
         except Exception:
             g.trace(f"Error .leojs JSON is not valid: {path}")

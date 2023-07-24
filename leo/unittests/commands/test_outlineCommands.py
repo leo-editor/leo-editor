@@ -197,7 +197,7 @@ class TestOutlineCommands(LeoUnitTest):
         
         # Define helper functions.
         #@+others
-        #@+node:ekr.20230723160526.1: *4* function: clean_tree
+        #@+node:ekr.20230723160526.1: *4* function: clean_tree (test_paste_retaining_clones)
         def clean_tree() -> None:
             """Clear everything but the root node."""
             p = self.root_p
@@ -205,15 +205,16 @@ class TestOutlineCommands(LeoUnitTest):
             p.deleteAllChildren()
             while p.hasNext():
                 p.next().doDelete()
-        #@+node:ekr.20230723161726.1: *4* function: copy_node
+        #@+node:ekr.20230723161726.1: *4* function: copy_node (test_paste_retaining_clones)
         def copy_node():
             """Copy c.p to the clipboard."""
-            if 1:  # The content of c.copyOutline, w/o setting unused g.app.paste_c
-                s = c.fileCommands.outline_to_clipboard_string()
-                g.app.gui.replaceClipboardWith(s)
+            if is_json:
+                s = c.fileCommands.outline_to_clipboard_json_string()
             else:
-                c.copyOutline()
-        #@+node:ekr.20230723085723.1: *4* function: create_tree
+                s = c.fileCommands.outline_to_clipboard_string()
+
+            g.app.gui.replaceClipboardWith(s)
+        #@+node:ekr.20230723085723.1: *4* function: create_tree (test_paste_retaining_clones)
         def create_tree() -> Position:
             """
             Create the following tree:
@@ -315,7 +316,9 @@ class TestOutlineCommands(LeoUnitTest):
             'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
         )
         for target_headline in valid_target_headlines:
-            for test_kind in ('cut', 'copy'):
+            for test_kind, is_json in (
+                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+            ):
                 
                 # print(f"TEST {test_kind} {target_headline}")
 
@@ -385,7 +388,7 @@ class TestOutlineCommands(LeoUnitTest):
         
         # Define helper functions.
         #@+others
-        #@+node:ekr.20230724064558.2: *4* function: clean_tree
+        #@+node:ekr.20230724064558.2: *4* function: clean_tree (test_paste_node)
         def clean_tree() -> None:
             """Clear everything but the root node."""
             p = self.root_p
@@ -393,15 +396,16 @@ class TestOutlineCommands(LeoUnitTest):
             p.deleteAllChildren()
             while p.hasNext():
                 p.next().doDelete()
-        #@+node:ekr.20230724064558.3: *4* function: copy_node
+        #@+node:ekr.20230724064558.3: *4* function: copy_node (test_paste_node)
         def copy_node():
             """Copy c.p to the clipboard."""
-            if 1:  # The content of c.copyOutline, w/o setting unused g.app.paste_c
-                s = c.fileCommands.outline_to_clipboard_string()
-                g.app.gui.replaceClipboardWith(s)
+            if is_json:
+                s = c.fileCommands.outline_to_clipboard_json_string()
             else:
-                c.copyOutline()
-        #@+node:ekr.20230724064558.4: *4* function: create_tree
+                s = c.fileCommands.outline_to_clipboard_string()
+
+            g.app.gui.replaceClipboardWith(s)
+        #@+node:ekr.20230724064558.4: *4* function: create_tree (test_paste_node)
         def create_tree() -> Position:
             """
             Create the following tree:
@@ -488,8 +492,10 @@ class TestOutlineCommands(LeoUnitTest):
         ))
         # g.printObj(valid_target_headlines, tag='valid_target_headlines')
         for target_headline in valid_target_headlines:
-            for test_kind in ('cut', 'copy'):
-                
+            for test_kind, is_json in (
+                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+            ):
+
                 # print('TEST', test_kind, target_headline)
 
                 # Create the tree and gnx_dict.
