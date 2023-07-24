@@ -445,37 +445,14 @@ class TestOutlineCommands(LeoUnitTest):
             # All tests cut/copy cc.
             cloned_headline = None if test_kind == 'cut' else 'cc:child1'
             try:
-                ## clones_s = ', '.join([z for z in cloned_headlines]) if cloned_headlines else 'None'
                 tag_s = f"{tag} kind: {test_kind} pasted? {int(pasted_flag)}"
                 for p in c.all_positions():
                     seen.add(p.v)
                     if p.h == cloned_headline and p.gnx in gnx_dict.values():
                         assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
+                        assert p.gnx in gnx_dict.get(p.h), f"{tag_s}: not in gnx_dict: {p.h}"
                     else:
                         assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
-                return ###
-            
-                for p in c.all_positions():
-                    message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
-                    assert gnx_dict.get(p.h) == p.gnx, message
-
-                # Test that all and *only* the expected nodes exist.
-                if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
-                    for z in seen:
-                        assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
-                    for z in vnodes:
-                        assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
-                else:
-                    assert test_kind == 'cut' and tag.startswith('undo')
-                    # All seen nodes should exist in vnodes.
-                    for z in seen:
-                        assert z in vnodes, f"{z.h} not in vnodes"
-                    # All vnodes should be seen except cc and cc:child2.
-                    for z in vnodes:
-                        if z.h in ('cc', 'cc:child2'):
-                            assert z not in seen, f"{z.h} in seen after undo"
-                        else:
-                            assert z in seen, f"{z.h} not seen after undo"
             except Exception as e:
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
