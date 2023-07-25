@@ -197,13 +197,12 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
-
     s = g.app.gui.getTextFromClipboard()
     if not s or not c.canPasteOutline(s):
         return  # This should never happen.
-
     isJson = s.lstrip().startswith("{")
 
+    # Define helpers.
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
     def skip_root(v: VNode) -> Generator:
@@ -344,8 +343,8 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
         xroot = json.loads(s)
         xvelements = xroot.get('vnodes')  # <v> elements.
         xtelements = xroot.get('tnodes')  # <t> elements.
-        # bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
         bodies = x.scanJsonTnodes(xtelements)
+        # g.printObj(bodies, tag='bodies/gnx2body')
 
         def addBody(node: Any) -> None:
             if not hasattr(bodies, node['gnx']):

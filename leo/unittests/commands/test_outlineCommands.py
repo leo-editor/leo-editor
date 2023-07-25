@@ -195,7 +195,7 @@ class TestOutlineCommands(LeoUnitTest):
         self.assertFalse(c.checkOutline())
         test_tree(tag='2')
 
-        # Restore
+        # Restore.
         u.restoreFromCopiedTree(cc, s)
 
         self.assertFalse(c.checkOutline())
