@@ -556,8 +556,7 @@ class TestOutlineCommands(LeoUnitTest):
         )
         for target_headline in valid_target_headlines:
             for test_kind, is_json in (
-                # ('cut', True), ('cut', False), ('copy', True), ('copy', False),
-                ('cut', False), ('copy', False),  ###
+                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
             ):
                 
                 # print(f"TEST {test_kind} {target_headline}")
