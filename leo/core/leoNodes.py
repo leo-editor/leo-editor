@@ -2001,8 +2001,11 @@ class VNode:
         g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
-    def __repr__(self) -> str:
-        return f"<VNode {self.gnx} {self.headString()}>"  # pragma: no cover
+    def __repr__(self) -> str:  # pragma: no cover
+        return (
+            '<VNode: hidden root>' if self.gnx == 'hidden-root-vnode-gnx'
+            else f"<VNode {self.gnx} {self.headString()}>"
+        )
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump

@@ -48,6 +48,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
+from leo.core.leoFileCommands import FastRead
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -1307,8 +1308,6 @@ class Undoer:
         - Calling c.redraw.
         """
         #@-<< docstring: restoreFromCopiedTree >>
-
-        from leo.core.leoFileCommands import FastRead  ### Temp.
 
         # This code is simpilar to fc.getLeoOutlineFromClipBoardRetainingClones.
         c = self.c
