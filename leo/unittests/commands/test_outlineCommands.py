@@ -95,7 +95,14 @@ class TestOutlineCommands(LeoUnitTest):
         assert clone.v == cc_child1.v
         # Careful: position cc has changed.
         cc = clone.next().copy()
+        # Initial checks.
         assert cc.h == 'cc'
+        # Make *sure* clones are as expected.
+        for p in c.all_positions():
+            if p.h == 'cc:child1':
+                assert p.isCloned(), p.h
+            else:
+                assert not p.isCloned(), p.h
         return cc
     #@+node:ekr.20230724141139.1: *3* TestOutlineCommands.copy_node
     def copy_node(self, is_json=False) -> str:

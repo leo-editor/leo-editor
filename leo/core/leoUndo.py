@@ -1308,10 +1308,9 @@ class Undoer:
         - Calling c.redraw.
         """
         #@-<< docstring: restoreFromCopiedTree >>
-
-        # This code is simpilar to fc.getLeoOutlineFromClipBoardRetainingClones.
-        c = self.c
+        c, u = self.c, self
         fc = c.fileCommands
+
         # This encoding must match the encoding used in outline_to_clipboard_string.
         encoding = fc.leo_file_encoding
 
@@ -1320,6 +1319,9 @@ class Undoer:
         s_bytes = g.toEncodedString(s, encoding, reportErrors=True)
         hidden_v = FastRead(c, fc.gnxDict).readFileFromClipboard(s_bytes)
         fc.initReadIvars()
+        if not hidden_v:
+            u.clearAndWarn('undo-change-tree')
+            return
 
         # The big switcharoo:
         # There is no need to link or unlink p! Its position does not change.
