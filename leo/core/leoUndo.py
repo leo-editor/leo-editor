@@ -49,11 +49,11 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoFileCommands import FastRead
+from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 #@-<< leoUndo imports & annotations >>
 
@@ -1292,11 +1292,11 @@ class Undoer:
             c.recolor()
             w.setFocus()
     #@+node:ekr.20230722062645.1: *4* u.restoreFromCopiedTree
-    def restoreFromCopiedTree(self, p: Position, s: str) -> None:
+    def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
         #@+<< docstring: restoreFromCopiedTree >>
         #@+node:ekr.20230722062838.1: *5* << docstring: restoreFromCopiedTree >>
         """
-        c.restoreFromCopiedTree: restore p.v from a copied tree.
+        c.restoreFromCopiedTree: restore v from a copied tree.
 
         This is a low-level method. See u.undo/redoChangeTree for examples.
 
@@ -1310,7 +1310,10 @@ class Undoer:
         #@-<< docstring: restoreFromCopiedTree >>
         c, u = self.c, self
         fc = c.fileCommands
-        old_parents = p.v.parents[:]  # Essential.
+        if not isinstance(v, VNode):
+            g.trace("Can't happen: not a vnode: {v!r}")
+            return
+        old_parents = v.parents[:]  # Essential.
 
         # This encoding must match the encoding used in outline_to_clipboard_string.
         encoding = fc.leo_file_encoding
@@ -1325,9 +1328,10 @@ class Undoer:
             u.clearAndWarn('undo-change-tree')
             return
 
-        # The big switcharoo: change p.v in place.
-        v = hidden_v.children[0]
-        v.parents = old_parents  # restore v.parents.
+        # The big switcharoo: change v in place.
+        new_v = hidden_v.children[0]
+        new_v.parents = old_parents  # restore v.parents.
+        v = new_v  ### Experimental.
 
         # All pasted nodes should have unique gnx's.
         ni = g.app.nodeIndices

@@ -2014,13 +2014,15 @@ class VNode:
 
     def dump(self, label: str = "") -> None:  # pragma: no cover
         v = self
-        s = '-' * 10
-        print(f"{s} {label} {v}")
+        # s = '-' * 10
+        print('')
+        print(f"dump of vnode: {label} {v}")
         # print('gnx: %s' % v.gnx)
-        print(f"len(parents): {len(v.parents)}")
-        print(f"len(children): {len(v.children)}")
-        print(f"parents: {g.listToString(v.parents)}")
-        print(f"children: {g.listToString(v.children)}")
+        print(f"len(parents): {len(v.parents)} len(children): {len(v.children)}")
+        if v.parents:
+            print(f"parents: {g.listToString(v.parents)}")
+        if v.children:
+            print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:

@@ -158,23 +158,21 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
 
-        #@+others  # Define test_tree function.
+        #@+others  # Define helper functions.
         #@+node:ekr.20230724210028.1: *4* function: test_tree (test_restoreFromCopiedTree)
         def test_tree(tag: str) -> None:
             """Test the tree."""
-            ### aa exists only when tag starts with 'insert' or 'undo'
-            ### coverage test.
+            assert tag[0].isnumeric()
             try:
-                cloned_headline = 'cc:child1'
                 for p in c.all_positions():
-                    if p.h == cloned_headline and p.gnx in gnx_dict.values():
-                        assert p.isCloned(), f"{p.h} not cloned"
-                        assert p.gnx in gnx_dict.get(p.h), f"{p.h} not in gnx_dict"
+                    if p.h == 'cc:child1' and not tag.startswith('4'):
+                        assert p.isCloned(), f"{p.h} is not cloned"
                     else:
                         assert not p.isCloned(), f"{p.h} is cloned"
+                    assert p.gnx in gnx_dict.get(p.h), f"{p.h} not in gnx_dict"
             except Exception as e:
                 message = f"Fail! tag: {tag}: {e}"
-                print(f"\n{message}\n")
+                print(f"\n{message}")
                 self.dump_clone_info(c)
                 # g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
@@ -190,30 +188,67 @@ class TestOutlineCommands(LeoUnitTest):
         vnodes = list(set(list(c.all_nodes())))
         gnx_dict = {z.h: z.gnx for z in vnodes}
 
-        # g.printObj(cc.v.parents, tag='cc.v.parents')
+        # Find aa.
+        aa = g.findTopLevelNode(c, 'aa')
+        assert aa
+        aa_v = aa.v  # Remember the unchanging vnode.
 
-        # s1 is the "before" string.
-        s1 = c.fileCommands.outline_to_clipboard_string(cc)
-
-        # Delete the aa node.
-        aa = c.rootPosition().next()
-        assert aa.h == 'aa'
-        aa.doDelete()
+        # s1: before deleting aa.
+        s1 = c.fileCommands.outline_to_clipboard_string(aa)
+        # data1 = save_data(aa_v)
         self.assertFalse(c.checkOutline())
-        test_tree(tag='delete aa')
+        test_tree(tag='1: before deleting aa')
 
-        # s2 is the "after" string.
-        s2 = c.fileCommands.outline_to_clipboard_string(cc)
+        # Delete aa.
+        aa.doDelete()
 
+        # s2: after deleting aa.
+        s2 = c.fileCommands.outline_to_clipboard_string(aa)
+        self.assertFalse(c.checkOutline())
+        test_tree(tag='2: after deleting aa')
+
+        # Find top-level cc:child1.
+        cc_child1 = g.findTopLevelNode(c, 'cc:child1')
+        assert cc_child1
+        assert cc_child1.isCloned()
+        cc_child1_v = cc_child1.v  # Remember the unchanging vnode.
+
+        # s3: before deleting cc:child1.
+        s3 = c.fileCommands.outline_to_clipboard_string(cc_child1)
+        self.assertFalse(c.checkOutline())
+        test_tree(tag='3')
+
+        # Delete cc:child1.
+        cc_child1.doDelete()
+
+        # s4: after deleting cc:child1.
+        s4 = c.fileCommands.outline_to_clipboard_string(cc_child1)
+        self.assertFalse(c.checkOutline())
+        test_tree(tag='4')
+
+        # Get back to the starting point.
+        g.trace('==== Restoring ====')
+        for (v, s, tag) in (
+            (cc_child1_v, s3, '3: undo'), (aa_v, s2, '2: undo'), (aa_v, s1, '1: undo'),
+        ):
+            g.trace(tag, v.dump())
+            u.restoreFromCopiedTree(v, s)
+            self.assertFalse(c.checkOutline())
+            test_tree(tag=tag)
+
+        # Check multiple do/redo cycles.
         for i in range(3):
-            # Undo from s1.
-            u.restoreFromCopiedTree(cc, s1)
-            self.assertFalse(c.checkOutline())
-            test_tree(tag=f"undo {i}")
-            # Redo from s2.
-            u.restoreFromCopiedTree(cc, s2)
-            self.assertFalse(c.checkOutline())
-            test_tree(tag=f"redo {i}")
+            for (v, s, tag) in (
+                # Do in order.
+                (aa_v, s1, f"1: redo{i}"), (aa_v, s2, f"2: redo{i}"),
+                (cc_child1_v, s3, f"3: redo{i}"), (cc_child1_v, s4, f"4: redo{i}"),
+                # Undo in reverse order.
+                (cc_child1_v, s3, f"3: undo{i}"), (aa_v, s2, f"2: undo{i}"), (aa_v, s1, f"1: undo{i}"),
+            ):
+                g.trace(tag, v)
+                u.restoreFromCopiedTree(v, s)
+                self.assertFalse(c.checkOutline())
+                test_tree(tag=tag)
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 

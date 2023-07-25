@@ -189,10 +189,10 @@ class LeoUnitTest(unittest.TestCase):
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
     #@+node:ekr.20230720210931.1: *3* LeoUnitTest.dump_clone_info
-    def dump_clone_info(self, c: Cmdr) -> None:
+    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
         """Dump all clone info."""
         print('')
-        g.trace(c.fileName())
+        g.trace(f"{tag or ''} {c.fileName()}")
         print('')
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
@@ -211,14 +211,13 @@ class LeoUnitTest(unittest.TestCase):
             print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
 
     #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
+    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
-        g.trace(c.fileName())
+        g.trace(f"{tag or ''} {c.fileName()}")
         print('')
         for p in c.all_positions():
             print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
-
     #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
