@@ -136,16 +136,16 @@ class FastRead:
 
         Unlike readFile above, this does not affect splitter sizes.
         """
-        v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
-        if not v:  # #1510.
+        hidden_v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
+        if not hidden_v:
             return None
         #
-        # #1111: ensure that all outlines have at least one node.
-        if not v.children:
+        # Ensure that all outlines have at least one node.
+        if not hidden_v.children:
             new_vnode = leoNodes.VNode(context=self.c)
             new_vnode.h = 'newHeadline'
-            v.children = [new_vnode]
-        return v
+            hidden_v.children = [new_vnode]
+        return hidden_v
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}

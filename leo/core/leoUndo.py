@@ -1290,6 +1290,46 @@ class Undoer:
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
             w.setFocus()
+    #@+node:ekr.20230722062645.1: *4* u.restoreFromCopiedTree
+    def restoreFromCopiedTree(self, p: Position, s: str) -> None:
+        #@+<< docstring: restoreFromCopiedTree >>
+        #@+node:ekr.20230722062838.1: *5* << docstring: restoreFromCopiedTree >>
+        """
+        c.restoreFromCopiedTree: restore p.v from a copied tree.
+
+        This is a low-level method. See u.undo/redoChangeTree for examples.
+
+        The caller is responsible for:
+
+        - Calling c.endEditing.
+        - Setting c.p correctly.
+        - Updating selection range and y-scroll position in c.frame.body.wrapper.
+        - Calling c.redraw.
+        """
+        #@-<< docstring: restoreFromCopiedTree >>
+
+        from leo.core.leoFileCommands import FastRead  ### Temp.
+
+        # This code is simpilar to fc.getLeoOutlineFromClipBoardRetainingClones.
+        c = self.c
+        fc = c.fileCommands
+        # This encoding must match the encoding used in outline_to_clipboard_string.
+        encoding = fc.leo_file_encoding
+
+        # Create a tree of vnodes from s.
+        fc.initReadIvars()
+        s_bytes = g.toEncodedString(s, encoding, reportErrors=True)
+        hidden_v = FastRead(c, fc.gnxDict).readFileFromClipboard(s_bytes)
+        fc.initReadIvars()
+
+        # The big switcharoo:
+        # There is no need to link or unlink p! Its position does not change.
+        p.v = hidden_v.children[0]
+
+        # All pasted nodes should have unique gnx's.
+        ni = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            ni.check_gnx(c, v.fileIndex, v)
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event: Event = None) -> None:
