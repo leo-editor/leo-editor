@@ -1310,22 +1310,24 @@ class Undoer:
         #@-<< docstring: restoreFromCopiedTree >>
         c, u = self.c, self
         fc = c.fileCommands
+        old_parents = p.v.parents[:]  # Essential.
 
         # This encoding must match the encoding used in outline_to_clipboard_string.
         encoding = fc.leo_file_encoding
 
         # Create a tree of vnodes from s.
+        x = FastRead(c, fc.gnxDict)  # Must use fc.gnxDict.
         fc.initReadIvars()
         s_bytes = g.toEncodedString(s, encoding, reportErrors=True)
-        hidden_v = FastRead(c, fc.gnxDict).readFileFromClipboard(s_bytes)
+        hidden_v = x.readFileFromClipboard(s_bytes)
         fc.initReadIvars()
         if not hidden_v:
             u.clearAndWarn('undo-change-tree')
             return
 
-        # The big switcharoo:
-        # There is no need to link or unlink p! Its position does not change.
-        p.v = hidden_v.children[0]
+        # The big switcharoo: change p.v in place.
+        v = hidden_v.children[0]
+        v.parents = old_parents  # restore v.parents.
 
         # All pasted nodes should have unique gnx's.
         ni = g.app.nodeIndices

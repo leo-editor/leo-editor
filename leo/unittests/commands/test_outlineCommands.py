@@ -9,7 +9,6 @@ import sys
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
-### from leo.commands.commanderOutlineCommands import
 assert g
 assert sys
 
@@ -192,10 +191,12 @@ class TestOutlineCommands(LeoUnitTest):
         self.assertFalse(c.checkOutline())
         test_tree(tag='1')
 
+        # g.printObj(cc.v.parents, tag='cc.v.parents')
+
         # Copy cc to the string s.  All positions stay the same.
         s = c.fileCommands.outline_to_clipboard_string(cc)
 
-        ### Modify outline.
+        ### To do: A better test will be to modify the outline.
 
         self.assertFalse(c.checkOutline())
         test_tree(tag='2')
