@@ -152,7 +152,7 @@ class TestOutlineCommands(LeoUnitTest):
         u.undo()
         result_children = [z.h for z in self.root_p.v.children]
         self.assertEqual(result_children, original_children)
-    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (revise)
+    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 
         c = self.c
@@ -162,6 +162,8 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230724210028.1: *4* function: test_tree (test_restoreFromCopiedTree)
         def test_tree(tag: str) -> None:
             """Test the tree."""
+            ### aa exists only when tag starts with 'insert' or 'undo'
+            ### coverage test.
             try:
                 cloned_headline = 'cc:child1'
                 for p in c.all_positions():
@@ -188,33 +190,30 @@ class TestOutlineCommands(LeoUnitTest):
         vnodes = list(set(list(c.all_nodes())))
         gnx_dict = {z.h: z.gnx for z in vnodes}
 
-        self.assertFalse(c.checkOutline())
-        test_tree(tag='1')
-
         # g.printObj(cc.v.parents, tag='cc.v.parents')
 
-        # Copy cc to the string s.  All positions stay the same.
-        s = c.fileCommands.outline_to_clipboard_string(cc)
+        # s1 is the "before" string.
+        s1 = c.fileCommands.outline_to_clipboard_string(cc)
 
-        ### To do: A better test will be to modify the outline.
-
+        # Delete the aa node.
+        aa = c.rootPosition().next()
+        assert aa.h == 'aa'
+        aa.doDelete()
         self.assertFalse(c.checkOutline())
-        test_tree(tag='2')
+        test_tree(tag='delete aa')
 
-        # Restore.
-        u.restoreFromCopiedTree(cc, s)
+        # s2 is the "after" string.
+        s2 = c.fileCommands.outline_to_clipboard_string(cc)
 
-        self.assertFalse(c.checkOutline())
-        test_tree(tag='restore')
-
-        # Test multiple undo/redo cycles.
         for i in range(3):
-            u.undo()
+            # Undo from s1.
+            u.restoreFromCopiedTree(cc, s1)
             self.assertFalse(c.checkOutline())
             test_tree(tag=f"undo {i}")
-            u.redo()
+            # Redo from s2.
+            u.restoreFromCopiedTree(cc, s2)
             self.assertFalse(c.checkOutline())
-            test_tree(tag=f"undo {i}")
+            test_tree(tag=f"redo {i}")
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
