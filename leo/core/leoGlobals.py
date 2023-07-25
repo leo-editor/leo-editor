@@ -4773,7 +4773,10 @@ class GitIssueController:
         page, total = 1, 0
         while True:
             url = page_url % (state, page)
-            r = requests.get(url, timeout=2.0)
+            headers = {}
+            if 'GITHUB_TOKEN' in os.environ:
+                headers['Authorization'] = 'Bearer ' + os.environ['GITHUB_TOKEN']
+            r = requests.get(url, timeout=2.0, headers=headers)
             try:
                 done, n = self.get_one_page(label, page, r, root)
                 # Do not remove this trace. It's reassuring.
