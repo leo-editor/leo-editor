@@ -330,18 +330,22 @@ def pasteAsTemplate(self: Self, event: Event = None) -> None:
     xtelements: Any
     uas: Any  # Possible bug?
 
+    x = leoFileCommands.FastRead(c, {})
+
     if not isJson:
-        xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
+        xroot = ElementTree.fromstring(s)
         xvelements = xroot.find('vnodes')  # <v> elements.
         xtelements = xroot.find('tnodes')  # <t> elements.
-        bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+        bodies, uas = x.scanTnodes(xtelements)
+        # g.printObj(bodies, tag='bodies/gnx2body')
+        x.updateBodies(bodies, x.gnx2vnode)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     else:
-        xroot = json.loads(g.app.gui.getTextFromClipboard())
+        xroot = json.loads(s)
         xvelements = xroot.get('vnodes')  # <v> elements.
         xtelements = xroot.get('tnodes')  # <t> elements.
         # bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
-        bodies = leoFileCommands.FastRead(c, {}).scanJsonTnodes(xtelements)
+        bodies = x.scanJsonTnodes(xtelements)
 
         def addBody(node: Any) -> None:
             if not hasattr(bodies, node['gnx']):

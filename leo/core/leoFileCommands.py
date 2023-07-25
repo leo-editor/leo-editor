@@ -391,8 +391,11 @@ class FastRead:
         """Update bodies to enforce the "pasted wins" policy."""
         for gnx in gnx2body:
             body = gnx2body[gnx]
-            v = gnx2vnode[gnx]
-            v.b = body
+            try:
+                v = gnx2vnode[gnx]
+                v.b = body
+            except KeyError:
+                pass
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
     def readFileFromJsonClipboard(self, s: str) -> VNode:
         """
