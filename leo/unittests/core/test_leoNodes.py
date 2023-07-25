@@ -14,7 +14,7 @@ class TestNodes(LeoUnitTest):
     """Unit tests for Position and Vnode classes."""
 
     test_outline = None  # Set by create_test_outline.
-    
+
     def setUp(self):
         """Create the nodes in the commander."""
         super().setUp()

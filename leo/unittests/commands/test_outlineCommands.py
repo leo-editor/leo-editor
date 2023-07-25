@@ -63,7 +63,7 @@ class TestOutlineCommands(LeoUnitTest):
                 dd:child1:child1
               dd:child2
             ee
-            
+
         return cc.
         """
         c = self.c
@@ -151,7 +151,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
         u = c.undoer
-        
+
         #@+others  # Define test_tree function.
         #@+node:ekr.20230724210028.1: *4* function: test_tree (test_restoreFromCopiedTree)
         def test_tree(tag: str) -> None:
@@ -172,24 +172,24 @@ class TestOutlineCommands(LeoUnitTest):
                 # g.printObj(vnodes, tag='vnodes')
                 self.fail(message)
         #@-others
-       
+
         # Create the tree.
         self.clean_tree()
         cc = self.create_test_paste_outline()
         c.selectPosition(cc)
-        
+
         # Create the gnx_dict.
         vnodes = list(set(list(c.all_nodes())))
         gnx_dict = {z.h: z.gnx for z in vnodes}
-        
+
         self.assertFalse(c.checkOutline())
         test_tree(tag='1')
-        
+
         # Copy cc to the string s.  All positions stay the same.
         s = c.fileCommands.outline_to_clipboard_string(cc)
-        
+
         ### Modify outline.
-        
+
         self.assertFalse(c.checkOutline())
         test_tree(tag='2')
 
@@ -198,7 +198,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         self.assertFalse(c.checkOutline())
         test_tree(tag='restore')
-        
+
         # Test multiple undo/redo cycles.
         for i in range(3):
             u.undo()
@@ -270,7 +270,7 @@ class TestOutlineCommands(LeoUnitTest):
             for test_kind, is_json in (
                 ('cut', True), ('cut', False), ('copy', True), ('copy', False),
             ):
-                
+
                 # print(f"TEST {test_kind} {target_headline}")
 
                 # Create the tree and gnx_dict.
@@ -280,7 +280,7 @@ class TestOutlineCommands(LeoUnitTest):
                 vnodes = list(set(list(c.all_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertFalse(c.checkOutline())
-                
+
                 # Change the body text of cc and cc:child1, the two cloned nodes.
                 cc.b = 'cc body: changed'
                 cc_child1 = cc.firstChild()
@@ -300,10 +300,10 @@ class TestOutlineCommands(LeoUnitTest):
                     # *Copy*  node cc
                     c.selectPosition(cc)
                     self.copy_node(is_json)
-                    
+
                     # Restore the empty bodies of cc and cc:child1 before the paste.
                     cc.b = cc_child1.b = ''  # Copy does not change these positions.
-                
+
                 self.assertFalse(c.checkOutline())
 
                 # Pretest: select all positions in the tree.
@@ -361,10 +361,10 @@ class TestOutlineCommands(LeoUnitTest):
                 # g.printObj(vnodes, tag='vnodes')
                 self.fail(message)
         #@-others
-        
+
         self.clean_tree()
         cc = self.create_test_paste_outline()
-        
+
         # All nodes except cc and its children itself are valid targets.
         valid_target_headlines = list(sorted(
             z.h for z in c.all_unique_positions() if z.h not in ('cc', 'cc:child1', 'cc:child2')

@@ -33,7 +33,7 @@ class TestLeoImport(BaseTestImporter):
         x.scan(f, target)
 
         # #2760: These results ignore way too much.
-        
+
         # Don't call run_test.
         self.check_outline(target, (
             (0, '',  # Ignore the top-level headline.
@@ -50,7 +50,7 @@ class TestLeoImport(BaseTestImporter):
         x = c.importCommands
         target = c.p.insertAfter()
         target.h = 'target'
-        
+
         body_1 = textwrap.dedent(
         """
             import os
@@ -86,7 +86,7 @@ class TestLeoImport(BaseTestImporter):
         )
         # Don't call run_test.
         self.check_outline(target, expected_results)
-        
+
         # Test undo
         u.undo()
         self.assertEqual(target.b, body_1, msg='undo test')
@@ -101,7 +101,7 @@ class TestLeoImport(BaseTestImporter):
             dir_ = 'C:/Repos/non-existent-directory/mypy'
         else:
             dir_ = '/Repos/non-existent-directory/mypy'
-        # minimize_headlines changes only headlines that start with dir_ or @<file> dir_. 
+        # minimize_headlines changes only headlines that start with dir_ or @<file> dir_.
         table = (
             ('root', 'root'),
             (dir_, 'path: mypy'),
@@ -121,7 +121,7 @@ class TestLeoImport(BaseTestImporter):
             root.h = h
             x.minimize_headline(root)
             self.assertEqual(root.h, expected, msg=h)
-            
+
         # Test that the recursive import only generates @<file> nodes containing absolute paths.
         for h in ('@file bad1.py', '@edit bad2.py'):
             with self.assertRaises(AssertionError, msg=h):
@@ -131,7 +131,7 @@ class TestLeoImport(BaseTestImporter):
     def slow_test_ric_run(self):
         c = self.c
         u = c.undoer
-        
+
         # Setup.
         root = c.rootPosition()
         root.deleteAllChildren()
@@ -146,7 +146,7 @@ class TestLeoImport(BaseTestImporter):
             # 4.1 sec. to import leo/core/*.py.
             dir_ = os.path.normpath(g.app.loadDir)
         self.assertTrue(os.path.exists(dir_), msg=dir_)
-        
+
         # Run the tests.
         expected_headline = 'imported files'
         for kind in ('@clean', '@file'):
