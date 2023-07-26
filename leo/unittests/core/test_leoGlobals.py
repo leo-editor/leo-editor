@@ -1164,7 +1164,7 @@ class TestGlobals(LeoUnitTest):
         d = g.parsePathData(c)
         paths = ['c:/Repos/leo-editor/leo/test', 'c:/Repos/leo-editor/leo/doc']
         expected_paths = [os.path.normpath(z) for z in paths]
-        self.assertTrue(sorted(list(d.values())), expected_paths)
+        self.assertEqual(list(sorted(d.values())), list(sorted(expected_paths)))
     #@+node:ekr.20230703175447.1: *3* TestGlobals.test_g_openUNLFile
     def test_g_openUNLFile(self):
 
