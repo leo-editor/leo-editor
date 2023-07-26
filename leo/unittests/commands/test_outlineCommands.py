@@ -157,6 +157,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
         u = c.undoer
+        assert u  ###
 
         #@+others  # Define helper functions.
         #@+node:ekr.20230724210028.1: *4* function: test_tree (test_restoreFromCopiedTree)
@@ -182,73 +183,35 @@ class TestOutlineCommands(LeoUnitTest):
         # Create the tree.
         self.clean_tree()
         cc = self.create_test_paste_outline()
+        # self.dump_clone_info(c)
         c.selectPosition(cc)
 
         # Create the gnx_dict.
         vnodes = list(set(list(c.all_nodes())))
         gnx_dict = {z.h: z.gnx for z in vnodes}
 
-        # Find aa.
-        aa = g.findTopLevelNode(c, 'aa')
-        assert aa
-        aa_v = aa.v  # Remember the unchanging vnode.
+        # s1: before inserting cc:child3.
+        s1 = c.fileCommands.outline_to_clipboard_string(cc)
+        assert s1
+        
+        cc_child3 = cc.insertAsLastChild()
+        cc_child3.h = 'cc:child3'
+        gnx_dict[cc_child3.h] = cc_child3.gnx
 
-        # s1: before deleting aa.
-        s1 = c.fileCommands.outline_to_clipboard_string(aa)
-        # data1 = save_data(aa_v)
         self.assertFalse(c.checkOutline())
-        test_tree(tag='1: before deleting aa')
+        test_tree(tag='1: before inserting cc:child3')
+        self.dump_clone_info(c)
 
-        # Delete aa.
-        aa.doDelete()
+        s2 = c.fileCommands.outline_to_clipboard_string(cc)
+        assert s2
 
-        # s2: after deleting aa.
-        s2 = c.fileCommands.outline_to_clipboard_string(aa)
         self.assertFalse(c.checkOutline())
-        test_tree(tag='2: after deleting aa')
-
-        # Find top-level cc:child1.
-        cc_child1 = g.findTopLevelNode(c, 'cc:child1')
-        assert cc_child1
-        assert cc_child1.isCloned()
-        cc_child1_v = cc_child1.v  # Remember the unchanging vnode.
-
-        # s3: before deleting cc:child1.
-        s3 = c.fileCommands.outline_to_clipboard_string(cc_child1)
-        self.assertFalse(c.checkOutline())
-        test_tree(tag='3')
-
-        # Delete cc:child1.
-        cc_child1.doDelete()
-
-        # s4: after deleting cc:child1.
-        s4 = c.fileCommands.outline_to_clipboard_string(cc_child1)
-        self.assertFalse(c.checkOutline())
-        test_tree(tag='4')
-
-        # Get back to the starting point.
-        g.trace('==== Restoring ====')
-        for (v, s, tag) in (
-            (cc_child1_v, s3, '3: undo'), (aa_v, s2, '2: undo'), (aa_v, s1, '1: undo'),
-        ):
-            g.trace(tag, v.dump())
-            u.restoreFromCopiedTree(v, s)
-            self.assertFalse(c.checkOutline())
-            test_tree(tag=tag)
-
-        # Check multiple do/redo cycles.
-        for i in range(3):
-            for (v, s, tag) in (
-                # Do in order.
-                (aa_v, s1, f"1: redo{i}"), (aa_v, s2, f"2: redo{i}"),
-                (cc_child1_v, s3, f"3: redo{i}"), (cc_child1_v, s4, f"4: redo{i}"),
-                # Undo in reverse order.
-                (cc_child1_v, s3, f"3: undo{i}"), (aa_v, s2, f"2: undo{i}"), (aa_v, s1, f"1: undo{i}"),
-            ):
-                g.trace(tag, v)
-                u.restoreFromCopiedTree(v, s)
-                self.assertFalse(c.checkOutline())
-                test_tree(tag=tag)
+        test_tree(tag='2: after inserting cc:child3')
+    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_v_archive
+    def test_v_archive(self):
+        c = self.c
+        v = c.p.v
+        g.printObj(v._archive(), tag=v.h)
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
