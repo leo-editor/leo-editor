@@ -118,10 +118,15 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         v = p.v
+        ### Add uAs.
         p.archive()
         v.archive()
-        # g.printObj(p.archive(), tag='p.archive')
-        # g.printObj(v.archive(), tag='v.archive')
+        if 0:
+            print('p.archive:')
+            g.printObj(p.archive())
+        if 0:
+            print('v.archive:')
+            g.printObj(v.archive())
     #@+node:ekr.20230724130924.1: *3* TestOutlineCommands.test_paste_as_template
     def test_paste_as_template(self):
 

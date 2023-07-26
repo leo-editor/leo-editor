@@ -1906,7 +1906,7 @@ class FileCommands:
         Return the a uA field for descendent VNode attributes,
         suitable for reconstituting uA's for anonymous vnodes.
         """
-        #
+        # z
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresponding archived positions.
         aList = []

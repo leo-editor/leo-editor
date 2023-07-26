@@ -323,13 +323,13 @@ class Position:
     __repr__ = __str__
     #@+node:ekr.20230726063237.1: *4* p.archive
     def archive(self) -> dict[str, Any]:
-        """
-        Return a archival dictionary for p/v.unarchive.
-        """
+        """Return a archival dictionary for p/v.unarchive."""
         p = self
         v = p.v
         c = v.context
         try:
+            # Dubious? Necessary?
+            # Use same (json?) code as in outline_to_clipboard_string?
             u = copy.deepcopy(v.u)
         except Exception:
             message = f"can not archive p.u: {p.h}"
@@ -2701,13 +2701,13 @@ class VNode:
         doc="VNode gnx property")
     #@+node:ekr.20230725104852.1: *3* v.archive
     def archive(self) -> dict[str, Any]:
-        """
-        Return a archival dictionary for p/v.unarchive.
-        """
+        """Return a archival dictionary."""
         v = self
         c = v.context
         p = Position(v)  # Create dummy position.
         try:
+            # Dubious? Necessary?
+            # Use same (json?) code as in outline_to_clipboard_string?
             u = copy.deepcopy(v.u)
         except Exception:
             message = f"can not archive v.u: {v.h}"
