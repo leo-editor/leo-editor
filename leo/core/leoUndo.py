@@ -790,6 +790,8 @@ class Undoer:
         c = self.c
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
+        
+        ### 
         bunch.oldPastedTree = c.fileCommands.outline_to_clipboard_string(c.p)
         bunch.oldBody = p.b
         bunch.oldHead = p.h
@@ -1331,6 +1333,7 @@ class Undoer:
         # The big switcharoo: change v in place.
         new_v = hidden_v.children[0]
         new_v.parents = old_parents  # restore v.parents.
+        assert v.gnx == new_v.gnx
         v = new_v  ### Experimental.
 
         # All pasted nodes should have unique gnx's.
