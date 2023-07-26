@@ -321,6 +321,29 @@ class Position:
         return f"<pos {id(p)} [{len(p.stack)}] None>"
 
     __repr__ = __str__
+    #@+node:ekr.20230726063237.1: *4* p.archive
+    def archive(self) -> dict[str, Any]:
+        """
+        Return a archival dictionary for p/v.unarchive.
+        """
+        p = self
+        v = p.v
+        c = v.context
+        try:
+            u = copy.deepcopy(v.u)
+        except Exception:
+            message = f"can not archive p.u: {p.h}"
+            if g.unitTesting:
+                raise ValueError(message)
+            u = None
+            g.trace(message)
+        return {
+            'archive': c.fileCommands.outline_to_clipboard_string(p),
+            'p': p.copy(),
+            'u': u,
+            'v': p.v,
+        }
+
     #@+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -2676,6 +2699,28 @@ class VNode:
     gnx = property(
         __get_gnx,  # __set_gnx,
         doc="VNode gnx property")
+    #@+node:ekr.20230725104852.1: *3* v.archive
+    def archive(self) -> dict[str, Any]:
+        """
+        Return a archival dictionary for p/v.unarchive.
+        """
+        v = self
+        c = v.context
+        p = Position(v)  # Create dummy position.
+        try:
+            u = copy.deepcopy(v.u)
+        except Exception:
+            message = f"can not archive v.u: {v.h}"
+            if g.unitTesting:
+                raise ValueError(message)
+            u = None
+            g.trace(message)
+        return {
+            'archive': c.fileCommands.outline_to_clipboard_string(p),
+            'p': None,
+            'u': u,
+            'v': p.v,
+        }
     #@-others
 vnode = VNode  # compatibility.
 
