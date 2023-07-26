@@ -790,8 +790,8 @@ class Undoer:
         c = self.c
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
-        
-        ### 
+
+        ###
         bunch.oldPastedTree = c.fileCommands.outline_to_clipboard_string(c.p)
         bunch.oldBody = p.b
         bunch.oldHead = p.h

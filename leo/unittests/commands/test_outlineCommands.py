@@ -157,7 +157,6 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
         u = c.undoer
-        assert u  ###
 
         #@+others  # Define helper functions.
         #@+node:ekr.20230724210028.1: *4* function: test_tree (test_restoreFromCopiedTree)
@@ -183,8 +182,9 @@ class TestOutlineCommands(LeoUnitTest):
         # Create the tree.
         self.clean_tree()
         cc = self.create_test_paste_outline()
-        # self.dump_clone_info(c)
-        c.selectPosition(cc)
+
+        # No need to select cc. We use only vnodes.
+        # c.selectPosition(cc)
 
         # Create the gnx_dict.
         vnodes = list(set(list(c.all_nodes())))
@@ -193,25 +193,38 @@ class TestOutlineCommands(LeoUnitTest):
         # s1: before inserting cc:child3.
         s1 = c.fileCommands.outline_to_clipboard_string(cc)
         assert s1
-        
+
+        # Insert cc:child3.
         cc_child3 = cc.insertAsLastChild()
         cc_child3.h = 'cc:child3'
         gnx_dict[cc_child3.h] = cc_child3.gnx
 
         self.assertFalse(c.checkOutline())
         test_tree(tag='1: before inserting cc:child3')
-        self.dump_clone_info(c)
 
         s2 = c.fileCommands.outline_to_clipboard_string(cc)
         assert s2
 
         self.assertFalse(c.checkOutline())
         test_tree(tag='2: after inserting cc:child3')
-    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_v_archive
-    def test_v_archive(self):
-        c = self.c
-        v = c.p.v
-        g.printObj(v._archive(), tag=v.h)
+
+         # Get back to the starting point.
+        for (v, s, tag) in (
+            (cc.v, s2, '2: undo'),
+        ):
+            u.restoreFromCopiedTree(v, s)
+            self.assertFalse(c.checkOutline())
+            test_tree(tag=tag)
+
+        # Check multiple do/redo cycles.
+        for i in range(3):
+            for (v, s, tag) in (
+                (cc.v, s1, f"1: redo{i}"),
+                (cc.v, s2, f"2: undo{i}"),
+            ):
+                u.restoreFromCopiedTree(v, s)
+                self.assertFalse(c.checkOutline())
+                test_tree(tag=tag)
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
