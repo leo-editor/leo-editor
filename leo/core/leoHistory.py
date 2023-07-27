@@ -34,7 +34,7 @@ class NodeHistory:
         if g.unitTesting or not self.beadList:
             return
         print(f"NodeHisory.beadList: {c.shortFileName()}:")
-        for i, data in enumerate(self.beadList):  ###(list(reversed(self.beadList))):
+        for i, data in enumerate(self.beadList):
             p, chapter = data
             p_s = p.h if p else 'no p'
             chapter_s = f"chapter: {chapter.name} " if chapter else ''
@@ -111,7 +111,6 @@ class NodeHistory:
                     aList.append(data)
         if change or found == -1:
             data = (p.copy(), cc.getSelectedChapter())
-            # if data not in aList:  ### Experimental
             aList.append(data)
             self.beadPointer = len(aList) - 1
         else:
