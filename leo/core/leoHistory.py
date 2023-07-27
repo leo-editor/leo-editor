@@ -30,12 +30,17 @@ class NodeHistory:
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
     def dump(self) -> None:
         """Dump the beadList"""
-        for i, data in enumerate(self.beadList):
+        c = self.c
+        if not self.beadList:
+            return
+        print(f"NodeHisory.beadList: {c.shortFileName()}:")
+        for i, data in enumerate(self.beadList):  ###(list(reversed(self.beadList))):
             p, chapter = data
             p_s = p.h if p else 'no p'
-            chapter_s = chapter.name if chapter else 'main'
-            mark = '**' if i == self.beadPointer else '  '
-            print(f"{mark} {i} {chapter_s} {p_s}")
+            chapter_s = f"chapter: {chapter.name} " if chapter else ''
+            mark_s = '**' if i == self.beadPointer else '  '
+            print(f"{mark_s} {chapter_s} {p_s}")
+        print('')
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
     def goNext(self) -> Optional[Position]:
         """Select the next node, if possible."""
@@ -105,11 +110,15 @@ class NodeHistory:
                 else:
                     aList.append(data)
         if change or found == -1:
-            aList.append((p.copy(), cc.getSelectedChapter()))
+            data = (p.copy(), cc.getSelectedChapter())
+            # if data not in aList:  ### Experimental
+            aList.append(data)
             self.beadPointer = len(aList) - 1
         else:
             self.beadPointer = found
         self.beadList = aList
+        if False and not g.unitTesting:
+            self.dump()
     #@-others
 #@-others
 #@@language python
