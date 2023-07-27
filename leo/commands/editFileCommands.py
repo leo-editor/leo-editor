@@ -970,7 +970,7 @@ class GitDiffController:
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
         re.compile(r'^\s*#@\-others'),  # A -others sentinel
-        re.compile('^\s*#@\-leo'),  # A -leo sentinel.
+        re.compile(r'^\s*#@\-leo'),  # A -leo sentinel.
     )
 
     def _find_node(self,

@@ -31,7 +31,7 @@ class NodeHistory:
     def dump(self) -> None:
         """Dump the beadList"""
         c = self.c
-        if not self.beadList:
+        if g.unitTesting or not self.beadList:
             return
         print(f"NodeHisory.beadList: {c.shortFileName()}:")
         for i, data in enumerate(self.beadList):  ###(list(reversed(self.beadList))):
@@ -117,8 +117,7 @@ class NodeHistory:
         else:
             self.beadPointer = found
         self.beadList = aList
-        if False and not g.unitTesting:
-            self.dump()
+        # self.dump()
     #@-others
 #@-others
 #@@language python
