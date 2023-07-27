@@ -2105,8 +2105,12 @@ class Commands:
         """
         c = self
         errors = 0
+        t1 = time.process_time()
         for f in (c.checkVnodeLinks, c.checkGnxs, c.checkLinks):
             errors += f()
+        if 0:
+            t2 = time.process_time()
+            g.trace(f"check-outline: {t2 - t1:4.2f} sec.", g.callers(2))
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline
     # Makes sure all nodes are valid.

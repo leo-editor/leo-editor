@@ -1614,16 +1614,11 @@ class FileCommands:
         return s
     #@+node:ekr.20031218072017.3046: *5* fc.write_Leo_file
     def write_Leo_file(self, fileName: str) -> bool:
-        """
-        Write all external files and the .leo file itself."""
+        """Write all external files and the .leo file itself."""
         c, fc = self.c, self
-        errors = c.checkOutline()
-        if errors:
-            g.error('Structural errors in outline! outline not written')
-            return False
         g.app.recentFilesManager.writeRecentFilesFile(c)
-        fc.writeAllAtFileNodes()  # Ignore any errors.
-        return fc.writeOutline(fileName)
+        fc.writeAllAtFileNodes()
+        return fc.writeOutline(fileName)  # Calls c.checkOutline.
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
