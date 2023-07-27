@@ -779,7 +779,7 @@ class LeoImportCommands:
             except Exception:
                 g.es_print('Exception importing', fn)
                 g.es_exception()
-        c.validateOutline()
+        c.checkOutline()
         parent.expand()
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files: list[str]) -> None:
@@ -1438,7 +1438,7 @@ class MORE_Importer:
             p = self.import_lines(lines, root)
             if p:
                 c.endEditing()
-                c.validateOutline()
+                c.checkOutline()
                 p.setDirty()
                 c.setChanged()
                 u.afterInsertNode(root, 'Import MORE File', undoData)

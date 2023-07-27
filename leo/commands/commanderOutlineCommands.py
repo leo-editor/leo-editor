@@ -84,7 +84,7 @@ def pasteOutline(
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
-    c.validateOutline()
+    c.checkOutline()
     errors = c.checkOutline()
     if errors > 0:
         return None
@@ -128,7 +128,7 @@ def pasteOutlineRetainingClones(
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
-    c.validateOutline()
+    c.checkOutline()
     errors = c.checkOutline()
     if errors > 0:
         return None
@@ -1011,7 +1011,7 @@ def clone(self: Cmdr, event: Event = None) -> Optional[Position]:
     clone = p.clone()
     clone.setDirty()
     c.setChanged()
-    if c.validateOutline():
+    if c.checkOutline() == 0:
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.redraw(clone)
         c.treeWantsFocus()
@@ -1047,7 +1047,7 @@ def cloneToAtSpot(self: Cmdr, event: Event = None) -> None:
     clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     clone.setDirty()
     c.setChanged()
-    if c.validateOutline():
+    if c.checkOutline() == 0:
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
         c.redraw(clone)
@@ -1108,7 +1108,7 @@ def deleteOutline(self: Cmdr, event: Event = None, op_name: str = "Delete Node")
     c.setChanged()
     u.afterDeleteNode(newNode, op_name, undoData)
     c.redraw(newNode)
-    c.validateOutline()
+    c.checkOutline()
 #@+node:ekr.20071005173203.1: *3* c_oc.insertChild
 @g.commander_command('insert-child')
 def insertChild(self: Cmdr, event: Event = None) -> None:

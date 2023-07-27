@@ -3368,7 +3368,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             else:
                 g.es("Can't move last node out of outline")
         undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
-        c.validateOutline()
+        c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()  # 2011/02/27: Fix bug 690467.
         c.setChanged()
