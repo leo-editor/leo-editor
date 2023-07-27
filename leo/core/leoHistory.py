@@ -4,11 +4,14 @@
 #@+node:ekr.20221213120137.1: ** << leoHistory imports & annotations >>
 from __future__ import annotations
 from typing import Any, Optional, TYPE_CHECKING
+from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+
+assert g
 #@-<< leoHistory imports & annotations >>
 
 #@+others
@@ -55,7 +58,8 @@ class NodeHistory:
     def select(self, p: Position, chapter: Any) -> None:
         """
         Update the history list when selecting p.
-        Called only from self.goToNext/PrevHistory
+
+        Only self.goNext and self.goPrev call this method.
         """
         c, cc = self.c, self.c.chapterController
         if c.positionExists(p):
@@ -73,7 +77,9 @@ class NodeHistory:
     def update(self, p: Position, change: bool = True) -> None:
         """
         Update the beadList while p is being selected.
-        Called *only* from c.frame.tree.selectHelper.
+
+        change: True:  The caller is c.frame.tree.selectHelper.
+                False: The caller is NodeHistory.select.
         """
         c, cc = self.c, self.c.chapterController
         if not p or not c.positionExists(p) or self.skipBeadUpdate:
