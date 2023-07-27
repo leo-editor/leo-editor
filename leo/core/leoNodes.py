@@ -334,7 +334,7 @@ class Position:
         except Exception:
             message = f"can not archive p.u: {p.h}"
             if g.unitTesting:
-                raise ValueError(message)
+                raise ValueError(message)  # pylint: disable=raise-missing-from
             u = None
             g.trace(message)
         return {
@@ -2712,7 +2712,7 @@ class VNode:
         except Exception:
             message = f"can not archive v.u: {v.h}"
             if g.unitTesting:
-                raise ValueError(message)
+                raise ValueError(message)  # pylint: disable=raise-missing-from
             u = None
             g.trace(message)
         return {

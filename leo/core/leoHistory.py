@@ -58,7 +58,7 @@ class NodeHistory:
     def select(self, p: Position, chapter: Any) -> None:
         """
         Update the history list when selecting p.
-        
+
         Only self.goNext and self.goPrev call this method.
         """
         c, cc = self.c, self.c.chapterController
@@ -77,7 +77,7 @@ class NodeHistory:
     def update(self, p: Position, change: bool = True) -> None:
         """
         Update the beadList while p is being selected.
-        
+
         change: True:  The caller is c.frame.tree.selectHelper.
                 False: The caller is NodeHistory.select.
         """
