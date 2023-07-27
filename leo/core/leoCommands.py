@@ -2054,9 +2054,8 @@ class Commands:
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
     def checkVnodeLinks(self) -> int:
         """
-        A fast check of all vnode links. Return the number of errors found.
-
-        This check doesn't verify p.childIndex.
+        Check all vnode links.
+        Return the number of errors.
         """
         c = self
 
