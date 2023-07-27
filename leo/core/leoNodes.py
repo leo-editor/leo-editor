@@ -1652,9 +1652,14 @@ class Position:
         for child in children:
             child.parents.remove(p.v)
             child.parents.append(parent_v)
-    #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent
+    #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent (compatibility only)
     # This routine checks the structure of the receiver's tree.
     def validateOutlineWithParent(self, pv: Position) -> bool:
+        """
+        A helper for the legacy version of c.validateOutline.
+
+        No longer used in Leo's core or unit tests.
+        """
         p = self
         result = True  # optimists get only unpleasant surprises.
         parent = p.getParent()

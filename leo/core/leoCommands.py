@@ -818,7 +818,7 @@ class Commands:
                     keyval = line.split(':', 1)
                     key = keyval[0].strip()
                     val = keyval[1].strip()
-                    active_map[key] = val
+                    active_map[key] = val  # # pylint: disable=unsupported-assignment-operation
             return processor_map, extension_map, terminal
         #@+node:tom.20230308193758.7: *4* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:
@@ -1941,7 +1941,10 @@ class Commands:
         return gnx_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self) -> int:
-        """Check the consistency of all links in the outline."""
+        """
+        Check the consistency of all links in the outline.
+        """
+        # This is too slow a test to be run outside of unit tests.
         c = self
         count, errors = 0, 0
         for p in c.all_positions():
@@ -2050,20 +2053,26 @@ class Commands:
         return True
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
     def checkVnodeLinks(self) -> int:
-        """Directly check all vnode links."""
+        """
+        Check all vnode links. Return the number of errors found.
+        """
         c = self
+
+        def checkVnode(v: VNode) -> int:
+            n = 0
+            for child in v.children:
+                child_count = v.children.count(child)
+                parent_count = child.parents.count(v)
+                if child_count != parent_count:
+                    g.trace(f"parent/child mismatch: parent: {v!r}, child: {child!r}")
+                    n += 1
+                n += checkVnode(child)
+            return n
+
         try:
-            hidden_v = c.hiddenRootNode
+            return checkVnode(c.hiddenRootNode)
         except AttributeError:
             return 1
-        for p in c.all_positions():
-            child_i = p._childIndex
-            parent_v = p.stack[-1][0] if p.stack else hidden_v
-            if not parent_v:
-                return 1
-            if parent_v.children[child_i] != p.v:
-                return 1
-        return 0
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
@@ -2106,24 +2115,25 @@ class Commands:
         c = self
         errors = 0
         t1 = time.process_time()
-        for f in (c.checkVnodeLinks, c.checkGnxs, c.checkLinks):
+        for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
-        if 0:
+        if False and not g.unitTesting:  # pylint: disable=simplifiable-condition
             t2 = time.process_time()
-            g.trace(f"check-outline: {t2 - t1:4.2f} sec.", g.callers(2))
+            g.trace(f"check-outline: {t2 - t1:4.2f} sec.")
         return errors
-    #@+node:ekr.20031218072017.1765: *4* c.validateOutline
+    #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
     def validateOutline(self, event: Event = None) -> bool:
+        """
+        A legacy outline checker, retained only for compatibility.
+
+        Not used in Leo's core or unit tests.
+        """
         c = self
-        if not g.app.validate_outline:
-            return True
-        root = c.rootPosition()
-        parent = None
-        if root:
-            return root.validateOutlineWithParent(parent)
-        return True
+        return c.checkOutline() == 0
+
+
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
