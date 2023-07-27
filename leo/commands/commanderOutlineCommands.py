@@ -265,7 +265,7 @@ def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
         if v is None:
             return leoNodes.VNode(c, gnx), True
         return v, False
-    #@+node:vitalije.20200529115539.1: *4* do_paste
+    #@+node:vitalije.20200529115539.1: *4* do_paste (pasteAsTemplate)
     def do_paste(vpar: Any, index: int) -> VNode:
         """
         pastes a new node as a child of vpar at given index

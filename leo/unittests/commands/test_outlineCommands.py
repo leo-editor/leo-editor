@@ -435,7 +435,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Change the body text of cc and cc:child1, the two cloned nodes.
                 cc.b = 'cc body: changed'
@@ -460,7 +460,7 @@ class TestOutlineCommands(LeoUnitTest):
                     # Restore the empty bodies of cc and cc:child1 before the paste.
                     cc.b = cc_child1.b = ''  # Copy does not change these positions.
 
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Pretest: select all positions in the tree.
                 for p in c.all_positions():
@@ -475,16 +475,16 @@ class TestOutlineCommands(LeoUnitTest):
                 c.pasteOutlineRetainingClones()
 
                 # Check the paste.
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
                 test_tree(pasted_flag=True, tag='paste-retaining-clones')
 
                 # Check multiple undo/redo cycles.
                 for i in range(3):
                     u.undo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
                     u.redo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):

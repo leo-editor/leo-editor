@@ -2051,29 +2051,59 @@ class Commands:
                 g.trace("p!=p.threadNext().threadBack()")
                 return False
         return True
-    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
+    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
     def checkVnodeLinks(self) -> int:
         """
         Check all vnode links.
         Return the number of errors.
         """
         c = self
+        messages = []
+        p = getattr(c, 'hiddenRootNode', None)
+        if not p:
+            return 0  # Nothing to check.
 
-        def checkVnode(v: VNode) -> int:
+        # define helper functions.
+        #@+others
+        #@+node:ekr.20230727140506.1: *6* function: checkVnode
+        def checkVnode(parent: VNode) -> int:
+
+            nonlocal messages
             n = 0
-            for child in v.children:
-                child_count = v.children.count(child)
-                parent_count = child.parents.count(v)
-                if child_count != parent_count:
-                    g.trace(f"parent/child mismatch: parent: {v!r}, child: {child!r}")
+            for child in parent.children:
+                child_n = parent.children.count(child)
+                parent_n = child.parents.count(parent)
+                if child_n != parent_n:
+                    messages.append(
+                        'Mismatch between parent.children and child.parents\n'
+                        f"parent: {parent.h:30} count(parent.children) = {child_n}\n"
+                        f" child: {child.h:30} count(child.parents = {parent_n}")
+                    recover(parent, child)
                     n += 1
                 n += checkVnode(child)
             return n
+        #@+node:ekr.20230727140555.1: *6* function: recover
+        def recover(parent: VNode, child: VNode) -> None:
+            """
+            Change parent and child so that: parent.children.count(child) == child.parents.count(parent).
+            
+            Remove links if doing so will leave child in the outline. Otherwise add links.
+            """
+            child_n = parent.children.count(child)
+            parent_n = child.parents.count(parent)
+            assert child_n >= 0
+            assert parent_n >= 0
+            print(g.objToString(parent.children, tag=f"parent: {parent.h} parent.children"))
+            print(g.objToString(child.parents, tag=f"child: {child.h} child.parents"))
+        #@-others
 
-        try:
-            return checkVnode(c.hiddenRootNode)
-        except AttributeError:
-            return 1
+        n = checkVnode(c.hiddenRootNode)
+        if n > 0:
+            message = '\n'.join(messages)
+            # print(message)
+            if g.unitTesting:
+                raise ValueError(message)
+        return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
@@ -2118,9 +2148,9 @@ class Commands:
         t1 = time.process_time()
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
-        if False and not g.unitTesting:  # pylint: disable=simplifiable-condition
-            t2 = time.process_time()
-            g.trace(f"check-outline: {t2 - t1:4.2f} sec.")
+        t2 = time.process_time()
+        if t2 - t1 > 0.01 and not g.unitTesting:  # pylint: disable=simplifiable-condition
+            g.trace(f"{t2 - t1:4.2f} sec. {c.shortFileName()} {g.caller()}")
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.

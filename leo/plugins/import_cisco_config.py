@@ -107,7 +107,7 @@ def importCiscoConfig(c):
                 linelist[i].startswith('no %s' % customLine)
             ):
                 #@+<< process custom line >>
-                #@+node:edream.110203113231.674: *3* << process custom line >>
+                #@+node:edream.110203113231.674: *3* << process custom line >> (import_cisco_config.py)
                 if customLine not in blocks:
                     blocks[customLine] = []
                     out.append(g.angleBrackets(customLine))
@@ -125,7 +125,7 @@ def importCiscoConfig(c):
         else:
             if linelist[i + 1].startswith(' '):
                 #@+<< process indented block >>
-                #@+node:edream.110203113231.675: *3* << process indented block >>
+                #@+node:edream.110203113231.675: *3* << process indented block >> (import_cisco_config.py)
                 space = linelist[i].find(' ')
                 if space == -1:
                     space = len(linelist[i])
