@@ -48,7 +48,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoFileCommands import FastRead
 from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -1293,53 +1292,6 @@ class Undoer:
             c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
             c.recolor()
             w.setFocus()
-    #@+node:ekr.20230722062645.1: *4* u.restoreFromCopiedTree
-    def restoreFromCopiedTree(self, v: VNode, s: str) -> None:
-        #@+<< docstring: restoreFromCopiedTree >>
-        #@+node:ekr.20230722062838.1: *5* << docstring: restoreFromCopiedTree >>
-        """
-        c.restoreFromCopiedTree: restore v from a copied tree.
-
-        This is a low-level method. See u.undo/redoChangeTree for examples.
-
-        The caller is responsible for:
-
-        - Calling c.endEditing.
-        - Setting c.p correctly.
-        - Updating selection range and y-scroll position in c.frame.body.wrapper.
-        - Calling c.redraw.
-        """
-        #@-<< docstring: restoreFromCopiedTree >>
-        c, u = self.c, self
-        fc = c.fileCommands
-        if not isinstance(v, VNode):
-            g.trace("Can't happen: not a vnode: {v!r}")
-            return
-        old_parents = v.parents[:]  # Essential.
-
-        # This encoding must match the encoding used in outline_to_clipboard_string.
-        encoding = fc.leo_file_encoding
-
-        # Create a tree of vnodes from s.
-        x = FastRead(c, fc.gnxDict)  # Must use fc.gnxDict.
-        fc.initReadIvars()
-        s_bytes = g.toEncodedString(s, encoding, reportErrors=True)
-        hidden_v = x.readFileFromClipboard(s_bytes)
-        fc.initReadIvars()
-        if not hidden_v:
-            u.clearAndWarn('undo-change-tree')
-            return
-
-        # The big switcharoo: change v in place.
-        new_v = hidden_v.children[0]
-        new_v.parents = old_parents  # restore v.parents.
-        assert v.gnx == new_v.gnx
-        v = new_v  ### Experimental.
-
-        # All pasted nodes should have unique gnx's.
-        ni = g.app.nodeIndices
-        for v in c.all_unique_nodes():
-            ni.check_gnx(c, v.fileIndex, v)
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event: Event = None) -> None:

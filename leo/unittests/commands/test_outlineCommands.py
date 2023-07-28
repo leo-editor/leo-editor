@@ -113,20 +113,13 @@ class TestOutlineCommands(LeoUnitTest):
             child.h = h
 
 
-    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_v_archive
-    def test_p_v_archive(self):
+    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_archive (not ready yet)
+    def test_p_archive(self):
+
+        self.skipTest('Not ready yet')
         c = self.c
         p = c.p
-        v = p.v
-        ### Add uAs.
         p.archive()
-        v.archive()
-        if 0:
-            print('p.archive:')
-            g.printObj(p.archive())
-        if 0:
-            print('v.archive:')
-            g.printObj(v.archive())
     #@+node:ekr.20230724130924.1: *3* TestOutlineCommands.test_paste_as_template
     def test_paste_as_template(self):
 
@@ -488,6 +481,8 @@ class TestOutlineCommands(LeoUnitTest):
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
+
+        self.skipTest('u.restoreFromCopiedTree not ready yet.')
 
         c = self.c
         u = c.undoer

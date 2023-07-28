@@ -2052,11 +2052,12 @@ class VNode:
     def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str = "") -> None:  # pragma: no cover
+    def dump(self, tag: str = "") -> None:  # pragma: no cover
         v = self
         # s = '-' * 10
         print('')
-        print(f"dump of vnode: {label} {v}")
+        tag_s = f"{tag}: " if tag else ''
+        print(f"dump of vnode: {tag_s}{v}")
         # print('gnx: %s' % v.gnx)
         print(f"len(parents): {len(v.parents)} len(children): {len(v.children)}")
         if v.parents:

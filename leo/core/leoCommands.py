@@ -2059,8 +2059,8 @@ class Commands:
         """
         c = self
 
-        #@+others # Define helpers.
-        #@+node:ekr.20230728005934.1: *6* find_errors
+        #@+others  # Define helpers.
+        #@+node:ekr.20230728005934.1: *6* function: find_errors
         def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
             Scan all vnodes for erroneous parent/child pairs.
@@ -2079,10 +2079,10 @@ class Commands:
                         messages.append(
                             'Mismatch between parent.children and child.parents\n'
                             f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                            f" child: {child_v.h:30} count(child.parents) = {parents_n}\n")
                         n += 1
             return error_list, messages, n
-        #@+node:ekr.20230728010156.1: *6* fix_errors
+        #@+node:ekr.20230728010156.1: *6* function: fix_errors
         def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
             "Fix all erroneous nodes by adding/deleting entries from v.parents." ""
             for parent_v, child_v in error_list:
@@ -2092,24 +2092,20 @@ class Commands:
                     g.trace('Can not happen: parents_n == children_n')
                 elif parents_n < children_n:
                     while parents_n < children_n:
+                        # Safe.
                         child_v.parents.append(parent_v)
                         parents_n += 1
                 else:
-                    while parents_n > children_n:
-                        child_v.parents.remove(parent_v)
-                        parents_n += 1
-        #@+node:ekr.20230728010753.1: *6* undelete_nodes
-        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
-
-            """Restore a parent link to any node that would otherwise be deleted."""
-            seen: list[VNode] = []
-            for parent_v, child_v in error_list:
-                if not child_v.parents and child_v not in seen:
-                    # Add child_v to *one* parent.
-                    seen.append(child_v)
-                    parent_v.children.append(child_v)
-                    child_v.parents.append(parent_v)
-        #@+node:ekr.20230728011151.1: *6* recheck
+                    while children_n < parents_n:
+                        if child_v.parents:
+                            # Safe.
+                            child_v.parents.remove(parent_v)
+                            children_n += 1
+                        else:
+                            # This could delete the child.
+                            parent_v.children.remove(child_v)
+                            parents_n += 1
+        #@+node:ekr.20230728011151.1: *6* function: recheck
         def recheck() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
             Rescan all vnodes to ensure that no errors remain.
@@ -2128,16 +2124,33 @@ class Commands:
                         messages.append(
                             'Error recovery failed!'
                             f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                            f" child: {child_v.h:30} count(child.parents) = {parents_n}\n")
                         n += 1
             return error_list, messages, n
+        #@+node:ekr.20230728010753.1: *6* function: undelete_nodes
+        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
+            """Restore parent/child links to vnodes that would otherwise be deleted."""
+            seen: list[VNode] = []
+            for parent_v, child_v in error_list:
+                if not child_v.parents and child_v not in seen:
+                    seen.append(child_v)  # Don't add child_v to any other parent.
+                    if child_v in parent_v.children:
+                        g.trace('Can not happen: child_v in parent_v.parents')
+                        parent_v.dump(tag='parent_v')
+                        child_v.dump(tag='child_v')
+                    # Symmetrically add the links.
+                    parent_v.children.append(child_v)
+                    child_v.parents.append(parent_v)
         #@-others
 
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        print('\n'.join(messages))
-        if 0:  # To be tested!
+        message = '\n'.join(messages)
+        if g.unitTesting:
+            raise ValueError(message)
+        print(message)
+        if 1:  # To be tested!
             fix_errors(error_list)
             undelete_nodes(error_list)
             error_list, messages, n = recheck()
@@ -2189,7 +2202,7 @@ class Commands:
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
         t2 = time.process_time()
-        if t2 - t1 > 0.01 and not g.unitTesting:  # pylint: disable=simplifiable-condition
+        if t2 - t1 > 0.5 and not g.unitTesting:  # pylint: disable=simplifiable-condition
             g.trace(f"{t2 - t1:4.2f} sec. {c.shortFileName()} {g.caller()}")
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
