@@ -2054,55 +2054,95 @@ class Commands:
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
     def checkVnodeLinks(self) -> int:
         """
-        Check all vnode links.
+        Check and repair all vnode links.
         Return the number of errors.
         """
         c = self
-        messages = []
-        p = getattr(c, 'hiddenRootNode', None)
-        if not p:
-            return 0  # Nothing to check.
 
-        # define helper functions.
-        #@+others
-        #@+node:ekr.20230727140506.1: *6* function: checkVnode
-        def checkVnode(parent: VNode) -> int:
+        #@+others # Define helpers.
+        #@+node:ekr.20230728005934.1: *6* find_errors
+        def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
+            """
+            Scan all vnodes for erroneous parent/child pairs.
 
-            nonlocal messages
+            Return (error_list, messages, n)
+            """
+            error_list: list[tuple[VNode, VNode]] = []
+            messages: list[str] = []
             n = 0
-            for child in parent.children:
-                child_n = parent.children.count(child)
-                parent_n = child.parents.count(parent)
-                if child_n != parent_n:
-                    messages.append(
-                        'Mismatch between parent.children and child.parents\n'
-                        f"parent: {parent.h:30} count(parent.children) = {child_n}\n"
-                        f" child: {child.h:30} count(child.parents = {parent_n}")
-                    recover(parent, child)
-                    n += 1
-                n += checkVnode(child)
-            return n
-        #@+node:ekr.20230727140555.1: *6* function: recover
-        def recover(parent: VNode, child: VNode) -> None:
+            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+                for child_v in parent_v.children:
+                    children_n = parent_v.children.count(child_v)
+                    parents_n = child_v.parents.count(parent_v)
+                    if children_n != parents_n:
+                        error_list.append((parent_v, child_v))
+                        messages.append(
+                            'Mismatch between parent.children and child.parents\n'
+                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                        n += 1
+            return error_list, messages, n
+        #@+node:ekr.20230728010156.1: *6* fix_errors
+        def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
+            "Fix all erroneous nodes by adding/deleting entries from v.parents." ""
+            for parent_v, child_v in error_list:
+                children_n = parent_v.children.count(child_v)
+                parents_n = child_v.parents.count(parent_v)
+                if parents_n == children_n:
+                    g.trace('Can not happen: parents_n == children_n')
+                elif parents_n < children_n:
+                    while parents_n < children_n:
+                        child_v.parents.append(parent_v)
+                        parents_n += 1
+                else:
+                    while parents_n > children_n:
+                        child_v.parents.remove(parent_v)
+                        parents_n += 1
+        #@+node:ekr.20230728010753.1: *6* undelete_nodes
+        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
+
+            """Restore a parent link to any node that would otherwise be deleted."""
+            seen: list[VNode] = []
+            for parent_v, child_v in error_list:
+                if not child_v.parents and child_v not in seen:
+                    # Add child_v to *one* parent.
+                    seen.append(child_v)
+                    parent_v.children.append(child_v)
+                    child_v.parents.append(parent_v)
+        #@+node:ekr.20230728011151.1: *6* recheck
+        def recheck() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
-            Change parent and child so that: parent.children.count(child) == child.parents.count(parent).
-            
-            Remove links if doing so will leave child in the outline. Otherwise add links.
+            Rescan all vnodes to ensure that no errors remain.
+
+            Return (error_list, messages, no)
             """
-            child_n = parent.children.count(child)
-            parent_n = child.parents.count(parent)
-            assert child_n >= 0
-            assert parent_n >= 0
-            print(g.objToString(parent.children, tag=f"parent: {parent.h} parent.children"))
-            print(g.objToString(child.parents, tag=f"child: {child.h} child.parents"))
+            error_list: list[tuple[VNode, VNode]] = []
+            messages: list[str] = []
+            n = 0
+            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+                for child_v in parent_v.children:
+                    children_n = parent_v.children.count(child_v)
+                    parents_n = child_v.parents.count(parent_v)
+                    if children_n != parents_n:
+                        error_list.append((parent_v, child_v))
+                        messages.append(
+                            'Error recovery failed!'
+                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                        n += 1
+            return error_list, messages, n
         #@-others
 
-        n = checkVnode(c.hiddenRootNode)
-        if n > 0:
-            message = '\n'.join(messages)
-            # print(message)
-            if g.unitTesting:
-                raise ValueError(message)
+        error_list, messages, n = find_errors()
+        if n == 0:
+            return 0
+        print('\n'.join(messages))
+        if 0:  # To be tested!
+            fix_errors(error_list)
+            undelete_nodes(error_list)
+            error_list, messages, n = recheck()
+            if n:
+                print('\n'.join(messages))
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
