@@ -90,7 +90,7 @@ class TestApp(LeoUnitTest):
         assert not g.os_path_exists(fn), fn
     #@+node:ekr.20230617065356.1: *3* TestApp.test_LM_scanOptions
     def test_LM_scanOptions(self):
-        
+
         bad_table = (
             '-h', '--help',
             '--gui', '--gui=xxx',
@@ -130,7 +130,7 @@ class TestApp(LeoUnitTest):
             '--window-spot=50x60',
         )
         scan = g.app.loadManager.scanOptions
-        
+
         # Careful. Restore sys.argv and sys.stdout.
         old_argv = sys.argv
         old_stdout = sys.stdout

@@ -23,16 +23,16 @@ class TestRefreshFromDisk (LeoUnitTest):
         def dummy_precheck(fileName: str, root: Any) -> bool:
             """A version of at.precheck that always returns True."""
             return True
-            
+
         at.precheck = dummy_precheck  # Force all writes.
-        
+
         # Define data.
         raw_contents = '"""Test File"""\n'
         altered_raw_contents = '"""Test File (changed)"""\n'
-        
+
         # Create a writable directory.
         directory = tempfile.gettempdir()
-        
+
         # Run the tests.
         for kind in ('clean', 'file'):
             file_name = f"{directory}{os.sep}test_at_{kind}.py"

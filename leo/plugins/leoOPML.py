@@ -716,7 +716,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
                 except ValueError:
                     pass
         self.ratio = ratio
-    #@+node:ekr.20060917190349: *4* startOutline
+    #@+node:ekr.20060917190349: *4* startOutline (leoOpml)
     def startOutline(self, attrs):
         if self.inElement('head'):
             self.error('<outline> inside <head>')

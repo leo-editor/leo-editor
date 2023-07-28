@@ -97,12 +97,13 @@ class LeoUnitTest(unittest.TestCase):
 
     Contains setUp/tearDown methods and various utilites.
     """
-    #@+others
-    #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
+
     @classmethod
     def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
+    #@+others
+    #@+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
     def setUp(self) -> None:
         """
         Create a commander using g.app.gui.
@@ -133,8 +134,7 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
-    #@+node:ekr.20230703103430.1: *3* LeoUnitTest: setup helpers and related tests
-    #@+node:ekr.20230703103458.1: *4* LeoUnitTest._set_setting
+    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
     def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
         """
         Call c.config.set with the given args, suppressing stdout.
@@ -145,19 +145,6 @@ class LeoUnitTest(unittest.TestCase):
             c.config.set(p=None, kind=kind, name=name, val=val)
         finally:
             sys.stdout = old_stdout
-    #@+node:ekr.20230703103514.1: *4* LeoUnitTest.verbose_test_set_setting
-    def verbose_test_set_setting(self) -> None:
-        # Not run by default. To run:
-        # python -m unittest leo.core.leoTest2.LeoUnitTest.verbose_test_set_setting
-        c = self.c
-        val: Any
-        for val in (True, False):
-            name = 'test-bool-setting'
-            self._set_setting(c, kind='bool', name=name, val=val)
-            self.assertTrue(c.config.getBool(name) == val)
-        val = 'aString'
-        self._set_setting(c, kind='string', name=name, val=val)
-        self.assertTrue(c.config.getString(name) == val)
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
@@ -201,21 +188,41 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
+    #@+node:ekr.20230720210931.1: *3* LeoUnitTest.dump_clone_info
+    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
+        """Dump all clone info."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()}{p.h}"
+            print(
+                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
+                f"{head_s:<10} parents: {p.v.parents}"
+            )
+    #@+node:ekr.20230724174102.1: *3* LeoUnitTest.dump_bodies
+    def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()} {p.h}"
+            print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
+
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
+    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
     #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* LeoUnitTest._dump_headlines
-    def _dump_headlines(self, c: Cmdr) -> None:  # pragma: no cover
-        """
-        Dump root's headlines, or all headlines if root is None.
-        """
-        print('')
-        g.trace(c.fileName())
-        print('')
-        for p in c.all_positions():
-            print(f"{p.gnx:10}: {' '*p.level()}{p.h}")
     #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
     def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
         """
@@ -226,6 +233,7 @@ class LeoUnitTest(unittest.TestCase):
             print(tag)
         _iter = root.self_and_subtree if root else self.c.all_positions
         for p in _iter():
+            print('')
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))
     #@-others

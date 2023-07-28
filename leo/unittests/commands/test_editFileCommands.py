@@ -19,7 +19,7 @@ class TestEditFileCommands(LeoUnitTest):
         # These links are valid within leoPy.leo on EKR's machine.
         # g.findUnl:        unl:gnx://leoPy.leo#ekr.20230626064652.1
         # g.parsePathData:  unl:gnx://leoPy.leo#ekr.20230630132341.1
-        
+
         path = g.os_path_finalize_join(g.app.loadDir, 'leoGlobals.py')
         msg = repr(path)
         self.assertTrue(os.path.exists(path), msg=msg)
@@ -37,7 +37,7 @@ class TestEditFileCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         x = GitDiffController(c=c)
-        
+
         # Setup the outline.
         root = c.rootPosition()
         root.h = '@file leoGlobals.py'
@@ -78,7 +78,7 @@ class TestEditFileCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         x = GitDiffController(c=c)
-        
+
         # Setup the outline.
         root = c.rootPosition()
         while root.hasNext():
@@ -104,7 +104,7 @@ class TestEditFileCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         x = GitDiffController(c=c)
-        
+
         # Setup the outline.
         root = c.rootPosition()
         while root.hasNext():

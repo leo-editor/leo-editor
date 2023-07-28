@@ -15,9 +15,9 @@ class TestCompare(LeoUnitTest):
     #@+others
     #@+node:ekr.20230714131540.3: *3* TestCompare.test_diff_marked_nodes
     def test_diff_marked_nodes(self):
-        
+
         from leo.core.leoCompare import diffMarkedNodes
-        
+
         # Setup.
         c = self.c
         u = c.undoer
@@ -26,17 +26,17 @@ class TestCompare(LeoUnitTest):
         while root.hasNext():
             root.next().doDelete()
         c.selectPosition(root)
-        
+
         # Create two sets of nodes.
         node1 = root.insertAsLastChild()
         node2 = root.insertAsLastChild()
         child1 = node1.insertAsLastChild()
         child2 = node2.insertAsLastChild()
-        
+
         # Mark the nodes.
         node1.setMarked()
         node2.setMarked()
-        
+
         # Populate the nodes.
         table = (
             (node1, 'node 1', '# Node 1.\n'),
@@ -58,7 +58,7 @@ class TestCompare(LeoUnitTest):
         self.assertEqual(c.lastTopLevel().h, 'diff marked nodes')
     #@+node:ekr.20230714160900.1: *3* TestCompare.test_diff_list_of_files
     def test_diff_list_of_files(self):
-        
+
         from leo.core.leoCompare import CompareLeoOutlines
 
         # Setup.
@@ -71,7 +71,7 @@ class TestCompare(LeoUnitTest):
             root.next().doDelete()
         c.selectPosition(root)
         self.assertEqual(c.lastTopLevel(), root)
-        
+
         # The contents of a small .leo file.
         contents1 = textwrap.dedent(
             """
@@ -91,7 +91,7 @@ class TestCompare(LeoUnitTest):
             </leo_file>
             """).lstrip()  # Leo doesn't tolerate a leading blank line!
         contents2 = contents1.replace('test_file1.leo', 'test_file2.leo')
-        
+
         # Create the absolute paths.
         directory = tempfile.gettempdir()
         path1 = os.path.normpath(os.path.join(directory, 'test_file1.leo'))
@@ -107,13 +107,13 @@ class TestCompare(LeoUnitTest):
         expected_last_headline = 'diff-leo-files'
         x.diff_list_of_files(paths)
         self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-        
+
         # Test undo and redo.
         u.undo()
         self.assertEqual(c.lastTopLevel(), root)
         u.redo()
         self.assertEqual(c.lastTopLevel().h, expected_last_headline)
-        
+
         # Remove temporary files.
         for path in paths:
             self.assertTrue(os.path.exists(path), msg=path)

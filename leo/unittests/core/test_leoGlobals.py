@@ -987,7 +987,7 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(test_p)
             result2 = g.findGnx(test_p.gnx, c)
             self.assertEqual(result2, test_p, msg=msg)
-            
+
         # Create the test tree.
         self._make_tree(c, 'Root')
         # Test all positions.
@@ -996,7 +996,7 @@ class TestGlobals(LeoUnitTest):
                 self.assertEqual(p, g.findGnx(gnx, c), msg=gnx)
     #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (legacy)
     def test_g_findUnl(self):
-        
+
         c = self.c
 
         # Create the test tree.
@@ -1164,7 +1164,7 @@ class TestGlobals(LeoUnitTest):
         d = g.parsePathData(c)
         paths = ['c:/Repos/leo-editor/leo/test', 'c:/Repos/leo-editor/leo/doc']
         expected_paths = [os.path.normpath(z) for z in paths]
-        self.assertTrue(sorted(list(d.values())), expected_paths)
+        self.assertEqual(list(sorted(d.values())), list(sorted(expected_paths)))
     #@+node:ekr.20230703175447.1: *3* TestGlobals.test_g_openUNLFile
     def test_g_openUNLFile(self):
 

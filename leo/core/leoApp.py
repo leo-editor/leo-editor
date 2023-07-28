@@ -145,7 +145,6 @@ class LeoApp:
         self.log_listener: Any = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
-        self.structure_errors = 0  # Set by p.safeMoveToThreadNext.
         self.statsDict: dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
         self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False  # True: enables c.validate_outline. (slow)
