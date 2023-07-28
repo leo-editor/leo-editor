@@ -323,27 +323,39 @@ class Position:
     __repr__ = __str__
     #@+node:ekr.20230726063237.1: *4* p.archive
     def archive(self) -> dict[str, Any]:
-        """Return a archival dictionary for p/v.unarchive."""
+        """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
-        v = p.v
-        c = v.context
-        try:
-            # Dubious? Necessary?
-            # Use same (json?) code as in outline_to_clipboard_string?
-            u = copy.deepcopy(v.u)
-        except Exception:
-            message = f"can not archive p.u: {p.h}"
-            if g.unitTesting:
-                raise ValueError(message)  # pylint: disable=raise-missing-from
-            u = None
-            g.trace(message)
-        return {
-            'archive': c.fileCommands.outline_to_clipboard_string(p),
-            'p': p.copy(),
-            'u': u,
-            'v': p.v,
-        }
 
+        # Create a list of all vnodes in p.self_and_subtree.
+        all_unique_vnodes: list[VNode] = []
+        for p in p.self_and_subtree():
+            if p.v not in all_unique_vnodes:
+                all_unique_vnodes.append(p.b)
+
+        # Create an archive of all_vnodes.
+        parents_dict: dict[str, list[str]] = {}
+        for v in all_unique_vnodes:
+            parents_dict[v.gnx] = [z.gnx for z in v.parents]
+
+        children_dict: dict[str, list[str]] = {}
+        for v in all_unique_vnodes:
+            children_dict[v.gnx] = [z.gnx for z in v.children]
+
+        marks_dict: dict[str, str] = {}
+        for v in all_unique_vnodes:
+            marks_dict[v.gnx] = str(int(v.isMarked()))
+
+        uas_dict: dict[str, dict] = {}
+        for v in all_unique_vnodes:
+            uas_dict[v.gnx] = v.archive_ua()  # To do.
+
+        return {
+            'vnodes': all_unique_vnodes,
+            'parents': parents_dict,
+            'children': children_dict,
+            'marks': marks_dict,
+            'uAs': uas_dict,
+        }
     #@+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -2051,6 +2063,10 @@ class VNode:
             print(f"parents: {g.listToString(v.parents)}")
         if v.children:
             print(f"children: {g.listToString(v.children)}")
+    #@+node:ekr.20230728062638.1: *4* v.archive_uas
+    def archive_uas(self) -> dict[str, dict]:
+        """To do: return a json-like dict of all uas."""
+        return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:
@@ -2704,28 +2720,6 @@ class VNode:
     gnx = property(
         __get_gnx,  # __set_gnx,
         doc="VNode gnx property")
-    #@+node:ekr.20230725104852.1: *3* v.archive
-    def archive(self) -> dict[str, Any]:
-        """Return a archival dictionary."""
-        v = self
-        c = v.context
-        p = Position(v)  # Create dummy position.
-        try:
-            # Dubious? Necessary?
-            # Use same (json?) code as in outline_to_clipboard_string?
-            u = copy.deepcopy(v.u)
-        except Exception:
-            message = f"can not archive v.u: {v.h}"
-            if g.unitTesting:
-                raise ValueError(message)  # pylint: disable=raise-missing-from
-            u = None
-            g.trace(message)
-        return {
-            'archive': c.fileCommands.outline_to_clipboard_string(p),
-            'p': None,
-            'u': u,
-            'v': p.v,
-        }
     #@-others
 vnode = VNode  # compatibility.
 
