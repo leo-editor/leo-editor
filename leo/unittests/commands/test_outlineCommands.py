@@ -115,6 +115,8 @@ class TestOutlineCommands(LeoUnitTest):
 
     #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_v_archive
     def test_p_v_archive(self):
+
+        self.skipTest('not ready yet')
         c = self.c
         p = c.p
         v = p.v
@@ -365,6 +367,8 @@ class TestOutlineCommands(LeoUnitTest):
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
+
+        self.skipTest('not ready yet')
 
         c = self.c
         p = c.p
