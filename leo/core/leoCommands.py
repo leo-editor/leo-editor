@@ -2054,7 +2054,11 @@ class Commands:
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
     def checkVnodeLinks(self) -> int:
         """
-        Check and repair all vnode links.
+        Check all vnode links.
+
+        Attempt error recovery if recover_flag is True.
+        Unit tests may set recover_flag to False for strict tests.
+
         Return the number of errors.
         """
         c = self
@@ -2146,10 +2150,10 @@ class Commands:
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        message = '\n'.join(messages)
-        if g.unitTesting:
-            raise ValueError(message)
-        print(message)
+        if 'strict' in g.app.debug:  # For unit testing.
+            return n
+        if True:  ### not g.unitTesting:
+            print('\n'.join(messages))
         if 1:  # To be tested!
             fix_errors(error_list)
             undelete_nodes(error_list)
