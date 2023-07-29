@@ -478,24 +478,82 @@ class TestOutlineCommands(LeoUnitTest):
                     u.redo()
                     self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
-    #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks (To Do)
+    #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks
     def test_c_checkVnodeLinks(self):
 
         c = self.c
-        # p = c.p
-        # u = c.undoer
 
-        # Create the tree and gnx_dict.
+        # Resources.
+        # self.dump_clone_info(c)
+        # g.printObj(gnx_dict, tag='gnx_dict')
+        # g.printObj(vnodes_list, tag='vnodes_list')
+        # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
+
+        #@+others  # define helper
+        #@+node:ekr.20230729124541.1: *4* function: do_defect
+        def do_defect(p: Position, defect: str) -> None:
+            pass
+        #@+node:ekr.20230729124819.1: *4* function: enable_options
+        def enable_options(options: str) -> None:
+            """Enable options in g.app.debug."""
+            g.app.debug = []
+            if 's' in options:
+                g.app.debug.append('test:strict')
+            if 'v' in options:
+                g.app.debug.append('test:verbose')
+        #@+node:ekr.20230729124441.1: *4* function: test (test_c_checkVnodeLinks)
+        def test(p: Position, defect: str, options: str) -> None:
+            """Run the test give after creating the given defect."""
+            # Re-create the tree.
+            self.clean_tree()
+            cc = self.create_test_paste_outline()
+            assert cc.h == 'cc'
+
+            # Re-create the vnodes_list and gnx_dict for test_node.
+                # vnodes_list = list(set(list(c.all_nodes())))
+                # gnx_dict = {z.h: z.gnx for z in vnodes_list}
+                # assert gnx_dict
+
+            # Find the node.
+            p = g.findNodeAnywhere(c, headline)
+            self.assertTrue(p, msg=headline)
+
+            # Insert the defect into p or p's parent.
+            do_defect(p, defect)
+
+            # Enable options.
+            enable_options(options)
+
+            # Run the test.
+            self.assertEqual(0, c.checkOutline())
+        #@-others
+
+        # Create the initial tree.
         self.clean_tree()
         cc = self.create_test_paste_outline()
-        assert cc.h == 'cc'
+        self.assertEqual(cc.h, 'cc')
+        headlines = [p.h for p in c.all_unique_positions()]
 
-        # Calculate vnodes and gnx_dict for test_node, before any changes.
-        vnodes = list(set(list(c.all_nodes())))
-        gnx_dict = {z.h: z.gnx for z in vnodes}
-        assert gnx_dict
+        # Options: a tuple (selector, option):
+        #          Selector: headline or 'all'
+        #          Option: 's' for strict, 'v' for verbose or 'sv' for both.
+        options: tuple[tuple[str, str]] = (
+            ('all', 'v'),
+        )
 
-        self.assertEqual(0, c.checkOutline())
+        # Create the list of all possible defects.
+        defects = []
+
+        # Test all actions on all positions for all headlines.
+        n, n_positions = 0, 0
+        for headline in headlines:
+            positions = [z for z in c.all_positions() if z.h == headline]
+            n_positions += len(positions)
+            for p in positions:
+                for defect in defects:
+                    n += 1
+                    test(p, defect, options)
+        # g.trace('Done', n, 'tests', n_positions, 'positions')
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 
