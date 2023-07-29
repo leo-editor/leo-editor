@@ -356,8 +356,11 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
 
-        # Set flags for checkVnodeLinks.
+        # This test fails with these flags for checkVnodeLinks.
         # g.app.debug.extend(['test:strict', 'test:verbose'])
+
+        # This test passes (with messages) with this flag:
+        # g.app.debug.append('test:strict')
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)
@@ -475,7 +478,7 @@ class TestOutlineCommands(LeoUnitTest):
                     u.redo()
                     self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
-    #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks
+    #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks (To Do)
     def test_c_checkVnodeLinks(self):
 
         c = self.c
