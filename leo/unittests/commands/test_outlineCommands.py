@@ -490,6 +490,24 @@ class TestOutlineCommands(LeoUnitTest):
                     u.redo()
                     self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
+    #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks
+    def test_c_checkVnodeLinks(self):
+
+        c = self.c
+        # p = c.p
+        # u = c.undoer
+
+        # Create the tree and gnx_dict.
+        self.clean_tree()
+        cc = self.create_test_paste_outline()
+        assert cc.h == 'cc'
+
+        # Calculate vnodes and gnx_dict for test_node, before any changes.
+        vnodes = list(set(list(c.all_nodes())))
+        gnx_dict = {z.h: z.gnx for z in vnodes}
+        assert gnx_dict
+
+        self.assertEqual(0, c.checkOutline())
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 

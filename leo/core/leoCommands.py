@@ -2054,14 +2054,16 @@ class Commands:
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
     def checkVnodeLinks(self) -> int:
         """
-        Check and repair all vnode links.
+        Check all vnode links.
+
+        Attempt error recovery if recover_flag is True.
+        Unit tests may set recover_flag to False for strict tests.
+
         Return the number of errors.
         """
         c = self
 
-        return 0  # Temporarily ignore this test!
-
-        #@+others # Define helpers.
+        #@+others  # Define helpers.
         #@+node:ekr.20230728005934.1: *6* find_errors
         def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
@@ -2138,13 +2140,24 @@ class Commands:
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        print('\n'.join(messages))
-        if 0:  # To be tested!
+        if 'strict' in g.app.debug:  # For unit testing.
+            return n
+        if False:  ### not g.unitTesting:
+            print('\n'.join(messages))
+        old_n = n
+        if 1:  # To be tested!
             fix_errors(error_list)
             undelete_nodes(error_list)
             error_list, messages, n = recheck()
             if n:
                 print('\n'.join(messages))
+            else:
+                g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+        else:
+            g.trace(f"{old_n} link error{g.plural(old_n)}")
+            g.trace(g.callers(2))
+            print('')
+            print('\n'.join(messages))
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
@@ -2185,14 +2198,9 @@ class Commands:
         Check for errors in the outline.
         Return the number of errors.
         """
-        c = self
-        errors = 0
-        t1 = time.process_time()
+        c, errors = self, 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
-        t2 = time.process_time()
-        if t2 - t1 > 0.5 and not g.unitTesting:  # pylint: disable=simplifiable-condition
-            g.trace(f"{t2 - t1:4.2f} sec. {c.shortFileName()} {g.caller()}")
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
