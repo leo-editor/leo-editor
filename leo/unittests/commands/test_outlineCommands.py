@@ -355,7 +355,7 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        
+
         # Set flags for checkVnodeLinks.
         # g.app.debug.extend(['test:strict', 'test:verbose'])
 
