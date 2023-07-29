@@ -2160,11 +2160,11 @@ class Commands:
         fix_errors(error_list)
         undelete_nodes(error_list)
         error_list, messages, n = recheck()
-        if verbose:
-            if n:
-                print('\n'.join(messages))
-            else:
-                g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+        if n:
+            # Report the *failure* to fix links!
+            print('\n'.join(messages))
+        elif verbose:
+            g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
