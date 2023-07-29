@@ -2137,27 +2137,27 @@ class Commands:
             return error_list, messages, n
         #@-others
 
+        # For unit testing.
+        silent = 'silent' in g.app.debug
+        strict = 'strict' in g.app.debug
+        verbose = not silent
+
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        if 'strict' in g.app.debug:  # For unit testing.
+        if strict:
             return n
-        if False:  ### not g.unitTesting:
+        if verbose:
             print('\n'.join(messages))
         old_n = n
-        if 1:  # To be tested!
-            fix_errors(error_list)
-            undelete_nodes(error_list)
-            error_list, messages, n = recheck()
+        fix_errors(error_list)
+        undelete_nodes(error_list)
+        error_list, messages, n = recheck()
+        if verbose:
             if n:
                 print('\n'.join(messages))
             else:
                 g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
-        else:
-            g.trace(f"{old_n} link error{g.plural(old_n)}")
-            g.trace(g.callers(2))
-            print('')
-            print('\n'.join(messages))
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
