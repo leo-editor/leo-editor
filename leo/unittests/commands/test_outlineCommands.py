@@ -113,7 +113,7 @@ class TestOutlineCommands(LeoUnitTest):
             child.h = h
 
 
-    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_archive (not ready yet)
+    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_archive (skipTest)
     def test_p_archive(self):
 
         self.skipTest('Not ready yet')
@@ -512,7 +512,7 @@ class TestOutlineCommands(LeoUnitTest):
                     u.redo()
                     self.assertEqual(0, check())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
-    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
+    #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree (skipTest)
     def test_restoreFromCopiedTree(self):
 
         self.skipTest('u.restoreFromCopiedTree not ready yet.')
