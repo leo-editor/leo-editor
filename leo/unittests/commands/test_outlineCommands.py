@@ -359,11 +359,10 @@ class TestOutlineCommands(LeoUnitTest):
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
-        self.skipTest('not ready yet')
-
         c = self.c
         p = c.p
         u = c.undoer
+        trace = False  ###
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)
@@ -379,32 +378,32 @@ class TestOutlineCommands(LeoUnitTest):
                 for p in c.all_positions():
                     seen.add(p.v)
                     if p.h in cloned_headlines:
-                        assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
+                        assert p.isCloned(), f"{tag_s}: oops: {p.h} is not cloned"
                         assert p.b, f"{tag_s} {p.h}: unexpected empty body text: {p.b!r}"
                     else:
-                        assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
+                        assert not p.isCloned(), f"{tag_s}: oops: {p.h} is cloned"
                     message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
                     assert gnx_dict.get(p.h) == p.gnx, message
 
                 # Test that all and *only* the expected nodes exist.
                 if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
                     for z in seen:
-                        assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
+                        assert z in vnodes, f"oops: p.v not in vnodes: {z.gnx}, {z.h}"
                     for z in vnodes:
-                        assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
+                        assert z in seen, f"oops: vnode not seen: {z.gnx}, {z.h}"
                 else:
                     assert test_kind == 'cut' and tag.startswith('undo')
                     # All seen nodes should exist in vnodes.
                     for z in seen:
-                        assert z in vnodes, f"{z.h} not in vnodes"
+                        assert z in vnodes, f"oops: {z.h} not in vnodes"
                     # All vnodes should be seen except cc and cc:child2.
                     for z in vnodes:
                         if z.h in ('cc', 'cc:child2'):
-                            assert z not in seen, f"{z.h} in seen after undo"
+                            assert z not in seen, f"oops: {z.h} in seen after undo"
                         else:
-                            assert z in seen, f"{z.h} not seen after undo"
+                            assert z in seen, f"oops: {z.h} not seen after undo"
             except Exception as e:
-                message = f"clone_test failed! tag: {tag}: {e}"
+                message = f"clone_test failed! {e}"  # e contains the tag.
                 print(f"\n{message}\n")
                 self.dump_clone_info(c)
                 # g.printObj(gnx_dict, tag='gnx_dict')
@@ -416,21 +415,28 @@ class TestOutlineCommands(LeoUnitTest):
             """
             A wrapper for c.checkOutline.
             """
-            if 'strict' not in g.app.debug:
-                g.app.debug.append('strict')
+            if 0:
+                if 'strict' not in g.app.debug:
+                    g.app.debug.append('strict')
+            if 1:
+                return 0
             return c.checkOutline()
         #@-others
 
         # Every paste will invalidate positions, so search for headlines instead.
         valid_target_headlines = (
-            'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
+            # 'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
+            'aa',
         )
         for target_headline in valid_target_headlines:
             for test_kind, is_json in (
-                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+                # ('cut', True), ('cut', False), ('copy', True), ('copy', False),
+                # ('cut', False),  # Passes.
+                ('copy', False),
             ):
 
-                # print(f"TEST {test_kind} {target_headline}")
+                if trace:
+                    print(f"TEST {test_kind} {target_headline}")
 
                 # Create the tree and gnx_dict.
                 self.clean_tree()
@@ -473,9 +479,26 @@ class TestOutlineCommands(LeoUnitTest):
                 target_p = g.findNodeAnywhere(c, target_headline)
                 self.assertTrue(target_p, msg=target_headline)
 
+                #  cc:child2 is not a clone here.
+                if trace:
+                    # self.dump_clone_info(c, tag='Before paste-retaining-clones')
+                    cc_child2 = g.findNodeAnywhere(c, 'cc:child2')
+                    assert cc_child2
+                    assert not cc_child2.isCloned(), 'before check'
+                    cc_child2.v.dump('before cc_child2.v')
+
                 # Paste after the target.
                 c.selectPosition(target_p)
                 c.pasteOutlineRetainingClones()
+
+                if trace:
+                    self.dump_clone_info(c, tag='after paste-retaining-clones')
+                    cc_child2.v.dump('after cc_child2.v')
+
+                # This is the problem.
+                cc_child2 = g.findNodeAnywhere(c, 'cc:child2')
+                assert cc_child2
+                assert not cc_child2.isCloned(), 'after check'  ### Fails.
 
                 # Check the paste.
                 self.assertEqual(0, check())

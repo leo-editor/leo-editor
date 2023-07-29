@@ -1939,7 +1939,7 @@ class Commands:
                 f"check-outline OK: {t2 - t1:4.2f} sec. "
                 f"{c.shortFileName()} {count} nodes")
         return gnx_errors
-    #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
+    #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers (not used)
     def checkLinks(self) -> int:
         """
         Check the consistency of all links in the outline.
@@ -2152,14 +2152,22 @@ class Commands:
             return 0
         if 'strict' in g.app.debug:  # For unit testing.
             return n
-        if True:  ### not g.unitTesting:
+        if False:  ### not g.unitTesting:
             print('\n'.join(messages))
-        if 1:  # To be tested!
+        old_n = n
+        if 0:  # To be tested!
             fix_errors(error_list)
             undelete_nodes(error_list)
             error_list, messages, n = recheck()
             if n:
                 print('\n'.join(messages))
+            else:
+                g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+        else:
+            g.trace(f"{old_n} link error{g.plural(old_n)}")
+            g.trace(g.callers(2))
+            print('')
+            print('\n'.join(messages))
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
@@ -2208,6 +2216,8 @@ class Commands:
         t2 = time.process_time()
         if t2 - t1 > 0.5 and not g.unitTesting:  # pylint: disable=simplifiable-condition
             g.trace(f"{t2 - t1:4.2f} sec. {c.shortFileName()} {g.caller()}")
+        # if errors:
+        #     g.trace(f"{errors} errors", g.callers(2))
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.

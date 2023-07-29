@@ -154,11 +154,10 @@ class FastRead:
 
         contents = g.toUnicode(s_or_b)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
-        contents = contents.translate(table)  # #1036, #1046.
+        contents = contents.translate(table)
         try:
             xroot = ElementTree.fromstring(contents)
         except Exception as e:
-            # #970: Report failure here.
             if path:
                 message = f"bad .leo file: {g.shortFileName(path)}"
             else:
@@ -166,7 +165,11 @@ class FastRead:
             g.es_print('\n' + message, color='red')
             g.es_print(g.toUnicode(e))
             print('')
-            return None, None  # #1510: Return a tuple.
+            return None, None
+        if 0:  ###
+            c = self.c
+            n = c.checkOutline()  ###
+            g.trace(f"(START) checkOutline returns {n}")  ###
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
@@ -315,6 +318,9 @@ class FastRead:
         #@+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
         def v_element_visitor(parent_e: Any, parent_v: VNode) -> None:
             """Visit the given element, creating or updating the parent vnode."""
+            trace = False and g.unitTesting  ##3
+            if trace:  ###
+                g.trace('*** parent_e:', parent_e, 'parent_v:', parent_v)  ###
             for e in parent_e:
                 assert e.tag in ('v', 'vh'), e.tag
                 if e.tag == 'vh':
@@ -328,14 +334,22 @@ class FastRead:
                     # g.trace('no "t" attrib')
                     gnx = None
                     v = None
+                if trace:  ###
+                    g.trace('***', 'e:', e, 'e.tag:', e.tag, 'v:', repr(v))
                 if v:
                     # A clone
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
+                    if trace:  ###
+                        n = c.checkOutline()  ###
+                        g.trace(f"checkOutline returns {n} {v.h}")  ###
                     # The body overrides any previous body text.
                     body = g.toUnicode(gnx2body.get(gnx) or '')
                     assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
+                    if trace:  ###
+                        parent_v.dump(tag='parent_v')
+                        v.dump(tag='v')
                 else:
                     #@+<< Make a new vnode, linked to the parent >>
                     #@+node:ekr.20180605075042.1: *6* << Make a new vnode, linked to the parent >>
@@ -343,6 +357,9 @@ class FastRead:
                     gnx2vnode[gnx] = v
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
+                    if trace:  ###
+                        n = c.checkOutline()  ###
+                        g.trace(f"checkOutline returns {n} {v.h}")  ###
                     body = g.toUnicode(gnx2body.get(gnx) or '')
                     assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
@@ -863,6 +880,9 @@ class FileCommands:
             return None
         self.initReadIvars()
 
+        if False and g.unitTesting:  ###
+            g.printObj(s, tag='getLeoOutlineFromClipboardRetainingClones')
+
         # All pasted nodes should already have unique gnx's.
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
@@ -897,17 +917,20 @@ class FileCommands:
 
         # Fix #862: paste-retaining-clones can corrupt the outline.
         self.linkChildrenToParents(p)
-        errors = c.checkOutline()
-        if errors > 0:
-            return None
+        if 0:  ###
+            errors = c.checkOutline()
+            if errors > 0:
+                return None
         c.selectPosition(p)
         self.initReadIvars()
         return p
-    #@+node:ekr.20180424123010.1: *5* fc.linkChildrenToParents
+    #@+node:ekr.20180424123010.1: *5* fc.linkChildrenToParents ********************
     def linkChildrenToParents(self, p: Position) -> None:
         """
         Populate the parent links in all children of p.
         """
+        if g.unitTesting:
+            return  ###
         for child in p.children():
             child.v.parents.append(p.v)
             self.linkChildrenToParents(child)

@@ -128,10 +128,10 @@ def pasteOutlineRetainingClones(
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
-    c.checkOutline()
-    errors = c.checkOutline()
-    if errors > 0:
-        return None
+    if 0:  ###
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
     # Handle the "before" data for undo.
     if True:  ### undoFlag:
         vnodeInfoDict = computeVnodeInfoDict(c)

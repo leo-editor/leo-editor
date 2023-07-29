@@ -197,7 +197,9 @@ class LeoUnitTest(unittest.TestCase):
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
             print(
-                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
+                f"clone? {int(p.isCloned())} "
+                # f"id(v): {id(p.v)} "
+                f"gnx: {p.gnx:27} "
                 f"{head_s:<10} parents: {p.v.parents}"
             )
     #@+node:ekr.20230724174102.1: *3* LeoUnitTest.dump_bodies
