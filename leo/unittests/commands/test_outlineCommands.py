@@ -113,22 +113,6 @@ class TestOutlineCommands(LeoUnitTest):
             child.h = h
 
 
-    #@+node:ekr.20230725111522.1: *3* TestOutlineCommands.test_p_v_archive
-    def test_p_v_archive(self):
-
-        self.skipTest('not ready yet')
-        c = self.c
-        p = c.p
-        v = p.v
-        ### Add uAs.
-        p.archive()
-        v.archive()
-        if 0:
-            print('p.archive:')
-            g.printObj(p.archive())
-        if 0:
-            print('v.archive:')
-            g.printObj(v.archive())
     #@+node:ekr.20230724130924.1: *3* TestOutlineCommands.test_paste_as_template
     def test_paste_as_template(self):
 
@@ -368,11 +352,12 @@ class TestOutlineCommands(LeoUnitTest):
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
-        self.skipTest('not ready yet')
-
         c = self.c
         p = c.p
         u = c.undoer
+        
+        # Set flags for checkVnodeLinks.
+        # g.app.debug.extend(['test:strict', 'test:verbose'])
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)

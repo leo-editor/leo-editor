@@ -2096,12 +2096,19 @@ class Commands:
                     g.trace('Can not happen: parents_n == children_n')
                 elif parents_n < children_n:
                     while parents_n < children_n:
+                        # Safe.
                         child_v.parents.append(parent_v)
                         parents_n += 1
                 else:
-                    while parents_n > children_n:
-                        child_v.parents.remove(parent_v)
-                        parents_n += 1
+                    while children_n < parents_n:
+                        if child_v.parents:
+                            # Safe.
+                            child_v.parents.remove(parent_v)
+                            children_n += 1
+                        else:
+                            # This could delete the child.
+                            parent_v.children.remove(child_v)
+                            parents_n += 1
         #@+node:ekr.20230728010753.1: *6* undelete_nodes
         def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
 
@@ -2138,17 +2145,17 @@ class Commands:
         #@-others
 
         # For unit testing.
-        silent = 'silent' in g.app.debug
-        strict = 'strict' in g.app.debug
-        verbose = not silent
-
+        strict = 'test:strict' in g.app.debug
+        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
+        if verbose:
+            print('\n')
+            g.trace(f"{len(messages)} link errors:\n")
+            print('\n'.join(messages) + '\n')
         if strict:
             return n
-        if verbose:
-            print('\n'.join(messages))
         old_n = n
         fix_errors(error_list)
         undelete_nodes(error_list)
