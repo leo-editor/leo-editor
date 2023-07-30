@@ -29,9 +29,9 @@ class BaseTestImporter(LeoUnitTest):
     def check_outline(self, p: Position, expected: tuple) -> None:
         """
         BaseTestImporter.check_outline.
-        
+
         Check that p's outline matches the expected results.
-        
+
         Dump the actual outline if there is a mismatch.
         """
         try:
@@ -422,26 +422,26 @@ class TestC(BaseTestImporter):
         trace = False
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
-        
+
         # enable-trace
-        
+
         namespace {
             n1;
         }
-        
+
         namespace outer {
             n2;
         }
-        
+
         int foo () {
             foo1;
             foo2;
         }
-        
+
         class class1 {
             class1;
         }
-        
+
         class class2 {
             x = 2;
             int bar (a, b) {
@@ -627,7 +627,7 @@ class TestCoffeescript(BaseTestImporter):
               str = blockTrim(str)
               str = unshift(str)
               if str.length > 0 then str else ""
-              
+
           """
         expected_results = (
           (0, '',  # Ignore the first headline.
@@ -1078,7 +1078,7 @@ class TestHtml(BaseTestImporter):
                     '<p id="P2">\n'
                     '\n'
                     '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-            ),    
+            ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
@@ -1238,7 +1238,7 @@ class TestHtml(BaseTestImporter):
         """
 
         # xml.preprocess_lines inserts a newline between </head> and <body>.
-        
+
         expected_results = (
             (0, '',
                     '@others\n'
@@ -1793,7 +1793,7 @@ class TestJavascript(BaseTestImporter):
                 window.scrollTo(0,0);
             }
         """
-        
+
         expected_results = (
             (0, '',  # Ignore the first headline.
                 '@others\n'
@@ -2554,7 +2554,7 @@ class TestPascal(BaseTestImporter):
             end. // interface
         """).strip() + '\n'
         #@-<< define s >>
-        
+
         expected_results = (
             (0, '',  # Ignore the first headline.
                 '@others\n'
@@ -2704,7 +2704,7 @@ class TestPascal(BaseTestImporter):
                     '   for i := 1 to num do\n'
                     '      with data^[i] do y := factor * y;\n'
                     'end;\n'
-                  
+
             ),
             (1, 'procedure statObj.multiplyGraph',
                     'procedure statObj.multiplyGraph(var source: pGraphObj);\n'
@@ -3054,7 +3054,7 @@ class TestPhp(BaseTestImporter):
             ?>
         """
         self.new_round_trip_test(s)
-        
+
     #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
 
@@ -3241,11 +3241,11 @@ class TestPython(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
-        
+
         # ekr-mypy2/mypy/applytype.py
-        
+
         # Note: the return type uses the python 3.11 syntax for Union.
-        
+
         s = """
         def get_target_type(
             tvar: TypeVarLikeType,
@@ -3339,18 +3339,18 @@ class TestPython(BaseTestImporter):
             import sys
             def f1():
                 pass
-            
+
             class Class1:pass
             a = 2
             @dec_for_f2
             def f2(): pass
-            
-            
+
+
             class A: pass
             # About main.
             def main():
                 pass
-            
+
             if __name__ == '__main__':
                 main()
         """
@@ -3401,7 +3401,7 @@ class TestPython(BaseTestImporter):
             """
             import sys
             from leo.core import leoGlobals as g
-            
+
             def f():
                 g.trace()
         '''
@@ -4048,7 +4048,7 @@ class TestTreepad (BaseTestImporter):
             node 2.1.1, line 2
             <end node> 5P9i0s8y19Z
         """
-       
+
         expected_results = (
             (0, '',  # Ignore the first headline.
                 '<Treepad version 2.7>\n'
@@ -4076,7 +4076,7 @@ class TestTreepad (BaseTestImporter):
             (4, 'headline 2.1.1',
                 'node 2.1.1, line 1\n'
                 'node 2.1.1, line 2\n'
-            ),  
+            ),
         )
         self.new_run_test(s, expected_results)
     #@-others
@@ -4168,7 +4168,7 @@ class TestXML(BaseTestImporter):
         </body>
         </html>
         """
-        
+
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
                     '@others\n'
@@ -4188,7 +4188,7 @@ class TestXML(BaseTestImporter):
                     '</head>\n'
             ),
             (2, "<body class='bodystring'>",
-            
+
                     "<body class='bodystring'>\n"
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'

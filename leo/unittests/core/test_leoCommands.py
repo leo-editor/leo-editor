@@ -82,6 +82,11 @@ class TestCommands(LeoUnitTest):
         c = self.c
         errors = c.checkOutline()
         self.assertEqual(errors, 0)
+    #@+node:ekr.20230727044355.1: *3* TestCommands.test_c_check_links
+    def check_c_checkVnodeLinks(self):
+        c = self.c
+        self.assertEqual(c.checkVnodeLinks(), 0)  # Leo's main checker.
+        self.assertEqual(c.checkLinks(), 0)  # A slow test, suitable only for unit tests.
     #@+node:ekr.20210901140645.15: *3* TestCommands.test_c_checkPythonCode
     def test_c_checkPythonCode(self):
         c = self.c

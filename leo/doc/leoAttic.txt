@@ -10394,18 +10394,17 @@ def tupleToString(obj: Any, indent: str='', tag: str=None) -> str:
     result.append(')')
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
-#@+node:tbrown.20111010104549.26758: *3* LEGACY: p.get_UNL
-def get_UNL(self) -> str:
-    """Return a legacy UNL. Required for error messages."""
-    parts_s = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-    if 1:
-        # New in Leo 6.7.4: Just return the list of parts.
-        base_unl = parts_s
-    else:
-        # Return <file-name> + `#`.
-        base_unl = f"{self.v.context.fileName()}#{parts_s}"
-    # Do *not* translate '-->' to '--%3E'.
-    return 'unl:' + '//' + base_unl.replace("'", "%27")
+#@+node:tbrown.20111010104549.26758: *3* p.get_full_legacy_UNL
+def get_full_legacy_UNL(self) -> str:
+    """
+    Return a legacy unl with the full file-name component.
+
+    Not used in Leo's core or official plugins.
+    """
+    p = self
+    c = p.v.context
+    path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+    return 'unl:' + f"//{c.fileName()}#{path_part}"
 #@+node:ekr.20220917052540.1: ** Old commands
 #@+node:ekr.20150514063305.281: *3* ec.flushLines (doesn't work)
 @cmd('flush-lines')
@@ -10475,6 +10474,262 @@ def linesHelper(self, event: Event, pattern: str, which: str) -> None:
     w.insert(i, ''.join(keeplines))
     w.setInsertPoint(i)
     self.endCommand(changed=True, setLabel=True)
+#@+node:vitalije.20170831154859.1: *3* Reference outline commands
+# These did not work reliably.
+#@+node:vitalije.20170831154840.1: *4* c_file.readRefLeoFile
+@g.commander_command('read-ref-file')
+def readRefLeoFile(self: Self, event: Event = None) -> None:
+    """
+    This command *completely replaces* the **public part** of this outline
+    with the contents of the reference Leo file. The public part consists
+    of all nodes above the top-level node whose headline is
+    `---begin-private-area---`.
+
+    Below this special node is **private area** where one can freely make
+    changes that should not be copied (published) to the reference Leo file.
+
+    **Note**: Use the set-reference-file command to create the separator node.
+    """
+    c = self
+    c.fileCommands.updateFromRefFile()
+#@+node:vitalije.20170831154850.1: *4* c_file.setReferenceFile
+@g.commander_command('set-reference-file')
+def setReferenceFile(self: Self, event: Event = None) -> None:
+    """
+    Shows a file open dialog allowing you to select a **reference** Leo
+    document to which this outline will be connected.
+
+    This command creates a **special separator node**, a top-level node
+    whose headline is `---begin-private-area---` and whose body is the path
+    to reference Leo file.
+
+    The separator node splits the outline into two parts. The **public
+    part** consists of all nodes above the separator node. The **private
+    part** consists of all nodes below the separator node.
+
+    The update-ref-file and read-ref-file commands operate on the **public
+    part** of the outline. The update-ref-file command saves *only* the
+    public part of the outline to reference Leo file. The read-ref-file
+    command *completely replaces* the public part of the outline with the
+    contents of reference Leo file.
+    """
+    c = self
+    fileName = g.app.gui.runOpenFileDialog(c,
+            title="Select reference Leo file",
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
+            defaultextension=g.defaultLeoFileExtension(c))
+    if not fileName:
+        return
+    c.fileCommands.setReferenceFile(fileName)
+#@+node:vitalije.20170831154830.1: *4* c_file.updateRefLeoFile
+@g.commander_command('update-ref-file')
+def updateRefLeoFile(self: Self, event: Event = None) -> None:
+    """
+    Saves only the **public part** of this outline to the reference Leo
+    file. The public part consists of all nodes above the **special
+    separator node**, a top-level node whose headline is
+    `---begin-private-area---`.
+
+    Below this special node is **private area** where one can freely make
+    changes that should not be copied (published) to the reference Leo file.
+
+    **Note**: Use the set-reference-file command to create the separator node.
+    """
+    c = self
+    c.fileCommands.save_ref()
+#@+node:vitalije.20170831135146.1: *4* fc.save_ref & helpers
+PRIVAREA = '---begin-private-area---'
+
+def save_ref(self) -> bool:
+    """Saves reference outline file"""
+    c = self.c
+    p = c.p
+    fc = self
+    @others
+    c.endEditing()
+    for v in c.hiddenRootNode.children:
+        if v.h == PRIVAREA:
+            fileName = g.splitLines(v.b)[0].strip()
+            break
+    else:
+        fileName = c.mFileName
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1", c=c, p=p, fileName=fileName)
+    if ok is None:
+        fileName, content = getPublicLeoFile()
+        fileName = g.finalize_join(c.openDirectory, fileName)
+        with open(fileName, 'w', encoding="utf-8", newline='\n') as out:
+            out.write(content)
+        g.es('updated reference file:',
+              g.shortFileName(fileName))
+    g.doHook("save2", c=c, p=p, fileName=fileName)
+    return ok
+#@+node:vitalije.20170831135535.1: *5* function: put_v_elements
+def put_v_elements() -> Optional[str]:
+    """
+    Puts all <v> elements in the order in which they appear in the outline.
+
+    This is not the same as fc.put_v_elements!
+    """
+    c.clearAllVisited()
+    fc.put("<vnodes>\n")
+    # Make only one copy for all calls.
+    fc.currentPosition = c.p
+    fc.rootPosition = c.rootPosition()
+    fc.vnodesDict = {}
+    ref_fname = None
+    for p in c.rootPosition().self_and_siblings(copy=False):
+        if p.h == PRIVAREA:
+            ref_fname = p.b.split('\n', 1)[0].strip()
+            break
+        # An optimization: Write the next top-level node.
+        fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
+    fc.put("</vnodes>\n")
+    return ref_fname
+#@+node:vitalije.20170831135447.1: *5* function: getPublicLeoFile
+def getPublicLeoFile() -> tuple[str, str]:
+    fc.outputFile = io.StringIO()
+    fc.putProlog()
+    fc.putHeader()
+    fc.putGlobals()
+    fc.putPrefs()
+    fc.putFindSettings()
+    fname = put_v_elements()
+    put_t_elements()
+    fc.putPostlog()
+    return fname, fc.outputFile.getvalue()
+
+#@+node:vitalije.20211218225014.1: *5* function: put_t_elements
+def put_t_elements() -> None:
+    """
+    Write all <t> elements except those for vnodes appearing in @file, @edit or @auto nodes.
+    """
+
+    def should_suppress(p: Position) -> bool:
+        return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
+            for z in p.self_and_parents())
+
+    fc.put("<tnodes>\n")
+    suppress = {}
+    for p in c.all_positions(copy=False):
+        if should_suppress(p):
+            suppress[p.v] = True
+
+    toBeWritten = {}
+    for root in c.rootPosition().self_and_siblings():
+        if root.h == PRIVAREA:
+            break
+        for p in root.self_and_subtree():
+            if p.v not in suppress and p.v not in toBeWritten:
+                toBeWritten[p.v.fileIndex] = p.v
+    for gnx in sorted(toBeWritten):
+        v = toBeWritten[gnx]
+        fc.put_t_element(v)
+    fc.put("</tnodes>\n")
+#@+node:vitalije.20170831144643.1: *4* fc.updateFromRefFile
+def updateFromRefFile(self) -> None:
+    """Updates public part of outline from the specified file."""
+    c, fc = self.c, self
+    @others
+    pubgnxes = set(pub_gnxes())
+    privgnxes = set(priv_gnxes())
+    privnodes = priv_data(privgnxes - pubgnxes)
+    toppriv = [v.gnx for v in priv_vnodes()]
+    fname = get_ref_filename()
+    if not fname:
+        return
+    with nosqlite_commander(fname):
+        theFile = open(fname, 'rb')
+        fc.initIvars()
+        fc.getLeoFile(theFile, fname, checkOpenFiles=False)
+    restore_priv(privnodes, toppriv)
+    c.redraw()
+#@+node:vitalije.20170831144827.2: *5* function: get_ref_filename
+def get_ref_filename() -> Optional[str]:
+    for v in priv_vnodes():
+        return g.splitLines(v.b)[0].strip()
+    return None
+#@+node:vitalije.20170831144827.4: *5* function: pub_vnodes
+def pub_vnodes() -> Generator:
+    for v in c.hiddenRootNode.children:
+        if v.h == PRIVAREA:
+            break
+        yield v
+#@+node:vitalije.20170831144827.5: *5* function: priv_vnodes
+def priv_vnodes() -> Generator:
+    pub = True
+    for v in c.hiddenRootNode.children:
+        if v.h == PRIVAREA:
+            pub = False
+        if pub:
+            continue
+        yield v
+#@+node:vitalije.20170831144827.6: *5* function: pub_gnxes
+def sub_gnxes(children: Any) -> Generator:
+    for v in children:
+        yield v.gnx
+        for gnx in sub_gnxes(v.children):
+            yield gnx
+
+def pub_gnxes() -> Generator:
+    return sub_gnxes(pub_vnodes())
+
+def priv_gnxes() -> Generator:
+    return sub_gnxes(priv_vnodes())
+#@+node:vitalije.20170831144827.7: *5* function: restore_priv
+def restore_priv(prdata: Any, topgnxes: Any) -> None:
+    vnodes: list[VNode] = []
+    for row in prdata:
+        (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
+        v = leoNodes.VNode(context=c, gnx=gnx)
+        v._headString = h
+        v._bodyString = b
+        v.children = children
+        v.parents = parents
+        v.iconVal = iconVal
+        v.statusBits = statusBits
+        v.u = ua
+        vnodes.append(v)
+
+    def pv(x: VNode) -> VNode:
+        return fc.gnxDict.get(x, c.hiddenRootNode)  # type:ignore
+
+    for v in vnodes:
+        v.children = [pv(x) for x in v.children]
+        v.parents = [pv(x) for x in v.parents]
+    for gnx in topgnxes:
+        v = fc.gnxDict[gnx]
+        c.hiddenRootNode.children.append(v)
+        if gnx in pubgnxes:
+            v.parents.append(c.hiddenRootNode)
+#@+node:vitalije.20170831144827.8: *5* function: priv_data
+def priv_data(gnxes: Any) -> tuple:
+
+    def dbrow(v: VNode) -> tuple:
+        return (
+                v.gnx,
+                v.h,
+                v.b,
+                [x.gnx for x in v.children],
+                [x.gnx for x in v.parents],
+                v.iconVal,
+                v.statusBits,
+                v.u
+            )
+
+    return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
+#@+node:vitalije.20170831144827.9: *5* function: nosqlite_commander
+@contextmanager
+def nosqlite_commander(fname: str) -> Generator:
+    oldname = c.mFileName
+    conn = getattr(c, 'sqlite_connection', None)
+    c.sqlite_connection = None
+    c.mFileName = fname
+    yield c
+    if c.sqlite_connection:
+        c.sqlite_connection.close()
+    c.mFileName = oldname
+    c.sqlite_connection = conn
 #@+node:ekr.20171226140643.1: *3* find.find-all-unique-regex
 @cmd('find-all-unique-regex')
 def interactive_find_all_unique_regex(self, event: Event = None) -> None:  # pragma: no cover (interactive)
@@ -10535,7 +10790,7 @@ def interactive_change_all_unique_regex2(self, event: Event) -> None:  # pragma:
     k.showStateAndMode()
     c.widgetWantsFocusNow(w)
     self.do_change_all(settings)
-#@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
+#@+node:ekr.20210907103011.1: *3* coverage commands from leo/commands/testCommands.py
 @first # -*- coding: utf-8 -*-
 """Unit test commands"""
 import os

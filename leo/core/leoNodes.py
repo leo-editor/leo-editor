@@ -321,6 +321,52 @@ class Position:
         return f"<pos {id(p)} [{len(p.stack)}] None>"
 
     __repr__ = __str__
+    #@+node:ekr.20230726063237.1: *4* p.archive
+    def archive(self) -> dict[str, Any]:
+        """Return a json-like archival dictionary for p/v.unarchive."""
+        p = self
+        c = p.v.context
+
+        # Create an *initial* list of all vnodes in p.self_and_subtree.
+        all_unique_vnodes: list[VNode] = []
+        for p in p.self_and_subtree():
+            if p.v not in all_unique_vnodes:
+                all_unique_vnodes.append(p.v)
+
+        def ref(v: VNode) -> Optional[str]:
+            if v == c.hiddenRootNode:
+                return None
+            if v.gnx not in all_unique_vnodes:
+                all_unique_vnodes.append(v.gnx)
+            return v.gnx
+
+        parents_dict: dict[str, list[str]] = {}
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            parents_list = [ref(z) for z in v.parents]
+            parents_dict[v.gnx] = [z for z in parents_list if z]
+
+        children_dict: dict[str, list[str]] = {}
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            childrens_list = [ref(z.gnx) for z in v.children]
+            children_dict[v.gnx] = [z for z in childrens_list if z]
+
+        marks_dict: dict[str, str] = {}
+        for v in all_unique_vnodes:
+            marks_dict[v.gnx] = str(int(v.isMarked()))
+
+        uas_dict: dict[str, dict] = {}
+        for v in all_unique_vnodes:
+            uas_dict[v.gnx] = v.archive_ua()  # To do.
+
+        return {
+            'vnodes': all_unique_vnodes,
+            'parents': parents_dict,
+            'children': children_dict,
+            'marks': marks_dict,
+            'uAs': uas_dict,
+        }
     #@+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -1412,53 +1458,6 @@ class Position:
     def checkVisNextLimit(self, limit: Position, p: Position) -> bool:  # pragma: no cover
         """Return True is p is outside limit of visible nodes."""
         return limit != p and not limit.isAncestorOf(p)
-    #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
-    def safeMoveToThreadNext(self) -> Position:  # pragma: no cover
-        """
-        Move a position to threadNext position.
-        Issue an error if any vnode is an ancestor of itself.
-        """
-        p = self
-        if p.v:
-            child_v = p.v.children and p.v.children[0]
-            if child_v:
-                for parent in p.self_and_parents(copy=False):
-                    if child_v == parent.v:
-                        g.app.structure_errors += 1
-                        g.error(f"vnode: {child_v} is its own parent")
-                        # Allocating a new vnode would be difficult.
-                        # Just remove child_v from parent.v.children.
-                        parent.v.children = [
-                            v2 for v2 in parent.v.children if not v2 == child_v]
-                        if parent.v in child_v.parents:
-                            child_v.parents.remove(parent.v)
-                        # Try not to hang.
-                        p.moveToParent()
-                        break
-                    elif child_v.fileIndex == parent.v.fileIndex:
-                        g.app.structure_errors += 1
-                        g.error(
-                            f"duplicate gnx: {child_v.fileIndex!r} "
-                            f"v: {child_v} parent: {parent.v}")
-                        child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
-                        assert child_v.gnx != parent.v.gnx
-                        # Should be ok to continue.
-                        p.moveToFirstChild()
-                        break
-                else:
-                    p.moveToFirstChild()
-            elif p.hasNext():
-                p.moveToNext()
-            else:
-                p.moveToParent()
-                while p:
-                    if p.hasNext():
-                        p.moveToNext()
-                        break  # found
-                    p.moveToParent()
-                # not found.
-        return p
-    #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20040303175026: *3* p.Moving, Inserting, Deleting, Cloning, Sorting
     #@+node:ekr.20040303175026.8: *4* p.clone
     def clone(self) -> Position:
@@ -1676,9 +1675,14 @@ class Position:
         for child in children:
             child.parents.remove(p.v)
             child.parents.append(parent_v)
-    #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent
+    #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent (compatibility only)
     # This routine checks the structure of the receiver's tree.
     def validateOutlineWithParent(self, pv: Position) -> bool:
+        """
+        A helper for the legacy version of c.validateOutline.
+
+        No longer used in Leo's core or unit tests.
+        """
         p = self
         result = True  # optimists get only unpleasant surprises.
         parent = p.getParent()
@@ -2048,8 +2052,11 @@ class VNode:
         g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
-    def __repr__(self) -> str:
-        return f"<VNode {self.gnx} {self.headString()}>"  # pragma: no cover
+    def __repr__(self) -> str:  # pragma: no cover
+        return (
+            '<VNode: hidden root>' if self.gnx == 'hidden-root-vnode-gnx'
+            else f"<VNode {self.gnx} {self.headString()}>"
+        )
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2058,13 +2065,19 @@ class VNode:
 
     def dump(self, label: str = "") -> None:  # pragma: no cover
         v = self
-        s = '-' * 10
-        print(f"{s} {label} {v}")
+        # s = '-' * 10
+        print('')
+        print(f"dump of vnode: {label} {v}")
         # print('gnx: %s' % v.gnx)
-        print(f"len(parents): {len(v.parents)}")
-        print(f"len(children): {len(v.children)}")
-        print(f"parents: {g.listToString(v.parents)}")
-        print(f"children: {g.listToString(v.children)}")
+        print(f"len(parents): {len(v.parents)} len(children): {len(v.children)}")
+        if v.parents:
+            print(f"parents: {g.listToString(v.parents)}")
+        if v.children:
+            print(f"children: {g.listToString(v.children)}")
+    #@+node:ekr.20230728062638.1: *4* v.archive_uas
+    def archive_uas(self) -> dict[str, dict]:
+        """To do: return a json-like dict of all uas."""
+        return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:

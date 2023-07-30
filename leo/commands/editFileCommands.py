@@ -79,7 +79,7 @@ class ConvertAtRoot:
                 self.root = None
         #
         # Check the results.
-        link_errors = c.checkOutline(check_links=True)
+        link_errors = c.checkOutline()
         self.errors += link_errors
         print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
         c.redraw()
@@ -970,7 +970,7 @@ class GitDiffController:
     node_ending_patterns = (
         re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
         re.compile(r'^\s*#@\-others'),  # A -others sentinel
-        re.compile('^\s*#@\-leo'),  # A -leo sentinel.
+        re.compile(r'^\s*#@\-leo'),  # A -leo sentinel.
     )
 
     def _find_node(self,
@@ -1308,17 +1308,25 @@ class GitDiffController:
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
-        # #2143
         directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         path = g.finalize_join(directory, fn)
+
+        # Find all the files in the rev.
         if rev:
+            command = f"git ls-tree -r {rev} --name-only"
+            lines = g.execGitCommand(command, directory)
+            if not any(fn in z for z in lines):
+                # g.trace(f"{fn} not in {rev}")
+                return ''
             # Get the file using git.
             # Use the file name, not the path.
             command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, directory)
             return g.toUnicode(''.join(lines)).replace('\r', '')
+
+        # Read the file.
         try:
             with open(path, 'rb') as f:
                 b = f.read()

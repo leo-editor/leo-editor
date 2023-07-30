@@ -505,7 +505,7 @@ def createLastChildNode(c: Cmdr, parent: Position, headline: str, body: str) -> 
     p.initHeadString(headline)
     p.setBodyString(body)
     p.setDirty()
-    c.validateOutline()
+    c.checkOutline()
     return p
 #@+node:ekr.20171123135625.24: *3* def extractDef
 extractDef_patterns = (
@@ -588,7 +588,7 @@ def extractSectionNames(self: Self, event: Event = None) -> None:
             p = createLastChildNode(c, current, name, None)
             u.afterInsertNode(p, undoType, undoData)
             found = True
-    c.validateOutline()
+    c.checkOutline()
     if found:
         u.afterChangeGroup(current, undoType)
         c.redraw(p)

@@ -578,7 +578,7 @@ class leo_interface:
         window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
         result = self.create_leo_h_reference(window, vnode)
         return result
-    #@+node:EKR.20040517080250.21: *4* add_leo_links
+    #@+node:EKR.20040517080250.21: *4* add_leo_links (mod_http.py)
     def add_leo_links(self, window, node, f):
         """
         Given a node 'node', add links to:

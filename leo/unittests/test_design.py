@@ -20,13 +20,13 @@ files_dict: dict[str, tuple[str, ast.AST]] = None
 #@+node:ekr.20230508065238.1: ** functions...
 #@+node:ekr.20230507170833.1: *3* function: dump_chains
 def dump_chains(chains_list, long_chains_list):
-    
+
     c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
     p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
     # s_pat = re.compile(r'\b(s[0-9]?|[\w_]+_s)\b')
     v_pat = re.compile(r'\b(v[0-9]?|[\w_]+_v)\b')
     pats = (c_pat, p_pat, v_pat)
-    
+
     print(g.callers(1))
     for s in long_chains_list:
         if any(pat.match(s) for pat in pats):
@@ -39,7 +39,7 @@ string_pat2 = re.compile(r'(\").*?(\")')
 patterns = (array_pat, call_pat, string_pat1, string_pat2)
 
 def filter_chain(s: str) -> str:
-        
+
     def repl(m):
         return m.group(1) + m.group(2)
 
@@ -55,7 +55,7 @@ def load_files():
     global files_dict
     if files_dict is not None:
         return
-        
+
     def compute_files(pattern, root_dir):
         return [g.finalize_join(root_dir, z)
             for z in glob.glob(pattern, root_dir=root_dir)]
@@ -159,7 +159,7 @@ class AnnotationsTraverser(NodeVisitor):
     #@-others
 #@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor)
 class ChainsTraverser(NodeVisitor):
-    
+
     chains_set = set()
 
     def visit_Attribute(self, node):
@@ -189,24 +189,24 @@ class TestAnnotations(unittest.TestCase):
 #@+node:ekr.20230506095648.1: ** class TestChains(unittest.TestCase)
 class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
-    
+
     #@+others
     #@+node:ekr.20230507170833.1: *3* function: dump_chains
     def dump_chains(chains_list, long_chains_list):
-        
+
         c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
         p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
         # s_pat = re.compile(r'\b(s[0-9]?|[\w_]+_s)\b')
         v_pat = re.compile(r'\b(v[0-9]?|[\w_]+_v)\b')
         pats = (c_pat, p_pat, v_pat)
-        
+
         print(g.callers(1))
         for s in long_chains_list:
             if any(pat.match(s) for pat in pats):
                 print(s)
     #@+node:ekr.20230507122923.1: *3* TestChains.slow_test_all_paths
     def slow_test_all_paths(self):
-        
+
         load_files()
         traverser = ChainsTraverser()
         traverser.chains_set = set()
@@ -219,7 +219,7 @@ class TestChains(unittest.TestCase):
             prefixes = ['.'.join(z.split('.')[0:2]) for z in long_chains_list]
             for z in sorted(list(set(prefixes))):
                 if z.startswith(('c.', 'p.', 'v.')):
-                    print(z) 
+                    print(z)
         if 0:
             print(f"{len(chains_list)} chains:")
             print(f"{len(long_chains_list)} long chains:")

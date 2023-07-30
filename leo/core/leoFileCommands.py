@@ -7,7 +7,6 @@ from __future__ import annotations
 import binascii
 from collections import defaultdict
 from collections.abc import Callable
-from contextlib import contextmanager
 from datetime import datetime
 import difflib
 import hashlib
@@ -19,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -35,7 +34,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
 
 #@-<< leoFileCommands annotations >>
-PRIVAREA = '---begin-private-area---'
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
 def cmd(name: Any) -> Callable:
@@ -138,16 +136,16 @@ class FastRead:
 
         Unlike readFile above, this does not affect splitter sizes.
         """
-        v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
-        if not v:  # #1510.
+        hidden_v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
+        if not hidden_v:
             return None
         #
-        # #1111: ensure that all outlines have at least one node.
-        if not v.children:
+        # Ensure that all outlines have at least one node.
+        if not hidden_v.children:
             new_vnode = leoNodes.VNode(context=self.c)
             new_vnode.h = 'newHeadline'
-            v.children = [new_vnode]
-        return v
+            hidden_v.children = [new_vnode]
+        return hidden_v
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
@@ -174,6 +172,7 @@ class FastRead:
         t_elements = xroot.find('tnodes')
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+        self.updateBodies(gnx2body, self.gnx2vnode)
         self.handleBits()
         return hidden_v, g_element
     #@+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
@@ -387,6 +386,16 @@ class FastRead:
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
+    #@+node:ekr.20230724092804.1: *4* fast.updateBodies
+    def updateBodies(self, gnx2body: dict[str, str], gnx2vnode: dict[str, VNode]) -> None:
+        """Update bodies to enforce the "pasted wins" policy."""
+        for gnx in gnx2body:
+            body = gnx2body[gnx]
+            try:
+                v = gnx2vnode[gnx]
+                v.b = body
+            except KeyError:
+                pass
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
     def readFileFromJsonClipboard(self, s: str) -> VNode:
         """
@@ -419,6 +428,7 @@ class FastRead:
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+            self.updateBodies(gnx2body, self.gnx2vnode)
             self.handleBits()
         except Exception:
             g.trace(f"Error .leojs JSON is not valid: {path}")
@@ -810,8 +820,7 @@ class FileCommands:
             g.trace('no c.p')
             return None
         self.initReadIvars()
-        # Save the hidden root's children.
-        old_children = c.hiddenRootNode.children
+
         # Save and clear gnxDict.
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
@@ -824,13 +833,13 @@ class FileCommands:
             hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
         v = hidden_v.children[0]
         v.parents = []
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = old_children
         if not v:
             g.es("the clipboard is not valid ", color="blue")
             return None
+
         # Create the position.
         p = leoNodes.Position(v)
+
         # Do *not* adjust links when linking v.
         if current.hasChildren() and current.isExpanded():
             p._linkCopiedAsNthChild(current, 0)
@@ -853,8 +862,7 @@ class FileCommands:
             g.trace('no c.p')
             return None
         self.initReadIvars()
-        # Save the hidden root's children.
-        old_children = c.hiddenRootNode.children
+
         # All pasted nodes should already have unique gnx's.
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
@@ -870,13 +878,13 @@ class FileCommands:
 
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
-        # Restore the hidden root's children
-        c.hiddenRootNode.children = old_children
         if not v:
             g.es("the clipboard is not valid ", color="blue")
             return None
+
         # Create the position.
         p = leoNodes.Position(v)
+
         # Do *not* adjust links when linking v.
         if current.hasChildren() and current.isExpanded():
             if not self.checkPaste(current, p):
@@ -886,20 +894,14 @@ class FileCommands:
             if not self.checkPaste(current.parent(), p):
                 return None
             p._linkCopiedAfter(current)
-        # Fix #862: paste-retaining-clones can corrupt the outline.
-        self.linkChildrenToParents(p)
+
+        # Automatically correct any link errors!
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
         c.selectPosition(p)
         self.initReadIvars()
         return p
-    #@+node:ekr.20180424123010.1: *5* fc.linkChildrenToParents
-    def linkChildrenToParents(self, p: Position) -> None:
-        """
-        Populate the parent links in all children of p.
-        """
-        for child in p.children():
-            if not child.v.parents:
-                child.v.parents.append(p.v)
-            self.linkChildrenToParents(child)
     #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
     def reassignAllIndices(self, p: Position) -> None:
         """Reassign all indices in p's subtree."""
@@ -1170,124 +1172,6 @@ class FileCommands:
         except sqlite3.OperationalError:
             pass
         return geom
-    #@+node:vitalije.20170831154734.1: *5* fc.setReferenceFile
-    def setReferenceFile(self, fileName: str) -> None:
-        c = self.c
-        for v in c.hiddenRootNode.children:
-            if v.h == PRIVAREA:
-                v.b = fileName
-                break
-        else:
-            v = c.rootPosition().insertBefore().v
-            v.h = PRIVAREA
-            v.b = fileName
-            c.redraw()
-        g.es('set reference file:', g.shortFileName(fileName))
-    #@+node:vitalije.20170831144643.1: *5* fc.updateFromRefFile
-    def updateFromRefFile(self) -> None:
-        """Updates public part of outline from the specified file."""
-        c, fc = self.c, self
-        #@+others
-        #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
-        def get_ref_filename() -> Optional[str]:
-            for v in priv_vnodes():
-                return g.splitLines(v.b)[0].strip()
-            return None
-        #@+node:vitalije.20170831144827.4: *6* function: pub_vnodes
-        def pub_vnodes() -> Generator:
-            for v in c.hiddenRootNode.children:
-                if v.h == PRIVAREA:
-                    break
-                yield v
-        #@+node:vitalije.20170831144827.5: *6* function: priv_vnodes
-        def priv_vnodes() -> Generator:
-            pub = True
-            for v in c.hiddenRootNode.children:
-                if v.h == PRIVAREA:
-                    pub = False
-                if pub:
-                    continue
-                yield v
-        #@+node:vitalije.20170831144827.6: *6* function: pub_gnxes
-        def sub_gnxes(children: Any) -> Generator:
-            for v in children:
-                yield v.gnx
-                for gnx in sub_gnxes(v.children):
-                    yield gnx
-
-        def pub_gnxes() -> Generator:
-            return sub_gnxes(pub_vnodes())
-
-        def priv_gnxes() -> Generator:
-            return sub_gnxes(priv_vnodes())
-        #@+node:vitalije.20170831144827.7: *6* function: restore_priv
-        def restore_priv(prdata: Any, topgnxes: Any) -> None:
-            vnodes: list[VNode] = []
-            for row in prdata:
-                (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                v._headString = h
-                v._bodyString = b
-                v.children = children
-                v.parents = parents
-                v.iconVal = iconVal
-                v.statusBits = statusBits
-                v.u = ua
-                vnodes.append(v)
-
-            def pv(x: VNode) -> VNode:
-                return fc.gnxDict.get(x, c.hiddenRootNode)  # type:ignore
-
-            for v in vnodes:
-                v.children = [pv(x) for x in v.children]
-                v.parents = [pv(x) for x in v.parents]
-            for gnx in topgnxes:
-                v = fc.gnxDict[gnx]
-                c.hiddenRootNode.children.append(v)
-                if gnx in pubgnxes:
-                    v.parents.append(c.hiddenRootNode)
-        #@+node:vitalije.20170831144827.8: *6* function: priv_data
-        def priv_data(gnxes: Any) -> tuple:
-
-            def dbrow(v: VNode) -> tuple:
-                return (
-                        v.gnx,
-                        v.h,
-                        v.b,
-                        [x.gnx for x in v.children],
-                        [x.gnx for x in v.parents],
-                        v.iconVal,
-                        v.statusBits,
-                        v.u
-                    )
-
-            return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
-        #@+node:vitalije.20170831144827.9: *6* function: nosqlite_commander
-        @contextmanager
-        def nosqlite_commander(fname: str) -> Generator:
-            oldname = c.mFileName
-            conn = getattr(c, 'sqlite_connection', None)
-            c.sqlite_connection = None
-            c.mFileName = fname
-            yield c
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-            c.mFileName = oldname
-            c.sqlite_connection = conn
-        #@-others
-        pubgnxes = set(pub_gnxes())
-        privgnxes = set(priv_gnxes())
-        privnodes = priv_data(privgnxes - pubgnxes)
-        toppriv = [v.gnx for v in priv_vnodes()]
-        fname = get_ref_filename()
-        if not fname:
-            return
-        with nosqlite_commander(fname):
-            theFile = open(fname, 'rb')
-            fc.initIvars()
-            fc.getLeoFile(theFile, fname, checkOpenFiles=False)
-        restore_priv(privnodes, toppriv)
-        c.redraw()
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
@@ -1470,94 +1354,6 @@ class FileCommands:
                 if c.config.getBool('save-clears-undo-buffer'):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
-        g.doHook("save2", c=c, p=p, fileName=fileName)
-        return ok
-    #@+node:vitalije.20170831135146.1: *5* fc.save_ref & helpers
-    def save_ref(self) -> bool:
-        """Saves reference outline file"""
-        c = self.c
-        p = c.p
-        fc = self
-        #@+others
-        #@+node:vitalije.20170831135535.1: *6* function: put_v_elements
-        def put_v_elements() -> Optional[str]:
-            """
-            Puts all <v> elements in the order in which they appear in the outline.
-
-            This is not the same as fc.put_v_elements!
-            """
-            c.clearAllVisited()
-            fc.put("<vnodes>\n")
-            # Make only one copy for all calls.
-            fc.currentPosition = c.p
-            fc.rootPosition = c.rootPosition()
-            fc.vnodesDict = {}
-            ref_fname = None
-            for p in c.rootPosition().self_and_siblings(copy=False):
-                if p.h == PRIVAREA:
-                    ref_fname = p.b.split('\n', 1)[0].strip()
-                    break
-                # An optimization: Write the next top-level node.
-                fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
-            fc.put("</vnodes>\n")
-            return ref_fname
-        #@+node:vitalije.20170831135447.1: *6* function: getPublicLeoFile
-        def getPublicLeoFile() -> tuple[str, str]:
-            fc.outputFile = io.StringIO()
-            fc.putProlog()
-            fc.putHeader()
-            fc.putGlobals()
-            fc.putPrefs()
-            fc.putFindSettings()
-            fname = put_v_elements()
-            put_t_elements()
-            fc.putPostlog()
-            return fname, fc.outputFile.getvalue()
-
-        #@+node:vitalije.20211218225014.1: *6* function: put_t_elements
-        def put_t_elements() -> None:
-            """
-            Write all <t> elements except those for vnodes appearing in @file, @edit or @auto nodes.
-            """
-
-            def should_suppress(p: Position) -> bool:
-                return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
-                    for z in p.self_and_parents())
-
-            fc.put("<tnodes>\n")
-            suppress = {}
-            for p in c.all_positions(copy=False):
-                if should_suppress(p):
-                    suppress[p.v] = True
-
-            toBeWritten = {}
-            for root in c.rootPosition().self_and_siblings():
-                if root.h == PRIVAREA:
-                    break
-                for p in root.self_and_subtree():
-                    if p.v not in suppress and p.v not in toBeWritten:
-                        toBeWritten[p.v.fileIndex] = p.v
-            for gnx in sorted(toBeWritten):
-                v = toBeWritten[gnx]
-                fc.put_t_element(v)
-            fc.put("</tnodes>\n")
-        #@-others
-        c.endEditing()
-        for v in c.hiddenRootNode.children:
-            if v.h == PRIVAREA:
-                fileName = g.splitLines(v.b)[0].strip()
-                break
-        else:
-            fileName = c.mFileName
-        # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-        ok = g.doHook("save1", c=c, p=p, fileName=fileName)
-        if ok is None:
-            fileName, content = getPublicLeoFile()
-            fileName = g.finalize_join(c.openDirectory, fileName)
-            with open(fileName, 'w', encoding="utf-8", newline='\n') as out:
-                out.write(content)
-            g.es('updated reference file:',
-                  g.shortFileName(fileName))
         g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
@@ -1808,15 +1604,11 @@ class FileCommands:
         return s
     #@+node:ekr.20031218072017.3046: *5* fc.write_Leo_file
     def write_Leo_file(self, fileName: str) -> bool:
-        """
-        Write all external files and the .leo file itself."""
+        """Write all external files and the .leo file itself."""
         c, fc = self.c, self
-        if c.checkOutline():
-            g.error('Structural errors in outline! outline not written')
-            return False
         g.app.recentFilesManager.writeRecentFilesFile(c)
-        fc.writeAllAtFileNodes()  # Ignore any errors.
-        return fc.writeOutline(fileName)
+        fc.writeAllAtFileNodes()
+        return fc.writeOutline(fileName)  # Calls c.checkOutline.
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
@@ -2043,7 +1835,8 @@ class FileCommands:
     def writeOutline(self, fileName: str) -> bool:
 
         c = self.c
-        if c.checkOutline():
+        errors = c.checkOutline()
+        if errors:
             g.error('Structure errors in outline! outline not written')
             return False
         if self.isReadOnly(fileName):
@@ -2098,7 +1891,7 @@ class FileCommands:
         Return the a uA field for descendent VNode attributes,
         suitable for reconstituting uA's for anonymous vnodes.
         """
-        #
+        # z
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresponding archived positions.
         aList = []

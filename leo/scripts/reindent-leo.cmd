@@ -21,6 +21,8 @@ rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
 rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
+rem echo reindent leo/unittests
+call py %REINDENT_PATH% -r leo\unittests
 goto done
 
 :no_reindent

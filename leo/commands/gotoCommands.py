@@ -24,13 +24,26 @@ class GoToCommands:
         self.c = c
 
     #@+others
-    #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
+    #@+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
     def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
         """
         Place the cursor on the n'th line (one-based) of an external file.
 
         Return (p, offset) if found or (None, -1) if not found.
         """
+        c = self.c
+        # Don't add an item in the history list here!
+        if c.nodeHistory:
+            c.nodeHistory.skipBeadUpdate = True
+            try:
+                p, offset = self.find_file_line_helper(n, p)
+            finally:
+                c.nodeHistory.skipBeadUpdate = False
+            return p, offset
+        p, offset = self.find_file_line_helper(n, p)
+        return p, offset
+    #@+node:ekr.20230727074847.1: *4* goto.find_file_line_helper
+    def find_file_line_helper(self, n: int, p: Position = None) -> tuple[Position, int]:
         c = self.c
         if n < 0:
             return None, -1

@@ -818,7 +818,7 @@ class Commands:
                     keyval = line.split(':', 1)
                     key = keyval[0].strip()
                     val = keyval[1].strip()
-                    active_map[key] = val
+                    active_map[key] = val  # # pylint: disable=unsupported-assignment-operation
             return processor_map, extension_map, terminal
         #@+node:tom.20230308193758.7: *4* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:
@@ -1308,6 +1308,7 @@ class Commands:
 
     all_positions_iter = all_positions
     allNodes_iter = all_positions
+    safe_all_positions = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
     def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
         """
@@ -1413,17 +1414,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool = True) -> Generator:  # pragma: no cover
-        """
-        A generator returning all positions of the outline. This generator does
-        *not* assume that vnodes are never their own ancestors.
-        """
-        c = self
-        p = c.rootPosition()  # Make one copy.
-        while p:
-            yield p.copy() if copy else p
-            p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
@@ -1828,7 +1818,9 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
-            # Don't kill unit tests for this kind of problem.
+            if g.unitTesting:
+                # New in Leo 6.7.4: *Do* raise an exception.
+                raise ValueError(f"Invalid position: {p!r}")
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p), repr(c))
             g.trace(g.callers())
@@ -1900,7 +1892,7 @@ class Commands:
         """
         Check the consistency of all gnx's.
         Reallocate gnx's for duplicates or empty gnx's.
-        Return the number of structure_errors found.
+        Return the number of errors found.
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
@@ -1913,7 +1905,7 @@ class Commands:
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.safe_all_positions(copy=False):
+        for p in c.all_positions(copy=False):
             count += 1
             v = p.v
             gnx = v.fileIndex
@@ -1934,31 +1926,29 @@ class Commands:
                     gnx_errors += 1
                     g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
                     new_gnx(v)
-        ok = not gnx_errors and not g.app.structure_errors
+        ok = not gnx_errors
         t2 = time.time()
         if not ok:
             g.es_print(
                 f"check-outline ERROR! {c.shortFileName()} "
-                f"{count} nodes, "
-                f"{gnx_errors} gnx errors, "
-                f"{g.app.structure_errors} "
-                f"structure errors",
+                f"{count} nodes, {gnx_errors} gnx errors, ",
                 color='red'
             )
         elif c.verbose_check_outline and not g.unitTesting:
             print(
                 f"check-outline OK: {t2 - t1:4.2f} sec. "
                 f"{c.shortFileName()} {count} nodes")
-        return g.app.structure_errors
+        return gnx_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self) -> int:
-        """Check the consistency of all links in the outline."""
+        """
+        Check the consistency of all links in the outline.
+        """
+        # This is too slow a test to be run outside of unit tests.
         c = self
-        t1 = time.time()
         count, errors = 0, 0
-        for p in c.safe_all_positions():
+        for p in c.all_positions():
             count += 1
-            # try:
             if not c.checkThreadLinks(p):
                 errors += 1
                 break
@@ -1968,14 +1958,6 @@ class Commands:
             if not c.checkParentAndChildren(p):
                 errors += 1
                 break
-            # except AssertionError:
-                # errors += 1
-                # junk, value, junk = sys.exc_info()
-                # g.error("test failed at position %s\n%s" % (repr(p), value))
-        t2 = time.time()
-        g.es_print(
-            f"check-links: {t2 - t1:4.2f} sec. "
-            f"{c.shortFileName()} {count} nodes", color='blue')
         return errors
     #@+node:ekr.20040314035615.2: *5* c.checkParentAndChildren
     def checkParentAndChildren(self, p: Position) -> bool:
@@ -1992,8 +1974,6 @@ class Commands:
                 print('<no p.v>')
             else:
                 print('<no p>')
-            if g.unitTesting:
-                assert False, g.callers()  # noqa
 
         if p.hasParent():
             n = p.childIndex()
@@ -2071,6 +2051,121 @@ class Commands:
                 g.trace("p!=p.threadNext().threadBack()")
                 return False
         return True
+    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
+    def checkVnodeLinks(self) -> int:
+        """
+        Check all vnode links.
+
+        Attempt error recovery if recover_flag is True.
+        Unit tests may set recover_flag to False for strict tests.
+
+        Return the number of errors.
+        """
+        c = self
+
+        #@+others  # Define helpers.
+        #@+node:ekr.20230728005934.1: *6* find_errors
+        def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
+            """
+            Scan all vnodes for erroneous parent/child pairs.
+
+            Return (error_list, messages, n)
+            """
+            error_list: list[tuple[VNode, VNode]] = []
+            messages: list[str] = []
+            n = 0
+            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+                for child_v in parent_v.children:
+                    children_n = parent_v.children.count(child_v)
+                    parents_n = child_v.parents.count(parent_v)
+                    if children_n != parents_n:
+                        error_list.append((parent_v, child_v))
+                        messages.append(
+                            'Mismatch between parent.children and child.parents\n'
+                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                        n += 1
+            return error_list, messages, n
+        #@+node:ekr.20230728010156.1: *6* fix_errors
+        def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
+            "Fix all erroneous nodes by adding/deleting entries from v.parents." ""
+            for parent_v, child_v in error_list:
+                children_n = parent_v.children.count(child_v)
+                parents_n = child_v.parents.count(parent_v)
+                if parents_n == children_n:
+                    pass  # Already fixed.
+                elif parents_n < children_n:
+                    while parents_n < children_n:
+                        # Safe.
+                        child_v.parents.append(parent_v)
+                        parents_n += 1
+                else:
+                    while children_n < parents_n:
+                        if child_v.parents:
+                            # Safe.
+                            child_v.parents.remove(parent_v)
+                            children_n += 1
+                        else:  # pragma: no cover
+                            # This could delete the child.
+                            parent_v.children.remove(child_v)
+                            parents_n += 1
+        #@+node:ekr.20230728010753.1: *6* undelete_nodes
+        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
+
+            """Restore a parent link to any node that would otherwise be deleted."""
+            seen: list[VNode] = []
+            for parent_v, child_v in error_list:
+                if not child_v.parents and child_v not in seen:  # pragma: no cover
+                    # Add child_v to *one* parent.
+                    seen.append(child_v)
+                    parent_v.children.append(child_v)
+                    child_v.parents.append(parent_v)
+        #@+node:ekr.20230728011151.1: *6* recheck
+        def recheck() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
+            """
+            Rescan all vnodes to ensure that no errors remain.
+
+            Return (error_list, messages, no)
+            """
+            error_list: list[tuple[VNode, VNode]] = []
+            messages: list[str] = []
+            n = 0
+            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+                for child_v in parent_v.children:
+                    children_n = parent_v.children.count(child_v)
+                    parents_n = child_v.parents.count(parent_v)
+                    if children_n != parents_n:  # pragma: no cover
+                        error_list.append((parent_v, child_v))
+                        messages.append(
+                            'Error recovery failed!'
+                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                        n += 1
+            return error_list, messages, n
+        #@-others
+
+        # For unit testing.
+        strict = 'test:strict' in g.app.debug
+        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+        error_list, messages, n = find_errors()
+        if n == 0:
+            return 0
+        if verbose:  # pragma: no cover
+            print('\n')
+            g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
+            print('\n'.join(messages) + '\n')
+        if strict:  # pragma: no cover
+            return n
+        old_n = n
+        fix_errors(error_list)
+        undelete_nodes(error_list)
+        error_list, messages, n = recheck()
+        if n:  # pragma: no cover
+            # Report the *failure* to fix links!
+            print('\n'.join(messages))
+        elif verbose:  # pragma: no cover
+            g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+        return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
@@ -2087,7 +2182,7 @@ class Commands:
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree(copy=False):
+        for p in root.self_and_subtree(copy=False):  # pragma: no cover
             if p.isCloned() and clonedVnodes.get(p.v):
                 if not g.unitTesting and warningFlag:
                     c.alert(message)
@@ -2105,30 +2200,28 @@ class Commands:
                 return False
         return True
     #@+node:ekr.20031218072017.2072: *4* c.checkOutline
-    def checkOutline(self, event: Event = None, check_links: bool = False) -> int:
+    def checkOutline(self) -> int:
         """
         Check for errors in the outline.
-        Return the count of serious structure errors.
+        Return the number of errors.
         """
-        # The check-outline command sets check_links = True.
-        c = self
-        g.app.structure_errors = 0
-        structure_errors = c.checkGnxs()
-        if check_links and not structure_errors:
-            structure_errors += c.checkLinks()
-        return structure_errors
-    #@+node:ekr.20031218072017.1765: *4* c.validateOutline
+        c, errors = self, 0
+        for f in (c.checkVnodeLinks, c.checkGnxs):
+            errors += f()
+        return errors
+    #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
     def validateOutline(self, event: Event = None) -> bool:
+        """
+        A legacy outline checker, retained only for compatibility.
+
+        Not used in Leo's core or unit tests.
+        """
         c = self
-        if not g.app.validate_outline:
-            return True
-        root = c.rootPosition()
-        parent = None
-        if root:
-            return root.validateOutlineWithParent(parent)
-        return True
+        return c.checkOutline() == 0
+
+
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
