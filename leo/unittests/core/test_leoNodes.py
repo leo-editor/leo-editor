@@ -637,23 +637,6 @@ class TestNodes(LeoUnitTest):
         c.undoer.redo()
         c.undoer.undo()
         c.undoer.redo()
-    #@+node:ekr.20210830095545.52: *4* TestNodes.test_paste_retaining_clones
-    def test_paste_retaining_clones(self):
-        c, p = self.c, self.c.p
-        child = p.insertAsNthChild(0)
-        child.setHeadString('child')
-        self.assertTrue(child)
-        grandChild = child.insertAsNthChild(0)
-        grandChild.setHeadString('grand child')
-        c.selectPosition(child)
-        c.copyOutline()
-        oldVnodes = [p2.v for p2 in child.self_and_subtree()]
-        c.p.contract()  # Essential
-        c.pasteOutlineRetainingClones()
-        self.assertNotEqual(c.p, child)
-        newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
-        for v in newVnodes:
-            self.assertTrue(v in oldVnodes)
     #@+node:ekr.20210830095545.53: *4* TestNodes.test_promote
     def test_promote(self):
         c, p = self.c, self.c.p

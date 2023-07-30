@@ -895,22 +895,13 @@ class FileCommands:
                 return None
             p._linkCopiedAfter(current)
 
-        # Fix #862: paste-retaining-clones can corrupt the outline.
-        self.linkChildrenToParents(p)
+        # Automatically correct any link errors!
         errors = c.checkOutline()
         if errors > 0:
             return None
         c.selectPosition(p)
         self.initReadIvars()
         return p
-    #@+node:ekr.20180424123010.1: *5* fc.linkChildrenToParents
-    def linkChildrenToParents(self, p: Position) -> None:
-        """
-        Populate the parent links in all children of p.
-        """
-        for child in p.children():
-            child.v.parents.append(p.v)
-            self.linkChildrenToParents(child)
     #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
     def reassignAllIndices(self, p: Position) -> None:
         """Reassign all indices in p's subtree."""

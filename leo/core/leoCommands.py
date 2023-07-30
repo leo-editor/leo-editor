@@ -2054,12 +2054,16 @@ class Commands:
     #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
     def checkVnodeLinks(self) -> int:
         """
-        Check and repair all vnode links.
+        Check all vnode links.
+
+        Attempt error recovery if recover_flag is True.
+        Unit tests may set recover_flag to False for strict tests.
+
         Return the number of errors.
         """
         c = self
 
-        #@+others # Define helpers.
+        #@+others  # Define helpers.
         #@+node:ekr.20230728005934.1: *6* find_errors
         def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
@@ -2089,22 +2093,29 @@ class Commands:
                 children_n = parent_v.children.count(child_v)
                 parents_n = child_v.parents.count(parent_v)
                 if parents_n == children_n:
-                    g.trace('Can not happen: parents_n == children_n')
+                    pass  # Already fixed.
                 elif parents_n < children_n:
                     while parents_n < children_n:
+                        # Safe.
                         child_v.parents.append(parent_v)
                         parents_n += 1
                 else:
-                    while parents_n > children_n:
-                        child_v.parents.remove(parent_v)
-                        parents_n += 1
+                    while children_n < parents_n:
+                        if child_v.parents:
+                            # Safe.
+                            child_v.parents.remove(parent_v)
+                            children_n += 1
+                        else:  # pragma: no cover
+                            # This could delete the child.
+                            parent_v.children.remove(child_v)
+                            parents_n += 1
         #@+node:ekr.20230728010753.1: *6* undelete_nodes
         def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
 
             """Restore a parent link to any node that would otherwise be deleted."""
             seen: list[VNode] = []
             for parent_v, child_v in error_list:
-                if not child_v.parents and child_v not in seen:
+                if not child_v.parents and child_v not in seen:  # pragma: no cover
                     # Add child_v to *one* parent.
                     seen.append(child_v)
                     parent_v.children.append(child_v)
@@ -2123,7 +2134,7 @@ class Commands:
                 for child_v in parent_v.children:
                     children_n = parent_v.children.count(child_v)
                     parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:
+                    if children_n != parents_n:  # pragma: no cover
                         error_list.append((parent_v, child_v))
                         messages.append(
                             'Error recovery failed!'
@@ -2133,16 +2144,27 @@ class Commands:
             return error_list, messages, n
         #@-others
 
+        # For unit testing.
+        strict = 'test:strict' in g.app.debug
+        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        print('\n'.join(messages))
-        if 0:  # To be tested!
-            fix_errors(error_list)
-            undelete_nodes(error_list)
-            error_list, messages, n = recheck()
-            if n:
-                print('\n'.join(messages))
+        if verbose:  # pragma: no cover
+            print('\n')
+            g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
+            print('\n'.join(messages) + '\n')
+        if strict:  # pragma: no cover
+            return n
+        old_n = n
+        fix_errors(error_list)
+        undelete_nodes(error_list)
+        error_list, messages, n = recheck()
+        if n:  # pragma: no cover
+            # Report the *failure* to fix links!
+            print('\n'.join(messages))
+        elif verbose:  # pragma: no cover
+            g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
@@ -2160,7 +2182,7 @@ class Commands:
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree(copy=False):
+        for p in root.self_and_subtree(copy=False):  # pragma: no cover
             if p.isCloned() and clonedVnodes.get(p.v):
                 if not g.unitTesting and warningFlag:
                     c.alert(message)
@@ -2183,14 +2205,9 @@ class Commands:
         Check for errors in the outline.
         Return the number of errors.
         """
-        c = self
-        errors = 0
-        t1 = time.process_time()
+        c, errors = self, 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
-        t2 = time.process_time()
-        if t2 - t1 > 0.01 and not g.unitTesting:  # pylint: disable=simplifiable-condition
-            g.trace(f"{t2 - t1:4.2f} sec. {c.shortFileName()} {g.caller()}")
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.

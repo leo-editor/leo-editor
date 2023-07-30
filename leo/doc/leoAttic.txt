@@ -10790,7 +10790,7 @@ def interactive_change_all_unique_regex2(self, event: Event) -> None:  # pragma:
     k.showStateAndMode()
     c.widgetWantsFocusNow(w)
     self.do_change_all(settings)
-#@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
+#@+node:ekr.20210907103011.1: *3* coverage commands from leo/commands/testCommands.py
 @first # -*- coding: utf-8 -*-
 """Unit test commands"""
 import os
