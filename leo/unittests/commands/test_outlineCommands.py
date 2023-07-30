@@ -483,11 +483,41 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
 
-        # Resources.
-        # self.dump_clone_info(c)
-        # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
+        # Create the initial tree.
+        #   aa
+        #       aa:child1
+        #   bb
+        #   cc:child1 (clone)
+        #   cc
+        #       cc:child1 (clone)
+        #       cc:child2
+        #   dd
+        #       dd:child1
+        #           dd:child1:child1
+        #       dd:child2
+        #   ee
+        self.clean_tree()
+        cc = self.create_test_paste_outline()
+        self.assertEqual(cc.h, 'cc')
 
-        #@+others  # define helper
+        # Globals for archiving.
+        vnodes_list = list(set(c.all_nodes()))
+        children_dict = {}
+        parents_dict = {}
+
+        #@+others  # define helpers
+        #@+node:ekr.20230730070124.1: *4* function: init_dicts
+        def init_dicts() -> None:
+            ### nonlocal vnodes_list, children_dict, parents_dict
+            for z in vnodes_list:
+                children_dict [z.gnx] = z.children[:]
+            for z in vnodes_list:
+                parents_dict [z.gnx] = z.parents[:]
+        #@+node:ekr.20230730070250.1: *4* function: restore_tree
+        def restore_tree():
+            for v in vnodes_list:
+                v.children = children_dict [v.gnx][:]
+                v.parents = parents_dict [v.gnx][:]
         #@+node:ekr.20230729124541.1: *4* function: do_defect
         def do_defect(parent: Position, child: Position, defect: str) -> bool:
             """
@@ -508,76 +538,51 @@ class TestOutlineCommands(LeoUnitTest):
             else:
                 assert False, defect
         #@+node:ekr.20230729124819.1: *4* function: enable_options
-        def enable_options(options: str) -> None:
-            """Enable options in g.app.debug."""
+        def enable_options(parent: Position, options: list[tuple[str, str]]) -> None:
+            """
+            Enable options in g.app.debug for given list of option descriptors.
+
+            Each descriptor has the form (selector, option).
+
+            selector: 'all' or a headline.
+            option: 's' for strict, 'v' for verbose.
+            """
             g.app.debug = []
-            if 's' in options:
-                g.app.debug.append('test:strict')
-            if 'v' in options:
-                g.app.debug.append('test:verbose')
+            for descriptor  in options:
+                selector, option = descriptor
+                if selector in ('all', parent.h):
+                    if 's' in option and 'test:strict' not in g.app.debug:
+                        g.app.debug.append('test:strict')
+                    if 'v' in option and 'test:verbose' not in g.app.debug:
+                        g.app.debug.append('test:verbose')
+
         #@+node:ekr.20230729124441.1: *4* function: test (test_c_checkVnodeLinks)
-        ### def test(parent: Position, child: Position, defect: str, options: str) -> None:
-        def test(headline: str, parent: Position, child: Position, defect: str) -> int:
+        def test(parent: Position, child: Position) -> int:
             """
             Run all tests on all positions with the given headline with all possible defects.
 
             Return the number of tests actually run.
             """
-            # Re-create the tree.
-            self.clean_tree()
-            cc = self.create_test_paste_outline()
-            assert cc.h == 'cc'
-
-            # Re-create the vnodes_list and gnx_dict for test_node.
-                # vnodes_list = list(set(list(c.all_nodes())))
-                # gnx_dict = {z.h: z.gnx for z in vnodes_list}
-                # assert gnx_dict
-
-            # Ensure the parent and child position exists:
-            equivalent_parent, equivalent_child = None, None
-            for p in c.all_positions():
-                if equivalent(p, parent):
-                    equivalent_parent = p.copy()
-                if equivalent(p, child):
-                    equivalent_child = p.copy()
-            assert equivalent_parent, f"No equivalent parent position: {parent}"
-            assert equivalent_child, f"No equivanlent child position: {child}"
-
-            # Try to create the defect.
-            if do_defect(equivalent_parent, equivalent_child, defect):
-                # Run the test with the given options.
-                enable_options(options)
-                self.assertEqual(0, c.checkOutline())
-                return 1
-            return 0
-        #@+node:ekr.20230729140919.1: *4* function: equivalent
-        def equivalent(p1: Position, p2: Position) -> bool:
-            """
-            Return True if two positions are structurally equivalent.
-
-            Use headlines as proxies for gnx's.
-            """
-            assert p1 and isinstance(p1, Position), repr(p1)
-            assert p2 and isinstance(p2, Position), repr(p2)
-
-            # Actual stack entries are tuples (v, childIndex).
-            # Create proxy stacks of tuples (headline, childIndex).
-            stack1 = [(v.h, index) for (v, index) in p1.stack]
-            stack2 = [(v.h, index) for (v, index) in p2.stack]
-            return p1._childIndex == p2._childIndex and stack1 == stack2
+            # Create defects and run tests.
+            enable_options(parent, options)
+            n = 0
+            for defect in defects:
+                restore_tree()
+                tag_s = f"defect: {defect} parent: {parent.h}, child: {child.h}"
+                self.assertEqual(0, c.checkOutline(), msg=f"Before: {tag_s}")
+                if do_defect(parent, child, defect):
+                    n += 1
+                    self.assertEqual(0, c.checkOutline(),msg=f" After: {tag_s}")
+            return n
         #@-others
 
-        # Create the initial tree.
-        self.clean_tree()
-        cc = self.create_test_paste_outline()
-        self.assertEqual(cc.h, 'cc')
-        headlines = [p.h for p in c.all_unique_positions()]
+        init_dicts()
 
         # Options: a tuple (selector, option):
         #          Selector: headline or 'all'
         #          Option: 's' for strict, 'v' for verbose or 'sv' for both.
         options: tuple[tuple[str, str]] = (
-            ('all', 'v'),
+            # ('all', 'v'),
         )
 
         # The list of all possible defects.
@@ -590,14 +595,12 @@ class TestOutlineCommands(LeoUnitTest):
 
         # Test all actions on all positions for all headlines.
         n, n_positions = 0, 0
-        for headline in headlines:
-            for defect in defects:
-                positions = [z for z in c.all_positions() if z.h == headline]
-                n_positions += len(positions)
-                for parent in positions:
-                    for child in parent.children():
-                        n += test(headline, parent, child, defect)
-        g.trace('Done', n, 'tests', n_positions, 'positions')
+        for parent in c.all_positions():
+            n_positions += 1
+            for child in parent.children():
+                n_positions += 1
+                n += test(parent, child)
+        # g.trace('Done', n, 'tests', n_positions, 'positions')
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 
