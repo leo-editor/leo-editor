@@ -515,10 +515,16 @@ class TestOutlineCommands(LeoUnitTest):
                 child.v.parents.append(parent.v)
             elif defect == 'parents:delete':
                 child.v.parents.remove(parent.v)
+            elif defect == 'parents:delete-all':
+                while parent.v in child.v.parents:
+                    child.v.parents.remove(parent.v)
             elif defect == 'children:insert':
                 parent.v.children.append(child.v)
             elif defect == 'children:delete':
                 parent.v.children.remove(child.v)
+            elif defect == 'children:delete-all':
+                while child.v in parent.v.children:
+                    parent.v.children.remove(child.v)
             else:
                 assert False, defect
         #@+node:ekr.20230729124819.1: *4* function: enable_options
@@ -562,6 +568,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         init_dicts()
 
+        # Set options for enable_options().
         # Options: a tuple (selector, option):
         #          Selector: headline or 'all'
         #          Option: 's' for strict, 'v' for verbose or 'sv' for both.
@@ -570,7 +577,9 @@ class TestOutlineCommands(LeoUnitTest):
         )
 
         # The list of all possible defects. See do_defect.
-        defects = ['parents:insert', 'parents:delete', 'children:insert', 'children:delete']
+        defects = [
+            'parents:insert', 'parents:delete', 'parents:delete-all',
+            'children:insert', 'children:delete', 'children:delete-all']
 
         # Test all defects on all positions.
         n_tests, n_positions = 0, 0

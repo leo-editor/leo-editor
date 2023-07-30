@@ -2105,7 +2105,7 @@ class Commands:
                             # Safe.
                             child_v.parents.remove(parent_v)
                             children_n += 1
-                        else:
+                        else:  # pragma: no cover
                             # This could delete the child.
                             parent_v.children.remove(child_v)
                             parents_n += 1
@@ -2115,7 +2115,7 @@ class Commands:
             """Restore a parent link to any node that would otherwise be deleted."""
             seen: list[VNode] = []
             for parent_v, child_v in error_list:
-                if not child_v.parents and child_v not in seen:
+                if not child_v.parents and child_v not in seen:  # pragma: no cover
                     # Add child_v to *one* parent.
                     seen.append(child_v)
                     parent_v.children.append(child_v)
@@ -2154,7 +2154,7 @@ class Commands:
             print('\n')
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
-        if strict:
+        if strict:  # pragma: no cover
             return n
         old_n = n
         fix_errors(error_list)
@@ -2182,7 +2182,7 @@ class Commands:
                 clonedVnodes[v] = v
         if not clonedVnodes:
             return True
-        for p in root.self_and_subtree(copy=False):
+        for p in root.self_and_subtree(copy=False):  # pragma: no cover
             if p.isCloned() and clonedVnodes.get(p.v):
                 if not g.unitTesting and warningFlag:
                     c.alert(message)
