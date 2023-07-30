@@ -2134,7 +2134,7 @@ class Commands:
                 for child_v in parent_v.children:
                     children_n = parent_v.children.count(child_v)
                     parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:
+                    if children_n != parents_n:  # pragma: no cover
                         error_list.append((parent_v, child_v))
                         messages.append(
                             'Error recovery failed!'
@@ -2150,7 +2150,7 @@ class Commands:
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        if verbose:
+        if verbose:  # pragma: no cover
             print('\n')
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
@@ -2160,10 +2160,10 @@ class Commands:
         fix_errors(error_list)
         undelete_nodes(error_list)
         error_list, messages, n = recheck()
-        if n:
+        if n:  # pragma: no cover
             # Report the *failure* to fix links!
             print('\n'.join(messages))
-        elif verbose:
+        elif verbose:  # pragma: no cover
             g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
