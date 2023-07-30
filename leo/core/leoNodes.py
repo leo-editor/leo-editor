@@ -325,21 +325,32 @@ class Position:
     def archive(self) -> dict[str, Any]:
         """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
+        c = p.v.context
 
-        # Create a list of all vnodes in p.self_and_subtree.
+        # Create an *initial* list of all vnodes in p.self_and_subtree.
         all_unique_vnodes: list[VNode] = []
         for p in p.self_and_subtree():
             if p.v not in all_unique_vnodes:
-                all_unique_vnodes.append(p.b)
+                all_unique_vnodes.append(p.v)
 
-        # Create an archive of all_vnodes.
+        def ref(v: VNode) -> Optional[str]:
+            if v == c.hiddenRootNode:
+                return None
+            if v.gnx not in all_unique_vnodes:
+                all_unique_vnodes.append(v.gnx)
+            return v.gnx
+
         parents_dict: dict[str, list[str]] = {}
-        for v in all_unique_vnodes:
-            parents_dict[v.gnx] = [z.gnx for z in v.parents]
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            parents_list = [ref(z) for z in v.parents]
+            parents_dict[v.gnx] = [z for z in parents_list if z]
 
         children_dict: dict[str, list[str]] = {}
-        for v in all_unique_vnodes:
-            children_dict[v.gnx] = [z.gnx for z in v.children]
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            childrens_list = [ref(z.gnx) for z in v.children]
+            children_dict[v.gnx] = [z for z in childrens_list if z]
 
         marks_dict: dict[str, str] = {}
         for v in all_unique_vnodes:

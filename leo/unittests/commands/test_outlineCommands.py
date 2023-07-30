@@ -491,8 +491,7 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230729124541.1: *4* function: do_defect
         def do_defect(parent: Position, child: Position, defect: str) -> bool:
             """
-            Create the defect if possible.
-            Return True if the defect was in fact created.
+            Create the defect if possible. Return True if the defect was created.
             """
             if defect == 'parents:insert':
                 # Insert one for parent_v in child_v.parents.
@@ -521,7 +520,7 @@ class TestOutlineCommands(LeoUnitTest):
         def test(headline: str, parent: Position, child: Position, defect: str) -> int:
             """
             Run all tests on all positions with the given headline with all possible defects.
-            
+
             Return the number of tests actually run.
             """
             # Re-create the tree.
@@ -555,12 +554,12 @@ class TestOutlineCommands(LeoUnitTest):
         def equivalent(p1: Position, p2: Position) -> bool:
             """
             Return True if two positions are structurally equivalent.
-            
+
             Use headlines as proxies for gnx's.
             """
             assert p1 and isinstance(p1, Position), repr(p1)
             assert p2 and isinstance(p2, Position), repr(p2)
-            
+
             # Actual stack entries are tuples (v, childIndex).
             # Create proxy stacks of tuples (headline, childIndex).
             stack1 = [(v.h, index) for (v, index) in p1.stack]
