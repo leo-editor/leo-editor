@@ -484,23 +484,11 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
 
         # Create the initial tree.
-        #   aa
-        #       aa:child1
-        #   bb
-        #   cc:child1 (clone)
-        #   cc
-        #       cc:child1 (clone)
-        #       cc:child2
-        #   dd
-        #       dd:child1
-        #           dd:child1:child1
-        #       dd:child2
-        #   ee
         self.clean_tree()
         cc = self.create_test_paste_outline()
         self.assertEqual(cc.h, 'cc')
 
-        # Globals for archiving.
+        # Create globals for restore_tree().
         vnodes_list = list(set(c.all_nodes()))
         children_dict = {}
         parents_dict = {}
@@ -519,22 +507,18 @@ class TestOutlineCommands(LeoUnitTest):
                 v.children = children_dict [v.gnx][:]
                 v.parents = parents_dict [v.gnx][:]
         #@+node:ekr.20230729124541.1: *4* function: do_defect
-        def do_defect(parent: Position, child: Position, defect: str) -> bool:
+        def do_defect(parent: Position, child: Position, defect: str) -> None:
             """
             Create the defect if possible. Return True if the defect was created.
             """
             if defect == 'parents:insert':
-                # Insert one for parent_v in child_v.parents.
-                return 0
+                child.v.parents.append(parent.v)
             elif defect == 'parents:delete':
-                # Delete all enties for parent_v in child_v.parents.
-                return 0
+                child.v.parents.remove(parent.v)
             elif defect == 'children:insert':
-                # Insert one entry in parent_v.children for child_v.
-                return 0
+                parent.v.children.append(child.v)
             elif defect == 'children:delete':
-                # Delete all entries in parent_v.children for child_v.
-                return 0
+                parent.v.children.remove(child.v)
             else:
                 assert False, defect
         #@+node:ekr.20230729124819.1: *4* function: enable_options
@@ -561,18 +545,18 @@ class TestOutlineCommands(LeoUnitTest):
             """
             Run all tests on all positions with the given headline with all possible defects.
 
-            Return the number of tests actually run.
+            Return the number of tests run.
             """
             # Create defects and run tests.
             enable_options(parent, options)
             n = 0
             for defect in defects:
-                restore_tree()
                 tag_s = f"defect: {defect} parent: {parent.h}, child: {child.h}"
+                n += 1
+                restore_tree()
                 self.assertEqual(0, c.checkOutline(), msg=f"Before: {tag_s}")
-                if do_defect(parent, child, defect):
-                    n += 1
-                    self.assertEqual(0, c.checkOutline(),msg=f" After: {tag_s}")
+                do_defect(parent, child, defect)
+                self.assertEqual(0, c.checkOutline(), msg=f" After: {tag_s}")
             return n
         #@-others
 
@@ -585,22 +569,17 @@ class TestOutlineCommands(LeoUnitTest):
             # ('all', 'v'),
         )
 
-        # The list of all possible defects.
-        defects = [
-             # Insert/delete all entries for parent_v from child_v.parents.
-            'parents:insert', 'parents:delete',
-            # Insert/delete all enties in parent_v.children for child_v.
-            'children:insert', 'children:delete',
-        ]
+        # The list of all possible defects. See do_defect.
+        defects = ['parents:insert', 'parents:delete', 'children:insert', 'children:delete']
 
-        # Test all actions on all positions for all headlines.
-        n, n_positions = 0, 0
+        # Test all defects on all positions.
+        n_tests, n_positions = 0, 0
         for parent in c.all_positions():
             n_positions += 1
             for child in parent.children():
                 n_positions += 1
-                n += test(parent, child)
-        # g.trace('Done', n, 'tests', n_positions, 'positions')
+                n_tests += test(parent, child)
+        # g.trace('Done', n_tests, 'tests', n_positions, 'positions')
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 

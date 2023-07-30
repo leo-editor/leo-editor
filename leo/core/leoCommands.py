@@ -2093,7 +2093,7 @@ class Commands:
                 children_n = parent_v.children.count(child_v)
                 parents_n = child_v.parents.count(parent_v)
                 if parents_n == children_n:
-                    g.trace('Can not happen: parents_n == children_n')
+                    pass  # Already fixed.
                 elif parents_n < children_n:
                     while parents_n < children_n:
                         # Safe.
@@ -2152,7 +2152,7 @@ class Commands:
             return 0
         if verbose:
             print('\n')
-            g.trace(f"{len(messages)} link errors:\n")
+            g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
         if strict:
             return n
