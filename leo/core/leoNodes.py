@@ -327,41 +327,38 @@ class Position:
         p = self
         c = p.v.context
 
-        # Create an *initial* list of all vnodes in p.self_and_subtree.
-        all_unique_vnodes: list[VNode] = []
-        for p in p.self_and_subtree():
-            if p.v not in all_unique_vnodes:
-                all_unique_vnodes.append(p.v)
+        def all_unique_vnodes(p: Position) -> Generator:
+            seen = set()
+            for p2 in p.self_and_subtree():
+                v = p2.v
+                if v not in seen:
+                    seen.add(v)
+                    yield(v)
 
-        def ref(v: VNode) -> Optional[str]:
-            if v == c.hiddenRootNode:
-                return None
-            if v.gnx not in all_unique_vnodes:
-                all_unique_vnodes.append(v.gnx)
-            return v.gnx
+        def vnode_to_gnx(v: VNode) -> Optional[str]:
+            return None if v == c.hiddenRootNode else v.gnx
+
+        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+            result = [vnode_to_gnx(z) for z in vnode_list]
+            return [z for z in result if z]
 
         parents_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            parents_list = [ref(z) for z in v.parents]
-            parents_dict[v.gnx] = [z for z in parents_list if z]
+        for v in all_unique_vnodes(p):
+            parents_dict[v.gnx] = vnode_list_to_gnx_list(v.parents)
 
         children_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            childrens_list = [ref(z.gnx) for z in v.children]
-            children_dict[v.gnx] = [z for z in childrens_list if z]
+        for v in all_unique_vnodes(p):
+            children_dict[v.gnx] = vnode_list_to_gnx_list(v.children)
 
         marks_dict: dict[str, str] = {}
-        for v in all_unique_vnodes:
+        for v in all_unique_vnodes(p):
             marks_dict[v.gnx] = str(int(v.isMarked()))
 
         uas_dict: dict[str, dict] = {}
-        for v in all_unique_vnodes:
+        for v in all_unique_vnodes(p):
             uas_dict[v.gnx] = v.archive_ua()  # To do.
 
         return {
-            'vnodes': all_unique_vnodes,
             'parents': parents_dict,
             'children': children_dict,
             'marks': marks_dict,
