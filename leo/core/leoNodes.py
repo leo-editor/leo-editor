@@ -342,21 +342,17 @@ class Position:
             result = [vnode_to_gnx(z) for z in vnode_list]
             return [z for z in result if z]
 
-        parents_dict: dict[str, list[str]] = {}
-        for v in all_unique_vnodes(p):
-            parents_dict[v.gnx] = vnode_list_to_gnx_list(v.parents)
-
         children_dict: dict[str, list[str]] = {}
-        for v in all_unique_vnodes(p):
-            children_dict[v.gnx] = vnode_list_to_gnx_list(v.children)
-
         marks_dict: dict[str, str] = {}
-        for v in all_unique_vnodes(p):
-            marks_dict[v.gnx] = str(int(v.isMarked()))
-
+        parents_dict: dict[str, list[str]] = {}
         uas_dict: dict[str, dict] = {}
+
         for v in all_unique_vnodes(p):
-            uas_dict[v.gnx] = v.archive_ua()  # To do.
+            gnx = v.gnx
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            marks_dict[gnx] = str(int(v.isMarked()))
+            uas_dict[gnx] = v.archive_ua()  # To do.
 
         return {
             'parents': parents_dict,
