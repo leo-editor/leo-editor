@@ -352,7 +352,7 @@ class Position:
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
             marks_dict[gnx] = str(int(v.isMarked()))
-            uas_dict[gnx] = v.archive_ua()  # To do.
+            uas_dict[gnx] = v.archive_uas()  # To do.
 
         return {
             'parents': parents_dict,
