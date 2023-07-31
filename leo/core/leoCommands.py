@@ -3304,6 +3304,10 @@ class Commands:
     def recreateGnxDict(self) -> None:
         """Recreate the gnx dict prior to refreshing nodes from disk."""
         c, d = self, {}
+        # Start with the hidden-root-vnode
+        vHiddenRoot = c.hiddenRootNode
+        d[vHiddenRoot.gnx] = vHiddenRoot
+        # And fill up the with rest of the commander's VNodes.
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             if isinstance(gnxString, str):

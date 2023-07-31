@@ -293,6 +293,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.app.forgetOpenFile(fn=c2.fileName())
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
+        # The inserted, deleted and changed dicts nodes may come from c2, a different Commander.
+        c.recreateGnxDict()  # So update c.fileCommands.gnxDict.
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
     def computeChangeDicts(self, d1: dict, d2: dict) -> tuple[dict, dict, dict]:
         """
