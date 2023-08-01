@@ -186,7 +186,7 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: Any, val: Any, kind: str = None) -> Any:  # Kind is for unit testing.
+    def resolveUa(self, attr: Any, val: Any, tag: str) -> Any:
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
             val = g.toEncodedString(val)
@@ -197,6 +197,11 @@ class FastRead:
         # Leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
             if isinstance(val, (str, bytes)):
+                if 1:  ###
+                    print('')
+                    callers = g.callers(30).split(',')
+                    test = [z for z in callers if z.startswith('test_')]
+                    g.trace(attr, tag, test, g.toUnicode(val))
                 return g.toUnicode(val)
         # Support JSON encoded attributes
         if attr.startswith('json_'):
@@ -211,10 +216,7 @@ class FastRead:
             binString = binascii.unhexlify(val)
         except Exception:
             # Assume that Leo 4.1 or above wrote the attribute.
-            if g.unitTesting:
-                assert kind == 'raw', f"unit test failed: kind={kind}"
-            else:
-                g.trace(f"can not unhexlify {attr}={val}")
+            g.trace(f"can not unhexlify {attr}={val}")
             return ''
         try:
             # No change needed to support protocols.
@@ -298,7 +300,7 @@ class FastRead:
             # Next, scan for uA's for this gnx.
             for key, val in e.attrib.items():
                 if key != 'tx':
-                    s: Optional[str] = self.resolveUa(key, val)
+                    s: Optional[str] = self.resolveUa(key, val, tag=f"scanTnodes: {gnx}")
                     if s:
                         gnx2ua[gnx][key] = s
         return gnx2body, gnx2ua
@@ -367,7 +369,7 @@ class FastRead:
                     uaDict = gnx2ua[gnx]  # A defaultdict(dict)
                     for key, val in d.items():
                         if key not in self.nativeVnodeAttributes:
-                            uaDict[key] = self.resolveUa(key, val)
+                            uaDict[key] = self.resolveUa(key, val, tag=f"scanVnodes: {v.h}")
                     if uaDict:
                         v.unknownAttributes = uaDict
                     #@-<< handle all other v attributes >>

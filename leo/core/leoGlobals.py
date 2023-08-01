@@ -7146,6 +7146,25 @@ def insertCodingLine(encoding: str, script: str) -> str:
             lines.insert(0, f"{tag} {encoding} -*-\n")
             script = ''.join(lines)
     return script
+#@+node:ekr.20230801082922.1: ** g.uAs
+#@+node:ekr.20230801095531.1: *3* g.pickle
+def pickle(headline: str, val: Any, tag: str) -> str:
+    """Pickle val and return the hexlified result."""
+    try:
+        s = pickle.dumps(val, protocol=1)
+        s2 = binascii.hexlify(s)
+        s3 = g.toUnicode(s2, 'utf-8')
+        field = f' {tag}="{s3}"'
+        return field
+    except pickle.PicklingError:
+        if tag:  # The caller will print the error if tag is None.
+            g.warning(f"ignoring non-pickleable value {val!r} in {headline}")
+        return ''
+    except Exception:
+        g.error(f"fc.pickle: unexpected exception in {headline}")
+        g.es_exception()
+        return ''
+#@+node:ekr.20230801095537.1: *3* g.unpickle
 #@+node:ekr.20070524083513: ** g.Unit Tests
 #@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
 def run_coverage_tests(module: str = '', filename: str = '') -> None:
