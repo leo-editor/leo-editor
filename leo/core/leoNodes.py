@@ -2724,7 +2724,8 @@ vnode = VNode  # compatibility.
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
 def vnode_to_gnx(v: VNode) -> Optional[str]:
-    return None if v == v.context.hiddenRootNode else v.gnx
+    c = v.context
+    return None if v == c.hiddenRootNode else v.gnx
 
 def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
     result = [vnode_to_gnx(z) for z in vnode_list]
