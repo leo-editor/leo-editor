@@ -2076,14 +2076,13 @@ class VNode:
         """To do: return a json-like dict of all uas."""
         v = self
         ua = getattr(v, 'unknownAttributes', None)
-        if not ua:
-            return {}
-        try:
-            json.dumps(ua, skipkeys=True, cls=SetJSONEncoder)  # If this test passes ok
-            return ua  # Valid UA's as-is. UA's are NOT encoded.
-        except TypeError:
-            g.trace(f"Can not serialize uA for {v.h}")
-            g.printObj(ua, tag=f"ua for {v.h}")
+        if ua:
+            try:
+                json.dumps(ua, skipkeys=True, cls=SetJSONEncoder)
+                return ua  # Valid UA's as-is. UA's are NOT encoded.
+            except TypeError:
+                g.trace(f"Can not serialize uA for {v.h}")
+                g.printObj(ua, tag=f"ua for {v.h}")
         return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
