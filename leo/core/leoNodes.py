@@ -325,29 +325,13 @@ class Position:
     def archive(self) -> dict[str, Any]:
         """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
-        c = p.v.context
-
-        def all_unique_vnodes(p: Position) -> Generator:
-            seen = set()
-            for p2 in p.self_and_subtree():
-                v = p2.v
-                if v not in seen:
-                    seen.add(v)
-                    yield(v)
-
-        def vnode_to_gnx(v: VNode) -> Optional[str]:
-            return None if v == c.hiddenRootNode else v.gnx
-
-        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
-            result = [vnode_to_gnx(z) for z in vnode_list]
-            return [z for z in result if z]
 
         children_dict: dict[str, list[str]] = {}
         marks_dict: dict[str, str] = {}
         parents_dict: dict[str, list[str]] = {}
         uas_dict: dict[str, dict] = {}
 
-        for v in all_unique_vnodes(p):
+        for v in p.all_unique_vnodes():
             gnx = v.gnx
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
@@ -462,6 +446,16 @@ class Position:
             array.append(s)
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
+    #@+node:ekr.20230801015109.1: *4* p.all_unique_vnodes
+    def all_unique_vnodes(self) -> Generator:
+        """Yield all unique vnodes in p.self_and_subtree()."""
+        p = self
+        seen = set()
+        for p2 in p.self_and_subtree(copy=False):
+            v = p2.v
+            if v not in seen:
+                seen.add(v)
+                yield(v)
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""
@@ -2728,6 +2722,13 @@ class VNode:
 vnode = VNode  # compatibility.
 
 #@@beautify
+#@+node:ekr.20230801015325.1: ** archive-related functions
+def vnode_to_gnx(v: VNode) -> Optional[str]:
+    return None if v == v.context.hiddenRootNode else v.gnx
+
+def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+    result = [vnode_to_gnx(z) for z in vnode_list]
+    return [z for z in result if z]
 #@-others
 #@@language python
 #@@tabwidth -4
