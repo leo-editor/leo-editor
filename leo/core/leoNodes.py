@@ -6,6 +6,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import copy
+import json
 import os
 import time
 import uuid
@@ -1956,6 +1957,15 @@ class Position:
     #@-others
 
 position = Position  # compatibility.
+#@+node:ekr.20230801025822.1: ** class SetEncoder
+class SetJSONEncoder(json.JSONEncoder):
+    """A class to encode json in archive files."""
+    # Same as SetJSONEncoder in leo.core.leoFileCommands.
+
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
@@ -2062,8 +2072,18 @@ class VNode:
         if v.children:
             print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20230728062638.1: *4* v.archive_uas
-    def archive_uas(self) -> dict[str, dict]:
+    def archive_uas(self) -> dict:
         """To do: return a json-like dict of all uas."""
+        v = self
+        ua = getattr(v, 'unknownAttributes', None)
+        if not ua:
+            return {}
+        try:
+            json.dumps(ua, skipkeys=True, cls=SetJSONEncoder)  # If this test passes ok
+            return ua  # Valid UA's as-is. UA's are NOT encoded.
+        except TypeError:
+            g.trace(f"Can not serialize uA for {v.h}")
+            g.printObj(ua, tag=f"ua for {v.h}")
         return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
