@@ -4702,7 +4702,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shell=False,
         )
         out, err = p.communicate()
-        lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]
     finally:
         os.chdir(old_dir)
     return lines
