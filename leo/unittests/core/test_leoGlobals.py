@@ -47,6 +47,13 @@ class Test_uas(LeoUnitTest):
         str_pos = d.get('str_leo_pos')
         assert isinstance(str_pos, str), repr(str_pos)
         assert str_pos == '1.2.1', repr(str_pos)
+    #@+node:ekr.20230801145127.1: *3* Test_uas.test_fast_resolveUa
+    def test_fast_resolveUa(self):
+
+        c = self.c
+        root = c.rootPosition()
+        d = root.v.u
+        g.printObj(d, tag='test_fast_resolveUa')
     #@-others
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
