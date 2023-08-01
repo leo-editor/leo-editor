@@ -188,6 +188,7 @@ class FastRead:
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
     def resolveUa(self, attr: Any, val: Any, tag: str) -> Any:
         """Parse an unknown attribute in a <v> or <t> element."""
+        trace = False  ###
         try:
             val = g.toEncodedString(val)
         except Exception:
@@ -197,7 +198,7 @@ class FastRead:
         # Leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
             if isinstance(val, (str, bytes)):
-                if 1:  ###
+                if trace:  ###
                     print('')
                     callers = g.callers(30).split(',')
                     test = [z for z in callers if z.startswith('test_')]

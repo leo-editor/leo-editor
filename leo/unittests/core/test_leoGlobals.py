@@ -12,6 +12,42 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
+#@+node:ekr.20230801141147.1: ** class Test_uas(LeoUnitTest)
+class Test_uas(LeoUnitTest):
+    """Test all code that reads or writes uAs."""
+
+    def setUp(self):
+        super().setUp()
+        self._init_uas()
+
+    #@+others
+    #@+node:ekr.20230801142105.1: *3* Test_uas._init_uas
+    def _init_uas(self):
+        """Put the three kinds of uAs into the root position."""
+        c = self.c
+        root = c.rootPosition()
+        self.assertEqual(root.h, 'root')
+
+        root.u = {
+            # uas starting with 'str_' are not pickled.
+            'str_leo_pos': '1.2.1',
+        }
+    #@+node:ekr.20230801141510.1: *3* Test_uas.test_fc_setPositionsFromVnodes
+    def test_fc_setPositionsFromVnodes(self):
+
+        c = self.c
+        root = c.rootPosition()
+        d = root.v.u
+
+        # This case will never be tested, which makes testing easier.
+        assert isinstance(c.db, g.NullObject), repr(c.db)
+        str_pos = c.db.get('current_position')
+        assert isinstance(str_pos, g.NullObject), repr(c.db)
+
+        str_pos = d.get('str_leo_pos')
+        assert isinstance(str_pos, str), repr(str_pos)
+        assert str_pos == '1.2.1', repr(str_pos)
+    #@-others
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
 
