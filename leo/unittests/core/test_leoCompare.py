@@ -47,15 +47,23 @@ class TestCompare(LeoUnitTest):
         for p, h, b in table:
             p.h = h
             p.b = b
+
+        self.assertEqual(0, len(u.beads))  # #3476.
         self.assertEqual(c.lastTopLevel(), root)
+        self.assertEqual(0, c.checkOutline())
 
         # Run the command.
         diffMarkedNodes(event={'c': c})
-        self.assertEqual(c.lastTopLevel().h, 'diff marked nodes')
-        u.undo()
-        self.assertEqual(c.lastTopLevel(), root)
-        u.redo()
-        self.assertEqual(c.lastTopLevel().h, 'diff marked nodes')
+        for i in range(3):
+            self.assertEqual(1, len(u.beads))  # #3476.
+            self.assertEqual(0, c.checkOutline())
+            self.assertEqual(c.lastTopLevel().h, 'diff marked nodes')
+            u.undo()
+            self.assertEqual(0, c.checkOutline())
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertEqual(0, c.checkOutline())
+            self.assertEqual(c.lastTopLevel().h, 'diff marked nodes')
     #@+node:ekr.20230714160900.1: *3* TestCompare.test_diff_list_of_files
     def test_diff_list_of_files(self):
 
