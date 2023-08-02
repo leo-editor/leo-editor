@@ -25,12 +25,15 @@ class Test_uas(LeoUnitTest):
     def _init_uas(self):
         """Put the three kinds of uAs into the root position."""
         c = self.c
+        fc = c.fileCommands
         root = c.rootPosition()
         self.assertEqual(root.h, 'root')
 
         root.u = {
             # uas starting with 'str_' are not pickled.
             'str_leo_pos': '1.2.1',
+            'json_attr1': {'key1': 'val1',},
+            'hexlified': fc.pickle(root, 'hexlified-val', tag='_init_uas'),
         }
     #@+node:ekr.20230801141510.1: *3* Test_uas.test_fc_setPositionsFromVnodes
     def test_fc_setPositionsFromVnodes(self):
@@ -49,11 +52,40 @@ class Test_uas(LeoUnitTest):
         assert str_pos == '1.2.1', repr(str_pos)
     #@+node:ekr.20230801145127.1: *3* Test_uas.test_fast_resolveUa
     def test_fast_resolveUa(self):
+        
+        import json
+        from leo.core.leoFileCommands import FastRead
 
         c = self.c
+        fc = c.fileCommands
+        x = FastRead(c, {})
+        
         root = c.rootPosition()
         d = root.v.u
-        g.printObj(d, tag='test_fast_resolveUa')
+        assert isinstance(d, dict), repr(d)
+        # g.printObj(d, tag='root.v.u')
+        
+        # Test general line.
+        key = 'hexlified'
+        # val = fc.pickle(root, 'hexlified-val', tag='_init_uas')
+        # d = x.resolveUa(attr=key, val=val, tag='test')
+        val = d.get(key)
+        g.printObj(d)
+        # d = x.resolveUa(attr=key, val=val, tag='test')
+        
+        # Test json_ line.
+        key = 'json_attr1'
+        if 0:
+            val = {'key1': 'val1'}
+            s = fc.putUaHelper(root, key, val)
+            print(s)
+        if 1:
+            val = '{"key1":"val1"}'
+            d = x.resolveUa(attr=key, val=val, tag='test')
+        if 1:  # The inner workings of x.resolveUa.
+            val = '{"key1":"val1"}'
+            d = json.loads(g.toUnicode(val))
+        assert isinstance(d, dict), repr(d)
     #@-others
 #@+node:ekr.20210902165045.1: ** class TestGlobals(LeoUnitTest)
 class TestGlobals(LeoUnitTest):
