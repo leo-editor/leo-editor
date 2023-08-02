@@ -47,7 +47,7 @@ class TestCompare(LeoUnitTest):
         for p, h, b in table:
             p.h = h
             p.b = b
-            
+
         self.assertEqual(0, len(u.beads))  # #3476.
         self.assertEqual(c.lastTopLevel(), root)
         self.assertEqual(0, c.checkOutline())
