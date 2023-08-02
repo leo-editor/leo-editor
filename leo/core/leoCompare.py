@@ -688,7 +688,6 @@ def diffMarkedNodes(event: Event) -> None:
         p = root.insertAsLastChild()
         p.h = f"diff {n}"
         p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
-        u.afterInsertNode(p, undoType, undoData)
         for p3 in (p1, p2):
             clone = p3.clone()
             clone.moveToLastChildOf(p)
