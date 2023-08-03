@@ -81,20 +81,22 @@ class GoToCommands:
         if not root:
             return None
         assert root.isAnyAtFileNode()
-        # Always get the file with sentinels.
+
+        # Get the file with sentinels.
         contents_s = self.get_external_file_with_sentinels(root) if s is None else s
-        remove_sentinels = any(z() for z in (root.isAtCleanNode, root.isAtAutoNode))  ### For now.
+        remove_sentinels = root.isAtCleanNode() or root.isAtAutoNode()
         contents = g.splitLines(contents_s)
         delim1, delim2 = self.get_delims(root)
         delims = self.get_3_delims(root)
-        # Match only the node with the correct gnx.
+
+        # Find the node with the correct gnx.
         node_pat = re.compile(fr"\s*{re.escape(delim1)}@\+node:{re.escape(p.gnx)}:")
         for i, s in enumerate(contents):
             if node_pat.match(s):
                 if remove_sentinels:
                     n = self.prev_hidden_lines(delims, contents, i)
                     if n is None:
-                        g.trace(f"Not found '{p.h}' {i}")
+                        # g.trace(f"Not found '{p.h}' {i}")
                         return i
                     else:
                         # g.trace(f"Found '{p.h}' {i} -> {n + 1}")
@@ -357,7 +359,7 @@ class GoToCommands:
         return delims2, delims3
 
     def get_3_delims(self, root: Position) -> tuple[str, str, str]:
-        """Return the two start/end delimiters in effect at root."""
+        """Return all three comment delimiters in effect at root."""
         c = self.c
         old_target_language = c.target_language
         try:
@@ -376,16 +378,6 @@ class GoToCommands:
         c = self.c
         if root.isAnyAtFileNode():
             return c.atFileCommands.atFileToString(root, sentinels=True)
-        if 0:
-            if root.isAtAutoNode():
-            # Special case @auto nodes:
-            # Leo does not write sentinels in the root @auto node.
-                try:
-                    g.app.force_at_auto_sentinels = True
-                    s = c.atFileCommands.atAutoToString(root)
-                finally:
-                    g.app.force_at_auto_sentinels = True
-            return s
         return g.composeScript(
             c=c,
             p=root,

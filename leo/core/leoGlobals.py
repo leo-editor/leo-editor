@@ -7130,11 +7130,13 @@ def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: 
     but not the external file.
     """
     delim1 = delims[0] or delims[1]
+
     # Get previous line, to test for previous @verbatim sentinel.
     line1 = contents[i - 1] if i > 0 else ''  # previous line.
     line2 = contents[i]
     if not g.is_sentinel(line2, delims):
         return False  # Non-sentinels are visible everywhere.
+
     # Strip off the leading sentinel comment. Works for blackened sentinels.
     s1 = line1.strip()[len(delim1) :]
     s2 = line2.strip()[len(delim1) :]
