@@ -42,32 +42,23 @@ class TestGotoCommands(TestOutlineCommands):
         # self.dump_clone_info(c)
         delim1, delim2 = x.get_delims(root)
         assert (delim1, delim2) == ('#', None)
-
-        def visible_line_in_outline(line: str) -> bool:
-            """Return True if the line is visible in the outline."""
-            if not x.is_sentinel(delim1, delim2, line):
-                return line
-            s = line.lstrip()[len(delim1) :]
-            if s.startswith('@+others'):
-                return '@others\n'  # A small hack.
-            if s.startswith('@+<<'):
-                return s[2:]
-            if s.startswith('@@'):
-                return s[1:]
-            return None
+        delims = x.get_3_delims(root)
 
         # A shortcut. All body lines are unique.
         contents_s = x.get_external_file_with_sentinels(root)
         contents = g.splitLines(contents_s)
-        clean_contents = [visible_line_in_outline(z) for z in contents if visible_line_in_outline(z)]
-        assert clean_contents
-
+        # Remove invisible sentinels and convert visible sentinels to
+        # their corresponding line in the outline.
+        clean_contents = [
+            z.replace('#@', '').replace('+others', '@others')
+            for i, z in enumerate(contents)
+            if not g.is_invisible_sentinel(delims, contents, i)
+        ]
         # g.printObj(contents, tag='With sentinels')
         # g.printObj(clean_contents, tag='No sentinels')
 
         # Test all lines of all nodes.
         for node_i, p in enumerate(c.all_positions()):
-
             p_offset = x.find_node_start(p) - 1
             assert p_offset is not None, p.h
             line = clean_contents[p_offset]

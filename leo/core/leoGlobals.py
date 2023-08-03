@@ -7118,7 +7118,7 @@ def insertCodingLine(encoding: str, script: str) -> str:
             script = ''.join(lines)
     return script
 #@+node:ekr.20230803155851.1: ** g.Sentinels
-#@+node:ekr.20230803160315.1: *3* g.is_invisible_sentinel (new)
+#@+node:ekr.20230803160315.1: *3* g.is_invisible_sentinel
 def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: int) -> bool:
     """
     delims are the comment delims in effect.
