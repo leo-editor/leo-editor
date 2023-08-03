@@ -3731,35 +3731,6 @@ def is_binary_string(s: str) -> bool:
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
     return bool(s.translate(None, bytes(aList)))  # type:ignore
-#@+node:EKR.20040504154039: *3* g.is_sentinel
-def is_sentinel(line: str, delims: Sequence) -> bool:
-    """
-    Return True if line starts with a sentinel comment.
-
-    Leo 6.7.2: Support blackened sentinels.
-    """
-    delim1, delim2, delim3 = delims
-    # Defensive code. Make *sure* delim has no trailing space.
-    if delim1:
-        delim1 = delim1.rstrip()
-    line = line.lstrip()
-    if delim1:
-        sentinel1 = delim1 + '@'
-        sentinel2 = delim1 + ' @'
-        return line.startswith((sentinel1, sentinel2))
-    if delim2 and delim3:
-        sentinel1 = delim2 + '@'
-        sentinel2 = delim2 + ' @'
-        if sentinel1 in line:
-            i = line.find(sentinel1)
-            j = line.find(delim3)
-            return 0 == i < j
-        if sentinel2 in line:
-            i = line.find(sentinel2)
-            j = line.find(delim3)
-            return 0 == i < j
-    g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
-    return False
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
 def makeAllNonExistentDirectories(theDir: str) -> Optional[str]:
     """
@@ -7146,6 +7117,66 @@ def insertCodingLine(encoding: str, script: str) -> str:
             lines.insert(0, f"{tag} {encoding} -*-\n")
             script = ''.join(lines)
     return script
+#@+node:ekr.20230803155851.1: ** g.Sentinels
+#@+node:ekr.20230803160315.1: *3* g.is_invisible_sentinel (new)
+def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: int) -> bool:
+    """
+    delims are the comment delims in effect.
+
+    contents is the contents *with* sentinels of an external file that
+    normally does *not* have sentinels.
+
+    Return True if contents[i] corresponds to a line visible in the outline
+    but not the external file.
+    """
+    delim1 = delims[0] or delims[1]
+    # Get previous line, to test for previous @verbatim sentinel.
+    line1 = contents[i - 1] if i > 0 else ''  # previous line.
+    line2 = contents[i]
+    if not g.is_sentinel(line2, delims):
+        return False  # Non-sentinels are visible everywhere.
+    # Strip off the leading sentinel comment. Works for blackened sentinels.
+    s1 = line1.strip()[len(delim1) :]
+    s2 = line2.strip()[len(delim1) :]
+    if s1.startswith('@verbatim'):
+        return False  # *This* line is visible in the outline.
+    if s2.startswith(('@+others', '@+<<', '@@')):
+        #@verbatim
+        # @others, section reference or Leo directive.
+        # Visibible in both the outline and external file.
+        return False
+    # Not visible anywhere. For example, @+leo, @-leo, @-others, @+node, @-node.
+    return True
+#@+node:EKR.20040504154039: *3* g.is_sentinel
+def is_sentinel(line: str, delims: tuple[str, str, str]) -> bool:
+    """
+    Return True if line starts with a sentinel comment.
+
+    Leo 6.7.2: Support blackened sentinels.
+    """
+    assert len(delims) == 3, (repr(delims), g.callers())  ###
+    delim1, delim2, delim3 = delims
+    # Defensive code. Make *sure* delim has no trailing space.
+    if delim1:
+        delim1 = delim1.rstrip()
+    line = line.lstrip()
+    if delim1:
+        sentinel1 = delim1 + '@'
+        sentinel2 = delim1 + ' @'
+        return line.startswith((sentinel1, sentinel2))
+    if delim2 and delim3:
+        sentinel1 = delim2 + '@'
+        sentinel2 = delim2 + ' @'
+        if sentinel1 in line:
+            i = line.find(sentinel1)
+            j = line.find(delim3)
+            return 0 == i < j
+        if sentinel2 in line:
+            i = line.find(sentinel2)
+            j = line.find(delim3)
+            return 0 == i < j
+    g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
+    return False
 #@+node:ekr.20070524083513: ** g.Unit Tests
 #@+node:ekr.20210901071523.1: *3* g.run_coverage_tests
 def run_coverage_tests(module: str = '', filename: str = '') -> None:

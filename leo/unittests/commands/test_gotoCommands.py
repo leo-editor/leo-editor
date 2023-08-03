@@ -62,13 +62,20 @@ class TestGotoCommands(TestOutlineCommands):
         clean_contents = [visible_line_in_outline(z) for z in contents if visible_line_in_outline(z)]
         assert clean_contents
 
+        # g.printObj(contents, tag='With sentinels')
+        # g.printObj(clean_contents, tag='No sentinels')
+
         # Test all lines of all nodes.
         for node_i, p in enumerate(c.all_positions()):
-            g.trace(p.h)
-            p_offset = x.find_node_start(p=p) - 1  # Convert to zero-based.
-            assert p_offset >= 0, p.h
 
-        g.printObj(clean_contents, tag='Clean contents')
+            p_offset = x.find_node_start(p) - 1
+            assert p_offset is not None, p.h
+            line = clean_contents[p_offset]
+            if p.h.startswith('@clean'):
+                assert line == '@language python\n', (p_offset, repr(p.h), repr(line))
+            else:
+                # print(f"{p.h:10} {p_offset:3} {line}")
+                assert p.h in line, (p_offset, repr(p.h), repr(line))
     #@-others
 #@-others
 #@-leo

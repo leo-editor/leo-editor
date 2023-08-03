@@ -82,59 +82,50 @@ class GoToCommands:
             return None
         assert root.isAnyAtFileNode()
         # Always get the file with sentinels.
-        contents = self.get_external_file_with_sentinels(root) if s is None else s
+        contents_s = self.get_external_file_with_sentinels(root) if s is None else s
         remove_sentinels = any(z() for z in (root.isAtCleanNode, root.isAtAutoNode))  ### For now.
-        lines = g.splitLines(contents)
-        ### g.trace(f"Entry: sentinels? {sentinels}")
-        ### g.printObj(lines, tag='find_node_start')
+        contents = g.splitLines(contents_s)
         delim1, delim2 = self.get_delims(root)
+        delims = self.get_3_delims(root)
         # Match only the node with the correct gnx.
-        node_pat = re.compile(r'\s*%s@\+node:%s:' % (
-            re.escape(delim1), re.escape(p.gnx)))
-        ### g.trace('Looking for gnx:', p.gnx, p.h)
-        for i, s in enumerate(lines):
+        node_pat = re.compile(fr"\s*{re.escape(delim1)}@\+node:{re.escape(p.gnx)}:")
+        for i, s in enumerate(contents):
             if node_pat.match(s):
-                ### g.trace('FOUND', p)
-                n = self.adjust_at_clean_line(delim1, delim2, lines, i - 1) if remove_sentinels else i
-                return n + 1  # Convert to one-based.
-
+                if remove_sentinels:
+                    n = self.prev_hidden_lines(delims, contents, i)
+                    if n is None:
+                        g.trace(f"Not found '{p.h}' {i}")
+                        return i
+                    else:
+                        # g.trace(f"Found '{p.h}' {i} -> {n + 1}")
+                        return max(0, i - n + 1)
+                return i + 1
         # #3010: Special case for .vue files.
         #        Also look for nodes delimited by "//"
         if root.h.endswith('.vue'):
             node_pat2 = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape('//'), re.escape(p.gnx)))
-        for i, s in enumerate(lines):
+        for i, s in enumerate(contents):
             if node_pat2.match(s):
                 return i + 1  # Convert to one-based.
         return None
-    #@+node:ekr.20230803073950.1: *4* goto.adjust_at_clean_line
-    def adjust_at_clean_line(self, delim1: str, delim2: str, lines: list[str], sentinels_i: int) -> int:
+    #@+node:ekr.20230803073950.1: *4* goto.prev_hidden_lines
+    def prev_hidden_lines(self,
+        delims: tuple[str, str, str],  # The comment delims.
+        contents: list[str],  # The contents of the file *including* sentinels.
+        target_i: int,  # The line number of the target line.
+    ) -> Optional[int]:
         """
-        sentinels_i is line number of the file *with* sentinels.
-        return the corresponding line number *without* sentinels.
+        Return the number of hidden sentinels preceding contents[target_i].
         """
-        i = 0
-        for line in lines:
-            if self.is_sentinel(delim1, delim2, line):
-                # Similar to scan_nonsentinel_lines.
-                s = line.strip()[len(delim1) :]  # Works for blackened sentinels.
-                if s.startswith(('@+others', '@+<<', '@@')):
-                    # These directives are visible in the outline. but *not* in the file.
-                    if i == sentinels_i:
-                        # g.trace('    Found sentinel', sentinels_i, '==>', i, repr(line))
-                        g.trace(f"    sentinel: {sentinels_i:2} --> {i:2} {line!r}")
-                        return i
-                    i += 1
-                else:
-                    # All other sentinels are invisible to the user.
-                    pass
-                continue
-            if i == sentinels_i:
-                # g.trace(f"non-sentinel: {sentinels_i:2} --> {i:2} {line!r}")
-                return i
-            i += 1
-        g.trace('NOT FOUND', sentinels_i)
-        return i
+        assert len(delims) == 3, g.callers()
+        n_prev = 0
+        for i, line in enumerate(contents):
+            if i == target_i:
+                return n_prev
+            if g.is_invisible_sentinel(delims, contents, i):
+                n_prev += 1
+        return None
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n: int, root: Position) -> tuple[Position, int]:
         """
@@ -350,9 +341,9 @@ class GoToCommands:
                         if fileName:
                             return p2.copy(), fileName
         return None, None
-    #@+node:ekr.20150625123747.1: *4* goto.get_delims
+    #@+node:ekr.20150625123747.1: *4* goto.get_delims & goto.get_3_delims
     def get_delims(self, root: Position) -> tuple[str, str]:
-        """Return the delimiters in effect at root."""
+        """Return the two start/end delimiters in effect at root."""
         c = self.c
         old_target_language = c.target_language
         try:
@@ -364,6 +355,17 @@ class GoToCommands:
         if delims1:
             return delims1, None
         return delims2, delims3
+
+    def get_3_delims(self, root: Position) -> tuple[str, str, str]:
+        """Return the two start/end delimiters in effect at root."""
+        c = self.c
+        old_target_language = c.target_language
+        try:
+            c.target_language = g.getLanguageAtPosition(c, root)
+            d = c.scanAllDirectives(root)
+        finally:
+            c.target_language = old_target_language
+        return d.get('delims')
     #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root: Position) -> str:
         """
@@ -461,13 +463,13 @@ def show_file_line(event: Event) -> None:
     w = c.frame.body.wrapper
     if not w:
         return
-    n0 = GoToCommands(c).find_node_start(p=c.p)
+    n0 = GoToCommands(c).find_node_start(p=c.p)  # One-based.
     if n0 is None:
         g.es_print('Line not found')
         return
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print('line', 1 + n0 + row)
+    g.es_print('line', n0 + row)  ### 1 + n0 + row)
 #@-others
 #@-leo
