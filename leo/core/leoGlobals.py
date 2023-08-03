@@ -7156,7 +7156,6 @@ def is_sentinel(line: str, delims: tuple[str, str, str]) -> bool:
 
     Leo 6.7.2: Support blackened sentinels.
     """
-    assert len(delims) == 3, (repr(delims), g.callers())  ###
     delim1, delim2, delim3 = delims
     # Defensive code. Make *sure* delim has no trailing space.
     if delim1:

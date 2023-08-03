@@ -462,6 +462,6 @@ def show_file_line(event: Event) -> None:
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print('line', n0 + row)  ### 1 + n0 + row)
+    g.es_print('line', n0 + row)
 #@-others
 #@-leo
