@@ -75,7 +75,7 @@ class GoToCommands:
         return None, -1
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
     def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
-        """Return the one-based global line number of the first line of p.b"""
+        """Return the 1-based global line number of the first line of p.b"""
         # See #283.
         root, fileName = self.find_root(p)
         if not root:
@@ -96,10 +96,8 @@ class GoToCommands:
                 if remove_sentinels:
                     n = self.prev_hidden_lines(delims, contents, i)
                     if n is None:
-                        # g.trace(f"Not found '{p.h}' {i}")
-                        return i
+                        return i + 1
                     else:
-                        # g.trace(f"Found '{p.h}' {i} -> {n + 1}")
                         return max(0, i - n + 1)
                 return i + 1
         # #3010: Special case for .vue files.
@@ -109,7 +107,7 @@ class GoToCommands:
             re.escape('//'), re.escape(p.gnx)))
         for i, s in enumerate(contents):
             if node_pat2.match(s):
-                return i + 1  # Convert to one-based.
+                return i + 1
         return None
     #@+node:ekr.20230803073950.1: *4* goto.prev_hidden_lines
     def prev_hidden_lines(self,
