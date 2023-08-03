@@ -73,31 +73,68 @@ class GoToCommands:
                 return p, offset
         self.fail(lines, n, root)
         return None, -1
-    #@+node:ekr.20160921210529.1: *3* goto.find_node_start
+    #@+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
     def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
-        """Return the global line number of the first line of p.b"""
+        """Return the one-based global line number of the first line of p.b"""
         # See #283.
         root, fileName = self.find_root(p)
         if not root:
             return None
         assert root.isAnyAtFileNode()
+        # Always get the file with sentinels.
         contents = self.get_external_file_with_sentinels(root) if s is None else s
+        remove_sentinels = any(z() for z in (root.isAtCleanNode, root.isAtAutoNode))  ### For now.
+        lines = g.splitLines(contents)
+        ### g.trace(f"Entry: sentinels? {sentinels}")
+        ### g.printObj(lines, tag='find_node_start')
         delim1, delim2 = self.get_delims(root)
         # Match only the node with the correct gnx.
         node_pat = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape(delim1), re.escape(p.gnx)))
-        for i, s in enumerate(g.splitLines(contents)):
+        ### g.trace('Looking for gnx:', p.gnx, p.h)
+        for i, s in enumerate(lines):
             if node_pat.match(s):
-                return i + 1
+                ### g.trace('FOUND', p)
+                n = self.adjust_at_clean_line(delim1, delim2, lines, i - 1) if remove_sentinels else i
+                return n + 1  # Convert to one-based.
+
         # #3010: Special case for .vue files.
         #        Also look for nodes delimited by "//"
         if root.h.endswith('.vue'):
             node_pat2 = re.compile(r'\s*%s@\+node:%s:' % (
             re.escape('//'), re.escape(p.gnx)))
-        for i, s in enumerate(g.splitLines(contents)):
+        for i, s in enumerate(lines):
             if node_pat2.match(s):
-                return i + 1
+                return i + 1  # Convert to one-based.
         return None
+    #@+node:ekr.20230803073950.1: *4* goto.adjust_at_clean_line
+    def adjust_at_clean_line(self, delim1: str, delim2: str, lines: list[str], sentinels_i: int) -> int:
+        """
+        sentinels_i is line number of the file *with* sentinels.
+        return the corresponding line number *without* sentinels.
+        """
+        i = 0
+        for line in lines:
+            if self.is_sentinel(delim1, delim2, line):
+                # Similar to scan_nonsentinel_lines.
+                s = line.strip()[len(delim1) :]  # Works for blackened sentinels.
+                if s.startswith(('@+others', '@+<<', '@@')):
+                    # These directives are visible in the outline. but *not* in the file.
+                    if i == sentinels_i:
+                        # g.trace('    Found sentinel', sentinels_i, '==>', i, repr(line))
+                        g.trace(f"    sentinel: {sentinels_i:2} --> {i:2} {line!r}")
+                        return i
+                    i += 1
+                else:
+                    # All other sentinels are invisible to the user.
+                    pass
+                continue
+            if i == sentinels_i:
+                # g.trace(f"non-sentinel: {sentinels_i:2} --> {i:2} {line!r}")
+                return i
+            i += 1
+        g.trace('NOT FOUND', sentinels_i)
+        return i
     #@+node:ekr.20150622140140.1: *3* goto.find_script_line
     def find_script_line(self, n: int, root: Position) -> tuple[Position, int]:
         """
@@ -335,21 +372,25 @@ class GoToCommands:
         would *not* have sentinels.
         """
         c = self.c
-        if root.isAtAutoNode():
+        if root.isAnyAtFileNode():
+            return c.atFileCommands.atFileToString(root, sentinels=True)
+        if 0:
+            if root.isAtAutoNode():
             # Special case @auto nodes:
             # Leo does not write sentinels in the root @auto node.
-            try:
-                g.app.force_at_auto_sentinels = True
-                s = c.atFileCommands.atAutoToString(root)
-            finally:
-                g.app.force_at_auto_sentinels = True
+                try:
+                    g.app.force_at_auto_sentinels = True
+                    s = c.atFileCommands.atAutoToString(root)
+                finally:
+                    g.app.force_at_auto_sentinels = True
             return s
-        return g.composeScript(  # Fix # 429.
+        return g.composeScript(
             c=c,
             p=root,
             s=root.b,
-            forcePythonSentinels=False,  # See #247.
-            useSentinels=True)
+            forcePythonSentinels=False,
+            useSentinels=True,
+        )
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s: str, delim2: Any) -> tuple[str, str]:
         """Return the gnx and headline of a #@+node."""
