@@ -1562,7 +1562,7 @@ class AtFile:
         except Exception:
             at.writeException(fileName, root)
             return ''
-    #@+node:ekr.20230804025627.1: *6* at.AtCleanToString
+    #@+node:ekr.20230804025627.1: *6* at.atCleanToString
     def atCleanToString(self, root: Position) -> str:  # pragma: no cover
         """Write one @clean node to a string."""
         at, c = self, self.c
