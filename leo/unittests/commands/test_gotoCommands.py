@@ -118,8 +118,8 @@ class TestGotoCommands(TestOutlineCommands):
                     assert p.h in line, (p.h, line)
 
             # Test show-file-line.
-            show_offset = x.find_node_start(p) - 1
-            assert show_offset >= 0, (show_offset, p.h)
+            show_offset = x.find_node_start(p)
+            assert show_offset not in (None, -1), (show_offset, p.h)
 
             # Test goto-global-line.
             goto_p, goto_offset = x.find_file_line(global_i)

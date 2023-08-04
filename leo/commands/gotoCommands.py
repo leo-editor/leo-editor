@@ -102,7 +102,7 @@ class GoToCommands:
                     n = self.prev_hidden_lines(delims, contents, i)
                     if n is None:
                         return i + 1
-                    return max(0, i - n + 1)
+                    return max(1, i - n + 1)
                 return i + 1
 
         # #3010: Special case for .vue files.
