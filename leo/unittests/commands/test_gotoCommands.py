@@ -74,7 +74,7 @@ class TestGotoCommands(TestOutlineCommands):
         # g.printObj(contents, tag='With sentinels')
         # g.printObj(clean_contents, tag='No sentinels')
 
-        # Test 1: A strong test of is_invisible_sentinel.
+        # Test 1: A strong test of g.is_invisible_sentinel.
         self.assertEqual(real_clean_contents, clean_contents)
         #@+<< Test 2: test the helper for show-file-line >>
         #@+node:ekr.20230804094419.1: *4* << Test 2: test the helper for show-file-line >>
