@@ -345,7 +345,7 @@ class GoToCommands:
                         if fileName:
                             return p2.copy(), fileName
         return None, None
-    #@+node:ekr.20150625123747.1: *4* goto.get_delims & goto.get_3_delims
+    #@+node:ekr.20150625123747.1: *4* goto.get_delims
     def get_delims(self, root: Position) -> tuple[str, str]:
         """Return the two start/end delimiters in effect at root."""
         c = self.c
@@ -359,7 +359,7 @@ class GoToCommands:
         if delims1:
             return delims1, None
         return delims2, delims3
-
+    #@+node:ekr.20230804034631.1: *4* goto.get_3_delims
     def get_3_delims(self, root: Position) -> tuple[str, str, str]:
         """Return all three comment delimiters in effect at root."""
         c = self.c

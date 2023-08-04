@@ -64,10 +64,10 @@ class TestGotoCommands(TestOutlineCommands):
         # g.printObj(contents, tag='With sentinels')
         # g.printObj(clean_contents, tag='No sentinels')
 
-        # A strong test of is_invisible_sentinel.
+        # Test 1: A strong test of is_invisible_sentinel.
         self.assertEqual(real_clean_contents, clean_contents)
 
-        # Test 1: x.find_node_start returns the 1-based index of the first line of each node.
+        # Test 2: x.find_node_start returns the 1-based index of the first line of each node.
         for node_i, p in enumerate(c.all_positions()):
             offset = x.find_node_start(p) - 1
             assert offset is not None, p.h
@@ -80,12 +80,10 @@ class TestGotoCommands(TestOutlineCommands):
                 # print(f"{p.h:10} {offset:3} {line}")
                 assert p.h in line, (offset, repr(p.h), repr(line))
 
-        # Test 2: x.find_file_line returns the expected node and offset.
+        # Test 3: x.find_file_line returns the expected node and offset.
         for i, clean_line in enumerate(clean_contents):
             p, offset = x.find_file_line(i)
-            if offset == -1:
-                g.trace('Not found', i, repr(clean_line))
-                continue
+            assert offset is not None, repr(p)
             assert offset > 0, (offset, repr(p))
             line = g.splitLines(p.b)[offset-1]
             # g.trace(f"{i:>2} {offset} {p.h:20} {line!r}")
