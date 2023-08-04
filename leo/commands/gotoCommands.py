@@ -96,8 +96,7 @@ class GoToCommands:
                     n = self.prev_hidden_lines(delims, contents, i)
                     if n is None:
                         return i + 1
-                    else:
-                        return max(0, i - n + 1)
+                    return max(0, i - n + 1)
                 return i + 1
 
         # #3010: Special case for .vue files.
@@ -198,16 +197,12 @@ class GoToCommands:
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         """
-        trace = False
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace:
-            g.trace(n, root.h)
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
-            if trace:
-                print(f"count: {count:2} offset: {offset} {s!r}")
+            # print(f"count: {count:2} offset: {offset} {s!r}")
             if is_sentinel:
                 s2 = s.strip()[len(delim1) :]  # Works for blackened sentinels.
                 if s2.startswith('@+node'):
