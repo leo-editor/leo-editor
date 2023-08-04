@@ -7142,11 +7142,13 @@ def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: 
     s2 = line2.strip()[len(delim1) :]
     if s1.startswith('@verbatim'):
         return False  # *This* line is visible in the outline.
-    if s2.startswith(('@+others', '@+<<', '@@')):
+    if s2.startswith('@@'):
+        # Directives are visible in the outline, but not the external file.
+        return True
+    if s2.startswith(('@+others', '@+<<')):
         #@verbatim
-        # @others, section reference or Leo directive.
-        # Visibible in both the outline and external file.
-        return False
+        # @others and section references are visibible everywhere.
+        return True
     # Not visible anywhere. For example, @+leo, @-leo, @-others, @+node, @-node.
     return True
 #@+node:EKR.20040504154039: *3* g.is_sentinel

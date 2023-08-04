@@ -27,7 +27,7 @@ class GoToCommands:
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
     def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
         """
-        Place the cursor on the n'th line (one-based) of an external file.
+        Place the cursor on the n'th line (1-based) of an external file.
 
         Return (p, offset) if found or (None, -1) if not found.
         """
@@ -76,7 +76,6 @@ class GoToCommands:
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
     def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
         """Return the 1-based global line number of the first line of p.b"""
-        # See #283.
         root, fileName = self.find_root(p)
         if not root:
             return None
@@ -84,7 +83,7 @@ class GoToCommands:
 
         # Get the file with sentinels.
         contents_s = self.get_external_file_with_sentinels(root) if s is None else s
-        remove_sentinels = root.isAtCleanNode() or root.isAtAutoNode()
+        remove_sentinels = not root.isAtFileNode()  # Same as in self.find_file_line_helper.
         contents = g.splitLines(contents_s)
         delim1, delim2 = self.get_delims(root)
         delims = self.get_3_delims(root)
@@ -100,11 +99,11 @@ class GoToCommands:
                     else:
                         return max(0, i - n + 1)
                 return i + 1
+
         # #3010: Special case for .vue files.
         #        Also look for nodes delimited by "//"
         if root.h.endswith('.vue'):
-            node_pat2 = re.compile(r'\s*%s@\+node:%s:' % (
-            re.escape('//'), re.escape(p.gnx)))
+            node_pat2 = re.compile(fr"\s{re.escape('//')}@\+node:{re.escape(p.gnx)}:")
         for i, s in enumerate(contents):
             if node_pat2.match(s):
                 return i + 1
@@ -199,11 +198,16 @@ class GoToCommands:
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         """
+        trace = False
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
+        if trace:
+            g.trace(n, root.h)
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
+            if trace:
+                print(f"count: {count:2} offset: {offset} {s!r}")
             if is_sentinel:
                 s2 = s.strip()[len(delim1) :]  # Works for blackened sentinels.
                 if s2.startswith('@+node'):

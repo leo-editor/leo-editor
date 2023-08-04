@@ -25,6 +25,7 @@ class TestGotoCommands(TestOutlineCommands):
         c.demote()
 
         # Add body text to each node.
+        # All body lines are unique, which simplifies the tests below.
         root = c.rootPosition()
         assert root.h == 'root'
         root.h = '@clean test.py'  # Make the root an @clean node.
@@ -37,16 +38,20 @@ class TestGotoCommands(TestOutlineCommands):
             '@others\n'
             'after\n'
         )
-
         # self.dump_headlines(c)
         # self.dump_clone_info(c)
+
+        # Init unchanging data.
         delim1, delim2 = x.get_delims(root)
         assert (delim1, delim2) == ('#', None)
         delims = x.get_3_delims(root)
-
-        # A shortcut. All body lines are unique.
         contents_s = x.get_external_file_with_sentinels(root)
         contents = g.splitLines(contents_s)
+
+        # Get the contents as produced by atCleanToString.
+        real_clean_s = c.atFileCommands.atCleanToString(root)
+        real_clean_contents = g.splitLines(real_clean_s)
+
         # Remove invisible sentinels and convert visible sentinels to
         # their corresponding line in the outline.
         clean_contents = [
@@ -54,19 +59,42 @@ class TestGotoCommands(TestOutlineCommands):
             for i, z in enumerate(contents)
             if not g.is_invisible_sentinel(delims, contents, i)
         ]
+
+        # g.printObj(real_clean_contents, tag='atCleanToString')
         # g.printObj(contents, tag='With sentinels')
         # g.printObj(clean_contents, tag='No sentinels')
 
-        # Test all lines of all nodes.
+        # A strong test of is_invisible_sentinel.
+        self.assertEqual(real_clean_contents, clean_contents)
+
+        # Test 1: x.find_node_start returns the 1-based index of the first line of each node.
         for node_i, p in enumerate(c.all_positions()):
-            p_offset = x.find_node_start(p) - 1
-            assert p_offset is not None, p.h
-            line = clean_contents[p_offset]
+            offset = x.find_node_start(p) - 1
+            assert offset is not None, p.h
+            line = clean_contents[offset]
             if p.h.startswith('@clean'):
-                assert line == '@language python\n', (p_offset, repr(p.h), repr(line))
+                if offset == 0:
+                    assert line == 'before\n', (offset, repr(p.h), repr(line))
+                    assert g.splitLines(p.b)[0] == '@language python\n', repr(p.b[0])
             else:
-                # print(f"{p.h:10} {p_offset:3} {line}")
-                assert p.h in line, (p_offset, repr(p.h), repr(line))
+                # print(f"{p.h:10} {offset:3} {line}")
+                assert p.h in line, (offset, repr(p.h), repr(line))
+
+        # Test 2: x.find_file_line returns the expected node and offset.
+        for i, clean_line in enumerate(clean_contents):
+            p, offset = x.find_file_line(i)
+            if offset == -1:
+                g.trace('Not found', i, repr(clean_line))
+                continue
+            assert offset > 0, (offset, repr(p))
+            line = g.splitLines(p.b)[offset-1]
+            # g.trace(f"{i:>2} {offset} {p.h:20} {line!r}")
+            if p.h.startswith('@clean'):
+                if offset == 1:
+                    # We are testing p.b, not clean_line.
+                    assert line == '@language python\n', (offset, repr(p.h), repr(line))
+            else:
+                assert p.h in line, (offset, repr(p.h), repr(line))
     #@-others
 #@-others
 #@-leo
