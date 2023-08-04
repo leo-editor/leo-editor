@@ -27,6 +27,8 @@ class GoToCommands:
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
     def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
         """
+        Helper for goto-global-line command.
+
         Place the cursor on the n'th line (1-based) of an external file.
 
         Return (p, offset) if found or (None, -1) if not found.
@@ -75,7 +77,11 @@ class GoToCommands:
         return None, -1
     #@+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
     def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
-        """Return the 1-based global line number of the first line of p.b"""
+        """
+        Helper for show-file-line command.
+
+        Return the 1-based global line number of the first line of p.b.
+        """
         root, fileName = self.find_root(p)
         if not root:
             return None
@@ -459,6 +465,6 @@ def show_file_line(event: Event) -> None:
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print('line', n0 + row)
+    g.es_print('line', n0 + row + 1)  # Returns the same as goto-global-line.
 #@-others
 #@-leo

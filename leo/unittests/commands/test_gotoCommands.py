@@ -18,6 +18,10 @@ class TestGotoCommands(TestOutlineCommands):
 
         c = self.c
         x = GoToCommands(c)
+
+        # All body lines are unique, which simplifies the tests below.
+        #@+<< create test tree >>
+        #@+node:ekr.20230804093924.1: *4* << create test tree >>
         self.clean_tree()
         self.create_test_paste_outline()
 
@@ -25,7 +29,6 @@ class TestGotoCommands(TestOutlineCommands):
         c.demote()
 
         # Add body text to each node.
-        # All body lines are unique, which simplifies the tests below.
         root = c.rootPosition()
         assert root.h == 'root'
         root.h = '@clean test.py'  # Make the root an @clean node.
@@ -38,27 +41,34 @@ class TestGotoCommands(TestOutlineCommands):
             '@others\n'
             'after\n'
         )
+        #@-<< create test tree >>
+
         # self.dump_headlines(c)
         # self.dump_clone_info(c)
 
-        # Init unchanging data.
+        #@+<< init unchanging data >>
+        #@+node:ekr.20230804093956.1: *4* << init unchanging data >>
+        # Init the comment delims.
         delim1, delim2 = x.get_delims(root)
-        assert (delim1, delim2) == ('#', None)
+        assert(delim1, delim2) == ('#', None)
         delims = x.get_3_delims(root)
+
+        # Create contents, the file *with* sentinels.
         contents_s = x.get_external_file_with_sentinels(root)
         contents = g.splitLines(contents_s)
 
-        # Get the contents as produced by atCleanToString.
+        # Create real_clean_contents, the contents produced by atCleanToString.
         real_clean_s = c.atFileCommands.atCleanToString(root)
         real_clean_contents = g.splitLines(real_clean_s)
 
-        # Remove invisible sentinels and convert visible sentinels to
-        # their corresponding line in the outline.
+        # Create clean_contents, contents without invisible sentinels
+        # converting visible sentinels to their corresponding line in the outline.
         clean_contents = [
             z.replace('#@', '').replace('+others', '@others')
             for i, z in enumerate(contents)
             if not g.is_invisible_sentinel(delims, contents, i)
         ]
+        #@-<< init unchanging data >>
 
         # g.printObj(real_clean_contents, tag='atCleanToString')
         # g.printObj(contents, tag='With sentinels')
@@ -66,8 +76,8 @@ class TestGotoCommands(TestOutlineCommands):
 
         # Test 1: A strong test of is_invisible_sentinel.
         self.assertEqual(real_clean_contents, clean_contents)
-
-        # Test 2: x.find_node_start returns the 1-based index of the first line of each node.
+        #@+<< Test 2: test the helper for show-file-line >>
+        #@+node:ekr.20230804094419.1: *4* << Test 2: test the helper for show-file-line >>
         for node_i, p in enumerate(c.all_positions()):
             offset = x.find_node_start(p) - 1
             assert offset is not None, p.h
@@ -79,13 +89,14 @@ class TestGotoCommands(TestOutlineCommands):
             else:
                 # print(f"{p.h:10} {offset:3} {line}")
                 assert p.h in line, (offset, repr(p.h), repr(line))
-
-        # Test 3: x.find_file_line returns the expected node and offset.
+        #@-<< Test 2: test the helper for show-file-line >>
+        #@+<< Test 3: test the helper for goto-global-line >>
+        #@+node:ekr.20230804094514.1: *4* << Test 3: test the helper for goto-global-line >>
         for i, clean_line in enumerate(clean_contents):
             p, offset = x.find_file_line(i)
             assert offset is not None, repr(p)
             assert offset > 0, (offset, repr(p))
-            line = g.splitLines(p.b)[offset-1]
+            line = g.splitLines(p.b)[offset - 1]
             # g.trace(f"{i:>2} {offset} {p.h:20} {line!r}")
             if p.h.startswith('@clean'):
                 if offset == 1:
@@ -93,6 +104,35 @@ class TestGotoCommands(TestOutlineCommands):
                     assert line == '@language python\n', (offset, repr(p.h), repr(line))
             else:
                 assert p.h in line, (offset, repr(p.h), repr(line))
+        #@-<< Test 3: test the helper for goto-global-line >>
+        #@+<< Test 4: test show-file-line & goto-global-line directly >>
+        #@+node:ekr.20230804105414.1: *4* << Test 4: test show-file-line & goto-global-line directly >>
+        global_i = 0  # Global line index.
+        for p in c.all_positions():
+
+            # Init and test lines.
+            lines = g.splitLines(p.b)
+            if p != root:
+                for i, line in enumerate(lines):
+                    # print(f"{global_i:2} {i} {p.h:30} {line!r}")
+                    assert p.h in line, (p.h, line)
+
+            # Test show-file-line.
+            show_offset = x.find_node_start(p) - 1
+            assert show_offset >= 0, (show_offset, p.h)
+
+            # Test goto-global-line.
+            goto_p, goto_offset = x.find_file_line(global_i)
+            assert p.h == goto_p.h, (p, goto_p)
+            assert goto_offset == 1, repr(p)
+
+            # Update global_i.
+            if p == root:
+                # Count `before`, `@others`, but *not* `@language python`.
+                global_i += 2
+            else:
+                global_i += len(lines)
+        #@-<< Test 4: test show-file-line & goto-global-line directly >>
     #@-others
 #@-others
 #@-leo
