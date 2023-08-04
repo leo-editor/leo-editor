@@ -7323,10 +7323,8 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
             n = int(m.group(2))
         except(TypeError, ValueError):
             pass
-    positions: Any = c.all_unique_positions()
-    if c.config.getBool('search-links-backwards', default=True):
-        positions = reversed(list(positions))
-    for p in positions:
+    # Search forwards, setting p2.
+    for p in c.all_unique_positions():
         if p.gnx == gnx:
             if n is None:
                 return p

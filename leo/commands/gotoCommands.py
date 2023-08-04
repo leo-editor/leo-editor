@@ -67,7 +67,7 @@ class GoToCommands:
             # Not all sentinels count as real lines.
             gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(root, gnx, h)
+            p = self.find_gnx2(gnx)
             if p:
                 self.success(n, offset, p)
                 return p, offset
@@ -112,7 +112,7 @@ class GoToCommands:
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(root, gnx, h)
+            p = self.find_gnx2(gnx)
             if p:
                 self.success(n, offset, p)
                 return p, offset
@@ -264,30 +264,40 @@ class GoToCommands:
         c.bodyWantsFocus()
         w.seeInsertPoint()
     #@+node:ekr.20100216141722.5626: *4* goto.find_gnx & find_gnx2
-    def find_gnx(
-        self,
-        root: Position,
-        gnx: str, vnodeName: str,
-    ) -> tuple[Position, bool]:  # Retain find_gnx for compatibility.
+    def find_gnx(self, root: Position, gnx: str, vnodeName: str) -> tuple[Position, bool]:
         """
-        Scan root's tree for a node with the given gnx and vnodeName.
+        Scan the outline for a node with the given gnx and vnodeName.
         return (p, True) if found or (None, False) otherwise.
         """
-        p = self.find_gnx2(root, gnx, vnodeName)
+        # Not used in Leo's core. Retain this method for compatibility.
+        p = self.find_gnx2(gnx)
         return p, bool(p)
 
-    def find_gnx2(self, root: Position, gnx: str, vnodeName: str) -> Optional[Position]:
+    def find_gnx2(self, gnx: str) -> Optional[Position]:
         """
-        Scan root's tree for a node with the given gnx and vnodeName.
-        return a copy of the position or None.
+        Scan the outline for a node with the given gnx and vnodeName.
+
+        Return a copy of the position or None.
         """
+        c = self.c
         if not gnx:
             return None  # Should never happen.
         gnx = g.toUnicode(gnx)
-        for p in root.self_and_subtree(copy=False):
-            if p.matchHeadline(vnodeName):
-                if p.v.fileIndex == gnx:
-                    return p.copy()
+
+        # Prefer c.p.
+        if c.p.gnx == gnx:
+            return c.p.copy()
+
+        # Search the entire outline.
+        positions: list[Position]
+        backwards = c.config.getBool('search-links-backwards', default=True)
+        if backwards:
+            positions = list(reversed(list(c.all_positions())))
+        else:
+            positions = list(c.all_positions())
+        for p in positions:
+            if p.v.fileIndex == gnx:
+                return p.copy()
         return None
     #@+node:ekr.20100216141722.5627: *4* goto.find_root
     def find_root(self, p: Position) -> tuple[Position, str]:
