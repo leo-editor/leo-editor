@@ -80,8 +80,7 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.3: *3* TestCommands.test_c_checkOutline
     def test_c_checkOutline(self):
         c = self.c
-        errors = c.checkOutline()
-        self.assertEqual(errors, 0)
+        self.assertEqual(0, c.checkOutline())
     #@+node:ekr.20230727044355.1: *3* TestCommands.test_c_check_links
     def check_c_checkVnodeLinks(self):
         c = self.c

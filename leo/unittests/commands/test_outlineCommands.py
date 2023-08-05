@@ -198,7 +198,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Change the body text of all the to-be-copied nodes.
                 cc.b = 'cc body: changed'
@@ -229,7 +229,7 @@ class TestOutlineCommands(LeoUnitTest):
                     # Copy does not change these positions.
                     cc.b = cc_child1.b = cc_child2.b = ''
 
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Pretest: select all positions in the tree.
                 for p in c.all_positions():
@@ -244,16 +244,16 @@ class TestOutlineCommands(LeoUnitTest):
                 c.pasteAsTemplate()
 
                 # Check the paste.
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
                 test_tree(pasted_flag=True, tag='paste-as-template')
 
                 # Check multiple undo/redo cycles.
                 for i in range(3):
                     u.undo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
                     u.redo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230724064558.1: *3* TestOutlineCommands.test_paste_node
     def test_paste_node(self):
@@ -308,7 +308,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Cut or copy cc.
                 if test_kind == 'cut':
@@ -323,7 +323,7 @@ class TestOutlineCommands(LeoUnitTest):
                     # *Copy*  node cc
                     c.selectPosition(cc)
                     self.copy_node(is_json)
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
 
                 # Pretest: select all positions in the tree.
                 for p in c.all_positions():
@@ -338,16 +338,16 @@ class TestOutlineCommands(LeoUnitTest):
                 c.pasteOutline()
 
                 # Check the paste.
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
                 test_tree(pasted_flag=True, tag='paste-node')
 
                 # Check multiple undo/redo cycles.
                 for i in range(3):
                     u.undo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
                     u.redo()
-                    self.assertFalse(c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
@@ -496,7 +496,6 @@ class TestOutlineCommands(LeoUnitTest):
         #@+others  # define helpers
         #@+node:ekr.20230730070124.1: *4* function: init_dicts
         def init_dicts() -> None:
-            ### nonlocal vnodes_list, children_dict, parents_dict
             for z in vnodes_list:
                 children_dict [z.gnx] = z.children[:]
             for z in vnodes_list:
@@ -636,13 +635,13 @@ class TestOutlineCommands(LeoUnitTest):
         cc_child3.h = 'cc:child3'
         gnx_dict[cc_child3.h] = cc_child3.gnx
 
-        self.assertFalse(c.checkOutline())
+        self.assertEqual(0, c.checkOutline())
         test_tree(tag='1: before inserting cc:child3')
 
         s2 = c.fileCommands.outline_to_clipboard_string(cc)
         assert s2
 
-        self.assertFalse(c.checkOutline())
+        self.assertEqual(0, c.checkOutline())
         test_tree(tag='2: after inserting cc:child3')
 
          # Get back to the starting point.
@@ -650,7 +649,7 @@ class TestOutlineCommands(LeoUnitTest):
             (cc.v, s2, '2: undo'),
         ):
             u.restoreFromCopiedTree(v, s)
-            self.assertFalse(c.checkOutline())
+            self.assertEqual(0, c.checkOutline())
             test_tree(tag=tag)
 
         # Check multiple do/redo cycles.
@@ -660,7 +659,7 @@ class TestOutlineCommands(LeoUnitTest):
                 (cc.v, s2, f"2: undo{i}"),
             ):
                 u.restoreFromCopiedTree(v, s)
-                self.assertFalse(c.checkOutline())
+                self.assertEqual(0, c.checkOutline())
                 test_tree(tag=tag)
     #@+node:ekr.20221112051634.1: *3* TestOutlineCommands.test_sort_children
     def test_sort_children(self):

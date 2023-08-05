@@ -1514,7 +1514,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 Strip s of all sentinel lines.
                 This may be dubious because it destroys outline structure.
                 """
-                delims = ['#', None, None]
+                delims = ('#', None, None)
                 return ''.join(
                     [z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
             #@-others

@@ -2088,7 +2088,7 @@ class Commands:
             return error_list, messages, n
         #@+node:ekr.20230728010156.1: *6* fix_errors
         def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
-            "Fix all erroneous nodes by adding/deleting entries from v.parents." ""
+            """Fix all erroneous nodes by adding/deleting entries from v.parents."""
             for parent_v, child_v in error_list:
                 children_n = parent_v.children.count(child_v)
                 parents_n = child_v.parents.count(parent_v)
@@ -2125,7 +2125,7 @@ class Commands:
             """
             Rescan all vnodes to ensure that no errors remain.
 
-            Return (error_list, messages, no)
+            Return (error_list, messages, n).
             """
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
@@ -2137,7 +2137,7 @@ class Commands:
                     if children_n != parents_n:  # pragma: no cover
                         error_list.append((parent_v, child_v))
                         messages.append(
-                            'Error recovery failed!'
+                            'Error recovery failed!\n'
                             f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
                             f" child: {child_v.h:30} count(child.parents = {parents_n}")
                         n += 1
@@ -3304,6 +3304,10 @@ class Commands:
     def recreateGnxDict(self) -> None:
         """Recreate the gnx dict prior to refreshing nodes from disk."""
         c, d = self, {}
+        # Start with the hidden-root-vnode
+        vHiddenRoot = c.hiddenRootNode
+        d[vHiddenRoot.gnx] = vHiddenRoot
+        # And fill up the with rest of the commander's VNodes.
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             if isinstance(gnxString, str):

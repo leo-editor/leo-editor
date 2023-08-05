@@ -84,7 +84,6 @@ def pasteOutline(
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
-    c.checkOutline()
     errors = c.checkOutline()
     if errors > 0:
         return None
@@ -128,7 +127,6 @@ def pasteOutlineRetainingClones(
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
     # Validate.
-    c.checkOutline()
     errors = c.checkOutline()
     if errors > 0:
         return None
