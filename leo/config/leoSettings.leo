@@ -514,6 +514,7 @@
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20220624062948.1"><vh>@bool redirect-execute-script-output-to-log_pane = False</vh></v>
+<v t="ekr.20230804112912.1"><vh>@bool search-links-backwards=True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
@@ -11675,6 +11676,11 @@ False:          Display only the .leo file's name in the status area.
 
 # test.leo:    c:/Repos/leo-editor/leo/test
 # LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
+<t tx="ekr.20230804112912.1">This setting tells how Leo should search when the user clicks a clickable link.
+
+True:  (Recommended) Search backwards from the end of the outline.
+False: (Legacy)      Search forwards from the start of the outline.
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
