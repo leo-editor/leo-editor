@@ -80,19 +80,23 @@ class GoToCommands:
         """
         Helper for show-file-line command.
 
-        Return the 1-based global line number of the first line of p.b.
+        Return the 1-based global line number of the *first* line of p.b.
         """
         root, fileName = self.find_root(p)
         if not root:
             return None
         assert root.isAnyAtFileNode()
 
-        # Get the file with sentinels.
-        contents_s = self.get_external_file_with_sentinels(root) if s is None else s
-        remove_sentinels = not root.isAtFileNode()  # Same as in self.find_file_line_helper.
-        contents = g.splitLines(contents_s)
+        # Init.
         delim1, delim2 = self.get_delims(root)
         delims = self.get_3_delims(root)
+        remove_sentinels = not root.isAtFileNode()  # Same as in self.find_file_line_helper.
+
+        # Get the file with sentinels.
+        contents_s = self.get_external_file_with_sentinels(root) if s is None else s
+        contents = g.splitLines(contents_s)
+        
+        # if not g.unitTesting: g.printObj(contents)
 
         # Find the node with the correct gnx.
         node_pat = re.compile(fr"\s*{re.escape(delim1)}@\+node:{re.escape(p.gnx)}:")
@@ -101,7 +105,9 @@ class GoToCommands:
                 if remove_sentinels:
                     n = self.prev_hidden_lines(delims, contents, i)
                     if n is None:
+                        # g.trace(f"i: {i:2} n: None: return {i+1}")
                         return i + 1
+                    # g.trace(f"i: {i:2} n: {n:2}:")
                     return max(1, i - n + 1)
                 return i + 1
 
@@ -449,8 +455,13 @@ class GoToCommands:
 @g.command('show-file-line')
 def show_file_line(event: Event) -> None:
     """
-    Prints the external file line number that corresponds to
-    the line the cursor is relatively positioned in Leo's body.
+    Print the external file line number that corresponds to the line
+    containing the cursor.
+    
+    The command is buggy. It will report incorrect line numbers for all
+    lines following @others or section references.
+    
+    This bug can not be fixed with any reasonable amount of work.
     """
     c = event.get('c')
     if not c:
@@ -458,13 +469,16 @@ def show_file_line(event: Event) -> None:
     w = c.frame.body.wrapper
     if not w:
         return
-    n0 = GoToCommands(c).find_node_start(p=c.p)  # One-based.
+    # n0 is the 1-based line number of the first line of p.b.
+    n0 = GoToCommands(c).find_node_start(p=c.p)  # 1-based.
     if n0 is None:
         g.es_print('Line not found')
         return
+    # This does not work after @others or section references.
     i = w.getInsertPoint()
     s = w.getAllText()
-    row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print('line', n0 + row + 1)  # Returns the same as goto-global-line.
+    row, col = g.convertPythonIndexToRowCol(s, i)  # 0-based
+    # g.trace('n0', n0, 'row', row)
+    g.es_print('line', n0 + row)
 #@-others
 #@-leo
