@@ -95,7 +95,7 @@ class GoToCommands:
         # Get the file with sentinels.
         contents_s = self.get_external_file_with_sentinels(root) if s is None else s
         contents = g.splitLines(contents_s)
-        
+
         # if not g.unitTesting: g.printObj(contents)
 
         # Find the node with the correct gnx.
@@ -467,10 +467,10 @@ def show_file_line(event: Event) -> None:
     """
     Print the external file line number that corresponds to the line
     containing the cursor.
-    
+
     The command is buggy. It will report incorrect line numbers for all
     lines following @others or section references.
-    
+
     This bug can not be fixed with any reasonable amount of work.
     """
     c = event.get('c')
