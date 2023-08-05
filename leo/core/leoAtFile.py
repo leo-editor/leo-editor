@@ -1562,6 +1562,20 @@ class AtFile:
         except Exception:
             at.writeException(fileName, root)
             return ''
+    #@+node:ekr.20230804025627.1: *6* at.atCleanToString
+    def atCleanToString(self, root: Position) -> str:  # pragma: no cover
+        """Write one @clean node to a string."""
+        at, c = self, self.c
+        try:
+            c.endEditing()
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
+            at.outputList = []
+            at.putFile(root, sentinels=False)
+            return '' if at.errors else ''.join(at.outputList)
+        except Exception:
+            at.writeException(fileName, root)
+            return ''
     #@+node:ekr.20190109160056.3: *6* at.atEditToString
     def atEditToString(self, root: Position) -> str:  # pragma: no cover
         """Write one @edit node."""

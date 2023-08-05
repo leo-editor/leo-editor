@@ -496,7 +496,6 @@ class TestOutlineCommands(LeoUnitTest):
         #@+others  # define helpers
         #@+node:ekr.20230730070124.1: *4* function: init_dicts
         def init_dicts() -> None:
-            ### nonlocal vnodes_list, children_dict, parents_dict
             for z in vnodes_list:
                 children_dict [z.gnx] = z.children[:]
             for z in vnodes_list:

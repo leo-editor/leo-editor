@@ -992,7 +992,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.225: *3* ec: goto node
-    #@+node:ekr.20170411065920.1: *4* ec.gotoAnyClone
+    #@+node:ekr.20170411065920.1: *4* goto-any-clone
     @cmd('goto-any-clone')
     def gotoAnyClone(self, event: Event = None) -> None:
         """Select then next cloned node, regardless of whether c.p is a clone."""
@@ -1004,7 +1004,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 return
             p.moveToThreadNext()
         g.es('no clones found after', c.p.h)
-    #@+node:ekr.20150514063305.226: *4* ec.gotoCharacter
+    #@+node:ekr.20150514063305.226: *4* goto-char
     @cmd('goto-char')
     def gotoCharacter(self, event: Event) -> None:
         """Put the cursor at the n'th character of the buffer."""
@@ -1030,7 +1030,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.clearState()
         c.widgetWantsFocus(w)
-    #@+node:ekr.20150514063305.227: *4* ec.gotoGlobalLine
+    #@+node:ekr.20150514063305.227: *4* goto-global-line
     @cmd('goto-global-line')
     def gotoGlobalLine(self, event: Event) -> None:
         """
@@ -1058,7 +1058,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if n.isdigit():
             # Very important: n is one-based.
             c.gotoCommands.find_file_line(n=int(n))
-    #@+node:ekr.20150514063305.228: *4* ec.gotoLine
+    #@+node:ekr.20150514063305.228: *4* goto-line
     @cmd('goto-line')
     def gotoLine(self, event: Event) -> None:
         """Put the cursor at the n'th line of the buffer."""
@@ -1456,6 +1456,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         url = p.get_UNL()
         g.app.gui.replaceClipboardWith(url)
+        print('gnx:', url)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
             status_line.put(url)
