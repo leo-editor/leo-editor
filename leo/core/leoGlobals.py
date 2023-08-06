@@ -2785,20 +2785,26 @@ def pdb(message: str = '') -> None:
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """Pretty print any Python object to a string."""
     if isinstance(obj, dict):
-        result_list = ['{\n']
-        pad = max([len(key) for key in obj])
-        for key in sorted(obj):
-            pad_s = ' ' * max(0, pad - len(key))
-            result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
-        result_list.append('}')
-        result = ''.join(result_list)
+        if obj:
+            result_list = ['{\n']
+            pad = max([len(key) for key in obj])
+            for key in sorted(obj):
+                pad_s = ' ' * max(0, pad - len(key))
+                result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
+            result_list.append('}')
+            result = ''.join(result_list)
+        else:
+            result = '{}'
     elif isinstance(obj, (list, tuple)):
-        # Return the enumerated lines of the list.
-        result_list = ['[\n' if isinstance(obj, list) else '(\n']
-        for i, z in enumerate(obj):
-            result_list.append(f"  {i:4}: {z!r}\n")
-        result_list.append(']\n' if isinstance(obj, list) else ')\n')
-        result = ''.join(result_list)
+        if obj:
+            # Return the enumerated lines of the list.
+            result_list = ['[\n' if isinstance(obj, list) else '(\n']
+            for i, z in enumerate(obj):
+                result_list.append(f"  {i:4}: {z!r}\n")
+            result_list.append(']\n' if isinstance(obj, list) else ')\n')
+            result = ''.join(result_list)
+        else:
+            result = '[]' if isinstance(obj, list) else '()'
     elif not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
