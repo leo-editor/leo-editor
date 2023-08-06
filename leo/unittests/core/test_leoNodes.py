@@ -75,13 +75,13 @@ class TestNodes(LeoUnitTest):
                 self.assertTrue(p < next)
                 next.moveToThreadNext()
             p.moveToThreadNext()
-    #@+node:ekr.20230806111835.1: *4* TestNodes.test_p__hash__
-    def test_p__hash__(self):
+    #@+node:ekr.20220307045746.1: *4* TestNodes.test_p_key
+    def test_p__key__(self):
 
-        # p.__hash__ must return None.
         c = self.c
-        assert c.p
-        assert c.p.__hash__ is None, repr(c.p.__hash__)
+        child = c.p.firstChild()
+        child.key()
+        child.sort_key(child)
     #@+node:ekr.20210830095545.24: *4* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
 
@@ -107,13 +107,13 @@ class TestNodes(LeoUnitTest):
         self.assertTrue(child.__gt__(p))
         self.assertTrue(child > p)
         self.assertTrue(grandChild > child)
-    #@+node:ekr.20220307045746.1: *4* TestNodes.test_p_key
-    def test_p__key__(self):
+    #@+node:ekr.20230806111835.1: *4* TestNodes.test_p__hash__
+    def test_p__hash__(self):
 
+        # p.__hash__ must return None.
         c = self.c
-        child = c.p.firstChild()
-        child.key()
-        child.sort_key(child)
+        assert c.p
+        assert c.p.__hash__ is None, repr(c.p.__hash__)
     #@+node:ekr.20230806111443.1: *3* TestNodes:  Top-level functions
     #@+node:ekr.20230806113053.1: *4* TestNodes.test_is_valid_json
     def test_is_valid_json(self):
