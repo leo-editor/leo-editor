@@ -2076,21 +2076,30 @@ class VNode:
         """Return a json-like dict of all uas."""
         v = self
         d = getattr(v, 'unknownAttributes', None)
+        trace = any(z in g.app.debug for z in ('save', 'test:v_archive_uas'))
         if d and isinstance(d, dict):
             # Prevalidate all inner dictionaries.
             result_d = {}
-            for key, value in d.values():
+            for key, value in d.items():
                 inner_d = d[key]
                 inner_result_d = {}
-                for inner_key, inner_val in inner_d:
-                    if is_valid_json({key: value}):
-                        inner_result_d[key] = value
+                for inner_key, inner_value in inner_d.items():
+                    if is_valid_json({inner_key: inner_value}):
+                        inner_result_d[inner_key] = inner_value
+                    elif trace:
+                        g.trace(
+                            f"In outer dict: key: {key!r}. "
+                            'Ignoring inner invalid key/value: '
+                            f"{inner_key!r}: {inner_value.__class__.__name__}")
                 if inner_result_d:
                     result_d[key] = inner_result_d
             if result_d and is_valid_json(result_d):
                 return result_d
             if result_d:
-                g.printObj(result_d, tag='can not happen: invalid result_d')
+                message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
+                if trace:
+                    raise ValueError(message)
+                print(message)
         return None
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
@@ -2751,10 +2760,13 @@ vnode = VNode  # compatibility.
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
 def is_valid_json(obj: Any) -> bool:
+    # obj_s = g.objToString(obj)
     try:
         json.dumps(obj, skipkeys=True, cls=SetJSONEncoder)
+        # g.trace('True', obj_s)
         return True
     except Exception:
+        # g.trace('False', obj_s)
         return False
 
 def vnode_to_gnx(v: VNode) -> Optional[str]:

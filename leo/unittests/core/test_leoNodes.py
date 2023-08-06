@@ -6,6 +6,7 @@
 # pylint: disable=no-member
 import textwrap
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import is_valid_json, vnode_to_gnx
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
@@ -74,13 +75,13 @@ class TestNodes(LeoUnitTest):
                 self.assertTrue(p < next)
                 next.moveToThreadNext()
             p.moveToThreadNext()
-    #@+node:ekr.20220307045746.1: *4* TestNodes.test_p_key
-    def test_p__key__(self):
+    #@+node:ekr.20230806111835.1: *4* TestNodes.test_p__hash__
+    def test_p__hash__(self):
 
+        # p.__hash__ must return None.
         c = self.c
-        child = c.p.firstChild()
-        child.key()
-        child.sort_key(child)
+        assert c.p
+        assert c.p.__hash__ is None, repr(c.p.__hash__)
     #@+node:ekr.20210830095545.24: *4* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
 
@@ -106,6 +107,45 @@ class TestNodes(LeoUnitTest):
         self.assertTrue(child.__gt__(p))
         self.assertTrue(child > p)
         self.assertTrue(grandChild > child)
+    #@+node:ekr.20220307045746.1: *4* TestNodes.test_p_key
+    def test_p__key__(self):
+
+        c = self.c
+        child = c.p.firstChild()
+        child.key()
+        child.sort_key(child)
+    #@+node:ekr.20230806111443.1: *3* TestNodes:  Top-level functions
+    #@+node:ekr.20230806113053.1: *4* TestNodes.test_is_valid_json
+    def test_is_valid_json(self):
+
+        c = self.c
+        good_table = (
+            'abc', 2,
+            {}, {'key': 'value'},
+            {
+                'plugin1': {},
+                'plugin2': [],
+            },
+            [],
+            ['a', 'b'],
+        )
+        bad_table = (
+            c, c.p, c.p.v,
+        )
+        for obj in good_table:
+            assert is_valid_json(obj), repr(obj)
+        for obj in bad_table:
+            assert not is_valid_json(obj), repr(obj)
+    #@+node:ekr.20230806113211.1: *4* TestNodes.test_vnode_to_gnx
+    def test_vnode_to_gnx(self):
+
+        c = self.c
+        table = (
+            (c.hiddenRootNode, None),
+            (c.p.v, c.p.v.gnx),
+        )
+        for v, gnx in table:
+            assert vnode_to_gnx(v) == gnx, (repr(v), repr(gnx))
     #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
     #@+node:ekr.20210830095545.6: *4* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
@@ -353,6 +393,126 @@ class TestNodes(LeoUnitTest):
             for descendant in p.unique_subtree():
                 self.assertTrue(p <= descendant)
             p.moveToThreadNext()
+    #@+node:ekr.20220708131426.1: *3* TestNodes: Getters
+    #@+node:ekr.20220307043449.1: *4* TestNodes.test_p_getters
+    def test_p_getters(self):
+        c, p = self.c, self.c.p
+        table1 = (
+            p.anyAtFileNodeName,
+            p.atAutoNodeName,
+            p.atCleanNodeName,
+            p.atEditNodeName,
+            p.atFileNodeName,
+            p.atNoSentinelsFileNodeName,
+            p.atShadowFileNodeName,
+            p.atSilentFileNodeName,
+            p.atThinFileNodeName,
+            p.isAnyAtFileNode,
+            p.isAtAllNode,
+            p.isAtAutoNode,
+            p.isAtAutoRstNode,
+            p.isAtCleanNode,
+            p.isAtEditNode,
+            p.isAtFileNode,
+            p.isAtIgnoreNode,
+            p.isAtNoSentinelsFileNode,
+            p.isAtOthersNode,
+            p.isAtRstFileNode,
+            p.isAtShadowFileNode,
+            p.isAtSilentFileNode,
+            p.isAtThinFileNode,
+            p.isMarked,
+            p.isOrphan,
+            p.isVisited,
+        )
+        for func in table1:
+            self.assertFalse(func(), msg=func.__name__)
+        table2 = (  # Proxies for vnode methods: don't care about result.
+            p.bodyString,
+            p.directParents,
+            p.findRootPosition,
+            p.getLastChild,
+            p.getLastNode,
+            p.headString,
+            p.isDirty,
+            p.isSelected,
+            p.status,
+        )
+        for func in table2:
+            func()
+        # More proxies, with various arguments.
+        p.getNthChild(0)
+        p.matchHeadline('xyzz')
+        self.assertTrue(c.p.isRoot())
+    #@+node:ekr.20210830095545.26: *4* TestNodes.test_p_hasNextBack
+    def test_p_hasNextBack(self):
+        c, p = self.c, self.c.p
+        for p in c.all_positions():
+            back = p.back()
+            next = p.next()
+            self.assertTrue(
+                (back and p.hasBack()) or
+                (not back and not p.hasBack()))
+            self.assertTrue(
+                (next and p.hasNext()) or
+                (not next and not p.hasNext()))
+        p.v = None
+        self.assertFalse(p.hasThreadNext())
+    #@+node:ekr.20210830095545.27: *4* TestNodes.test_p_hasParentChild
+    def test_p_hasParentChild(self):
+        c, p = self.c, self.c.p
+        for p in c.all_positions():
+            child = p.firstChild()
+            parent = p.parent()
+            assert(
+                (child and p.hasFirstChild()) or
+                (not child and not p.hasFirstChild()))
+            assert(
+                (parent and p.hasParent()) or
+                (not parent and not p.hasParent()))
+    #@+node:ekr.20210830095545.28: *4* TestNodes.test_p_hasThreadNextBack
+    def test_p_hasThreadNextBack(self):
+        c, p = self.c, self.c.p
+        for p in c.all_positions():
+            threadBack = p.getThreadBack()
+            threadNext = p.getThreadNext()
+            assert(
+                (threadBack and p.hasThreadBack()) or
+                (not threadBack and not p.hasThreadBack()))
+            assert(
+                (threadNext and p.hasThreadNext()) or
+                (not threadNext and not p.hasThreadNext()))
+    #@+node:ekr.20210830095545.29: *4* TestNodes.test_p_isAncestorOf
+    def test_p_isAncestorOf(self):
+        c, p = self.c, self.c.p
+        for p in c.all_positions():
+            child = p.firstChild()
+            while child:
+                for parent in p.self_and_parents_iter():
+                    assert parent.isAncestorOf(child)
+                child.moveToNext()
+            next = p.next()
+            self.assertFalse(p.isAncestorOf(next))
+    #@+node:ekr.20210830095545.30: *4* TestNodes.test_p_isCurrentPosition
+    def test_p_isCurrentPosition(self):
+        c, p = self.c, self.c.p
+        self.assertFalse(c.isCurrentPosition(None))
+        self.assertTrue(c.isCurrentPosition(p))
+    #@+node:ekr.20220708132658.1: *4* TestNodes.test_p_isVisible
+    def test_p_isVisible(self):
+        c = self.c
+        for p in c.all_positions():
+            p.expand()
+        for p in c.all_positions():
+            self.assertTrue(p.isVisible(c), msg=p.h)
+        for p in c.all_positions():
+            p.contract()
+            p.v.expandedPositions = []
+        for p in c.all_positions():
+            if p.level() == 0:
+                self.assertTrue(p.isVisible(c), msg=p.h)
+            else:
+                self.assertFalse(p.isVisible(c), msg=p.h)
     #@+node:ekr.20220306072631.1: *3* TestNodes: Outline operations
     #@+node:ekr.20210830095545.42: *4* TestNodes.test_clone_and_move_the_clone_to_the_root
     def test_clone_and_move_the_clone_to_the_root(self):
@@ -687,127 +847,10 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().h, 'child 1')
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
-    #@+node:ekr.20220708131426.1: *3* TestNodes: Getters
-    #@+node:ekr.20220307043449.1: *4* TestNodes.test_p_getters
-    def test_p_getters(self):
-        c, p = self.c, self.c.p
-        table1 = (
-            p.anyAtFileNodeName,
-            p.atAutoNodeName,
-            p.atCleanNodeName,
-            p.atEditNodeName,
-            p.atFileNodeName,
-            p.atNoSentinelsFileNodeName,
-            p.atShadowFileNodeName,
-            p.atSilentFileNodeName,
-            p.atThinFileNodeName,
-            p.isAnyAtFileNode,
-            p.isAtAllNode,
-            p.isAtAutoNode,
-            p.isAtAutoRstNode,
-            p.isAtCleanNode,
-            p.isAtEditNode,
-            p.isAtFileNode,
-            p.isAtIgnoreNode,
-            p.isAtNoSentinelsFileNode,
-            p.isAtOthersNode,
-            p.isAtRstFileNode,
-            p.isAtShadowFileNode,
-            p.isAtSilentFileNode,
-            p.isAtThinFileNode,
-            p.isMarked,
-            p.isOrphan,
-            p.isVisited,
-        )
-        for func in table1:
-            self.assertFalse(func(), msg=func.__name__)
-        table2 = (  # Proxies for vnode methods: don't care about result.
-            p.bodyString,
-            p.directParents,
-            p.findRootPosition,
-            p.getLastChild,
-            p.getLastNode,
-            p.headString,
-            p.isDirty,
-            p.isSelected,
-            p.status,
-        )
-        for func in table2:
-            func()
-        # More proxies, with various arguments.
-        p.getNthChild(0)
-        p.matchHeadline('xyzz')
-        self.assertTrue(c.p.isRoot())
-    #@+node:ekr.20210830095545.26: *4* TestNodes.test_p_hasNextBack
-    def test_p_hasNextBack(self):
-        c, p = self.c, self.c.p
-        for p in c.all_positions():
-            back = p.back()
-            next = p.next()
-            self.assertTrue(
-                (back and p.hasBack()) or
-                (not back and not p.hasBack()))
-            self.assertTrue(
-                (next and p.hasNext()) or
-                (not next and not p.hasNext()))
-        p.v = None
-        self.assertFalse(p.hasThreadNext())
-    #@+node:ekr.20210830095545.27: *4* TestNodes.test_p_hasParentChild
-    def test_p_hasParentChild(self):
-        c, p = self.c, self.c.p
-        for p in c.all_positions():
-            child = p.firstChild()
-            parent = p.parent()
-            assert(
-                (child and p.hasFirstChild()) or
-                (not child and not p.hasFirstChild()))
-            assert(
-                (parent and p.hasParent()) or
-                (not parent and not p.hasParent()))
-    #@+node:ekr.20210830095545.28: *4* TestNodes.test_p_hasThreadNextBack
-    def test_p_hasThreadNextBack(self):
-        c, p = self.c, self.c.p
-        for p in c.all_positions():
-            threadBack = p.getThreadBack()
-            threadNext = p.getThreadNext()
-            assert(
-                (threadBack and p.hasThreadBack()) or
-                (not threadBack and not p.hasThreadBack()))
-            assert(
-                (threadNext and p.hasThreadNext()) or
-                (not threadNext and not p.hasThreadNext()))
-    #@+node:ekr.20210830095545.29: *4* TestNodes.test_p_isAncestorOf
-    def test_p_isAncestorOf(self):
-        c, p = self.c, self.c.p
-        for p in c.all_positions():
-            child = p.firstChild()
-            while child:
-                for parent in p.self_and_parents_iter():
-                    assert parent.isAncestorOf(child)
-                child.moveToNext()
-            next = p.next()
-            self.assertFalse(p.isAncestorOf(next))
-    #@+node:ekr.20210830095545.30: *4* TestNodes.test_p_isCurrentPosition
-    def test_p_isCurrentPosition(self):
-        c, p = self.c, self.c.p
-        self.assertFalse(c.isCurrentPosition(None))
-        self.assertTrue(c.isCurrentPosition(p))
-    #@+node:ekr.20220708132658.1: *4* TestNodes.test_p_isVisible
-    def test_p_isVisible(self):
-        c = self.c
-        for p in c.all_positions():
-            p.expand()
-        for p in c.all_positions():
-            self.assertTrue(p.isVisible(c), msg=p.h)
-        for p in c.all_positions():
-            p.contract()
-            p.v.expandedPositions = []
-        for p in c.all_positions():
-            if p.level() == 0:
-                self.assertTrue(p.isVisible(c), msg=p.h)
-            else:
-                self.assertFalse(p.isVisible(c), msg=p.h)
-    #@+node:ekr.20220306072850.1: *3* TestNodes: Positions methods
+    #@+node:ekr.20220306072850.1: *3* TestNodes: Position methods
+    #@+node:ekr.20230806111605.1: *4* TestNodes.test_p_archive
+    def test_p_archive(self):
+        pass
     #@+node:ekr.20210830095545.17: *4* TestNodes.test_p_convertTreeToString_and_allies
     def test_convertTreeToString_and_allies(self):
         p = self.c.p
@@ -850,6 +893,16 @@ class TestNodes(LeoUnitTest):
         c.deletePositionsInList(aList)
         c.redraw()
 
+    #@+node:ekr.20210830095545.4: *4* TestNodes.test_p_hash
+    def test_position_not_hashable(self):
+        p = self.c.p
+        # p.__hash__ should not exist.
+        try:
+            a = set()
+            a.add(p)
+            assert False, 'Adding position to set should throw exception'  # pragma: no cover
+        except TypeError:
+            pass
     #@+node:ekr.20210830095545.31: *4* TestNodes.test_p_isRootPosition
     def test_p_isRootPosition(self):
         c, p = self.c, self.c.p
@@ -944,20 +997,32 @@ class TestNodes(LeoUnitTest):
         c.selectPosition(next)
         s = w.get(0, w.getLastIndex())
         self.assertEqual(s.rstrip(), "after")
-    #@+node:ekr.20210830095545.4: *4* TestNodes.test_position_not_hashable
-    def test_position_not_hashable(self):
-        p = self.c.p
-        try:
-            a = set()
-            a.add(p)
-            assert False, 'Adding position to set should throw exception'  # pragma: no cover
-        except TypeError:
-            pass
-    #@+node:ekr.20220708134418.1: *4* TestNodes.test_validateOutlineWithParent
+    #@+node:ekr.20220708134418.1: *4* TestNodes.test_p_validateOutlineWithParent
     def test_validateOutlineWithParent(self):
         c = self.c
         for p in c.all_positions():
             self.assertTrue(p.validateOutlineWithParent(p.parent()), msg=p.h)
+    #@+node:ekr.20230806111526.1: *4* TestNodes.test_v_archive_uas
+    def test_v_archive_uas(self):
+
+        c = self.c
+        p = c.p
+        v = p.v
+        d = {
+            'plugin1': {'key': 'value'},
+            'plugin2': {'iconVal': v.iconVal},
+        }
+        # Python won't let us add these items directly.
+        d ['plugin2']['p'] = p
+        d ['plugin2']['v'] = v
+        v.u = d
+        expected = {
+            'plugin1': {'key': 'value'},
+            'plugin2': {'iconVal': v.iconVal},
+        }
+        if 0:  # Enable trace in v.archive_uas.
+            g.app.debug = 'test:v_archive_uas'
+        assert v.archive_uas() == expected, repr(v.archive_uas())
     #@+node:ekr.20220307043258.1: *3* TestNodes: Position properties
     #@+node:ekr.20210830095545.20: *4* TestNodes.test_p_h_with_newlines
     def test_p_h_with_newlines(self):
