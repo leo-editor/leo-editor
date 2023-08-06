@@ -63,7 +63,7 @@ def dump_gnx_dict(event: Event) -> None:
         return
     d = c.fileCommands.gnxDict
     g.printObj(d, tag='gnxDict')
-#@+node:felix.20220618222639.1: ** class SetEncoder
+#@+node:felix.20220618222639.1: ** class SetJSONEncoder
 class SetJSONEncoder(json.JSONEncoder):
     # Used to encode JSON in leojs files
     def default(self, obj: Any) -> Any:

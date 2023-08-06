@@ -456,7 +456,7 @@ class Position:
             v = p2.v
             if v not in seen:
                 seen.add(v)
-                yield(v)
+                yield v
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""
@@ -1779,7 +1779,7 @@ class Position:
     nosentinels = property(
         __get_nosentinels,  # __set_nosentinels
         doc="position property returning the body text without sentinels")
-    #@+node:ekr.20160129073222.1: *4* p.u Property
+    #@+node:ekr.20160129073222.1: *4* p.u property
     def __get_u(self) -> Any:
         p = self
         return p.v.u
@@ -1957,7 +1957,7 @@ class Position:
     #@-others
 
 position = Position  # compatibility.
-#@+node:ekr.20230801025822.1: ** class SetEncoder
+#@+node:ekr.20230801025822.1: ** class SetJsonEncoder
 class SetJSONEncoder(json.JSONEncoder):
     """A class to encode json in archive files."""
     # Same as SetJSONEncoder in leo.core.leoFileCommands.
@@ -2073,17 +2073,25 @@ class VNode:
             print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20230728062638.1: *4* v.archive_uas
     def archive_uas(self) -> dict:
-        """To do: return a json-like dict of all uas."""
+        """Return a json-like dict of all uas."""
         v = self
-        ua = getattr(v, 'unknownAttributes', None)
-        if ua:
-            try:
-                json.dumps(ua, skipkeys=True, cls=SetJSONEncoder)
-                return ua  # Valid UA's as-is. UA's are NOT encoded.
-            except TypeError:
-                g.trace(f"Can not serialize uA for {v.h}")
-                g.printObj(ua, tag=f"ua for {v.h}")
-        return {}
+        d = getattr(v, 'unknownAttributes', None)
+        if d and isinstance(d, dict):
+            # Prevalidate all inner dictionaries.
+            result_d = {}
+            for key, value in d.values():
+                inner_d = d[key]
+                inner_result_d = {}
+                for inner_key, inner_val in inner_d:
+                    if is_valid_json({key: value}):
+                        inner_result_d[key] = value
+                if inner_result_d:
+                    result_d[key] = inner_result_d
+            if result_d and is_valid_json(result_d):
+                return result_d
+            if result_d:
+                g.printObj(result_d, tag='can not happen: invalid result_d')
+        return None
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:
@@ -2742,6 +2750,13 @@ vnode = VNode  # compatibility.
 
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
+def is_valid_json(obj: Any) -> bool:
+    try:
+        json.dumps(obj, skipkeys=True, cls=SetJSONEncoder)
+        return True
+    except Exception:
+        return False
+
 def vnode_to_gnx(v: VNode) -> Optional[str]:
     c = v.context
     return None if v == c.hiddenRootNode else v.gnx
