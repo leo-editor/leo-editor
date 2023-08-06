@@ -2762,6 +2762,27 @@ vnode = VNode  # compatibility.
 
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
+def dump_archive(d):
+    """Dump the archive in a more readable format."""
+    for key in d:
+        if key in ('parents', 'children'):
+            print(f"{key}: {{")
+            d2 = d.get(key)
+            if d2:
+                for key2, val2 in d2.items():
+                    if val2:
+                        print(f"  {key2}: [")
+                        for gnx in val2:
+                            print(f"    {gnx},")
+                        print('  ]')
+                    else:
+                        print(f"  {key2}: []")
+            else:
+                g.printObj(d2, tag=key)
+            print('}')
+        else:
+            g.printObj(d.get(key), tag=key)
+
 def is_valid_json(obj: Any) -> bool:
     try:
         json.dumps(obj, skipkeys=True, cls=SetJSONEncoder)

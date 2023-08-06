@@ -29,7 +29,10 @@ def copyOutline(self: Cmdr, event: Event = None) -> str:
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    s = c.fileCommands.outline_to_clipboard_string()
+    if c.config.getBool('copy-node-as-xml', default=True):
+        s = c.fileCommands.outline_to_clipboard_string()
+    else:
+        s = c.p.archive()
     g.app.paste_c = c
     if g.app.inBridge:
         return s

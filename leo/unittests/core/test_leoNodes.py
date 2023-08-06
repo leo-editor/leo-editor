@@ -6,7 +6,7 @@
 # pylint: disable=no-member
 import textwrap
 from leo.core import leoGlobals as g
-from leo.core.leoNodes import is_valid_json, vnode_to_gnx
+from leo.core.leoNodes import dump_archive, is_valid_json, vnode_to_gnx
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
@@ -543,6 +543,20 @@ class TestNodes(LeoUnitTest):
         assert not clone.back(), 'fail 6'
         clone.doDelete()
         assert not child.isCloned(), 'fail 7'
+    #@+node:ekr.20230806160312.1: *4* TestNodes.test_copy_node
+    def test_copy_node(self):
+
+        c = self.c
+        trace_json, trace_xml = False, False
+        for val in (True, False):
+            self._set_setting(c, 'bool', 'copy-node-as-xml', val)
+            setting_val = c.config.getBool('copy-node-as-xml')
+            assert setting_val == val, repr(setting_val)
+            s = c.copyOutline()
+            if val and trace_xml:
+                g.printObj(s, tag=f"c.config.getBool('copy-node-as-xml'): {val!r}")
+            if not val and trace_json:
+                dump_archive(s)
     #@+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
         # This test requires @bool select-next-after-delete = False
