@@ -2762,7 +2762,7 @@ vnode = VNode  # compatibility.
 
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
-def dump_archive(d):
+def dump_archive(d: dict) -> None:
     """Dump the archive in a more readable format."""
     for key in d:
         if key in ('parents', 'children'):
