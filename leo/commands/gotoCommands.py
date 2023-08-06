@@ -115,9 +115,9 @@ class GoToCommands:
         #        Also look for nodes delimited by "//"
         if root.h.endswith('.vue'):
             node_pat2 = re.compile(fr"\s{re.escape('//')}@\+node:{re.escape(p.gnx)}:")
-        for i, s in enumerate(contents):
-            if node_pat2.match(s):
-                return i + 1
+            for i, s in enumerate(contents):
+                if node_pat2.match(s):
+                    return i + 1
         return None
     #@+node:ekr.20230803073950.1: *4* goto.prev_hidden_lines
     def prev_hidden_lines(self,
