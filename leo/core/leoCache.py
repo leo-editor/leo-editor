@@ -80,7 +80,7 @@ class CommanderCacher:
             # Null gui's don't normally set the g.app.gui.db.
             g.app.setGlobalDb()
         # Fixes bug 670108.
-        assert g.app.db is not None  # a PickleShareDB instance.
+        assert g.app.db is not None
         # Make sure g.guessExternalEditor works.
         g.app.db.get("LEO_EDITOR")
         # self.initFileDB('~/testpickleshare')
