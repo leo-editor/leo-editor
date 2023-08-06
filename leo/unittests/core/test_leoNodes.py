@@ -789,7 +789,7 @@ class TestNodes(LeoUnitTest):
     #@+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
         c, p = self.c, self.c.p
-        
+
         if not c.config.getBool('copy-node-as-xml', default=True):  ###
             self.skipTest('copy-node-as-archive not ready yet')
 
