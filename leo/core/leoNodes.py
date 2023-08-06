@@ -324,7 +324,7 @@ class Position:
     __repr__ = __str__
     #@+node:ekr.20230726063237.1: *4* p.archive
     def archive(self) -> dict[str, Any]:
-        """Return a json-like archival dictionary for p/v.unarchive."""
+        """Return an archival dict of p.v and all vnodes in its subtree."""
         p = self
 
         children_dict: dict[str, list[str]] = {}
@@ -336,8 +336,11 @@ class Position:
             gnx = v.gnx
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
-            marks_dict[gnx] = str(int(v.isMarked()))
-            uas_dict[gnx] = v.archive_uas()
+            if v.isMarked():
+                marks_dict[gnx] = '1'
+            uas = v.archive_uas()
+            if uas:
+                uas_dict[gnx] = uas
 
         return {
             'parents': parents_dict,

@@ -850,7 +850,14 @@ class TestNodes(LeoUnitTest):
     #@+node:ekr.20220306072850.1: *3* TestNodes: Position methods
     #@+node:ekr.20230806111605.1: *4* TestNodes.test_p_archive
     def test_p_archive(self):
-        pass
+
+        c = self.c
+        p = c.p
+        d = p.archive()
+        assert isinstance(d, dict), repr(d)
+        if 0:
+            for key in d:
+                g.printObj(d.get(key), tag=key)
     #@+node:ekr.20210830095545.17: *4* TestNodes.test_p_convertTreeToString_and_allies
     def test_convertTreeToString_and_allies(self):
         p = self.c.p
