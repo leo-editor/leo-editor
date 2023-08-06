@@ -25,11 +25,11 @@
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
-<v t="ekr.20230616024812.1"><vh>@button cover-one</vh></v>
-<v t="ekr.20220306092217.1"><vh>@button test-one</vh>
+<v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
+<v t="ekr.20220306092217.1"><vh>@command test-one</vh>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+<v t="ekr.20230724084617.1"><vh>&lt;&lt; old tests &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20230508145335.1"><vh>@button slow-tests</vh></v>
 <v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
 <v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
@@ -134,6 +134,7 @@
 <v t="ekr.20220503084045.1"><vh>function: scan</vh></v>
 </v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
+<v t="ekr.20230720115916.1"><vh>script: node-history</vh></v>
 <v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
 <v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
 <v t="ekr.20210701044513.1"><vh>&lt;&lt; read into a1_s, b1_s &gt;&gt;</vh></v>
@@ -250,6 +251,9 @@
 <v t="ekr.20221129164042.1"><vh>@edit ../../setup.cfg</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 <v t="ekr.20221201080228.1"><vh>To be deleted ../../blacken_leo.py</vh></v>
+</v>
+<v t="ekr.20230717210524.1"><vh>In leo/docs</vh>
+<v t="ekr.20230716154653.1"><vh>@edit ../../docs/load-leo.html</vh></v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
@@ -653,12 +657,13 @@
 <v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
 <v t="ekr.20220812224747.1"><vh>@file ../unittests/test_writers.py</vh></v>
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
-<v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
+<v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
+<v t="ekr.20230710105542.1"><vh>@file ../unittests/commands/test_commanderFileCommands.py</vh></v>
+<v t="ekr.20211013081056.1"><vh>@file ../unittests/commands/test_convertCommands.py</vh></v>
 <v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
 <v t="ekr.20230705083159.1"><vh>@file ../unittests/commands/test_editFileCommands.py</vh></v>
-<v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
-<v t="ekr.20211013081056.1"><vh>@file ../unittests/commands/test_convertCommands.py</vh></v>
-<v t="ekr.20230710105542.1"><vh>@file ../unittests/commands/test_commanderFileCommands.py</vh></v>
+<v t="ekr.20230802060212.1"><vh>@file ../unittests/commands/test_gotoCommands.py</vh></v>
+<v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
 </v>
 <v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
 <v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
@@ -682,6 +687,7 @@
 <v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
 <v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 <v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
+<v t="ekr.20230722095455.1"><vh>@file ../unittests/core/test_leoTest2.py</vh></v>
 <v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
 </v>
@@ -1883,8 +1889,8 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='devel',               # Old
-    rev2='ekr-3181-mypy-links',   # New
+    rev1='master',  # Old
+    rev2='devel',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2766,29 +2772,22 @@ def do_sec(i, m, s):
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20220306092217.1">g.cls()
+g.cls()
+if c.isChanged():
+    c.save()
 &lt;&lt; prefixes &gt;&gt;
+&lt;&lt; old tests &gt;&gt;
 commands = (
-    # f" {importers}",
-    # f" {core}.test_leoAst.TestTOG"
-    # f" {core}.test_leoApp.TestApp.test_LM_scanOptions",
-    # f" {core}.test_leoImport.TestLeoImport",
-    # f" {core}.test_leoGlobals.TestGlobals",
+   
+    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_retaining_clones",
+    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_c_checkVnodeLinks",
+    # f" {core}.test_leoGlobals.Test_uas",
     
-    # Also runs LeoUnitTest.test_set_setting
-    # f" {commands}.test_editFileCommands.TestEditFileCommands",
-    # f" {commands}.test_commanderFileCommands.TestEditFileCommands.test_gdc_node_history",
-    # f" {commands}.test_commanderFileCommands.TestRefreshFromDisk",
-    # f" {core}.test_leoImport.TestLeoImport.test_parse_body",
-
-    # f" {core}.test_leoCompare.TestCompare",
-    # f" {commands}.test_editFileCommands.TestEditFileCommands.test_diff_two_branches",
-    # f" {commands}.test_editFileCommands.TestEditFileCommands.test_git_diff",
-    #f" {commands}.test_editFileCommands.TestEditFileCommands.test_diff_two_revs",
-
-    # f" {core}.test_leoCompare.TestCompare.test_diff_list_of_files",
-    f" {core}.test_leoImport.TestLeoImport.slow_test_ric_run",
+    # f" {core}.test_leoCompare.TestCompare.test_diff_marked_nodes",
+    f" {commands}.test_gotoCommands.TestGotoCommands.test_show_file_line",
 )
-commands_s = f"python -m unittest {' '.join(commands)}"
+verbose_flag = ''  # -v
+commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
 g.execute_shell_commands(commands_s)
 </t>
 <t tx="ekr.20220318085657.1">"""
@@ -3142,6 +3141,7 @@ core_dir = join(leo_dir, 'core')
 commands_dir = join(leo_dir, 'commands')
 external_dir = join(leo_dir, 'external')
 plugins_dir = join(leo_dir, 'plugins')
+unittests_dir = join(leo_dir, '..', 'unittests')
 
 def make_list(pattern):
     return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
@@ -3151,6 +3151,7 @@ core_files = make_list(f"{core_dir}{sep}*.py")
 commands_files = make_list(f"{commands_dir}{sep}*.py")
 external_files = make_list(f"{external_dir}{sep}*.py")
 plugin_files = make_list(f"{plugins_dir}{sep}*.py")
+unittests_files = make_list(f"{unittests_dir}{sep}*.py")
 
 # Compute paths from @&lt;file&gt; nodes.
 at_file_paths = sorted([
@@ -3406,6 +3407,8 @@ rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
 rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
+rem echo reindent leo/unittests
+call py %REINDENT_PATH% -r leo\unittests
 goto done
 
 :no_reindent
@@ -3459,9 +3462,10 @@ g.execute_shell_commands(
     'python -m unittest '
     # 'leo.unittests.test_design.TestAnnotations.slow_test_all_paths '
     # 'leo.unittests.test_design.TestChains.slow_test_all_paths'
+    # 'leo.unittests.core.test_leoImport.TestLeoImport.slow_test_ric_run',
+    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.verbose_test_git_diff',
+    # f" {commands}.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history",
 
-    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history',
-    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.test_diff_two_branches',
 )
 </t>
 <t tx="ekr.20230511074046.1">commands = 'leo.unittests.commands'
@@ -3476,7 +3480,6 @@ testColorizer = 'test_leoColorizer.TestColorizer'
 testCommands = 'test_leoCommands.TestCommands'
 testGlobals = 'test_leoGlobals.TestGlobals'
 </t>
-<t tx="ekr.20230616024812.1">g.execute_shell_commands('cover-one')</t>
 <t tx="ekr.20230624114517.1"></t>
 <t tx="ekr.20230628105236.1">@language batch
 @echo off
@@ -3497,5 +3500,37 @@ call py -m ruff leo/plugins/qt_text.py
 call py -m ruff leo/plugins/qt_tree.py
 </t>
 <t tx="ekr.20230702120645.1"></t>
+<t tx="ekr.20230717210524.1"></t>
+<t tx="ekr.20230720115916.1">g.cls()
+import leo.commands.editFileCommands as efc
+
+x = efc.GitDiffController(c=c)
+path = g.os_path_finalize_join(g.app.loadDir, 'leoGlobals.py')
+gnxs = (
+    'ekr.20230626064652.1',  # EKR's replacement gnx
+    'tbrown.20140311095634.15188',  # Terry's original node.
+)
+x.node_history(path, gnxs, limit=60)
+</t>
+<t tx="ekr.20230724084617.1"># f" {importers}",
+# f" {core}.test_leoAst.TestTOG"
+# f" {core}.test_leoApp.TestApp",
+# f" {core}.test_leoCompare.TestCompare",
+# f" {core}.test_leoGlobals.TestGlobals",
+# f" {core}.test_leoImport.TestLeoImport",
+# f" {core}.test_leoTest2.TestTest2",
+
+# f" {commands}.test_editFileCommands",
+# f" {commands}.test_commanderFileCommands",
+# f" {commands}.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history",
+
+# f" {core}.test_leoGlobals.TestGlobals.test_g_parsePathData",
+
+# f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_node",
+# f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_as_template",
+# f" {commands}.test_outlineCommands.TestOutlineCommands.test_restoreFromCopiedTree",
+# f" {commands}.test_outlineCommands.TestOutlineCommands.test_p_v_archive",
+# f" {core}.test_leoCommands.TestCommands.check_c_check_links",
+</t>
 </tnodes>
 </leo_file>
