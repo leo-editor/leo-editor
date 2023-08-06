@@ -2760,13 +2760,10 @@ vnode = VNode  # compatibility.
 #@@beautify
 #@+node:ekr.20230801015325.1: ** archive-related functions
 def is_valid_json(obj: Any) -> bool:
-    # obj_s = g.objToString(obj)
     try:
         json.dumps(obj, skipkeys=True, cls=SetJSONEncoder)
-        # g.trace('True', obj_s)
         return True
     except Exception:
-        # g.trace('False', obj_s)
         return False
 
 def vnode_to_gnx(v: VNode) -> Optional[str]:
