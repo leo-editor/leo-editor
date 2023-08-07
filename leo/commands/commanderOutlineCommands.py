@@ -29,10 +29,10 @@ def copyOutline(self: Cmdr, event: Event = None) -> str:
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    if c.config.getBool('copy-node-as-xml', default=True):
-        s = c.fileCommands.outline_to_clipboard_string()
-    else:
+    if g.json_paste_switch:
         s = c.p.archive()
+    else:
+        s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
     if g.app.inBridge:
         return s
@@ -78,9 +78,15 @@ def pasteOutline(
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
+
+    if g.json_paste_switch:
+        g.trace('paste-as-json not ready yet')
+        return None
+
     isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
+
     # Get *position* to be pasted.
     pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
     if not pasted:

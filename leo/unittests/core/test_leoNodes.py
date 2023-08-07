@@ -6,7 +6,6 @@
 # pylint: disable=no-member
 import textwrap
 from leo.core import leoGlobals as g
-from leo.core.leoNodes import dump_archive, is_valid_json, vnode_to_gnx
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
@@ -133,9 +132,9 @@ class TestNodes(LeoUnitTest):
             c, c.p, c.p.v,
         )
         for obj in good_table:
-            assert is_valid_json(obj), repr(obj)
+            assert g.is_valid_json(obj), repr(obj)
         for obj in bad_table:
-            assert not is_valid_json(obj), repr(obj)
+            assert not g.is_valid_json(obj), repr(obj)
     #@+node:ekr.20230806113211.1: *4* TestNodes.test_vnode_to_gnx
     def test_vnode_to_gnx(self):
 
@@ -145,7 +144,7 @@ class TestNodes(LeoUnitTest):
             (c.p.v, c.p.v.gnx),
         )
         for v, gnx in table:
-            assert vnode_to_gnx(v) == gnx, (repr(v), repr(gnx))
+            assert g.vnode_to_gnx(v) == gnx, (repr(v), repr(gnx))
     #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
     #@+node:ekr.20210830095545.6: *4* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
@@ -547,20 +546,9 @@ class TestNodes(LeoUnitTest):
     def test_copy_node(self):
 
         c = self.c
-        trace_json, trace_xml = False, False
-        try:
-            for val in (True, False):
-                self._set_setting(c, 'bool', 'copy-node-as-xml', val)
-                setting_val = c.config.getBool('copy-node-as-xml')
-                assert setting_val == val, repr(setting_val)
-                s = c.copyOutline()
-                if val and trace_xml:
-                    g.printObj(s, tag=f"c.config.getBool('copy-node-as-xml'): {val!r}")
-                if not val and trace_json:
-                    dump_archive(s)
-        finally:
-            # Restore global setting to its legacy (default) value.
-            self._set_setting(c, 'bool', 'copy-node-as-xml', False)
+        s = c.copyOutline()
+        if 0:
+            g.dump_archive(s, tag='test_copy_node')
     #@+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
         # This test requires @bool select-next-after-delete = False
@@ -790,8 +778,7 @@ class TestNodes(LeoUnitTest):
     def test_paste_node(self):
         c, p = self.c, self.c.p
 
-        if not c.config.getBool('copy-node-as-xml', default=True):  ###
-            self.skipTest('copy-node-as-archive not ready yet')
+        ### self.skipTest('copy-node-as-archive not ready yet')
 
         child = p.insertAsNthChild(0)
         child.setHeadString('child')

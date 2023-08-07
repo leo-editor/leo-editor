@@ -20,6 +20,7 @@ import glob
 import importlib
 import inspect
 import io
+import json
 import operator
 import os
 from pathlib import Path
@@ -60,6 +61,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
+#@+<< leoGlobals json_paste_switch >>
+#@+node:ekr.20230807123041.1: ** << leoGlobals json_paste_switch >>
+# Temporary switch.
+json_paste_switch = False
+#@-<< leoGlobals json_paste_switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
@@ -2500,6 +2506,13 @@ class UiTypeException(Exception):
 def assertUi(uitype: Any) -> None:
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
+#@+node:ekr.20230801025822.1: *3* class g.SetJsonEncoder
+class SetJSONEncoder(json.JSONEncoder):
+    """A class to encode json in archive files."""
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
@@ -7223,6 +7236,47 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)
+#@+node:ekr.20230801015325.1: ** g.UAs
+#@+node:ekr.20230807120727.1: *3* g.dump_archive
+def dump_archive(d: dict, tag: str = None) -> None:
+    """Dump the archive in a more readable format."""
+    if tag:
+        print(tag)
+    for key in d:
+        if key in ('parents', 'children'):
+            print(f"{key}: {{")
+            d2 = d.get(key)
+            if d2:
+                for key2, val2 in d2.items():
+                    if val2:
+                        print(f"  {key2}: [")
+                        for gnx in val2:
+                            print(f"    {gnx},")
+                        print('  ]')
+                    else:
+                        print(f"  {key2}: []")
+            else:
+                g.printObj(d2, tag=key)
+            print('}')
+        else:
+            g.printObj(d.get(key), tag=key)
+
+#@+node:ekr.20230807120828.1: *3* g.is_valid_json
+def is_valid_json(obj: Any) -> bool:
+    """Return True if the given object can be converted to json."""
+    try:
+        json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+        return True
+    except Exception:
+        return False
+#@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
+def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+    result = [vnode_to_gnx(z) for z in vnode_list]
+    return [z for z in result if z]
+
+def vnode_to_gnx(v: VNode) -> Optional[str]:
+    c = v.context
+    return None if v == c.hiddenRootNode else v.gnx
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 #@+<< About clickable links >>
 #@+node:ekr.20230624100622.1: *3* << About clickable links >>

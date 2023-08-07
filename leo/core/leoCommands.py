@@ -4151,12 +4151,16 @@ class Commands:
             # A chapter.
             return current != limit.firstChild()
         return current != c.rootPosition()
-    #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
+    #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline (test)
     def canPasteOutline(self, s: str = None) -> bool:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
-        # check for JSON
+
+        if g.json_paste_switch:
+            return bool(s)  ### To do.
+
+        ### legacy.
         if s and s.lstrip().startswith("{"):
             try:
                 d = json.loads(s)

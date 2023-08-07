@@ -6,7 +6,6 @@
 from __future__ import annotations
 from collections.abc import Callable
 import copy
-import json
 import os
 import time
 import uuid
@@ -334,8 +333,8 @@ class Position:
 
         for v in p.all_unique_vnodes():
             gnx = v.gnx
-            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
-            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
             if v.isMarked():
                 marks_dict[gnx] = '1'
             uas = v.archive_uas()
@@ -1960,15 +1959,6 @@ class Position:
     #@-others
 
 position = Position  # compatibility.
-#@+node:ekr.20230801025822.1: ** class SetJsonEncoder
-class SetJSONEncoder(json.JSONEncoder):
-    """A class to encode json in archive files."""
-    # Same as SetJSONEncoder in leo.core.leoFileCommands.
-
-    def default(self, obj: Any) -> Any:
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
@@ -2087,7 +2077,7 @@ class VNode:
                 inner_d = d[key]
                 inner_result_d = {}
                 for inner_key, inner_value in inner_d.items():
-                    if is_valid_json({inner_key: inner_value}):
+                    if g.is_valid_json({inner_key: inner_value}):
                         inner_result_d[inner_key] = inner_value
                     elif trace:
                         g.trace(
@@ -2096,7 +2086,7 @@ class VNode:
                             f"{inner_key!r}: {inner_value.__class__.__name__}")
                 if inner_result_d:
                     result_d[key] = inner_result_d
-            if result_d and is_valid_json(result_d):
+            if result_d and g.is_valid_json(result_d):
                 return result_d
             if result_d:
                 message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
@@ -2761,44 +2751,6 @@ class VNode:
 vnode = VNode  # compatibility.
 
 #@@beautify
-#@+node:ekr.20230801015325.1: ** archive-related functions
-def dump_archive(d: dict, tag: str = None) -> None:
-    """Dump the archive in a more readable format."""
-    if tag:
-        print(tag)
-    for key in d:
-        if key in ('parents', 'children'):
-            print(f"{key}: {{")
-            d2 = d.get(key)
-            if d2:
-                for key2, val2 in d2.items():
-                    if val2:
-                        print(f"  {key2}: [")
-                        for gnx in val2:
-                            print(f"    {gnx},")
-                        print('  ]')
-                    else:
-                        print(f"  {key2}: []")
-            else:
-                g.printObj(d2, tag=key)
-            print('}')
-        else:
-            g.printObj(d.get(key), tag=key)
-
-def is_valid_json(obj: Any) -> bool:
-    try:
-        json.dumps(obj, skipkeys=True, cls=SetJSONEncoder)
-        return True
-    except Exception:
-        return False
-
-def vnode_to_gnx(v: VNode) -> Optional[str]:
-    c = v.context
-    return None if v == c.hiddenRootNode else v.gnx
-
-def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
-    result = [vnode_to_gnx(z) for z in vnode_list]
-    return [z for z in result if z]
 #@-others
 #@@language python
 #@@tabwidth -4

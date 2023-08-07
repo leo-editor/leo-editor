@@ -40,7 +40,6 @@ except Exception:
 #
 # Leo imports.
 from leo.core import leoGlobals as g
-from leo.core import leoNodes
 #@-<< checkerCommands imports >>
 #@+<< checkerCommands annotations >>
 #@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
@@ -110,7 +109,7 @@ def check_uas(event: Event) -> None:
         for v in c.all_unique_nodes():
             d = v.archive_uas()
             if d:
-                leoNodes.dump_archive(d, tag=f"uAs for {v.h}...")
+                g.dump_archive(d, tag=f"uAs for {v.h}...")
     finally:
         g.app.debug = old_debug
 #@+node:ekr.20190608084751.1: *3* find-long-lines

@@ -63,13 +63,6 @@ def dump_gnx_dict(event: Event) -> None:
         return
     d = c.fileCommands.gnxDict
     g.printObj(d, tag='gnxDict')
-#@+node:felix.20220618222639.1: ** class SetJSONEncoder
-class SetJSONEncoder(json.JSONEncoder):
-    # Used to encode JSON in leojs files
-    def default(self, obj: Any) -> Any:
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
 
@@ -824,18 +817,31 @@ class FileCommands:
         # Save and clear gnxDict.
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
-        if s.lstrip().startswith("{"):
-            # Maybe JSON
-            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+
+        ### Temp.
+        # pylint: disable=no-else-return
+
+        if g.json_paste_switch:
+            ### To do.
+            v = None  ### Temp.
+            self.gnxDict = oldGnxDict
+            g.trace('paste from json not ready yet')
+            return None  ###
+
         else:
-            # This encoding must match the encoding used in outline_to_clipboard_string.
-            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
-        v = hidden_v.children[0]
-        v.parents = []
-        if not v:
-            g.es("the clipboard is not valid ", color="blue")
-            return None
+            ### Legacy code.
+            if s.lstrip().startswith("{"):
+                # Maybe JSON
+                hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+            else:
+                # This encoding must match the encoding used in outline_to_clipboard_string.
+                s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+                hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
+            v = hidden_v.children[0]
+            v.parents = []
+            if not v:
+                g.es("the clipboard is not valid ", color="blue")
+                return None
 
         # Create the position.
         p = leoNodes.Position(v)
@@ -1549,7 +1555,7 @@ class FileCommands:
             self.usingClipboard = True
             if self.c.config.getBool('json-outline-clipboard', default=False):
                 d = self.leojs_outline_dict(p or self.c.p)
-                s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+                s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
             else:
                 self.outputFile = io.StringIO()
                 self.putProlog()
@@ -1579,7 +1585,7 @@ class FileCommands:
         try:
             self.usingClipboard = True
             d = self.leojs_outline_dict(p or self.c.p)  # Checks for illegal ua's
-            s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+            s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
         finally:  # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
@@ -1628,7 +1634,7 @@ class FileCommands:
             # Create the dict corresponding to the JSON.
             d = self.leojs_outline_dict()  # Checks for illegal ua's
             # Convert the dict to JSON.
-            json_s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+            json_s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
             # Write bytes.
             f.write(bytes(json_s, self.leo_file_encoding, 'replace'))
             f.close()
@@ -1656,7 +1662,7 @@ class FileCommands:
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
                     try:
-                        json.dumps(p.v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this test passes ok
+                        json.dumps(p.v.unknownAttributes, skipkeys=True, cls=g.SetJSONEncoder)
                         uas[p.v.gnx] = p.v.unknownAttributes  # Valid UA's as-is. UA's are NOT encoded.
                     except TypeError:
                         g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
@@ -1677,7 +1683,7 @@ class FileCommands:
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                     try:
                         # If this passes, the (unencoded) uAs are valid json.
-                        json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)
+                        json.dumps(v.unknownAttributes, skipkeys=True, cls=g.SetJSONEncoder)
                         uas[v.gnx] = v.unknownAttributes
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
