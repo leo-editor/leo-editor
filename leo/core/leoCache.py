@@ -353,7 +353,7 @@ class SqlitePickleShare:
             return val
         except Exception:  # #1444: Was KeyError.
             return default
-    #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
+    #@+node:vitalije.20170716201700.17: *3* has_key (SqlitePickleShare)
     def has_key(self, key: str) -> bool:
         sql = 'select 1 from cachevalues where key=?;'
         for _row in self.conn.execute(sql, (key,)):
