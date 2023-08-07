@@ -857,6 +857,15 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
     #@+node:ekr.20220306072850.1: *3* TestNodes: Position methods
+    #@+node:ekr.20230807171632.1: *4* TestNodes.test_c_archive
+    def test_c_archive(self):
+
+        c = self.c
+        d = c.archive()
+        assert isinstance(d, dict), repr(d)
+        if 0:
+            for key in d:
+                g.printObj(d.get(key), tag=key)
     #@+node:ekr.20230806111605.1: *4* TestNodes.test_p_archive
     def test_p_archive(self):
 
