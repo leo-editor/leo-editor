@@ -2241,7 +2241,7 @@ class VNode:
         It *is* valid for v to be c.hiddenRootNode
         """
         v = self
-        seen: list[VNode] = [v]
+        seen: dict[str, bool] = {v.gnx: True}
         to_be_visited = [z for z in v.children]
 
         yield v
@@ -2249,8 +2249,8 @@ class VNode:
             v = to_be_visited.pop()
             yield v
             for child in v.children:
-                if child not in seen:
-                    seen.append(child)
+                if child.gnx not in seen:
+                    seen[child.gnx] = True
                     to_be_visited.append(child)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
