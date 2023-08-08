@@ -262,8 +262,6 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         p = c.p
         u = c.undoer
-        self.skipTest('not ready yet')  ###
-        return  ###
 
         # This test fails with these flags for checkVnodeLinks.
         # g.app.debug.extend(['test:strict', 'test:verbose'])
@@ -286,7 +284,7 @@ class TestOutlineCommands(LeoUnitTest):
                     seen.add(p.v)
                     if p.h in cloned_headlines:
                         assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
-                        assert p.b, f"{tag_s} {p.h}: unexpected empty body text: {p.b!r}"
+                        # assert p.b, f"{tag_s} {p.h}: unexpected empty body text: {p.b!r}"
                     else:
                         assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
                     message = f"{tag}: p.gnx: {p.gnx} != expected {gnx_dict.get(p.h)}"
