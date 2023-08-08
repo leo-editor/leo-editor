@@ -1310,44 +1310,14 @@ class Commands:
     allNodes_iter = all_positions
     safe_all_positions = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode) -> Generator:
         """
-        Generates all positions p in this outline where p.v is v.
-
-        Should be called with stack=None.
-
-        The generated positions are not necessarily in outline order.
-
-        By Виталије Милошевић (Vitalije Milosevic).
+        Generate all positions p (in outline order) such that p.v == v.
         """
         c = self
-
-        if stack is None:
-            stack = []
-
-        if not isinstance(v, leoNodes.VNode):
-            g.es_print(f"not a VNode: {v!r}")
-            return  # Stop the generator.
-
-        def allinds(v: VNode, target_v: VNode) -> Generator:
-            """Yield all indices i such that v.children[i] == target_v."""
-            for i, x in enumerate(v.children):
-                if x is target_v:
-                    yield i
-
-        def stack2pos(stack: list[tuple]) -> Position:
-            """Convert the stack to a position."""
-            v, i = stack[-1]
-            return leoNodes.Position(v, i, stack[:-1])
-
-        for v2 in set(v.parents):
-            for i in allinds(v2, v):
-                stack.insert(0, (v, i))
-                if v2 is c.hiddenRootNode:
-                    yield stack2pos(stack)
-                else:
-                    yield from c.all_positions_for_v(v2, stack)
-                stack.pop(0)
+        for p in c.all_positions():
+            if p.v == v:
+                yield p.copy()
     #@+node:ekr.20161120121226.1: *5* c.all_roots
     def all_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
         """
