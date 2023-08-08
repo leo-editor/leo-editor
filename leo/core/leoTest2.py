@@ -144,7 +144,7 @@ class LeoUnitTest(unittest.TestCase):
         while p.hasNext():
             p.next().doDelete()
     #@+node:ekr.20230724141139.1: *4* LeoUnitTest.copy_node
-    def copy_node(self, is_json=False) -> str:
+    def copy_node(self, is_json: bool = False) -> str:
         """Copy c.p to the clipboard."""
         c = self.c
         if is_json:
