@@ -321,32 +321,6 @@ class Position:
         return f"<pos {id(p)} [{len(p.stack)}] None>"
 
     __repr__ = __str__
-    #@+node:ekr.20230726063237.1: *4* p.archive
-    def archive(self) -> dict[str, Any]:
-        """Return an archival dict of p.v and all vnodes in its subtree."""
-        p = self
-
-        children_dict: dict[str, list[str]] = {}
-        marks_dict: dict[str, str] = {}
-        parents_dict: dict[str, list[str]] = {}
-        uas_dict: dict[str, dict] = {}
-
-        for v in p.all_unique_vnodes():
-            gnx = v.gnx
-            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-            if v.isMarked():
-                marks_dict[gnx] = '1'
-            uas = v.archive_uas()
-            if uas:
-                uas_dict[gnx] = uas
-
-        return {
-            'parents': parents_dict,
-            'children': children_dict,
-            'marks': marks_dict,
-            'uAs': uas_dict,
-        }
     #@+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -449,16 +423,6 @@ class Position:
             array.append(s)
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
-    #@+node:ekr.20230801015109.1: *4* p.all_unique_vnodes
-    def all_unique_vnodes(self) -> Generator:
-        """Yield all unique vnodes in p.self_and_subtree()."""
-        p = self
-        seen = set()
-        for p2 in p.self_and_subtree(copy=False):
-            v = p2.v
-            if v not in seen:
-                seen.add(v)
-                yield v
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""
@@ -2268,6 +2232,26 @@ class VNode:
         for child in v.children:
             v2.children.append(child.copyTree(copyMarked))
         return v2
+    #@+node:ekr.20230808052030.1: *3* v.Generators
+    #@+node:ekr.20230808052041.1: *4* v.self_and_subtree
+    def self_and_subtree(self) -> Generator:
+        """
+        Yield v itself and all descendant vnodes.
+
+        It *is* valid for v to be c.hiddenRootNode
+        """
+        v = self
+        seen: list[VNode] = [v]
+        to_be_visited = [z for z in v.children]
+
+        yield v
+        while to_be_visited:
+            v = to_be_visited.pop()
+            yield v
+            for child in v.children:
+                if child not in seen:
+                    seen.append(child)
+                    to_be_visited.append(child)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:

@@ -2585,7 +2585,7 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
         g.app.gui.replaceClipboardWith(s)
-        return self._make_response({"string": s})
+        return self._make_response({"string": s})  ###
 
     #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
     def copy_node_as_json(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
@@ -2638,7 +2638,7 @@ class LeoServer:
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
         g.app.gui.replaceClipboardWith(s)
-        return self._make_response({"string": s})
+        return self._make_response({"string": s})  ###
     #@+node:felix.20210621233316.53: *5* server.delete_node
     def delete_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """

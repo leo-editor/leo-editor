@@ -542,13 +542,13 @@ class TestNodes(LeoUnitTest):
         assert not clone.back(), 'fail 6'
         clone.doDelete()
         assert not child.isCloned(), 'fail 7'
-    #@+node:ekr.20230806160312.1: *4* TestNodes.test_copy_node
-    def test_copy_node(self):
+    #@+node:ekr.20230806160312.1: *4* TestNodes.test_c_copy_node_command
+    def test_c_copy_node_command(self):
 
         c = self.c
-        s = c.copyOutline()
+        d = c.copyOutline()
         if 0:
-            g.dump_archive(s, tag='test_copy_node')
+            g.dump_archive(d, tag='test_c_copy_node_command')
     #@+node:ekr.20210830095545.43: *4* TestNodes.test_delete_node
     def test_delete_node(self):
         # This test requires @bool select-next-after-delete = False
@@ -857,25 +857,6 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
     #@+node:ekr.20220306072850.1: *3* TestNodes: Position methods
-    #@+node:ekr.20230807171632.1: *4* TestNodes.test_c_archive
-    def test_c_archive(self):
-
-        c = self.c
-        d = c.archive()
-        assert isinstance(d, dict), repr(d)
-        if 0:
-            for key in d:
-                g.printObj(d.get(key), tag=key)
-    #@+node:ekr.20230806111605.1: *4* TestNodes.test_p_archive
-    def test_p_archive(self):
-
-        c = self.c
-        p = c.p
-        d = p.archive()
-        assert isinstance(d, dict), repr(d)
-        if 0:
-            for key in d:
-                g.printObj(d.get(key), tag=key)
     #@+node:ekr.20210830095545.17: *4* TestNodes.test_p_convertTreeToString_and_allies
     def test_convertTreeToString_and_allies(self):
         p = self.c.p
@@ -1087,6 +1068,16 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.u, d)
         self.assertEqual(p.v.u, d)
     #@+node:ekr.20220306073301.1: *3* TestNodes: VNode methods
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive
+    def test_g_archive(self):
+
+        c = self.c
+        p = c.p
+        # self.dump_headlines(c)
+        for v in (p.v, None):
+            d = g.archive(c, v)
+            assert isinstance(d, dict), repr(d)
+            # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
     #@+node:ekr.20210830095545.39: *4* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p
@@ -1155,6 +1146,14 @@ class TestNodes(LeoUnitTest):
         )
         for func in table2:
             func()  # Don't care about result.
+    #@+node:ekr.20230808054014.1: *4* TestNodes.test_v_self_and_subtree
+    def test_v_self_and_subtree(self):
+
+        c = self.c
+        for p in c.all_positions():
+            vnode_list = list(p.v.self_and_subtree())
+            for p2 in p.self_and_subtree():
+                assert p2.v in vnode_list, (p2.h. vnode_list)
     #@-others
 #@+node:ekr.20220306054624.1: ** class TestNodeIndices(LeoUnitTest)
 class TestNodeIndices(LeoUnitTest):

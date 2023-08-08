@@ -7237,11 +7237,40 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)
 #@+node:ekr.20230801015325.1: ** g.UAs
+#@+node:ekr.20230807171351.1: *3* g.archive
+def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
+    """
+    Return an archival dict of v and all its descendants.
+
+    If v is None, return an archive of the entire outline.
+    """
+    if v is None:
+        v = c.hiddenRootNode
+    children_dict: dict[str, list[str]] = {}
+    marks_dict: dict[str, str] = {}
+    parents_dict: dict[str, list[str]] = {}
+    uas_dict: dict[str, dict] = {}
+    for v in v.self_and_subtree():
+        gnx = v.gnx
+        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+        if v.isMarked():
+            marks_dict[gnx] = '1'
+        uas = v.archive_uas()
+        if uas:
+            uas_dict[gnx] = uas
+
+    return {
+        'parents': parents_dict,
+        'children': children_dict,
+        'marks': marks_dict,
+        'uAs': uas_dict,
+    }
 #@+node:ekr.20230807120727.1: *3* g.dump_archive
 def dump_archive(d: dict, tag: str = None) -> None:
     """Dump the archive in a more readable format."""
-    if tag:
-        print(tag)
+    tag_s = f" {tag}" if tag else ''
+    print(f"\nDump of archive:{tag_s}...\n")
     for key in d:
         if key in ('parents', 'children'):
             print(f"{key}: {{")

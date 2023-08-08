@@ -3093,32 +3093,6 @@ class Commands:
         path = os.path.expandvars(path)
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
-    #@+node:ekr.20230807171351.1: *4* c.archive
-    def archive(self) -> dict[str, Any]:
-        """Return an archival dict of all vnodes in the outline."""
-        c = self
-
-        children_dict: dict[str, list[str]] = {}
-        marks_dict: dict[str, str] = {}
-        parents_dict: dict[str, list[str]] = {}
-        uas_dict: dict[str, dict] = {}
-
-        for v in [c.hiddenRootNode] + list(c.all_unique_nodes()):
-            gnx = v.gnx
-            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-            if v.isMarked():
-                marks_dict[gnx] = '1'
-            uas = v.archive_uas()
-            if uas:
-                uas_dict[gnx] = uas
-
-        return {
-            'parents': parents_dict,
-            'children': children_dict,
-            'marks': marks_dict,
-            'uAs': uas_dict,
-        }
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition
     def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
