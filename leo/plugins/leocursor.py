@@ -128,7 +128,7 @@ class LeoCursor:
             self.__root = v
             self.__attribManagers = []
             self.__parents = []
-    #@+node:tbrown.20100205200824.9978: *3* __iter__
+    #@+node:tbrown.20100205200824.9978: *3* __iter__ (LeoCursor)
     def __iter__(self):
 
         for i in self.__v.children:

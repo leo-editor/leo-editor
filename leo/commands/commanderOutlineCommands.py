@@ -208,7 +208,7 @@ def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
 
     # Define helpers.
     #@+others
-    #@+node:vitalije.20200529112224.1: *4* skip_root
+    #@+node:vitalije.20200529112224.1: *4* skip_root (pasteAsTemplate)
     def skip_root(v: VNode) -> Generator:
         """
         generates v nodes in the outline order
@@ -227,7 +227,7 @@ def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
         if gnx in outside:
             return gnx
         return g.app.nodeIndices.computeNewIndex()
-    #@+node:vitalije.20200529115141.1: *4* viter
+    #@+node:vitalije.20200529115141.1: *4* viter (pasteAsTemplate)
     def viter(parent_gnx: str, xv: Any) -> Generator:
         """
         iterates <v> nodes generating tuples:
