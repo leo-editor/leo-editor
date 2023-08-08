@@ -2236,7 +2236,7 @@ class VNode:
     #@+node:ekr.20230808052041.1: *4* v.self_and_subtree
     def self_and_subtree(self) -> Generator:
         """
-        Yield v itself and all descendant vnodes.
+        Yield v itself and all descendant vnodes, without duplicates.
 
         It *is* valid for v to be c.hiddenRootNode
         """
