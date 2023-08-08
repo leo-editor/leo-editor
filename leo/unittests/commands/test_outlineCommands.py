@@ -356,6 +356,8 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
 
+        g.trace(g.callers(20))
+
         # This test fails with these flags for checkVnodeLinks.
         # g.app.debug.extend(['test:strict', 'test:verbose'])
 
