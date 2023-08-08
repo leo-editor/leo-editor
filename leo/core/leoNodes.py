@@ -2242,8 +2242,7 @@ class VNode:
         """
         v = self
         seen: dict[str, bool] = {v.gnx: True}
-        to_be_visited = [z for z in v.children]
-
+        to_be_visited = list(set(v.children))
         yield v
         while to_be_visited:
             v = to_be_visited.pop()
