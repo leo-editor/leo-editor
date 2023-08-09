@@ -20,99 +20,6 @@ class TestOutlineCommands(LeoUnitTest):
     """
 
     #@+others
-    #@+node:ekr.20230724140745.1: *3* TestOutlineCommands.clean_tree
-    def clean_tree(self) -> None:
-        """Clear everything but the root node."""
-        p = self.root_p
-        assert p.h == 'root'
-        p.deleteAllChildren()
-        while p.hasNext():
-            p.next().doDelete()
-    #@+node:ekr.20230724141139.1: *3* TestOutlineCommands.copy_node
-    def copy_node(self, is_json=False) -> str:
-        """Copy c.p to the clipboard."""
-        c = self.c
-        if is_json:
-            s = c.fileCommands.outline_to_clipboard_json_string()
-        else:
-            s = c.fileCommands.outline_to_clipboard_string()
-        g.app.gui.replaceClipboardWith(s)
-        return s
-    #@+node:ekr.20230724140451.1: *3* TestOutlineCommands.create_test_paste_outline
-    def create_test_paste_outline(self) -> Position:
-        """
-        Create the following tree:
-
-            aa
-                aa:child1
-            bb
-            cc:child1 (clone)
-            cc
-              cc:child1 (clone)
-              cc:child2
-            dd
-              dd:child1
-                dd:child1:child1
-              dd:child2
-            ee
-
-        return cc.
-        """
-        c = self.c
-        root = c.rootPosition()
-        aa = root.insertAfter()
-        aa.h = 'aa'
-        aa_child1 = aa.insertAsLastChild()
-        aa_child1.h = 'aa:child1'
-        bb = aa.insertAfter()
-        bb.h = 'bb'
-        cc = bb.insertAfter()
-        cc.h = 'cc'
-        cc_child1 = cc.insertAsLastChild()
-        cc_child1.h = 'cc:child1'
-        cc_child2 = cc_child1.insertAfter()
-        cc_child2.h = 'cc:child2'
-        dd = cc.insertAfter()
-        dd.h = 'dd'
-        dd_child1 = dd.insertAsLastChild()
-        dd_child1.h = 'dd:child1'
-        dd_child2 = dd.insertAsLastChild()
-        dd_child2.h = 'dd:child2'
-        dd_child1_child1 = dd_child1.insertAsLastChild()
-        dd_child1_child1.h = 'dd:child1:child1'
-        ee = dd.insertAfter()
-        ee.h = 'ee'
-        clone = cc_child1.clone()
-        clone.moveAfter(bb)
-        assert clone.v == cc_child1.v
-        # Careful: position cc has changed.
-        cc = clone.next().copy()
-        # Initial checks.
-        assert cc.h == 'cc'
-        # Make *sure* clones are as expected.
-        for p in c.all_positions():
-            if p.h == 'cc:child1':
-                assert p.isCloned(), p.h
-            else:
-                assert not p.isCloned(), p.h
-        return cc
-    #@+node:ekr.20221113064908.1: *3* TestOutlineCommands.create_test_sort_outline
-    def create_test_sort_outline(self) -> None:
-        """Create a test outline suitable for sort commands."""
-        p = self.c.p
-        assert p == self.root_p
-        assert p.h == 'root'
-        table = (
-            'child a',
-            'child z',
-            'child b',
-            'child w',
-        )
-        for h in table:
-            child = p.insertAsLastChild()
-            child.h = h
-
-
     #@+node:ekr.20230724130924.1: *3* TestOutlineCommands.test_paste_as_template
     def test_paste_as_template(self):
 
@@ -356,11 +263,9 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
 
-        # This test fails with these flags for checkVnodeLinks.
-        # g.app.debug.extend(['test:strict', 'test:verbose'])
-
-        # This test passes (with messages) with this flag:
-        # g.app.debug.append('test:strict')
+        # These tests fail in Leo 6.7.4. To be corrected in Leo 6.7.5.
+        # g.app.debug.extend(['test:strict'])
+        # g.app.debug.extend(['test:verbose'])
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)
@@ -384,7 +289,7 @@ class TestOutlineCommands(LeoUnitTest):
                     assert gnx_dict.get(p.h) == p.gnx, message
 
                 # Test that all and *only* the expected nodes exist.
-                if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
+                if test_kind == 'copy' or tag.startswith(('redo', 'paste')):
                     for z in seen:
                         assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
                     for z in vnodes:
@@ -415,6 +320,9 @@ class TestOutlineCommands(LeoUnitTest):
             'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
         )
         for target_headline in valid_target_headlines:
+
+            # print(f"\nTarget headline: {target_headline}\n")
+
             for test_kind, is_json in (
                 ('cut', True), ('cut', False), ('copy', True), ('copy', False),
             ):
@@ -449,9 +357,6 @@ class TestOutlineCommands(LeoUnitTest):
                     c.selectPosition(cc)
                     self.copy_node(is_json)
 
-                    # Restore the empty bodies of cc and cc:child1 before the paste.
-                    cc.b = cc_child1.b = ''  # Copy does not change these positions.
-
                 self.assertEqual(0, c.checkOutline())
 
                 # Pretest: select all positions in the tree.
@@ -468,7 +373,7 @@ class TestOutlineCommands(LeoUnitTest):
 
                 # Check the paste.
                 self.assertEqual(0, c.checkOutline())
-                test_tree(pasted_flag=True, tag='paste-retaining-clones')
+                test_tree(pasted_flag=True, tag='paste')
 
                 # Check multiple undo/redo cycles.
                 for i in range(3):
