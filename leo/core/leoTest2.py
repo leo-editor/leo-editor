@@ -96,7 +96,7 @@ class LeoUnitTest(unittest.TestCase):
     The base class for all unit tests in Leo.
 
     Contains setUp/tearDown methods and various utilites.
-    
+
     This class must not contain any  test_* methods!
     """
 
