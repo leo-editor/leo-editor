@@ -1278,10 +1278,10 @@ class Commands:
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
-    #@+node:ekr.20091001141621.6043: *5* c.all_nodes
-    def all_nodes(self) -> Generator:
+    #@+node:ekr.20091001141621.6043: *5* c.all_unique_nodes
+    def all_unique_nodes(self) -> Generator:
         """
-        Yield all VNodes of the outline (except c.hiddenRootNode) in no
+        Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
         particular order.
         """
         c = self
@@ -1290,8 +1290,8 @@ class Commands:
 
     # Compatibility with old code...
 
-    all_unique_nodes = all_nodes
-    all_vnodes_iter = all_nodes
+    all_nodes = all_unique_nodes
+    all_vnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
     def all_positions(self, copy: bool = True) -> Generator:
@@ -3803,7 +3803,7 @@ class Commands:
     def contractAllHeadlines(self, event: Event = None) -> None:
         """Contract all nodes in the outline."""
         c = self
-        for v in c.all_nodes():
+        for v in c.all_unique_nodes():
             v.contract()
             v.expandedPositions = []  # #2571
         if c.hoistStack:

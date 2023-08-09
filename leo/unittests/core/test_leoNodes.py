@@ -239,7 +239,7 @@ class TestNodes(LeoUnitTest):
     def test_all_nodes_coverage(self):
         c = self.c
         v1 = [p.v for p in c.all_positions()]
-        v2 = [v for v in c.all_nodes()]
+        v2 = [v for v in c.all_unique_nodes()]
         for v in v2:
             self.assertTrue(v in v1)
         for v in v1:
@@ -1169,7 +1169,7 @@ class TestNodeIndices(LeoUnitTest):
         c = self.c
         self.create_test_outline()
         # Make sure all indices in the test outline have the proper id, set in create_app.
-        for v in c.all_nodes():
+        for v in c.all_unique_nodes():
             self.assertTrue(v.fileIndex.startswith(g.app.leoID), msg=repr(v.fileIndex))
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20220306055432.1: *3* TestNodeIndices.test_compute_last_index

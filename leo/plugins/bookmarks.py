@@ -1175,7 +1175,7 @@ class BookMarkDisplayProvider:
                 if not gnx and '_leo_bookmarks_show' in c.db:
                     gnx = c.db['_leo_bookmarks_show']
                 # first try old style local gnx lookup
-                for i in c.all_nodes():
+                for i in c.all_unique_nodes():
                     if str(i.gnx) == gnx:
                         v = i
                         break

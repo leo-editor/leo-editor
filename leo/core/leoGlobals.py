@@ -5996,7 +5996,7 @@ def goto_last_exception(c: Cmdr) -> None:
             # A script.
             c.goToScriptLineNumber(line_number, c.p)
         else:
-            for p in c.all_nodes():
+            for p in c.all_unique_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
                     c.goToLineNumber(line_number)
                     return

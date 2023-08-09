@@ -1022,7 +1022,7 @@ class ActiveSettingsOutline:
             self.create_inner_outline(commander, kind, p)
         #
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
-        for v in c.all_nodes():
+        for v in c.all_unique_nodes():
             v.clearDirty()
         c.setChanged()
         c.redraw()

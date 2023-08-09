@@ -103,7 +103,7 @@ class TestOutlineCommands(LeoUnitTest):
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
-                vnodes = list(set(list(c.all_nodes())))
+                vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertEqual(0, c.checkOutline())
 
@@ -213,7 +213,7 @@ class TestOutlineCommands(LeoUnitTest):
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
-                vnodes = list(set(list(c.all_nodes())))
+                vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertEqual(0, c.checkOutline())
 
@@ -333,7 +333,7 @@ class TestOutlineCommands(LeoUnitTest):
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
-                vnodes = list(set(list(c.all_nodes())))
+                vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
                 self.assertEqual(0, c.checkOutline())
 
@@ -394,7 +394,7 @@ class TestOutlineCommands(LeoUnitTest):
         self.assertEqual(cc.h, 'cc')
 
         # Create globals for restore_tree().
-        vnodes_list = list(set(c.all_nodes()))
+        vnodes_list = list(set(c.all_unique_nodes()))
         children_dict = {}
         parents_dict = {}
 
@@ -528,7 +528,7 @@ class TestOutlineCommands(LeoUnitTest):
         # c.selectPosition(cc)
 
         # Create the gnx_dict.
-        vnodes = list(set(list(c.all_nodes())))
+        vnodes = list(set(list(c.all_unique_nodes())))
         gnx_dict = {z.h: z.gnx for z in vnodes}
 
         # s1: before inserting cc:child3.
