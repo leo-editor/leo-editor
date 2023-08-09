@@ -2251,6 +2251,20 @@ class VNode:
                 if child.gnx not in seen:
                     seen[child.gnx] = True
                     to_be_visited.append(child)
+    #@+node:ekr.20230809044102.1: *4* v.self_and_all_parents
+    def self_and_all_parents(self) -> Generator:
+        """Yield all parents of v and v.parents."""
+        v = self
+        seen: dict[str, bool] = {v.gnx: True}
+        to_be_visited = list(set(v.parents))
+        yield v
+        while to_be_visited:
+            v = to_be_visited.pop()
+            yield v
+            for parent in v.parents:
+                if parent.gnx not in seen:
+                    seen[parent.gnx] = True
+                    to_be_visited.append(parent)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
@@ -2509,18 +2523,22 @@ class VNode:
         Modified by EKR.
         """
         v = self
-        seen: set[VNode] = set([v.context.hiddenRootNode])
 
-        def v_and_parents(v: VNode) -> Generator:
-            if v in seen:
-                return
-            seen.add(v)
-            yield v
-            for parent_v in v.parents:
-                if parent_v not in seen:
-                    yield from v_and_parents(parent_v)
+        ###
+            # seen: set[VNode] = set([v.context.hiddenRootNode])
 
-        for v2 in v_and_parents(v):
+            # def v_and_parents(v: VNode) -> Generator:
+                # if v in seen:
+                    # return
+                # seen.add(v)
+                # yield v
+                # for parent_v in v.parents:
+                    # if parent_v not in seen:
+                        # yield from v_and_parents(parent_v)
+
+            # for v2 in v_and_parents(v):
+
+        for v2 in v.self_and_all_parents():
             if v2.isAnyAtFileNode():
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
