@@ -1278,21 +1278,19 @@ class Commands:
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
-    #@+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
+    #@+node:ekr.20091001141621.6043: *5* c.all_nodes
     def all_nodes(self) -> Generator:
-        """A generator returning all vnodes in the outline, in outline order."""
+        """
+        Yield all VNodes of the outline (except c.hiddenRootNode) in no
+        particular order.
+        """
         c = self
-        for p in c.all_positions():
-            yield p.v
-
-    def all_unique_nodes(self) -> Generator:
-        """A generator returning each vnode of the outline."""
-        c = self
-        for p in c.all_unique_positions(copy=False):
-            yield p.v
+        for v in c.hiddenRootNode.self_and_subtree():
+            yield v
 
     # Compatibility with old code...
 
+    all_unique_nodes = all_nodes
     all_vnodes_iter = all_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions

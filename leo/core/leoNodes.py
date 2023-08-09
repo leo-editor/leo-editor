@@ -2238,12 +2238,15 @@ class VNode:
         """
         Yield v itself and all descendant vnodes, without duplicates.
 
-        It *is* valid for v to be c.hiddenRootNode
+        An edge case: c.hiddenRootNode.self_and_subtree() yields all vnodes of
+        the outline *except* c.hiddenRootNode.
         """
         v = self
+        c = v.context
         seen: dict[str, bool] = {v.gnx: True}
         to_be_visited = list(set(v.children))
-        yield v
+        if v != c.hiddenRootNode:
+            yield v
         while to_be_visited:
             v = to_be_visited.pop()
             yield v
