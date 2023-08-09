@@ -1312,7 +1312,9 @@ class Commands:
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
     def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
         """
-        Generates all positions p in this outline where p.v is v.
+        Yield all positions p in this outline such that p.v == v.
+
+        This method is much faster than brute-force searching.
 
         Should be called with stack=None.
 
@@ -1320,6 +1322,7 @@ class Commands:
 
         By Виталије Милошевић (Vitalije Milosevic).
         """
+        # Not used in Leo's core.
         c = self
 
         if stack is None:
@@ -4151,7 +4154,7 @@ class Commands:
             # A chapter.
             return current != limit.firstChild()
         return current != c.rootPosition()
-    #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline (test)
+    #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
     def canPasteOutline(self, s: str = None) -> bool:
         # c = self
         if not s:
