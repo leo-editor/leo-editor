@@ -340,8 +340,6 @@ def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
         xvelements = xroot.find('vnodes')  # <v> elements.
         xtelements = xroot.find('tnodes')  # <t> elements.
         bodies, uas = x.scanTnodes(xtelements)
-        # g.printObj(bodies, tag='bodies/gnx2body')
-        x.updateBodies(bodies, x.gnx2vnode)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     else:
         xroot = json.loads(s)
