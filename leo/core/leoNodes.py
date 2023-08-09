@@ -2253,7 +2253,7 @@ class VNode:
                     to_be_visited.append(child)
     #@+node:ekr.20230809044102.1: *4* v.self_and_all_parents
     def self_and_all_parents(self) -> Generator:
-        """Yield all parents of v and v.parents."""
+        """Yield v and all parents of v and v.parents."""
         v = self
         seen: dict[str, bool] = {v.gnx: True}
         to_be_visited = list(set(v.parents))
@@ -2519,25 +2519,8 @@ class VNode:
     def setAllAncestorAtFileNodesDirty(self) -> None:
         """
         Original idea by Виталије Милошевић (Vitalije Milosevic).
-
-        Modified by EKR.
         """
         v = self
-
-        ###
-            # seen: set[VNode] = set([v.context.hiddenRootNode])
-
-            # def v_and_parents(v: VNode) -> Generator:
-                # if v in seen:
-                    # return
-                # seen.add(v)
-                # yield v
-                # for parent_v in v.parents:
-                    # if parent_v not in seen:
-                        # yield from v_and_parents(parent_v)
-
-            # for v2 in v_and_parents(v):
-
         for v2 in v.self_and_all_parents():
             if v2.isAnyAtFileNode():
                 v2.setDirty()
