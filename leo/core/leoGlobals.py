@@ -36,7 +36,7 @@ import textwrap
 import time
 import traceback
 import types
-from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -3158,20 +3158,6 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     3. Search p's "extended parents" for an unambiguous @language directive.
     """
     v0 = p.v
-    seen: set[VNode]
-
-    # The same generator as in v.setAllAncestorAtFileNodesDirty.
-    # Original idea by Виталије Милошевић (Vitalije Milosevic).
-    # Modified by EKR.
-
-    def v_and_parents(v: VNode) -> Generator:
-        if v in seen:
-            return
-        seen.add(v)
-        yield v
-        for parent_v in v.parents:
-            if parent_v not in seen:
-                yield from v_and_parents(parent_v)
 
     def find_language(v: VNode, phase: int) -> Optional[str]:
         """
@@ -3198,18 +3184,15 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     language = g.findFirstValidAtLanguageDirective(p.b)
     if language:
         return language
-    #
-    # Phase 1: search only @<file> nodes: #2308.
-    # Phase 2: search all nodes.
+
     for phase in (1, 2):
-        # Search direct parents.
+        # Search *direct* parents.
         for p2 in p.self_and_parents(copy=False):
             language = find_language(p2.v, phase)
             if language:
                 return language
         # Search all extended parents.
-        seen = set([v0.context.hiddenRootNode])
-        for v in v_and_parents(v0):
+        for v in v0.self_and_all_parents():
             language = find_language(v, phase)
             if language:
                 return language
