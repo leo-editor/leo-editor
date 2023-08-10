@@ -2234,18 +2234,18 @@ class VNode:
         return v2
     #@+node:ekr.20230808052030.1: *3* v.Generators
     #@+node:ekr.20230808052041.1: *4* v.self_and_subtree
-    def self_and_subtree(self) -> Generator:
+    def self_and_subtree(self, allow_hidden_node: bool = False) -> Generator:
         """
         Yield v itself and all descendant vnodes, without duplicates.
 
-        An edge case: c.hiddenRootNode.self_and_subtree() yields all vnodes of
-        the outline *except* c.hiddenRootNode.
+        An edge case: the `allow_hidden_node` kwarg determines whether
+        this generator may yield the hidden root vnode.
         """
         v = self
         c = v.context
         seen: dict[str, bool] = {v.gnx: True}
         to_be_visited = list(set(v.children))
-        if v != c.hiddenRootNode:
+        if allow_hidden_node or v != c.hiddenRootNode:
             yield v
         while to_be_visited:
             v = to_be_visited.pop()

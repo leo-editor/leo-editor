@@ -7233,7 +7233,7 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
     marks_dict: dict[str, str] = {}
     parents_dict: dict[str, list[str]] = {}
     uas_dict: dict[str, dict] = {}
-    for v in v.self_and_subtree():
+    for v in v.self_and_subtree(allow_hidden_node=True):
         gnx = v.gnx
         children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
         parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
