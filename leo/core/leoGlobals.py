@@ -391,9 +391,26 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
         'root': root.gnx,
         'uas': uas_dict,
     }
-#@+node:ekr.20230810090101.1: *3* g.archive_to_vnode
-def archive_to_vnode(d: dict) -> Optional[VNode]:
-    return None  ### To do.
+#@+node:ekr.20230810090101.1: *3* g.unarchive_to_vnode (to do)
+def unarchive_to_vnode(d: dict, v: VNode) -> bool:
+
+    try:
+        gnx = d['root']
+        v.gnx = gnx
+        v.parents = d['parents'][gnx]
+        v.children = d['children'][gnx]
+        if d['marks'].get(gnx):
+            v.setMarked()
+        uas_string = d['uas'].get(gnx)
+        if uas_string:
+            uas = g.unarchive_uas(uas_string)
+            if uas:
+                v.uas = uas
+        return True
+    except Exception as e:
+        g.trace(f"Unexpected exception: {e}")
+        g.es_exception()
+        return False
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
 def archive_uas(v: VNode) -> dict:
     """Return a json-like dict of all uas."""
@@ -447,6 +464,15 @@ def dump_archive(d: dict, tag: str = None) -> None:
         else:
             g.printObj(d.get(key), tag=key)
 
+#@+node:ekr.20230810091857.1: *3* g.unarchive_uas (to do)
+def unarchive_uas(d: dict) -> Optional[dict]:
+    """
+    d is a dict whose values are strings written by json.dumps.
+
+    Return the corresponding dict whose values are python objects.
+    """
+
+    return None
 #@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
 def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
     result = [vnode_to_gnx(z) for z in vnode_list]

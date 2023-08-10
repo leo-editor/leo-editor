@@ -792,7 +792,7 @@ class FileCommands:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
-    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard (to do)
+    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -810,8 +810,9 @@ class FileCommands:
             d = g.json_string_to_dict(s)
             if d is None:
                 return None
-            v = g.archive_to_vnode(d)
-            if not v:
+            v = leoNodes.VNode(c)
+            ok = g.unarchive_to_vnode(d, v)
+            if not ok:
                 return None
         else:
             ### Legacy code.
