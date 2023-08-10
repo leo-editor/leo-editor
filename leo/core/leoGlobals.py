@@ -391,12 +391,14 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
         'root': root.gnx,
         'uas': uas_dict,
     }
-#@+node:ekr.20230810090101.1: *3* g.unarchive_to_vnode (to do)
-def unarchive_to_vnode(d: dict, v: VNode) -> bool:
-
+#@+node:ekr.20230810090101.1: *3* g.unarchive_to_vnode (test)
+def unarchive_to_vnode(d: dict, v: VNode, retain_gnxs: bool) -> bool:
+    """Set all ivars of v from the d, a dict created by g.archive."""
+    ### Handle gnxs properly.
+    ### Convert *all* vnodes
     try:
         gnx = d['root']
-        v.gnx = gnx
+        v.fileIndex = gnx
         v.parents = d['parents'][gnx]
         v.children = d['children'][gnx]
         if d['marks'].get(gnx):
@@ -409,7 +411,8 @@ def unarchive_to_vnode(d: dict, v: VNode) -> bool:
         return True
     except Exception as e:
         g.trace(f"Unexpected exception: {e}")
-        g.es_exception()
+        # g.es_exception()
+        g.printObj(d)
         return False
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
 def archive_uas(v: VNode) -> dict:

@@ -811,7 +811,7 @@ class FileCommands:
             if d is None:
                 return None
             v = leoNodes.VNode(c)
-            ok = g.unarchive_to_vnode(d, v)
+            ok = g.unarchive_to_vnode(d, v, retain_gnxs=False)
             if not ok:
                 return None
         else:
@@ -845,7 +845,7 @@ class FileCommands:
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
-    #@+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones
+    #@+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones (to do)
     def getLeoOutlineFromClipboardRetainingClones(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -860,13 +860,22 @@ class FileCommands:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-        if s.lstrip().startswith("{"):
-            # Maybe JSON
-            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+        if g.json_paste_switch:
+            d = g.json_string_to_dict(s)
+            if d is None:
+                return None
+            hidden_v = leoNodes.VNode(c)
+            ok = g.unarchive_to_vnode(d, hidden_v, retain_gnxs=True)
+            if not ok:
+                return None
         else:
-            # This encoding must match the encoding used in outline_to_clipboard_string.
-            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
+            if s.lstrip().startswith("{"):
+                # Maybe JSON
+                hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+            else:
+                # This encoding must match the encoding used in outline_to_clipboard_string.
+                s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+                hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
 
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
@@ -1563,6 +1572,12 @@ class FileCommands:
         """
         Return a JSON string suitable for pasting to the clipboard.
         """
+        if g.json_paste_switch:
+            c = self.c
+            if not p:
+                p = c.p
+            d = g.archive(c, p.v)
+            return g.obj_to_json_string(d, warn=True)
         # Save
         tua = self.descendentTnodeUaDictList
         vua = self.descendentVnodeUaDictList

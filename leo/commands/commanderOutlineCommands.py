@@ -113,7 +113,7 @@ def pasteOutline(
     c.redraw(pasted)
     c.recolor()
     return pasted
-#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
+#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers (to do)
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(
     self: Cmdr, event: Event = None, s: str = None,
@@ -192,7 +192,7 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
+#@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate (to do)
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
     """Paste as template clones only nodes that were already clones"""
