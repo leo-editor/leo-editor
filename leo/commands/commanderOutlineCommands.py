@@ -82,15 +82,9 @@ def pasteOutline(
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
-
-    if g.json_paste_switch:
-        g.trace('paste-as-json not ready yet')
-        return None
-
     isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
-
     # Get *position* to be pasted.
     pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
     if not pasted:

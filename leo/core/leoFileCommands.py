@@ -792,7 +792,7 @@ class FileCommands:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
-    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
+    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard (to do)
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -806,16 +806,13 @@ class FileCommands:
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
 
-        ### Temp.
-        # pylint: disable=no-else-return
-
         if g.json_paste_switch:
-            ### To do.
-            v = None  ### Temp.
-            self.gnxDict = oldGnxDict
-            g.trace('paste from json not ready yet')
-            return None  ###
-
+            d = g.json_string_to_dict(s)
+            if d is None:
+                return None
+            v = g.archive_to_vnode(d)
+            if not v:
+                return None
         else:
             ### Legacy code.
             if s.lstrip().startswith("{"):

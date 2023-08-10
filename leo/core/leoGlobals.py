@@ -356,6 +356,105 @@ app: Any = None  # The singleton app object. Set by runLeo.py.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
+#@+node:ekr.20230801015325.1: ** g.Archives
+#@+node:ekr.20230807171351.1: *3* g.archive
+def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
+    """
+    Return an archival dict of v and all its descendants.
+
+    If v is None, return an archive of the entire outline.
+    """
+    children_dict: dict[str, list[str]] = {}
+    marks_dict: dict[str, str] = {}
+    parents_dict: dict[str, list[str]] = {}
+    uas_dict: dict[str, dict] = {}
+    if v is None:
+        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
+        v = c.hiddenRootNode
+        gnx = v.gnx
+        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+    root = v
+    for v in v.self_and_subtree_vnodes():
+        gnx = v.gnx
+        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+        if v.isMarked():
+            marks_dict[gnx] = '1'
+        uas = g.archive_uas(v)
+        if uas:
+            uas_dict[gnx] = uas
+    return {
+        'children': children_dict,
+        'marks': marks_dict,
+        'parents': parents_dict,
+        'root': root.gnx,
+        'uas': uas_dict,
+    }
+#@+node:ekr.20230810090101.1: *3* g.archive_to_vnode
+def archive_to_vnode(d: dict) -> Optional[VNode]:
+    return None  ### To do.
+#@+node:ekr.20230728062638.1: *3* g.archive_uas
+def archive_uas(v: VNode) -> dict:
+    """Return a json-like dict of all uas."""
+    d = getattr(v, 'unknownAttributes', None)
+    trace = any(z in g.app.debug for z in ('save', 'test:v_archive_uas'))
+    if d and isinstance(d, dict):
+        # Prevalidate all inner dictionaries.
+        result_d = {}
+        for key, value in d.items():
+            inner_d = d[key]
+            inner_result_d = {}
+            for inner_key, inner_value in inner_d.items():
+                if g.is_valid_json({inner_key: inner_value}):
+                    inner_result_d[inner_key] = inner_value
+                elif trace:
+                    g.trace(
+                        f"In outer dict: key: {key!r}. "
+                        'Ignoring inner invalid key/value: '
+                        f"{inner_key!r}: {inner_value.__class__.__name__}")
+            if inner_result_d:
+                result_d[key] = inner_result_d
+        if result_d and g.is_valid_json(result_d):
+            return result_d
+        if result_d:
+            message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
+            if trace:
+                raise ValueError(message)
+            print(message)
+    return None
+#@+node:ekr.20230807120727.1: *3* g.dump_archive
+def dump_archive(d: dict, tag: str = None) -> None:
+    """Dump the archive in a more readable format."""
+    tag_s = f" {tag}" if tag else ''
+    print(f"\nDump of archive:{tag_s}...\n")
+    for key in d:
+        if key in ('parents', 'children'):
+            print(f"{key}: {{")
+            d2 = d.get(key)
+            if d2:
+                for key2, val2 in d2.items():
+                    if val2:
+                        print(f"  {key2}: [")
+                        for gnx in val2:
+                            print(f"    {gnx},")
+                        print('  ]')
+                    else:
+                        print(f"  {key2}: []")
+            else:
+                g.printObj(d2, tag=key)
+            print('}')
+        else:
+            g.printObj(d.get(key), tag=key)
+
+#@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
+def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+    result = [vnode_to_gnx(z) for z in vnode_list]
+    return [z for z in result if z]
+
+def vnode_to_gnx(v: VNode) -> Optional[str]:
+    c = v.context
+    return None if v == c.hiddenRootNode else v.gnx
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp
 def standard_timestamp() -> str:
@@ -5770,6 +5869,33 @@ def stripBlankLines(s: str) -> str:
         elif line[j] == '\n':
             lines[i] = '\n'
     return ''.join(lines)
+#@+node:ekr.20230807120828.1: ** g.JSON
+#@+node:ekr.20230810090150.1: *3* g.is_valid_json
+def is_valid_json(obj: Any) -> bool:
+    """Return True if the given object can be converted to JSON."""
+    try:
+        json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+        return True
+    except Exception:
+        return False
+
+#@+node:ekr.20230810090150.2: *3* g.json_string_to_dict
+def json_string_to_dict(s: str) -> Optional[dict]:
+    try:
+        return json.loads(s)
+    except Exception:
+        return None
+
+#@+node:ekr.20230810090150.3: *3* g.obj_to_json_string
+def obj_to_json_string(obj: Any) -> Optional[str]:
+    """
+    Convert the given object to string using json.dumps.
+    Return None if there is an error.
+    """
+    try:
+        return json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+    except Exception:
+        return None
 #@+node:ekr.20031218072017.3108: ** g.Logging & Printing
 # g.es and related print to the Log window.
 # g.pr prints to the console.
@@ -7219,120 +7345,6 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)
-#@+node:ekr.20230801015325.1: ** g.UAs
-#@+node:ekr.20230807171351.1: *3* g.archive
-def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
-    """
-    Return an archival dict of v and all its descendants.
-
-    If v is None, return an archive of the entire outline.
-    """
-    children_dict: dict[str, list[str]] = {}
-    marks_dict: dict[str, str] = {}
-    parents_dict: dict[str, list[str]] = {}
-    uas_dict: dict[str, dict] = {}
-    if v is None:
-        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
-        v = c.hiddenRootNode
-        gnx = v.gnx
-        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-    root = v
-    for v in v.self_and_subtree_vnodes():
-        gnx = v.gnx
-        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-        if v.isMarked():
-            marks_dict[gnx] = '1'
-        uas = g.archive_uas(v)
-        if uas:
-            uas_dict[gnx] = uas
-    return {
-        'children': children_dict,
-        'marks': marks_dict,
-        'parents': parents_dict,
-        'root': root.gnx,
-        'uas': uas_dict,
-    }
-#@+node:ekr.20230728062638.1: *3* g.archive_uas
-def archive_uas(v: VNode) -> dict:
-    """Return a json-like dict of all uas."""
-    d = getattr(v, 'unknownAttributes', None)
-    trace = any(z in g.app.debug for z in ('save', 'test:v_archive_uas'))
-    if d and isinstance(d, dict):
-        # Prevalidate all inner dictionaries.
-        result_d = {}
-        for key, value in d.items():
-            inner_d = d[key]
-            inner_result_d = {}
-            for inner_key, inner_value in inner_d.items():
-                if g.is_valid_json({inner_key: inner_value}):
-                    inner_result_d[inner_key] = inner_value
-                elif trace:
-                    g.trace(
-                        f"In outer dict: key: {key!r}. "
-                        'Ignoring inner invalid key/value: '
-                        f"{inner_key!r}: {inner_value.__class__.__name__}")
-            if inner_result_d:
-                result_d[key] = inner_result_d
-        if result_d and g.is_valid_json(result_d):
-            return result_d
-        if result_d:
-            message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
-            if trace:
-                raise ValueError(message)
-            print(message)
-    return None
-#@+node:ekr.20230807120727.1: *3* g.dump_archive
-def dump_archive(d: dict, tag: str = None) -> None:
-    """Dump the archive in a more readable format."""
-    tag_s = f" {tag}" if tag else ''
-    print(f"\nDump of archive:{tag_s}...\n")
-    for key in d:
-        if key in ('parents', 'children'):
-            print(f"{key}: {{")
-            d2 = d.get(key)
-            if d2:
-                for key2, val2 in d2.items():
-                    if val2:
-                        print(f"  {key2}: [")
-                        for gnx in val2:
-                            print(f"    {gnx},")
-                        print('  ]')
-                    else:
-                        print(f"  {key2}: []")
-            else:
-                g.printObj(d2, tag=key)
-            print('}')
-        else:
-            g.printObj(d.get(key), tag=key)
-
-#@+node:ekr.20230807120828.1: *3* g.is_valid_json & obj_to_json_string
-def is_valid_json(obj: Any) -> bool:
-    """Return True if the given object can be converted to JSON."""
-    try:
-        json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
-        return True
-    except Exception:
-        return False
-
-def obj_to_json_string(obj: Any) -> Optional[str]:
-    """
-    Convert the given object to string using json.dumps.
-    Return None if there is an error.
-    """
-    try:
-        return json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
-    except Exception:
-        return None
-#@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
-def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
-    result = [vnode_to_gnx(z) for z in vnode_list]
-    return [z for z in result if z]
-
-def vnode_to_gnx(v: VNode) -> Optional[str]:
-    c = v.context
-    return None if v == c.hiddenRootNode else v.gnx
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 #@+<< About clickable links >>
 #@+node:ekr.20230624100622.1: *3* << About clickable links >>

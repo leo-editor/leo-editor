@@ -4159,7 +4159,7 @@ class Commands:
             s = g.app.gui.getTextFromClipboard()
 
         if g.json_paste_switch:
-            return bool(s)  ### To do.
+            return g.json_string_to_dict(s) is not None
 
         ### legacy.
         if s and s.lstrip().startswith("{"):
