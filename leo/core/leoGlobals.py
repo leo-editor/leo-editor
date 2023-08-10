@@ -7251,7 +7251,7 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
         'children': children_dict,
         'marks': marks_dict,
         'parents': parents_dict,
-        'root': root,
+        'root': root.gnx,
         'uas': uas_dict,
     }
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
