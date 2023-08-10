@@ -2028,36 +2028,6 @@ class VNode:
             print(f"parents: {g.listToString(v.parents)}")
         if v.children:
             print(f"children: {g.listToString(v.children)}")
-    #@+node:ekr.20230728062638.1: *4* v.archive_uas
-    def archive_uas(self) -> dict:
-        """Return a json-like dict of all uas."""
-        v = self
-        d = getattr(v, 'unknownAttributes', None)
-        trace = any(z in g.app.debug for z in ('save', 'test:v_archive_uas'))
-        if d and isinstance(d, dict):
-            # Prevalidate all inner dictionaries.
-            result_d = {}
-            for key, value in d.items():
-                inner_d = d[key]
-                inner_result_d = {}
-                for inner_key, inner_value in inner_d.items():
-                    if g.is_valid_json({inner_key: inner_value}):
-                        inner_result_d[inner_key] = inner_value
-                    elif trace:
-                        g.trace(
-                            f"In outer dict: key: {key!r}. "
-                            'Ignoring inner invalid key/value: '
-                            f"{inner_key!r}: {inner_value.__class__.__name__}")
-                if inner_result_d:
-                    result_d[key] = inner_result_d
-            if result_d and g.is_valid_json(result_d):
-                return result_d
-            if result_d:
-                message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
-                if trace:
-                    raise ValueError(message)
-                print(message)
-        return None
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:

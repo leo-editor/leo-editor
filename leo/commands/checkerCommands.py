@@ -104,10 +104,10 @@ def check_uas(event: Event) -> None:
     if not c:
         return
     old_debug = g.app.debug
-    g.app.debug = ['uas']  # Enable traces in v.archive_uas.
+    g.app.debug = ['uas']  # Enable traces in g.archive_uas.
     try:
         for v in c.all_unique_nodes():
-            d = v.archive_uas()
+            d = g.archive_uas(v)
             if d:
                 g.dump_archive(d, tag=f"uAs for {v.h}...")
     finally:

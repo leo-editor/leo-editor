@@ -1026,9 +1026,9 @@ class TestNodes(LeoUnitTest):
             'plugin1': {'key': 'value'},
             'plugin2': {'iconVal': v.iconVal},
         }
-        if 0:  # Enable trace in v.archive_uas.
+        if 0:  # Enable trace in g.archive_uas.
             g.app.debug = 'test:v_archive_uas'
-        assert v.archive_uas() == expected, repr(v.archive_uas())
+        assert g.archive_uas(v) == expected, repr(g.archive_uas(v))
     #@+node:ekr.20220307043258.1: *3* TestNodes: Position properties
     #@+node:ekr.20210830095545.20: *4* TestNodes.test_p_h_with_newlines
     def test_p_h_with_newlines(self):
