@@ -364,6 +364,7 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
 
     If v is None, return an archive of the entire outline.
     """
+    # Keys are gnxs, values are lists of gnxs.
     children_dict: dict[str, list[str]] = {}
     marks_dict: dict[str, str] = {}
     parents_dict: dict[str, list[str]] = {}
@@ -394,6 +395,16 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
 #@+node:ekr.20230810090101.1: *3* g.unarchive_to_vnode (test)
 def unarchive_to_vnode(d: dict, v: VNode, retain_gnxs: bool) -> bool:
     """Set all ivars of v from the d, a dict created by g.archive."""
+    # Enter all gnxs in the archive into vnode_dict.
+    vnode_dict: dict[str, Any] = {}
+    for d2 in (d['children'], d['parents']):
+        for gnx in d2:
+            vnode_dict[gnx] = True
+            for gnx2 in d2[gnx]:
+                vnode_dict[gnx2] = True
+
+    # g.printObj(vnode_dict)
+
     ### Handle gnxs properly.
     ### Convert *all* vnodes
     try:
