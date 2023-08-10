@@ -1068,7 +1068,7 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.u, d)
         self.assertEqual(p.v.u, d)
     #@+node:ekr.20220306073301.1: *3* TestNodes: VNode methods
-    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive (to do: round-trip test)
     def test_g_archive(self):
 
         c = self.c
@@ -1077,7 +1077,13 @@ class TestNodes(LeoUnitTest):
         for v in (p.v, None):
             d = g.archive(c, v)
             assert isinstance(d, dict), repr(d)
-            # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
+            if 0:
+                g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
+                s = g.obj_to_json_string(d)
+                # g.printObj(s, tag=f"g.obj_to_json_string: v: {v!r}")
+                kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
+                print(f"\ng.obj_to_json_string: {kind_s}\n")
+                print(s)
     #@+node:ekr.20210830095545.39: *4* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p

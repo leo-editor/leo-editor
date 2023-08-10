@@ -396,17 +396,18 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
 def unarchive_to_vnode(d: dict, v: VNode, retain_gnxs: bool) -> bool:
     """Set all ivars of v from the d, a dict created by g.archive."""
     # Enter all gnxs in the archive into vnode_dict.
-    vnode_dict: dict[str, Any] = {}
+    vnode_dict: dict[str, Optional[VNode]] = {}
     for d2 in (d['children'], d['parents']):
         for gnx in d2:
-            vnode_dict[gnx] = True
+            vnode_dict[gnx] = None
             for gnx2 in d2[gnx]:
-                vnode_dict[gnx2] = True
+                vnode_dict[gnx2] = None
+
+    # Allocate or link all vnodes.
+    ### To do.
 
     # g.printObj(vnode_dict)
 
-    ### Handle gnxs properly.
-    ### Convert *all* vnodes
     try:
         gnx = d['root']
         v.fileIndex = gnx
@@ -2636,13 +2637,6 @@ class UiTypeException(Exception):
 def assertUi(uitype: Any) -> None:
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
-#@+node:ekr.20230801025822.1: *3* class g.SetJsonEncoder
-class SetJSONEncoder(json.JSONEncoder):
-    """A class to encode json in archive files."""
-    def default(self, obj: Any) -> Any:
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
@@ -5901,6 +5895,15 @@ def stripBlankLines(s: str) -> str:
             lines[i] = '\n'
     return ''.join(lines)
 #@+node:ekr.20230807120828.1: ** g.JSON
+#@+node:ekr.20230801025822.1: *3* class g.SetJsonEncoder
+class SetJSONEncoder(json.JSONEncoder):
+    """
+    A class to encode json in archive files.
+    """
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20230810090150.1: *3* g.is_valid_json
 def is_valid_json(obj: Any, warn: bool = False) -> bool:
     """Return True if the given object can be converted to JSON."""
@@ -5927,10 +5930,13 @@ def json_string_to_dict(s: str, warn: bool = False) -> Optional[dict]:
 def obj_to_json_string(obj: Any, warn: bool = False) -> Optional[str]:
     """
     Convert the given object to string using json.dumps.
+
+    This function specifies the format of json-based .leo files.
+
     Return None if there is an error.
     """
     try:
-        return json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+        return json.dumps(obj, indent=2, skipkeys=True, sort_keys=True)  # cls=g.SetJSONEncoder)
     except Exception as e:
         if warn:
             g.trace(f"Unexpected exception: {e}")
