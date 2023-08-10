@@ -403,7 +403,7 @@ def unarchive_to_vnode(d: dict, v: VNode) -> bool:
             v.setMarked()
         uas_string = d['uas'].get(gnx)
         if uas_string:
-            uas = g.unarchive_uas(uas_string)
+            uas = g.json_string_to_dict(uas_string, warn=True)
             if uas:
                 v.uas = uas
         return True
@@ -464,15 +464,6 @@ def dump_archive(d: dict, tag: str = None) -> None:
         else:
             g.printObj(d.get(key), tag=key)
 
-#@+node:ekr.20230810091857.1: *3* g.unarchive_uas (to do)
-def unarchive_uas(d: dict) -> Optional[dict]:
-    """
-    d is a dict whose values are strings written by json.dumps.
-
-    Return the corresponding dict whose values are python objects.
-    """
-
-    return None
 #@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
 def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
     result = [vnode_to_gnx(z) for z in vnode_list]
@@ -5897,30 +5888,39 @@ def stripBlankLines(s: str) -> str:
     return ''.join(lines)
 #@+node:ekr.20230807120828.1: ** g.JSON
 #@+node:ekr.20230810090150.1: *3* g.is_valid_json
-def is_valid_json(obj: Any) -> bool:
+def is_valid_json(obj: Any, warn: bool = False) -> bool:
     """Return True if the given object can be converted to JSON."""
     try:
         json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
         return True
-    except Exception:
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}")
+            g.es_exception()
         return False
 
 #@+node:ekr.20230810090150.2: *3* g.json_string_to_dict
-def json_string_to_dict(s: str) -> Optional[dict]:
+def json_string_to_dict(s: str, warn: bool = False) -> Optional[dict]:
     try:
         return json.loads(s)
-    except Exception:
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}")
+            g.es_exception()
         return None
 
 #@+node:ekr.20230810090150.3: *3* g.obj_to_json_string
-def obj_to_json_string(obj: Any) -> Optional[str]:
+def obj_to_json_string(obj: Any, warn: bool = False) -> Optional[str]:
     """
     Convert the given object to string using json.dumps.
     Return None if there is an error.
     """
     try:
         return json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
-    except Exception:
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}")
+            g.es_exception()
         return None
 #@+node:ekr.20031218072017.3108: ** g.Logging & Printing
 # g.es and related print to the Log window.
