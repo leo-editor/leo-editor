@@ -2233,19 +2233,18 @@ class VNode:
             v2.children.append(child.copyTree(copyMarked))
         return v2
     #@+node:ekr.20230808052030.1: *3* v.Generators
-    #@+node:ekr.20230808052041.1: *4* v.self_and_subtree
-    def self_and_subtree(self, allow_hidden_node: bool = False) -> Generator:
+    #@+node:ekr.20230808052041.1: *4* v.self_and_subtree_vnodes
+    def self_and_subtree_vnodes(self) -> Generator:
         """
         Yield v itself and all descendant vnodes, without duplicates.
 
-        An edge case: the `allow_hidden_node` kwarg determines whether
-        this generator may yield the hidden root vnode.
+        An edge case: never yield the hidden root node.
         """
         v = self
         c = v.context
         seen: dict[str, bool] = {v.gnx: True}
         to_be_visited = list(set(v.children))
-        if allow_hidden_node or v != c.hiddenRootNode:
+        if v != c.hiddenRootNode:
             yield v
         while to_be_visited:
             v = to_be_visited.pop()
@@ -2254,8 +2253,8 @@ class VNode:
                 if child.gnx not in seen:
                     seen[child.gnx] = True
                     to_be_visited.append(child)
-    #@+node:ekr.20230809044102.1: *4* v.self_and_all_parents
-    def self_and_all_parents(self) -> Generator:
+    #@+node:ekr.20230809044102.1: *4* v.self_and_all_parent_vnodes
+    def self_and_all_parent_vnodes(self) -> Generator:
         """Yield v and all parents of v and v.parents."""
         v = self
         c = self.context
@@ -2526,7 +2525,7 @@ class VNode:
     def setAllAncestorAtFileNodesDirty(self) -> None:
         """Original idea by Виталије Милошевић (Vitalije Milosevic)."""
         v = self
-        for v2 in v.self_and_all_parents():
+        for v2 in v.self_and_all_parent_vnodes():
             if v2.isAnyAtFileNode():
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString

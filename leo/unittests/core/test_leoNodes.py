@@ -1151,7 +1151,7 @@ class TestNodes(LeoUnitTest):
 
         c = self.c
         for p in c.all_positions():
-            vnode_list = list(p.v.self_and_subtree())
+            vnode_list = list(p.v.self_and_subtree_vnodes())
             for p2 in p.self_and_subtree():
                 assert p2.v in vnode_list, (p2.h. vnode_list)
     #@-others

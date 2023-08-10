@@ -1285,7 +1285,7 @@ class Commands:
         particular order.
         """
         c = self
-        for v in c.hiddenRootNode.self_and_subtree():
+        for v in c.hiddenRootNode.self_and_subtree_vnodes():
             yield v
 
     # Compatibility with old code...

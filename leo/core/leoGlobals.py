@@ -3192,7 +3192,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
             if language:
                 return language
         # Search all extended parents.
-        for v in v0.self_and_all_parents():
+        for v in v0.self_and_all_parent_vnodes():
             language = find_language(v, phase)
             if language:
                 return language
@@ -7227,13 +7227,17 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
 
     If v is None, return an archive of the entire outline.
     """
-    if v is None:
-        v = c.hiddenRootNode
     children_dict: dict[str, list[str]] = {}
     marks_dict: dict[str, str] = {}
     parents_dict: dict[str, list[str]] = {}
     uas_dict: dict[str, dict] = {}
-    for v in v.self_and_subtree(allow_hidden_node=True):
+    if v is None:
+        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
+        v = c.hiddenRootNode
+        gnx = v.gnx
+        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+    for v in v.self_and_subtree_vnodes():
         gnx = v.gnx
         children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
         parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
