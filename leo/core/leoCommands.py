@@ -1283,7 +1283,7 @@ class Commands:
         """
         Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
         particular order.
-        
+
         This method is about three times faster than c.all_unique_positions.
         """
         c = self
