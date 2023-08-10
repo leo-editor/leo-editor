@@ -7307,14 +7307,24 @@ def dump_archive(d: dict, tag: str = None) -> None:
         else:
             g.printObj(d.get(key), tag=key)
 
-#@+node:ekr.20230807120828.1: *3* g.is_valid_json
+#@+node:ekr.20230807120828.1: *3* g.is_valid_json & obj_to_json_string
 def is_valid_json(obj: Any) -> bool:
-    """Return True if the given object can be converted to json."""
+    """Return True if the given object can be converted to JSON."""
     try:
         json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
         return True
     except Exception:
         return False
+
+def obj_to_json_string(obj: Any) -> Optional[str]:
+    """
+    Convert the given object to string using json.dumps.
+    Return None if there is an error.
+    """
+    try:
+        return json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+    except Exception:
+        return None
 #@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
 def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
     result = [vnode_to_gnx(z) for z in vnode_list]

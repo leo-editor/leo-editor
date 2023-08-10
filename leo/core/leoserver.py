@@ -2560,7 +2560,7 @@ class LeoServer:
         p = self._get_p(param)
         p.contract()
         return self._make_response()
-    #@+node:felix.20210621233316.52: *5* server.copy_node
+    #@+node:felix.20210621233316.52: *5* server.copy_node (test)
     def copy_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Copy a node, don't select it.
@@ -2571,9 +2571,13 @@ class LeoServer:
         p = self._get_p(param)
 
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if g.json_paste_switch:  ###
+            copyMethod = c.copyOutline
+        elif hasattr(param, "asJSON"):
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
+        else:
+            copyMethod = c.copyOutline
 
         if p == c.p:
             s = copyMethod()
@@ -2608,7 +2612,7 @@ class LeoServer:
         g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
 
-    #@+node:felix.20220222172507.1: *5* server.cut_node
+    #@+node:felix.20220222172507.1: *5* server.cut_node (test)
     def cut_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Cut a node, don't select it.
@@ -2617,9 +2621,13 @@ class LeoServer:
         c = self._check_c()
         p = self._get_p(param)
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if g.json_paste_switch:  ###
+            copyMethod = c.copyOutline
+        elif hasattr(param, "asJSON"):
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
+        else:
+            copyMethod = c.copyOutline
         if p == c.p:
             s = copyMethod()
             c.cutOutline()  # already on this node, so cut it

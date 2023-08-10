@@ -24,14 +24,17 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
-def copyOutline(self: Cmdr, event: Event = None) -> Any:  ### str:
+def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     """Copy the selected outline to the clipboard."""
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    s: Any  ###
+    s: Optional[str]
     if g.json_paste_switch:
-        s = g.archive(c, c.p.v)
+        d = g.archive(c, c.p.v)
+        s = g.obj_to_json_string(d)
+        if s is None:
+            return None
     else:
         s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
