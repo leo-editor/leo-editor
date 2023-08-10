@@ -7237,6 +7237,7 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
         gnx = v.gnx
         children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
         parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+    root = v
     for v in v.self_and_subtree_vnodes():
         gnx = v.gnx
         children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
@@ -7246,12 +7247,12 @@ def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
         uas = g.archive_uas(v)
         if uas:
             uas_dict[gnx] = uas
-
     return {
-        'parents': parents_dict,
         'children': children_dict,
         'marks': marks_dict,
-        'uAs': uas_dict,
+        'parents': parents_dict,
+        'root': root,
+        'uas': uas_dict,
     }
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
 def archive_uas(v: VNode) -> dict:
