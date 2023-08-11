@@ -811,9 +811,7 @@ class FileCommands:
             if d is None:
                 return None
             v = leoNodes.VNode(c)
-            ok = g.unarchive_to_vnode(c, d, v, retain_gnxs=False)
-            if not ok:
-                return None
+            c.unarchive_to_vnode(d, v, retain_gnxs=False)
         else:
             ### Legacy code.
             if s.lstrip().startswith("{"):
@@ -865,9 +863,7 @@ class FileCommands:
             if d is None:
                 return None
             hidden_v = leoNodes.VNode(c)
-            ok = g.unarchive_to_vnode(c, d, hidden_v, retain_gnxs=True)
-            if not ok:
-                return None
+            c.unarchive_to_vnode(d, hidden_v, retain_gnxs=True)
         else:
             if s.lstrip().startswith("{"):
                 # Maybe JSON
