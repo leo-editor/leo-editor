@@ -1966,6 +1966,17 @@ class Commands:
         """
         c = self
 
+        #@+others # define helper functions
+        #@+node:ekr.20230807120730.1: *5* c.archive: helper functions
+        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+            result = [vnode_to_gnx(z) for z in vnode_list]
+            return [z for z in result if z]
+
+        def vnode_to_gnx(v: VNode) -> Optional[str]:
+            c = v.context
+            return None if v == c.hiddenRootNode else v.gnx
+        #@-others
+
         # The keys are gnxs for all these dicts.
         children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
         parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
@@ -1978,8 +1989,8 @@ class Commands:
         if v is None:
             v = c.hiddenRootNode
             gnx = v.gnx
-            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
             body_dict[gnx] = ''
             headline_dict[gnx] = ''
 
@@ -1990,9 +2001,9 @@ class Commands:
         for v in iter_():
             gnx = v.gnx
             body_dict[gnx] = v._bodyString
-            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             headline_dict[gnx] = v._headString
-            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
             if v.isMarked():
                 marks_dict[gnx] = '1'
             uas = g.archive_uas(v)

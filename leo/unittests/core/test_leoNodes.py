@@ -135,17 +135,66 @@ class TestNodes(LeoUnitTest):
             assert g.is_valid_json(obj), repr(obj)
         for obj in bad_table:
             assert not g.is_valid_json(obj), repr(obj)
-    #@+node:ekr.20230806113211.1: *4* TestNodes.test_vnode_to_gnx
-    def test_vnode_to_gnx(self):
+    #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_c_archive
+    def test_c_archive(self):
 
         c = self.c
-        table = (
-            (c.hiddenRootNode, None),
-            (c.p.v, c.p.v.gnx),
-        )
-        for v, gnx in table:
-            assert g.vnode_to_gnx(v) == gnx, (repr(v), repr(gnx))
-    #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
+        fc = c.fileCommands
+        from leo.core.leoNodes import VNode
+
+        # Make sure ni.new_vnode_helper won't raise AssertionError.
+        assert g.app.nodeIndices
+        assert c.fileCommands
+
+        # Run all tests.
+        trace = False
+        for kind in ('all',):
+            for retain_gnxs in (True,):  ###  (True, False):
+                self.clean_tree()
+                self.create_test_outline()
+                test_p = c.rootPosition()
+                assert test_p.h == 'root'
+                v = test_p.v
+                old_gnx_keys = [z for z in fc.gnxDict]
+                if trace:
+                    print(f"{len(old_gnx_keys)} keys in old_gnx_keys")
+                    for z in old_gnx_keys:
+                        print(f"  {z}")
+                # self.dump_headlines(c)
+
+                if trace:
+                    n1 = len(list(fc.gnxDict.keys()))
+                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, retain? {int(retain_gnxs)}")
+
+                d = c.archive(v)
+                if 0:
+                    # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
+                    s = g.obj_to_json_string(d)
+                    kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
+                    print(f"\ng.obj_to_json_string: {kind_s}\n")
+                    print(s)
+                c.unarchive_to_vnode(d, test_p.v, retain_gnxs)
+                if trace:
+                    n2 = len(list(fc.gnxDict.keys()))
+                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, retain? {int(retain_gnxs)}")
+                assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
+                assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
+                if retain_gnxs:
+                    for z in fc.gnxDict:
+                        assert z in old_gnx_keys, z
+                    for z in old_gnx_keys:
+                        assert z in fc.gnxDict, z
+                elif 0:
+                    for z in fc.gnxDict:
+                        assert z.gnx not in old_gnx_keys, z
+                    for gnx in old_gnx_keys:
+                        assert gnx not in fc.gnxDict, z
+                if 0:
+                    g.printObj(test_p.v.parents, tag='test_p.v.parents')
+                    g.printObj(test_p.v.children, tag='test_p.v.children')
+                if 0:
+                    self.dump_headlines(c)
     #@+node:ekr.20210830095545.6: *4* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
         c, p = self.c, self.c.p
@@ -1068,65 +1117,6 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.u, d)
         self.assertEqual(p.v.u, d)
     #@+node:ekr.20220306073301.1: *3* TestNodes: VNode methods
-    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive
-    def test_g_archive(self):
-
-        c = self.c
-        fc = c.fileCommands
-        from leo.core.leoNodes import VNode
-
-        # Make sure ni.new_vnode_helper won't raise AssertionError.
-        assert g.app.nodeIndices
-        assert c.fileCommands
-
-        # Run all tests.
-        trace = False
-        for kind in ('all',):
-            for retain_gnxs in (True,):  ###  (True, False):
-                self.clean_tree()
-                self.create_test_outline()
-                test_p = c.rootPosition()
-                assert test_p.h == 'root'
-                v = test_p.v
-                old_gnx_keys = [z for z in fc.gnxDict]
-                if trace:
-                    print(f"{len(old_gnx_keys)} keys in old_gnx_keys")
-                    for z in old_gnx_keys:
-                        print(f"  {z}")
-                # self.dump_headlines(c)
-
-                if trace:
-                    n1 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, retain? {int(retain_gnxs)}")
-
-                d = c.archive(v)
-                if 0:
-                    # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
-                    s = g.obj_to_json_string(d)
-                    kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
-                    print(f"\ng.obj_to_json_string: {kind_s}\n")
-                    print(s)
-                c.unarchive_to_vnode(d, test_p.v, retain_gnxs)
-                if trace:
-                    n2 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, retain? {int(retain_gnxs)}")
-                assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
-                assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
-                if retain_gnxs:
-                    for z in fc.gnxDict:
-                        assert z in old_gnx_keys, z
-                    for z in old_gnx_keys:
-                        assert z in fc.gnxDict, z
-                elif 0:
-                    for z in fc.gnxDict:
-                        assert z.gnx not in old_gnx_keys, z
-                    for gnx in old_gnx_keys:
-                        assert gnx not in fc.gnxDict, z
-                if 0:
-                    g.printObj(test_p.v.parents, tag='test_p.v.parents')
-                    g.printObj(test_p.v.children, tag='test_p.v.children')
-                if 0:
-                    self.dump_headlines(c)
     #@+node:ekr.20210830095545.39: *4* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p

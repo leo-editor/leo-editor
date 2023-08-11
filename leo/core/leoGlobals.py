@@ -413,14 +413,6 @@ def dump_archive(d: dict, tag: str = None) -> None:
             else:
                 g.printObj(d.get(key), tag=key)
 
-#@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
-def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
-    result = [vnode_to_gnx(z) for z in vnode_list]
-    return [z for z in result if z]
-
-def vnode_to_gnx(v: VNode) -> Optional[str]:
-    c = v.context
-    return None if v == c.hiddenRootNode else v.gnx
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp
 def standard_timestamp() -> str:
