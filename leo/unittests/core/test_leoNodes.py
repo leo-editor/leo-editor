@@ -1068,22 +1068,39 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.u, d)
         self.assertEqual(p.v.u, d)
     #@+node:ekr.20220306073301.1: *3* TestNodes: VNode methods
-    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive (to do: round-trip test)
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_g_archive
     def test_g_archive(self):
 
         c = self.c
         p = c.p
+        from leo.core.leoNodes import VNode
+
+        # Make sure ni.new_vnode_helper won't raise AssertionError.
+        assert g.app.nodeIndices
+        assert c.fileCommands
+
         # self.dump_headlines(c)
-        for v in (p.v, None):
-            d = g.archive(c, v)
-            assert isinstance(d, dict), repr(d)
-            if 0:
-                g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
-                s = g.obj_to_json_string(d)
-                # g.printObj(s, tag=f"g.obj_to_json_string: v: {v!r}")
-                kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
-                print(f"\ng.obj_to_json_string: {kind_s}\n")
-                print(s)
+        root = c.rootPosition()
+        test_p = root
+        ### for v in (p.v, None):
+        for v in (p.v,):
+            ### for retain_gnxs in (True, False):
+            for retain_gnxs in (True,):
+                d = c.archive(v)
+                if 0:
+                    # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
+                    s = g.obj_to_json_string(d)
+                    kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
+                    print(f"\ng.obj_to_json_string: {kind_s}\n")
+                    print(s)
+                c.unarchive_to_vnode(d, test_p.v, retain_gnxs)
+                assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
+                assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
+                if 0:
+                    g.printObj(test_p.v.parents, tag='test_p.v.parents')
+                    g.printObj(test_p.v.children, tag='test_p.v.children')
+                    for v in test_p.v.self_and_subtree_vnodes():
+                        print(v.h)
     #@+node:ekr.20210830095545.39: *4* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p

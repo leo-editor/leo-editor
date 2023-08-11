@@ -2000,9 +2000,9 @@ class VNode:
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
         #
-        #   def allocate_vnode(c,gnx):
+        #   def allocate_vnode(c, gnx):
         #       v = VNode(c)
-        #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
+        #       g.app.nodeIndices.new_vnode_helper(c, gnx, v)
         g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__

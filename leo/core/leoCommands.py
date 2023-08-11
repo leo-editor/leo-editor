@@ -605,7 +605,8 @@ class Commands:
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
-    #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
+    #@+node:ekr.20230811051010.1: *3* top-level commands
+    #@+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
     def execute_general_script_command(self, event: Event = None) -> None:
         """
@@ -658,13 +659,13 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language,
             directory=directory, regex=regex, root=p)
-    #@+node:tom.20230308193758.1: *3* @cmd c.execute-external-file
+    #@+node:tom.20230308193758.1: *4* @cmd c.execute-external-file
     #@@language python
     @cmd('execute-external-file')
     def execute_external_file(self, event: Event = None) -> None:
         r"""
         #@+<< docstring >>
-        #@+node:tom.20230308193758.2: *4* << docstring >>
+        #@+node:tom.20230308193758.2: *5* << docstring >>
         Run external files.
 
         If there is an @language directive in the top node of the file,
@@ -715,10 +716,10 @@ class Commands:
         c = self
         MAP_SETTING_NODE = 'run-external-processor-map'
         #@+others
-        #@+node:tom.20230313002434.1: *4* Declarations
+        #@+node:tom.20230313002434.1: *5* Declarations
         PREFERRED_TERMINALS = ('konsole', 'xfce4-terminal', 'mate-terminal',
                                'gnome-terminal', 'xterm')
-        #@+node:tom.20230308193758.3: *4* SETTINGS_HELP
+        #@+node:tom.20230308193758.3: *5* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
         section, looking like this example:
@@ -740,7 +741,7 @@ class Commands:
 
         Blank lines and lines starting with a "#" are ignored.
         '''
-        #@+node:tom.20230308193758.4: *4* extension map
+        #@+node:tom.20230308193758.4: *5* extension map
         LANGUAGE_EXTENSION_MAP = {
         '.cmd': 'batch',
         '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
@@ -751,7 +752,7 @@ class Commands:
         '.pyw': 'python',
         'rb': 'ruby',
         }
-        #@+node:tom.20230308193758.5: *4* processor map
+        #@+node:tom.20230308193758.5: *5* processor map
         PROCESSORS = {
         'batch': 'cmd.exe',
         'julia': 'julia',
@@ -760,7 +761,7 @@ class Commands:
         'ruby': 'ruby',
         'shellscript': 'bash',
         }
-        #@+node:tom.20230308193758.6: *4* get_external_maps
+        #@+node:tom.20230308193758.6: *5* get_external_maps
         def get_external_maps() -> tuple[dict, dict, str]:
             r"""Return processor, extension maps for @data node.
 
@@ -820,7 +821,7 @@ class Commands:
                     val = keyval[1].strip()
                     active_map[key] = val  # # pylint: disable=unsupported-assignment-operation
             return processor_map, extension_map, terminal
-        #@+node:tom.20230308193758.7: *4* getExeKind
+        #@+node:tom.20230308193758.7: *5* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:
             """Return the executable kind of the external file.
 
@@ -841,7 +842,7 @@ class Commands:
 
             return language
 
-        #@+node:tom.20230308193758.8: *4* getProcessor
+        #@+node:tom.20230308193758.8: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
             """Return the name or path of a program able to run our external program."""
             processor = ''
@@ -861,7 +862,7 @@ class Commands:
                 if not proc:
                     processor = ''
             return processor
-        #@+node:tom.20230308193758.9: *4* Get Windows File Associations
+        #@+node:tom.20230308193758.9: *5* Get Windows File Associations
         def get_win_assoc(extension: str) -> str:
             """Return Windows association for given file extension, or ''.
 
@@ -896,7 +897,7 @@ class Commands:
                 return ''
             prog_str = ftype_str.split('=')[1]
             return prog_str.split('"')[1]
-        #@+node:tom.20230308193758.10: *4* getShell
+        #@+node:tom.20230308193758.10: *5* getShell
         def getShell() -> str:
             # Prefer bash unless it is not present - we know its options' names
             shell = 'bash'
@@ -905,9 +906,9 @@ class Commands:
                 # Need bare shell name, not whole path
                 shell = os.environ['SHELL'].split('/')[-1]
             return shell
-        #@+node:tom.20230308193758.11: *4* getTerminal
+        #@+node:tom.20230308193758.11: *5* getTerminal
         #@+others
-        #@+node:tom.20230308193758.12: *5* getTerminalFromDirectory
+        #@+node:tom.20230308193758.12: *6* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
             BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
                          'koi8rxterm', 'rofi-sensible-terminal',
@@ -923,7 +924,7 @@ class Commands:
                     if bare_term not in BAD_NAMES:
                         return t
             return ''
-        #@+node:tom.20230308193758.13: *5* getCommonTerminal
+        #@+node:tom.20230308193758.13: *6* getCommonTerminal
         def getCommonTerminal(names: Union[str, list, tuple]) -> str:
             """Return a terminal name given candidate names.
 
@@ -949,7 +950,7 @@ class Commands:
                     or getTerminalFromDirectory('/usr/bin')
                     or getTerminalFromDirectory('/bin')
                     )
-        #@+node:tom.20230308193758.14: *4* getTermExecuteCmd
+        #@+node:tom.20230308193758.14: *5* getTermExecuteCmd
         def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
@@ -960,7 +961,7 @@ class Commands:
             EXECUTESTR = 'execute'
 
             #@+others
-            #@+node:tom.20230308193758.15: *5* get_help_message
+            #@+node:tom.20230308193758.15: *6* get_help_message
             def get_help_message(terminal: str, help_cmd: str) -> str:
                 cmd = f'{terminal} {help_cmd}'
                 # pylint: disable=subprocess-run-check
@@ -970,7 +971,7 @@ class Commands:
                     # g.es('error:', proc.stderr.decode('utf-8'))
                     return ''
                 return msg
-            #@+node:tom.20230308193758.16: *5* find_ex_arg
+            #@+node:tom.20230308193758.16: *6* find_ex_arg
             def find_ex_arg(help_msg: str) -> str:
                 for line in help_msg.splitlines():
                     if '--command' in line:
@@ -999,14 +1000,14 @@ class Commands:
             else:
                 arg = '-e ' if 'xterm' in terminal else '-x '
             return arg
-        #@+node:tom.20230308193758.17: *4* checkShebang
+        #@+node:tom.20230308193758.17: *5* checkShebang
         def checkShebang(path: str) -> bool:
             """Return True if file begins with a shebang line, else False."""
             path = g.finalize(path)
             with open(path, encoding='utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
-        #@+node:tom.20230308193758.18: *4* runFile
+        #@+node:tom.20230308193758.18: *5* runFile
         def runfile(fullpath: str, processor: str, terminal: str) -> None:
             direc: str = os.path.expanduser(os.path.dirname(fullpath))
             if g.isWindows:
@@ -1069,7 +1070,7 @@ class Commands:
             runfile(path, processor, terminal)
         else:
             g.es('Cannot find an @- file', color='red')
-    #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
+    #@+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event: Event = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
@@ -1131,7 +1132,7 @@ class Commands:
             g.handleScriptException(c, p)
         finally:
             del sys.path[:2]
-    #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
+    #@+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
         self,
@@ -1207,7 +1208,7 @@ class Commands:
         finally:
             g.app.log = oldLog
             self.unredirectScriptOutput()
-    #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
+    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
     def executeScriptHelper(self,
         args: Any,
         define_g: Any,
@@ -1241,13 +1242,13 @@ class Commands:
                 exec(script, d)
         finally:
             g.inScript = g.app.inScript = False
-    #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
+    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
     def redirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
-    #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
+    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p: Position) -> None:
         c = self
         aList = g.get_directives_dict_list(p)
@@ -1258,13 +1259,13 @@ class Commands:
                 os.chdir(path)
             except Exception:
                 pass
-    #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
+    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
     def unredirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.restoreStderr()
             g.restoreStdout()
-    #@+node:ekr.20080514131122.12: *3* @cmd recolor
+    #@+node:ekr.20080514131122.12: *4* @cmd recolor
     @cmd('recolor')
     def recolorCommand(self, event: Event = None) -> None:
         """Force a full recolor."""
@@ -1889,7 +1890,119 @@ class Commands:
 
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@+node:ekr.20171124081419.1: *3* c.Check Outline...
+    #@+node:ekr.20230811051032.1: *3* c.Archive
+    #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode (test)
+    def unarchive_to_vnode(self, d: dict, v: VNode, retain_gnxs: bool) -> None:
+        """Set all ivars of v from the d, a dict created by g.archive."""
+        c = self
+        fc = c.fileCommands
+        assert fc
+
+        # Enter all gnxs in the archive into vnode_dict.
+        vnode_dict: dict[str, Optional[VNode]] = {}  # Keys are gnxs; values are VNodes.
+        for d2 in (d['children'], d['parents']):
+            for gnx in d2:
+                vnode_dict[gnx] = None
+                for gnx2 in d2[gnx]:
+                    vnode_dict[gnx2] = None
+
+        def new_vnode(gnx: str) -> VNode:
+            new_gnx = gnx if retain_gnxs else None
+            # The VNode ctor always calls ni.getNewIndex(v)
+            return leoNodes.VNode(c, new_gnx)
+
+        def dump_vnode_dict(tag: str) -> None:
+            g.printObj([
+                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
+                    for key, val in vnode_dict.items()
+                ],
+                tag=f"vnode_dict: {tag}"
+            )
+
+        # Create or link all Vnodes.
+        # gnx_dict: dict[str, VNode] = c.fileCommands.gnxDict if retain_gnxs else {}
+        try:
+            old_gnx_dict = fc.gnxDict
+            fc.gnxDict = {}
+
+            for gnx in vnode_dict:
+                vnode_dict[gnx] = new_vnode(gnx)
+
+            ### dump_vnode_dict('before')
+
+            for gnx, v in vnode_dict.items():
+                assert v.gnx == gnx, (repr(gnx), repr(v))
+                parents_gnxs = d['parents'][gnx]
+                children_gnxs = d['children'][gnx]
+                uas_string = d['uas'].get(gnx)
+
+                # Set values
+                v.parents = [vnode_dict[z] for z in parents_gnxs]
+                v.children = [vnode_dict[z] for z in children_gnxs]
+                v._bodyString = d['bodies'][gnx]
+                v._headString = d['headlines'][gnx] + ' NEW'  ### Temp.
+                if d['marks'].get(gnx):
+                    v.setMarked()
+                if uas_string:
+                    uas = g.json_string_to_dict(uas_string, warn=True)
+                    if uas:
+                        v.uas = uas
+
+            ### dump_vnode_dict('after')
+
+        except Exception as e:
+            g.trace(f"Unexpected exception: {e}")
+            # g.es_exception()
+            g.printObj(d)
+        finally:
+            fc.gnxDict = old_gnx_dict
+    #@+node:ekr.20230807171351.1: *4* c.archive
+    def archive(self, v: VNode = None) -> dict[str, Any]:
+        """
+        Return an archival dict of v and all its descendants.
+
+        If v is None, return an archive of the entire outline.
+        """
+        c = self
+
+        # The keys are gnxs for all these dicts.
+        children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        body_dict: dict[str, str] = {}  # Values are body text.
+        headline_dict: dict[str, str] = {}  # Values are headlines.
+        marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
+        uas_dict: dict[str, dict] = {}  # Values are json strings.
+
+        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
+        if v is None:
+            v = c.hiddenRootNode
+            gnx = v.gnx
+            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+
+        # Create all the dicts.
+        root = v
+        for v in v.self_and_subtree_vnodes():
+            gnx = v.gnx
+            body_dict[gnx] = v._bodyString
+            children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
+            headline_dict[gnx] = v._headString
+            parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+            if v.isMarked():
+                marks_dict[gnx] = '1'
+            uas = g.archive_uas(v)
+            if uas:
+                uas_dict[gnx] = uas
+        return {
+            'bodies': body_dict,
+            'children': children_dict,
+            'headlines': headline_dict,
+            'marks': marks_dict,
+            'parents': parents_dict,
+            'root': root.gnx,
+            'uas': uas_dict,
+        }
+    #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:
         """

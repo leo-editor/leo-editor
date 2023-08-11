@@ -41,7 +41,7 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 
-# Leo never imports any other Leo module.
+# This module must never import any other Leo module at the top level.
 
 # Third-party tools.
 import webbrowser
@@ -357,75 +357,6 @@ inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20230801015325.1: ** g.Archives
-#@+node:ekr.20230807171351.1: *3* g.archive
-def archive(c: Cmdr, v: VNode = None) -> dict[str, Any]:
-    """
-    Return an archival dict of v and all its descendants.
-
-    If v is None, return an archive of the entire outline.
-    """
-    # Keys are gnxs, values are lists of gnxs.
-    children_dict: dict[str, list[str]] = {}
-    marks_dict: dict[str, str] = {}
-    parents_dict: dict[str, list[str]] = {}
-    uas_dict: dict[str, dict] = {}
-    if v is None:
-        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
-        v = c.hiddenRootNode
-        gnx = v.gnx
-        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-    root = v
-    for v in v.self_and_subtree_vnodes():
-        gnx = v.gnx
-        children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
-        parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
-        if v.isMarked():
-            marks_dict[gnx] = '1'
-        uas = g.archive_uas(v)
-        if uas:
-            uas_dict[gnx] = uas
-    return {
-        'children': children_dict,
-        'marks': marks_dict,
-        'parents': parents_dict,
-        'root': root.gnx,
-        'uas': uas_dict,
-    }
-#@+node:ekr.20230810090101.1: *3* g.unarchive_to_vnode (test)
-def unarchive_to_vnode(d: dict, v: VNode, retain_gnxs: bool) -> bool:
-    """Set all ivars of v from the d, a dict created by g.archive."""
-    # Enter all gnxs in the archive into vnode_dict.
-    vnode_dict: dict[str, Optional[VNode]] = {}
-    for d2 in (d['children'], d['parents']):
-        for gnx in d2:
-            vnode_dict[gnx] = None
-            for gnx2 in d2[gnx]:
-                vnode_dict[gnx2] = None
-
-    # Allocate or link all vnodes.
-    ### To do.
-
-    # g.printObj(vnode_dict)
-
-    try:
-        gnx = d['root']
-        v.fileIndex = gnx
-        v.parents = d['parents'][gnx]
-        v.children = d['children'][gnx]
-        if d['marks'].get(gnx):
-            v.setMarked()
-        uas_string = d['uas'].get(gnx)
-        if uas_string:
-            uas = g.json_string_to_dict(uas_string, warn=True)
-            if uas:
-                v.uas = uas
-        return True
-    except Exception as e:
-        g.trace(f"Unexpected exception: {e}")
-        # g.es_exception()
-        g.printObj(d)
-        return False
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
 def archive_uas(v: VNode) -> dict:
     """Return a json-like dict of all uas."""
@@ -460,24 +391,27 @@ def dump_archive(d: dict, tag: str = None) -> None:
     """Dump the archive in a more readable format."""
     tag_s = f" {tag}" if tag else ''
     print(f"\nDump of archive:{tag_s}...\n")
-    for key in d:
-        if key in ('parents', 'children'):
-            print(f"{key}: {{")
-            d2 = d.get(key)
-            if d2:
-                for key2, val2 in d2.items():
-                    if val2:
-                        print(f"  {key2}: [")
-                        for gnx in val2:
-                            print(f"    {gnx},")
-                        print('  ]')
-                    else:
-                        print(f"  {key2}: []")
+    if 1:
+        print(json.dumps(d, indent=2, sort_keys=True))
+    else:
+        for key in d:
+            if key in ('parents', 'children'):
+                print(f"{key}: {{")
+                d2 = d.get(key)
+                if d2:
+                    for key2, val2 in d2.items():
+                        if val2:
+                            print(f"  {key2}: [")
+                            for gnx in val2:
+                                print(f"    {gnx},")
+                            print('  ]')
+                        else:
+                            print(f"  {key2}: []")
+                else:
+                    g.printObj(d2, tag=key)
+                print('}')
             else:
-                g.printObj(d2, tag=key)
-            print('}')
-        else:
-            g.printObj(d.get(key), tag=key)
+                g.printObj(d.get(key), tag=key)
 
 #@+node:ekr.20230807120730.1: *3* g.vnode_list_to_gnx_list & g.vnode_to_gnx
 def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
@@ -5936,7 +5870,7 @@ def obj_to_json_string(obj: Any, warn: bool = False) -> Optional[str]:
     Return None if there is an error.
     """
     try:
-        return json.dumps(obj, indent=2, skipkeys=True, sort_keys=True)  # cls=g.SetJSONEncoder)
+        return json.dumps(obj, indent=2, sort_keys=True)
     except Exception as e:
         if warn:
             g.trace(f"Unexpected exception: {e}")
