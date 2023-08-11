@@ -1576,7 +1576,7 @@ class FileCommands:
             c = self.c
             if not p:
                 p = c.p
-            d = g.archive(c, p.v)
+            d = c.archive(p.v)
             return g.obj_to_json_string(d, warn=True)
         # Save
         tua = self.descendentTnodeUaDictList

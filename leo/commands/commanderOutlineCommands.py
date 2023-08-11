@@ -31,7 +31,7 @@ def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     c.endEditing()
     s: Optional[str]
     if g.json_paste_switch:
-        d = g.archive(c, c.p.v)
+        d = c.archive(c.p.v)
         s = g.obj_to_json_string(d)
         if s is None:
             return None
