@@ -1892,7 +1892,7 @@ class Commands:
     setTopVnode = setTopPosition
     #@+node:ekr.20230811051032.1: *3* c.Archive
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
-    def unarchive_to_vnode(self, d: dict, v: VNode, retain_gnxs: bool) -> None:
+    def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
         c = self
         fc = c.fileCommands
@@ -1909,7 +1909,7 @@ class Commands:
         def new_vnode(gnx: str) -> VNode:
             # The VNode ctor always calls ni.getNewIndex(v)
             if gnx == c.hiddenRootNode.gnx:
-                return c.hiddenRootNode
+                return root_v  ### Experimental  c.hiddenRootNode
             if retain_gnxs:
                 v = gnx_dict.get(gnx)
                 return v or leoNodes.VNode(c, gnx)
@@ -1932,7 +1932,9 @@ class Commands:
             ### dump_vnode_dict('before')
 
             for gnx, v in vnode_dict.items():
-                assert v.gnx == gnx, (repr(gnx), repr(v))
+
+                ### Not ready yet.
+                ### assert v.gnx == gnx, (repr(gnx), repr(v))
                 parents_gnxs = d['parents'][gnx]
                 children_gnxs = d['children'][gnx]
                 uas_string = d['uas'].get(gnx)
@@ -1947,7 +1949,7 @@ class Commands:
                 if uas_string:
                     uas = g.json_string_to_dict(uas_string, warn=True)
                     if uas:
-                        v.uas = uas
+                        v.u = uas
 
             # dump_vnode_dict('after')
             fc.gnxDict = gnx_dict
