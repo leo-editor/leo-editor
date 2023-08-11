@@ -792,7 +792,7 @@ class FileCommands:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
-    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
+    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard (pdb)
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -809,9 +809,10 @@ class FileCommands:
         if g.json_paste_switch:
             d = g.json_string_to_dict(s)
             if d is None:
+                g.es("the clipboard is not valid ", color="blue")
                 return None
             v = leoNodes.VNode(c)
-            c.unarchive_to_vnode(d, v, retain_gnxs=False)
+            c.unarchive_to_vnode(d, root_v=v, retain_gnxs=False)
         else:
             ### Legacy code.
             if s.lstrip().startswith("{"):
@@ -1573,7 +1574,10 @@ class FileCommands:
             if not p:
                 p = c.p
             d = c.archive(p.v)
-            return g.obj_to_json_string(d, warn=True)
+            s = g.obj_to_json_string(d, warn=True)
+            ### g.printObj(s, tag='outline_to_clipboard_json_string')
+            g.trace('json string:', len(s))
+            return s
         # Save
         tua = self.descendentTnodeUaDictList
         vua = self.descendentVnodeUaDictList

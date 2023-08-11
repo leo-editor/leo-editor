@@ -998,7 +998,9 @@ if p:
 else:
     print('Not found:', h)
 </t>
-<t tx="ekr.20230623064935.1">parse-body
+<t tx="ekr.20230623064935.1">copy-node-as-json
+paste-node
+parse-body
 diff-marked-nodes
 refresh-from-disk
 convert-unls

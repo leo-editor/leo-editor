@@ -1907,6 +1907,9 @@ class Commands:
                     vnode_dict[gnx2] = None
 
         def new_vnode(gnx: str) -> VNode:
+
+            ### Link root_v and d['root']
+
             # The VNode ctor always calls ni.getNewIndex(v)
             if gnx == c.hiddenRootNode.gnx:
                 return root_v  ### Experimental  c.hiddenRootNode
@@ -1926,6 +1929,7 @@ class Commands:
         # Create or link all Vnodes.
         # gnx_dict: dict[str, VNode] = c.fileCommands.gnxDict if retain_gnxs else {}
         try:
+            # Create VNodes.
             for gnx in vnode_dict:
                 vnode_dict[gnx] = new_vnode(gnx)
 
@@ -1943,13 +1947,27 @@ class Commands:
                 v.parents = [vnode_dict[z] for z in parents_gnxs]
                 v.children = [vnode_dict[z] for z in children_gnxs]
                 v._bodyString = d['bodies'][gnx]
-                v._headString = d['headlines'][gnx] + ' NEW'  ### Temp.
+                v._headString = d['headlines'][gnx]  ### + ' NEW'  ### Temp.
                 if d['marks'].get(gnx):
                     v.setMarked()
                 if uas_string:
                     uas = g.json_string_to_dict(uas_string, warn=True)
                     if uas:
                         v.u = uas
+
+            # Copy d['root'] to root_d arg.
+            root_gnx = d['root']
+            archive_root_v = vnode_dict[root_gnx]
+            assert isinstance(archive_root_v, leoNodes.VNode), repr(archive_root_v)
+
+            root_v.parents = archive_root_v.parents
+            root_v.children = archive_root_v.children
+            root_v._bodyString = archive_root_v._bodyString
+            root_v._headString = archive_root_v._headString
+            if archive_root_v.isMarked():
+                root_v.setMarked()
+            if hasattr(archive_root_v, 'unknownAttributes'):
+                root_v.unknownAttributes = archive_root_v.unknownAttributes
 
             # dump_vnode_dict('after')
             fc.gnxDict = gnx_dict

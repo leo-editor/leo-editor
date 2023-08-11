@@ -64,7 +64,8 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+<< leoGlobals json_paste_switch >>
 #@+node:ekr.20230807123041.1: ** << leoGlobals json_paste_switch >>
 # Temporary switch.
-json_paste_switch = False
+json_paste_switch = False  # True: cut/copy/paste in new json format.
+json_leo_swith = False  # True: read/write json format .leo files.
 #@-<< leoGlobals json_paste_switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
