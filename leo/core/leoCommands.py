@@ -1891,7 +1891,7 @@ class Commands:
     topVnode = topPosition
     setTopVnode = setTopPosition
     #@+node:ekr.20230811051032.1: *3* c.Archive
-    #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode (test)
+    #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by g.archive."""
         c = self
@@ -1909,6 +1909,8 @@ class Commands:
         def new_vnode(gnx: str) -> VNode:
             new_gnx = gnx if retain_gnxs else None
             # The VNode ctor always calls ni.getNewIndex(v)
+            if gnx == c.hiddenRootNode.gnx:
+                return c.hiddenRootNode
             return leoNodes.VNode(c, new_gnx)
 
         def dump_vnode_dict(tag: str) -> None:
@@ -1948,12 +1950,13 @@ class Commands:
                     if uas:
                         v.uas = uas
 
-            ### dump_vnode_dict('after')
+            # dump_vnode_dict('after')
 
         except Exception as e:
             g.trace(f"Unexpected exception: {e}")
-            # g.es_exception()
-            g.printObj(d)
+            g.es_exception()
+            # g.printObj(d)
+            # g.dump_archive(d)
         finally:
             fc.gnxDict = old_gnx_dict
     #@+node:ekr.20230807171351.1: *4* c.archive
@@ -1979,10 +1982,14 @@ class Commands:
             gnx = v.gnx
             children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)
             parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
+            body_dict[gnx] = ''
+            headline_dict[gnx] = ''
+            
+        iter_ = c.all_unique_vnodes if v is None else v.self_and_subtree_vnodes
 
         # Create all the dicts.
         root = v
-        for v in v.self_and_subtree_vnodes():
+        for v in iter_():
             gnx = v.gnx
             body_dict[gnx] = v._bodyString
             children_dict[gnx] = g.vnode_list_to_gnx_list(v.children)

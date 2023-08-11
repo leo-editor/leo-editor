@@ -1073,19 +1073,22 @@ class TestNodes(LeoUnitTest):
 
         c = self.c
         p = c.p
+        assert p  ###
         from leo.core.leoNodes import VNode
 
         # Make sure ni.new_vnode_helper won't raise AssertionError.
         assert g.app.nodeIndices
         assert c.fileCommands
 
-        # self.dump_headlines(c)
+        if 0:
+            self.dump_headlines(c)
+
         root = c.rootPosition()
         test_p = root
+        for v in (None,):
         ### for v in (p.v, None):
-        for v in (p.v,):
-            ### for retain_gnxs in (True, False):
-            for retain_gnxs in (True,):
+            ### for retain_gnxs in (True,):
+            for retain_gnxs in (True, False):
                 d = c.archive(v)
                 if 0:
                     # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
@@ -1099,8 +1102,8 @@ class TestNodes(LeoUnitTest):
                 if 0:
                     g.printObj(test_p.v.parents, tag='test_p.v.parents')
                     g.printObj(test_p.v.children, tag='test_p.v.children')
-                    for v in test_p.v.self_and_subtree_vnodes():
-                        print(v.h)
+                if 0:
+                    self.dump_headlines(c)
     #@+node:ekr.20210830095545.39: *4* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
         p = self.c.p
