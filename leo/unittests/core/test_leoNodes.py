@@ -1072,23 +1072,33 @@ class TestNodes(LeoUnitTest):
     def test_g_archive(self):
 
         c = self.c
-        p = c.p
-        assert p  ###
+        fc = c.fileCommands
         from leo.core.leoNodes import VNode
 
         # Make sure ni.new_vnode_helper won't raise AssertionError.
         assert g.app.nodeIndices
         assert c.fileCommands
 
-        if 0:
-            self.dump_headlines(c)
+        # Run all tests.
+        trace = False
+        for kind in ('all',):
+            for retain_gnxs in (True,):  ###  (True, False):
+                self.clean_tree()
+                self.create_test_outline()
+                test_p = c.rootPosition()
+                assert test_p.h == 'root'
+                v = test_p.v
+                old_gnx_keys = [z for z in fc.gnxDict]
+                if trace:
+                    print(f"{len(old_gnx_keys)} keys in old_gnx_keys")
+                    for z in old_gnx_keys:
+                        print(f"  {z}")
+                # self.dump_headlines(c)
 
-        root = c.rootPosition()
-        test_p = root
-        for v in (None,):
-        ### for v in (p.v, None):
-            ### for retain_gnxs in (True,):
-            for retain_gnxs in (True, False):
+                if trace:
+                    n1 = len(list(fc.gnxDict.keys()))
+                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, retain? {int(retain_gnxs)}")
+
                 d = c.archive(v)
                 if 0:
                     # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
@@ -1097,8 +1107,21 @@ class TestNodes(LeoUnitTest):
                     print(f"\ng.obj_to_json_string: {kind_s}\n")
                     print(s)
                 c.unarchive_to_vnode(d, test_p.v, retain_gnxs)
+                if trace:
+                    n2 = len(list(fc.gnxDict.keys()))
+                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, retain? {int(retain_gnxs)}")
                 assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
                 assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
+                if retain_gnxs:
+                    for z in fc.gnxDict:
+                        assert z in old_gnx_keys, z
+                    for z in old_gnx_keys:
+                        assert z in fc.gnxDict, z
+                elif 0:
+                    for z in fc.gnxDict:
+                        assert z.gnx not in old_gnx_keys, z
+                    for gnx in old_gnx_keys:
+                        assert gnx not in fc.gnxDict, z
                 if 0:
                     g.printObj(test_p.v.parents, tag='test_p.v.parents')
                     g.printObj(test_p.v.children, tag='test_p.v.children')

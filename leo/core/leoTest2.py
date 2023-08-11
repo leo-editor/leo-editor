@@ -140,8 +140,9 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
     def clean_tree(self) -> None:
         """Clear everything but the root node."""
-        p = self.root_p
-        assert p.h == 'root'
+        c = self.c
+        p = c.rootPosition()
+        p.h = 'root'
         p.deleteAllChildren()
         while p.hasNext():
             p.next().doDelete()

@@ -1896,7 +1896,7 @@ class Commands:
         """Set all ivars of v from the d, a dict created by g.archive."""
         c = self
         fc = c.fileCommands
-        assert fc
+        gnx_dict = fc.gnxDict
 
         # Enter all gnxs in the archive into vnode_dict.
         vnode_dict: dict[str, Optional[VNode]] = {}  # Keys are gnxs; values are VNodes.
@@ -1907,11 +1907,13 @@ class Commands:
                     vnode_dict[gnx2] = None
 
         def new_vnode(gnx: str) -> VNode:
-            new_gnx = gnx if retain_gnxs else None
             # The VNode ctor always calls ni.getNewIndex(v)
             if gnx == c.hiddenRootNode.gnx:
                 return c.hiddenRootNode
-            return leoNodes.VNode(c, new_gnx)
+            if retain_gnxs:
+                v = gnx_dict.get(gnx)
+                return v or leoNodes.VNode(c, gnx)
+            return leoNodes.VNode(c, None)
 
         def dump_vnode_dict(tag: str) -> None:
             g.printObj([
@@ -1924,9 +1926,6 @@ class Commands:
         # Create or link all Vnodes.
         # gnx_dict: dict[str, VNode] = c.fileCommands.gnxDict if retain_gnxs else {}
         try:
-            old_gnx_dict = fc.gnxDict
-            fc.gnxDict = {}
-
             for gnx in vnode_dict:
                 vnode_dict[gnx] = new_vnode(gnx)
 
@@ -1951,14 +1950,13 @@ class Commands:
                         v.uas = uas
 
             # dump_vnode_dict('after')
+            fc.gnxDict = gnx_dict
 
         except Exception as e:
             g.trace(f"Unexpected exception: {e}")
             g.es_exception()
             # g.printObj(d)
             # g.dump_archive(d)
-        finally:
-            fc.gnxDict = old_gnx_dict
     #@+node:ekr.20230807171351.1: *4* c.archive
     def archive(self, v: VNode = None) -> dict[str, Any]:
         """
@@ -1984,7 +1982,7 @@ class Commands:
             parents_dict[gnx] = g.vnode_list_to_gnx_list(v.parents)
             body_dict[gnx] = ''
             headline_dict[gnx] = ''
-            
+
         iter_ = c.all_unique_vnodes if v is None else v.self_and_subtree_vnodes
 
         # Create all the dicts.
