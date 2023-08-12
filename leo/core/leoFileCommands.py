@@ -792,7 +792,7 @@ class FileCommands:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
-    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard (pdb)
+    #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
