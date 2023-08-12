@@ -2253,12 +2253,12 @@ class Commands:
                         messages.append(
                             'Mismatch between parent.children and child.parents\n\n'
                             f"parent: {parent_v.gnx} {parent_v.h}\n"
-                            f"  parent.children: {[z.h for z in parent_v.children]}\n"
-                            f"matching_children: {[z.h for z in matching_children]}\n\n"
+                            f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
+                            f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
 
                             f" child: {child_v.gnx} {child_v.h}\n"
-                            f"   child.parents: {[z.h for z in child_v.parents]}\n"
-                            f"matching_parents: {[z.h for z in matching_parents]}\n"
+                            f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
+                            f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
                         )
                         n += 1
             return error_list, messages, n
@@ -2328,24 +2328,22 @@ class Commands:
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        if verbose or g.unitTesting:  # pragma: no cover
+        if verbose:  # pragma: no cover
             print('\n')
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
-            ### g.dump_clone_info(c)
-        if strict or g.unitTesting:  # pragma: no cover
+            g.dump_clone_info(c)
+        if strict:  # pragma: no cover
             return n
-
-        if 0:  ### Hopeless.
-            old_n = n
-            fix_errors(error_list)
-            undelete_nodes(error_list)
-            error_list, messages, n = recheck()
-            if n:  # pragma: no cover
-                # Report the *failure* to fix links!
-                print('\n'.join(messages))
-            elif verbose:  # pragma: no cover
-                g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+        old_n = n
+        fix_errors(error_list)
+        undelete_nodes(error_list)
+        error_list, messages, n = recheck()
+        if n:  # pragma: no cover
+            # Report the *failure* to fix links!
+            print('\n'.join(messages))
+        elif verbose:  # pragma: no cover
+            g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning

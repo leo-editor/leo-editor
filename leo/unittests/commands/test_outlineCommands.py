@@ -348,11 +348,8 @@ class TestOutlineCommands(LeoUnitTest):
                 c.selectPosition(target_p)
                 c.pasteOutlineRetainingClones()
 
-                # self.dump_headlines(c)
-                g.dump_clone_info(c)
-
-                # Check the paste *last*.
-                ### self.assertEqual(0, c.checkOutline())
+                # Do the checks *last*.
+                self.assertEqual(0, c.checkGnxs())
                 self.assertEqual(0, c.checkVnodeLinks())
 
             # test_tree(pasted_flag=True, tag='paste')

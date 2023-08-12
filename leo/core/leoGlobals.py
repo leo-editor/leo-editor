@@ -3059,17 +3059,6 @@ def timeSince(start: float) -> str:
 #@+node:ekr.20230720210931.1: *3* g.dump_clone_info
 def dump_clone_info(c: Cmdr, tag: str = None) -> None:
     """Dump all clone info."""
-
-    def dump_gnx(v: VNode) -> str:
-        return '.' + v.gnx.split('.')[2]
-
-    def dump_vnode(v: VNode) -> str:
-        return (
-            'hidden' if v == c.hiddenRootNode
-            # else f"{v.gnx[-10:]}: {v.h}"
-            else f"{dump_gnx(v)}:{v.h}"
-        )
-
     print('')
     tag_s = tag + ': ' if tag else ''
     g.trace(f"{tag_s}{c.fileName()}\n")
@@ -3081,11 +3070,22 @@ def dump_clone_info(c: Cmdr, tag: str = None) -> None:
         children_s = '[' + ', '.join([dump_vnode(z) for z in p.v.children]) + ']'
         print(
             f"{cloned_s:>4}"
-            # f"{' '*3}{p.gnx[-10:]}"
-            f"{' '*3}{dump_gnx(p.v):5}"
+            f"{' '*3}{g.dump_gnx(p.v):5}"
             f"{' '*2}{head_s:<18} {parents_s:<20}"
             f"{children_s}"
         )
+#@+node:ekr.20230812112043.1: *3* g.dump_gnx
+def dump_gnx(v: VNode) -> str:
+    return '.' + v.gnx.split('.')[2]
+
+#@+node:ekr.20230812112044.1: *3* g.dump_vnode
+def dump_vnode(v: VNode) -> str:
+    c = v.context
+    return (
+        'hidden' if v == c.hiddenRootNode
+        # else f"{v.gnx[-10:]}: {v.h}"
+        else f"{dump_gnx(v)}:{v.h}"
+    )
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # Weird pylint bug, activated by TestLeoGlobals class.
 # Disabling this will be safe, because pyflakes will still warn about true redefinitions
