@@ -2038,6 +2038,21 @@ class Commands:
             'root': root.gnx,
             'uas': uas_dict,
         }
+    #@+node:ekr.20230812041307.1: *4* c.compute_parents_vnodes
+    def compute_parents_vnodes(self, v: VNode) -> list[VNode]:
+        """
+        Return the list of all parents VNodes of v.
+
+        A helper for paste-retaining-clones.
+        """
+        c = self
+        result: list[VNode] = []
+        for parent in c.all_unique_nodes():
+            if parent != v:
+                for child in v.children:
+                    if child == v:
+                        result.append(parent)
+        return result
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:

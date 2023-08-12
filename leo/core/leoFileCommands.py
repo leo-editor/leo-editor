@@ -844,7 +844,7 @@ class FileCommands:
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
-    #@+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones (to do)
+    #@+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones
     def getLeoOutlineFromClipboardRetainingClones(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -863,8 +863,8 @@ class FileCommands:
             d = g.json_string_to_dict(s)
             if d is None:
                 return None
-            hidden_v = leoNodes.VNode(c)
-            c.unarchive_to_vnode(d, hidden_v, retain_gnxs=True)
+            v = leoNodes.VNode(c)
+            c.unarchive_to_vnode(d, v, retain_gnxs=True)
         else:
             if s.lstrip().startswith("{"):
                 # Maybe JSON
@@ -874,11 +874,11 @@ class FileCommands:
                 s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
                 hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
 
-        v = hidden_v.children[0]
-        v.parents.remove(hidden_v)
-        if not v:
-            g.es("the clipboard is not valid ", color="blue")
-            return None
+            v = hidden_v.children[0]
+            v.parents.remove(hidden_v)
+            if not v:
+                g.es("the clipboard is not valid ", color="blue")
+                return None
 
         # Create the position.
         p = leoNodes.Position(v)
@@ -892,6 +892,11 @@ class FileCommands:
             if not self.checkPaste(current.parent(), p):
                 return None
             p._linkCopiedAfter(current)
+
+        # Recompute parents.
+        if g.json_paste_switch:
+            assert p.v == v
+            v.parents = c.compute_parents_vnodes(v)
 
         # Automatically correct any link errors!
         errors = c.checkOutline()
