@@ -547,7 +547,8 @@ def revert(self: Self, event: Event = None) -> None:
     # Make sure the user wants to Revert.
     fn = c.mFileName
     if not fn:
-        g.es('can not revert unnamed file.')
+        g.es('Can not revert unnamed file.')
+        return
     if not g.os_path_exists(fn):
         g.es(f"Can not revert unsaved file: {fn}")
         return
