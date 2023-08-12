@@ -317,7 +317,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
                 self.fail(message)  # This throws another exception!
         #@-others
-        
+
         ### First test.
         if 1:
             is_json = True
@@ -326,7 +326,7 @@ class TestOutlineCommands(LeoUnitTest):
             # Create the tree and gnx_dict.
             self.clean_tree()
             cc = self.create_test_paste_outline()
-            
+
             if 1:  # Copy.
                 c.selectPosition(cc)
                 self.copy_node(is_json)
@@ -350,7 +350,7 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Check the paste.
             self.assertEqual(0, c.checkOutline())
-            
+
             self.dump_headlines(c)
             self.dump_clone_info(c)
 
