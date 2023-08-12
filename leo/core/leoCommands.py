@@ -2238,19 +2238,28 @@ class Commands:
 
             Return (error_list, messages, n)
             """
+            ### g.dump_clone_info(c)
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
             n = 0
-            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+            all_nodes = list(c.all_unique_nodes())
+            all_nodes.append(c.hiddenRootNode)
+            for parent_v in all_nodes:
                 for child_v in parent_v.children:
-                    children_n = parent_v.children.count(child_v)
-                    parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:
+                    matching_children = [z for z in parent_v.children if z == child_v]
+                    matching_parents = [z for z in child_v.parents if z == parent_v]
+                    if len(matching_children) != len(matching_parents):
                         error_list.append((parent_v, child_v))
                         messages.append(
-                            'Mismatch between parent.children and child.parents\n'
-                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                            'Mismatch between parent.children and child.parents\n\n'
+                            f"parent: {parent_v.gnx} {parent_v.h}\n"
+                            f"  parent.children: {[z.h for z in parent_v.children]}\n"
+                            f"matching_children: {[z.h for z in matching_children]}\n\n"
+
+                            f" child: {child_v.gnx} {child_v.h}\n"
+                            f"   child.parents: {[z.h for z in child_v.parents]}\n"
+                            f"matching_parents: {[z.h for z in matching_parents]}\n"
+                        )
                         n += 1
             return error_list, messages, n
         #@+node:ekr.20230728010156.1: *6* fix_errors
@@ -2314,24 +2323,29 @@ class Commands:
         # For unit testing.
         strict = 'test:strict' in g.app.debug
         verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+
+        # Call find_errors.
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
-        if verbose:  # pragma: no cover
+        if verbose or g.unitTesting:  # pragma: no cover
             print('\n')
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
-        if strict:  # pragma: no cover
+            ### g.dump_clone_info(c)
+        if strict or g.unitTesting:  # pragma: no cover
             return n
-        old_n = n
-        fix_errors(error_list)
-        undelete_nodes(error_list)
-        error_list, messages, n = recheck()
-        if n:  # pragma: no cover
-            # Report the *failure* to fix links!
-            print('\n'.join(messages))
-        elif verbose:  # pragma: no cover
-            g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+
+        if 0:  ### Hopeless.
+            old_n = n
+            fix_errors(error_list)
+            undelete_nodes(error_list)
+            error_list, messages, n = recheck()
+            if n:  # pragma: no cover
+                # Report the *failure* to fix links!
+                print('\n'.join(messages))
+            elif verbose:  # pragma: no cover
+                g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning

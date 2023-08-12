@@ -43,7 +43,7 @@ class TestGotoCommands(LeoUnitTest):
         #@-<< create test tree >>
 
         # self.dump_headlines(c)
-        # self.dump_clone_info(c)
+        # g.dump_clone_info(c)
 
         #@+<< init unchanging data >>
         #@+node:ekr.20230804093956.1: *4* << init unchanging data >>

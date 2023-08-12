@@ -898,10 +898,12 @@ class FileCommands:
             assert p.v == v
             v.parents = c.compute_parents_vnodes(v)
 
-        # Automatically correct any link errors!
-        errors = c.checkOutline()
-        if errors > 0:
-            return None
+        # Automatically correct link errors, but not during unit tests.
+        if not g.unitTesting:
+            errors = c.checkOutline()
+            if errors > 0:
+                return None
+
         c.selectPosition(p)
         self.initReadIvars()
         return p

@@ -83,7 +83,7 @@ class TestOutlineCommands(LeoUnitTest):
             except Exception as e:
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
-                # self.dump_clone_info(c)
+                # g.dump_clone_info(c)
                 self.dump_bodies(c)
                 g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
@@ -191,7 +191,7 @@ class TestOutlineCommands(LeoUnitTest):
             except Exception as e:
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
-                self.dump_clone_info(c)
+                g.dump_clone_info(c)
                 # g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
                 self.fail(message)
@@ -267,8 +267,8 @@ class TestOutlineCommands(LeoUnitTest):
         u = c.undoer
 
         # These tests fail in Leo 6.7.4. To be corrected in Leo 6.7.5.
-        # g.app.debug.extend(['test:strict'])
-        # g.app.debug.extend(['test:verbose'])
+        g.app.debug.extend(['test:strict'])
+        g.app.debug.extend(['test:verbose'])
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)
@@ -311,48 +311,49 @@ class TestOutlineCommands(LeoUnitTest):
             except Exception as e:
                 message = f"clone_test failed! tag: {tag}: {e}"
                 print(f"\n{message}\n")
-                self.dump_clone_info(c)
+                g.dump_clone_info(c)
                 # g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
                 # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
                 self.fail(message)  # This throws another exception!
         #@-others
 
-        ### First test.
+        ### New test.
         if 1:
-            is_json = True
-            target_headline = 'ee'
+            for kind in ('copy', 'cut'):
+                target_headline = 'ee'
 
-            # Create the tree and gnx_dict.
-            self.clean_tree()
-            cc = self.create_test_paste_outline()
+                print(f"TEST {kind} {target_headline}")
 
-            if 1:  # Copy.
+                # Create the tree and gnx_dict.
+                self.clean_tree()
+                cc = self.create_test_paste_outline()
+
+                # Always copy cc
                 c.selectPosition(cc)
-                self.copy_node(is_json)
-            else:
-                # Cut.
-                c.selectPosition(cc)
-                self.copy_node(is_json)
-                back = cc.threadBack()
-                assert back
-                cc.doDelete()
-                c.selectPosition(back)
-                self.assertEqual(0, c.checkOutline())
+                self.copy_node()
+                if kind == 'cut':
+                    self.copy_node()
+                    back = cc.threadBack()
+                    assert back
+                    cc.doDelete()
+                    c.selectPosition(back)
+                    ### self.assertEqual(0, c.checkOutline())
 
-            # Find the target position by headline.
-            target_p = g.findNodeAnywhere(c, target_headline)
-            self.assertTrue(target_p, msg=target_headline)
+                # Find the target position by headline.
+                target_p = g.findNodeAnywhere(c, target_headline)
+                self.assertTrue(target_p, msg=target_headline)
 
-            # Paste after the target.
-            c.selectPosition(target_p)
-            c.pasteOutlineRetainingClones()
+                # Paste after the target.
+                c.selectPosition(target_p)
+                c.pasteOutlineRetainingClones()
 
-            # Check the paste.
-            self.assertEqual(0, c.checkOutline())
+                # self.dump_headlines(c)
+                g.dump_clone_info(c)
 
-            self.dump_headlines(c)
-            self.dump_clone_info(c)
+                # Check the paste *last*.
+                ### self.assertEqual(0, c.checkOutline())
+                self.assertEqual(0, c.checkVnodeLinks())
 
             # test_tree(pasted_flag=True, tag='paste')
             return ###
@@ -557,7 +558,7 @@ class TestOutlineCommands(LeoUnitTest):
             except Exception as e:
                 message = f"Fail! tag: {tag}: {e}"
                 print(f"\n{message}")
-                self.dump_clone_info(c)
+                g.dump_clone_info(c)
                 # g.printObj(gnx_dict, tag='gnx_dict')
                 # g.printObj(vnodes, tag='vnodes')
                 self.fail(message)
