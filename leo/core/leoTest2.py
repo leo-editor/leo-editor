@@ -300,22 +300,28 @@ class LeoUnitTest(unittest.TestCase):
     def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
         """Dump all clone info."""
 
+        def dump_gnx(v: VNode) -> str:
+            return '.' + v.gnx.split('.')[2]
+
         def dump_vnode(v: VNode) -> str:
             return (
                 'hidden' if v == c.hiddenRootNode
-                else f"{v.gnx[-10:]}: {v.h}"
+                # else f"{v.gnx[-10:]}: {v.h}"
+                else f"{dump_gnx(v)}:{v.h}"
             )
 
         print('')
         tag_s = tag + ': ' if tag else ''
         g.trace(f"{tag_s}{c.fileName()}\n")
-        print(f"clone{' '*6}gnx{' '*6}headline{' '*11}parents")
+        print(f"clone{' '*3}gnx{' '*3}headline{' '*11}parents")
         for p in c.all_positions():
+            cloned_s = ' yes' if p.isCloned() else ''
             head_s = f"{' '*p.level()}{p.h}"
             parents_s = ', '.join([dump_vnode(z) for z in p.v.parents])
             print(
-                f"{int(p.isCloned()):>3}"
-                f"{' '*5}{p.gnx[-10:]}"
+                f"{cloned_s:>4}"
+                # f"{' '*3}{p.gnx[-10:]}"
+                f"{' '*3}{dump_gnx(p.v):5}"
                 f"{' '*2}{head_s:<18} [{parents_s}]"
             )
     #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
