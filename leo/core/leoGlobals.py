@@ -389,30 +389,44 @@ def archive_uas(v: VNode) -> dict:
     return None
 #@+node:ekr.20230807120727.1: *3* g.dump_archive
 def dump_archive(d: dict, tag: str = None) -> None:
-    """Dump the archive in a more readable format."""
+    """
+    Dump the archive in a more readable format, showing corrsponding headlines.
+
+    """
     tag_s = f" {tag}" if tag else ''
     print(f"\nDump of archive:{tag_s}...\n")
-    if 1:
+
+    if 0:  # Reasonable, but does not resolve gnxs to headlines.
         print(json.dumps(d, indent=2, sort_keys=True))
-    else:
-        for key in d:
-            if key in ('parents', 'children'):
-                print(f"{key}: {{")
-                d2 = d.get(key)
-                if d2:
-                    for key2, val2 in d2.items():
-                        if val2:
-                            print(f"  {key2}: [")
-                            for gnx in val2:
-                                print(f"    {gnx},")
-                            print('  ]')
-                        else:
-                            print(f"  {key2}: []")
-                else:
-                    g.printObj(d2, tag=key)
-                print('}')
+        return
+
+    headlines = d['headlines']
+    bodies = d['bodies']
+    for key in d:
+        if key in ('parents', 'children', 'bodies'):
+            print(f"{key}: {{")
+            d2 = d.get(key)
+            if d2:
+                for key2, val2 in d2.items():
+                    if val2:
+                        print(f"  {key2}: [")
+                        for gnx in val2:
+                            if key == 'bodies':
+                                print(f"    {gnx:28} {len(bodies.get(gnx) or ''):4} {headlines[gnx]}")
+                            else:
+                                print(f"    {gnx:28} {headlines[gnx]}")
+                        print('  ]')
+                    elif key == 'bodies':
+                        gnx = key2
+                        print(f"    {gnx:28} len(body): {'0':2} {headlines[gnx]}")
+                    else:
+                        gnx = key2
+                        print(f"  {gnx}: []")
             else:
-                g.printObj(d.get(key), tag=key)
+                g.printObj(d2, tag=key)
+            print('}')
+        else:
+            g.printObj(d.get(key), tag=key)
 
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp

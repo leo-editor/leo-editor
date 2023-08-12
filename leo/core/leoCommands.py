@@ -1907,12 +1907,10 @@ class Commands:
                     vnode_dict[gnx2] = None
 
         def new_vnode(gnx: str) -> VNode:
-
-            ### Link root_v and d['root']
-
+            """Find or create the vnode with the given gnx."""
             # The VNode ctor always calls ni.getNewIndex(v)
             if gnx == c.hiddenRootNode.gnx:
-                return root_v  ### Experimental  c.hiddenRootNode
+                return root_v
             if retain_gnxs:
                 v = gnx_dict.get(gnx)
                 return v or leoNodes.VNode(c, gnx)
@@ -2029,7 +2027,7 @@ class Commands:
             uas = g.archive_uas(v)
             if uas:
                 uas_dict[gnx] = uas
-        return {
+        d = {
             'bodies': body_dict,
             'children': children_dict,
             'headlines': headline_dict,
@@ -2038,6 +2036,8 @@ class Commands:
             'root': root.gnx,
             'uas': uas_dict,
         }
+        # g.dump_archive(d)
+        return d
     #@+node:ekr.20230812041307.1: *4* c.compute_parents_vnodes
     def compute_parents_vnodes(self, v: VNode) -> list[VNode]:
         """
