@@ -23,7 +23,7 @@ from leo.core import leoApp
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
 #@-<< leoTest2 imports & annotations >>
 
 #@+others
@@ -299,24 +299,34 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
     def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
         """Dump all clone info."""
+
+        def dump_vnode(v: VNode) -> str:
+            return (
+                'hidden' if v == c.hiddenRootNode
+                else f"{v.gnx[-10:]}: {v.h}"
+            )
+
         print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
+        tag_s = tag + ': ' if tag else ''
+        g.trace(f"{tag_s}{c.fileName()}\n")
+        print(f"clone{' '*6}gnx{' '*6}headline{' '*11}parents")
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
+            parents_s = ', '.join([dump_vnode(z) for z in p.v.parents])
             print(
-                # f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30} "
-                f"clone? {int(p.isCloned())} gnx: {p.gnx:30} "
-                f"{head_s:<10} parents: {p.v.parents}"
+                f"{int(p.isCloned()):>3}"
+                f"{' '*5}{p.gnx[-10:]}"
+                f"{' '*2}{head_s:<18} [{parents_s}]"
             )
     #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
     def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
+        tag_s = tag + ': ' if tag else ''
+        g.trace(f"{tag_s}{c.fileName()}\n")
         for p in c.all_positions():
-            print(f"{p.gnx:30} {' '*p.level()}{p.h}")
+            print(f"{p.gnx[-10:]} {' '*p.level()}{p.h}")
+        print('')
     #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
