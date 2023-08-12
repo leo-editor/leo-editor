@@ -317,6 +317,46 @@ class TestOutlineCommands(LeoUnitTest):
                 # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
                 self.fail(message)  # This throws another exception!
         #@-others
+        
+        ### First test.
+        if 1:
+            is_json = True
+            target_headline = 'ee'
+
+            # Create the tree and gnx_dict.
+            self.clean_tree()
+            cc = self.create_test_paste_outline()
+            
+            if 1:  # Copy.
+                c.selectPosition(cc)
+                self.copy_node(is_json)
+            else:
+                # Cut.
+                c.selectPosition(cc)
+                self.copy_node(is_json)
+                back = cc.threadBack()
+                assert back
+                cc.doDelete()
+                c.selectPosition(back)
+                self.assertEqual(0, c.checkOutline())
+
+            # Find the target position by headline.
+            target_p = g.findNodeAnywhere(c, target_headline)
+            self.assertTrue(target_p, msg=target_headline)
+
+            # Paste after the target.
+            c.selectPosition(target_p)
+            c.pasteOutlineRetainingClones()
+
+            # Check the paste.
+            self.assertEqual(0, c.checkOutline())
+            
+            self.dump_headlines(c)
+            self.dump_clone_info(c)
+
+            # test_tree(pasted_flag=True, tag='paste')
+            return ###
+
 
         # Every paste will invalidate positions, so search for headlines instead.
         valid_target_headlines = (

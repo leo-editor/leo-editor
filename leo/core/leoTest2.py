@@ -150,7 +150,7 @@ class LeoUnitTest(unittest.TestCase):
     def copy_node(self, is_json: bool = False) -> str:
         """Copy c.p to the clipboard."""
         c = self.c
-        if is_json:
+        if is_json or g.json_paste_switch:
             s = c.fileCommands.outline_to_clipboard_json_string()
         else:
             s = c.fileCommands.outline_to_clipboard_string()
@@ -305,7 +305,8 @@ class LeoUnitTest(unittest.TestCase):
         for p in c.all_positions():
             head_s = f"{' '*p.level()}{p.h}"
             print(
-                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
+                # f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30} "
+                f"clone? {int(p.isCloned())} gnx: {p.gnx:30} "
                 f"{head_s:<10} parents: {p.v.parents}"
             )
     #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
@@ -315,7 +316,7 @@ class LeoUnitTest(unittest.TestCase):
         g.trace(f"{tag or ''} {c.fileName()}")
         print('')
         for p in c.all_positions():
-            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
+            print(f"{p.gnx:30} {' '*p.level()}{p.h}")
     #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
