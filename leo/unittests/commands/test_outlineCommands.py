@@ -320,7 +320,7 @@ class TestOutlineCommands(LeoUnitTest):
 
         ### New test.
         if 1:
-            for kind in ('copy', 'cut'):
+            for kind in ('cut', 'copy'):
                 target_headline = 'ee'
 
                 print(f"TEST {kind} {target_headline}")
@@ -332,13 +332,13 @@ class TestOutlineCommands(LeoUnitTest):
                 # Always copy cc
                 c.selectPosition(cc)
                 self.copy_node()
+
                 if kind == 'cut':
                     self.copy_node()
                     back = cc.threadBack()
                     assert back
                     cc.doDelete()
                     c.selectPosition(back)
-                    ### self.assertEqual(0, c.checkOutline())
 
                 # Find the target position by headline.
                 target_p = g.findNodeAnywhere(c, target_headline)

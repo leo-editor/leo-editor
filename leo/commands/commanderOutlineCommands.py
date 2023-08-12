@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
+#@+node:ekr.20031218072017.1550: *3* c_oc: copy-node
 @g.commander_command('copy-node')
 def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     """Copy the selected outline to the clipboard."""
@@ -42,7 +42,7 @@ def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
         return s
     g.app.gui.replaceClipboardWith(s)
     return s
-#@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
+#@+node:ekr.20220314071523.1: *3* c_oc: copy-node-as-json
 @g.commander_command('copy-node-as-json')
 def copyOutlineAsJSON(self: Cmdr, event: Event = None) -> Optional[str]:
     """Copy the selected outline as JSON to the clipboard"""
@@ -55,7 +55,7 @@ def copyOutlineAsJSON(self: Cmdr, event: Event = None) -> Optional[str]:
         return s
     g.app.gui.replaceClipboardWith(s)
     return None
-#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
+#@+node:ekr.20031218072017.1549: *3* c_oc: cut-node
 @g.commander_command('cut-node')
 def cutOutline(self: Cmdr, event: Event = None) -> None:
     """Delete the selected outline and send it to the clipboard."""
@@ -64,7 +64,7 @@ def cutOutline(self: Cmdr, event: Event = None) -> None:
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
+#@+node:ekr.20031218072017.1551: *3* c_oc: paste-node
 @g.commander_command('paste-node')
 def pasteOutline(
     self: Cmdr,
@@ -113,7 +113,7 @@ def pasteOutline(
     c.redraw(pasted)
     c.recolor()
     return pasted
-#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers (to do)
+#@+node:EKR.20040610130943: *3* c_oc: paste-retaining-clones
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(
     self: Cmdr, event: Event = None, s: str = None,
@@ -138,12 +138,11 @@ def pasteOutlineRetainingClones(
     if errors > 0:
         return None
     # Handle the "before" data for undo.
-    if True:  ### undoFlag:
-        vnodeInfoDict = computeVnodeInfoDict(c)
-        undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=True,
-            copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
-        )
+    vnodeInfoDict = computeVnodeInfoDict(c)
+    undoData = c.undoer.beforeInsertNode(c.p,
+        pasteAsClone=True,
+        copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
+    )
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
@@ -156,8 +155,7 @@ def pasteOutlineRetainingClones(
     for p in pasted.self_and_subtree():
         p.setAllAncestorAtFileNodesDirty()
     # Finish the command.
-    if True:  ### undoFlag:
-        c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
+    c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     c.redraw(pasted)
     c.recolor()
     return pasted
@@ -192,7 +190,7 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate (to do)
+#@+node:vitalije.20200529105105.1: *3* c_oc: paste-as-template (to do?)
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
     """Paste as template clones only nodes that were already clones"""
