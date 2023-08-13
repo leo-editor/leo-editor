@@ -269,6 +269,7 @@ class TestOutlineCommands(LeoUnitTest):
         # These tests fail in Leo 6.7.4. To be corrected in Leo 6.7.5.
         g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
+        ### g.json_paste_switch = True  ### Temporary.
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)

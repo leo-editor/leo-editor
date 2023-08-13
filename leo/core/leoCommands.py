@@ -59,6 +59,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
+    # Type aliases.
+    PositionStack = list[tuple[VNode, int]]
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Widget = Any
 #@-<< leoCommands annotations >>
@@ -1433,14 +1436,14 @@ class Commands:
             for child in reversed(v.children):
                 to_be_visited.append(child)
     #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
-    def alt_all_positions(self) -> Generator:
+    def alt_all_positions(self, copy: bool = True) -> Generator:  # copy kwarg not used.
         """An alternative implementation of c.all_positions."""
         c = self
-
-        PositionStack = list[tuple[VNode, int]]
+        Position = leoNodes.Position
 
         def visit(childIndex: int, v: VNode, stack: PositionStack) -> Generator:
-            yield leoNodes.Position(v, childIndex, stack[:])
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
             stack.append((v, childIndex))
             for child_childIndex, child_v, in enumerate(v.children):
                 yield from visit(child_childIndex, child_v, stack)
@@ -2069,7 +2072,7 @@ class Commands:
         }
         # g.dump_archive(d)
         return d
-    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
+    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents (rewrite)
     def recompute_all_parents(self) -> None:
         """
         Recompute all v.parents arrays.
@@ -2079,6 +2082,7 @@ class Commands:
         c = self
         for v in c.all_vnode_positions():
             v.parents = []
+        # seen: dict[str, bool] = {}
         for v in c.all_vnode_positions():
             for child in v.children:
                 child.parents.append(v)
