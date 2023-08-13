@@ -1432,7 +1432,7 @@ class Commands:
             yield v
             for child in reversed(v.children):
                 to_be_visited.append(child)
-    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions (To do)
+    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
     def alt_all_positions(self) -> Generator:
         """An alternative implementation of c.all_positions."""
         c = self
