@@ -318,6 +318,15 @@ class TestOutlineCommands(LeoUnitTest):
                 self.fail(message)  # This throws another exception!
         #@-others
 
+        if 1: # Test that c.all_positions() and c.all_vnode_positions() are equivalent:
+            self.clean_tree()
+            cc = self.create_test_paste_outline()
+            vnodes1 = [c.hiddenRootNode] + [z.v for z in c.all_positions()]
+            vnodes2 = list(c.all_vnode_positions())
+            # g.printObj([g.dump_vnode(z) for z in vnodes1])
+            # g.printObj([g.dump_vnode(z) for z in vnodes2])
+            assert vnodes1 == vnodes2
+
         ### New test.
         if 1:
             for kind in ('cut', 'copy'):

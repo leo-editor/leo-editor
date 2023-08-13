@@ -893,12 +893,10 @@ class FileCommands:
                 return None
             p._linkCopiedAfter(current)
 
-        # Recompute parents.
-        if g.json_paste_switch:
-            assert p.v == v
-            v.parents = c.compute_parents_vnodes(v)
+        # Recompute all v.parents data *after* linking v.
+        c.recompute_all_parents()
 
-        # Automatically correct link errors, but not during unit tests.
+        # Automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None
@@ -1582,7 +1580,7 @@ class FileCommands:
             d = c.archive(p.v)
             s = g.obj_to_json_string(d, warn=True)
             ### g.printObj(s, tag='outline_to_clipboard_json_string')
-            g.trace('json string:', len(s))
+            ### g.trace('json string:', len(s))
             return s
         # Save
         tua = self.descendentTnodeUaDictList

@@ -1418,6 +1418,20 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20230813053808.1: *5* c.all_vnode_positions
+    def all_vnode_positions(self) -> Generator:
+        """
+        c.all_vnode_positions: A helper for c.recompute_all_parents.
+
+        Yield all VNodes corresponding to c.all_positions using neither Positions nor v.parents.
+        """
+        c = self
+        to_be_visited: list[VNode] = [c.hiddenRootNode]
+        while to_be_visited:
+            v = to_be_visited.pop()
+            yield v
+            for child in reversed(v.children):
+                to_be_visited.append(child)
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
@@ -1942,7 +1956,7 @@ class Commands:
                 uas_string = d['uas'].get(gnx)
 
                 # Set values
-                v.parents = [vnode_dict[z] for z in parents_gnxs]
+                v.parents = [] if retain_gnxs else [vnode_dict[z] for z in parents_gnxs]
                 v.children = [vnode_dict[z] for z in children_gnxs]
                 v._bodyString = d['bodies'][gnx]
                 v._headString = d['headlines'][gnx]  ### + ' NEW'  ### Temp.
@@ -2038,21 +2052,19 @@ class Commands:
         }
         # g.dump_archive(d)
         return d
-    #@+node:ekr.20230812041307.1: *4* c.compute_parents_vnodes
-    def compute_parents_vnodes(self, v: VNode) -> list[VNode]:
+    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
+    def recompute_all_parents(self) -> None:
         """
-        Return the list of all parents VNodes of v.
+        Recompute all v.parents arrays.
 
         A helper for paste-retaining-clones.
         """
         c = self
-        result: list[VNode] = []
-        for parent in c.all_unique_nodes():
-            if parent != v:
-                for child in v.children:
-                    if child == v:
-                        result.append(parent)
-        return result
+        for v in c.all_vnode_positions():
+            v.parents = []
+        for v in c.all_vnode_positions():
+            for child in v.children:
+                child.parents.append(v)
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:
