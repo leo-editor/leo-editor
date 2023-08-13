@@ -1901,7 +1901,7 @@ class LeoFind:
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
     def interactive_tag_children(self, event: Event = None) -> None:  # pragma: no cover (interactive)
-        """tag-children: prompt for a tag and add it to all children of c.p."""
+        """Prompt for a tag and add it to all children of c.p."""
         w = self.c.frame.body.wrapper
         if not w:
             return
@@ -1936,7 +1936,7 @@ class LeoFind:
     #@+node:ekr.20230124043210.1: *4* find.tag-node & helper
     @cmd('tag-node')
     def interactive_tag_node(self, event: Event = None) -> None:  # pragma: no cover (interactive)
-        """tag-node: prompt for a tag and add it to c.p."""
+        """Prompt for a tag and add it to c.p."""
         w = self.c.frame.body.wrapper
         if not w:
             return
