@@ -1311,7 +1311,7 @@ class Commands:
     allNodes_iter = all_positions
     safe_all_positions = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: Optional[list[tuple[VNode, int]]] = None) -> Generator:
         """
         Yield all positions p in this outline such that p.v == v.
 
@@ -1339,7 +1339,7 @@ class Commands:
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: list[tuple]) -> Position:
+        def stack2pos(stack: Optional[list[tuple[VNode, int]]]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
@@ -1432,6 +1432,23 @@ class Commands:
             yield v
             for child in reversed(v.children):
                 to_be_visited.append(child)
+    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions (To do)
+    def alt_all_positions(self) -> Generator:
+        """An alternative implementation of c.all_positions."""
+        c = self
+
+        PositionStack = list[tuple[VNode, int]]
+
+        def visit(childIndex: int, v: VNode, stack: PositionStack) -> Generator:
+            yield leoNodes.Position(v, childIndex, stack[:])
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        stack: PositionStack = []
+        for i, v in enumerate(c.hiddenRootNode.children):
+            yield from visit(i, v, stack)
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
@@ -2026,7 +2043,7 @@ class Commands:
             body_dict[gnx] = ''
             headline_dict[gnx] = ''
 
-        iter_ = c.all_unique_vnodes if v is None else v.self_and_subtree_vnodes
+        iter_ = c.all_unique_nodes if v is None else v.self_and_subtree_vnodes
 
         # Create all the dicts.
         root = v

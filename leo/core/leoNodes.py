@@ -248,15 +248,15 @@ class Position:
         """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: Optional[list] = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: Optional[list[tuple[VNode, int]]] = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
         # Stack entries are tuples (v, childIndex).
-        if stack:
-            self.stack = stack[:]  # Creating a copy here is safest and best.
-        else:
+        if stack is None:
             self.stack = []
+        else:
+            self.stack = stack[:]  # Creating a copy here is safest and best.
         g.app.positions += 1
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__(self, other: Any) -> bool:
