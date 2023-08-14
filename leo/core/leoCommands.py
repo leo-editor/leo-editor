@@ -1424,7 +1424,7 @@ class Commands:
     #@+node:ekr.20230813053808.1: *5* c.alt_all_unique_nodes
     def alt_all_unique_nodes(self) -> Generator:
         """
-        Yield all unique VNodes corresponding to c.all_positions.
+        Yield all unique VNodes corresponding to c.all_unique_positions.
 
         The following is an equivalent (much worse) generator:
 
