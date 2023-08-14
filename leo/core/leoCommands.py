@@ -1421,15 +1421,18 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20230813053808.1: *5* c.all_vnode_positions
-    def all_vnode_positions(self) -> Generator:
+    #@+node:ekr.20230813053808.1: *5* c.alt_all_nodes
+    def alt_all_nodes(self) -> Generator:
         """
-        c.all_vnode_positions: A helper for c.recompute_all_parents.
+        Yield all VNodes corresponding to c.all_positions.
 
-        Yield all VNodes corresponding to c.all_positions using neither Positions nor v.parents.
+        This is an equivalent (much worse) generator:
+
+            for z in c.all_positions():
+                yield z.v
         """
         c = self
-        to_be_visited: list[VNode] = [c.hiddenRootNode]
+        to_be_visited: list[VNode] = list(reversed(c.hiddenRootNode.children))
         while to_be_visited:
             v = to_be_visited.pop()
             yield v
@@ -2080,10 +2083,10 @@ class Commands:
         A helper for paste-retaining-clones.
         """
         c = self
-        for v in c.all_vnode_positions():
+        for v in c.alt_all_nodes():
             v.parents = []
         # seen: dict[str, bool] = {}
-        for v in c.all_vnode_positions():
+        for v in c.alt_all_nodes():
             for child in v.children:
                 child.parents.append(v)
     #@+node:ekr.20171124081419.1: *3* c.Check outline

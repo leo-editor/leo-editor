@@ -293,28 +293,25 @@ class TestNodes(LeoUnitTest):
             self.assertTrue(v in v1)
         for v in v1:
             self.assertTrue(v in v2)
-    #@+node:ekr.20230813140712.1: *4* TestNodes.test_all_vnode_positions
-    def test_all_vnode_positions(self):
+    #@+node:ekr.20230813140640.1: *4* TestNodes.test_all_alt_generators
+    def test_all_alt_generators(self):
 
         c = self.c
         self.clean_tree()
         cc = self.create_test_paste_outline()
         assert cc.h == 'cc', repr(cc)
-        vnodes1 = [c.hiddenRootNode] + [z.v for z in c.all_positions()]
-        vnodes2 = list(c.all_vnode_positions())
-        # g.printObj([g.dump_vnode(z) for z in vnodes1])
-        # g.printObj([g.dump_vnode(z) for z in vnodes2])
-        assert vnodes1 == vnodes2
-    #@+node:ekr.20230813140640.1: *4* TestNodes.test_c_alt_all_positions
-    def test_c_alt_all_positions(self):
 
-        c = self.c
-        self.clean_tree()
-        cc = self.create_test_paste_outline()
-        assert cc.h == 'cc', repr(cc)
+        # Test alt_all_positions.
         positions1 = list(c.all_positions())
         positions2 = list(c.alt_all_positions())
         assert positions1 == positions2
+
+        # Test alt_all_nodes
+        vnodes1 = [z.v for z in c.all_positions()]
+        vnodes2 = list(c.alt_all_nodes())
+        # g.printObj([g.dump_vnode(z) for z in vnodes1])
+        # g.printObj([g.dump_vnode(z) for z in vnodes2])
+        assert vnodes1 == vnodes2
     #@+node:ekr.20210830095545.9: *4* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
         c, p = self.c, self.c.p
