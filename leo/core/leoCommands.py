@@ -2365,9 +2365,11 @@ class Commands:
             return error_list, messages, n
         #@-others
 
+        verbose = True  ### To be removed.
+
         # For unit testing.
-        strict = 'test:strict' in g.app.debug
-        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+        ### strict = 'test:strict' in g.app.debug
+        ### verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
 
         # Call find_errors.
         error_list, messages, n = find_errors()
@@ -2378,11 +2380,12 @@ class Commands:
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
             g.dump_clone_info(c)
-        if strict:  # pragma: no cover
-            return n
+        # if strict:  # pragma: no cover
+            # return n
         old_n = n
-        fix_errors(error_list)
-        undelete_nodes(error_list)
+        c.recompute_all_parents()
+        ### fix_errors(error_list)
+        ### undelete_nodes(error_list)
         error_list, messages, n = recheck()
         if n:  # pragma: no cover
             # Report the *failure* to fix links!
