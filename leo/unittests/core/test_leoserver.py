@@ -147,7 +147,7 @@ class TestLeoServer(LeoUnitTest):
                     except Exception as e:
                         if method_name not in expected:
                             print('')
-                            print(f"Exception in {tag}: {method_name!r} {e}")  # pragma:no cover# pragma:no cover
+                            print(f"Exception in {tag}: {method_name!r} {e}")  # pragma:no cover
         finally:
             server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
