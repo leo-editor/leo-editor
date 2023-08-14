@@ -1421,21 +1421,24 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20230813053808.1: *5* c.alt_all_nodes
-    def alt_all_nodes(self) -> Generator:
+    #@+node:ekr.20230813053808.1: *5* c.alt_all_unique_nodes
+    def alt_all_unique_nodes(self) -> Generator:
         """
-        Yield all VNodes corresponding to c.all_positions.
+        Yield all unique VNodes corresponding to c.all_positions.
 
         This is an equivalent (much worse) generator:
 
-            for z in c.all_positions():
+            for z in c.all_unique_positions():
                 yield z.v
         """
         c = self
+        seen: dict[str, bool] = {}
         to_be_visited: list[VNode] = list(reversed(c.hiddenRootNode.children))
         while to_be_visited:
             v = to_be_visited.pop()
-            yield v
+            if v.gnx not in seen:
+                seen[v.gnx] = True
+                yield v
             for child in reversed(v.children):
                 to_be_visited.append(child)
     #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
@@ -2078,17 +2081,23 @@ class Commands:
     #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents (rewrite)
     def recompute_all_parents(self) -> None:
         """
-        Recompute all v.parents arrays.
-
-        A helper for paste-retaining-clones.
+        Recompute all v.parents arrays using neither using positions nor v.parents ivars.
         """
         c = self
-        for v in c.alt_all_nodes():
+        root_v = c.hiddenRootNode
+
+        # Clear all v.parents arrays.
+        root_v.parents = []
+        for v in c.alt_all_unique_nodes():
             v.parents = []
-        # seen: dict[str, bool] = {}
-        for v in c.alt_all_nodes():
-            for child in v.children:
-                child.parents.append(v)
+
+        # Loop invariant: Visit each *parent* vnode *once*.
+        #                 Child vnodes may be visited more than once.
+        for child in root_v.children:
+            child.parents.append(root_v)
+        for parent in c.alt_all_unique_nodes():
+            for child in parent.children:
+                child.parents.append(parent)
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:

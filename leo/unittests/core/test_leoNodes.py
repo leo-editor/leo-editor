@@ -306,12 +306,33 @@ class TestNodes(LeoUnitTest):
         positions2 = list(c.alt_all_positions())
         assert positions1 == positions2
 
-        # Test alt_all_nodes
-        vnodes1 = [z.v for z in c.all_positions()]
-        vnodes2 = list(c.alt_all_nodes())
-        # g.printObj([g.dump_vnode(z) for z in vnodes1])
-        # g.printObj([g.dump_vnode(z) for z in vnodes2])
+        # Test alt_all_unique_nodes
+        vnodes1 = [z.v for z in c.all_unique_positions()]
+        vnodes2 = list(c.alt_all_unique_nodes())
+        if vnodes1 != vnodes2:
+            g.printObj([g.dump_vnode(z) for z in vnodes1])
+            g.printObj([g.dump_vnode(z) for z in vnodes2])
         assert vnodes1 == vnodes2
+    #@+node:ekr.20230814055824.1: *4* TestNodes.test_recompute_all_parents
+    def test_recompute_all_parents(self):
+
+        c = self.c
+        self.clean_tree()
+        cc = self.create_test_paste_outline()
+        assert cc.h == 'cc', repr(cc)
+        root_v = c.hiddenRootNode
+
+        assert root_v.parents == []
+        sorted_parents1 = [list(sorted([z2.h for z2 in z.v.parents])) for z in c.all_positions()]
+        c.recompute_all_parents()
+        assert root_v.parents == []
+        sorted_parents2 = [list(sorted([z2.h for z2 in z.v.parents])) for z in c.all_positions()]
+        if sorted_parents1 != sorted_parents2:
+            g.printObj(sorted_parents1)
+            g.printObj(sorted_parents2)
+        assert sorted_parents1 == sorted_parents2
+
+
     #@+node:ekr.20210830095545.9: *4* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
         c, p = self.c, self.c.p

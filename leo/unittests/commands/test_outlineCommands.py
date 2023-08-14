@@ -324,7 +324,7 @@ class TestOutlineCommands(LeoUnitTest):
             for kind in ('cut', 'copy'):
                 target_headline = 'ee'
 
-                print(f"TEST {kind} {target_headline}")
+                # print(f"TEST {kind} {target_headline}")
 
                 # Create the tree and gnx_dict.
                 self.clean_tree()
