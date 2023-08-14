@@ -369,16 +369,17 @@ def archive_uas(v: VNode) -> dict:
         for key, value in d.items():
             inner_d = d[key]
             inner_result_d = {}
-            for inner_key, inner_value in inner_d.items():
-                if g.is_valid_json({inner_key: inner_value}):
-                    inner_result_d[inner_key] = inner_value
-                elif trace:
-                    g.trace(
-                        f"In outer dict: key: {key!r}. "
-                        'Ignoring inner invalid key/value: '
-                        f"{inner_key!r}: {inner_value.__class__.__name__}")
-            if inner_result_d:
-                result_d[key] = inner_result_d
+            if inner_d and isinstance(inner_d, dict):
+                for inner_key, inner_value in inner_d.items():
+                    if g.is_valid_json({inner_key: inner_value}):
+                        inner_result_d[inner_key] = inner_value
+                    elif trace:
+                        g.trace(
+                            f"In outer dict: key: {key!r}. "
+                            'Ignoring inner invalid key/value: '
+                            f"{inner_key!r}: {inner_value.__class__.__name__}")
+                if inner_result_d:
+                    result_d[key] = inner_result_d
         if result_d and g.is_valid_json(result_d):
             return result_d
         if result_d:

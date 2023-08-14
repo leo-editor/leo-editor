@@ -70,7 +70,7 @@ class TestLeoServer(LeoUnitTest):
     #@+node:felix.20210621233316.102: *3* TestLeoServer.test_most_public_server_methods
     def test_most_public_server_methods(self):
         server = self.server
-        tag = 'test_most_public_server_methods'
+        ### tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
@@ -146,7 +146,9 @@ class TestLeoServer(LeoUnitTest):
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in {tag}: {method_name!r} {e}")  # pragma:no cover
+                            print('')
+                            g.trace(f"{method_name!r} {e}")  # pragma:no cover
+                        ### raise
         finally:
             server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
