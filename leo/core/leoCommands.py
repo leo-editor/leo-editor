@@ -1439,8 +1439,8 @@ class Commands:
             if v.gnx not in seen:
                 seen[v.gnx] = True
                 yield v
-            for child in reversed(v.children):
-                to_be_visited.append(child)
+                for child in reversed(v.children):
+                    to_be_visited.append(child)
     #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
     def alt_all_positions(self, copy: bool = True) -> Generator:  # copy kwarg not used.
         """An alternative implementation of c.all_positions."""
