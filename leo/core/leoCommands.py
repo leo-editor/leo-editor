@@ -2307,62 +2307,6 @@ class Commands:
                         )
                         n += 1
             return error_list, messages, n
-        #@+node:ekr.20230728010156.1: *6* fix_errors
-        def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
-            """Fix all erroneous nodes by adding/deleting entries from v.parents."""
-            for parent_v, child_v in error_list:
-                children_n = parent_v.children.count(child_v)
-                parents_n = child_v.parents.count(parent_v)
-                if parents_n == children_n:
-                    pass  # Already fixed.
-                elif parents_n < children_n:
-                    while parents_n < children_n:
-                        # Safe.
-                        child_v.parents.append(parent_v)
-                        parents_n += 1
-                else:
-                    while children_n < parents_n:
-                        if child_v.parents:
-                            # Safe.
-                            child_v.parents.remove(parent_v)
-                            children_n += 1
-                        else:  # pragma: no cover
-                            # This could delete the child.
-                            parent_v.children.remove(child_v)
-                            parents_n += 1
-        #@+node:ekr.20230728010753.1: *6* undelete_nodes
-        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
-
-            """Restore a parent link to any node that would otherwise be deleted."""
-            seen: list[VNode] = []
-            for parent_v, child_v in error_list:
-                if not child_v.parents and child_v not in seen:  # pragma: no cover
-                    # Add child_v to *one* parent.
-                    seen.append(child_v)
-                    parent_v.children.append(child_v)
-                    child_v.parents.append(parent_v)
-        #@+node:ekr.20230728011151.1: *6* recheck
-        def recheck() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
-            """
-            Rescan all vnodes to ensure that no errors remain.
-
-            Return (error_list, messages, n).
-            """
-            error_list: list[tuple[VNode, VNode]] = []
-            messages: list[str] = []
-            n = 0
-            for parent_v in c.all_unique_nodes():  # Avoids recursion.
-                for child_v in parent_v.children:
-                    children_n = parent_v.children.count(child_v)
-                    parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:  # pragma: no cover
-                        error_list.append((parent_v, child_v))
-                        messages.append(
-                            'Error recovery failed!\n'
-                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
-                        n += 1
-            return error_list, messages, n
         #@-others
 
         # For unit testing.
@@ -2382,9 +2326,7 @@ class Commands:
             return n
         old_n = n
         c.recompute_all_parents()
-        ### fix_errors(error_list)
-        ### undelete_nodes(error_list)
-        error_list, messages, n = recheck()
+        error_list, messages, n = find_errors()
         if n:  # pragma: no cover
             # Report the *failure* to fix links!
             print('\n'.join(messages))
