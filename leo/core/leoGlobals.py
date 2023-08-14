@@ -64,7 +64,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+<< leoGlobals json_paste_switch >>
 #@+node:ekr.20230807123041.1: ** << leoGlobals json_paste_switch >>
 # Temporary switch.
-json_paste_switch = False  # True: cut/copy/paste in new json format.
+json_paste_switch = True  # True: cut/copy/paste in new json format.
 json_leo_swith = False  # True: read/write json format .leo files.
 #@-<< leoGlobals json_paste_switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
@@ -401,34 +401,49 @@ def dump_archive(d: dict, tag: str = None) -> None:
         print(json.dumps(d, indent=2, sort_keys=True))
         return
 
-    headlines = d['headlines']
     bodies = d['bodies']
-    for key in d:
-        if key in ('parents', 'children', 'bodies'):
-            print(f"{key}: {{")
-            d2 = d.get(key)
-            if d2:
-                for key2, val2 in d2.items():
-                    if val2:
-                        print(f"  {key2}: [")
-                        for gnx in val2:
-                            if key == 'bodies':
-                                print(f"    {gnx:28} {len(bodies.get(gnx) or ''):4} {headlines[gnx]}")
-                            else:
-                                print(f"    {gnx:28} {headlines[gnx]}")
-                        print('  ]')
-                    elif key == 'bodies':
-                        gnx = key2
-                        print(f"    {gnx:28} len(body): {'0':2} {headlines[gnx]}")
-                    else:
-                        gnx = key2
-                        print(f"  {gnx}: []")
-            else:
-                g.printObj(d2, tag=key)
-            print('}')
-        else:
-            g.printObj(d.get(key), tag=key)
+    children = d['children']
+    headlines = d['headlines']
+    marks = d['marks']
+    parents = d['parents']
+    root = d['root']
+    uas = d['uas']
 
+    def gnx_to_headline(gnx: str) -> str:
+        return headlines[gnx] if gnx in headlines else '<no headline>'
+
+    print('headlines')
+    for gnx, headline in headlines.items():
+        print(f"  {gnx:28} {headline}")
+
+    print('bodies:')
+    for gnx, body in bodies.items():
+        body_s = f"len(body): {len(body)}" if '\n' in body else body
+        print(f"  {gnx:28} {gnx_to_headline(gnx)} {body_s}")
+
+    print('parents:')
+    for gnx, parents_list in parents.items():
+        parents_s = g.objToString(parents_list, indent=2).rstrip()
+        print(f"  {gnx:28} {gnx_to_headline(gnx)} {parents_s}")
+
+    print('children:')
+    for gnx, child_list in children.items():
+        child_s = g.objToString(child_list, indent=2).rstrip()
+        print(f"  {gnx:28} {gnx_to_headline(gnx)} {child_s}")
+
+    print('marks:')
+    for gnx in marks:
+        print(f"  {gnx:28} Marked: {gnx_to_headline(gnx)}")
+
+    print(f"root: {root:20} {gnx_to_headline(root)}")
+
+    print('uas:')
+    if 0:  # Hangs.
+        for gnx, ua in uas.items():
+            # uas_s = g.objToString(ua, indent=2).rstrip()
+            print(f"  {gnx:28} {gnx_to_headline(gnx)}")
+
+    print('')
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp
 def standard_timestamp() -> str:
@@ -6147,13 +6162,20 @@ def goto_last_exception(c: Cmdr) -> None:
     else:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
+internalError_dict: dict[str, bool] = {}
+
 def internalError(*args: Any) -> None:
     """Report a serious interal error in Leo."""
-    callers = g.callers(20).split(',')
+    callers_s = g.callers(20)
+    callers = callers_s.split(',')
     caller = callers[-1]
+    key = caller  # f"{caller}:{callers_s}"
+    if key in g.internalError_dict:
+        return
+    g.internalError_dict[key] = True
     g.error('\nInternal Leo error in', caller)
     g.es_print(*args)
-    g.es_print('Called from', ', '.join(callers[:-1]))
+    g.printObj(callers[:-1], tag='Called from')
     g.es_print('Please report this error to Leo\'s developers', color='red')
 #@+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = None) -> None:

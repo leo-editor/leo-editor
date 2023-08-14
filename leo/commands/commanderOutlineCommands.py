@@ -183,7 +183,7 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
     In short, it seems wise to do things the foolproof way.
     """
     d = {}
-    for v in c.all_unique_nodes():
+    for v in c.alt_all_unique_nodes():
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d

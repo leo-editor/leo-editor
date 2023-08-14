@@ -1938,6 +1938,8 @@ class Commands:
         fc = c.fileCommands
         gnx_dict = fc.gnxDict
 
+        ### g.dump_archive(d, tag='unarchive_to_vnode')  ###
+
         # Enter all gnxs in the archive into vnode_dict.
         vnode_dict: dict[str, Optional[VNode]] = {}  # Keys are gnxs; values are VNodes.
         for d2 in (d['children'], d['parents']):
@@ -1971,21 +1973,19 @@ class Commands:
             for gnx in vnode_dict:
                 vnode_dict[gnx] = new_vnode(gnx)
 
-            ### dump_vnode_dict('before')
-
             for gnx, v in vnode_dict.items():
 
                 ### Not ready yet.
                 ### assert v.gnx == gnx, (repr(gnx), repr(v))
-                parents_gnxs = d['parents'][gnx]
-                children_gnxs = d['children'][gnx]
+                parents_gnxs = d.get('parents') or []
+                children_gnxs = d.get('children') or []
                 uas_string = d['uas'].get(gnx)
 
                 # Set values
                 v.parents = [] if retain_gnxs else [vnode_dict[z] for z in parents_gnxs]
                 v.children = [vnode_dict[z] for z in children_gnxs]
-                v._bodyString = d['bodies'][gnx]
-                v._headString = d['headlines'][gnx]  ### + ' NEW'  ### Temp.
+                v._bodyString = d['bodies'].get(gnx) or ''
+                v._headString = d['headlines'].get(gnx) or ''
                 if d['marks'].get(gnx):
                     v.setMarked()
                 if uas_string:
@@ -1998,14 +1998,15 @@ class Commands:
             archive_root_v = vnode_dict[root_gnx]
             assert isinstance(archive_root_v, leoNodes.VNode), repr(archive_root_v)
 
-            root_v.parents = archive_root_v.parents
-            root_v.children = archive_root_v.children
-            root_v._bodyString = archive_root_v._bodyString
-            root_v._headString = archive_root_v._headString
-            if archive_root_v.isMarked():
-                root_v.setMarked()
-            if hasattr(archive_root_v, 'unknownAttributes'):
-                root_v.unknownAttributes = archive_root_v.unknownAttributes
+            if 0:  ### Not yet: Hangs!
+                root_v.parents = archive_root_v.parents
+                root_v.children = archive_root_v.children
+                root_v._bodyString = archive_root_v._bodyString
+                root_v._headString = archive_root_v._headString
+                if archive_root_v.isMarked():
+                    root_v.setMarked()
+                if hasattr(archive_root_v, 'unknownAttributes'):
+                    root_v.unknownAttributes = archive_root_v.unknownAttributes
 
             # dump_vnode_dict('after')
             fc.gnxDict = gnx_dict
@@ -2058,15 +2059,17 @@ class Commands:
         root = v
         for v in iter_():
             gnx = v.gnx
+            ### g.trace(gnx, v.h, v._bodyString)  ###
             body_dict[gnx] = v._bodyString
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             headline_dict[gnx] = v._headString
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
             if v.isMarked():
                 marks_dict[gnx] = '1'
-            uas = g.archive_uas(v)
-            if uas:
-                uas_dict[gnx] = uas
+            if 0:  ### Hangs?
+                uas = g.archive_uas(v)
+                if uas:
+                    uas_dict[gnx] = uas
         d = {
             'bodies': body_dict,
             'children': children_dict,
@@ -2076,7 +2079,7 @@ class Commands:
             'root': root.gnx,
             'uas': uas_dict,
         }
-        # g.dump_archive(d)
+        # g.dump_archive(d, tag='c.archive')
         return d
     #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
     def recompute_all_parents(self) -> None:
@@ -2106,6 +2109,7 @@ class Commands:
         Reallocate gnx's for duplicates or empty gnx's.
         Return the number of errors found.
         """
+
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
         d: dict[str, set[VNode]] = {}
@@ -2117,9 +2121,8 @@ class Commands:
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.all_positions(copy=False):
+        for v in c.alt_all_unique_nodes():
             count += 1
-            v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
                 aSet: set[VNode] = d.get(gnx, set())
@@ -2128,7 +2131,7 @@ class Commands:
             else:
                 gnx_errors += 1
                 new_gnx(v)
-                g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
+                g.es_print(f"empty v.fileIndex: {v} new: {v.gnx!r}", color='red')
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
