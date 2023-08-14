@@ -2081,7 +2081,7 @@ class Commands:
     #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
     def recompute_all_parents(self) -> None:
         """
-        Recompute all v.parents arrays using neither using positions nor v.parents ivars.
+        Recompute all v.parents arrays using neither positions nor v.parents ivars.
         """
         c = self
         root_v = c.hiddenRootNode
