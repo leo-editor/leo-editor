@@ -269,7 +269,9 @@ class TestOutlineCommands(LeoUnitTest):
         # These tests fail in Leo 6.7.4. To be corrected in Leo 6.7.5.
         g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
-        ### g.json_paste_switch = True  ### Temporary.
+
+        old_json_paste_switch = g.json_paste_switch
+        g.json_paste_switch = True  ### Temporary.
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230723160812.1: *4* function: test_tree (test_paste_retaining_clones)
@@ -319,9 +321,8 @@ class TestOutlineCommands(LeoUnitTest):
                 self.fail(message)  # This throws another exception!
         #@-others
 
-        ### New test.
         if 1:
-            for kind in ('cut', 'copy'):
+            for test_kind in ('cut', 'copy'):
                 target_headline = 'ee'
 
                 # print(f"TEST {kind} {target_headline}")
@@ -329,12 +330,17 @@ class TestOutlineCommands(LeoUnitTest):
                 # Create the tree and gnx_dict.
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
+                self.assertEqual(0, c.checkOutline())
+
+                # Calculate vnodes and gnx_dict for test_node, before any changes.
+                vnodes = list(set(list(c.all_unique_nodes())))
+                gnx_dict = {z.h: z.gnx for z in vnodes}
 
                 # Always copy cc
                 c.selectPosition(cc)
                 self.copy_node()
 
-                if kind == 'cut':
+                if test_kind == 'cut':
                     self.copy_node()
                     back = cc.threadBack()
                     assert back
@@ -353,9 +359,17 @@ class TestOutlineCommands(LeoUnitTest):
                 self.assertEqual(0, c.checkGnxs())
                 self.assertEqual(0, c.checkVnodeLinks())
 
-            # test_tree(pasted_flag=True, tag='paste')
-            return ###
+                # Check multiple undo/redo cycles.
+                for i in range(3):
+                    u.undo()
+                    self.assertEqual(0, c.checkOutline())
+                    ### test_tree(pasted_flag=False, tag=f"undo {i}")
+                    u.redo()
+                    self.assertEqual(0, c.checkOutline())
+                    ### test_tree(pasted_flag=True, tag=f"redo {i}")
 
+            g.json_paste_switch = old_json_paste_switch  ###
+            return  ###
 
         # Every paste will invalidate positions, so search for headlines instead.
         valid_target_headlines = (
@@ -374,6 +388,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Create the tree and gnx_dict.
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
+
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}

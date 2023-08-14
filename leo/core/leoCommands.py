@@ -2078,7 +2078,7 @@ class Commands:
         }
         # g.dump_archive(d)
         return d
-    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents (rewrite)
+    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
     def recompute_all_parents(self) -> None:
         """
         Recompute all v.parents arrays using neither using positions nor v.parents ivars.
