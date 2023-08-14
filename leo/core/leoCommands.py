@@ -1426,7 +1426,7 @@ class Commands:
         """
         Yield all unique VNodes corresponding to c.all_positions.
 
-        This is an equivalent (much worse) generator:
+        The following is an equivalent (much worse) generator:
 
             for z in c.all_unique_positions():
                 yield z.v
