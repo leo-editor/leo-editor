@@ -422,7 +422,7 @@ class Position:
                 s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
-    #@+node:ekr.20091001141621.6060: *3* p.generators
+    #@+node:ekr.20091001141621.6060: *3* p.Generators
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""

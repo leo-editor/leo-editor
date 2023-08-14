@@ -85,15 +85,13 @@ def pasteOutline(
     isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
+
     # Get *position* to be pasted.
+    # Calls c.recompute_all_parents() and c.checkOutline.
     pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
     if not pasted:
-        # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
-    # Validate.
-    errors = c.checkOutline()
-    if errors > 0:
-        return None
+
     # Handle the "before" data for undo.
     if undoFlag:
         undoData = c.undoer.beforeInsertNode(c.p,
@@ -128,15 +126,14 @@ def pasteOutlineRetainingClones(
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
+
     # Get *position* to be pasted.
+    # Calls c.recompute_all_parents() and c.checkOutline.
     pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
     if not pasted:
         # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
-    # Validate.
-    errors = c.checkOutline()
-    if errors > 0:
-        return None
+
     # Handle the "before" data for undo.
     vnodeInfoDict = computeVnodeInfoDict(c)
     undoData = c.undoer.beforeInsertNode(c.p,

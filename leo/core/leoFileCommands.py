@@ -837,8 +837,18 @@ class FileCommands:
         else:
             p._linkCopiedAfter(current)
         assert not p.isCloned(), g.objToString(p.v.parents)
+
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
+
+        # Recompute all v.parents data *after* linking v.
+        c.recompute_all_parents()
+
+        # Automatically correct link errors.
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
+
         c.selectPosition(p)
         self.initReadIvars()
         return p
