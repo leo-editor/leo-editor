@@ -2584,9 +2584,8 @@ class LeoServer:
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
-        ### g.printObj(s, tag='server.copy_node')
         g.app.gui.replaceClipboardWith(s)
-        return self._make_response({"string": s})  ###
+        return self._make_response({"string": s})
 
     #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
     def copy_node_as_json(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
@@ -2609,7 +2608,7 @@ class LeoServer:
         g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
 
-    #@+node:felix.20220222172507.1: *5* server.cut_node (test)
+    #@+node:felix.20220222172507.1: *5* server.cut_node
     def cut_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Cut a node, don't select it.
@@ -2618,13 +2617,9 @@ class LeoServer:
         c = self._check_c()
         p = self._get_p(param)
         copyMethod = c.copyOutline
-        if g.json_paste_switch:  ###
-            copyMethod = c.copyOutline
-        elif hasattr(param, "asJSON"):
+        if hasattr(param, "asJSON"):
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
-        else:
-            copyMethod = c.copyOutline
         if p == c.p:
             s = copyMethod()
             c.cutOutline()  # already on this node, so cut it
@@ -2643,7 +2638,7 @@ class LeoServer:
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
         g.app.gui.replaceClipboardWith(s)
-        return self._make_response({"string": s})  ###
+        return self._make_response({"string": s})
     #@+node:felix.20210621233316.53: *5* server.delete_node
     def delete_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
