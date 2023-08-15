@@ -3322,7 +3322,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
             if language:
                 return language
         # Search all extended parents.
-        for v in v0.self_and_all_parent_vnodes():
+        for v in v0.alt_self_and_parents():
             language = find_language(v, phase)
             if language:
                 return language
