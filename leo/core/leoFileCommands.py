@@ -847,33 +847,30 @@ class FileCommands:
         if not current:
             g.trace('no c.p')
             return None
-        self.initReadIvars()
 
-        # All pasted nodes should already have unique gnx's.
+        # Test the to-be-pasted string.
+        d = g.json_string_to_dict(s)
+        if d is None:
+            return None
+
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
+        else:
+            p = c.p.insertAfter()
+
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoard')
+            return None
+
+        # Init. All pasted nodes should already have unique gnx's.
+        self.initReadIvars()
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-        d = g.json_string_to_dict(s)
-        if d is None:
-            return None
-        v = leoNodes.VNode(c)
-        c.unarchive_to_vnode(d, v, retain_gnxs=True)
-
-        ### Simplify ###
-
-        # Create the position.
-        p = leoNodes.Position(v)
-
-        # Do *not* adjust links when linking v.
-        if current.hasChildren() and current.isExpanded():
-            if not self.checkPaste(current, p):
-                return None
-            p._linkCopiedAsNthChild(current, 0)
-        else:
-            if not self.checkPaste(current.parent(), p):
-                return None
-            p._linkCopiedAfter(current)
+        # Paste into p.v
+        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=True)
 
         # Recompute all v.parents data *after* linking v.
         c.recompute_all_parents()
