@@ -2983,7 +2983,7 @@ class LoadManager:
             traceback.print_exc()
             return False
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn: str, gui: LeoGui, old_c: Optional[Cmdr]) -> Optional[Cmdr]:
+    def loadLocalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Optional[Cmdr]:
         """Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
@@ -3012,7 +3012,7 @@ class LoadManager:
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
     #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, gui: LeoGui, old_c: Optional[Cmdr]) -> Cmdr:
+    def openEmptyLeoFile(self, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """Open an empty, untitled, new Leo file."""
         lm = self
         # Disable the log.
@@ -3053,7 +3053,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self,
         fn: str,
-        gui: LeoGui,
+        gui: Optional[LeoGui],
         old_c: Optional[Cmdr],
         previousSettings: "PreviousSettings",
     ) -> Optional[Cmdr]:
