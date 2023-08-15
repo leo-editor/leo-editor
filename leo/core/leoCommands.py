@@ -1291,7 +1291,7 @@ class Commands:
         This method is about three times faster than c.all_unique_positions.
         """
         c = self
-        for v in c.hiddenRootNode.self_and_subtree_vnodes():
+        for v in c.hiddenRootNode.alt_self_and_subtree():
             yield v
 
     # Compatibility with old code...
@@ -2046,7 +2046,7 @@ class Commands:
         marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
         uas_dict: dict[str, dict] = {}  # Values are json strings.
 
-        # Handle the special case here, *not* in v.self_and_subtree_vnodes.
+        # Handle the special case here, *not* in v.alt_self_and_subtree.
         if v is None:
             v = c.hiddenRootNode
             gnx = v.gnx
@@ -2057,7 +2057,7 @@ class Commands:
 
         # Create all the dicts.
         root = v
-        iter_ = c.all_unique_nodes if v is None else v.self_and_subtree_vnodes
+        iter_ = c.all_unique_nodes if v is None else v.alt_self_and_subtree
         for v in iter_():
             gnx = v.gnx
             body_dict[gnx] = g.splitLines(v._bodyString)

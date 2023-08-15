@@ -2234,8 +2234,8 @@ class VNode:
             v2.children.append(child.copyTree(copyMarked))
         return v2
     #@+node:ekr.20230808052030.1: *3* v.Generators
-    #@+node:ekr.20230808052041.1: *4* v.self_and_subtree_vnodes
-    def self_and_subtree_vnodes(self) -> Generator:
+    #@+node:ekr.20230808052041.1: *4* v.alt_self_and_subtree
+    def alt_self_and_subtree(self) -> Generator:
         """
         Yield v itself and all descendant vnodes, without duplicates.
 
