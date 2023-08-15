@@ -2321,6 +2321,7 @@ class Commands:
             return 0
         if verbose:  # pragma: no cover
             print('\n')
+            g.trace(g.callers())
             g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
             print('\n'.join(messages) + '\n')
             g.dump_clone_info(c)

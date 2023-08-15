@@ -171,6 +171,10 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
 
+        # Enable strict tests and verbose tracing.
+        g.app.debug.extend(['test:strict'])
+        g.app.debug.extend(['test:verbose'])
+
         #@+others  # Define test_tree function.
         #@+node:ekr.20230724064558.5: *4* function: test_tree (test_paste_node)
         def test_tree(pasted_flag: bool, tag: str) -> None:
@@ -203,7 +207,6 @@ class TestOutlineCommands(LeoUnitTest):
         valid_target_headlines = list(sorted(
             z.h for z in c.all_unique_positions() if z.h not in ('cc', 'cc:child1', 'cc:child2')
         ))
-        # g.printObj(valid_target_headlines, tag='valid_target_headlines')
         for target_headline in valid_target_headlines:
             for test_kind, is_json in (
                 ('cut', True), ('cut', False), ('copy', True), ('copy', False),
@@ -214,6 +217,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Create the tree and gnx_dict.
                 self.clean_tree()
                 cc = self.create_test_paste_outline()
+
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
@@ -232,7 +236,8 @@ class TestOutlineCommands(LeoUnitTest):
                     # *Copy*  node cc
                     c.selectPosition(cc)
                     self.copy_node(is_json)
-                self.assertEqual(0, c.checkOutline())
+
+                self.assertEqual(0, c.checkOutline())  # Check 1.
 
                 # Pretest: select all positions in the tree.
                 for p in c.all_positions():
@@ -247,7 +252,7 @@ class TestOutlineCommands(LeoUnitTest):
                 c.pasteOutline()
 
                 # Check the paste.
-                self.assertEqual(0, c.checkOutline())
+                self.assertEqual(0, c.checkOutline())  # Check 2.
                 test_tree(pasted_flag=True, tag='paste-node')
 
                 # Check multiple undo/redo cycles.
@@ -256,13 +261,14 @@ class TestOutlineCommands(LeoUnitTest):
                     self.assertEqual(0, c.checkOutline())
                     test_tree(pasted_flag=False, tag=f"undo {i}")
                     u.redo()
-                    self.assertEqual(0, c.checkOutline())
+                    self.assertEqual(0, c.checkOutline())  # Check 3.
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
 
         c = self.c
         u = c.undoer
+
         # Enable strict tests and verbose tracing.
         g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])

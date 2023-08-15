@@ -796,7 +796,6 @@ class FileCommands:
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
-        # current = c.p
         if not c.p:
             g.trace('no c.p')
             return None
@@ -828,6 +827,9 @@ class FileCommands:
 
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
+
+        # Recompute all v.parents data *after* linking v.
+        c.recompute_all_parents()
 
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
