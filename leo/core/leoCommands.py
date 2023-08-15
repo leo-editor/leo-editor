@@ -1934,11 +1934,13 @@ class Commands:
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
+        trace = False
         c = self
         fc = c.fileCommands
         gnx_dict = fc.gnxDict
 
-        ### g.dump_archive(d, tag='unarchive_to_vnode')  ###
+        if trace:  # Very effective trace.
+            g.dump_archive(d, tag='unarchive_to_vnode')
 
         # Enter all gnxs in the archive into vnode_dict.
         vnode_dict: dict[str, Optional[VNode]] = {}  # Keys are gnxs; values are VNodes.
@@ -1974,19 +1976,20 @@ class Commands:
                 vnode_dict[gnx] = new_vnode(gnx)
 
             for gnx, v in vnode_dict.items():
-
-                ### Not ready yet.
-                ### assert v.gnx == gnx, (repr(gnx), repr(v))
-                parents_gnxs = d.get('parents') or []
-                children_gnxs = d.get('children') or []
+                # Let block.
+                body = d.get('bodies').get(gnx) or []
+                children = d.get('children').get(gnx) or []
+                headline = d.get('headlines').get(gnx) or ''
+                marks = d.get('marks').get(gnx)
+                parents = d.get('parents').get(gnx) or []
                 uas_string = d['uas'].get(gnx)
-
-                # Set values
-                v.parents = [] if retain_gnxs else [vnode_dict[z] for z in parents_gnxs]
-                v.children = [vnode_dict[z] for z in children_gnxs]
-                v._bodyString = d['bodies'].get(gnx) or ''
-                v._headString = d['headlines'].get(gnx) or ''
-                if d['marks'].get(gnx):
+                # Setters.
+                # g.printObj(children, tag=f"{v.gnx} {headline}")
+                v.parents = [] if retain_gnxs else [vnode_dict[z] for z in parents]
+                v.children = [vnode_dict[z] for z in children]
+                v._bodyString = ''.join(body)
+                v._headString = headline
+                if marks:
                     v.setMarked()
                 if uas_string:
                     uas = g.json_string_to_dict(uas_string, warn=True)
@@ -1998,15 +2001,15 @@ class Commands:
             archive_root_v = vnode_dict[root_gnx]
             assert isinstance(archive_root_v, leoNodes.VNode), repr(archive_root_v)
 
-            if 0:  ### Not yet: Hangs!
-                root_v.parents = archive_root_v.parents
-                root_v.children = archive_root_v.children
-                root_v._bodyString = archive_root_v._bodyString
-                root_v._headString = archive_root_v._headString
-                if archive_root_v.isMarked():
-                    root_v.setMarked()
-                if hasattr(archive_root_v, 'unknownAttributes'):
-                    root_v.unknownAttributes = archive_root_v.unknownAttributes
+            # Patch the root, but *not* the root's parent links.
+            root_v.children = archive_root_v.children  ### Experimental.
+            root_v._bodyString = archive_root_v._bodyString
+            root_v._headString = archive_root_v._headString
+            if archive_root_v.isMarked():
+                root_v.setMarked()
+            uas = getattr(archive_root_v, 'unknownAttributes', None)
+            if uas is not None:
+                root_v.unknownAttributes = uas
 
             # dump_vnode_dict('after')
             fc.gnxDict = gnx_dict
@@ -2039,7 +2042,7 @@ class Commands:
         # The keys are gnxs for all these dicts.
         children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
         parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
-        body_dict: dict[str, str] = {}  # Values are body text.
+        body_dict: dict[str, list[str]] = {}  # Values are lists of body lines.
         headline_dict: dict[str, str] = {}  # Values are headlines.
         marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
         uas_dict: dict[str, dict] = {}  # Values are json strings.
@@ -2050,17 +2053,15 @@ class Commands:
             gnx = v.gnx
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
-            body_dict[gnx] = ''
+            body_dict[gnx] = ['']
             headline_dict[gnx] = ''
-
-        iter_ = c.all_unique_nodes if v is None else v.self_and_subtree_vnodes
 
         # Create all the dicts.
         root = v
+        iter_ = c.all_unique_nodes if v is None else v.self_and_subtree_vnodes
         for v in iter_():
             gnx = v.gnx
-            ### g.trace(gnx, v.h, v._bodyString)  ###
-            body_dict[gnx] = v._bodyString
+            body_dict[gnx] = g.splitLines(v._bodyString)
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             headline_dict[gnx] = v._headString
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)

@@ -796,55 +796,40 @@ class FileCommands:
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
-        current = c.p
-        if not current:
+        # current = c.p
+        if not c.p:
             g.trace('no c.p')
             return None
-        self.initReadIvars()
 
-        # Save and clear gnxDict.
+        # Test the to-be-pasted string.
+        d = g.json_string_to_dict(s)
+        if d is None:
+            g.es("the clipboard is not valid ", color="blue")
+            g.dump_archive(d, tag='paste-node')
+            return None
+
+        # Init.
+        self.initReadIvars()
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
 
-        if g.json_paste_switch:
-            d = g.json_string_to_dict(s)
-            if d is None:
-                g.es("the clipboard is not valid ", color="blue")
-                return None
-            v = leoNodes.VNode(c)
-            c.unarchive_to_vnode(d, root_v=v, retain_gnxs=False)
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
         else:
-            ### Legacy code.
-            if s.lstrip().startswith("{"):
-                # Maybe JSON
-                hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
-            else:
-                # This encoding must match the encoding used in outline_to_clipboard_string.
-                s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-                hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
-            v = hidden_v.children[0]
-            v.parents = []
-            if not v:
-                g.es("the clipboard is not valid ", color="blue")
-                return None
+            p = c.p.insertAfter()
 
-        # Create the position.
-        p = leoNodes.Position(v)
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoard')
+            return None
 
-        # Do *not* adjust links when linking v.
-        if current.hasChildren() and current.isExpanded():
-            p._linkCopiedAsNthChild(current, 0)
-        else:
-            p._linkCopiedAfter(current)
-        assert not p.isCloned(), g.objToString(p.v.parents)
+        # Paste into p.v
+        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=False)
 
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
 
-        # Recompute all v.parents data *after* linking v.
-        c.recompute_all_parents()
-
-        # Automatically correct link errors.
+        # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None

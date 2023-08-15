@@ -414,30 +414,40 @@ def dump_archive(d: dict, tag: str = None) -> None:
 
     print('headlines')
     for gnx, headline in headlines.items():
-        print(f"  {gnx:28} {headline}")
+        print(f"  {gnx:>40} {headline}")
 
-    print('bodies:')
+    print('\nbodies:')
+    i = 0
     for gnx, body in bodies.items():
-        body_s = f"len(body): {len(body)}" if '\n' in body else body
-        print(f"  {gnx:28} {gnx_to_headline(gnx)} {body_s}")
+        # body_s = f"len(body): {len(body)}" if '\n' in body else body
+        # print(f"  {gnx:28} {gnx_to_headline(gnx)} {body_s}")
+        # g.printObj(body, tag=f"{gnx} {gnx_to_headline(gnx)}")
+        print(f" body {i:2} len(body): {len(body):<4} {gnx_to_headline(gnx)}")
+        i += 1
 
-    print('parents:')
+    print('\nparents:')
+    i = 0
     for gnx, parents_list in parents.items():
-        parents_s = g.objToString(parents_list, indent=2).rstrip()
-        print(f"  {gnx:28} {gnx_to_headline(gnx)} {parents_s}")
+        parents_list_headlines = [gnx_to_headline(gnx) for gnx in parents_list]
+        parents_list_s = g.objToString(parents_list_headlines, indent=2).rstrip()
+        print(f"  parent {i}: {gnx_to_headline(gnx)} {parents_list_s}")
+        i += 1
 
-    print('children:')
+    print('\nchildren:')
+    i = 0
     for gnx, child_list in children.items():
-        child_s = g.objToString(child_list, indent=2).rstrip()
-        print(f"  {gnx:28} {gnx_to_headline(gnx)} {child_s}")
+        child_list_headlines = [gnx_to_headline(gnx) for gnx in child_list]
+        child_list_s = g.objToString(child_list_headlines, indent=2).rstrip()
+        print(f"  child {i}: {gnx_to_headline(gnx)} {child_list_s}")
+        i += 1
 
-    print('marks:')
+    print('\nmarks:')
     for gnx in marks:
-        print(f"  {gnx:28} Marked: {gnx_to_headline(gnx)}")
+        print(f"  Marked: {gnx_to_headline(gnx)}")
 
-    print(f"root: {root:20} {gnx_to_headline(root)}")
+    print(f"\nroot: {gnx_to_headline(root)}")
 
-    print('uas:')
+    print('\nuas:')
     if 0:  # Hangs.
         for gnx, ua in uas.items():
             # uas_s = g.objToString(ua, indent=2).rstrip()
@@ -2878,41 +2888,46 @@ def pdb(message: str = '') -> None:
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """Pretty print any Python object to a string."""
+    indent_s = ' ' * indent
     if isinstance(obj, dict):
         if obj:
-            result_list = ['{\n']
+            result_list = [f"{indent_s}{{\n"]
             pad = max([len(key) for key in obj])
             for key in sorted(obj):
                 pad_s = ' ' * max(0, pad - len(key))
                 result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
-            result_list.append('}')
+            result_list.append(f"{indent_s}}}")
             result = ''.join(result_list)
         else:
-            result = '{}'
+            result = f"{indent_s}{{}}"
     elif isinstance(obj, (list, tuple)):
         if obj:
             # Return the enumerated lines of the list.
-            result_list = ['[\n' if isinstance(obj, list) else '(\n']
+            result_list = [f"{indent_s}[\n" if isinstance(obj, list) else "{indent_s}(\n"]
             for i, z in enumerate(obj):
-                result_list.append(f"  {i:4}: {z!r}\n")
-            result_list.append(']\n' if isinstance(obj, list) else ')\n')
+                result_list.append(f"{indent_s}  {i:4}: {z!r}\n")
+            result_list.append(f"{indent_s}]\n" if isinstance(obj, list) else f"{indent_s})\n")
             result = ''.join(result_list)
         else:
-            result = '[]' if isinstance(obj, list) else '()'
+            result = f"{indent_s}[]" if isinstance(obj, list) else f"{indent_s}()"
     elif not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
         if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
-            result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
+            result = (
+                f"{indent_s}{result[0]}\n"
+                f"{indent_s}{result[1:-2]}\n"
+                f"{indent_s}{result[-1]}"
+            )
     elif '\n' not in obj:
         result = repr(obj)
     else:
         # Return the enumerated lines of the string.
         lines = ''.join([
-            f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
+            f"{indent_s}  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
         ])
-        result = f"[\n{lines}]\n"
-    return f"{tag.strip()}: {result}" if tag and tag.strip() else result
+        result = f"{indent_s}[\n{lines}]\n"
+    return f"{indent_s}{tag.strip()}: {result}" if tag and tag.strip() else result
 
 toString = objToString
 dictToString = objToString
