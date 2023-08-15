@@ -407,6 +407,7 @@ def dump_archive(d: dict, tag: str = None) -> None:
     parents = d['parents']
     root = d['root']
     uas = d['uas']
+    was_cloned = d['was_cloned']
 
     def gnx_to_headline(gnx: str) -> str:
         return headlines[gnx] if gnx in headlines else '<no headline>'
@@ -447,10 +448,13 @@ def dump_archive(d: dict, tag: str = None) -> None:
     print(f"\nroot: {gnx_to_headline(root)}")
 
     print('\nuas:')
-    if 1:
-        for gnx, ua in uas.items():
-            # uas_s = g.objToString(ua, indent=2).rstrip()
-            print(f"  {gnx:28} {gnx_to_headline(gnx)}")
+    for gnx, ua in uas.items():
+        # uas_s = g.objToString(ua, indent=2).rstrip()
+        print(f"  {gnx:28} {gnx_to_headline(gnx)}")
+
+    print('\nwas_cloned')
+    for gnx in was_cloned:
+        print(f"  Was cloned: {gnx_to_headline(gnx)}")
 
     print('')
 #@+node:ekr.20201211182722.1: ** g.Backup

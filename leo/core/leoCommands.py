@@ -2044,6 +2044,7 @@ class Commands:
         headline_dict: dict[str, str] = {}  # Values are headlines.
         marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
         uas_dict: dict[str, dict] = {}  # Values are json strings.
+        was_cloned_dict: dict[str, str] = {}  # Values are '1', only for cloned nodes.
 
         # Handle the special case here, *not* in v.alt_self_and_subtree.
         if v is None:
@@ -2065,10 +2066,11 @@ class Commands:
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
             if v.isMarked():
                 marks_dict[gnx] = '1'
-            if 0:  ### Hangs?
-                uas = g.archive_uas(v)
-                if uas:
-                    uas_dict[gnx] = uas
+            if v.isCloned():
+                was_cloned_dict[gnx] = '1'
+            uas = g.archive_uas(v)
+            if uas:
+                uas_dict[gnx] = uas
         d = {
             'bodies': body_dict,
             'children': children_dict,
@@ -2077,6 +2079,7 @@ class Commands:
             'parents': parents_dict,
             'root': root.gnx,
             'uas': uas_dict,
+            'was_cloned': was_cloned_dict,
         }
         # g.dump_archive(d, tag='c.archive')
         return d
@@ -2100,6 +2103,10 @@ class Commands:
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
                 child.parents.append(parent)
+    #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive (Test)
+    def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
+        """Return True if the archive d specifies that the given gnx was cloned."""
+        return bool(d['was_cloned'].get(gnx))
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:
