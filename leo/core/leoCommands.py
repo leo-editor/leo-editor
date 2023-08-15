@@ -1281,23 +1281,6 @@ class Commands:
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
-    #@+node:ekr.20091001141621.6043: *5* c.all_unique_nodes
-    def all_unique_nodes(self) -> Generator:
-        """
-        Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
-        particular order.
-
-        This method is about three times faster than c.all_unique_positions.
-        """
-        c = self
-        for v in c.hiddenRootNode.alt_self_and_subtree():
-            yield v
-
-    # Compatibility with old code...
-
-    all_nodes = all_unique_nodes
-    all_vnodes_iter = all_unique_nodes
-    all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
     def all_positions(self, copy: bool = True) -> Generator:
         """A generator return all positions of the outline, in outline order."""
@@ -1376,6 +1359,23 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20091001141621.6043: *5* c.all_unique_nodes
+    def all_unique_nodes(self) -> Generator:
+        """
+        Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
+        particular order.
+
+        This method is about three times faster than c.all_unique_positions.
+        """
+        c = self
+        for v in c.hiddenRootNode.alt_self_and_subtree():
+            yield v
+
+    # Compatibility with old code...
+
+    all_nodes = all_unique_nodes
+    all_vnodes_iter = all_unique_nodes
+    all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
     def all_unique_positions(self, copy: bool = True) -> Generator:
         """
@@ -1420,6 +1420,23 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
+    def alt_all_positions(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        c = self
+        Position = leoNodes.Position
+
+        def visit(childIndex: int, v: VNode, stack: PositionStack) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        stack: PositionStack = []
+        for i, v in enumerate(c.hiddenRootNode.children):
+            yield from visit(i, v, stack)
     #@+node:ekr.20230813053808.1: *5* c.alt_all_unique_nodes
     def alt_all_unique_nodes(self) -> Generator:
         """
@@ -1440,23 +1457,6 @@ class Commands:
                 yield v
                 for child in reversed(v.children):
                     to_be_visited.append(child)
-    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
-    def alt_all_positions(self, copy: bool = True) -> Generator:  # copy kwarg not used.
-        """An alternative implementation of c.all_positions."""
-        c = self
-        Position = leoNodes.Position
-
-        def visit(childIndex: int, v: VNode, stack: PositionStack) -> Generator:
-            # Position.__init__ copies the stack.
-            yield Position(v, childIndex, stack)
-            stack.append((v, childIndex))
-            for child_childIndex, child_v, in enumerate(v.children):
-                yield from visit(child_childIndex, child_v, stack)
-            stack.pop()
-
-        stack: PositionStack = []
-        for i, v in enumerate(c.hiddenRootNode.children):
-            yield from visit(i, v, stack)
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:

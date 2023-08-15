@@ -423,6 +423,37 @@ class Position:
             array.append(s)
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.Generators
+    #@+node:ekr.20230813172128.1: *4* p.alt_self_and_subtree
+    def alt_self_and_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        p = self
+
+        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        yield p.copy()
+        for i, v in enumerate(p.v.children):
+            yield from visit(i, v, p.stack)
+    #@+node:ekr.20230813173841.1: *4* p.alt_subtree
+    def alt_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        p = self
+
+        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        for i, v in enumerate(p.v.children):
+            yield from visit(i, v, p.stack)
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""
@@ -585,37 +616,6 @@ class Position:
     # Compatibility with old code...
 
     self_and_subtree_iter = self_and_subtree
-    #@+node:ekr.20230813172128.1: *4* p.alt_self_and_subtree
-    def alt_self_and_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
-        """An alternative implementation of c.all_positions."""
-        p = self
-
-        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
-            # Position.__init__ copies the stack.
-            yield Position(v, childIndex, stack)
-            stack.append((v, childIndex))
-            for child_childIndex, child_v, in enumerate(v.children):
-                yield from visit(child_childIndex, child_v, stack)
-            stack.pop()
-
-        yield p.copy()
-        for i, v in enumerate(p.v.children):
-            yield from visit(i, v, p.stack)
-    #@+node:ekr.20230813173841.1: *4* p.alt_subtree
-    def alt_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
-        """An alternative implementation of c.all_positions."""
-        p = self
-
-        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
-            # Position.__init__ copies the stack.
-            yield Position(v, childIndex, stack)
-            stack.append((v, childIndex))
-            for child_childIndex, child_v, in enumerate(v.children):
-                yield from visit(child_childIndex, child_v, stack)
-            stack.pop()
-
-        for i, v in enumerate(p.v.children):
-            yield from visit(i, v, p.stack)
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self, copy: bool = True) -> Generator:
         """Yield all positions in p's subtree, but not p."""
