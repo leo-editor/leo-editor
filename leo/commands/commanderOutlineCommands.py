@@ -4,15 +4,15 @@
 #@+<< commanderOutlineCommands imports & annotations >>
 #@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
-from collections import defaultdict
+### from collections import defaultdict
 from collections.abc import Callable
-import xml.etree.ElementTree as ElementTree
-import json
+### import xml.etree.ElementTree as ElementTree
+### import json
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING  ### Generator
 from leo.core import leoGlobals as g
-from leo.core import leoNodes
-from leo.core import leoFileCommands
+###from leo.core import leoNodes
+###from leo.core import leoFileCommands
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -81,11 +81,6 @@ def pasteOutline(
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
 
-    if 0:  ###
-        isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
-        if not isLeo:
-            return None
-
     # Get *position* to be pasted.
     # Calls c.recompute_all_parents() and c.checkOutline.
     pasted = c.fileCommands.getLeoOutlineFromClipboard(s)
@@ -131,7 +126,6 @@ def pasteOutlineRetainingClones(
     # Calls c.recompute_all_parents() and c.checkOutline.
     pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
     if not pasted:
-        # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
 
     # Handle the "before" data for undo.
@@ -187,216 +181,46 @@ def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:vitalije.20200529105105.1: *3* c_oc: paste-as-template (to do?)
+#@+node:vitalije.20200529105105.1: *3* c_oc: paste-as-template
 @g.commander_command('paste-as-template')
-def pasteAsTemplate(self: Cmdr, event: Event = None) -> None:
+def pasteAsTemplate(self: Cmdr, event: Event = None) -> Optional[Position]:
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
     s = g.app.gui.getTextFromClipboard()
     if not s or not c.canPasteOutline(s):
-        return  # This should never happen.
-    isJson = s.lstrip().startswith("{")
+        return None  # This should never happen.
 
-    # Define helpers.
-    #@+others
-    #@+node:vitalije.20200529112224.1: *4* skip_root (pasteAsTemplate)
-    def skip_root(v: VNode) -> Generator:
-        """
-        generates v nodes in the outline order
-        but skips a subtree of the node with root_gnx
-        """
-        if v.gnx != root_gnx:
-            yield v
-            for ch in v.children:
-                yield from skip_root(ch)
-    #@+node:vitalije.20200529112459.1: *4* translate_gnx
-    def translate_gnx(gnx: str) -> str:
-        """
-        allocates a new gnx for all nodes that
-        are not found outside copied tree
-        """
-        if gnx in outside:
-            return gnx
-        return g.app.nodeIndices.computeNewIndex()
-    #@+node:vitalije.20200529115141.1: *4* viter (pasteAsTemplate)
-    def viter(parent_gnx: str, xv: Any) -> Generator:
-        """
-        iterates <v> nodes generating tuples:
+    # Get *position* to be pasted.
+    # Calls c.recompute_all_parents() and c.checkOutline.
+    pasted = c.fileCommands.getLeoOutlineFromClipboardAsTemplate(s)
+    if not pasted:
+        return None
 
-            (parent_gnx, child_gnx, headline, body)
+    # Handle the "before" data for undo.
+    vnodeInfoDict = computeVnodeInfoDict(c)
+    undoData = c.undoer.beforeInsertNode(c.p,
+        pasteAsClone=True,
+        copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
+    )
+    # Paste the node into the outline.
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged()
+    back = pasted.back()
+    if back and back.hasChildren() and back.isExpanded():
+        pasted.moveToNthChildOf(back, 0)
+        pasted.setDirty()
+    # Set dirty bits for ancestors of *all* pasted nodes.
+    for p in pasted.self_and_subtree():
+        p.setAllAncestorAtFileNodesDirty()
+    # Finish the command.
+    c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
+    c.redraw(pasted)
+    c.recolor()
+    return pasted
 
-        skipping the descendants of already seen nodes.
-        """
 
-        if not isJson:
-            chgnx = xv.attrib.get('t')
-        else:
-            chgnx = xv.get('gnx')
-
-        b = bodies[chgnx]
-        gnx = translation.get(chgnx)
-        if gnx in seen:
-            yield parent_gnx, gnx, heads.get(gnx), b
-        else:
-            seen.add(gnx)
-            if not isJson:
-                h = xv[0].text
-            else:
-                h = xv.get('vh', '')
-            heads[gnx] = h
-            yield parent_gnx, gnx, h, b
-            if not isJson:
-                for xch in xv[1:]:
-                    yield from viter(gnx, xch)
-            else:
-                if xv.get('children'):
-                    for xch in xv['children']:
-                        yield from viter(gnx, xch)
-
-    #@+node:vitalije.20200529114857.1: *4* getv
-    gnx2v = c.fileCommands.gnxDict
-    def getv(gnx: str) -> tuple[VNode, bool]:
-        """
-        returns a pair (vnode, is_new) for the given gnx.
-        if node doesn't exist, creates a new one.
-        """
-        v = gnx2v.get(gnx)
-        if v is None:
-            return leoNodes.VNode(c, gnx), True
-        return v, False
-    #@+node:vitalije.20200529115539.1: *4* do_paste (pasteAsTemplate)
-    def do_paste(vpar: Any, index: int) -> VNode:
-        """
-        pastes a new node as a child of vpar at given index
-        """
-        vpargnx = vpar.gnx
-        # the first node is inserted at the given index
-        # and the rest are just appended at parents children
-        # to achieve this we first create a generator object
-        rows = viter(vpargnx, xvelements[0])
-
-        # then we just take first tuple
-        pgnx, gnx, h, b = next(rows)
-
-        # create vnode
-        v, _ = getv(gnx)
-        v.h = h
-        v.b = b
-
-        # and finally insert it at the given index
-        vpar.children.insert(index, v)
-        v.parents.append(vpar)
-
-        pasted = v  # remember the first node as a return value
-
-        # now we iterate the rest of tuples
-        for pgnx, gnx, h, b in rows:
-
-            # get or create a child `v`
-            v, isNew = getv(gnx)
-            if isNew:
-                v.h = h
-                v.b = b
-                ua = uas.get(gnx)
-                if ua:
-                    v.unknownAttributes = ua
-            # get parent node `vpar`
-            vpar = getv(pgnx)[0]
-
-            # and link them
-            vpar.children.append(v)
-            v.parents.append(vpar)
-
-        return pasted
-    #@+node:vitalije.20200529120440.1: *4* undoHelper
-    def undoHelper() -> None:
-        v = vpar.children.pop(index)
-        v.parents.remove(vpar)
-        c.redraw(bunch.p)
-    #@+node:vitalije.20200529120537.1: *4* redoHelper
-    def redoHelper() -> None:
-        vpar.children.insert(index, pasted)
-        pasted.parents.append(vpar)
-        c.redraw(newp)
-    #@-others
-
-    xvelements: Any
-    xtelements: Any
-    uas: Any  # Possible bug?
-
-    x = leoFileCommands.FastRead(c, {})
-
-    if not isJson:
-        xroot = ElementTree.fromstring(s)
-        xvelements = xroot.find('vnodes')  # <v> elements.
-        xtelements = xroot.find('tnodes')  # <t> elements.
-        bodies, uas = x.scanTnodes(xtelements)
-        root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
-    else:
-        xroot = json.loads(s)
-        xvelements = xroot.get('vnodes')  # <v> elements.
-        xtelements = xroot.get('tnodes')  # <t> elements.
-        bodies = x.scanJsonTnodes(xtelements)
-        # g.printObj(bodies, tag='bodies/gnx2body')
-
-        def addBody(node: Any) -> None:
-            if not hasattr(bodies, node['gnx']):
-                bodies[node['gnx']] = ''
-            if node.get('children'):
-                for child in node['children']:
-                    addBody(child)
-
-        # generate bodies for all possible nodes, not just non-empty bodies.
-        addBody(xvelements[0])
-        uas = defaultdict(dict)
-        uas.update(xroot.get('uas', {}))
-        root_gnx = xvelements[0].get('gnx')  # the gnx of copied node
-
-    # outside will contain gnxes of nodes that are outside the copied tree
-    outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
-
-    # we generate new gnx for each node in the copied tree
-    translation = {x: translate_gnx(x) for x in bodies}
-
-    seen = set(outside)  # required for the treatment of local clones inside the copied tree
-
-    heads: dict[str, str] = {}
-
-    bunch = c.undoer.createCommonBunch(p)
-    #@+<< prepare destination data >>
-    #@+node:vitalije.20200529111500.1: *4* << prepare destination data >>
-    # destination data consists of
-    #    1. vpar --- parent v node that should receive pasted child
-    #    2. index --- at which pasted child will be
-    #    3. parStack --- a stack for creating new position of the pasted node
-    #
-    # the new position will be:  Position(vpar.children[index], index, parStack)
-    # but it can't be calculated yet, before actual paste is done
-    if p.isExpanded():
-        # paste as a first child of current position
-        vpar = p.v
-        index = 0
-        parStack = p.stack + [(p.v, p._childIndex)]
-    else:
-        # paste after the current position
-        parStack = p.stack
-        vpar = p.stack[-1][0] if p.stack else c.hiddenRootNode
-        index = p._childIndex + 1
-
-    #@-<< prepare destination data >>
-
-    pasted = do_paste(vpar, index)
-
-    newp = leoNodes.Position(pasted, index, parStack)
-
-    bunch.undoHelper = undoHelper
-    bunch.redoHelper = redoHelper
-    bunch.undoType = 'paste-retaining-outside-clones'
-
-    newp.setDirty()
-    c.undoer.pushBead(bunch)
-    c.redraw(newp)
 #@+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
 def dumpOutline(self: Cmdr, event: Event = None) -> None:

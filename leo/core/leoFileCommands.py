@@ -803,7 +803,7 @@ class FileCommands:
         # Test the to-be-pasted string.
         d = g.json_string_to_dict(s)
         if d is None:
-            g.es("the clipboard is not valid ", color="blue")
+            g.es("The clipboard is not valid ", color="blue")
             g.dump_archive(d, tag='paste-node')
             return None
 
@@ -829,7 +829,7 @@ class FileCommands:
         self.reassignAllIndices(p)
 
         # Recompute all v.parents data *after* linking v.
-        c.recompute_all_parents()
+        c.recompute_all_parents()  ### Just adjust one pair of links???
 
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
@@ -853,6 +853,8 @@ class FileCommands:
         # Test the to-be-pasted string.
         d = g.json_string_to_dict(s)
         if d is None:
+            g.es("The clipboard is not valid ", color="blue")
+            g.dump_archive(d, tag='paste-node-retaining-clones')
             return None
 
         # Create the new position *first*.
@@ -862,7 +864,7 @@ class FileCommands:
             p = c.p.insertAfter()
 
         if c.checkOutline() > 0:
-            g.trace('Can not happen: fc.getLeoOutlineFromClipBoard')
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoardRetainingClones')
             return None
 
         # Init. All pasted nodes should already have unique gnx's.
@@ -885,9 +887,65 @@ class FileCommands:
         c.selectPosition(p)
         self.initReadIvars()
         return p
+    #@+node:ekr.20230815140104.1: *5* fc.getLeoOutlineFromClipBoardAsTemplate (NEW)
+    def getLeoOutlineFromClipboardAsTemplate(self, s: str) -> Optional[Position]:
+        """Read a Leo outline from string s in clipboard format."""
+        c = self.c
+        if not c.p:
+            g.trace('no c.p')
+            return None
+
+        # Test the to-be-pasted string.
+        d = g.json_string_to_dict(s)
+        if d is None:
+            g.es("The clipboard is not valid ", color="blue")
+            g.dump_archive(d, tag='paste-node-as-template')
+            return None
+
+        # Init.
+        self.initReadIvars()
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
+        else:
+            p = c.p.insertAfter()
+
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoardAsTemplate')
+            return None
+
+        # Paste into p.v
+        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=False)
+
+        self.gnxDict = oldGnxDict
+        self.reassignNonClonedIndices(d, p)
+
+        # Recompute all v.parents data *after* linking v.
+        c.recompute_all_parents()
+
+        # Defensive code: automatically correct link errors.
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
+
+        c.selectPosition(p)
+        self.initReadIvars()
+        return p
     #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
     def reassignAllIndices(self, p: Position) -> None:
         """Reassign all indices in p's subtree."""
+        ni = g.app.nodeIndices
+        for p2 in p.self_and_subtree(copy=False):
+            v = p2.v
+            index = ni.getNewIndex(v)
+            if 'gnx' in g.app.debug:
+                g.trace('**reassigning**', index, v)
+    #@+node:ekr.20230815141055.1: *5* fc.reassignNonClonedIndices (NEW)
+    def reassignNonClonedIndices(self, d: dict, p: Position) -> None:
+        """Reassign only *non-cloned* indices in p's subtree."""
         ni = g.app.nodeIndices
         for p2 in p.self_and_subtree(copy=False):
             v = p2.v

@@ -866,9 +866,6 @@ class TestNodes(LeoUnitTest):
     #@+node:ekr.20210830095545.51: *4* TestNodes.test_paste_node
     def test_paste_node(self):
         c, p = self.c, self.c.p
-
-        ### self.skipTest('copy-node-as-archive not ready yet')
-
         child = p.insertAsNthChild(0)
         child.setHeadString('child')
         child2 = p.insertAsNthChild(1)
