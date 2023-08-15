@@ -422,7 +422,7 @@ def dump_archive(d: dict, tag: str = None) -> None:
         # body_s = f"len(body): {len(body)}" if '\n' in body else body
         # print(f"  {gnx:28} {gnx_to_headline(gnx)} {body_s}")
         # g.printObj(body, tag=f"{gnx} {gnx_to_headline(gnx)}")
-        print(f" body {i:2} len(body): {len(body):<4} {gnx_to_headline(gnx)}")
+        print(f" body {i} lines: {len(body)} {gnx_to_headline(gnx)}")
         i += 1
 
     print('\nparents:')
@@ -448,7 +448,7 @@ def dump_archive(d: dict, tag: str = None) -> None:
     print(f"\nroot: {gnx_to_headline(root)}")
 
     print('\nuas:')
-    if 0:  # Hangs.
+    if 1:
         for gnx, ua in uas.items():
             # uas_s = g.objToString(ua, indent=2).rstrip()
             print(f"  {gnx:28} {gnx_to_headline(gnx)}")
@@ -2887,47 +2887,51 @@ def pdb(message: str = '') -> None:
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
-    """Pretty print any Python object to a string."""
-    indent_s = ' ' * indent
+    """
+    Dump a Python object using pprint.pformat only as a fallback.
+    """
     if isinstance(obj, dict):
         if obj:
-            result_list = [f"{indent_s}{{\n"]
+            result_list = ['{\n']
             pad = max([len(key) for key in obj])
             for key in sorted(obj):
                 pad_s = ' ' * max(0, pad - len(key))
                 result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
-            result_list.append(f"{indent_s}}}")
-            result = ''.join(result_list)
+            result_list.append('}\n')
         else:
-            result = f"{indent_s}{{}}"
+            result_list = ['{}']
     elif isinstance(obj, (list, tuple)):
         if obj:
             # Return the enumerated lines of the list.
-            result_list = [f"{indent_s}[\n" if isinstance(obj, list) else "{indent_s}(\n"]
+            result_list = ['[\n' if isinstance(obj, list) else '(\n']
             for i, z in enumerate(obj):
-                result_list.append(f"{indent_s}  {i:4}: {z!r}\n")
-            result_list.append(f"{indent_s}]\n" if isinstance(obj, list) else f"{indent_s})\n")
-            result = ''.join(result_list)
+                result_list.append(f"  {i:4}: {z!r}\n")
+            result_list.append(']\n' if isinstance(obj, list) else ')\n')
         else:
-            result = f"{indent_s}[]" if isinstance(obj, list) else f"{indent_s}()"
+            result_list = ['[]\n' if isinstance(obj, list) else '()\n']
     elif not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
         if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
-            result = (
-                f"{indent_s}{result[0]}\n"
-                f"{indent_s}{result[1:-2]}\n"
-                f"{indent_s}{result[-1]}"
-            )
+            result_list = [
+                f"{result[0]}\n",
+                f"{result[1:-2]}\n",
+                f"{result[-1]}\n",
+            ]
+        else:
+            result_list = [result]
     elif '\n' not in obj:
-        result = repr(obj)
+        result_list = [repr(obj)]
     else:
         # Return the enumerated lines of the string.
-        lines = ''.join([
-            f"{indent_s}  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
-        ])
-        result = f"{indent_s}[\n{lines}]\n"
-    return f"{indent_s}{tag.strip()}: {result}" if tag and tag.strip() else result
+        result_list = [
+            f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
+        ]
+    indent_s = ' ' * indent
+    result_s = ''.join(f"{indent_s}{z}" for z in result_list)
+    if tag and tag.strip():
+        return f"{tag}: {result_s.lstrip()}"
+    return result_s
 
 toString = objToString
 dictToString = objToString

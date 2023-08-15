@@ -1934,12 +1934,11 @@ class Commands:
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
-        trace = False
         c = self
         fc = c.fileCommands
         gnx_dict = fc.gnxDict
 
-        if trace:  # Very effective trace.
+        if 0:  # Very effective trace.
             g.dump_archive(d, tag='unarchive_to_vnode')
 
         # Enter all gnxs in the archive into vnode_dict.
