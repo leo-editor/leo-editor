@@ -4,7 +4,6 @@
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
 from collections.abc import Callable
-import json
 import os
 import re
 import subprocess
@@ -4323,25 +4322,10 @@ class Commands:
         return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
     def canPasteOutline(self, s: str = None) -> bool:
-        # c = self
+        """Return True if s (or the clipboard) contains text that may be pasted."""
         if not s:
             s = g.app.gui.getTextFromClipboard()
-
-        if g.json_paste_switch:
-            return g.json_string_to_dict(s) is not None
-
-        ### legacy.
-        if s and s.lstrip().startswith("{"):
-            try:
-                d = json.loads(s)
-                if not ('vnodes' in d and 'tnodes' in d):
-                    return False
-            except Exception:
-                return False
-            return True
-        if s and g.match(s, 0, g.app.prolog_prefix_string):
-            return True
-        return False
+        return bool(s and g.json_string_to_dict(s)is not None)
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self) -> bool:
         p = self.p

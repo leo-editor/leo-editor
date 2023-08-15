@@ -61,12 +61,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
-#@+<< leoGlobals json_paste_switch >>
-#@+node:ekr.20230807123041.1: ** << leoGlobals json_paste_switch >>
+#@+<< leoGlobals switch >>
+#@+node:ekr.20230807123041.1: ** << leoGlobals switch >>
 # Temporary switch.
-json_paste_switch = True  # True: cut/copy/paste in new json format.
 json_leo_swith = False  # True: read/write json format .leo files.
-#@-<< leoGlobals json_paste_switch >>
+#@-<< leoGlobals switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'

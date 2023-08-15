@@ -27,8 +27,7 @@ class TestOutlineCommands(LeoUnitTest):
         p = c.p
         u = c.undoer
 
-        if g.json_paste_switch:
-            self.skipTest('not ready yet')  ###
+        self.skipTest('not ready yet')  ###
 
         #@+others  # Define test_tree function.
         #@+node:ekr.20230724130959.5: *4* function: test_tree (test_paste_as_template)
@@ -264,57 +263,48 @@ class TestOutlineCommands(LeoUnitTest):
 
         c = self.c
         u = c.undoer
-
-        # These tests fail in Leo 6.7.4. To be corrected in Leo 6.7.5.
+        # Enable strict tests and verbose tracing.
         g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
-        try:
-            old_json_paste_switch = g.json_paste_switch  ###
-            g.json_paste_switch = True  ### Temporary.
+        for test_kind in ('cut', 'copy'):
+            target_headline = 'ee'
 
-            for test_kind in ('cut', 'copy'):
-                target_headline = 'ee'
+            # Create the tree and gnx_dict.
+            self.clean_tree()
+            cc = self.create_test_paste_outline()
+            self.assertEqual(0, c.checkOutline())
 
-                # print(f"TEST {kind} {target_headline}")
+            # Always copy cc
+            c.selectPosition(cc)
+            self.copy_node()
 
-                # Create the tree and gnx_dict.
-                self.clean_tree()
-                cc = self.create_test_paste_outline()
+            if test_kind == 'cut':
+                s = c.fileCommands.outline_to_clipboard_json_string()
+                g.app.gui.replaceClipboardWith(s)
+                back = cc.threadBack()
+                assert back
+                cc.doDelete()
+                c.selectPosition(back)
+
+            # Find the target position by headline.
+            target_p = g.findNodeAnywhere(c, target_headline)
+            self.assertTrue(target_p, msg=target_headline)
+
+            # Paste after the target.
+            c.selectPosition(target_p)
+            c.pasteOutlineRetainingClones()
+
+            # Do the checks *last*.
+            self.assertEqual(0, c.checkGnxs())
+            self.assertEqual(0, c.checkVnodeLinks())
+
+            # Check multiple undo/redo cycles.
+            for i in range(3):
+                u.undo()
                 self.assertEqual(0, c.checkOutline())
-
-                # Always copy cc
-                c.selectPosition(cc)
-                self.copy_node()
-
-                if test_kind == 'cut':
-                    s = c.fileCommands.outline_to_clipboard_json_string()
-                    g.app.gui.replaceClipboardWith(s)
-                    back = cc.threadBack()
-                    assert back
-                    cc.doDelete()
-                    c.selectPosition(back)
-
-                # Find the target position by headline.
-                target_p = g.findNodeAnywhere(c, target_headline)
-                self.assertTrue(target_p, msg=target_headline)
-
-                # Paste after the target.
-                c.selectPosition(target_p)
-                c.pasteOutlineRetainingClones()
-
-                # Do the checks *last*.
-                self.assertEqual(0, c.checkGnxs())
-                self.assertEqual(0, c.checkVnodeLinks())
-
-                # Check multiple undo/redo cycles.
-                for i in range(3):
-                    u.undo()
-                    self.assertEqual(0, c.checkOutline())
-                    u.redo()
-                    self.assertEqual(0, c.checkOutline())
-        finally:
-            g.json_paste_switch = old_json_paste_switch  ###
+                u.redo()
+                self.assertEqual(0, c.checkOutline())
     #@+node:ekr.20230729042305.1: *3* TestOutlineCommands.test_c_checkVnodeLinks
     def test_c_checkVnodeLinks(self):
 

@@ -150,10 +150,7 @@ class LeoUnitTest(unittest.TestCase):
     def copy_node(self, is_json: bool = False) -> str:
         """Copy c.p to the clipboard."""
         c = self.c
-        if is_json or g.json_paste_switch:
-            s = c.fileCommands.outline_to_clipboard_json_string()
-        else:
-            s = c.fileCommands.outline_to_clipboard_string()
+        s = c.fileCommands.outline_to_clipboard_json_string()
         g.app.gui.replaceClipboardWith(s)
         return s
     #@+node:ekr.20210830151601.1: *4* LeoUnitTest.create_test_outline

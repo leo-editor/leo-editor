@@ -854,26 +854,13 @@ class FileCommands:
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-        if g.json_paste_switch:
-            d = g.json_string_to_dict(s)
-            if d is None:
-                return None
-            v = leoNodes.VNode(c)
-            c.unarchive_to_vnode(d, v, retain_gnxs=True)
-        else:
-            if s.lstrip().startswith("{"):
-                # Maybe JSON
-                hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
-            else:
-                # This encoding must match the encoding used in outline_to_clipboard_string.
-                s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-                hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
+        d = g.json_string_to_dict(s)
+        if d is None:
+            return None
+        v = leoNodes.VNode(c)
+        c.unarchive_to_vnode(d, v, retain_gnxs=True)
 
-            v = hidden_v.children[0]
-            v.parents.remove(hidden_v)
-            if not v:
-                g.es("the clipboard is not valid ", color="blue")
-                return None
+        ### Simplify ###
 
         # Create the position.
         p = leoNodes.Position(v)
@@ -1568,31 +1555,11 @@ class FileCommands:
         """
         Return a JSON string suitable for pasting to the clipboard.
         """
-        if g.json_paste_switch:
-            c = self.c
-            if not p:
-                p = c.p
-            d = c.archive(p.v)
-            s = g.obj_to_json_string(d, warn=True)
-            ### g.printObj(s, tag='outline_to_clipboard_json_string')
-            ### g.trace('json string:', len(s))
-            return s
-        # Save
-        tua = self.descendentTnodeUaDictList
-        vua = self.descendentVnodeUaDictList
-        gnxDict = self.gnxDict
-        vnodesDict = self.vnodesDict
-        try:
-            self.usingClipboard = True
-            d = self.leojs_outline_dict(p or self.c.p)  # Checks for illegal ua's
-            s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
-        finally:  # Restore
-            self.descendentTnodeUaDictList = tua
-            self.descendentVnodeUaDictList = vua
-            self.gnxDict = gnxDict
-            self.vnodesDict = vnodesDict
-            self.usingClipboard = False
-        return s
+        c = self.c
+        if not p:
+            p = c.p
+        d = c.archive(p.v)
+        return g.obj_to_json_string(d, warn=True)
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string
     def outline_to_xml_string(self) -> str:
         """Write the outline in .leo (XML) format to a string."""

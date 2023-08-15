@@ -29,14 +29,12 @@ def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    s: Optional[str]
-    if g.json_paste_switch:
-        d = c.archive(c.p.v)
-        s = g.obj_to_json_string(d)
-        if s is None:
-            return None
-    else:
-        s = c.fileCommands.outline_to_clipboard_string()
+    ### s: Optional[str]
+
+    d = c.archive(c.p.v)
+    s = g.obj_to_json_string(d)
+    if s is None:
+        return None
     g.app.paste_c = c
     if g.app.inBridge:
         return s
