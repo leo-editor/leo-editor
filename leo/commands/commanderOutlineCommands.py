@@ -698,7 +698,7 @@ def goToParent(self: Cmdr, event: Event = None) -> None:
 #@+node:ekr.20190211104913.1: *3* c_oc.goToPrevMarkedHeadline
 @g.commander_command('goto-prev-marked')
 def goToPrevMarkedHeadline(self: Cmdr, event: Event = None) -> None:
-    """Select the next marked node."""
+    """Select the previous marked node."""
     c, p = self, self.p
     if not p:
         return
