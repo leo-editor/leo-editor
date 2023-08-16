@@ -356,7 +356,10 @@ app: Any = None  # The singleton app object. Set by runLeo.py.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
-#@+node:ekr.20230801015325.1: ** g.Archives
+#@+node:ekr.20230801015325.1: ** g.Archive
+# New in Leo 6.7.5. Leo uses JSON
+# - For all copy/paste operations.
+# - When writing .leo files.
 #@+node:ekr.20230728062638.1: *3* g.archive_uas
 def archive_uas(v: VNode) -> dict:
     """Return a json-like dict of all uas."""

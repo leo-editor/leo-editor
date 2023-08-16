@@ -806,6 +806,8 @@ class FileCommands:
             g.es("The clipboard is not valid ", color="blue")
             g.dump_archive(d, tag='paste-node')
             return None
+        if not c.validate_archive(d):
+            return None
 
         # Init.
         self.initReadIvars()
@@ -856,6 +858,8 @@ class FileCommands:
             g.es("The clipboard is not valid ", color="blue")
             g.dump_archive(d, tag='paste-node-retaining-clones')
             return None
+        if not g.validate_archive(d):
+            return None
 
         # Create the new position *first*.
         if c.p.hasChildren() and c.p.isExpanded():
@@ -887,7 +891,7 @@ class FileCommands:
         c.selectPosition(p)
         self.initReadIvars()
         return p
-    #@+node:ekr.20230815140104.1: *5* fc.getLeoOutlineFromClipBoardAsTemplate (NEW)
+    #@+node:ekr.20230815140104.1: *5* fc.getLeoOutlineFromClipBoardAsTemplate
     def getLeoOutlineFromClipboardAsTemplate(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
@@ -900,6 +904,8 @@ class FileCommands:
         if d is None:
             g.es("The clipboard is not valid ", color="blue")
             g.dump_archive(d, tag='paste-node-as-template')
+            return None
+        if not c.validate_archive(d):
             return None
 
         # Init.
@@ -940,18 +946,19 @@ class FileCommands:
         ni = g.app.nodeIndices
         for p2 in p.self_and_subtree(copy=False):
             v = p2.v
-            index = ni.getNewIndex(v)
+            index = ni.getNewIndex(v)  # Sets v._fileIndex.
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
-    #@+node:ekr.20230815141055.1: *5* fc.reassignNonClonedIndices (NEW)
+    #@+node:ekr.20230815141055.1: *5* fc.reassignNonClonedIndices
     def reassignNonClonedIndices(self, d: dict, p: Position) -> None:
         """Reassign only *non-cloned* indices in p's subtree."""
+        c = self.c
         ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree(copy=False):
-            v = p2.v
-            index = ni.getNewIndex(v)
-            if 'gnx' in g.app.debug:
-                g.trace('**reassigning**', index, v)
+        for v in p.v.alt_self_and_subtree():
+            if not c.was_cloned_in_archive(d, v.gnx):
+                index = ni.getNewIndex(v)  # Sets v._fileIndex.
+                if 'gnx' in g.app.debug:
+                    g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
     def getLeoFile(

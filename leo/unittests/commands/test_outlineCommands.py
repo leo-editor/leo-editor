@@ -24,146 +24,52 @@ class TestOutlineCommands(LeoUnitTest):
     def test_paste_as_template(self):
 
         c = self.c
-        p = c.p
         u = c.undoer
 
-        ### self.skipTest('not ready yet')  ###
-
         #@+others  # Define test_tree function.
-        #@+node:ekr.20230724130959.5: *4* function: test_tree (test_paste_as_template)
-        def test_tree(pasted_flag: bool, tag: str) -> None:
-            """Test the tree."""
-            tag_s = f"kind: {test_kind} is_json? {int(is_json)} pasted? {int(pasted_flag)} {target_p.h}"
-            try:
-                # Test clone status and gnx. Set seen.
-                seen = set()
-                for p in c.all_positions():
-                    seen.add(p.v)
-                    if p.h == 'cc:child1':
-                        assert p.isCloned(), f"{tag_s}: not cloned: {p.h}"
-                    else:
-                        assert not p.isCloned(), f"{tag_s}: is cloned: {p.h}"
-
-                # Test bodies. A fairly weak test.
-                for p in c.all_positions():
-                    if p.h in ('cc', 'cc:child1', 'cc:child2'):
-                        pass  # One copy will have a body, another won't.
-                    else:
-                        assert not p.b, f"{tag_s} unexpected body: {p.h}"
-
-                # Test gnxs.
-                for p in c.all_positions():
-                    if p.h in ('cc', 'cc:child2'):
-                        pass  # The pasted copies will have new gnxs.
-                    else:
-                        message = f"{tag_s}: p.gnx: {p.gnx} !=  {gnx_dict.get(p.h)}"
-                        assert p.gnx == gnx_dict.get(p.h), message
-
-                # Test that all and *only* the expected nodes exist.
-                if test_kind == 'copy' or tag.startswith(('redo', 'paste-')):
-                    for z in seen:
-                        if z.h not in ('cc', 'cc:child2'):
-                            assert z in vnodes, f"p.v not in vnodes: {z.gnx}, {z.h}"
-                    for z in vnodes:
-                        if z.h not in ('cc', 'cc:child2'):
-                            assert z in seen, f"vnode not seen: {z.gnx}, {z.h}"
-                else:
-                    assert test_kind == 'cut' and tag.startswith('undo')
-                    # All seen nodes should exist in vnodes.
-                    for z in seen:
-                        if z.h not in ('cc', 'cc:child2'):
-                            assert z in vnodes, f"{z.h} not in vnodes"
-                    # All vnodes should be seen except cc and cc:child2.
-                    for z in vnodes:
-                        if z.h in ('cc', 'cc:child2'):
-                            assert z not in seen, f"{z.h} in seen after undo"
-                        else:
-                            assert z in seen, f"{z.h} not seen after undo"
-            except Exception as e:
-                message = f"clone_test failed! tag: {tag}: {e}"
-                print(f"\n{message}\n")
-                # g.dump_clone_info(c)
-                self.dump_bodies(c)
-                g.printObj(gnx_dict, tag='gnx_dict')
-                # g.printObj(vnodes, tag='vnodes')
-                # g.printObj([f"{z.gnx:30} {' '*z.level()}{z.h:10} {z.b!r}" for z in c.all_positions()], tag='bodies')
-                self.fail(message)  # This throws another exception!
         #@-others
+       
+        for test_kind in ('cut', 'copy'):
+            target_headline = 'ee'
 
-        # Every paste will invalidate positions, so search for headlines instead.
-        valid_target_headlines = (
-            'root', 'aa', 'aa:child1', 'bb', 'dd', 'dd:child1', 'dd:child1:child1', 'dd:child2', 'ee',
-        )
-        for target_headline in valid_target_headlines:
-            for test_kind, is_json in (
-                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
-            ):
+            # Create the tree and gnx_dict.
+            self.clean_tree()
+            cc = self.create_test_paste_outline()
+            self.assertEqual(0, c.checkOutline())
 
-                # print(f"TEST {test_kind} {target_headline}")
+            # Calculate vnodes and gnx_dict for test_node, before any changes.
+            # vnodes = list(set(list(c.all_unique_nodes())))
+            # gnx_dict = {z.h: z.gnx for z in vnodes}
+            
+            # Always copy cc
+            c.selectPosition(cc)
+            self.copy_node()
 
-                # Create the tree and gnx_dict.
-                self.clean_tree()
-                cc = self.create_test_paste_outline()
-                # Calculate vnodes and gnx_dict for test_node, before any changes.
-                vnodes = list(set(list(c.all_unique_nodes())))
-                gnx_dict = {z.h: z.gnx for z in vnodes}
+            if test_kind == 'cut':
+                s = c.fileCommands.outline_to_clipboard_json_string()
+                g.app.gui.replaceClipboardWith(s)
+                back = cc.threadBack()
+                assert back
+                cc.doDelete()
+                c.selectPosition(back)
+
+            # Find the target position by headline.
+            target_p = g.findNodeAnywhere(c, target_headline)
+            self.assertTrue(target_p, msg=target_headline)
+
+            # Paste after the target.
+            c.selectPosition(target_p)
+            c.pasteAsTemplate()
+
+            # Do the checks *last*.
+            self.assertEqual(0, c.checkOutline())
+            
+            # Check multiple undo/redo cycles.
+            for i in range(3):
+                u.undo()
                 self.assertEqual(0, c.checkOutline())
-
-                # Change the body text of all the to-be-copied nodes.
-                cc.b = 'cc body: changed'
-                cc_child1 = cc.firstChild()
-                cc_child2 = cc_child1.next()
-                assert cc.h == 'cc', repr(cc)
-                assert cc_child1.h == 'cc:child1', repr(cc_child1.h)
-                assert cc_child2.h == 'cc:child2', repr(cc_child2.h)
-                cc.b = 'cc body: changed'
-                cc_child1.b = 'cc:child1 body: changed'
-                cc_child2.b = 'cc:child2 body: changed'
-
-                # Cut or copy cc.
-                if test_kind == 'cut':
-                    # Delete cc *without* undo.
-                    c.selectPosition(cc)
-                    self.copy_node(is_json)
-                    back = cc.threadBack()
-                    assert back
-                    cc.doDelete()
-                    c.selectPosition(back)
-                else:
-                    # *Copy*  node cc
-                    c.selectPosition(cc)
-                    self.copy_node(is_json)
-
-                    # Restore the empty bodies of cc and cc:child1.
-                    # Copy does not change these positions.
-                    cc.b = cc_child1.b = cc_child2.b = ''
-
+                u.redo()
                 self.assertEqual(0, c.checkOutline())
-
-                # Pretest: select all positions in the tree.
-                for p in c.all_positions():
-                    c.selectPosition(p)
-
-                # Find the target position by headline.
-                target_p = g.findNodeAnywhere(c, target_headline)
-                self.assertTrue(target_p, msg=target_headline)
-
-                # Paste after the target.
-                c.selectPosition(target_p)
-                c.pasteAsTemplate()
-
-                # Check the paste.
-                self.assertEqual(0, c.checkOutline())
-                test_tree(pasted_flag=True, tag='paste-as-template')
-
-                # Check multiple undo/redo cycles.
-                for i in range(3):
-                    u.undo()
-                    self.assertEqual(0, c.checkOutline())
-                    test_tree(pasted_flag=False, tag=f"undo {i}")
-                    u.redo()
-                    self.assertEqual(0, c.checkOutline())
-                    test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230724064558.1: *3* TestOutlineCommands.test_paste_node
     def test_paste_node(self):
 

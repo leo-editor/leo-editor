@@ -1930,6 +1930,92 @@ class Commands:
     topVnode = topPosition
     setTopVnode = setTopPosition
     #@+node:ekr.20230811051032.1: *3* c.Archive
+    #@+node:ekr.20230807171351.1: *4* c.archive
+    def archive(self, v: VNode = None) -> dict[str, Any]:
+        """
+        Return an archival dict of v and all its descendants.
+
+        If v is None, return an archive of the entire outline.
+        """
+        c = self
+
+        #@+others # define helper functions
+        #@+node:ekr.20230807120730.1: *5* c.archive: helper functions
+        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+            result = [vnode_to_gnx(z) for z in vnode_list]
+            return [z for z in result if z]
+
+        def vnode_to_gnx(v: VNode) -> Optional[str]:
+            c = v.context
+            return None if v == c.hiddenRootNode else v.gnx
+        #@-others
+
+        # The keys are gnxs for all these dicts.
+        children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        body_dict: dict[str, list[str]] = {}  # Values are lists of body lines.
+        headline_dict: dict[str, str] = {}  # Values are headlines.
+        marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
+        uas_dict: dict[str, dict] = {}  # Values are json strings.
+        was_cloned_dict: dict[str, str] = {}  # Values are '1', only for cloned nodes.
+
+        # Handle the special case here, *not* in v.alt_self_and_subtree.
+        if v is None:
+            v = c.hiddenRootNode
+            gnx = v.gnx
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            body_dict[gnx] = ['']
+            headline_dict[gnx] = ''
+
+        # Create all the dicts.
+        root = v
+        iter_ = c.all_unique_nodes if v is None else v.alt_self_and_subtree
+        for v in iter_():
+            gnx = v.gnx
+            body_dict[gnx] = g.splitLines(v._bodyString)
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            headline_dict[gnx] = v._headString
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            if v.isMarked():
+                marks_dict[gnx] = '1'
+            if v.isCloned():
+                was_cloned_dict[gnx] = '1'
+            uas = g.archive_uas(v)
+            if uas:
+                uas_dict[gnx] = uas
+        d = {
+            'bodies': body_dict,
+            'children': children_dict,
+            'headlines': headline_dict,
+            'marks': marks_dict,
+            'parents': parents_dict,
+            'root': root.gnx,
+            'uas': uas_dict,
+            'was_cloned': was_cloned_dict,
+        }
+        # g.dump_archive(d, tag='c.archive')
+        return d
+    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
+    def recompute_all_parents(self) -> None:
+        """
+        Recompute all v.parents arrays using neither positions nor v.parents ivars.
+        """
+        c = self
+        root_v = c.hiddenRootNode
+
+        # Clear all v.parents arrays.
+        root_v.parents = []
+        for v in c.alt_all_unique_nodes():
+            v.parents = []
+
+        # Loop invariant: Visit each *parent* vnode *once*.
+        #                 Child vnodes may be visited more than once.
+        for child in root_v.children:
+            child.parents.append(root_v)
+        for parent in c.alt_all_unique_nodes():
+            for child in parent.children:
+                child.parents.append(parent)
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
@@ -2017,93 +2103,17 @@ class Commands:
             g.es_exception()
             # g.printObj(d)
             # g.dump_archive(d)
-    #@+node:ekr.20230807171351.1: *4* c.archive
-    def archive(self, v: VNode = None) -> dict[str, Any]:
-        """
-        Return an archival dict of v and all its descendants.
-
-        If v is None, return an archive of the entire outline.
-        """
+    #@+node:ekr.20230816045125.1: *4* c.validate_archive
+    def validate_archive(self, d:dict) -> bool:
+        """Ensure that unarchiving the outline will succeed."""
         c = self
-
-        #@+others # define helper functions
-        #@+node:ekr.20230807120730.1: *5* c.archive: helper functions
-        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
-            result = [vnode_to_gnx(z) for z in vnode_list]
-            return [z for z in result if z]
-
-        def vnode_to_gnx(v: VNode) -> Optional[str]:
-            c = v.context
-            return None if v == c.hiddenRootNode else v.gnx
-        #@-others
-
-        # The keys are gnxs for all these dicts.
-        children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
-        parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
-        body_dict: dict[str, list[str]] = {}  # Values are lists of body lines.
-        headline_dict: dict[str, str] = {}  # Values are headlines.
-        marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
-        uas_dict: dict[str, dict] = {}  # Values are json strings.
-        was_cloned_dict: dict[str, str] = {}  # Values are '1', only for cloned nodes.
-
-        # Handle the special case here, *not* in v.alt_self_and_subtree.
-        if v is None:
-            v = c.hiddenRootNode
-            gnx = v.gnx
-            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
-            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
-            body_dict[gnx] = ['']
-            headline_dict[gnx] = ''
-
-        # Create all the dicts.
-        root = v
-        iter_ = c.all_unique_nodes if v is None else v.alt_self_and_subtree
-        for v in iter_():
-            gnx = v.gnx
-            body_dict[gnx] = g.splitLines(v._bodyString)
-            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
-            headline_dict[gnx] = v._headString
-            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
-            if v.isMarked():
-                marks_dict[gnx] = '1'
-            if v.isCloned():
-                was_cloned_dict[gnx] = '1'
-            uas = g.archive_uas(v)
-            if uas:
-                uas_dict[gnx] = uas
-        d = {
-            'bodies': body_dict,
-            'children': children_dict,
-            'headlines': headline_dict,
-            'marks': marks_dict,
-            'parents': parents_dict,
-            'root': root.gnx,
-            'uas': uas_dict,
-            'was_cloned': was_cloned_dict,
-        }
-        # g.dump_archive(d, tag='c.archive')
-        return d
-    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
-    def recompute_all_parents(self) -> None:
-        """
-        Recompute all v.parents arrays using neither positions nor v.parents ivars.
-        """
-        c = self
-        root_v = c.hiddenRootNode
-
-        # Clear all v.parents arrays.
-        root_v.parents = []
-        for v in c.alt_all_unique_nodes():
-            v.parents = []
-
-        # Loop invariant: Visit each *parent* vnode *once*.
-        #                 Child vnodes may be visited more than once.
-        for child in root_v.children:
-            child.parents.append(root_v)
-        for parent in c.alt_all_unique_nodes():
-            for child in parent.children:
-                child.parents.append(parent)
-    #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive (Test)
+        root_v = leoNodes.VNode(c)  # Create a throw-away gnx.
+        try:
+            c.unarchive_to_vnode(d, root_v, retain_gnxs=False)
+            return True
+        except Exception:
+            return False
+    #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
     def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
         """Return True if the archive d specifies that the given gnx was cloned."""
         return bool(d['was_cloned'].get(gnx))
