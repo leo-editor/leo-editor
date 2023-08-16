@@ -26,10 +26,61 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
 
-        #@+others  # Define test_tree function.
+        #@+others  # Define test_functions
+        #@+node:ekr.20230816162557.4: *4* function: test_after_copy
+        def test_after_copy():
+            """Test copy ee followed by paste_as_template."""
+            try:
+                # Test clone status and gnx.
+                for v in c.alt_all_unique_nodes():
+                    if v.h in ('cc', 'cc:child1'):
+                        assert len(v.parents) > 1, f"not cloned: {v.h}"
+                    else:
+                        assert len(v.parents) == 1, f"is cloned: {v.h}"
+
+                # Test gnxs.
+                for v in c.alt_all_unique_nodes():
+                    if v.h in ('cc', 'cc:child2'):
+                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+                    else:
+                        assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+
+            except Exception:
+                g.trace('Fail')
+                s = g.app.gui.getTextFromClipboard()
+                d = g.json_string_to_dict(s)
+                g.dump_archive(d)
+                g.dump_clone_info(c)
+                raise
+        #@+node:ekr.20230816162909.3: *4* function: test_after_cut
+        def test_after_cut():
+            """Test copy ee followed by paste_as_template."""
+            try:
+                # Test clone status and gnx.
+                for v in c.alt_all_unique_nodes():
+                    if v.h in ('cc:child1',):
+                        assert len(v.parents) > 1, f"not cloned: {v.h}"
+                    else:
+                        assert len(v.parents) == 1, f"is cloned: {v.h}"
+
+                # Test gnxs.
+                for v in c.alt_all_unique_nodes():
+                    if v.h in ('cc:child2',):
+                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+                    else:
+                        assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+
+            except Exception:
+                g.trace('Fail')
+                s = g.app.gui.getTextFromClipboard()
+                d = g.json_string_to_dict(s)
+                g.dump_archive(d)
+                g.dump_clone_info(c)
+                raise
         #@-others
        
-        for test_kind in ('cut', 'copy'):
+        # Cut or copy 'cc', select 'ee', then paste-as-template.
+        for test_kind in ('copy', 'cut'):
             target_headline = 'ee'
 
             # Create the tree and gnx_dict.
@@ -38,8 +89,8 @@ class TestOutlineCommands(LeoUnitTest):
             self.assertEqual(0, c.checkOutline())
 
             # Calculate vnodes and gnx_dict for test_node, before any changes.
-            # vnodes = list(set(list(c.all_unique_nodes())))
-            # gnx_dict = {z.h: z.gnx for z in vnodes}
+            vnodes = list(set(list(c.all_unique_nodes())))
+            gnx_dict = {z.h: z.gnx for z in vnodes}
             
             # Always copy cc
             c.selectPosition(cc)
@@ -63,7 +114,11 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Do the checks *last*.
             self.assertEqual(0, c.checkOutline())
-            
+            if test_kind == 'cut':
+                test_after_cut()
+            else:
+                test_after_copy()
+
             # Check multiple undo/redo cycles.
             for i in range(3):
                 u.undo()
