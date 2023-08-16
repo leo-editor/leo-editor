@@ -858,7 +858,7 @@ class FileCommands:
             g.es("The clipboard is not valid ", color="blue")
             g.dump_archive(d, tag='paste-node-retaining-clones')
             return None
-        if not g.validate_archive(d):
+        if not c.validate_archive(d):
             return None
 
         # Create the new position *first*.

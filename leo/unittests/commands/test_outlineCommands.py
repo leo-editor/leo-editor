@@ -78,7 +78,7 @@ class TestOutlineCommands(LeoUnitTest):
                 g.dump_clone_info(c)
                 raise
         #@-others
-       
+
         # Cut or copy 'cc', select 'ee', then paste-as-template.
         for test_kind in ('copy', 'cut'):
             target_headline = 'ee'
@@ -91,7 +91,7 @@ class TestOutlineCommands(LeoUnitTest):
             # Calculate vnodes and gnx_dict for test_node, before any changes.
             vnodes = list(set(list(c.all_unique_nodes())))
             gnx_dict = {z.h: z.gnx for z in vnodes}
-            
+
             # Always copy cc
             c.selectPosition(cc)
             self.copy_node()

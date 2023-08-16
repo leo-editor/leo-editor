@@ -2104,7 +2104,7 @@ class Commands:
             # g.printObj(d)
             # g.dump_archive(d)
     #@+node:ekr.20230816045125.1: *4* c.validate_archive
-    def validate_archive(self, d:dict) -> bool:
+    def validate_archive(self, d: dict) -> bool:
         """Ensure that unarchiving the outline will succeed."""
         c = self
         root_v = leoNodes.VNode(c)  # Create a throw-away gnx.
