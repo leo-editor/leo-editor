@@ -187,8 +187,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     u = c.undoer
     g.setGlobalOpenDir(fn)
     undoData = u.beforeInsertNode(c.p)
-    last = c.lastTopLevel()
-    p = last.insertAfter()
+    p = c.p.insertAfter()
     p.h = f"@edit {fn}"
     s, e = g.readFileIntoString(fn, kind='@edit')
     p.b = s
@@ -835,6 +834,7 @@ def readAtShadowNodes(self: Self, event: Event = None) -> None:
 def readFileIntoNode(self: Self, event: Event = None) -> None:
     """Read a file into a single node."""
     c = self
+    u = c.undoer
     undoType = 'Read File Into Node'
     c.endEditing()
     filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs"),]
@@ -850,9 +850,11 @@ def readFileIntoNode(self: Self, event: Event = None) -> None:
     g.chdir(fileName)
     s = '@nocolor\n' + s
     w = c.frame.body.wrapper
-    p = c.insertHeadline(op_name=undoType)
+    undoData = u.beforeInsertNode(c.p)
+    p = c.p.insertAfter()
     p.setHeadString('@read-file-into-node ' + fileName)
     p.setBodyString(s)
+    u.afterInsertNode(p, undoType, undoData)
     w.setAllText(s)
     c.redraw(p)
 #@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
