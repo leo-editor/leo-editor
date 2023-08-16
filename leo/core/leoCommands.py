@@ -1365,7 +1365,7 @@ class Commands:
         Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
         particular order.
 
-        This method is about three times faster than c.all_unique_positions.
+        This method is about three times faster than using c.all_unique_positions.
         """
         c = self
         for v in c.hiddenRootNode.alt_self_and_subtree():
@@ -2004,6 +2004,14 @@ class Commands:
         c = self
         root_v = c.hiddenRootNode
 
+        def dump_links(parent: VNode, child: VNode) -> str:
+            parent_s = 'hidden' if parent == root_v else parent.h
+            if 0:
+                return f"{parent_s:20} {child.h:20}"
+            return (
+                f"parent: {parent_s:20} child: {g.dump_gnx(child):4} "
+                f"{child.h:20} child.parents: {child.parents}")
+
         # Clear all v.parents arrays.
         root_v.parents = []
         for v in c.alt_all_unique_nodes():
@@ -2011,11 +2019,18 @@ class Commands:
 
         # Loop invariant: Visit each *parent* vnode *once*.
         #                 Child vnodes may be visited more than once.
+        # Visit the hidden root.
+        print('')
         for child in root_v.children:
             child.parents.append(root_v)
+            g.trace(dump_links(root_v, child))
+        # Visit all other parents.
+        print('')
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
+                g.trace('BEFORE', dump_links(parent, child))
                 child.parents.append(parent)
+                g.trace(' AFTER', dump_links(parent, child))
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
@@ -2116,7 +2131,9 @@ class Commands:
     #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
     def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
         """Return True if the archive d specifies that the given gnx was cloned."""
-        return bool(d['was_cloned'].get(gnx))
+        # return bool(d['was_cloned'].get(gnx))
+        ### g.trace(d['was_cloned'])
+        return gnx in d['was_cloned']
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:

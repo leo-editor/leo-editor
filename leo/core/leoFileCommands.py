@@ -924,7 +924,7 @@ class FileCommands:
             return None
 
         # Paste into p.v
-        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=False)
+        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=True)
 
         self.gnxDict = oldGnxDict
         self.reassignNonClonedIndices(d, p)
@@ -955,6 +955,7 @@ class FileCommands:
         c = self.c
         ni = g.app.nodeIndices
         for v in p.v.alt_self_and_subtree():
+            g.trace(v.gnx, c.was_cloned_in_archive(d, v.gnx), v.h)
             if not c.was_cloned_in_archive(d, v.gnx):
                 index = ni.getNewIndex(v)  # Sets v._fileIndex.
                 if 'gnx' in g.app.debug:

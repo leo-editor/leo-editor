@@ -422,9 +422,6 @@ def dump_archive(d: dict, tag: str = None) -> None:
     print('\nbodies:')
     i = 0
     for gnx, body in bodies.items():
-        # body_s = f"len(body): {len(body)}" if '\n' in body else body
-        # print(f"  {gnx:28} {gnx_to_headline(gnx)} {body_s}")
-        # g.printObj(body, tag=f"{gnx} {gnx_to_headline(gnx)}")
         print(f" body {i} lines: {len(body)} {gnx_to_headline(gnx)}")
         i += 1
 
@@ -3102,7 +3099,7 @@ def dump_clone_info(c: Cmdr, tag: str = None) -> None:
     """Dump all clone info."""
     print('')
     tag_s = tag + ': ' if tag else ''
-    g.trace(f"{tag_s}{c.fileName()}\n")
+    g.trace(f"{tag_s}{g.shortFileName(c.fileName())}\n")
     print(f"clone{' '*3}gnx{' '*3}headline{' '*11}parents{' '*13}children")
     for p in c.all_positions():
         cloned_s = ' yes' if p.isCloned() else ''

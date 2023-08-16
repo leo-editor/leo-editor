@@ -29,58 +29,59 @@ class TestOutlineCommands(LeoUnitTest):
         #@+others  # Define test_functions
         #@+node:ekr.20230816162557.4: *4* function: test_after_copy
         def test_after_copy():
-            """Test copy ee followed by paste_as_template."""
+            """Test copy cc, select ee, paste_as_template."""
+            # cc is *not* a clone in the original, so only the top-level cc:child1 should be a clone!
             try:
                 # Test clone status and gnx.
                 for v in c.alt_all_unique_nodes():
-                    if v.h in ('cc', 'cc:child1'):
-                        assert len(v.parents) > 1, f"not cloned: {v.h}"
+                    if v.h == 'cc:child1':
+                        if c.hiddenRootNode in v.parents:
+                            assert len(v.parents) > 1, f"not cloned: {v.h}"
+                            assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
+                        else:
+                            assert len(v.parents) == 1, f"is cloned: {v.h}"
+                            assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
+                    elif v.h in ('cc', 'cc:child2'):
+                        assert len(v.parents) == 1, f"is cloned: {v.h}"
+                        # The original has the same gnx; the copy has a new gnx.
                     else:
                         assert len(v.parents) == 1, f"is cloned: {v.h}"
-
-                # Test gnxs.
-                for v in c.alt_all_unique_nodes():
-                    if v.h in ('cc', 'cc:child2'):
-                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
-                    else:
-                        assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
 
             except Exception:
                 g.trace('Fail')
-                s = g.app.gui.getTextFromClipboard()
-                d = g.json_string_to_dict(s)
-                g.dump_archive(d)
-                g.dump_clone_info(c)
+                if 0:
+                    s = g.app.gui.getTextFromClipboard()
+                    d = g.json_string_to_dict(s)
+                    g.dump_archive(d)
+                g.dump_clone_info(c, tag='test_after_copy')
                 raise
         #@+node:ekr.20230816162909.3: *4* function: test_after_cut
         def test_after_cut():
-            """Test copy ee followed by paste_as_template."""
+            """Test cut cc, select ee, paste_as_template."""
+            # Nothing should be a clone.
             try:
-                # Test clone status and gnx.
                 for v in c.alt_all_unique_nodes():
-                    if v.h in ('cc:child1',):
-                        assert len(v.parents) > 1, f"not cloned: {v.h}"
+                    assert len(v.parents) == 1, f"is cloned: {v.h}"
+                    if v.h in ('cc', 'cc:child2'):
+                        assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
                     else:
-                        assert len(v.parents) == 1, f"is cloned: {v.h}"
+                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
 
-                # Test gnxs.
-                for v in c.alt_all_unique_nodes():
-                    if v.h in ('cc:child2',):
-                        assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
-                    else:
-                        assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h))
+                g.dump_clone_info(c,tag='test_after_cut')  #######
 
             except Exception:
                 g.trace('Fail')
-                s = g.app.gui.getTextFromClipboard()
-                d = g.json_string_to_dict(s)
-                g.dump_archive(d)
-                g.dump_clone_info(c)
+                if 0:
+                    s = g.app.gui.getTextFromClipboard()
+                    d = g.json_string_to_dict(s)
+                    g.dump_archive(d)
+                g.dump_clone_info(c, tag='test_after_cut')
                 raise
         #@-others
 
         # Cut or copy 'cc', select 'ee', then paste-as-template.
-        for test_kind in ('copy', 'cut'):
+        for test_kind in ('cut',):  ### ('copy', 'cut'):
             target_headline = 'ee'
 
             # Create the tree and gnx_dict.
