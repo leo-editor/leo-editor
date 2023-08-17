@@ -26862,7 +26862,7 @@ See the first comment of PR #3424 for full details.
 
 - PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
-- 40+ issues and 50+ pull requests.
+- 50+ issues and 70+ pull requests.
 
 **Links**
 
@@ -26880,7 +26880,6 @@ See the first comment of PR #3424 for full details.
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
-
 </t>
 <t tx="ekr.20230717044724.1"></t>
 </tnodes>

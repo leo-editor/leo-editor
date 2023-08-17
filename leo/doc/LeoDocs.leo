@@ -32681,7 +32681,7 @@ See the first comment of PR #3424 for full details.
 
 - PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
-- 40+ issues and 50+ pull requests.
+- 50+ issues and 70+ pull requests.
 
 **Links**
 
@@ -32756,7 +32756,7 @@ at.readOneAtEditNode and at.readOneAtAsisNode.
 - `PR #3215`_: Retire the settings_finder, backlink, and quickMove plugins.
   The first was dangerous. gnx-based unls obsolete the other two.
   
-- 40+ issues and about 50 pull requests.</t>
+- 50+ issues and 70+ pull requests.</t>
 <t tx="ekr.20230716051446.1">Leo syntax colors clickable links in the body pane. For example:
 
 Leo's home page: https://leo-editor.github.io/leo-editor/
