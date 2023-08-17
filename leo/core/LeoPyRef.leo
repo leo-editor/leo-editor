@@ -1931,7 +1931,7 @@ while True:
         break
 </t>
 <t tx="ekr.20200308193719.1">d = {}  # Keys are gnxs, values is a list of vnodes with that gnx.
-for v in c.all_nodes():
+for v in c.all_unique_nodes():
     gnx = v.gnx
     aList = d.get(gnx, [])
     if v not in aList:
@@ -2778,13 +2778,14 @@ if c.isChanged():
 &lt;&lt; prefixes &gt;&gt;
 &lt;&lt; old tests &gt;&gt;
 commands = (
-   
-    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_retaining_clones",
-    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_c_checkVnodeLinks",
-    # f" {core}.test_leoGlobals.Test_uas",
+
+    # f" {core}.test_leoserver.TestLeoServer.test_most_public_server_methods",
     
-    # f" {core}.test_leoCompare.TestCompare.test_diff_marked_nodes",
-    f" {commands}.test_gotoCommands.TestGotoCommands.test_show_file_line",
+    # Fails
+    # f" {core}.test_leoCommands.TestCommands.test_koi8_r_encoding",
+    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_retaining_clones",
+    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_node",
+    f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_as_template",
 )
 verbose_flag = ''  # -v
 commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
@@ -3474,7 +3475,7 @@ design = 'leo.unittests.test_design'
 gui = 'leo.unittests.test_gui'
 importers = 'leo.unittests.test_importers'
 syntax = 'leo.unittests.test_syntax'
-#
+
 testAtFile = 'test_leoAtFile.TestAtFile'
 testColorizer = 'test_leoColorizer.TestColorizer'
 testCommands = 'test_leoCommands.TestCommands'
@@ -3513,24 +3514,20 @@ gnxs = (
 x.node_history(path, gnxs, limit=60)
 </t>
 <t tx="ekr.20230724084617.1"># f" {importers}",
-# f" {core}.test_leoAst.TestTOG"
+
 # f" {core}.test_leoApp.TestApp",
+# f" {core}.test_leoAst.TestTOG"
+# f" {core}.test_leoCommands.TestCommands",
 # f" {core}.test_leoCompare.TestCompare",
 # f" {core}.test_leoGlobals.TestGlobals",
 # f" {core}.test_leoImport.TestLeoImport",
+# f" {core}.test_leoNodes.TestNodes",
 # f" {core}.test_leoTest2.TestTest2",
 
-# f" {commands}.test_editFileCommands",
 # f" {commands}.test_commanderFileCommands",
-# f" {commands}.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history",
-
-# f" {core}.test_leoGlobals.TestGlobals.test_g_parsePathData",
-
-# f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_node",
-# f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_as_template",
-# f" {commands}.test_outlineCommands.TestOutlineCommands.test_restoreFromCopiedTree",
-# f" {commands}.test_outlineCommands.TestOutlineCommands.test_p_v_archive",
-# f" {core}.test_leoCommands.TestCommands.check_c_check_links",
+# f" {commands}.test_editFileCommands",
+# f" {commands}.test_gotoCommands.TestGotoCommands",
+# f" {commands}.test_outlineCommands",
 </t>
 </tnodes>
 </leo_file>
