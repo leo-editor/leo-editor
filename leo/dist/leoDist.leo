@@ -1492,7 +1492,8 @@ About merges:
 
 - Run the full-test-leo script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
-</t>
+
+- Test on Linux.</t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
