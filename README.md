@@ -1,36 +1,49 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.7.4 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.3**
+**The highlights of Leo 6.7.4**
 
-- PR #3260: Improved and safer handling of paths in `@<file>` nodes.
-            Leo supports Python's standard os.path expansions.
-            Leo no longer supports {{python-expression}} in headlines.
-            
-- Several large code cleanups: 460+ files changed.
+**Warning: breaking changes to Leo's api**
 
-**Commands**
+p.get_UNL returns gnx-based unls. Previously it returned path-based gnxs.
+See the first comment of PR #3424 for full details.
 
-- PR #3227: Add commands to add/remove numbers from headlines.
-- PR #3255: Add write-zip-archive command.
-- PR #3192: Add show-color-settings and the show-font-settings commands.
+**gnx-based unls**
 
-**Other changes**
+- PR #3215 and #3424: gnx-based unls (clickable links).
+  These links will break only if the original node is deleted.
+  
+**New settings**
+  
+- @string unl-status-kind = gnx
+- @bool full-unl-paths = True
+- @data unl-path-prefixes
+  
+**Other improvements**
+  
+- PR #3330: Improve importers for C, C++, and cython.
+- PR #3345: Improve importer architecture.
+- PR #3363 & #3379: Improve c.recursiveImport.
+- PR #3376: Improve python importer.
 
-- PR #3208: Add 'reload-settings' hook.
-- PR #3214: Optionally expand headlines on mouse-over.
-- PR #3224: Improve mod_autosave plugin.
-- PR #3241: Simplify Leo's path wrappers.
-- PRs #3264 and #3277: Simplify Leo's path-related code.
-- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
+**Large code changes**
+
+- PR #3365: Simplify mypy annotations (128 files).
+- PR #3367: Import Callable from collections.abc instead of typing (50 files).
+
+**Retire three plugins**
+
+- PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
+
+- 50+ issues and 70+ pull requests.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
-- [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
+- [6.7.4 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.4+)
+- [6.7.4 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.4)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
