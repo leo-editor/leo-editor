@@ -960,6 +960,8 @@ class FileCommands:
                 index = ni.getNewIndex(v)  # Sets v._fileIndex.
                 if 'gnx' in g.app.debug:
                     g.trace('**reassigning**', index, v)
+
+        ############ Switch all references in the tree ############
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
     def getLeoFile(

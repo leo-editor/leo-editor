@@ -2006,8 +2006,9 @@ class Commands:
 
         def dump_links(parent: VNode, child: VNode) -> str:
             parent_s = 'hidden' if parent == root_v else parent.h
-            if 0:
-                return f"{parent_s:20} {child.h:20}"
+            if 1:
+                # return f"{id(parent)} {parent_s:20} {id(child)} {child.h:20}"
+                return f"{parent_s:20} {child.h:20} id(child.parents): {id(child.parents)}"
             return (
                 f"parent: {parent_s:20} child: {g.dump_gnx(child):4} "
                 f"{child.h:20} child.parents: {child.parents}")
@@ -2020,17 +2021,16 @@ class Commands:
         # Loop invariant: Visit each *parent* vnode *once*.
         #                 Child vnodes may be visited more than once.
         # Visit the hidden root.
-        print('')
+        ### print('')
         for child in root_v.children:
             child.parents.append(root_v)
-            g.trace(dump_links(root_v, child))
+            ### g.trace(dump_links(root_v, child))
         # Visit all other parents.
-        print('')
+        ### print('')
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
-                g.trace('BEFORE', dump_links(parent, child))
                 child.parents.append(parent)
-                g.trace(' AFTER', dump_links(parent, child))
+                ### g.trace(dump_links(parent, child))
     #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode
     def unarchive_to_vnode(self, d: dict, root_v: VNode, retain_gnxs: bool) -> None:
         """Set all ivars of v from the d, a dict created by c.archive."""
