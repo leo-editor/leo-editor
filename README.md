@@ -36,7 +36,7 @@ See the first comment of PR #3424 for full details.
 
 - PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
 
-- 40+ issues and 50+ pull requests.
+- 50+ issues and 70+ pull requests.
 
 **Links**
 
