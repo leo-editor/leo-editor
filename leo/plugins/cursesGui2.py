@@ -334,7 +334,7 @@ class LeoTreeData(npyscreen.TreeData):
     #@-<< about LeoTreeData ivars >>
 
     _children: list[LeoTreeData]
-    content = Union[str, Position]
+    content = Any
 
     def __len__(self) -> int:
         if native:
@@ -442,7 +442,7 @@ class LeoTreeData(npyscreen.TreeData):
             # May be useful when child is cloned.
             self._children = [z for z in self._children if z != child]
     #@+node:ekr.20170518103807.21: *5* LeoTreeData.set_content
-    def set_content(self, content: Union[str, Position]) -> None:
+    def set_content(self, content: Any) -> None:
 
         if native:
             if content is None:
@@ -2152,7 +2152,7 @@ class CoreFrame(leoFrame.LeoFrame):
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.5
         # Widgets
-        self.top = TopFrame(c)
+        self.top: Any = TopFrame(c)
         self.body = CoreBody(c)
         self.menu = CoreMenu(c)
         self.miniBufferWidget: MiniBufferWrapper = None
