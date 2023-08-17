@@ -1615,6 +1615,8 @@ python -m leo.core.runLeo
 **uninstall after testing**
 
 python -m pip uninstall leo
+
+-restore sitecustomize.py if necessary.
 </t>
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
