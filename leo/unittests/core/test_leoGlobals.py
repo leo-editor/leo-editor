@@ -165,7 +165,7 @@ class TestGlobals(LeoUnitTest):
                     .replace('ERR', f"{tool} error")
                 )
     #@+node:ekr.20230701061355.1: *4* TestGlobals._test_per_commander_data
-    def _test_per_commander_data(self):
+    def _test_per_commander_data(self) -> None:
         """Test the test data."""
         c = self.c
 
@@ -174,8 +174,10 @@ class TestGlobals(LeoUnitTest):
             self.assertEqual(self.tools, list(sorted(d.keys())))
 
         # Pretest: all absolute paths must exist.
+        #          #3497: Silently skip this test if not.
         for z in self.absolute_paths:
-            self.assertTrue(os.path.exists(z), msg=repr(z))
+            if not os.path.exists(z):
+                return
 
         # Pretest: all generated error messages must match the tool's pattern.
         for tool in self.tools:
