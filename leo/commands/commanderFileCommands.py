@@ -314,7 +314,6 @@ def refreshFromDisk(self: Self, event: Event = None) -> None:
         return
     at = c.atFileCommands
     c.nodeConflictList = []
-    c.recreateGnxDict()
     if p.isAtAutoNode() or p.isAtAutoRstNode():
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!

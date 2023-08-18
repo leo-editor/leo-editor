@@ -2984,7 +2984,9 @@ class FastAtRead:
 
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode: dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        # New in Leo 6.7.5: Leo never saves/restores this dict.
+        self.gnx2vnode: dict[str, VNode] = gnx2vnode
         self.path: str = None
         self.root: Position = None
         # compiled patterns...

@@ -1233,9 +1233,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
         # Check the outline!
-        c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)

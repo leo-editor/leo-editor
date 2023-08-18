@@ -293,8 +293,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.app.forgetOpenFile(fn=c2.fileName())
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
-        # The inserted, deleted and changed dicts nodes may come from c2, a different Commander.
-        c.recreateGnxDict()  # So update c.fileCommands.gnxDict.
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
     def computeChangeDicts(self, d1: dict, d2: dict) -> tuple[dict, dict, dict]:
         """
@@ -352,6 +350,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def createCompareClones(self, d: dict[str, str], kind: str, parent: Position) -> None:
         if d:
             c = self.c  # Use the visible commander.
+            gnxDict = c.fileCommands.gnxDict
             parent = parent.insertAsLastChild()
             parent.setHeadString(kind)
             for key in d:
@@ -367,7 +366,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     copy = p.copyTreeAfter()
                     copy.moveToLastChildOf(parent)
                     for p2 in copy.self_and_subtree(copy=False):
-                        p2.v.context = c
+                        v = p2.v
+                        v.context = c
+                        gnx = v.fileIndex
+                        # Update the gnxDict.
+                        if gnx not in gnxDict:
+                            gnxDict[gnx] = v
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
     def createFileDict(self, c: Cmdr) -> dict[str, Position]:
         """Create a dictionary of all relevant positions in commander c."""
