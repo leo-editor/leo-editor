@@ -825,7 +825,7 @@ class FileCommands:
             return None
 
         # Paste into p.v
-        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=False)
+        c.unarchive_to_vnode(d, root_v=p.v, command_name='paste-node')
 
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
@@ -878,7 +878,7 @@ class FileCommands:
             ni.check_gnx(c, v.fileIndex, v)
 
         # Paste into p.v
-        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=True)
+        c.unarchive_to_vnode(d, root_v=p.v, command_name='paste-retaining-clones')
 
         # Recompute all v.parents data *after* linking v.
         c.recompute_all_parents()
@@ -924,7 +924,7 @@ class FileCommands:
             return None
 
         # Paste into p.v
-        c.unarchive_to_vnode(d, root_v=p.v, retain_gnxs=True)
+        c.unarchive_to_vnode(d, root_v=p.v, command_name='paste-as-template')
 
         self.gnxDict = oldGnxDict
         self.reassignNonClonedIndices(d, p)

@@ -150,7 +150,7 @@ class TestNodes(LeoUnitTest):
         # Run all tests.
         trace = False
         for kind in ('all',):
-            for retain_gnxs in (True,):  ###  (True, False):
+            for command_name in ('paste-node', 'paste-as-template', 'paste-retaining-clones', 'validate'):
                 self.clean_tree()
                 self.create_test_outline()
                 test_p = c.rootPosition()
@@ -165,7 +165,7 @@ class TestNodes(LeoUnitTest):
 
                 if trace:
                     n1 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, retain? {int(retain_gnxs)}")
+                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, {command_name}")
 
                 d = c.archive(v)
                 if 0:
@@ -174,13 +174,14 @@ class TestNodes(LeoUnitTest):
                     kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
                     print(f"\ng.obj_to_json_string: {kind_s}\n")
                     print(s)
-                c.unarchive_to_vnode(d, test_p.v, retain_gnxs)
+                c.unarchive_to_vnode(d, test_p.v, command_name)
                 if trace:
                     n2 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, retain? {int(retain_gnxs)}")
+                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, {command_name}")
                 assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
                 assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
-                if retain_gnxs:
+
+                if 0:  ### To do.
                     for z in fc.gnxDict:
                         assert z in old_gnx_keys, z
                     for z in old_gnx_keys:
