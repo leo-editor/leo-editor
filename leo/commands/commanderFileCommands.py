@@ -857,30 +857,6 @@ def readFileIntoNode(self: Self, event: Event = None) -> None:
     u.afterInsertNode(p, undoType, undoData)
     w.setAllText(s)
     c.redraw(p)
-#@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
-@g.commander_command('read-outline-only')
-def readOutlineOnly(self: Self, event: Event = None) -> None:
-    """Open a Leo outline, but do not read any derived files."""
-    c = self
-    c.endEditing()
-    fileName = g.app.gui.runOpenFileDialog(c,
-        title="Read Outline Only",
-        filetypes=[("Leo files", "*.leo *.leojs *.db"), ("All files", "*")],
-        defaultextension=".leo")
-    if not fileName:
-        return
-    try:
-        # pylint: disable=assignment-from-no-return
-        # Can't use 'with" because readOutlineOnly closes the file.
-        theFile = open(fileName, 'r')
-        g.chdir(fileName)
-        c = g.app.newCommander(fileName)
-        frame = c.frame
-        frame.deiconify()
-        frame.lift()
-        c.fileCommands.readOutlineOnly(theFile, fileName)  # closes file.
-    except Exception:
-        g.es("can not open:", fileName)
 #@+node:ekr.20070915142635: *3* c_file.writeFileFromNode
 @g.commander_command('write-file-from-node')
 def writeFileFromNode(self: Self, event: Event = None) -> None:
