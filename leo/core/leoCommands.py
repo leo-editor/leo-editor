@@ -2065,7 +2065,7 @@ class Commands:
             """
             Return *all* gnxs occuring in archive d.
 
-            Later internal tests will ensure this list is complete.
+            Later internal tests must ensure this list is complete.
             """
             result_set: set[str] = set()
 
@@ -2073,9 +2073,9 @@ class Commands:
             all_dicts = (
                 d['bodies'],
                 d['children'],
-                d['parents'],
                 d['headlines'],
                 d['marks'],
+                d['parents'],
                 d['uas'],
                 d['was_cloned'],
             )
