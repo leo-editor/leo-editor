@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170302123956.1: * @file ../doc/leoAttic.txt
 # This is Leo's final resting place for dead code.
-# Much easier to access than a git repo.
+# New in Leo 6.7.5. The attic will contain only code retired in the present release.
 
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20220917052540.1: ** Old commands
+#@+node:ekr.20220917052540.1: ** retire read-outline-only
 #@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
 @g.commander_command('read-outline-only')
 def readOutlineOnly(self: Self, event: Event = None) -> None:
