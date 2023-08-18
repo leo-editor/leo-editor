@@ -65,7 +65,7 @@ class TestEditFileCommands(LeoUnitTest):
             finally:
                 sys.stdout = sys.__stdout__
             # #3497: Silently skip the test if nothing has changed.
-            if c.lastTopLevel().h == root.h:
+            if c.lastTopLevel() == root:
                 return
             self.assertEqual(c.lastTopLevel().h, expected_last_headline)
             u.undo()
@@ -122,7 +122,7 @@ class TestEditFileCommands(LeoUnitTest):
         finally:
             sys.stdout = sys.__stdout__
         # #3497: Silently skip the test if nothing has changed.
-        if c.lastTopLevel().h == root.h:
+        if c.lastTopLevel() == root:
             return
         self.assertEqual(c.lastTopLevel().h.strip(), expected_last_headline)
         # Test undo/redo.
