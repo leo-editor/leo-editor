@@ -1120,19 +1120,6 @@ class FileCommands:
                 n2.setHeadString('new:' + h2)
                 n2.setBodyString(b2)
         return root
-    #@+node:ekr.20031218072017.3030: *5* fc.readOutlineOnly
-    def readOutlineOnly(self, theFile: Any, fileName: str) -> VNode:
-        c = self.c
-        # Set c.openDirectory
-        theDir = g.os_path_dirname(fileName)
-        if theDir:
-            c.openDirectory = c.frame.openDirectory = theDir
-        v, ratio = self.getLeoFile(theFile, fileName, readAtFileNodesFlag=False)
-        c.redraw()
-        c.frame.deiconify()
-        junk, junk, secondary_ratio = self.frame.initialRatios()
-        c.frame.resizePanesToRatio(ratio, secondary_ratio)
-        return v
     #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb & helpers
     def retrieveVnodesFromDb(self, conn: Any) -> VNode:
         """
