@@ -174,7 +174,7 @@ class TestNodes(LeoUnitTest):
                     kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
                     print(f"\ng.obj_to_json_string: {kind_s}\n")
                     print(s)
-                c.unarchive_to_vnode(d, test_p.v, command_name)
+                c.unarchive(d, test_p.v, command_name)
                 if trace:
                     n2 = len(list(fc.gnxDict.keys()))
                     g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, {command_name}")

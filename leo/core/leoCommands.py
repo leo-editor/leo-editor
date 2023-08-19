@@ -2031,11 +2031,10 @@ class Commands:
             for child in parent.children:
                 child.parents.append(parent)
                 ### g.trace(dump_links(parent, child))
-    #@+node:ekr.20230810090101.1: *4* c.unarchive_to_vnode & helpers
-    def unarchive_to_vnode(self, d: dict, root_v: VNode, command_name: str) -> None:
+    #@+node:ekr.20230810090101.1: *4* c.unarchive
+    def unarchive(self, d: dict, root_v: VNode, command_name: str) -> None:
         #@+<< c.unarchive_to vnode: docstring >>
         #@+node:ekr.20230818173923.1: *5* << c.unarchive_to vnode: docstring >>
-        #@@language rest
         """
         c.unarchive_to_vode: The heart of the dearchiving process.
 
@@ -2053,11 +2052,14 @@ class Commands:
         fc = c.fileCommands
         global_gnx_dict = fc.gnxDict.copy()  # A shallow copy should suffice.
 
-        valid_command_names = ('validate', 'paste-node', 'paste-retaining-clones', 'paste-as-template')
-        assert command_name in valid_command_names, repr(command_name)
+        valid_command_names = (
+            'paste-node', 'paste-retaining-clones', 'paste-as-template',
+            'read-outline',
+            'validate',
+        )
 
         if 0:  # Very effective trace.
-            g.dump_archive(d, tag=f"unarchive_to_vnode: {command_name}")
+            g.dump_archive(d, tag=f"unarchive: {command_name}")
 
         #@+others  # define helper funtions.
         #@+node:ekr.20230818165719.1: *5* function: all_gnxs_in_archive
@@ -2093,50 +2095,19 @@ class Commands:
                         result_set.add(gnx2)
 
             return list(result_set)
-        #@+node:ekr.20230818173706.1: *5* function: dump_local_vnode_dict
-        def dump_local_vnode_dict(tag: str) -> None:
-            """For debugging. Produce a readable dump of local_vnode_dict."""
-            g.printObj([
-                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
-                    for key, val in local_vnode_dict.items()
-                ],
-                tag=f"local_vnode_dict: {tag}"
-            )
-        #@+node:ekr.20230818165723.1: *5* function: new_local_vnode
-        def new_local_vnode(gnx: str) -> VNode:
-            """Find or create the vnode with the given gnx."""
-            # The VNode ctor always calls ni.getNewIndex(v)
-            if gnx == c.hiddenRootNode.gnx:
-                return root_v
-            if command_name in ('paste-node', 'validate'):
-                # Always return a new VNode.
-                return leoNodes.VNode(c)
-            if (
-                command_name == 'paste-retaining-clones' or
-                command_name == 'paste-as-template' and c.was_cloned_in_archive(d, gnx)
-            ):
-                # The interesting case. We *can* use a deleted vnode.
-                if gnx in global_gnx_dict:
-                    return global_gnx_dict[gnx]
+        #@+node:ekr.20230819095749.1: *5* function: allocate_all_vnodes
+        def allocate_all_vnodes() -> None:
+            """Allocate all VNodes and make entries in the local_vnode_dict."""
+            for gnx in all_gnxs:
+                assert gnx not in local_vnode_dict, repr(gnx)
+                local_vnode_dict[gnx] = None
 
-            # The c's outline has *never* contained a VNode with the given gnx.
-            return leoNodes.VNode(c)
-        #@-others
-
-        # Create the local_vnode_dict.
-        all_gnxs: list[str] = all_gnxs_in_archive(d)
-        local_vnode_dict: dict[str, Optional[VNode]] = {}  # Keys are gnxs; values are VNodes.
-        for gnx in all_gnxs:
-            assert gnx not in local_vnode_dict, repr(gnx)
-            local_vnode_dict[gnx] = None
-
-        # Create or link all Vnodes.
-        # gnx_dict: dict[str, VNode] = c.fileCommands.gnxDict if retain_gnxs else {}
-        try:
             # Create or link VNodes, depending on command_name.
             for gnx in local_vnode_dict:
                 assert local_vnode_dict[gnx] is None, local_vnode_dict[gnx]
                 local_vnode_dict[gnx] = new_local_vnode(gnx)
+        #@+node:ekr.20230819100843.1: *5* function: create_links
+        def create_links(all_new_gnxs: list[str], new_archive: dict) -> None:
 
             for gnx, v in local_vnode_dict.items():
                 # Let block.
@@ -2173,16 +2144,100 @@ class Commands:
             uas = getattr(archive_root_v, 'unknownAttributes', None)
             if uas is not None:
                 root_v.unknownAttributes = uas
+        #@+node:ekr.20230819101356.1: *5* function: create_new_archive (to do)
+        def create_new_archive() -> dict:
+            """Create a *new* archive, whose gnxs *do* appear in the global_gnx_dict."""
+            return d ###
+        #@+node:ekr.20230818173706.1: *5* function: dump_local_vnode_dict
+        def dump_local_vnode_dict(tag: str) -> None:
+            """For debugging. Produce a readable dump of local_vnode_dict."""
+            g.printObj([
+                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
+                    for key, val in local_vnode_dict.items()
+                ],
+                tag=f"local_vnode_dict: {tag}"
+            )
+        #@+node:ekr.20230819094833.1: *5* function: gnx_to_gnx
+        def gnx_to_gnx(gnx: str) -> str:
+            """Resolve a gnx (from the archive) to the corresponding gnx in the outline."""
+            if gnx in local_vnode_dict:
+                return gnx
+            if gnx in global_gnx_dict:
+                return gnx
+            assert False, f"gnx not found: {gnx!r}"
+        #@+node:ekr.20230818165723.1: *5* function: new_local_vnode
+        def new_local_vnode(gnx: str) -> VNode:
+            """Find or create the vnode with the given gnx."""
+            # The VNode ctor always calls ni.getNewIndex(v)
+            if gnx == c.hiddenRootNode.gnx:
+                return root_v
+            if command_name in ('paste-node', 'validate'):
+                # Always return a new VNode.
+                return leoNodes.VNode(c)
+            if (
+                command_name == 'paste-retaining-clones' or
+                command_name == 'paste-as-template' and c.was_cloned_in_archive(d, gnx)
+            ):
+                # The interesting case. We *can* use a deleted vnode.
+                if gnx in global_gnx_dict:
+                    return global_gnx_dict[gnx]
 
-            # dump_local_vnode_dict('after')
+            # The c's outline has *never* contained a VNode with the given gnx.
+            return leoNodes.VNode(c)
+        #@+node:ekr.20230819095004.1: *5* function: resolve
+        def resolve(gnx: str) -> VNode:
+            """Resolve a gnx in the outline to corresponding VNode."""
+            return local_vnode_dict[gnx_to_gnx(gnx)]
+        #@+node:ekr.20230819101513.1: *5* function: update_fc_gnxDict
+        def update_fc_gnxDict() -> None:
+            """Update fc.gnxDict, with careful checks."""
+            # fc.gnxDict.update(global_gnx_dict)
+            for z, v in global_gnx_dict.items():
+                assert isinstance(v, VNode), repr(v)
+                if z in fc.gnxDict:
+                    assert fc.gnxDict[z] == v
+                else:
+                    fc.gnxDict[z] = v
+        #@-others
+
+        # The main line, much like a linker.
+        try:
+            assert command_name in valid_command_names, repr(command_name)
+
+            # Compute the list of all gnxs in the archive.
+            # These gnxs do *not* necessarily appear in the outline (global_gnx_dict)!
+            all_gnxs: list[str] = all_gnxs_in_archive(d)
+
+            # The local_vnode_dict contains keys for *all* gnxs in the archive; values are VNodes.
+            local_vnode_dict: dict[str, Optional[VNode]] = {}
+
+            # Allocate all missing VNodes.
+            allocate_all_vnodes()
+
+            # Create a *new* archive, whose gnxs *do* appear in the global_gnx_dict.
+            new_archive = create_new_archive()
+
+            # Verify that all new gnx's refer to VNodes in the global_gnx_dict.
+            all_new_gnxs: list[str] = all_gnxs_in_archive(new_archive)
+            for z in all_new_gnxs:
+                assert z in global_gnx_dict
+
+            # Create parent/child links.
+            create_links(all_new_gnxs, new_archive)
+
+            # Overwrite data from the archive.
+            ### To do ###
 
             # Update fc.gnxDict unless we are validating.
             if command_name != 'validate':
-                fc.gnxDict = global_gnx_dict
+                update_fc_gnxDict()
 
         except Exception as e:
+            if g.unitTesting:
+                raise
             g.trace(f"Unexpected exception: {e}")
             g.es_exception()
+            g.internalError(e)
             # g.printObj(d)
             # g.dump_archive(d)
     #@+node:ekr.20230816045125.1: *4* c.validate_archive
@@ -2191,7 +2246,7 @@ class Commands:
         c = self
         root_v = leoNodes.VNode(c)  # Create a throw-away gnx.
         try:
-            c.unarchive_to_vnode(d, root_v, command_name='validate')
+            c.unarchive(d, root_v, command_name='validate')
             return True
         except Exception:
             return False
