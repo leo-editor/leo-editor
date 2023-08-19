@@ -4137,7 +4137,6 @@ class LeoServer:
             'read-at-file-nodes',
             'read-at-shadow-nodes',
             'read-file-into-node',
-            'read-outline-only',
             'read-ref-file',
 
             # Save Files.
