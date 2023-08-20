@@ -170,7 +170,7 @@ class TestOutlineCommands(LeoUnitTest):
         ))
         is_json = True
         for target_headline in valid_target_headlines:
-            for test_kind in ('cut', 'copy'):
+            for test_kind in ('copy', 'cut'):
 
                 print('TEST', test_kind, target_headline)
 

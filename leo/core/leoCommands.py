@@ -2086,9 +2086,13 @@ class Commands:
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
             for gnx, v in vnode_dict.items():
+                headline_s = archive.get('headlines').get(gnx) or '<No Headline>'
                 children = archive.get('children').get(gnx) or []
                 parents = archive.get('parents').get(gnx) or []
-                assert parents is not None, repr(gnx)
+                g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
+                # children = archive['children']
+                # parents = archive['parents']
+                # assert parents not in (None, []), repr(gnx)
                 v.parents = [vnode_dict[z] for z in parents]
                 v.children = [vnode_dict[z] for z in children]
         #@+node:ekr.20230818173706.1: *5* function: dump_vnode_dict
@@ -2106,6 +2110,7 @@ class Commands:
             # Important special case.
             if gnx == c.hiddenRootNode.gnx:
                 assert root_v == c.hiddenRootNode, f"root_v {root_v} != c.hiddenRootNode"
+                return c.hiddenRootNode
 
             # Always use root_v.
             if gnx == archive['root']:
@@ -2173,6 +2178,7 @@ class Commands:
 
             # Setup.
             all_gnxs: list[str] = all_gnxs_in_archive(archive)
+
             # Keys are *all* gnxs in the archive; values are VNodes. See new_vnode for details.
             vnode_dict: dict[str, Optional[VNode]] = {gnx: new_vnode(gnx) for gnx in all_gnxs}
 
@@ -2180,6 +2186,10 @@ class Commands:
             root_parents = root_v.parents[:]
             create_parent_child_links(vnode_dict)
             root_parents = root_parents
+            
+            # Set the parents of the root
+            archive_root = vnode_dict[archive['root']]
+            archive_root.parents = [root_v]
 
             # Validate before overwriting data.
             post_validate(root_v)
@@ -2393,7 +2403,7 @@ class Commands:
                 g.trace("p!=p.threadNext().threadBack()")
                 return False
         return True
-    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
+    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
     def checkVnodeLinks(self) -> int:
         """
         Check all vnode links.
@@ -2406,14 +2416,13 @@ class Commands:
         c = self
 
         #@+others  # Define helpers.
-        #@+node:ekr.20230728005934.1: *6* find_errors
+        #@+node:ekr.20230728005934.1: *6* function: find_errors
         def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
             Scan all vnodes for erroneous parent/child pairs.
 
             Return (error_list, messages, n)
             """
-            ### g.dump_clone_info(c)
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
             n = 0
@@ -2423,19 +2432,26 @@ class Commands:
                 for child_v in parent_v.children:
                     matching_children = [z for z in parent_v.children if z == child_v]
                     matching_parents = [z for z in child_v.parents if z == parent_v]
-                    if len(matching_children) != len(matching_parents):
-                        error_list.append((parent_v, child_v))
-                        messages.append(
-                            'Mismatch between parent.children and child.parents\n\n'
-                            f"parent: {parent_v.gnx} {parent_v.h}\n"
-                            f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
-                            f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
+                    if len(matching_children) == len(matching_parents):
+                        continue
+                    n += 1
+                    error_list.append((parent_v, child_v))
+                    message_tail = (
+                        f"parent: {parent_v.gnx} {parent_v.h}\n"
+                        f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
+                        f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
 
-                            f" child: {child_v.gnx} {child_v.h}\n"
-                            f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
-                            f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
+                        f" child: {child_v.gnx} {child_v.h}\n"
+                        f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
+                        f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
+                    )
+                    if not matching_parents:
+                        messages.append('parent not in child.parents\n\n' + message_tail)
+                    else:
+                        messages.append(
+                            'Mismatch between parent.children and child.parents\n\n' +
+                            message_tail
                         )
-                        n += 1
             return error_list, messages, n
         #@-others
 
