@@ -1956,7 +1956,7 @@ class Commands:
         body_dict: dict[str, list[str]] = {}  # Values are lists of body lines.
         headline_dict: dict[str, str] = {}  # Values are headlines.
         marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
-        uas_dict: dict[str, dict] = {}  # Values are json strings.
+        uas_dict: dict[str, dict] = {}  # Values are json dicts.
         was_cloned_dict: dict[str, str] = {}  # Values are '1', only for cloned nodes.
 
         # Handle the special case here, *not* in v.alt_self_and_subtree.
@@ -2218,7 +2218,9 @@ class Commands:
             return True
         except AssertionError as e:
             g.trace(f"Invalid archive: {e}")
-            g.es_exception()
+            if g.unitTesting:
+                g.es_exception()
+                raise
             return False
     #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
     def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
