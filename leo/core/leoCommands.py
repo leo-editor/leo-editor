@@ -2032,13 +2032,13 @@ class Commands:
                 child.parents.append(parent)
                 ### g.trace(dump_links(parent, child))
     #@+node:ekr.20230810090101.1: *4* c.unarchive
-    def unarchive(self, d: dict, root_v: VNode, command_name: str) -> None:
+    def unarchive(self, archive: dict, root_v: VNode, command_name: str) -> None:
         #@+<< c.unarchive_to vnode: docstring >>
         #@+node:ekr.20230818173923.1: *5* << c.unarchive_to vnode: docstring >>
         """
         c.unarchive_to_vode: The heart of the dearchiving process.
 
-        Patch root_v from d, a dict created by c.archive, creating all of
+        Patch root_v from archive, a dict created by c.archive, creating all of
         root_v's descendants as needed.
 
         Depending on command_name, create new VNodes or use existing VNodes from fc.gnxDict.
@@ -2050,36 +2050,32 @@ class Commands:
         #@-<< c.unarchive_to vnode: docstring >>
         c = self
         fc = c.fileCommands
-        global_gnx_dict = fc.gnxDict.copy()  # A shallow copy should suffice.
-
+        global_gnx_dict = fc.gnxDict  # Updated only at the end.
         valid_command_names = (
-            'paste-node', 'paste-retaining-clones', 'paste-as-template',
-            'read-outline',
-            'validate',
+            'paste-node', 'paste-retaining-clones', 'paste-as-template', 'read-outline',
         )
-
         if 0:  # Very effective trace.
-            g.dump_archive(d, tag=f"unarchive: {command_name}")
+            g.dump_archive(archive, tag=f"unarchive: {command_name}")
 
         #@+others  # define helper funtions.
         #@+node:ekr.20230818165719.1: *5* function: all_gnxs_in_archive
-        def all_gnxs_in_archive(d: dict) -> list[str]:
+        def all_gnxs_in_archive(archive: dict) -> list[str]:
             """
-            Return *all* gnxs occuring in archive d.
+            Return *all* gnxs occuring anywhere in the given archive.
 
-            Later internal tests must ensure this list is complete.
+            These gnxs do *not* necessarily occur in the outline!
             """
             result_set: set[str] = set()
 
             # The keys of all inner dicts are gnxs.
             all_dicts = (
-                d['bodies'],
-                d['children'],
-                d['headlines'],
-                d['marks'],
-                d['parents'],
-                d['uas'],
-                d['was_cloned'],
+                archive['bodies'],
+                archive['children'],
+                archive['headlines'],
+                archive['marks'],
+                archive['parents'],
+                archive['uas'],
+                archive['was_cloned'],
             )
 
             # Add the outer keys.
@@ -2088,39 +2084,71 @@ class Commands:
                     result_set.add(key)
 
             # The values of children and parents dicts are lists of gnxs.
-            for z in (d['children'], d['parents']):
+            for z in (archive['children'], archive['parents']):
                 for gnx in z:
                     assert gnx in result_set, repr(gnx)
                     for gnx2 in z[gnx]:
                         result_set.add(gnx2)
 
             return list(result_set)
-        #@+node:ekr.20230819095749.1: *5* function: allocate_all_vnodes
-        def allocate_all_vnodes() -> None:
-            """Allocate all VNodes and make entries in the local_vnode_dict."""
-            for gnx in all_gnxs:
-                assert gnx not in local_vnode_dict, repr(gnx)
-                local_vnode_dict[gnx] = None
+        #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links (rewrite)
+        def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
+            """Create parent/child links in *all* vnodes."""
+            for gnx, v in vnode_dict.items():
+                children = archive.get('children').get(gnx) or []
+                parents = archive.get('parents').get(gnx) or []
+                assert parents is not None, repr(gnx)
+                v.parents = [vnode_dict[z] for z in parents]
+                v.children = [vnode_dict[z] for z in children]
+        #@+node:ekr.20230818173706.1: *5* function: dump_vnode_dict
+        def dump_vnode_dict(tag: str) -> None:
+            """For debugging. Produce a readable dump of vnode_dict."""
+            g.printObj([
+                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
+                    for key, val in vnode_dict.items()
+                ],
+                tag=f"vnode_dict: {tag}"
+            )
+        #@+node:ekr.20230818165723.1: *5* function: new_vnode
+        def new_vnode(gnx: str) -> VNode:
+            """Find or create the vnode with the given gnx."""
+            # Important special case.
+            if gnx == c.hiddenRootNode.gnx:
+                assert root_v == c.hiddenRootNode, f"root_v {root_v} != c.hiddenRootNode"
 
-            # Create or link VNodes, depending on command_name.
-            for gnx in local_vnode_dict:
-                assert local_vnode_dict[gnx] is None, local_vnode_dict[gnx]
-                local_vnode_dict[gnx] = new_local_vnode(gnx)
-        #@+node:ekr.20230819100843.1: *5* function: create_links
-        def create_links(all_new_gnxs: list[str], new_archive: dict) -> None:
+            # Always use root_v.
+            if gnx == archive['root']:
+                return root_v
 
-            for gnx, v in local_vnode_dict.items():
-                # Let block.
-                body = d.get('bodies').get(gnx) or []
-                children = d.get('children').get(gnx) or []
-                headline = d.get('headlines').get(gnx) or ''
-                marks = d.get('marks').get(gnx)
-                parents = d.get('parents').get(gnx) or []
-                uas_string = d['uas'].get(gnx)
-                # Setters.
-                assert parents is not None
-                v.parents = [local_vnode_dict[z] for z in parents]
-                v.children = [local_vnode_dict[z] for z in children]
+            if command_name == 'read-outline':
+                # Return a new VNode *retaining* the gnx.
+                return leoNodes.VNode(c)
+
+            if command_name == 'paste-node':
+                # Return a new VNode with a *new* gnx.
+                return leoNodes.VNode(c)
+            if (
+                command_name == 'paste-retaining-clones' or
+                command_name == 'paste-as-template' and c.was_cloned_in_archive(archive, gnx)
+            ):
+                # The interesting case. We *can* use a deleted vnode.
+                if gnx in global_gnx_dict:
+                    return global_gnx_dict[gnx]
+
+            # c's outline has *never* contained a VNode with the given gnx.
+            return leoNodes.VNode(c)
+        #@+node:ekr.20230820042603.1: *5* function: overwrite_node_data (to do)
+        def overwrite_node_data(archive: dict, vnode_dict: dict) -> None:
+            """
+            Overwrite non-link data, using values from the archive.
+            """
+            for gnx, v in vnode_dict.items():
+
+                body = archive.get('bodies').get(gnx) or []
+                headline = archive.get('headlines').get(gnx) or ''
+                marks = archive.get('marks').get(gnx)
+                uas_string = archive['uas'].get(gnx)
+
                 v._bodyString = ''.join(body)
                 v._headString = headline
                 if marks:
@@ -2129,108 +2157,74 @@ class Commands:
                     uas = g.json_string_to_dict(uas_string, warn=True)
                     if uas:
                         v.u = uas
+        #@+node:ekr.20230819162108.1: *5* function: post_validate (to do)
+        def post_validate(root_v: VNode) -> None:
+            """
+            Validate the newly-created VNode, its descendants and all gnx.
 
-            # Copy d['root'] to root_d arg.
-            root_gnx = d['root']
-            archive_root_v = local_vnode_dict[root_gnx]
-            assert isinstance(archive_root_v, leoNodes.VNode), repr(archive_root_v)
+            Raise AssertionError if not.
+            """
 
-            # Patch the root, but *not* the root's parent links.
-            root_v.children = archive_root_v.children  ### Experimental.
-            root_v._bodyString = archive_root_v._bodyString
-            root_v._headString = archive_root_v._headString
-            if archive_root_v.isMarked():
-                root_v.setMarked()
-            uas = getattr(archive_root_v, 'unknownAttributes', None)
-            if uas is not None:
-                root_v.unknownAttributes = uas
-        #@+node:ekr.20230819101356.1: *5* function: create_new_archive (to do)
-        def create_new_archive() -> dict:
-            """Create a *new* archive, whose gnxs *do* appear in the global_gnx_dict."""
-            return d ###
-        #@+node:ekr.20230818173706.1: *5* function: dump_local_vnode_dict
-        def dump_local_vnode_dict(tag: str) -> None:
-            """For debugging. Produce a readable dump of local_vnode_dict."""
-            g.printObj([
-                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
-                    for key, val in local_vnode_dict.items()
-                ],
-                tag=f"local_vnode_dict: {tag}"
-            )
-        #@+node:ekr.20230819094833.1: *5* function: gnx_to_gnx
-        def gnx_to_gnx(gnx: str) -> str:
-            """Resolve a gnx (from the archive) to the corresponding gnx in the outline."""
-            if gnx in local_vnode_dict:
-                return gnx
-            if gnx in global_gnx_dict:
-                return gnx
-            assert False, f"gnx not found: {gnx!r}"
-        #@+node:ekr.20230818165723.1: *5* function: new_local_vnode
-        def new_local_vnode(gnx: str) -> VNode:
-            """Find or create the vnode with the given gnx."""
-            # The VNode ctor always calls ni.getNewIndex(v)
-            if gnx == c.hiddenRootNode.gnx:
-                return root_v
-            if command_name in ('paste-node', 'validate'):
-                # Always return a new VNode.
-                return leoNodes.VNode(c)
-            if (
-                command_name == 'paste-retaining-clones' or
-                command_name == 'paste-as-template' and c.was_cloned_in_archive(d, gnx)
+        #@+node:ekr.20230819162207.7: *5* function: pre_validate
+        def pre_validate(archive: dict) -> None:
+            """
+            Ensure the archive is valid.
+
+            Raise AssertionError if not.
+            """
+            for key in (
+                'bodies', 'children', 'headlines', 'marks',
+                'parents', 'root', 'uas', 'was_cloned',
             ):
-                # The interesting case. We *can* use a deleted vnode.
-                if gnx in global_gnx_dict:
-                    return global_gnx_dict[gnx]
+                assert key in archive, f"archive key not found: {key!r}"
+                d = archive[key]
+                assert isinstance(d, dict), f"archive {key!r} must be a python dictionary."
+                for inner_key in d:
+                    assert isinstance(inner_key, str), f"Inner key {inner_key} of {key!r} must be a string."
+            bodies = archive['bodies']
+            for key, value in bodies.items():
+                assert isinstance(value, list), f"bodies must be lists of strings: {key!r} {value!r}"
 
-            # The c's outline has *never* contained a VNode with the given gnx.
-            return leoNodes.VNode(c)
         #@+node:ekr.20230819095004.1: *5* function: resolve
         def resolve(gnx: str) -> VNode:
             """Resolve a gnx in the outline to corresponding VNode."""
-            return local_vnode_dict[gnx_to_gnx(gnx)]
-        #@+node:ekr.20230819101513.1: *5* function: update_fc_gnxDict
-        def update_fc_gnxDict() -> None:
-            """Update fc.gnxDict, with careful checks."""
-            # fc.gnxDict.update(global_gnx_dict)
-            for z, v in global_gnx_dict.items():
+            assert gnx in vnode_dict, f"gnx {gnx!r} not found."
+            return vnode_dict[gnx]
+        #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
+        def update_gnxDict() -> None:
+            """Carefully update fc.gnxDict."""
+            for gnx, v in global_gnx_dict.items():
+                assert isinstance(gnx, str), repr(gnx)
                 assert isinstance(v, VNode), repr(v)
-                if z in fc.gnxDict:
-                    assert fc.gnxDict[z] == v
+                if gnx in fc.gnxDict:
+                    assert fc.gnxDict[gnx] == v
                 else:
-                    fc.gnxDict[z] = v
+                    fc.gnxDict[gnx] = v
         #@-others
 
         # The main line, much like a linker.
         try:
             assert command_name in valid_command_names, repr(command_name)
 
-            # Compute the list of all gnxs in the archive.
-            # These gnxs do *not* necessarily appear in the outline (global_gnx_dict)!
-            all_gnxs: list[str] = all_gnxs_in_archive(d)
+            pre_validate(archive)
 
-            # The local_vnode_dict contains keys for *all* gnxs in the archive; values are VNodes.
-            local_vnode_dict: dict[str, Optional[VNode]] = {}
+            all_gnxs: list[str] = all_gnxs_in_archive(archive)
 
-            # Allocate all missing VNodes.
-            allocate_all_vnodes()
+            # Keys are *all* gnxs in the archive; values are VNodes.
+            vnode_dict: dict[str, Optional[VNode]] = {}
+            for gnx in all_gnxs:
+                vnode_dict[gnx] = new_vnode(gnx)
 
-            # Create a *new* archive, whose gnxs *do* appear in the global_gnx_dict.
-            new_archive = create_new_archive()
+            # Set all parent/child links, but not root_v.parents.
+            root_parents = root_v.parents[:]
+            create_parent_child_links(vnode_dict)
+            root_parents = root_parents
 
-            # Verify that all new gnx's refer to VNodes in the global_gnx_dict.
-            all_new_gnxs: list[str] = all_gnxs_in_archive(new_archive)
-            for z in all_new_gnxs:
-                assert z in global_gnx_dict
+            overwrite_node_data(archive, vnode_dict)
 
-            # Create parent/child links.
-            create_links(all_new_gnxs, new_archive)
+            post_validate(root_v)
 
-            # Overwrite data from the archive.
-            ### To do ###
-
-            # Update fc.gnxDict unless we are validating.
-            if command_name != 'validate':
-                update_fc_gnxDict()
+            update_gnxDict()  # Last, after validation.
 
         except Exception as e:
             if g.unitTesting:
@@ -2238,8 +2232,8 @@ class Commands:
             g.trace(f"Unexpected exception: {e}")
             g.es_exception()
             g.internalError(e)
-            # g.printObj(d)
-            # g.dump_archive(d)
+            # g.printObj(archive)
+            # g.dump_archive(archive)
     #@+node:ekr.20230816045125.1: *4* c.validate_archive
     def validate_archive(self, d: dict) -> bool:
         """Ensure that unarchiving the outline will succeed."""
