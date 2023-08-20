@@ -2033,21 +2033,12 @@ class Commands:
                 ### g.trace(dump_links(parent, child))
     #@+node:ekr.20230810090101.1: *4* c.unarchive
     def unarchive(self, archive: dict, root_v: VNode, command_name: str) -> None:
-        #@+<< c.unarchive_to vnode: docstring >>
-        #@+node:ekr.20230818173923.1: *5* << c.unarchive_to vnode: docstring >>
         """
-        c.unarchive_to_vode: The heart of the dearchiving process.
-
         Patch root_v from archive, a dict created by c.archive, creating all of
-        root_v's descendants as needed.
+        root_v's descendants as needed and updating fc.gnxDict.
 
-        Depending on command_name, create new VNodes or use existing VNodes from fc.gnxDict.
-
-        The 'validate' command_name indicates that we are validating the archive.
-
-        Update gc.fnxDict unless command_name is 'validate'.
+        The caller should already have called c.validate_archive.
         """
-        #@-<< c.unarchive_to vnode: docstring >>
         c = self
         fc = c.fileCommands
         global_gnx_dict = fc.gnxDict  # Updated only at the end.
@@ -2165,26 +2156,6 @@ class Commands:
             Raise AssertionError if not.
             """
 
-        #@+node:ekr.20230819162207.7: *5* function: pre_validate
-        def pre_validate(archive: dict) -> None:
-            """
-            Ensure the archive is valid.
-
-            Raise AssertionError if not.
-            """
-            for key in (
-                'bodies', 'children', 'headlines', 'marks',
-                'parents', 'root', 'uas', 'was_cloned',
-            ):
-                assert key in archive, f"archive key not found: {key!r}"
-                d = archive[key]
-                assert isinstance(d, dict), f"archive {key!r} must be a python dictionary."
-                for inner_key in d:
-                    assert isinstance(inner_key, str), f"Inner key {inner_key} of {key!r} must be a string."
-            bodies = archive['bodies']
-            for key, value in bodies.items():
-                assert isinstance(value, list), f"bodies must be lists of strings: {key!r} {value!r}"
-
         #@+node:ekr.20230819095004.1: *5* function: resolve
         def resolve(gnx: str) -> VNode:
             """Resolve a gnx in the outline to corresponding VNode."""
@@ -2193,6 +2164,7 @@ class Commands:
         #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
         def update_gnxDict() -> None:
             """Carefully update fc.gnxDict."""
+            from leo.core.leoNodes import VNode
             for gnx, v in global_gnx_dict.items():
                 assert isinstance(gnx, str), repr(gnx)
                 assert isinstance(v, VNode), repr(v)
@@ -2207,7 +2179,6 @@ class Commands:
             assert command_name in valid_command_names, repr(command_name)
 
             # Setup.
-            pre_validate(archive)
             all_gnxs: list[str] = all_gnxs_in_archive(archive)
             # Keys are *all* gnxs in the archive; values are VNodes. See new_vnode for details.
             vnode_dict: dict[str, Optional[VNode]] = {gnx: new_vnode(gnx) for gnx in all_gnxs}
@@ -2233,14 +2204,28 @@ class Commands:
             # g.printObj(archive)
             # g.dump_archive(archive)
     #@+node:ekr.20230816045125.1: *4* c.validate_archive
-    def validate_archive(self, d: dict) -> bool:
-        """Ensure that unarchiving the outline will succeed."""
-        c = self
-        root_v = leoNodes.VNode(c)  # Create a throw-away gnx.
+    def validate_archive(self, archive: dict) -> bool:
+        """Return True if c.unarchive(archive) will succeed."""
         try:
-            c.unarchive(d, root_v, command_name='validate')
+            assert 'root' in archive, "archive key not found: 'root'"
+            root_gnx = archive['root']
+            assert isinstance(root_gnx, str), repr(root_gnx)
+            for key in (
+                'bodies', 'children', 'headlines', 'marks',
+                'parents', 'uas', 'was_cloned',
+            ):
+                assert key in archive, f"archive key not found: {key!r}"
+                d = archive[key]
+                assert isinstance(d, dict), f"archive {key!r} must be a python dictionary."
+                for inner_key in d:
+                    assert isinstance(inner_key, str), f"Inner key {inner_key} of {key!r} must be a string."
+            bodies = archive['bodies']
+            for key, value in bodies.items():
+                assert isinstance(value, list), f"bodies must be lists of strings: {key!r} {value!r}"
             return True
-        except Exception:
+        except AssertionError as e:
+            g.trace(f"Invalid archive: {e}")
+            g.es_exception()
             return False
     #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
     def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:

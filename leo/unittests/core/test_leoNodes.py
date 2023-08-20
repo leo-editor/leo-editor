@@ -136,7 +136,7 @@ class TestNodes(LeoUnitTest):
         for obj in bad_table:
             assert not g.is_valid_json(obj), repr(obj)
     #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
-    #@+node:ekr.20230808053626.1: *4* TestNodes.test_c_archive
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_c_archive (to do)
     def test_c_archive(self):
 
         c = self.c
@@ -150,7 +150,7 @@ class TestNodes(LeoUnitTest):
         # Run all tests.
         trace = False
         for kind in ('all',):
-            for command_name in ('paste-node', 'paste-as-template', 'paste-retaining-clones', 'validate'):
+            for command_name in ('paste-node', 'paste-as-template', 'paste-retaining-clones', 'read-outline'):
                 self.clean_tree()
                 self.create_test_outline()
                 test_p = c.rootPosition()

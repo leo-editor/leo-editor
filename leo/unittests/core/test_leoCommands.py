@@ -410,7 +410,7 @@ class TestCommands(LeoUnitTest):
         p1 = p.insertAsLastChild()
         s = '\xd4\xc5\xd3\xd4'  # the word 'test' in Russian, koi8-r
         assert isinstance(s, str), repr(s)
-        p1.setBodyString(s)
+        p1.b = s
         c.selectPosition(p1)
         c.copyOutline()
         c.pasteOutline()

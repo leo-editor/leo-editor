@@ -800,19 +800,13 @@ class FileCommands:
             g.trace('no c.p')
             return None
 
-        # Test the to-be-pasted string.
+        # Prevalidate the to-be-pasted archive.
+        if not s:
+            return None
         d = g.json_string_to_dict(s)
-        if d is None:
-            g.es("The clipboard is not valid ", color="blue")
-            g.dump_archive(d, tag='paste-node')
-            return None
         if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
             return None
-
-        # Init.
-        self.initReadIvars()
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
 
         # Create the new position *first*.
         if c.p.hasChildren() and c.p.isExpanded():
@@ -827,19 +821,12 @@ class FileCommands:
         # Paste into p.v
         c.unarchive(d, root_v=p.v, command_name='paste-node')
 
-        self.gnxDict = oldGnxDict
-        self.reassignAllIndices(p)
-
-        # Recompute all v.parents data *after* linking v.
-        c.recompute_all_parents()  ### Just adjust one pair of links???
-
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None
 
         c.selectPosition(p)
-        self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
@@ -852,13 +839,12 @@ class FileCommands:
             g.trace('no c.p')
             return None
 
-        # Test the to-be-pasted string.
-        d = g.json_string_to_dict(s)
-        if d is None:
-            g.es("The clipboard is not valid ", color="blue")
-            g.dump_archive(d, tag='paste-node-retaining-clones')
+        # Prevalidate the to-be-pasted archive.
+        if not s:
             return None
+        d = g.json_string_to_dict(s)
         if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
             return None
 
         # Create the new position *first*.
@@ -899,19 +885,13 @@ class FileCommands:
             g.trace('no c.p')
             return None
 
-        # Test the to-be-pasted string.
+        # Prevalidate the to-be-pasted archive.
+        if not s:
+            return None
         d = g.json_string_to_dict(s)
-        if d is None:
-            g.es("The clipboard is not valid ", color="blue")
-            g.dump_archive(d, tag='paste-node-as-template')
-            return None
         if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
             return None
-
-        # Init.
-        self.initReadIvars()
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
 
         # Create the new position *first*.
         if c.p.hasChildren() and c.p.isExpanded():
@@ -926,42 +906,13 @@ class FileCommands:
         # Paste into p.v
         c.unarchive(d, root_v=p.v, command_name='paste-as-template')
 
-        self.gnxDict = oldGnxDict
-        self.reassignNonClonedIndices(d, p)
-
-        # Recompute all v.parents data *after* linking v.
-        c.recompute_all_parents()
-
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None
 
         c.selectPosition(p)
-        self.initReadIvars()
         return p
-    #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
-    def reassignAllIndices(self, p: Position) -> None:
-        """Reassign all indices in p's subtree."""
-        ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree(copy=False):
-            v = p2.v
-            index = ni.getNewIndex(v)  # Sets v._fileIndex.
-            if 'gnx' in g.app.debug:
-                g.trace('**reassigning**', index, v)
-    #@+node:ekr.20230815141055.1: *5* fc.reassignNonClonedIndices
-    def reassignNonClonedIndices(self, d: dict, p: Position) -> None:
-        """Reassign only *non-cloned* indices in p's subtree."""
-        c = self.c
-        ni = g.app.nodeIndices
-        for v in p.v.alt_self_and_subtree():
-            g.trace(v.gnx, c.was_cloned_in_archive(d, v.gnx), v.h)
-            if not c.was_cloned_in_archive(d, v.gnx):
-                index = ni.getNewIndex(v)  # Sets v._fileIndex.
-                if 'gnx' in g.app.debug:
-                    g.trace('**reassigning**', index, v)
-
-        ############ Switch all references in the tree ############
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
     def getLeoFile(
