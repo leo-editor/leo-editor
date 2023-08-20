@@ -2427,7 +2427,7 @@ class Commands:
             messages: list[str] = []
             n = 0
             
-            def oops(parent_v, child_v, message_list: list[str]) -> None:
+            def oops(parent_v: VNode, child_v: VNode, message_list: list[str]) -> None:
                 """Helper for error message"""
                 error_list.append((parent_v, child_v))
                 message = '\n'.join(f"{i+1}: {z}" for i, z in enumerate(message_list))
