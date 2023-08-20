@@ -2426,32 +2426,38 @@ class Commands:
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
             n = 0
+            
+            def oops(parent_v, child_v, message_list: list[str]) -> None:
+                """Helper for error message"""
+                error_list.append((parent_v, child_v))
+                message = '\n'.join(f"{i+1}: {z}" for i, z in enumerate(message_list))
+                messages.append(
+                    f"{message}\n\n"
+                    f"parent: {parent_v.gnx} {parent_v.h}\n"
+                    f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
+                    f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
+
+                    f" child: {child_v.gnx} {child_v.h}\n"
+                    f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
+                    f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
+                )
+
             all_nodes = list(c.all_unique_nodes())
             all_nodes.append(c.hiddenRootNode)
             for parent_v in all_nodes:
                 for child_v in parent_v.children:
                     matching_children = [z for z in parent_v.children if z == child_v]
                     matching_parents = [z for z in child_v.parents if z == parent_v]
-                    if len(matching_children) == len(matching_parents):
-                        continue
-                    n += 1
-                    error_list.append((parent_v, child_v))
-                    message_tail = (
-                        f"parent: {parent_v.gnx} {parent_v.h}\n"
-                        f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
-                        f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
-
-                        f" child: {child_v.gnx} {child_v.h}\n"
-                        f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
-                        f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
-                    )
+                    local_messages = []
+                    if child_v in child_v.parents:
+                        local_messages.append('child is parent of itself')
                     if not matching_parents:
-                        messages.append('parent not in child.parents\n\n' + message_tail)
-                    else:
-                        messages.append(
-                            'Mismatch between parent.children and child.parents\n\n' +
-                            message_tail
-                        )
+                        local_messages.append('parent not in child.parents')
+                    if len(matching_children) != len(matching_parents):
+                        local_messages.append('Mismatch between parent.children and child.parents')
+                    if local_messages:
+                        oops(parent_v, child_v, local_messages)
+                        n += len(local_messages)
             return error_list, messages, n
         #@-others
 
@@ -2466,7 +2472,7 @@ class Commands:
         if verbose:  # pragma: no cover
             print('\n')
             g.trace(g.callers())
-            g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
+            g.trace(f"{n} link error{g.plural(n)}:\n")
             print('\n'.join(messages) + '\n')
             g.dump_clone_info(c)
         if strict:  # pragma: no cover
