@@ -2091,7 +2091,7 @@ class Commands:
                         result_set.add(gnx2)
 
             return list(result_set)
-        #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links (rewrite)
+        #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
             for gnx, v in vnode_dict.items():
@@ -2206,25 +2206,23 @@ class Commands:
         try:
             assert command_name in valid_command_names, repr(command_name)
 
+            # Setup.
             pre_validate(archive)
-
             all_gnxs: list[str] = all_gnxs_in_archive(archive)
-
-            # Keys are *all* gnxs in the archive; values are VNodes.
-            vnode_dict: dict[str, Optional[VNode]] = {}
-            for gnx in all_gnxs:
-                vnode_dict[gnx] = new_vnode(gnx)
+            # Keys are *all* gnxs in the archive; values are VNodes. See new_vnode for details.
+            vnode_dict: dict[str, Optional[VNode]] = {gnx: new_vnode(gnx) for gnx in all_gnxs}
 
             # Set all parent/child links, but not root_v.parents.
             root_parents = root_v.parents[:]
             create_parent_child_links(vnode_dict)
             root_parents = root_parents
 
-            overwrite_node_data(archive, vnode_dict)
-
+            # Validate before overwriting data.
             post_validate(root_v)
 
-            update_gnxDict()  # Last, after validation.
+            # Finish.
+            overwrite_node_data(archive, vnode_dict)
+            update_gnxDict()
 
         except Exception as e:
             if g.unitTesting:
