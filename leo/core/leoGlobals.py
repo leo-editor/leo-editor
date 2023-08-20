@@ -5931,7 +5931,7 @@ def json_string_to_dict(s: str, warn: bool = False) -> Optional[dict]:
         return json.loads(s)
     except Exception as e:
         if warn:
-            g.trace(f"Unexpected exception: {e}")
+            g.trace(f"Unexpected exception: {e}", g.callers())
             g.es_exception()
         return None
 

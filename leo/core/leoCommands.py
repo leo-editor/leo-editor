@@ -2128,7 +2128,7 @@ class Commands:
 
             # c's outline has *never* contained a VNode with the given gnx.
             return leoNodes.VNode(c)
-        #@+node:ekr.20230820042603.1: *5* function: overwrite_node_data (to do)
+        #@+node:ekr.20230820042603.1: *5* function: overwrite_node_data
         def overwrite_node_data(archive: dict, vnode_dict: dict) -> None:
             """
             Overwrite non-link data, using values from the archive.
@@ -2138,29 +2138,22 @@ class Commands:
                 body = archive.get('bodies').get(gnx) or []
                 headline = archive.get('headlines').get(gnx) or ''
                 marks = archive.get('marks').get(gnx)
-                uas_string = archive['uas'].get(gnx)
+                uas_dict = archive['uas'].get(gnx)
 
                 v._bodyString = ''.join(body)
                 v._headString = headline
                 if marks:
                     v.setMarked()
-                if uas_string:
-                    uas = g.json_string_to_dict(uas_string, warn=True)
-                    if uas:
-                        v.u = uas
+                if uas_dict:
+                    v.u = uas_dict
         #@+node:ekr.20230819162108.1: *5* function: post_validate (to do)
         def post_validate(root_v: VNode) -> None:
             """
-            Validate the newly-created VNode, its descendants and all gnx.
-
-            Raise AssertionError if not.
+            Raise AssertionError if the newly-pasted tree is invalid.
             """
+            # Make sure all parent/child VNodes are in the vnode_dict.
 
-        #@+node:ekr.20230819095004.1: *5* function: resolve
-        def resolve(gnx: str) -> VNode:
-            """Resolve a gnx in the outline to corresponding VNode."""
-            assert gnx in vnode_dict, f"gnx {gnx!r} not found."
-            return vnode_dict[gnx]
+            # Make sure all parent/child links are valid.
         #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
         def update_gnxDict() -> None:
             """Carefully update fc.gnxDict."""
@@ -2198,7 +2191,7 @@ class Commands:
         except Exception as e:
             if g.unitTesting:
                 raise
-            g.trace(f"Unexpected exception: {e}")
+            g.trace(f"Invalid archive: {e}")
             g.es_exception()
             g.internalError(e)
             # g.printObj(archive)

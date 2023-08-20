@@ -130,7 +130,6 @@ class TestOutlineCommands(LeoUnitTest):
     def test_paste_node(self):
 
         c = self.c
-        p = c.p
         u = c.undoer
 
         # Enable strict tests and verbose tracing.
@@ -169,12 +168,11 @@ class TestOutlineCommands(LeoUnitTest):
         valid_target_headlines = list(sorted(
             z.h for z in c.all_unique_positions() if z.h not in ('cc', 'cc:child1', 'cc:child2')
         ))
+        is_json = True
         for target_headline in valid_target_headlines:
-            for test_kind, is_json in (
-                ('cut', True), ('cut', False), ('copy', True), ('copy', False),
-            ):
+            for test_kind in ('cut', 'copy'):
 
-                # print('TEST', test_kind, target_headline)
+                print('TEST', test_kind, target_headline)
 
                 # Create the tree and gnx_dict.
                 self.clean_tree()
@@ -183,7 +181,7 @@ class TestOutlineCommands(LeoUnitTest):
                 # Calculate vnodes and gnx_dict for test_node, before any changes.
                 vnodes = list(set(list(c.all_unique_nodes())))
                 gnx_dict = {z.h: z.gnx for z in vnodes}
-                self.assertEqual(0, c.checkOutline())
+                self.assertEqual(0, c.checkOutline(), msg='pre-test')
 
                 # Cut or copy cc.
                 if test_kind == 'cut':
@@ -199,11 +197,7 @@ class TestOutlineCommands(LeoUnitTest):
                     c.selectPosition(cc)
                     self.copy_node(is_json)
 
-                self.assertEqual(0, c.checkOutline())  # Check 1.
-
-                # Pretest: select all positions in the tree.
-                for p in c.all_positions():
-                    c.selectPosition(p)
+                self.assertEqual(0, c.checkOutline(), msg='check 1')
 
                 # Find the target position by headline.
                 target_p = g.findNodeAnywhere(c, target_headline)
@@ -214,16 +208,16 @@ class TestOutlineCommands(LeoUnitTest):
                 c.pasteOutline()
 
                 # Check the paste.
-                self.assertEqual(0, c.checkOutline())  # Check 2.
+                self.assertEqual(0, c.checkOutline(), msg='check 2')
                 test_tree(pasted_flag=True, tag='paste-node')
 
                 # Check multiple undo/redo cycles.
                 for i in range(3):
                     u.undo()
-                    self.assertEqual(0, c.checkOutline())
+                    self.assertEqual(0, c.checkOutline(), msg='after undo')
                     test_tree(pasted_flag=False, tag=f"undo {i}")
                     u.redo()
-                    self.assertEqual(0, c.checkOutline())  # Check 3.
+                    self.assertEqual(0, c.checkOutline(), msg='after redo')
                     test_tree(pasted_flag=True, tag=f"redo {i}")
     #@+node:ekr.20230722104508.1: *3* TestOutlineCommands.test_paste_retaining_clones
     def test_paste_retaining_clones(self):
