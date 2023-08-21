@@ -2090,6 +2090,7 @@ class Commands:
                     headline_s = archive.get('headlines').get(gnx)
                     g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
                 if v == root_v:
+                    # A crucial special case. The *archived* root has no parents.
                     pass
                 else:
                     v.parents = [vnode_dict[z] for z in parents]

@@ -26,6 +26,10 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
 
+        # Enable strict tests and verbose tracing in c.checkVnodeLinks.
+        g.app.debug.extend(['test:strict'])
+        g.app.debug.extend(['test:verbose'])
+
         #@+others  # Define test_functions
         #@+node:ekr.20230816162557.4: *4* function: test_after_copy
         def test_after_copy():
@@ -132,7 +136,7 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
 
-        # Enable strict tests and verbose tracing.
+        # Enable strict tests and verbose tracing in c.checkVnodeLinks.
         g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
@@ -225,8 +229,8 @@ class TestOutlineCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
 
-        # Enable strict tests and verbose tracing.
-        # g.app.debug.extend(['test:strict'])
+        # Enable strict tests and verbose tracing in c.checkVnodeLinks.
+        g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
         for test_kind in ('cut', 'copy'):
