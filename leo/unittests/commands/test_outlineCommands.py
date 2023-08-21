@@ -133,7 +133,7 @@ class TestOutlineCommands(LeoUnitTest):
         u = c.undoer
 
         # Enable strict tests and verbose tracing.
-        g.app.debug.extend(['test:strict'])
+        ### g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
         #@+others  # Define test_tree function.
@@ -172,7 +172,7 @@ class TestOutlineCommands(LeoUnitTest):
         for target_headline in valid_target_headlines:
             for test_kind in ('copy', 'cut'):
 
-                print('TEST', test_kind, target_headline)
+                print(f"\nTEST {test_kind}, then paste after {target_headline}")
 
                 # Create the tree and gnx_dict.
                 self.clean_tree()
@@ -226,7 +226,7 @@ class TestOutlineCommands(LeoUnitTest):
         u = c.undoer
 
         # Enable strict tests and verbose tracing.
-        g.app.debug.extend(['test:strict'])
+        # g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
         for test_kind in ('cut', 'copy'):
@@ -315,25 +315,6 @@ class TestOutlineCommands(LeoUnitTest):
                     parent.v.children.remove(child.v)
             else:
                 assert False, defect
-        #@+node:ekr.20230729124819.1: *4* function: enable_options
-        def enable_options(parent: Position, options: list[tuple[str, str]]) -> None:
-            """
-            Enable options in g.app.debug for given list of option descriptors.
-
-            Each descriptor has the form (selector, option).
-
-            selector: 'all' or a headline.
-            option: 's' for strict, 'v' for verbose.
-            """
-            g.app.debug = []
-            for descriptor  in options:
-                selector, option = descriptor
-                if selector in ('all', parent.h):
-                    if 's' in option and 'test:strict' not in g.app.debug:
-                        g.app.debug.append('test:strict')
-                    if 'v' in option and 'test:verbose' not in g.app.debug:
-                        g.app.debug.append('test:verbose')
-
         #@+node:ekr.20230729124441.1: *4* function: test (test_c_checkVnodeLinks)
         def test(parent: Position, child: Position) -> int:
             """
@@ -342,7 +323,6 @@ class TestOutlineCommands(LeoUnitTest):
             Return the number of tests run.
             """
             # Create defects and run tests.
-            enable_options(parent, options)
             n = 0
             for defect in defects:
                 tag_s = f"defect: {defect} parent: {parent.h}, child: {child.h}"
@@ -356,14 +336,6 @@ class TestOutlineCommands(LeoUnitTest):
 
         init_dicts()
 
-        # Set options for enable_options().
-        # Options: a tuple (selector, option):
-        #          Selector: headline or 'all'
-        #          Option: 's' for strict, 'v' for verbose or 'sv' for both.
-        options: tuple[tuple[str, str]] = (
-            # ('all', 'v'),
-        )
-
         # The list of all possible defects. See do_defect.
         defects = [
             'parents:insert', 'parents:delete', 'parents:delete-all',
@@ -376,7 +348,6 @@ class TestOutlineCommands(LeoUnitTest):
             for child in parent.children():
                 n_positions += 1
                 n_tests += test(parent, child)
-        # g.trace('Done', n_tests, 'tests', n_positions, 'positions')
     #@+node:ekr.20230722083123.1: *3* TestOutlineCommands.test_restoreFromCopiedTree
     def test_restoreFromCopiedTree(self):
 

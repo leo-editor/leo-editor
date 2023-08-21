@@ -866,10 +866,7 @@ class FileCommands:
         # Paste into p.v
         c.unarchive(d, root_v=p.v, command_name='paste-retaining-clones')
 
-        # Recompute all v.parents data *after* linking v.
-        c.recompute_all_parents()
-
-        # Automatically correct link errors.
+        # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None

@@ -2086,13 +2086,11 @@ class Commands:
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
             for gnx, v in vnode_dict.items():
-                headline_s = archive.get('headlines').get(gnx) or '<No Headline>'
                 children = archive.get('children').get(gnx) or []
                 parents = archive.get('parents').get(gnx) or []
-                g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
-                # children = archive['children']
-                # parents = archive['parents']
-                # assert parents not in (None, []), repr(gnx)
+                if 0:
+                    headline_s = archive.get('headlines').get(gnx)
+                    g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
                 v.parents = [vnode_dict[z] for z in parents]
                 v.children = [vnode_dict[z] for z in children]
         #@+node:ekr.20230818173706.1: *5* function: dump_vnode_dict
@@ -2159,6 +2157,8 @@ class Commands:
             # Make sure all parent/child VNodes are in the vnode_dict.
 
             # Make sure all parent/child links are valid.
+
+            assert c.checkVnodeLinks() == 0
         #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
         def update_gnxDict() -> None:
             """Carefully update fc.gnxDict."""
@@ -2183,10 +2183,13 @@ class Commands:
             vnode_dict: dict[str, Optional[VNode]] = {gnx: new_vnode(gnx) for gnx in all_gnxs}
 
             # Set all parent/child links, but not root_v.parents.
-            root_parents = root_v.parents[:]
-            create_parent_child_links(vnode_dict)
-            root_parents = root_parents
-            
+            if 1:
+                create_parent_child_links(vnode_dict)
+            else:
+                root_parents = root_v.parents[:]
+                create_parent_child_links(vnode_dict)
+                root_parents = root_parents
+
             # Set the parents of the root
             archive_root = vnode_dict[archive['root']]
             archive_root.parents = [root_v]
@@ -2426,7 +2429,7 @@ class Commands:
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
             n = 0
-            
+
             def oops(parent_v: VNode, child_v: VNode, message_list: list[str]) -> None:
                 """Helper for error message"""
                 error_list.append((parent_v, child_v))
@@ -2462,19 +2465,21 @@ class Commands:
         #@-others
 
         # For unit testing.
-        strict = 'test:strict' in g.app.debug
-        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+        strict = g.unitTesting
+        ### strict = 'test:strict' in g.app.debug
+        verbose = any(z in g.app.debug for z in (
+            'test:verbose', 'gnx', 'shutdown', 'startup', 'verbose')
+        )
 
-        # Call find_errors.
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
         if verbose:  # pragma: no cover
-            print('\n')
+            print('')
             g.trace(g.callers())
             g.trace(f"{n} link error{g.plural(n)}:\n")
-            print('\n'.join(messages) + '\n')
-            g.dump_clone_info(c)
+            print('\n'.join(messages).rstrip())
+            g.dump_clone_info(c, tag='checkVnodeLinks')
         if strict:  # pragma: no cover
             return n
         old_n = n
