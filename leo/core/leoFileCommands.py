@@ -819,7 +819,7 @@ class FileCommands:
             return None
 
         # Paste into p.v
-        c.unarchive(d, root_v=p.v, command_name='paste-node')
+        c.unarchive(d, root=p, command_name='paste-node')
 
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
@@ -864,7 +864,7 @@ class FileCommands:
             ni.check_gnx(c, v.fileIndex, v)
 
         # Paste into p.v
-        c.unarchive(d, root_v=p.v, command_name='paste-retaining-clones')
+        c.unarchive(d, root=p, command_name='paste-retaining-clones')
 
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
@@ -901,7 +901,7 @@ class FileCommands:
             return None
 
         # Paste into p.v
-        c.unarchive(d, root_v=p.v, command_name='paste-as-template')
+        c.unarchive(d, root=p, command_name='paste-as-template')
 
         # Defensive code: automatically correct link errors.
         errors = c.checkOutline()

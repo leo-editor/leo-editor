@@ -1997,12 +1997,13 @@ class Commands:
         # g.dump_archive(d, tag='c.archive')
         return d
     #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
-    def recompute_all_parents(self) -> None:
+    def recompute_all_parents(self, root_v: VNode = None) -> None:
         """
         Recompute all v.parents arrays using neither positions nor v.parents ivars.
         """
         c = self
-        root_v = c.hiddenRootNode
+        if root_v is None:
+            root_v = c.hiddenRootNode
 
         def dump_links(parent: VNode, child: VNode) -> str:
             parent_s = 'hidden' if parent == root_v else parent.h
@@ -2032,7 +2033,7 @@ class Commands:
                 child.parents.append(parent)
                 ### g.trace(dump_links(parent, child))
     #@+node:ekr.20230810090101.1: *4* c.unarchive
-    def unarchive(self, archive: dict, root_v: VNode, command_name: str) -> None:
+    def unarchive(self, archive: dict, root: Position, command_name: str) -> None:
         """
         Patch root_v from archive, a dict created by c.archive, creating all of
         root_v's descendants as needed and updating fc.gnxDict.
@@ -2040,6 +2041,7 @@ class Commands:
         The caller should already have called c.validate_archive.
         """
         c = self
+        root_v = root.v
         fc = c.fileCommands
         global_gnx_dict = fc.gnxDict  # Updated only at the end.
         valid_command_names = (
@@ -2083,6 +2085,11 @@ class Commands:
         #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
+
+            ### Must simulate full traversal using *Positions*, not unique vnodes.
+            ### for v in root.alt_self_and_subtree():
+
+
             for gnx, v in vnode_dict.items():
                 children = archive.get('children').get(gnx) or []
                 parents = archive.get('parents').get(gnx) or []
@@ -2173,6 +2180,7 @@ class Commands:
             }
             create_parent_child_links(vnode_dict)
             overwrite_node_data(archive, vnode_dict)
+            ## c.recompute_all_parents(root_v)
             assert(n := c.checkVnodeLinks()) == 0, n
             update_gnxDict()
         except Exception as e:
