@@ -2020,25 +2020,6 @@ class Commands:
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
                 child.parents.append(parent)
-    #@+node:ekr.20230821122338.1: *4* c.recompute_parents_in_tree
-    def recompute_parents_in_tree(self, root_v: VNode) -> None:
-        """
-        Recompute all v.parents arrays in root_v's subtree using neither
-        positions nor v.parents ivars.
-        """
-
-        # Clear all v.parents arrays except root_v's parents.
-        root_parents = root_v.parents
-        for v in root_v.alt_self_and_subtree():
-            v.parents = []
-        root_v.parents = root_parents
-
-        # Loop invariant: Visit each *parent* vnode *once*.
-        #                 Child vnodes may be visited more than once.
-
-        for parent_v in root_v.alt_self_and_subtree():
-            for child_v in parent_v.children:
-                child_v.parents.append(parent_v)
     #@+node:ekr.20230810090101.1: *4* c.unarchive
     def unarchive(self, archive: dict, root: Position, command_name: str) -> None:
         """
@@ -2108,17 +2089,11 @@ class Commands:
 
             # Pass 1: create children links.
             for gnx, v in vnode_dict.items():
-                ### g.trace('Set children for', v.h)
                 children = archive.get('children').get(gnx) or []
                 v.children = [vnode_dict[z] for z in children]
 
-            # Pass 2: recreate parent links.
-            if command_name == 'paste-node':
-                # All changes are localize, so this suffices.
-                c.recompute_parents_in_tree(root_v)
-            else:
-                # c.all_positions_for_v assumes v.parents are all correct.
-                c.recompute_all_parents()
+            # Pass 2: We must recompute *all* parents.
+            c.recompute_all_parents()
 
             # Immediately check.
             if g.unitTesting:

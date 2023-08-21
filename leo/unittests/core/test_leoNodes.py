@@ -314,8 +314,8 @@ class TestNodes(LeoUnitTest):
             g.printObj([g.dump_vnode(z) for z in vnodes1])
             g.printObj([g.dump_vnode(z) for z in vnodes2])
         assert vnodes1 == vnodes2
-    #@+node:ekr.20230814055824.1: *4* TestNodes.test_recompute_all_parents
-    def test_recompute_all_parents(self):
+    #@+node:ekr.20230814055824.1: *4* TestNodes.test_c_recompute_all_parents
+    def test_c_recompute_all_parents(self):
 
         c = self.c
         self.clean_tree()
