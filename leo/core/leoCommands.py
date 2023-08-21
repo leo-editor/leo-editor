@@ -2108,7 +2108,9 @@ class Commands:
                 assert root_v == c.hiddenRootNode, f"root_v {root_v} != c.hiddenRootNode"
                 return c.hiddenRootNode
 
-            # Careful: root_v should *never* be archive['root'].
+            # Important special case: Make use root_v for archive's root.
+            if gnx == archive['root']:
+                return root_v
 
             if command_name == 'read-outline':
                 # Return a new VNode *retaining* the gnx.

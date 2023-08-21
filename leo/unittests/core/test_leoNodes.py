@@ -136,7 +136,7 @@ class TestNodes(LeoUnitTest):
         for obj in bad_table:
             assert not g.is_valid_json(obj), repr(obj)
     #@+node:ekr.20220306073015.1: *3* TestNodes: Commander methods
-    #@+node:ekr.20230808053626.1: *4* TestNodes.test_c_archive (to do)
+    #@+node:ekr.20230808053626.1: *4* TestNodes.test_c_archive
     def test_c_archive(self):
 
         c = self.c
