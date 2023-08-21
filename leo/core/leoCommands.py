@@ -2045,8 +2045,6 @@ class Commands:
         valid_command_names = (
             'paste-node', 'paste-retaining-clones', 'paste-as-template', 'read-outline',
         )
-        if 0:  # Very effective trace.
-            g.dump_archive(archive, tag=f"unarchive: {command_name}")
 
         #@+others  # define helper funtions.
         #@+node:ekr.20230818165719.1: *5* function: all_gnxs_in_archive
@@ -2110,9 +2108,7 @@ class Commands:
                 assert root_v == c.hiddenRootNode, f"root_v {root_v} != c.hiddenRootNode"
                 return c.hiddenRootNode
 
-            # Always use root_v.
-            if gnx == archive['root']:
-                return root_v
+            # Careful: root_v should *never* be archive['root'].
 
             if command_name == 'read-outline':
                 # Return a new VNode *retaining* the gnx.
@@ -2149,16 +2145,6 @@ class Commands:
                     v.setMarked()
                 if uas_dict:
                     v.u = uas_dict
-        #@+node:ekr.20230819162108.1: *5* function: post_validate (to do)
-        def post_validate(root_v: VNode) -> None:
-            """
-            Raise AssertionError if the newly-pasted tree is invalid.
-            """
-            # Make sure all parent/child VNodes are in the vnode_dict.
-
-            # Make sure all parent/child links are valid.
-
-            assert c.checkVnodeLinks() == 0
         #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
         def update_gnxDict() -> None:
             """Carefully update fc.gnxDict."""
@@ -2175,34 +2161,21 @@ class Commands:
         # The main line, much like a linker.
         try:
             assert command_name in valid_command_names, repr(command_name)
-
-            # Setup.
             all_gnxs: list[str] = all_gnxs_in_archive(archive)
-
-            # Keys are *all* gnxs in the archive; values are VNodes. See new_vnode for details.
-            vnode_dict: dict[str, Optional[VNode]] = {gnx: new_vnode(gnx) for gnx in all_gnxs}
-
-            # Set all parent/child links, but not root_v.parents.
-            if 1:
-                create_parent_child_links(vnode_dict)
-            else:
-                root_parents = root_v.parents[:]
-                create_parent_child_links(vnode_dict)
-                root_parents = root_parents
-
-            # Set the parents of the root
-            archive_root = vnode_dict[archive['root']]
-            archive_root.parents = [root_v]
-
-            # Validate before overwriting data.
-            post_validate(root_v)
-
-            # Finish.
+            vnode_dict: dict[str, Optional[VNode]] = {
+                gnx: new_vnode(gnx) for gnx in all_gnxs
+            }
+            create_parent_child_links(vnode_dict)
             overwrite_node_data(archive, vnode_dict)
+            assert(n := c.checkVnodeLinks()) == 0, n
             update_gnxDict()
-
         except Exception as e:
             if g.unitTesting:
+                # Very effective trace.
+                if 0:
+                    print('')
+                    g.trace('Callers:', g.callers())
+                    g.dump_archive(archive, tag=f"unarchive: {command_name} root_v: {root_v.h}")
                 raise
             g.trace(f"Invalid archive: {e}")
             g.es_exception()
@@ -2464,13 +2437,10 @@ class Commands:
             return error_list, messages, n
         #@-others
 
-        # For unit testing.
-        strict = g.unitTesting
-        ### strict = 'test:strict' in g.app.debug
+        strict = 'test:strict' in g.app.debug  # Do *not* use g.unitTesting instead!
         verbose = any(z in g.app.debug for z in (
             'test:verbose', 'gnx', 'shutdown', 'startup', 'verbose')
         )
-
         error_list, messages, n = find_errors()
         if n == 0:
             return 0

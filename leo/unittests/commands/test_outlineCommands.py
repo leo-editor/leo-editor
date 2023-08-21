@@ -133,7 +133,7 @@ class TestOutlineCommands(LeoUnitTest):
         u = c.undoer
 
         # Enable strict tests and verbose tracing.
-        ### g.app.debug.extend(['test:strict'])
+        g.app.debug.extend(['test:strict'])
         g.app.debug.extend(['test:verbose'])
 
         #@+others  # Define test_tree function.
@@ -172,7 +172,7 @@ class TestOutlineCommands(LeoUnitTest):
         for target_headline in valid_target_headlines:
             for test_kind in ('copy', 'cut'):
 
-                print(f"\nTEST {test_kind}, then paste after {target_headline}")
+                # print(f"\nTEST {test_kind} cc, then paste after {target_headline}")
 
                 # Create the tree and gnx_dict.
                 self.clean_tree()
