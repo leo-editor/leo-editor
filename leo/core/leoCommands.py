@@ -2082,14 +2082,30 @@ class Commands:
                         result_set.add(gnx2)
 
             return list(result_set)
+        #@+node:ekr.20230821041717.1: *5* function: new_create_parent_child_links
+        def new_create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
+
+            def visit(parent_v: VNode, child_v: VNode) -> None:
+                g.trace(parent_v, child_v)
+
+            def parents_and_children(parent_v: VNode, child_v: VNode) -> Generator:
+                assert parent_v.__class__.__name__ == 'VNode', parent_v.__class__.__name__
+                assert child_v.__class__.__name__ == 'VNode', child_v.__class__.__name__
+                yield(parent_v, child_v)
+                for grand_child_v in child_v.children:
+                    yield from parents_and_children(child_v, grand_child_v)
+
+            gnx = archive['root']
+            children = archive.get('children').get(gnx) or []
+            root_children = [vnode_dict[z] for z in children]
+            # g.printObj([z.h for z in root_children], tag=f"children of {root_v.h}")
+            for child_v in root_children:
+                for (parent_v, child_v) in parents_and_children(root_v, child_v):
+                    if 0:  ### To do.
+                        print(f"{parent_v.h:>10} {child_v.h}")
         #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
-
-            ### Must simulate full traversal using *Positions*, not unique vnodes.
-            ### for v in root.alt_self_and_subtree():
-
-
             for gnx, v in vnode_dict.items():
                 children = archive.get('children').get(gnx) or []
                 parents = archive.get('parents').get(gnx) or []
@@ -2178,14 +2194,15 @@ class Commands:
             vnode_dict: dict[str, Optional[VNode]] = {
                 gnx: new_vnode(gnx) for gnx in all_gnxs
             }
-            create_parent_child_links(vnode_dict)
             overwrite_node_data(archive, vnode_dict)
-            ## c.recompute_all_parents(root_v)
+            create_parent_child_links(vnode_dict)
+            new_create_parent_child_links(vnode_dict)
             assert(n := c.checkVnodeLinks()) == 0, n
             update_gnxDict()
         except Exception as e:
             if g.unitTesting:
                 # Very effective trace.
+                g.es_exception()
                 if 0:
                     print('')
                     g.trace('Callers:', g.callers())
