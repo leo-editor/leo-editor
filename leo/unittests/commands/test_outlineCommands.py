@@ -70,7 +70,7 @@ class TestOutlineCommands(LeoUnitTest):
                         assert len(v.parents) == 2, f"is not cloned: {v.h}"
                     else:
                         assert len(v.parents) == 1, f"is cloned: {v.h}"
-                    if v.h in ('cc', 'cc:child2'):
+                    if v.h in ('cc', 'cc:child2', 'cc:child1:child1'):
                         assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
                     else:
                         assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)

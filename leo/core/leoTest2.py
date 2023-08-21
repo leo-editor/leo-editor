@@ -205,12 +205,15 @@ class LeoUnitTest(unittest.TestCase):
                 aa:child1
             bb
             cc:child1 (clone)
+                cc:child1:child1
             cc
               cc:child1 (clone)
+                cc:child1:child1
               cc:child2
             dd
               dd:child1
                 dd:child1:child1
+                    dd:child1:child1:child1
               dd:child2
             ee
 
@@ -228,6 +231,8 @@ class LeoUnitTest(unittest.TestCase):
         cc.h = 'cc'
         cc_child1 = cc.insertAsLastChild()
         cc_child1.h = 'cc:child1'
+        cc_child1_child1 = cc_child1.insertAsLastChild()
+        cc_child1_child1.h = 'cc:child1:child1'
         cc_child2 = cc_child1.insertAfter()
         cc_child2.h = 'cc:child2'
         dd = cc.insertAfter()
@@ -238,6 +243,8 @@ class LeoUnitTest(unittest.TestCase):
         dd_child2.h = 'dd:child2'
         dd_child1_child1 = dd_child1.insertAsLastChild()
         dd_child1_child1.h = 'dd:child1:child1'
+        dd_child1_child1_child1 = dd_child1_child1.insertAsLastChild()
+        dd_child1_child1_child1.h = 'dd:child1:child1:child1'
         ee = dd.insertAfter()
         ee.h = 'ee'
         clone = cc_child1.clone()
