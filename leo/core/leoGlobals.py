@@ -3094,9 +3094,37 @@ def printDiffTime(message: str, start: float) -> float:
 
 def timeSince(start: float) -> str:
     return f"{time.time()-start:5.2f} sec."
+#@+node:ekr.20230821105641.1: *3* g.clone_info_to_list
+def clone_info_to_list(c: Cmdr, tag: str = None) -> list[str]:
+    """
+    Return a list of strings corresponding to g.dump_info.
+
+    Sort parent lists but *not* children lists.
+    """
+    # Used in unit tests.
+    result = []
+    tag_s = tag + ': ' if tag else ''
+    result.append(f"{tag_s}{g.shortFileName(c.fileName())}\n")
+    result.append(f"clone{' '*3}gnx{' '*3}headline{' '*11}parents{' '*13}children")
+    for p in c.all_positions():
+        cloned_s = ' yes' if p.isCloned() else ''
+        head_s = f"{' '*p.level()}{p.h}"
+        children_list = [dump_vnode(z) for z in p.v.children]
+        parents_list = list(sorted([dump_vnode(z) for z in p.v.parents]))
+        parents_s = '[' + ', '.join(parents_list) + ']'
+        children_s = '[' + ', '.join(children_list) + ']'
+        result.append(
+            f"{cloned_s:>4}"
+            f"{' '*3}{g.dump_gnx(p.v):5}"
+            f"{' '*2}{head_s:<18} {parents_s:<20}"
+            f"{children_s}"
+        )
+    return result
 #@+node:ekr.20230720210931.1: *3* g.dump_clone_info
 def dump_clone_info(c: Cmdr, tag: str = None) -> None:
-    """Dump all clone info."""
+    """
+    Print clone info, sorting parents list but *not* children lists.
+    """
     print('')
     tag_s = tag + ': ' if tag else ''
     g.trace(f"{tag_s}{g.shortFileName(c.fileName())}\n")
@@ -3104,14 +3132,17 @@ def dump_clone_info(c: Cmdr, tag: str = None) -> None:
     for p in c.all_positions():
         cloned_s = ' yes' if p.isCloned() else ''
         head_s = f"{' '*p.level()}{p.h}"
-        parents_s = '[' + ', '.join([dump_vnode(z) for z in p.v.parents]) + ']'
-        children_s = '[' + ', '.join([dump_vnode(z) for z in p.v.children]) + ']'
+        children_list = [dump_vnode(z) for z in p.v.children]
+        parents_list = list(sorted([dump_vnode(z) for z in p.v.parents]))
+        parents_s = '[' + ', '.join(parents_list) + ']'
+        children_s = '[' + ', '.join(children_list) + ']'
         print(
             f"{cloned_s:>4}"
             f"{' '*3}{g.dump_gnx(p.v):5}"
             f"{' '*2}{head_s:<18} {parents_s:<20}"
             f"{children_s}"
         )
+
 #@+node:ekr.20230812112043.1: *3* g.dump_gnx
 def dump_gnx(v: VNode) -> str:
     return '.' + v.gnx.split('.')[2]

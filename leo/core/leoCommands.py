@@ -2005,15 +2005,6 @@ class Commands:
         if root_v is None:
             root_v = c.hiddenRootNode
 
-        def dump_links(parent: VNode, child: VNode) -> str:
-            parent_s = 'hidden' if parent == root_v else parent.h
-            if 1:
-                # return f"{id(parent)} {parent_s:20} {id(child)} {child.h:20}"
-                return f"{parent_s:20} {child.h:20} id(child.parents): {id(child.parents)}"
-            return (
-                f"parent: {parent_s:20} child: {g.dump_gnx(child):4} "
-                f"{child.h:20} child.parents: {child.parents}")
-
         # Clear all v.parents arrays.
         root_v.parents = []
         for v in c.alt_all_unique_nodes():
@@ -2021,17 +2012,16 @@ class Commands:
 
         # Loop invariant: Visit each *parent* vnode *once*.
         #                 Child vnodes may be visited more than once.
+
         # Visit the hidden root.
-        ### print('')
         for child in root_v.children:
             child.parents.append(root_v)
-            ### g.trace(dump_links(root_v, child))
+
         # Visit all other parents.
-        ### print('')
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
                 child.parents.append(parent)
-                ### g.trace(dump_links(parent, child))
+
     #@+node:ekr.20230810090101.1: *4* c.unarchive
     def unarchive(self, archive: dict, root: Position, command_name: str) -> None:
         """

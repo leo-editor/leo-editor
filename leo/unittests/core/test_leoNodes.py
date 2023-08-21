@@ -7,6 +7,7 @@
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoNodes import VNode
 
 #@+others
 #@+node:ekr.20210828112210.1: ** class TestNodes(LeoUnitTest)
@@ -141,7 +142,6 @@ class TestNodes(LeoUnitTest):
 
         c = self.c
         fc = c.fileCommands
-        from leo.core.leoNodes import VNode
 
         # Make sure ni.new_vnode_helper won't raise AssertionError.
         assert g.app.nodeIndices
@@ -322,18 +322,28 @@ class TestNodes(LeoUnitTest):
         cc = self.create_test_paste_outline()
         assert cc.h == 'cc', repr(cc)
         root_v = c.hiddenRootNode
-
         assert root_v.parents == []
+
+        # Before snapshots.
+        clone_info1 = g.clone_info_to_list(c)
         sorted_parents1 = [list(sorted([z2.h for z2 in z.v.parents])) for z in c.all_positions()]
+
         c.recompute_all_parents()
+
+        # After snapshots.
         assert root_v.parents == []
         sorted_parents2 = [list(sorted([z2.h for z2 in z.v.parents])) for z in c.all_positions()]
+        clone_info2 = g.clone_info_to_list(c)
+
+        # Checks.
         if sorted_parents1 != sorted_parents2:
             g.printObj(sorted_parents1)
             g.printObj(sorted_parents2)
         assert sorted_parents1 == sorted_parents2
-
-
+        if clone_info1 != clone_info2:
+            g.printObj(clone_info1, tag='clone_info1')
+            g.printObj(clone_info2, tag='clone_info2')
+        assert clone_info1 == clone_info2
     #@+node:ekr.20210830095545.9: *4* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
         c, p = self.c, self.c.p
