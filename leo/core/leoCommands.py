@@ -2089,7 +2089,10 @@ class Commands:
                 if 0:
                     headline_s = archive.get('headlines').get(gnx)
                     g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
-                v.parents = [vnode_dict[z] for z in parents]
+                if v == root_v:
+                    pass
+                else:
+                    v.parents = [vnode_dict[z] for z in parents]
                 v.children = [vnode_dict[z] for z in children]
         #@+node:ekr.20230818173706.1: *5* function: dump_vnode_dict
         def dump_vnode_dict(tag: str) -> None:
