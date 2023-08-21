@@ -63,17 +63,17 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230816162909.3: *4* function: test_after_cut
         def test_after_cut():
             """Test cut cc, select ee, paste_as_template."""
-            # Nothing should be a clone.
             try:
                 for v in c.alt_all_unique_nodes():
-                    assert len(v.parents) == 1, f"is cloned: {v.h}"
+                    # Only cc:child1 is a clone.
+                    if v.h == 'cc:child1':
+                        assert len(v.parents) == 2, f"is not cloned: {v.h}"
+                    else:
+                        assert len(v.parents) == 1, f"is cloned: {v.h}"
                     if v.h in ('cc', 'cc:child2'):
                         assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
                     else:
                         assert v.gnx == gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
-
-                g.dump_clone_info(c,tag='test_after_cut')  #######
-
             except Exception:
                 g.trace('Fail')
                 if 0:
@@ -119,6 +119,7 @@ class TestOutlineCommands(LeoUnitTest):
 
             # Do the checks *last*.
             self.assertEqual(0, c.checkOutline())
+
             if test_kind == 'cut':
                 test_after_cut()
             else:

@@ -1997,13 +1997,12 @@ class Commands:
         # g.dump_archive(d, tag='c.archive')
         return d
     #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
-    def recompute_all_parents(self, root_v: VNode = None) -> None:
+    def recompute_all_parents(self) -> None:
         """
         Recompute all v.parents arrays using neither positions nor v.parents ivars.
         """
         c = self
-        if root_v is None:
-            root_v = c.hiddenRootNode
+        root_v = c.hiddenRootNode
 
         # Clear all v.parents arrays.
         root_v.parents = []
@@ -2013,7 +2012,7 @@ class Commands:
         # Loop invariant: Visit each *parent* vnode *once*.
         #                 Child vnodes may be visited more than once.
 
-        # Visit the hidden root.
+        # Visit the hidden_root.
         for child in root_v.children:
             child.parents.append(root_v)
 
@@ -2021,7 +2020,25 @@ class Commands:
         for parent in c.alt_all_unique_nodes():
             for child in parent.children:
                 child.parents.append(parent)
+    #@+node:ekr.20230821122338.1: *4* c.recompute_parents_in_tree
+    def recompute_parents_in_tree(self, root_v: VNode) -> None:
+        """
+        Recompute all v.parents arrays in root_v's subtree using neither
+        positions nor v.parents ivars.
+        """
 
+        # Clear all v.parents arrays except root_v's parents.
+        root_parents = root_v.parents
+        for v in root_v.alt_self_and_subtree():
+            v.parents = []
+        root_v.parents = root_parents
+
+        # Loop invariant: Visit each *parent* vnode *once*.
+        #                 Child vnodes may be visited more than once.
+
+        for parent_v in root_v.alt_self_and_subtree():
+            for child_v in parent_v.children:
+                child_v.parents.append(parent_v)
     #@+node:ekr.20230810090101.1: *4* c.unarchive
     def unarchive(self, archive: dict, root: Position, command_name: str) -> None:
         """
@@ -2072,51 +2089,42 @@ class Commands:
                         result_set.add(gnx2)
 
             return list(result_set)
-        #@+node:ekr.20230821041717.1: *5* function: new_create_parent_child_links
-        def new_create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
-
-            def visit(parent_v: VNode, child_v: VNode) -> None:
-                g.trace(parent_v, child_v)
-
-            def parents_and_children(parent_v: VNode, child_v: VNode) -> Generator:
-                assert parent_v.__class__.__name__ == 'VNode', parent_v.__class__.__name__
-                assert child_v.__class__.__name__ == 'VNode', child_v.__class__.__name__
-                yield(parent_v, child_v)
-                for grand_child_v in child_v.children:
-                    yield from parents_and_children(child_v, grand_child_v)
-
-            gnx = archive['root']
-            children = archive.get('children').get(gnx) or []
-            root_children = [vnode_dict[z] for z in children]
-            # g.printObj([z.h for z in root_children], tag=f"children of {root_v.h}")
-            for child_v in root_children:
-                for (parent_v, child_v) in parents_and_children(root_v, child_v):
-                    if 0:  ### To do.
-                        print(f"{parent_v.h:>10} {child_v.h}")
         #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
+            if 0:  ### Old code:
+                for gnx, v in vnode_dict.items():
+                    children = archive.get('children').get(gnx) or []
+                    parents = archive.get('parents').get(gnx) or []
+                    if 0:
+                        headline_s = archive.get('headlines').get(gnx)
+                        g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
+                    if v == root_v:
+                        # A crucial special case. The *archived* root has no parents.
+                        pass
+                    else:
+                        v.parents = [vnode_dict[z] for z in parents]
+                    v.children = [vnode_dict[z] for z in children]
+
+            # Pass 1: create children links.
             for gnx, v in vnode_dict.items():
+                ### g.trace('Set children for', v.h)
                 children = archive.get('children').get(gnx) or []
-                parents = archive.get('parents').get(gnx) or []
-                if 0:
-                    headline_s = archive.get('headlines').get(gnx)
-                    g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
-                if v == root_v:
-                    # A crucial special case. The *archived* root has no parents.
-                    pass
-                else:
-                    v.parents = [vnode_dict[z] for z in parents]
                 v.children = [vnode_dict[z] for z in children]
-        #@+node:ekr.20230818173706.1: *5* function: dump_vnode_dict
-        def dump_vnode_dict(tag: str) -> None:
-            """For debugging. Produce a readable dump of vnode_dict."""
-            g.printObj([
-                    f"{key:26} {val.__class__.__name__}:{id(val)} len(body): {len(val.b):4} {val.h}"
-                    for key, val in vnode_dict.items()
-                ],
-                tag=f"vnode_dict: {tag}"
-            )
+
+            # Pass 2: recreate parent links.
+            if command_name == 'paste-node':
+                # All changes are localize, so this suffices.
+                c.recompute_parents_in_tree(root_v)
+            else:
+                # c.all_positions_for_v assumes v.parents are all correct.
+                c.recompute_all_parents()
+
+            # Immediately check.
+            if g.unitTesting:
+                g.app.debug = ['test:strict', 'test:verbose']
+                n = c.checkVnodeLinks()
+                assert n == 0, n  # c.checkVnodeLinks()
         #@+node:ekr.20230818165723.1: *5* function: new_vnode
         def new_vnode(gnx: str) -> VNode:
             """Find or create the vnode with the given gnx."""
@@ -2177,7 +2185,6 @@ class Commands:
                     fc.gnxDict[gnx] = v
         #@-others
 
-        # The main line, much like a linker.
         try:
             assert command_name in valid_command_names, repr(command_name)
             all_gnxs: list[str] = all_gnxs_in_archive(archive)
@@ -2186,7 +2193,6 @@ class Commands:
             }
             overwrite_node_data(archive, vnode_dict)
             create_parent_child_links(vnode_dict)
-            new_create_parent_child_links(vnode_dict)
             assert(n := c.checkVnodeLinks()) == 0, n
             update_gnxDict()
         except Exception as e:
