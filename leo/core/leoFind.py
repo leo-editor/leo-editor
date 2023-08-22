@@ -2508,7 +2508,8 @@ class LeoFind:
             if s[i] == '\\':
                 ch = s[i + 1]
                 if ch == '\\':
-                    s = s[:i] + s[i + 1 :]  # replace \\ by \
+                    ### s = s[:i] + s[i + 1 :]  # replace \\ by \
+                    pass  # #3505: Do *not* replace \\ by \
                 elif ch == 'n':
                     s = s[:i] + '\n' + s[i + 2 :]  # replace the \n by a newline
                 elif ch == 't':

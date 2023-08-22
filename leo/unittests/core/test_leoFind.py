@@ -934,11 +934,17 @@ class TestFind(LeoUnitTest):
         c = self.c
         x = leoFind.LeoFind(c)
         table = (
-            ('\\\\', '\\'),
+            # Only replace \n, \\n, \t and \\t.
+            ('\\', '\\'),
+            ('\\\\', '\\\\'),
+            (r'a\bc', r'a\bc'),
+            (r'a\\bc', r'a\\bc'),
+            (r'a \ b', r'a \ b'),
+            (r'a \\ b', r'a \\ b'),
+            (r'a \\\ b', r'a \\\ b'),
+
             ('\\n', '\n'),
             ('\\t', '\t'),
-            (r'a\bc', r'a\bc'),
-            (r'a\\bc', r'a\bc'),
             (r'a\tc', 'a\tc'),  # Replace \t by a tab.
             (r'a\nc', 'a\nc'),  # Replace \n by a newline.
         )
