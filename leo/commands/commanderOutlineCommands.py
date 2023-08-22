@@ -46,7 +46,7 @@ def copyOutlineAsJSON(self: Cmdr, event: Event = None) -> Optional[str]:
     if g.app.inBridge:
         return s
     g.app.gui.replaceClipboardWith(s)
-    return None
+    return s
 #@+node:ekr.20031218072017.1549: *3* c_oc: cut-node
 @g.commander_command('cut-node')
 def cutOutline(self: Cmdr, event: Event = None) -> None:
