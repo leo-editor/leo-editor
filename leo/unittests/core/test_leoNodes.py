@@ -7,7 +7,6 @@
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-from leo.core.leoNodes import VNode
 
 #@+others
 #@+node:ekr.20210828112210.1: ** class TestNodes(LeoUnitTest)
@@ -141,61 +140,18 @@ class TestNodes(LeoUnitTest):
     def test_c_archive(self):
 
         c = self.c
-        fc = c.fileCommands
 
-        # Make sure ni.new_vnode_helper won't raise AssertionError.
-        assert g.app.nodeIndices
-        assert c.fileCommands
+        for command_name in ('paste-node', 'paste-as-template', 'paste-retaining-clones', 'read-outline'):
+            self.clean_tree()
+            self.create_test_outline()
+            test_p = c.rootPosition()
+            assert test_p.h == 'root'
 
-        # Run all tests.
-        trace = False
-        for kind in ('all',):
-            for command_name in ('paste-node', 'paste-as-template', 'paste-retaining-clones', 'read-outline'):
-                self.clean_tree()
-                self.create_test_outline()
-                test_p = c.rootPosition()
-                assert test_p.h == 'root'
-                v = test_p.v
-                old_gnx_keys = [z for z in fc.gnxDict]
-                if trace:
-                    print(f"{len(old_gnx_keys)} keys in old_gnx_keys")
-                    for z in old_gnx_keys:
-                        print(f"  {z}")
-                # self.dump_headlines(c)
-
-                if trace:
-                    n1 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n1} keys in gnxDict(before, {command_name}")
-
-                d = c.archive(v)
-                if 0:
-                    # g.dump_archive(d, tag=f"{v.h} and subtree" if v else "Entire outline")
-                    s = g.obj_to_json_string(d)
-                    kind_s = 'Entire outline' if v is None else f"{v.h} and subtree..."
-                    print(f"\ng.obj_to_json_string: {kind_s}\n")
-                    print(s)
-                c.unarchive(d, test_p, command_name)
-                if trace:
-                    n2 = len(list(fc.gnxDict.keys()))
-                    g.printObj(fc.gnxDict, tag=f"{n2} keys in gnxDict(after, {command_name}")
-                assert all(isinstance(z, VNode) for z in test_p.v.parents), test_p.v.parents
-                assert all(isinstance(z, VNode) for z in test_p.v.children), test_p.v.children
-
-                if 0:  ### To do.
-                    for z in fc.gnxDict:
-                        assert z in old_gnx_keys, z
-                    for z in old_gnx_keys:
-                        assert z in fc.gnxDict, z
-                elif 0:
-                    for z in fc.gnxDict:
-                        assert z.gnx not in old_gnx_keys, z
-                    for gnx in old_gnx_keys:
-                        assert gnx not in fc.gnxDict, z
-                if 0:
-                    g.printObj(test_p.v.parents, tag='test_p.v.parents')
-                    g.printObj(test_p.v.children, tag='test_p.v.children')
-                if 0:
-                    self.dump_headlines(c)
+            v = test_p.v
+            d = c.archive(v)
+            c.unarchive(d, test_p, command_name)
+            n = c.checkOutline()
+            assert n == 0, n
     #@+node:ekr.20210830095545.6: *4* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
         c, p = self.c, self.c.p
