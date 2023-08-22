@@ -2073,27 +2073,19 @@ class Commands:
         #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
         def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
             """Create parent/child links in *all* vnodes."""
-            if 0:  ### Old code:
-                for gnx, v in vnode_dict.items():
-                    children = archive.get('children').get(gnx) or []
-                    parents = archive.get('parents').get(gnx) or []
-                    if 0:
-                        headline_s = archive.get('headlines').get(gnx)
-                        g.printObj(parents, tag=f"parents of {gnx}: {headline_s}")
-                    if v == root_v:
-                        # A crucial special case. The *archived* root has no parents.
-                        pass
-                    else:
-                        v.parents = [vnode_dict[z] for z in parents]
-                    v.children = [vnode_dict[z] for z in children]
 
             # Pass 1: create children links.
             for gnx, v in vnode_dict.items():
                 children = archive.get('children').get(gnx) or []
                 v.children = [vnode_dict[z] for z in children]
 
-            # Pass 2: We must recompute *all* parents.
-            c.recompute_all_parents()
+            # Pass 2: recompute parents.
+            if command_name == 'paste-node':
+                # Just recompute the parents in root_v's subtree.
+                recompute_parents_in_tree(root_v)
+            else:
+                # We *must* recompute all parents whenever clones are involved.
+                c.recompute_all_parents()
 
             # Immediately check.
             if g.unitTesting:
@@ -2147,6 +2139,27 @@ class Commands:
                     v.setMarked()
                 if uas_dict:
                     v.u = uas_dict
+        #@+node:ekr.20230821122338.1: *5* function: recompute_parents_in_tree
+        def recompute_parents_in_tree(root_v: VNode) -> None:
+            """
+            Recompute all v.parents arrays in root_v's subtree using neither
+            positions nor v.parents ivars.
+
+            This is valid *only* if root_v's subtree contains no clones.
+            """
+
+            # Clear all v.parents arrays except root_v's parents.
+            root_parents = root_v.parents
+            for v in root_v.alt_self_and_subtree():
+                v.parents = []
+            root_v.parents = root_parents
+
+            # Loop invariant: Visit each *parent* vnode *once*.
+            #                 Child vnodes may be visited more than once.
+
+            for parent_v in root_v.alt_self_and_subtree():
+                for child_v in parent_v.children:
+                    child_v.parents.append(parent_v)
         #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
         def update_gnxDict() -> None:
             """Carefully update fc.gnxDict."""
@@ -2172,9 +2185,8 @@ class Commands:
             update_gnxDict()
         except Exception as e:
             if g.unitTesting:
-                # Very effective trace.
                 g.es_exception()
-                if 0:
+                if 0:  # Very effective trace for debugging.
                     print('')
                     g.trace('Callers:', g.callers())
                     g.dump_archive(archive, tag=f"unarchive: {command_name} root_v: {root_v.h}")
@@ -2182,8 +2194,6 @@ class Commands:
             g.trace(f"Invalid archive: {e}")
             g.es_exception()
             g.internalError(e)
-            # g.printObj(archive)
-            # g.dump_archive(archive)
     #@+node:ekr.20230816045125.1: *4* c.validate_archive
     def validate_archive(self, archive: dict) -> bool:
         """Return True if c.unarchive(archive) will succeed."""
