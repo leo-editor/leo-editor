@@ -4,15 +4,10 @@
 #@+<< commanderOutlineCommands imports & annotations >>
 #@+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
-### from collections import defaultdict
 from collections.abc import Callable
-### import xml.etree.ElementTree as ElementTree
-### import json
 import time
-from typing import Any, Optional, TYPE_CHECKING  ### Generator
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-###from leo.core import leoNodes
-###from leo.core import leoFileCommands
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -29,7 +24,6 @@ def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
-    ### s: Optional[str]
 
     d = c.archive(c.p.v)
     s = g.obj_to_json_string(d)

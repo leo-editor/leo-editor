@@ -205,7 +205,6 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230330042647.1: *4* TestGlobals._make_tree
     def _make_tree(self, c, root_h=None):
         """Make a test tree for c."""
-        ### c = self.c
         root = c.rootPosition()
         root.h = root_h or 'Root'
         root.b = "def root():\n    pass\n"
@@ -440,15 +439,8 @@ class TestGlobals(LeoUnitTest):
 
         # g.findAnyUnl returns a Position or None.
 
-        ### To do: resolve all valid unls to a real position.
-
         c = self.c
         self._make_tree(c, root_h='root')
-
-        if 0:  ### Not yet.
-            for unl in self.valid_unls + self.missing_unls:
-                p = c.rootPosition()
-                self.assertEqual(p, g.findAnyUnl(unl, c), msg=unl)
 
         # Suppress warnings.
         old_stdout = sys.stdout

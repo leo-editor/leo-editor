@@ -45,7 +45,7 @@ class TestOutlineCommands(LeoUnitTest):
                         else:
                             assert len(v.parents) == 1, f"is cloned: {v.h}"
                             assert v.gnx != gnx_dict.get(v.h), (v.gnx, gnx_dict.get(v.h), v.h)
-                    elif v.h in ('cc', 'cc:child2'):
+                    elif v.h in ('cc', 'cc:child2', 'cc:child1:child1'):
                         assert len(v.parents) == 1, f"is cloned: {v.h}"
                         # The original has the same gnx; the copy has a new gnx.
                     else:
@@ -85,7 +85,7 @@ class TestOutlineCommands(LeoUnitTest):
         #@-others
 
         # Cut or copy 'cc', select 'ee', then paste-as-template.
-        for test_kind in ('cut',):  ### ('copy', 'cut'):
+        for test_kind in ('copy', 'cut'):
             target_headline = 'ee'
 
             # Create the tree and gnx_dict.

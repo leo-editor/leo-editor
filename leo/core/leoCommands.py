@@ -2223,8 +2223,6 @@ class Commands:
     #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
     def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
         """Return True if the archive d specifies that the given gnx was cloned."""
-        # return bool(d['was_cloned'].get(gnx))
-        ### g.trace(d['was_cloned'])
         return gnx in d['was_cloned']
     #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
