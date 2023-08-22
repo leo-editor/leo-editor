@@ -36,7 +36,7 @@ def copyOutline(self: Cmdr, event: Event = None) -> Optional[str]:
     return s
 #@+node:ekr.20220314071523.1: *3* c_oc: copy-node-as-json
 @g.commander_command('copy-node-as-json')
-def copyOutlineAsJSON(self: Cmdr, event: Event = None) -> Optional[str]:
+def copyOutlineAsJSON(self: Cmdr, event: Event = None) -> str:
     """Copy the selected outline as JSON to the clipboard"""
     # Copying an outline has no undo consequences.
     c = self

@@ -1939,6 +1939,8 @@ class Commands:
         """
         c = self
 
+        format = 'file' if v is None else 'copy-paste'
+
         #@+others # define helper functions
         #@+node:ekr.20230807120730.1: *5* c.archive: helper functions
         def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
@@ -1977,16 +1979,18 @@ class Commands:
             children_dict[gnx] = vnode_list_to_gnx_list(v.children)
             headline_dict[gnx] = v._headString
             parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
-            if v.isMarked():
-                marks_dict[gnx] = '1'
-            if v.isCloned():
-                was_cloned_dict[gnx] = '1'
+            if format != 'file':
+                if v.isMarked():
+                    marks_dict[gnx] = '1'
+                if v.isCloned():
+                    was_cloned_dict[gnx] = '1'
             uas = g.archive_uas(v)
             if uas:
                 uas_dict[gnx] = uas
         d = {
             'bodies': body_dict,
             'children': children_dict,
+            'format': format,  # 'file' or 'copy-paste'
             'headlines': headline_dict,
             'marks': marks_dict,
             'parents': parents_dict,
@@ -2198,18 +2202,32 @@ class Commands:
     def validate_archive(self, archive: dict) -> bool:
         """Return True if c.unarchive(archive) will succeed."""
         try:
+            # Mandatory key: 'format'.
+            assert 'format' in archive, "archive key not found: 'format'"
+            format = archive['format']
+            assert format in ('file', 'copy-paste'), f"Invalid 'format': {format!r}"
+
+            # Mandatory key: 'root'.
             assert 'root' in archive, "archive key not found: 'root'"
             root_gnx = archive['root']
             assert isinstance(root_gnx, str), repr(root_gnx)
-            for key in (
-                'bodies', 'children', 'headlines', 'marks',
-                'parents', 'uas', 'was_cloned',
-            ):
+
+            # Madatory keys whose values are dictionaries.
+            for key in ('bodies', 'children', 'headlines', 'parents', 'uas'):
                 assert key in archive, f"archive key not found: {key!r}"
                 d = archive[key]
                 assert isinstance(d, dict), f"archive {key!r} must be a python dictionary."
                 for inner_key in d:
                     assert isinstance(inner_key, str), f"Inner key {inner_key} of {key!r} must be a string."
+
+            # Keys that are allowed only format is 'copy-paste'.
+            for key in ('marks', 'was_cloned'):
+                if format == 'file':
+                    assert key not in archive, key
+                else:
+                    assert key in archive, key
+
+            # Bodies must be lists of strings.
             bodies = archive['bodies']
             for key, value in bodies.items():
                 assert isinstance(value, list), f"bodies must be lists of strings: {key!r} {value!r}"
