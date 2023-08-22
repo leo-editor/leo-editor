@@ -639,7 +639,7 @@ def save_node_as_xml_outline(self: Self, event: Event = None) -> None:
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')
 def exportHeadlines(self: Self, event: Event = None) -> None:
-    """Export all headlines to an external file."""
+    """Export headlines for c.p and its subtree to an external file."""
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
