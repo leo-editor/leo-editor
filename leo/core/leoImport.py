@@ -372,6 +372,7 @@ class LeoImportCommands:
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName: str) -> None:
+        """Export headlines for c.p and its subtree to the file with the given name."""
         p = self.c.p
         nl = self.output_newline
         if not p:
