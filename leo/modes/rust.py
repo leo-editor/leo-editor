@@ -206,7 +206,9 @@ rulesDict1 = {
     "#": [rust_rule5, rust_rule6,],
     "%": [rust_rule18,],
     "&": [rust_rule19,],
-    "'": [rust_rule4,],
+
+    # "'": [rust_rule4,],
+
     "(": [rust_rule26,],
     "*": [rust_rule15,],
     "+": [rust_rule12,],
