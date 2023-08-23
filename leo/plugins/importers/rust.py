@@ -20,7 +20,7 @@ class Rust_Importer(Importer):
     string_list: list[str] = ['"']
 
     block_patterns = (
-        ('impl', re.compile(r'\bimpl\b.*?(\w+)')),
+        ('impl', re.compile(r'\bimpl\b(.*?)\s*{')),  # Use most of the line.
         ('fn', re.compile(r'\s*fn\s*(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s*(\w+)\s*\(')),
     )
