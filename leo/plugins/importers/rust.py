@@ -16,7 +16,11 @@ class Rust_Importer(Importer):
 
     language = 'rust'
 
+    # Single quotes do *not* start strings.
+    string_list: list[str] = ['"']
+
     block_patterns = (
+        ('impl', re.compile(r'\bimpl\b.*?(\w+)')),
         ('fn', re.compile(r'\s*fn\s*(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s*(\w+)\s*\(')),
     )
