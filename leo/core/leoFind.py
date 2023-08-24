@@ -2497,8 +2497,7 @@ class LeoFind:
         return result
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s: str) -> str:
-        """Carefully replace backslashes in a search pattern."""
-        # #3503: Leave backslashes alone, except for the following.
+        """Replace backslash-n with a newline and backslash-t with a tab."""
         return s.replace('\\n', '\n').replace('\\t', '\t')
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
