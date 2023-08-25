@@ -35,6 +35,20 @@ class Python_Importer(Importer):
     )
 
     #@+others
+    #@+node:ekr.20230825094632.1: *3* python_i.compute_headline
+    def compute_headline(self, block: Block) -> str:
+        """
+        Importer.compute_headline.
+
+        Return the headline for the given block.
+
+        Subclasses may override this method as necessary.
+        """
+        child_kind, child_name, child_start, child_start_body, child_end = block
+        if child_kind == 'def':
+            return child_name
+        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -148,6 +162,51 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
+    #@+node:ekr.20230825095926.1: *3* python_i.postprocess (do do)
+    def postprocess(self, parent: Position) -> None:
+        """
+        Post-process all nodes:
+            
+        - Add class names to headlines.
+        - Move docstrings to their natural places.
+        """
+        # This code used to be in RecursiveImportController.
+        g.trace(parent.h)
+
+    #@+node:ekr.20230825100219.1: *3* python_i.add_class_names (to do)
+    def add_class_names(self, p: Position) -> None:
+        """Add class names to headlines for all descendant nodes."""
+        after, class_name = None, None
+        class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
+        paren_pattern = re.compile(r'(.*)\(.*\.py\)')
+        for p in p.self_and_subtree(copy=False):
+            # Part 1: update the status.
+            m = self.file_pattern.match(p.h)
+            if m:
+                after, class_name = None, None
+                continue
+            if p.h.startswith('@path '):
+                after, class_name = None, None
+            elif p.h.startswith('class '):
+                class_name = p.h[5:].strip()
+                if class_name:
+                    after = p.nodeAfterTree()
+                    continue
+            elif p == after:
+                after, class_name = None, None
+
+            # Part 2: update the headline.
+            if class_name:
+                if p.h.startswith(class_name):
+                    m = class_paren_pattern.match(p.h)
+                    if m:
+                        p.h = f"{m.group(1)}.{m.group(2).lstrip()}".rstrip()
+                else:
+                    p.h = f"{class_name}.{p.h.lstrip()}"
+            else:
+                m = paren_pattern.match(p.h)
+                if m:
+                    p.h = m.group(1).rstrip()
     #@-others
 #@-others
 
