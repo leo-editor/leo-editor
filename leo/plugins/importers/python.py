@@ -53,7 +53,8 @@ class Python_Importer(Importer):
                         p.h = f"{m.group(1)}.{p.h[4:].strip()}"
                         break
                 else:
-                    p.h = f"function: {p.h[4:].strip()}"
+                    if self.language == 'python':
+                        p.h = f"function: {p.h[4:].strip()}"
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -216,7 +217,6 @@ class Python_Importer(Importer):
         # Move class docstrings.
         for p in parent.subtree():
             if p.h.startswith('class '):
-                g.trace(p.h)
                 move_docstring(p)
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess
     def postprocess(self, parent: Position) -> None:

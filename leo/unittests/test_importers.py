@@ -639,11 +639,11 @@ class TestCoffeescript(BaseTestImporter):
                 'class Builder\n'
                 '  @others\n'
           ),
-          (2, 'def constructor',
+          (2, 'Builder.constructor',
               'constructor: ->\n'
               '  @transformer = new Transformer\n'
           ),
-          (2, 'def build',
+          (2, 'Builder.build',
                 '# `build()`\n'
                 '\n'
                 'build: (args...) ->\n'
@@ -658,13 +658,13 @@ class TestCoffeescript(BaseTestImporter):
                 '\n'
                 '  if node.parenthesized then paren(out) else out\n'
           ),
-          (2, 'def transform',
+          (2, 'Builder.transform',
               '# `transform()`\n'
               '\n'
               'transform: (args...) ->\n'
               '  @transformer.transform.apply(@transformer, args)\n'
           ),
-          (2, 'def body',
+          (2, 'Builder.body',
               '# `body()`\n'
               '\n'
               'body: (node, opts={}) ->\n'
@@ -3176,7 +3176,7 @@ class TestPython(BaseTestImporter):
             (1, '<< TestPython.test_general_test_1: preamble >>',
                     'import sys\n'
             ),
-            (1, 'def f1',
+            (1, 'function: f1',
                     'def f1():\n'
                     '    pass\n'
             ),
@@ -3184,15 +3184,15 @@ class TestPython(BaseTestImporter):
                        'class Class1:\n'
                        '    @others\n'
             ),
-            (2, 'def method11',
+            (2, 'Class1.method11',
                        'def method11():\n'
                        '    pass\n'
             ),
-            (2, 'def method12',
+            (2, 'Class1.method12',
                        'def method12():\n'
                        '    pass\n'
             ),
-            (1, 'def f2',
+            (1, 'function: f2',
                        '#\n'
                        '# Define a = 2\n'
                        'a = 2\n'
@@ -3206,18 +3206,18 @@ class TestPython(BaseTestImporter):
                        'class Class2:\n'
                        '    @others\n'
             ),
-            (2, 'def method21',
+            (2, 'Class2.method21',
                        'def method21():\n'
                        '    print(1)\n'
                        '    print(2)\n'
                        '    print(3)\n'
             ),
-            (2, 'def method22',
+            (2, 'Class2.method22',
                        '@myDecorator\n'
                        'def method22():\n'
                        '    pass\n'
             ),
-            (2, 'def method23',
+            (2, 'Class2.method23',
                        'def method23():\n'
                        '    pass\n'
             ),
@@ -3225,13 +3225,13 @@ class TestPython(BaseTestImporter):
                 'class UnderindentedComment:\n'
                 '@others\n'  # The underindented comments prevents indentaion
             ),
-            (2, 'def u1',
+            (2, 'UnderindentedComment.u1',
                     '# Outer underindented comment\n'
                     '    def u1():\n'
                     '    # Underindented comment in u1.\n'
                     '        pass\n'
             ),
-            (1, 'def main',
+            (1, 'function: main',
                        '# About main.\n'
                        '\n'
                        'def main():\n'
@@ -3264,7 +3264,7 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'def get_target_type',
+            (1, 'function: get_target_type',
                     'def get_target_type(\n'
                     '    tvar: TypeVarLikeType,\n'
                     '    type: Type,\n'
@@ -3369,14 +3369,14 @@ class TestPython(BaseTestImporter):
             (1, '<< TestPython.test_oneliners: preamble >>',
                     'import sys\n'
             ),
-            (1, 'def f1',
+            (1, 'function: f1',
                     'def f1():\n'
                     '    pass\n'
             ),
             (1, 'class Class1',
                     'class Class1:pass\n'
             ),
-            (1, 'def f2',
+            (1, 'function: f2',
                     'a = 2\n'
                     '@dec_for_f2\n'
                     'def f2(): pass\n'
@@ -3384,7 +3384,7 @@ class TestPython(BaseTestImporter):
             (1, 'class A',
                     'class A: pass\n'
             ),
-            (1, 'def main',
+            (1, 'function: main',
                        '# About main.\n'
                        'def main():\n'
                        '    pass\n'
@@ -3417,14 +3417,13 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< TestPython.test_preamble: preamble >>',
+            (1, '<< TestPython.test_post_process: preamble >>',
                     '\n'
                     'from __future__ import annotations\n'
                     '\n'
-
             ),
             (1, 'class C1',
-                    'class C1:\n',
+                    'class C1:\n'
                     '    """Class docstring"""\n'
                     '    @others\n'
             ),
@@ -3434,9 +3433,9 @@ class TestPython(BaseTestImporter):
                     '    pass\n'
             ),
             (1, 'function: f1',
-                   'def f():\n'
-                   '    g.trace()\n'
-            )
+                   'def f1():\n'
+                   '    pass\n'
+            ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20230612085239.1: *3* TestPython.test_preamble
@@ -3472,7 +3471,7 @@ class TestPython(BaseTestImporter):
                     'from leo.core import leoGlobals as g\n'
                     '\n'
             ),
-            (1, 'def f',
+            (1, 'function: f',
                    'def f():\n'
                    '    g.trace()\n'
             )
