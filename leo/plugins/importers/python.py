@@ -148,7 +148,7 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
-    #@+node:ekr.20230825095926.1: *3* python_i.postprocess (do do)
+    #@+node:ekr.20230825095926.1: *3* python_i.postprocess (to do)
     def postprocess(self, parent: Position) -> None:
         """
         Post-process all nodes:

@@ -1719,42 +1719,6 @@ class RecursiveImportController:
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
         self.clear_dirty_bits(p)
-        ### self.add_class_names(p)
-    #@+node:ekr.20180524100258.1: *5* ric.add_class_names
-    def add_class_names(self, p: Position) -> None:
-        """Add class names to headlines for all descendant nodes."""
-        return  #########
-        after, class_name = None, None
-        class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
-        paren_pattern = re.compile(r'(.*)\(.*\.py\)')
-        for p in p.self_and_subtree(copy=False):
-            # Part 1: update the status.
-            m = self.file_pattern.match(p.h)
-            if m:
-                after, class_name = None, None
-                continue
-            if p.h.startswith('@path '):
-                after, class_name = None, None
-            elif p.h.startswith('class '):
-                class_name = p.h[5:].strip()
-                if class_name:
-                    after = p.nodeAfterTree()
-                    continue
-            elif p == after:
-                after, class_name = None, None
-
-            # Part 2: update the headline.
-            if class_name:
-                if p.h.startswith(class_name):
-                    m = class_paren_pattern.match(p.h)
-                    if m:
-                        p.h = f"{m.group(1)}.{m.group(2).lstrip()}".rstrip()
-                else:
-                    p.h = f"{class_name}.{p.h.lstrip()}"
-            else:
-                m = paren_pattern.match(p.h)
-                if m:
-                    p.h = m.group(1).rstrip()
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p: Position) -> None:
         c = self.c
