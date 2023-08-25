@@ -3391,6 +3391,54 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
+    def test_post_process(self):
+
+        s = '''
+            """Module-level docstring"""
+
+            from __future__ import annotations
+
+            class C1:
+                """Class docstring"""
+
+                def __init__(self):
+                    pass
+
+            def f1():
+                pass
+
+            '''
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '"""Module-level docstring"""\n'
+                    '<< TestPython.test_post_process: preamble >>\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<< TestPython.test_preamble: preamble >>',
+                    '\n'
+                    'from __future__ import annotations\n'
+                    '\n'
+
+            ),
+            (1, 'class C1',
+                    'class C1:\n',
+                    '    """Class docstring"""\n'
+                    '    @others\n'
+            ),
+            (2, 'C1.__init__',
+                    '\n'
+                    'def __init__(self):\n'
+                    '    pass\n'
+            ),
+            (1, 'function: f1',
+                   'def f():\n'
+                   '    g.trace()\n'
+            )
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230612085239.1: *3* TestPython.test_preamble
     def test_preamble(self):
 
