@@ -176,6 +176,8 @@ class Python_Importer(Importer):
 
         delims = ('"""', "'''")
 
+        #@+others  # define helper functions
+        #@+node:ekr.20230825164231.1: *4* function: find_docstrings
         def find_docstring(p: Position) -> Optional[str]:
             """Righting a regex that will return a docstring is too tricky."""
             s_strip = p.b.strip()
@@ -194,6 +196,7 @@ class Python_Importer(Importer):
                 i += 1
             return None
 
+        #@+node:ekr.20230825164234.1: *4* function: move_docstring
         def move_docstring(parent: Position) -> None:
             """Move a docstring from the child to the parent."""
             child = parent.firstChild()
@@ -202,14 +205,30 @@ class Python_Importer(Importer):
             docstring = find_docstring(child)
             if not docstring:
                 return
+
             child.b = child.b[len(docstring) :]
-            # g.printObj(docstring, tag=child.h)
             if parent.h.startswith('class'):
                 parent_lines = g.splitLines(parent.b)
+                # Count the number of parent lines before the class line.
+                n = 0
+                while n < len(parent_lines):
+                    line = parent_lines[n]
+                    n += 1
+                    if line.strip().startswith('class'):
+                        break
+                if n >= len(parent_lines):
+                    g.trace('NO CLASS LINE')
+                    return
                 docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
-                parent.b = ''.join([parent_lines[0]] + docstring_list + parent_lines[1:])
+                parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
             else:
                 parent.b = docstring + parent.b
+
+            # Delete references to empty children.
+            # ric.remove_empty_nodes will delete the child later.
+            if not child.b.strip():
+                parent.b = parent.b.replace(child.h, '')
+        #@-others
 
         # Move module-level docstrings.
         move_docstring(parent)
