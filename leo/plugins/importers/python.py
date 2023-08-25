@@ -35,20 +35,6 @@ class Python_Importer(Importer):
     )
 
     #@+others
-    #@+node:ekr.20230825094632.1: *3* python_i.compute_headline
-    def compute_headline(self, block: Block) -> str:
-        """
-        Importer.compute_headline.
-
-        Return the headline for the given block.
-
-        Subclasses may override this method as necessary.
-        """
-        child_kind, child_name, child_start, child_start_body, child_end = block
-        if child_kind == 'def':
-            return child_name
-        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
-
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -166,16 +152,22 @@ class Python_Importer(Importer):
     def postprocess(self, parent: Position) -> None:
         """
         Post-process all nodes:
-            
+
         - Add class names to headlines.
         - Move docstrings to their natural places.
         """
         # This code used to be in RecursiveImportController.
-        g.trace(parent.h)
+        ### g.trace(parent.h)
+
+        for p in parent.subtree():
+            if p.h.startswith('class'):
+                self.add_class_names(p)
 
     #@+node:ekr.20230825100219.1: *3* python_i.add_class_names (to do)
     def add_class_names(self, p: Position) -> None:
         """Add class names to headlines for all descendant nodes."""
+        g.trace(p.h)  ###
+        return  ###
         after, class_name = None, None
         class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
         paren_pattern = re.compile(r'(.*)\(.*\.py\)')

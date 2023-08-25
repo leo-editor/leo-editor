@@ -294,7 +294,7 @@ class Importer:
 
         # Generate all nodes.
         self.gen_lines(lines, parent)
-        
+
         # A hook for python importer.
         self.postprocess(parent)
 
@@ -324,7 +324,7 @@ class Importer:
         """
         return lines
     #@+node:ekr.20230825095756.1: *4* i.postprocess
-    def preprocess(self, parent: Position) -> None:
+    def postprocess(self, parent: Position) -> None:
         """
         A hook to enable post-processing of all nodes.
 
