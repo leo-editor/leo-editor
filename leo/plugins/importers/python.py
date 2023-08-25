@@ -148,17 +148,6 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
-    #@+node:ekr.20230825065619.1: *3* python_i.post_process
-    def post_process(self, parent: Position) -> None:
-        """
-        Python_Importer.post_process.
-
-        - Move module-level docstrings to the top level.
-        - Move class docstrings right after the `class` line.
-        - Remove `def ` from all headlines. Use `function: ` for true functions.
-        """
-        if not g.unitTesting:  ###
-            g.trace(parent.h)
     #@-others
 #@-others
 

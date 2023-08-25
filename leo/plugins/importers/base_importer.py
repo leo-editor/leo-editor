@@ -295,9 +295,6 @@ class Importer:
         # Generate all nodes.
         self.gen_lines(lines, parent)
 
-        # A hook for last-minute adjustments.
-        self.post_process(parent)
-
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
@@ -315,13 +312,6 @@ class Importer:
         as comments and strings.
         """
         return self.delete_comments_and_strings(lines[:])
-    #@+node:ekr.20230825065418.1: *4* i.post_process
-    def post_process(self, parent: Position) -> None:
-        """
-       A hook to allow last-minute adjustments to all generated nodes.
-
-       The Python_Importer uses this hook.
-       """
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: list[str]) -> list[str]:
         """
