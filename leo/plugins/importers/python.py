@@ -4,7 +4,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -167,16 +167,63 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
-    #@+node:ekr.20230825095926.1: *3* python_i.postprocess (to do)
-    def postprocess(self, parent: Position) -> None:
+    #@+node:ekr.20230825111112.1: *3* python_i.move_docstrings
+    def move_docstrings(self, parent: Position) -> None:
         """
-        Post-process all nodes:
+        Move docstrings to their most convenient locations.
+        """
 
-        - Add class names to headlines.
-        - Move docstrings to their natural places.
-        """
-        # This code used to be in RecursiveImportController.
+        delims = ('"""', "'''")
+
+        def find_docstring(p: Position) -> Optional[str]:
+            """Righting a regex that will return a docstring is too tricky."""
+            s_strip = p.b.strip()
+            if not s_strip:
+                return None
+            if not s_strip.startswith(delims):
+                return None
+            delim = delims[0] if s_strip.startswith(delims[0]) else delims[1]
+            lines = g.splitLines(p.b)
+            if lines[0].count(delim) == 2:
+                return lines[0]
+            i = 1
+            while i < len(lines):
+                if delim in lines[i]:
+                    return ''.join(lines[: i + 1])
+                i += 1
+            return None
+
+        def move_docstring(parent: Position) -> None:
+            """Move a docstring from the child to the parent."""
+            child = parent.firstChild()
+            if not child:
+                return
+            docstring = find_docstring(child)
+            if not docstring:
+                return
+            child.b = child.b[len(docstring) :]
+            # g.printObj(docstring, tag=child.h)
+            if parent.h.startswith('class'):
+                parent_lines = g.splitLines(parent.b)
+                docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
+                parent.b = ''.join([parent_lines[0]] + docstring_list + parent_lines[1:])
+            else:
+                parent.b = docstring + parent.b
+
+        # Move module-level docstrings.
+        move_docstring(parent)
+
+        # Move class docstrings.
+        for p in parent.subtree():
+            if p.h.startswith('class '):
+                g.trace(p.h)
+                move_docstring(p)
+    #@+node:ekr.20230825095926.1: *3* python_i.postprocess
+    def postprocess(self, parent: Position) -> None:
+        """Python_Importer.postprocess."""
+        # See #3514.
         self.adjust_headlines(parent)
+        self.move_docstrings(parent)
     #@-others
 #@-others
 
