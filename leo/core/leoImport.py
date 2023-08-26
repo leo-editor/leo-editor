@@ -585,8 +585,11 @@ class LeoImportCommands:
         ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
-        # The so-called scanning func is a callback. It must have a c argument.
-        func = self.dispatch(ext, p)
+
+        # Each importer file defines `do_import` at the top level with this signature:
+        # def do_import(c: Cmdr, parent: Position, s: str) -> None:
+
+        func = self.dispatch(ext, p)  # The do_import callback.
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)

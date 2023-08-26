@@ -326,9 +326,10 @@ class Importer:
     #@+node:ekr.20230825095756.1: *4* i.postprocess
     def postprocess(self, parent: Position) -> None:
         """
-        A hook to enable post-processing of all nodes.
+        Importer.postprocess.
 
-        Python_Importer uses this hook.
+        New in Leo 6.7.5. The Importer class handles all the post-processing
+                          instead of the RecursiveImportController class.
         """
 
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace

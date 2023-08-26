@@ -1558,6 +1558,11 @@ class TestHtml(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
     #@-others
+#@+node:ekr.20230826053559.1: ** class TestImporter(LeoUnitTest)
+class TestImporter(LeoUnitTest):
+    """General tests of the Importer class."""
+    #@+others
+    #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
 
