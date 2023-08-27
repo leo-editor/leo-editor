@@ -1598,23 +1598,48 @@ class RecursiveImportController:
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root: Position = None
-        self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
-        # Adjust the root directory.
-        assert dir_ and self.root_directory, dir_
-        self.root_directory = self.root_directory.replace('\\', '/')
-        if self.root_directory.endswith('/'):
-            self.root_directory = self.root_directory[:-1]
+
+        ###
+        # self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
+        # # Adjust the root directory.
+        # assert dir_ and self.root_directory, dir_
+        # self.root_directory = self.root_directory.replace('\\', '/')
+        # if self.root_directory.endswith('/'):
+            # self.root_directory = self.root_directory[:-1]
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
+    #@+node:ekr.20230827074129.1: *3* ric.compute_root_directory
+    def compute_root_directory(self, dir_: str) -> Optional[str]:
+        """
+        Return root_directory, the base of all relative paths.
+
+        Return None if c.fileName() can't server as as the base.
+        """
+        c = self.c
+        file_name = c.fileName()
+        dir_name = os.path.dirname(file_name) if file_name else None
+        if not dir_:
+            ### g.trace(repr(dir_), '==>', repr(dir_name))  ###
+            return dir_name
+        rel_path = os.path.relpath(dir_, dir_name)
+        g.trace(repr(dir_), '==>', repr(rel_path))  ###
+        return rel_path  ### To do.
+
+
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_: str) -> None:
         """
         Import all files whose extension matches self.theTypes in dir_.
         In fact, dir_ can be a path to a single file.
         """
+        g.trace(g.callers())
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
+            return
+        self.root_directory = self.compute_root_directory(dir_)
+        if not self.root_directory:
+            g.es("can't create relative paths to {dir_!r}", color='red')
             return
         try:
             c, u = self.c, self.c.undoer
@@ -1749,43 +1774,49 @@ class RecursiveImportController:
 
         assert os.path.isabs(self.root_directory)
 
-        def relative_path(path: str) -> str:
-            """Return path relative to the root directory."""
-            assert path.startswith(self.root_directory), repr(path)
-            assert os.path.isabs(path), repr(path)
-            path = path.split('/')[-1] if '/' in path else path
-            return path
-
-        def compute_at_path_path(path: str) -> str:
-            """Compute the relative path to be used in an @path directive."""
-            assert path.startswith(self.root_directory), repr(path)
-            assert os.path.isabs(path), repr(path)
-            path = path[len(self.root_directory) :]
-            if path.startswith('/'):
-                path = path[1:]
-            return path
+        root_dir = self.root_directory
+        sep = os.path.sep
 
         m = self.file_pattern.match(p.h)
         if m:
             # p is an @file node of some kind.
             kind = m.group(0)
-            path = p.h[len(kind) :].strip().replace('\\', '/')
+            path = p.h[len(kind) :].strip()  ### .replace('\\', '/')
+            rel_path = os.path.relpath(path, root_dir)
+            base = os.path.basename(path)
+            full_path = f"{rel_path}{sep}{base}" if rel_path else base
+            norm_path = full_path.replace('\\', '/')
             # Shorten p.h.
-            p.h = f"{kind} {relative_path(path)}"
-            # Prepend an @path directive to p.b if it has a directory component.
-            path = compute_at_path_path(path)
-            if path and '/' in path:
-                directory = '/'.join(path.split('/')[:-1])
-                p.b = f"@path {directory}\n{p.b}"
-        elif '/' in p.h and p.h == self.root_directory:
-            # Show the last component.
-            directory = p.h.split('/')[-1]
-            p.h = f"path: {directory}"
-        elif p.h.startswith(self.root_directory):
-            # The importer has created the start of an @path node.
-            h = compute_at_path_path(p.h)
-            if h:
-                p.h = f"path: {h}"
+            p.h = f"{kind} {norm_path}"
+
+            # Prepend an @path directive to p.b if necessary.
+            if rel_path and rel_path != '.':
+                g.trace(p.h, '==>', rel_path)
+                p.b = f"@path {rel_path}\n{p.b}"
+            # path = compute_at_path_path(path)
+            # if path and '/' in path:
+                # directory = '/'.join(path.split('/')[:-1])
+                # p.b = f"@path {directory}\n{p.b}"
+            return
+
+        if p.h.startswith(self.root_directory):
+            rel_path = os.path.relpath(p.h, root_dir)
+            g.trace(p.h, 'rel_path', rel_path)
+            if rel_path and rel_path != '.':
+                g.trace(p.h, '==>', f"path: {rel_path}")
+                p.h = f"path: {rel_path}"
+
+
+        # elif '/' in p.h and p.h == self.root_directory:
+            # # Show the last component.
+            # directory = p.h.split('/')[-1]
+            # p.h = f"path: {directory}"
+        # elif p.h.startswith(self.root_directory) and
+            # # The importer has created the start of an @path node.
+            # h = compute_at_path_path(p.h)
+            # if h:
+                # p.h = f"path: {h}"
+
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""

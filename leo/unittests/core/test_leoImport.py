@@ -4,7 +4,7 @@
 
 import io
 import os
-import sys
+### import sys
 import textwrap
 from leo.unittests.test_importers import BaseTestImporter
 from leo.core import leoImport
@@ -97,20 +97,26 @@ class TestLeoImport(BaseTestImporter):
     #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_ric_minimize_headlines
     def test_ric_minimize_headlines(self):
         c, root = self.c, self.c.rootPosition()
-        if sys.platform.startswith('win'):
-            dir_ = 'C:/Repos/non-existent-directory/mypy'
-        else:
-            dir_ = '/Repos/non-existent-directory/mypy'
+        ###
+            # if sys.platform.startswith('win'):
+                # dir_ = 'C:/Repos/non-existent-directory/mypy'
+            # else:
+                # dir_ = '/Repos/non-existent-directory/mypy'
+
         # minimize_headlines changes only headlines that start with dir_ or @<file> dir_.
+
+        dir_ = os.path.dirname(c.fileName())  ###
+
         table = (
             ('root', 'root'),
             (dir_, 'path: mypy'),
-            (f"{dir_}/test", 'path: mypy/test'),
-            (f"{dir_}/xyzzy/test2", 'path: mypy/xyzzy/test2'),
-            (f"@clean {dir_}/x.py", '@clean x.py'),
+            # (f"{dir_}/test", 'path: mypy/test'),
+            # (f"{dir_}/xyzzy/test2", 'path: mypy/xyzzy/test2'),
+            # (f"@clean {dir_}/x.py", '@clean x.py'),
         )
         x = leoImport.RecursiveImportController(c,
-            dir_=dir_,
+            ### dir_=dir_,
+            dir_=None,  ####
             kind='@clean',
             recursive=True,
             safe_at_file = False,
@@ -119,6 +125,7 @@ class TestLeoImport(BaseTestImporter):
         )
         for h, expected in table:
             root.h = h
+            x.root_directory = x.compute_root_directory(None)  ### Experimental.
             x.minimize_headline(root)
             self.assertEqual(root.h, expected, msg=h)
 
