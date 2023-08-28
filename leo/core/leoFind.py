@@ -2497,26 +2497,8 @@ class LeoFind:
         return result
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s: str) -> str:
-        """Carefully replace backslashes in a search pattern."""
-        # This is NOT the same as:
-        #
-        #   s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
-        #
-        # because there is no rescanning.
-        i = 0
-        while i + 1 < len(s):
-            if s[i] == '\\':
-                ch = s[i + 1]
-                if ch == '\\':
-                    s = s[:i] + s[i + 1 :]  # replace \\ by \
-                elif ch == 'n':
-                    s = s[:i] + '\n' + s[i + 2 :]  # replace the \n by a newline
-                elif ch == 't':
-                    s = s[:i] + '\t' + s[i + 2 :]  # replace \t by a tab
-                else:
-                    i += 1  # Skip the escaped character.
-            i += 1
-        return s
+        """Replace backslash-n with a newline and backslash-t with a tab."""
+        return s.replace('\\n', '\n').replace('\\t', '\t')
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
     def init_in_headline(self) -> None:
