@@ -97,7 +97,7 @@ class TestLeoImport(BaseTestImporter):
     #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_ric_minimize_headlines
     def test_ric_minimize_headlines(self):
         c, root = self.c, self.c.rootPosition()
-        
+
 
         # minimize_headlines changes only headlines that start with dir_ or @<file> dir_.
 

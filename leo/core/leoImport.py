@@ -1596,17 +1596,10 @@ class RecursiveImportController:
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+        self.n_files: int = 0
         self.recursive = recursive
         self.root: Position = None
-        self.root_directory = None  # Set by ric.run.
-
-        ###
-        # self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
-        # # Adjust the root directory.
-        # assert dir_ and self.root_directory, dir_
-        # self.root_directory = self.root_directory.replace('\\', '/')
-        # if self.root_directory.endswith('/'):
-            # self.root_directory = self.root_directory[:-1]
+        self.root_directory: str = None  # Set by ric.run.
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
@@ -1615,10 +1608,10 @@ class RecursiveImportController:
         """
         dir_ can be None, a directory contained in the outline's directory, or
         a single file.
-        
+
         Return leo's directory if dir_'s directory is the outline's directory
         or a subdirectory.
-        
+
         There is no need to call os.path.relpath in this class. The paths of
         all imported files start with the outline's directory.
         """
@@ -1643,7 +1636,7 @@ class RecursiveImportController:
         dir_ can be None, a directory contained in the outline's directory, or a single file.
 
         Import all files in the dir_ directory, or the outline's directory if dir_ is None.
-        
+
         Import all files whose extension matches self.theTypes in dir_.
         In fact, dir_ can be a path to a single file.
         """
@@ -1802,8 +1795,8 @@ class RecursiveImportController:
         # The paths of all @<file> nodes should start with root_dir.
         root_dir = self.root_directory.replace('\\', '/')
         len_root_dir = len(root_dir)
-        
-        def rel_path(path):
+
+        def rel_path(path: str) -> str:
             path = path[len_root_dir:].strip()
             if path.startswith('/'):
                 path = path[1:]
