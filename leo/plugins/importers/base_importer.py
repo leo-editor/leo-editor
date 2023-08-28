@@ -3,6 +3,7 @@
 """base_importer.py: The base Importer class used by almost all importers."""
 from __future__ import annotations
 import io
+import os
 import re
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -61,6 +62,8 @@ class Importer:
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
         self.root: Position = None
+        file_name = c.fileName()
+        self.root_directory = os.path.dirname(file_name) if file_name else None
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.

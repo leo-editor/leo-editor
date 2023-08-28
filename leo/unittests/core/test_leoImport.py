@@ -97,15 +97,11 @@ class TestLeoImport(BaseTestImporter):
     #@+node:ekr.20230613235653.1: *3* TestLeoImport.test_ric_minimize_headlines
     def test_ric_minimize_headlines(self):
         c, root = self.c, self.c.rootPosition()
-        ###
-            # if sys.platform.startswith('win'):
-                # dir_ = 'C:/Repos/non-existent-directory/mypy'
-            # else:
-                # dir_ = '/Repos/non-existent-directory/mypy'
+        
 
         # minimize_headlines changes only headlines that start with dir_ or @<file> dir_.
 
-        dir_ = os.path.dirname(c.fileName())  ###
+        leo_dir = os.path.dirname(c.fileName())
 
         table = (
             ('root', 'root'),
