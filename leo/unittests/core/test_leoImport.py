@@ -105,7 +105,7 @@ class TestLeoImport(BaseTestImporter):
 
         table = (
             ('root', 'root'),
-            (dir_, 'path: mypy'),
+            (leo_dir, 'path: mypy'),
             # (f"{dir_}/test", 'path: mypy/test'),
             # (f"{dir_}/xyzzy/test2", 'path: mypy/xyzzy/test2'),
             # (f"@clean {dir_}/x.py", '@clean x.py'),
