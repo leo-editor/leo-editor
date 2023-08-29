@@ -1690,7 +1690,7 @@ class RecursiveImportController:
             c.redraw(parent)
         if not g.unitTesting:
             t2 = time.time()
-            n = len(list(parent.self_and_subtree()))
+            n = len(list(parent.subtree()))
             g.es_print(
                 f"imported {n} node{g.plural(n)} "
                 f"in {self.n_files} file{g.plural(self.n_files)} "
@@ -1701,7 +1701,7 @@ class RecursiveImportController:
         files = []
         if not os.path.exists(dir_):
             self.error(f"Not found: {dir_!r}")
-            return  ###
+            return
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
@@ -1843,8 +1843,9 @@ class RecursiveImportController:
                     return True
             return False
 
+        # Never remove p itself!
         aList = [
-            p2 for p2 in p.self_and_subtree()
+            p2 for p2 in p.subtree()
                 if not p2.b.strip() and not has_significant_children(p2)]
         if aList:
             c.deletePositionsInList(aList)  # Don't redraw.
