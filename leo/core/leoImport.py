@@ -1737,9 +1737,10 @@ class RecursiveImportController:
             path = norm(p.h[len(kind) :].strip())
             if path.startswith(outline_dir):
                 file_name = os.path.basename(path)
-                r_path = rel_path(path)
+                dir_name = os.path.dirname(path)
+                r_path = rel_path(dir_name)
                 p.h = f"{kind} {file_name}"
-                if r_path and '/' in r_path:
+                if r_path: ###  and '/' in r_path:
                     p.b = f"@path {r_path}\n{p.b}"
             return
 
@@ -1845,7 +1846,7 @@ class RecursiveImportController:
             self.n_files = 0
             if g.os_path_isfile(dir_):
                 if self.verbose:
-                    g.es_print(f"\nimporting file: {dir!r}")
+                    g.es_print(f"\nimporting file: {dir_!r}")
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
