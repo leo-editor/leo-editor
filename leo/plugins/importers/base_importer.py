@@ -333,12 +333,14 @@ class Importer:
     #@+node:ekr.20230825095756.1: *4* i.postprocess
     def postprocess(self, parent: Position) -> None:
         """
-        Importer.postprocess.
+        Importer.postprocess.  A hook for language-specific post-processing.
 
-        New in Leo 6.7.5. The Importer class handles all the post-processing
-                          instead of the RecursiveImportController class.
+        Python_Importer overrides this method.
+
+        **Important**: The RecursiveImportController (RIC) class contains a
+                       language-independent postpass that adjusts headlines of
+                       *all* imported nodes.
         """
-
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)
         """
