@@ -1823,7 +1823,7 @@ class Commands:
                 raise ValueError(f"Invalid position: {p!r}")
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p), repr(c))
-            g.trace(g.callers())
+            g.printObj(g.callers(20).split(','), tag='Callers')
 
     # For compatibility with old scripts.
 
