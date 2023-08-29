@@ -112,7 +112,7 @@ class TestLeoImport(BaseTestImporter):
         )
         x = leoImport.RecursiveImportController(c,
             ### dir_=dir_,
-            dir_=None,  ####
+            dir_=None,  ###
             kind='@clean',
             recursive=True,
             safe_at_file = False,

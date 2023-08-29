@@ -4379,13 +4379,7 @@ class Commands:
         """
         #@-<< docstring >>
         c = self
-        ###
-            # if not dir_:
-                # g.es_print('Missing dir_ argument')
-                # return
-            # if not g.os_path_exists(dir_):
-                # g.es_print(f"Directory/file does not exist: {dir_}")
-                # return
+
         # Import all files in dir_ after c.p.
         try:
             from leo.core import leoImport

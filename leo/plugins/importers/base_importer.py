@@ -282,7 +282,7 @@ class Importer:
         Overriding this method gives the subclass completed control.
         """
         c = self.c
-        ### g.trace(f"{len(s):>6} {parent.h}")  ###
+
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
