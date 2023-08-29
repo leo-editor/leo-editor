@@ -1740,7 +1740,7 @@ class RecursiveImportController:
                 dir_name = os.path.dirname(path)
                 r_path = rel_path(dir_name)
                 p.h = f"{kind} {file_name}"
-                if r_path: ###  and '/' in r_path:
+                if r_path:
                     p.b = f"@path {r_path}\n{p.b}"
             return
 
@@ -1846,6 +1846,7 @@ class RecursiveImportController:
             self.n_files = 0
             if g.os_path_isfile(dir_):
                 if self.verbose:
+                    # Only print this message if importing a *single* file.
                     print('')
                     g.es_print(f"importing file: {os.path.normpath(dir_)}")
                 self.import_one_file(dir_, parent)
