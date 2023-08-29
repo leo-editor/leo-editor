@@ -1599,7 +1599,7 @@ class RecursiveImportController:
         self.n_files: int = 0
         self.recursive = recursive
         self.root: Position = None
-        self.root_directory: str = None  # Set by ric.run.
+        self.outline_directory: str = None  # Set by ric.run.
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
@@ -1635,7 +1635,7 @@ class RecursiveImportController:
     def error(self, message: str) -> None:
         """Print an error message."""
         g.es_print(message, color='red')
-    #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
+    #@+node:ekr.20130823083943.12613: *3* ric.run
     def run(self, dir_: Optional[str]) -> None:
         """
         dir_ can be None, a directory contained in the outline's directory, or a single file.
@@ -1651,15 +1651,15 @@ class RecursiveImportController:
         # All computations use forward slashes.
         if dir_ is not None:
             dir_ = dir_.replace('\\', '/')
-        self.root_directory = self.compute_root_directory(dir_)
-        if not self.root_directory:
+        self.outline_directory = self.compute_root_directory(dir_)
+        if not self.outline_directory:
             self.error(f"{dir_!r} is outside of the outline's directory")
             return
         if dir_ is None:
-            dir_ = self.root_directory
+            dir_ = self.outline_directory
         # All computations use forward slashes.
         assert '\\' not in dir_, repr(dir_)
-        assert '\\' not in self.root_directory, repr(self.root_directory)
+        assert '\\' not in self.outline_directory, repr(self.outline_directory)
         try:
             c, u = self.c, self.c.undoer
             t1 = time.time()
@@ -1701,7 +1701,8 @@ class RecursiveImportController:
         files = []
         if not os.path.exists(dir_):
             self.error(f"Not found: {dir_!r}")
-        elif g.os_path_isfile(dir_):
+            return  ###
+        if g.os_path_isfile(dir_):
             files = [dir_]
         else:
             if self.verbose:
@@ -1762,7 +1763,7 @@ class RecursiveImportController:
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         """
-        assert self.root_directory
+        assert self.outline_directory
         self.fix_back_slashes(p)
         for p2 in p.subtree():
             self.minimize_headline(p2)
@@ -1794,11 +1795,11 @@ class RecursiveImportController:
         Create an @path directive in  @<file> nodes.
         """
 
-        # The root_directory is the outline's directory.
-        assert os.path.isabs(self.root_directory), repr(self.root_directory)
+        # The outline_directory is the outline's directory.
+        assert os.path.isabs(self.outline_directory), repr(self.outline_directory)
 
         # The paths of all @<file> nodes should start with root_dir.
-        root_dir = self.root_directory.replace('\\', '/')
+        root_dir = self.outline_directory.replace('\\', '/')
         len_root_dir = len(root_dir)
 
         def rel_path(path: str) -> str:

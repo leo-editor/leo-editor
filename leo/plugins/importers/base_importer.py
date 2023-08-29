@@ -63,7 +63,7 @@ class Importer:
         self.c = c  # May be None.
         self.root: Position = None
         file_name = c.fileName()
-        self.root_directory = os.path.dirname(file_name) if file_name else None
+        self.outline_directory = os.path.dirname(file_name) if file_name else None
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
@@ -272,12 +272,16 @@ class Importer:
     def import_from_string(self, parent: Position, s: str) -> None:
         """
         Importer.import_from_string.
+        
+        parent: An @<file> node containing the absolute path to the to-be-imported file.
+        s: The contents of the file.
 
         The top-level code for almost all importers.
 
         Overriding this method gives the subclass completed control.
         """
         c = self.c
+        g.trace(f"{len(s):>6} {parent.h}")  ###
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
