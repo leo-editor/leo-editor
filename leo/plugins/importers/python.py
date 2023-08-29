@@ -4,7 +4,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -35,6 +35,26 @@ class Python_Importer(Importer):
     )
 
     #@+others
+    #@+node:ekr.20230825100219.1: *3* python_i.adjust_headlines
+    def adjust_headlines(self, parent: Position) -> None:
+        """
+        Add class names for all methods.
+
+        Change 'def' to 'function:' for all non-methods.
+        """
+        class_pat = re.compile(r'\s*class\s+(\w+)')
+
+        for p in parent.subtree():
+            if p.h.startswith('def '):
+                # Look up the tree for the nearest class.
+                for z in p.parents():
+                    m = class_pat.match(z.h)
+                    if m:
+                        p.h = f"{m.group(1)}.{p.h[4:].strip()}"
+                        break
+                else:
+                    if self.language == 'python':
+                        p.h = f"function: {p.h[4:].strip()}"
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -148,6 +168,81 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
+    #@+node:ekr.20230825111112.1: *3* python_i.move_docstrings
+    def move_docstrings(self, parent: Position) -> None:
+        """
+        Move docstrings to their most convenient locations.
+        """
+
+        delims = ('"""', "'''")
+
+        #@+others  # define helper functions
+        #@+node:ekr.20230825164231.1: *4* function: find_docstrings
+        def find_docstring(p: Position) -> Optional[str]:
+            """Righting a regex that will return a docstring is too tricky."""
+            s_strip = p.b.strip()
+            if not s_strip:
+                return None
+            if not s_strip.startswith(delims):
+                return None
+            delim = delims[0] if s_strip.startswith(delims[0]) else delims[1]
+            lines = g.splitLines(p.b)
+            if lines[0].count(delim) == 2:
+                return lines[0]
+            i = 1
+            while i < len(lines):
+                if delim in lines[i]:
+                    return ''.join(lines[: i + 1])
+                i += 1
+            return None
+
+        #@+node:ekr.20230825164234.1: *4* function: move_docstring
+        def move_docstring(parent: Position) -> None:
+            """Move a docstring from the child to the parent."""
+            child = parent.firstChild()
+            if not child:
+                return
+            docstring = find_docstring(child)
+            if not docstring:
+                return
+
+            child.b = child.b[len(docstring) :]
+            if parent.h.startswith('class'):
+                parent_lines = g.splitLines(parent.b)
+                # Count the number of parent lines before the class line.
+                n = 0
+                while n < len(parent_lines):
+                    line = parent_lines[n]
+                    n += 1
+                    if line.strip().startswith('class'):
+                        break
+                if n >= len(parent_lines):
+                    g.trace('NO CLASS LINE')
+                    return
+                docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
+                parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
+            else:
+                parent.b = docstring + parent.b
+
+            # Delete references to empty children.
+            # ric.remove_empty_nodes will delete the child later.
+            if not child.b.strip():
+                parent.b = parent.b.replace(child.h, '')
+        #@-others
+
+        # Move module-level docstrings.
+        move_docstring(parent)
+
+        # Move class docstrings.
+        for p in parent.subtree():
+            if p.h.startswith('class '):
+                move_docstring(p)
+    #@+node:ekr.20230825095926.1: *3* python_i.postprocess
+    def postprocess(self, parent: Position) -> None:
+        """Python_Importer.postprocess."""
+        # See #3514.
+        self.adjust_headlines(parent)
+        self.move_docstrings(parent)
     #@-others
 #@-others
 

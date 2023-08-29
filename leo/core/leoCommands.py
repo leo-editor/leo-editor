@@ -1823,7 +1823,7 @@ class Commands:
                 raise ValueError(f"Invalid position: {p!r}")
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p), repr(c))
-            g.trace(g.callers())
+            g.printObj(g.callers(20).split(','), tag='Callers')
 
     # For compatibility with old scripts.
 
@@ -4361,12 +4361,14 @@ class Commands:
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_              The root directory or file to import.
+            dir_              The path to a directory or file.
+                              Relative paths must exist relative to the outline's directory.
             kind              One of ('@clean','@edit','@file','@nosent').
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
                               None is equivalent to ['.py']
+            verbose=False     True: report imported directories.
 
         This method cleans imported files as follows:
 
@@ -4377,12 +4379,7 @@ class Commands:
         """
         #@-<< docstring >>
         c = self
-        if not dir_:
-            g.es_print('Missing dir_ argument')
-            return
-        if not g.os_path_exists(dir_):
-            g.es_print(f"Directory/file does not exist: {dir_}")
-            return
+
         # Import all files in dir_ after c.p.
         try:
             from leo.core import leoImport
