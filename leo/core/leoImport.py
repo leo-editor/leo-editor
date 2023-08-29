@@ -1577,7 +1577,7 @@ class MORE_Importer:
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController:
     """Recursively import all python files in a directory and clean the result."""
-    
+
     # Similar to p.isAnyAtFileNode, but not the same.
     file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
 
@@ -1620,7 +1620,7 @@ class RecursiveImportController:
             files = [dir_]
         else:
             if self.verbose:
-                g.es_print(f"importing directory: {dir_}")
+                g.es_print(f"importing directory: {os.path.normpath(dir_)}")
             files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
@@ -1711,7 +1711,6 @@ class RecursiveImportController:
 
         fix_back_slashes has converted backslashes to forward slashes.
         """
-
 
         # The outline_directory is the outline's directory.
         assert os.path.isabs(self.outline_directory), repr(self.outline_directory)
