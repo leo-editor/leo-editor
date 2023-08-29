@@ -585,8 +585,11 @@ class LeoImportCommands:
         ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
-        # The so-called scanning func is a callback. It must have a c argument.
-        func = self.dispatch(ext, p)
+
+        # Each importer file defines `do_import` at the top level with this signature:
+        # def do_import(c: Cmdr, parent: Position, s: str) -> None:
+
+        func = self.dispatch(ext, p)  # The do_import callback.
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
@@ -772,8 +775,6 @@ class LeoImportCommands:
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
-                    if self.verbose and not g.unitTesting:
-                        g.blue("imported", g.shortFileName(fn) if shortFn else fn)
                     p.contract()
                     p.setDirty()
                     c.setChanged()
@@ -1576,11 +1577,15 @@ class MORE_Importer:
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController:
     """Recursively import all python files in a directory and clean the result."""
+
+    # Similar to p.isAnyAtFileNode, but not the same.
+    file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+
     #@+others
-    #@+node:ekr.20130823083943.12615: *3* ric.ctor
+    #@+node:ekr.20130823083943.12615: *3*  ric.ctor
     def __init__(self, c: Cmdr,
         *,  # All other args are kwargs.
-        dir_: str,
+        dir_: Optional[str],
         ignore_pattern: re.Pattern = None,
         kind: str,
         recursive: bool = True,
@@ -1590,72 +1595,32 @@ class RecursiveImportController:
     ) -> None:
         """Ctor for RecursiveImportController class."""
         self.c = c
-        self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+        self.n_files: int = 0
         self.recursive = recursive
         self.root: Position = None
-        self.root_directory = dir_ if os.path.isdir(dir_) else os.path.dirname(dir_)
-        # Adjust the root directory.
-        assert dir_ and self.root_directory, dir_
-        self.root_directory = self.root_directory.replace('\\', '/')
-        if self.root_directory.endswith('/'):
-            self.root_directory = self.root_directory[:-1]
+        file_name = c.fileName()
+        self.outline_directory: Optional[str] = os.path.dirname(file_name) if file_name else None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
-    #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
-    def run(self, dir_: str) -> None:
-        """
-        Import all files whose extension matches self.theTypes in dir_.
-        In fact, dir_ can be a path to a single file.
-        """
-        if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
-            g.es('bad kind param', self.kind, color='red')
-            return
-        try:
-            c, u = self.c, self.c.undoer
-            t1 = time.time()
-            g.app.disable_redraw = True
-            last = c.lastTopLevel()
-            c.selectPosition(last)
-            undoData = u.beforeInsertNode(last)
-            # Always create a new last top-level node.
-            self.root = parent = last.insertAfter()
-            parent.v.h = 'imported files'
-            # Special case for a single file.
-            self.n_files = 0
-            if g.os_path_isfile(dir_):
-                if self.verbose:
-                    g.es_print('\nimporting file:', dir_)
-                self.import_one_file(dir_, parent)
-            else:
-                self.import_dir(dir_, parent)
-            self.post_process(parent)
-            u.afterInsertNode(parent, 'recursive-import', undoData)
-        except Exception:
-            g.es_print('Exception in recursive import')
-            g.es_exception()
-        finally:
-            g.app.disable_redraw = False
-            for p2 in parent.self_and_subtree(copy=False):
-                p2.contract()
-            c.redraw(parent)
-        if not g.unitTesting:
-            t2 = time.time()
-            n = len(list(parent.self_and_subtree()))
-            g.es_print(
-                f"imported {n} node{g.plural(n)} "
-                f"in {self.n_files} file{g.plural(self.n_files)} "
-                f"in {t2 - t1:2.2f} seconds")
-    #@+node:ekr.20130823083943.12597: *4* ric.import_dir
+    #@+node:ekr.20230828090452.1: *3* ric.error
+    def error(self, message: str) -> None:
+        """Print an error message."""
+        g.es_print(message, color='red')
+    #@+node:ekr.20130823083943.12597: *3* ric.import_dir
     def import_dir(self, dir_: str, parent: Position) -> None:
         """Import selected files from dir_, a directory."""
+        files = []
+        if not os.path.exists(dir_):
+            self.error(f"Not found: {dir_!r}")
+            return
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
             if self.verbose:
-                g.es_print('importing directory:', dir_)
+                g.es_print(f"importing directory: {os.path.normpath(dir_)}")
             files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
@@ -1670,9 +1635,9 @@ class RecursiveImportController:
                     if not self.ignore_pattern.search(path):
                         dirs.append(path)
             except OSError:
-                g.es_print('Exception computing', path)
+                self.error(f"Exception computing: {path!r}")
                 g.es_exception()
-        if files or dirs:
+        if files2 or dirs:
             parent = parent.insertAsLastChild()
             parent.v.h = dir_
             if files2:
@@ -1683,7 +1648,7 @@ class RecursiveImportController:
                 assert self.recursive
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
-    #@+node:ekr.20170404103953.1: *4* ric.import_one_file
+    #@+node:ekr.20170404103953.1: *3* ric.import_one_file
     def import_one_file(self, path: str, parent: Position) -> None:
         """Import one file to the last top-level node."""
         c = self.c
@@ -1706,125 +1671,85 @@ class RecursiveImportController:
         p.h = self.kind + p.h[5:]  # Honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
-    #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
+    #@+node:ekr.20130823083943.12607: *3* ric.post_process
     def post_process(self, p: Position) -> None:
         """
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         """
-        assert self.root_directory
+        assert self.outline_directory
         self.fix_back_slashes(p)
         for p2 in p.subtree():
             self.minimize_headline(p2)
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
         self.clear_dirty_bits(p)
-        self.add_class_names(p)
-    #@+node:ekr.20180524100258.1: *5* ric.add_class_names
-    def add_class_names(self, p: Position) -> None:
-        """Add class names to headlines for all descendant nodes."""
-        # pylint: disable=no-else-continue
-        after, class_name = None, None
-        class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
-        paren_pattern = re.compile(r'(.*)\(.*\.py\)')
-        for p in p.self_and_subtree(copy=False):
-            # Part 1: update the status.
-            m = self.file_pattern.match(p.h)
-            if m:
-                # prefix = m.group(1)
-                # fn = g.shortFileName(p.h[len(prefix):].strip())
-                after, class_name = None, None
-                continue
-            elif p.h.startswith('@path '):
-                after, class_name = None, None
-            elif p.h.startswith('class '):
-                class_name = p.h[5:].strip()
-                if class_name:
-                    after = p.nodeAfterTree()
-                    continue
-            elif p == after:
-                after, class_name = None, None
-            # Part 2: update the headline.
-            if class_name:
-                if p.h.startswith(class_name):
-                    m = class_paren_pattern.match(p.h)
-                    if m:
-                        p.h = f"{m.group(1)}.{m.group(2)}".rstrip()
-                else:
-                    p.h = f"{class_name}.{p.h}"
-            else:
-                m = paren_pattern.match(p.h)
-                if m:
-                    p.h = m.group(1).rstrip()
-            # elif fn:
-                # tag = ' (%s)' % fn
-                # if not p.h.endswith(tag):
-                    # p.h += tag
-    #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
+    #@+node:ekr.20130823083943.12608: *4* ric.clear_dirty_bits
     def clear_dirty_bits(self, p: Position) -> None:
         c = self.c
         c.clearChanged()  # Clears *all* dirty bits.
         for p in p.self_and_subtree(copy=False):
             p.clearDirty()
-    #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
+    #@+node:ekr.20130823083943.12609: *4* ric.dump_headlines
     def dump_headlines(self, p: Position) -> None:
         # show all headlines.
         for p in p.self_and_subtree(copy=False):
             print(p.h)
-    #@+node:ekr.20130823083943.12610: *5* ric.fix_back_slashes
+    #@+node:ekr.20130823083943.12610: *4* ric.fix_back_slashes
     def fix_back_slashes(self, p: Position) -> None:
         """Convert backslash to slash in all headlines."""
         for p in p.self_and_subtree(copy=False):
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s
-    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headline
+    #@+node:ekr.20130823083943.12611: *4* ric.minimize_headline
     def minimize_headline(self, p: Position) -> None:
         """
         Adjust headlines and add @path directives to headlines or body text.
+
         Create an @path directive in  @<file> nodes.
+
+        fix_back_slashes has converted backslashes to forward slashes.
         """
 
-        assert os.path.isabs(self.root_directory)
+        # The outline_directory is the outline's directory.
+        assert os.path.isabs(self.outline_directory), repr(self.outline_directory)
 
-        def relative_path(path: str) -> str:
-            """Return path relative to the root directory."""
-            assert path.startswith(self.root_directory), repr(path)
-            assert os.path.isabs(path), repr(path)
-            path = path.split('/')[-1] if '/' in path else path
-            return path
+        def norm(path: str) -> str:
+            """A hack to handle Windows drive names."""
+            return path.lower() if g.isWindows else path
 
-        def compute_at_path_path(path: str) -> str:
-            """Compute the relative path to be used in an @path directive."""
-            assert path.startswith(self.root_directory), repr(path)
-            assert os.path.isabs(path), repr(path)
-            path = path[len(self.root_directory) :]
+        def rel_path(path: str) -> str:
+            path = path[len_outline_dir:].strip()
             if path.startswith('/'):
                 path = path[1:]
             return path
+
+         # The paths of all @<file> nodes should start with outline_dir.
+        p.h = norm(p.h.replace('\\', '/'))  # Defensive.
+        outline_dir = norm(self.outline_directory.replace('\\', '/'))
+        len_outline_dir = len(outline_dir)
 
         m = self.file_pattern.match(p.h)
         if m:
             # p is an @file node of some kind.
             kind = m.group(0)
-            path = p.h[len(kind) :].strip().replace('\\', '/')
-            # Shorten p.h.
-            p.h = f"{kind} {relative_path(path)}"
-            # Prepend an @path directive to p.b if it has a directory component.
-            path = compute_at_path_path(path)
-            if path and '/' in path:
-                directory = '/'.join(path.split('/')[:-1])
-                p.b = f"@path {directory}\n{p.b}"
-        elif '/' in p.h and p.h == self.root_directory:
-            # Show the last component.
-            directory = p.h.split('/')[-1]
-            p.h = f"path: {directory}"
-        elif p.h.startswith(self.root_directory):
-            # The importer has created the start of an @path node.
-            h = compute_at_path_path(p.h)
-            if h:
-                p.h = f"path: {h}"
-    #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
+            path = norm(p.h[len(kind) :].strip())
+            if path.startswith(outline_dir):
+                file_name = os.path.basename(path)
+                dir_name = os.path.dirname(path)
+                r_path = rel_path(dir_name)
+                p.h = f"{kind} {file_name}"
+                if r_path:
+                    p.b = f"@path {r_path}\n{p.b}"
+            return
+
+        # Handle everything else.
+        if p.h.startswith(outline_dir):
+            r_path = rel_path(p.h)
+            if r_path:
+                p.h = f"path: {r_path}"
+    #@+node:ekr.20130823083943.12612: *4* ric.remove_empty_nodes
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""
         c = self.c
@@ -1840,11 +1765,110 @@ class RecursiveImportController:
                     return True
             return False
 
+        # Never remove p itself!
         aList = [
-            p2 for p2 in p.self_and_subtree()
+            p2 for p2 in p.subtree()
                 if not p2.b.strip() and not has_significant_children(p2)]
         if aList:
             c.deletePositionsInList(aList)  # Don't redraw.
+    #@+node:ekr.20230829043849.1: *3* ric_resolve_dir_arg
+    def resolve_dir_arg(self, arg: str) -> Optional[str]:
+        """
+        arg can be None or a path (relative or absolute) to a file or
+        directory.
+
+        Return True if the arg can be resolved to a file/directory within
+        self.outline_directory.
+
+        Relative paths are considered to be relative to self.outline_directory.
+        As a result, there is no need to call os.path.relpath anywhere in this
+        class.
+        """
+
+        arg1 = arg  # For asserts.
+        outline_dir = self.outline_directory
+
+        # Initial sanity checks.
+        assert outline_dir, repr(outline_dir)
+        assert os.path.isabs(outline_dir), repr(outline_dir)
+        assert os.path.exists(outline_dir), repr(outline_dir)
+        assert os.path.isdir(outline_dir), repr(outline_dir)
+
+        # Resolve arg relative to the outline's directory.
+        if arg is None:
+            arg = outline_dir
+        elif not os.path.isabs(arg):
+            arg = os.path.join(outline_dir, arg)
+        if not os.path.exists(arg):
+            return None
+
+        # Final sanity checks.
+        assert arg, repr(arg1)
+        assert os.path.isabs(arg), repr(arg1)
+        assert os.path.exists(arg), repr(arg1)
+        return arg
+    #@+node:ekr.20130823083943.12613: *3* ric.run
+    def run(self, dir_: Optional[str]) -> None:
+        """
+        dir_ can be None, a directory contained in the outline's directory, or a single file.
+
+        Import all files in the dir_ directory, or the outline's directory if dir_ is None.
+
+        Import all files whose extension matches self.theTypes in dir_.
+        In fact, dir_ can be a path to a single file.
+        """
+        if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+            self.error(f"bad kind param: {self.kind!r}")
+            return
+        if not self.outline_directory:
+            self.error('The outline has no name. Please save it.')
+            return
+
+        # Resolve dir_ to an absolute path.
+        dir_1 = dir_
+        dir_ = self.resolve_dir_arg(dir_)
+        if dir_ is None:
+            self.error(f"invalid 'dir_' argument: {dir_1!r}")
+            return
+
+        # Import all requested files.
+        try:
+            c, u = self.c, self.c.undoer
+            t1 = time.time()
+            g.app.disable_redraw = True
+            last = c.lastTopLevel()
+            c.selectPosition(last)
+            undoData = u.beforeInsertNode(last)
+            # Always create a new last top-level node.
+            self.root = parent = last.insertAfter()
+            parent.v.h = 'imported files'
+            # Special case for a single file.
+            self.n_files = 0
+            if g.os_path_isfile(dir_):
+                if self.verbose:
+                    # Only print this message if importing a *single* file.
+                    print('')
+                    g.es_print(f"importing file: {os.path.normpath(dir_)}")
+                self.import_one_file(dir_, parent)
+            else:
+                self.import_dir(dir_, parent)
+            self.post_process(parent)
+            u.afterInsertNode(parent, 'recursive-import', undoData)
+        except Exception:
+            self.error('Exception in recursive import')
+            g.es_exception()
+        finally:
+            g.app.disable_redraw = False
+            for p2 in parent.self_and_subtree(copy=False):
+                p2.contract()
+            c.redraw(parent)
+        if not g.unitTesting:
+            t2 = time.time()
+            n = len(list(parent.subtree()))
+            g.es_print(
+                f"imported {n} node{g.plural(n)} "
+                f"in {self.n_files} file{g.plural(self.n_files)} "
+                f"in {t2 - t1:2.2f} seconds")
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:

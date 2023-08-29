@@ -270,11 +270,16 @@ class Importer:
         """
         Importer.import_from_string.
 
+        parent: An @<file> node containing the absolute path to the to-be-imported file.
+
+        s: The contents of the file.
+
         The top-level code for almost all importers.
 
         Overriding this method gives the subclass completed control.
         """
         c = self.c
+
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
@@ -294,6 +299,9 @@ class Importer:
 
         # Generate all nodes.
         self.gen_lines(lines, parent)
+
+        # A hook for python importer.
+        self.postprocess(parent)
 
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.
@@ -320,6 +328,17 @@ class Importer:
         Xml_Importer uses this hook to split lines.
         """
         return lines
+    #@+node:ekr.20230825095756.1: *4* i.postprocess
+    def postprocess(self, parent: Position) -> None:
+        """
+        Importer.postprocess.  A hook for language-specific post-processing.
+
+        Python_Importer overrides this method.
+
+        **Important**: The RecursiveImportController (RIC) class contains a
+                       language-independent postpass that adjusts headlines of
+                       *all* imported nodes.
+        """
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)
         """
