@@ -1846,7 +1846,8 @@ class RecursiveImportController:
             self.n_files = 0
             if g.os_path_isfile(dir_):
                 if self.verbose:
-                    g.es_print(f"\nimporting file: {dir_!r}")
+                    print('')
+                    g.es_print(f"importing file: {os.path.normpath(dir_)}")
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
