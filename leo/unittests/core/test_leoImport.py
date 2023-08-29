@@ -4,7 +4,6 @@
 
 import io
 import os
-### import sys
 import textwrap
 from leo.unittests.test_importers import BaseTestImporter
 from leo.core import leoImport
