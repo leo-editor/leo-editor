@@ -775,8 +775,6 @@ class LeoImportCommands:
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
-                    if self.verbose and not g.unitTesting:
-                        g.blue("imported", g.shortFileName(fn) if shortFn else fn)
                     p.contract()
                     p.setDirty()
                     c.setChanged()
@@ -1579,6 +1577,10 @@ class MORE_Importer:
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
 class RecursiveImportController:
     """Recursively import all python files in a directory and clean the result."""
+    
+    # Similar to p.isAnyAtFileNode, but not the same.
+    file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+
     #@+others
     #@+node:ekr.20130823083943.12615: *3*  ric.ctor
     def __init__(self, c: Cmdr,
@@ -1593,7 +1595,6 @@ class RecursiveImportController:
     ) -> None:
         """Ctor for RecursiveImportController class."""
         self.c = c
-        self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.n_files: int = 0
@@ -1619,7 +1620,7 @@ class RecursiveImportController:
             files = [dir_]
         else:
             if self.verbose:
-                g.es_print(f"importing directory: {dir!r}")
+                g.es_print(f"importing directory: {dir_}")
             files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
