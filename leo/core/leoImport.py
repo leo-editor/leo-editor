@@ -1830,10 +1830,6 @@ class RecursiveImportController:
             self.error(f"invalid 'dir_' argument: {dir_1!r}")
             return
 
-        # All computations from here on use forward slashes.
-        ### dir_ = dir_.replace('\\', '/')
-        ### self.outline_directory = self.outline_directory.replace('\\', '/')
-
         # Import all requested files.
         try:
             c, u = self.c, self.c.undoer
