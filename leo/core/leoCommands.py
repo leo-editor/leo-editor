@@ -4361,12 +4361,14 @@ class Commands:
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_              The root directory or file to import.
+            dir_              The path to a directory or file.
+                              Relative paths must exist relative to the outline's directory.
             kind              One of ('@clean','@edit','@file','@nosent').
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
                               None is equivalent to ['.py']
+            verbose=False     True: report imported directories.
 
         This method cleans imported files as follows:
 
