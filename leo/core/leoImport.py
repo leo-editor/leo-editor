@@ -1619,6 +1619,7 @@ class RecursiveImportController:
         leo_name = c.fileName()
         leo_directory = os.path.dirname(leo_name) if leo_name else None
         if not leo_directory:
+
             return None
         leo_directory = leo_directory.replace('\\', '/')
         if not dir_:
@@ -1630,6 +1631,10 @@ class RecursiveImportController:
             dir_ = os.path.dirname(dir_)
         # Ignore case here to compare drive letters properly on Windows.
         return leo_directory if dir_.lower().startswith(leo_directory.lower()) else None
+    #@+node:ekr.20230828090452.1: *3* ric.error
+    def error(self, message: str) -> None:
+        """Print an error message."""
+        g.es_print(message, color='red')
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_: Optional[str]) -> None:
         """
@@ -1641,14 +1646,14 @@ class RecursiveImportController:
         In fact, dir_ can be a path to a single file.
         """
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
-            g.es_print('bad kind param', self.kind, color='red')
+            self.error(f"bad kind param: {self.kind!r}")
             return
         # All computations use forward slashes.
         if dir_ is not None:
             dir_ = dir_.replace('\\', '/')
         self.root_directory = self.compute_root_directory(dir_)
         if not self.root_directory:
-            g.es_print(f"{dir_!r} is outside of the outline's directory", color='red')
+            self.error(f"{dir_!r} is outside of the outline's directory")
             return
         if dir_ is None:
             dir_ = self.root_directory
@@ -1669,14 +1674,14 @@ class RecursiveImportController:
             self.n_files = 0
             if g.os_path_isfile(dir_):
                 if self.verbose:
-                    g.es_print('\nimporting file:', dir_)
+                    g.es_print(f"\nimporting file: {dir!r}")
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
             self.post_process(parent)
             u.afterInsertNode(parent, 'recursive-import', undoData)
         except Exception:
-            g.es_print('Exception in recursive import')
+            self.error('Exception in recursive import')
             g.es_exception()
         finally:
             g.app.disable_redraw = False
@@ -1695,12 +1700,12 @@ class RecursiveImportController:
         """Import selected files from dir_, a directory."""
         files = []
         if not os.path.exists(dir_):
-            g.es_print(f"Not found: {dir_!r}", color='red')
+            self.error(f"Not found: {dir_!r}")
         elif g.os_path_isfile(dir_):
             files = [dir_]
         else:
             if self.verbose:
-                g.es_print('importing directory:', dir_)
+                g.es_print(f"importing directory: {dir!r}")
             files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
@@ -1715,7 +1720,7 @@ class RecursiveImportController:
                     if not self.ignore_pattern.search(path):
                         dirs.append(path)
             except OSError:
-                g.es_print('Exception computing', path)
+                self.error(f"Exception computing: {path!r}")
                 g.es_exception()
         if files2 or dirs:
             parent = parent.insertAsLastChild()
