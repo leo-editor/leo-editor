@@ -272,7 +272,7 @@ class Importer:
     def import_from_string(self, parent: Position, s: str) -> None:
         """
         Importer.import_from_string.
-        
+
         parent: An @<file> node containing the absolute path to the to-be-imported file.
         s: The contents of the file.
 
@@ -281,7 +281,7 @@ class Importer:
         Overriding this method gives the subclass completed control.
         """
         c = self.c
-        g.trace(f"{len(s):>6} {parent.h}")  ###
+        ### g.trace(f"{len(s):>6} {parent.h}")  ###
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
