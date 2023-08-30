@@ -3099,7 +3099,10 @@ class TestPython(BaseTestImporter):
             "'''\n",
             '    if 2: a = 2\n',
             "'''\n",
-            'i = 2\n'
+            'i = 2\n',
+            # #3517: f-strings.
+            # mypy/build.py line 430.
+            r"""plugin_error(f'Can\'t find plugin "{plugin_path}"')""" + '\n',
         ]
         expected_lines = [
             'i = 1 \n',
@@ -3113,7 +3116,8 @@ class TestPython(BaseTestImporter):
             '\n',
             '\n',
             '\n',
-            'i = 2\n'
+            'i = 2\n',
+            'plugin_error()\n',
         ]
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
