@@ -62,14 +62,14 @@ class Python_Importer(Importer):
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
         Python_i.delete_comments_and_strings.
-        
+
         This method handles f-strings properly.
         """
-        
+
         def skip_string(delim: str, i: int, line: str) -> tuple[str, int]:
             """
             Skip the remainder of a string.
-            
+
             Sring ends:       return ('', i)
             String continues: return (delim, len(line))
             """
@@ -88,7 +88,7 @@ class Python_Importer(Importer):
             return delim, i
 
         delim: str = ''  # The open string delim.
-        result: list[str] = [] 
+        result: list[str] = []
         for line_i, line in enumerate(lines):
             i, result_line = 0, []
             while i < len(line):
@@ -210,18 +210,13 @@ class Python_Importer(Importer):
             return len(s) - len(s.lstrip())
 
         prev_line = self.guide_lines[i - 1]
-        trace = False and 'load_plugins_from_config' in prev_line ###
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
+
         # Handle multi-line def's. Scan to the line containing a close parenthesis.
-        if trace:
-            g.trace('***********')
-            print(i, i2, 'prev_line', repr(prev_line))
         if prev_line.strip().startswith('def ') and ')' not in prev_line:
             while i < i2:
                 i += 1
-                if trace:
-                    print('     LOOK', repr(self.guide_lines[i - 1]))
                 if ')' in self.guide_lines[i - 1]:
                     break
         tail_lines = 0
@@ -229,17 +224,13 @@ class Python_Importer(Importer):
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
-                if trace: print('NEXT', i, repr(s))
                 i += 1
                 if s.strip():
                     if lws_n(s) <= lws1:
                         # A non-comment line that ends the block.
                         # Exclude all tail lines.
-                        if trace:
-                            print('DONE', i, 'tail_lines', tail_lines - 1, repr(s))
                         return i - tail_lines - 1
                     # A non-comment line that does not end the block.
-                    ### if trace: print('Non-comment', i, repr(s))
                     tail_lines = 0
                 else:
                     # A comment line.
