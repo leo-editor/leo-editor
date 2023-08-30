@@ -3564,7 +3564,6 @@ class TestPython(BaseTestImporter):
                 custom_plugins: list[Plugin] = []
         ''')
 
-
         expected_results = (
             (0, '',  # Ignore the first headline.
                 '@others\n'
