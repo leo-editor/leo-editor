@@ -178,6 +178,19 @@ class Python_Importer(Importer):
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
         i, prev_i, results = i1, i1, []
+        ### g.printObj(self.lines[max(0, i1-1):i2+1], tag=f"Entry: {i1}:{i2}")
+
+        def lws_n(s: str) -> int:
+            """Return the length of the leading whitespace for s."""
+            return len(s) - len(s.lstrip())
+
+        # Look behind to see what the previous block was.
+        if i1 > 0:
+            prev_block_line = self.guide_lines[i1 - 1]
+            ### g.trace('prev_block_line', repr(prev_block_line))
+        else:
+            prev_block_line = ''
+
         while i < i2:
             s = self.guide_lines[i]
             i += 1
@@ -188,9 +201,20 @@ class Python_Importer(Importer):
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    results.append((kind, name, prev_i, i, end))
-                    i = prev_i = end
+                    ### g.trace(i, end, name, 'kind', kind, 'prev_block_line', repr(prev_block_line))
+
+                    # #3517: Don't generated nested defs.
+                    if (
+                        kind == 'def'
+                        and prev_block_line.strip().startswith('def ')
+                        and lws_n(prev_block_line) < lws_n(s)
+                    ):
+                        pass
+                    else:
+                        results.append((kind, name, prev_i, i, end))
+                        i = prev_i = end
                     break
+        ### g.printObj(results, tag=f"Results: {i1}:{i2}")
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
