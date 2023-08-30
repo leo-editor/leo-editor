@@ -3543,6 +3543,49 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
+    def test_nested_defs(self):
+        # See #3517
+
+        s = (
+        '''
+            def load_plugins_from_config(
+                options: Options, errors: Errors, stdout: TextIO
+            ) -> tuple[list[Plugin], dict[str, str]]:
+                """Load all configured plugins."""
+
+                snapshot: dict[str, str] = {}
+
+                def plugin_error(message: str) -> NoReturn:
+                    errors.report(line, 0, message)
+                    errors.raise_error(use_stdout=False)
+
+                custom_plugins: list[Plugin] = []
+        ''')
+
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'function: load_plugins_from_config',
+                'def load_plugins_from_config(\n'
+                '    options: Options, errors: Errors, stdout: TextIO\n'
+                ') -> tuple[list[Plugin], dict[str, str]]:\n'
+                '    """Load all configured plugins."""\n'
+                '\n'
+                '    snapshot: dict[str, str] = {}\n'
+                '\n'
+                '    def plugin_error(message: str) -> NoReturn:\n'
+                '        errors.report(line, 0, message)\n'
+                '        errors.raise_error(use_stdout=False)\n'
+                '\n'
+                '    custom_plugins: list[Plugin] = []\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
