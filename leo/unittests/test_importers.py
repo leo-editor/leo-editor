@@ -3547,6 +3547,7 @@ class TestPython(BaseTestImporter):
     def test_nested_defs(self):
         # See #3517
 
+        # A simplified version of code in mypy/build.py.
         s = (
         '''
             def load_plugins_from_config(
