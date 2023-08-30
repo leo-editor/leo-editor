@@ -1726,7 +1726,7 @@ class RecursiveImportController:
             return path
 
          # The paths of all @<file> nodes should start with outline_dir.
-        p.h = norm(p.h.replace('\\', '/'))  # Defensive.
+        p.h = p.h.replace('\\', '/')  # Defensive.
         outline_dir = norm(self.outline_directory.replace('\\', '/'))
         len_outline_dir = len(outline_dir)
 
@@ -1734,8 +1734,8 @@ class RecursiveImportController:
         if m:
             # p is an @file node of some kind.
             kind = m.group(0)
-            path = norm(p.h[len(kind) :].strip())
-            if path.startswith(outline_dir):
+            path = p.h[len(kind) :].strip()
+            if norm(path).startswith(outline_dir):
                 file_name = os.path.basename(path)
                 dir_name = os.path.dirname(path)
                 r_path = rel_path(dir_name)
@@ -1745,7 +1745,7 @@ class RecursiveImportController:
             return
 
         # Handle everything else.
-        if p.h.startswith(outline_dir):
+        if norm(p.h).startswith(outline_dir):
             r_path = rel_path(p.h)
             if r_path:
                 p.h = f"path: {r_path}"

@@ -55,6 +55,72 @@ class Python_Importer(Importer):
                 else:
                     if self.language == 'python':
                         p.h = f"function: {p.h[4:].strip()}"
+    #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
+    string_pat1 = re.compile(r'([fFrR]*)("""|")')
+    string_pat2 = re.compile(r"([fFrR]*)('''|')")
+
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
+        """
+        Python_i.delete_comments_and_strings.
+        
+        This method handles f-strings properly.
+        """
+        
+        def skip_string(delim: str, i: int, line: str) -> tuple[str, int]:
+            """
+            Skip the remainder of a string.
+            
+            Sring ends:       return ('', i)
+            String continues: return (delim, len(line))
+            """
+            if delim not in line:
+                return delim, len(line)
+            delim_pat = re.compile(delim)
+            while i < len(line):
+                ch = line[i]
+                if ch == '\\':
+                    i += 2
+                    continue
+                if delim_pat.match(line, i):
+                ### if line[i:].startswith(delim):  ###  Temp!
+                    return '', i + len(delim)
+                i += 1
+            return delim, i
+
+        delim: str = ''  # The open string delim.
+        result: list[str] = [] 
+        for line_i, line in enumerate(lines):
+            i, result_line = 0, []
+            while i < len(line):
+                if delim:
+                    delim, i = skip_string(delim, i, line)
+                    continue
+                ch = line[i]
+                if ch in '#\n':
+                    break
+                m = (
+                    self.string_pat1.match(line, i) or
+                    self.string_pat2.match(line, i)
+                )
+                if m:
+                    ### g.trace(line_i, i, m.group(0), repr(line))
+                    # Start skipping the string.
+                    prefix, delim = m.group(1), m.group(2)
+                    ### g.trace(repr(prefix), repr(delim))
+                    i += len(prefix)
+                    i += len(delim)
+                    if i < len(line):
+                        delim, i = skip_string(delim, i, line)
+                else:
+                    result_line.append(ch)
+                    i += 1
+
+            # End the line and append it to the result.
+            if line.endswith('\n'):
+                result_line.append('\n')
+            result.append(''.join(result_line))
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -125,6 +191,7 @@ class Python_Importer(Importer):
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
+                    ### g.trace(f"{i:4} {end:4} {s!r}")
                     results.append((kind, name, prev_i, i, end))
                     i = prev_i = end
                     break
@@ -143,12 +210,18 @@ class Python_Importer(Importer):
             return len(s) - len(s.lstrip())
 
         prev_line = self.guide_lines[i - 1]
+        trace = False and 'load_plugins_from_config' in prev_line ###
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
         # Handle multi-line def's. Scan to the line containing a close parenthesis.
+        if trace:
+            g.trace('***********')
+            print(i, i2, 'prev_line', repr(prev_line))
         if prev_line.strip().startswith('def ') and ')' not in prev_line:
             while i < i2:
                 i += 1
+                if trace:
+                    print('     LOOK', repr(self.guide_lines[i - 1]))
                 if ')' in self.guide_lines[i - 1]:
                     break
         tail_lines = 0
@@ -156,13 +229,17 @@ class Python_Importer(Importer):
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
+                if trace: print('NEXT', i, repr(s))
                 i += 1
                 if s.strip():
                     if lws_n(s) <= lws1:
                         # A non-comment line that ends the block.
                         # Exclude all tail lines.
+                        if trace:
+                            print('DONE', i, 'tail_lines', tail_lines - 1, repr(s))
                         return i - tail_lines - 1
                     # A non-comment line that does not end the block.
+                    ### if trace: print('Non-comment', i, repr(s))
                     tail_lines = 0
                 else:
                     # A comment line.
