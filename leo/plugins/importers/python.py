@@ -82,7 +82,6 @@ class Python_Importer(Importer):
                     i += 2
                     continue
                 if delim_pat.match(line, i):
-                ### if line[i:].startswith(delim):  ###  Temp!
                     return '', i + len(delim)
                 i += 1
             return delim, i
@@ -103,10 +102,8 @@ class Python_Importer(Importer):
                     self.string_pat2.match(line, i)
                 )
                 if m:
-                    ### g.trace(line_i, i, m.group(0), repr(line))
                     # Start skipping the string.
                     prefix, delim = m.group(1), m.group(2)
-                    ### g.trace(repr(prefix), repr(delim))
                     i += len(prefix)
                     i += len(delim)
                     if i < len(line):
@@ -191,7 +188,6 @@ class Python_Importer(Importer):
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    ### g.trace(f"{i:4} {end:4} {s!r}")
                     results.append((kind, name, prev_i, i, end))
                     i = prev_i = end
                     break
