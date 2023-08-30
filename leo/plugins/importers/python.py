@@ -55,6 +55,21 @@ class Python_Importer(Importer):
                 else:
                     if self.language == 'python':
                         p.h = f"function: {p.h[4:].strip()}"
+    #@+node:ekr.20230830113521.1: *3* python_i.adjust_at_others
+    def adjust_at_others(self, parent: Position) -> None:
+        """
+        Add a blank line before @others, and remove the leading blank line in the first child.
+        """
+        for p in parent.subtree():
+            if p.h.startswith('class') and p.hasChildren():
+                child = p.firstChild()
+                lines = g.splitLines(p.b)
+                for i, line in enumerate(lines):
+                    if line == ' ' * 4 + '@others\n' and child.b.startswith('\n'):
+                        p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
+                        child = p.firstChild()
+                        child.b = child.b[1:]
+                        break
     #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
     string_pat1 = re.compile(r'([fFrR]*)("""|")')
     string_pat2 = re.compile(r"([fFrR]*)('''|')")
@@ -322,6 +337,7 @@ class Python_Importer(Importer):
         # See #3514.
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
+        self.adjust_at_others(parent)
     #@-others
 #@-others
 
