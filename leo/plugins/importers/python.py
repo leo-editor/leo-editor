@@ -292,8 +292,8 @@ class Python_Importer(Importer):
 
         #@+node:ekr.20230825164234.1: *4* function: move_docstring
         def move_docstring(parent: Position) -> None:
-            """Move a docstring from the child to the parent."""
-            child = parent.firstChild()
+            """Move a docstring from the child (or next sibling) to the parent."""
+            child = parent.firstChild() or parent.next()
             if not child:
                 return
             docstring = find_docstring(child)
@@ -308,11 +308,12 @@ class Python_Importer(Importer):
                 while n < len(parent_lines):
                     line = parent_lines[n]
                     n += 1
-                    if line.strip().startswith('class'):
+                    if line.strip().startswith('class '):
                         break
-                if n >= len(parent_lines):
-                    g.trace('NO CLASS LINE')
+                if n > len(parent_lines):
+                    g.printObj(g.splitLines(parent.b), tag=f"Noclass line: {p.h}")
                     return
+                # This isn't perfect in some situations.
                 docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
                 parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
             else:
