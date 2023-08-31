@@ -24,9 +24,9 @@ class Python_Importer(Importer):
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
-    async_def_pat = re.compile(r'\s*async\s+def\s*(\w+)\s*\(')
-    def_pat = re.compile(r'\s*def\s*(\w+)\s*\(')
-    class_pat = re.compile(r'\s*class\s*(\w+)')
+    async_def_pat = re.compile(r'\s*async\s+def\s+(\w+)\s*\(')
+    def_pat = re.compile(r'\s*def\s+(\w+)\s*\(')
+    class_pat = re.compile(r'\s*class\s+(\w+)')
 
     block_patterns: tuple = (
         ('class', class_pat),
@@ -55,6 +55,84 @@ class Python_Importer(Importer):
                 else:
                     if self.language == 'python':
                         p.h = f"function: {p.h[4:].strip()}"
+    #@+node:ekr.20230830113521.1: *3* python_i.adjust_at_others
+    def adjust_at_others(self, parent: Position) -> None:
+        """
+        Add a blank line before @others, and remove the leading blank line in the first child.
+        """
+        for p in parent.subtree():
+            if p.h.startswith('class') and p.hasChildren():
+                child = p.firstChild()
+                lines = g.splitLines(p.b)
+                for i, line in enumerate(lines):
+                    if line == ' ' * 4 + '@others\n' and child.b.startswith('\n'):
+                        p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
+                        child = p.firstChild()
+                        child.b = child.b[1:]
+                        break
+    #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
+    string_pat1 = re.compile(r'([fFrR]*)("""|")')
+    string_pat2 = re.compile(r"([fFrR]*)('''|')")
+
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
+        """
+        Python_i.delete_comments_and_strings.
+
+        This method handles f-strings properly.
+        """
+
+        def skip_string(delim: str, i: int, line: str) -> tuple[str, int]:
+            """
+            Skip the remainder of a string.
+
+            Sring ends:       return ('', i)
+            String continues: return (delim, len(line))
+            """
+            if delim not in line:
+                return delim, len(line)
+            delim_pat = re.compile(delim)
+            while i < len(line):
+                ch = line[i]
+                if ch == '\\':
+                    i += 2
+                    continue
+                if delim_pat.match(line, i):
+                    return '', i + len(delim)
+                i += 1
+            return delim, i
+
+        delim: str = ''  # The open string delim.
+        result: list[str] = []
+        for line_i, line in enumerate(lines):
+            i, result_line = 0, []
+            while i < len(line):
+                if delim:
+                    delim, i = skip_string(delim, i, line)
+                    continue
+                ch = line[i]
+                if ch in '#\n':
+                    break
+                m = (
+                    self.string_pat1.match(line, i) or
+                    self.string_pat2.match(line, i)
+                )
+                if m:
+                    # Start skipping the string.
+                    prefix, delim = m.group(1), m.group(2)
+                    i += len(prefix)
+                    i += len(delim)
+                    if i < len(line):
+                        delim, i = skip_string(delim, i, line)
+                else:
+                    result_line.append(ch)
+                    i += 1
+
+            # End the line and append it to the result.
+            if line.endswith('\n'):
+                result_line.append('\n')
+            result.append(''.join(result_line))
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -115,6 +193,13 @@ class Python_Importer(Importer):
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
         i, prev_i, results = i1, i1, []
+
+        def lws_n(s: str) -> int:
+            """Return the length of the leading whitespace for s."""
+            return len(s) - len(s.lstrip())
+
+        # Look behind to see what the previous block was.
+        prev_block_line = self.guide_lines[i1 - 1] if i1 > 0 else ''
         while i < i2:
             s = self.guide_lines[i]
             i += 1
@@ -125,8 +210,16 @@ class Python_Importer(Importer):
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-                    results.append((kind, name, prev_i, i, end))
-                    i = prev_i = end
+
+                    # #3517: Don't generated nested defs.
+                    if (kind == 'def'
+                        and prev_block_line.strip().startswith('def ')
+                        and lws_n(prev_block_line) < lws_n(s)
+                    ):
+                        pass
+                    else:
+                        results.append((kind, name, prev_i, i, end))
+                        i = prev_i = end
                     break
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
@@ -145,6 +238,7 @@ class Python_Importer(Importer):
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
+
         # Handle multi-line def's. Scan to the line containing a close parenthesis.
         if prev_line.strip().startswith('def ') and ')' not in prev_line:
             while i < i2:
@@ -198,8 +292,8 @@ class Python_Importer(Importer):
 
         #@+node:ekr.20230825164234.1: *4* function: move_docstring
         def move_docstring(parent: Position) -> None:
-            """Move a docstring from the child to the parent."""
-            child = parent.firstChild()
+            """Move a docstring from the child (or next sibling) to the parent."""
+            child = parent.firstChild() or parent.next()
             if not child:
                 return
             docstring = find_docstring(child)
@@ -214,11 +308,12 @@ class Python_Importer(Importer):
                 while n < len(parent_lines):
                     line = parent_lines[n]
                     n += 1
-                    if line.strip().startswith('class'):
+                    if line.strip().startswith('class '):
                         break
-                if n >= len(parent_lines):
-                    g.trace('NO CLASS LINE')
+                if n > len(parent_lines):
+                    g.printObj(g.splitLines(parent.b), tag=f"Noclass line: {p.h}")
                     return
+                # This isn't perfect in some situations.
                 docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
                 parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
             else:
@@ -243,6 +338,7 @@ class Python_Importer(Importer):
         # See #3514.
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
+        self.adjust_at_others(parent)
     #@-others
 #@-others
 

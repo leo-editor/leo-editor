@@ -76,11 +76,8 @@ class TestLeoImport(BaseTestImporter):
             ),
             (1, 'function: macro',
                 'def macro(func):\n'
-                '    @others\n'
-            ),
-            (2, 'function: new_func',
-                'def new_func(*args, **kwds):\n'
-                "    raise RuntimeError('blah blah blah')\n"
+                '    def new_func(*args, **kwds):\n'
+                "        raise RuntimeError('blah blah blah')\n"
             ),
         )
         # Don't call run_test.

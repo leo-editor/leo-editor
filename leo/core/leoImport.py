@@ -1683,6 +1683,7 @@ class RecursiveImportController:
             self.minimize_headline(p2)
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
+            self.move_leading_blank_lines(p)
         self.clear_dirty_bits(p)
     #@+node:ekr.20130823083943.12608: *4* ric.clear_dirty_bits
     def clear_dirty_bits(self, p: Position) -> None:
@@ -1726,7 +1727,7 @@ class RecursiveImportController:
             return path
 
          # The paths of all @<file> nodes should start with outline_dir.
-        p.h = norm(p.h.replace('\\', '/'))  # Defensive.
+        p.h = p.h.replace('\\', '/')  # Defensive.
         outline_dir = norm(self.outline_directory.replace('\\', '/'))
         len_outline_dir = len(outline_dir)
 
@@ -1734,8 +1735,8 @@ class RecursiveImportController:
         if m:
             # p is an @file node of some kind.
             kind = m.group(0)
-            path = norm(p.h[len(kind) :].strip())
-            if path.startswith(outline_dir):
+            path = p.h[len(kind) :].strip()
+            if norm(path).startswith(outline_dir):
                 file_name = os.path.basename(path)
                 dir_name = os.path.dirname(path)
                 r_path = rel_path(dir_name)
@@ -1745,10 +1746,21 @@ class RecursiveImportController:
             return
 
         # Handle everything else.
-        if p.h.startswith(outline_dir):
+        if norm(p.h).startswith(outline_dir):
             r_path = rel_path(p.h)
             if r_path:
                 p.h = f"path: {r_path}"
+    #@+node:ekr.20230831011155.1: *4* ric.move_leading_blank_lines
+    def move_leading_blank_lines(self, parent: Position) -> None:
+        """
+        Move leading blank lines from one node to its previous sibling.
+        """
+        for p in parent.subtree():
+            if p.hasBack() and p.b.startswith('\n'):
+                back = p.back()
+                while p.b.startswith('\n'):
+                    p.b = p.b[1:]
+                    back.b = back.b + '\n'
     #@+node:ekr.20130823083943.12612: *4* ric.remove_empty_nodes
     def remove_empty_nodes(self, p: Position) -> None:
         """Remove empty nodes. Not called for @auto or @edit trees."""
