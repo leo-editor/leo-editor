@@ -133,17 +133,6 @@ class Python_Importer(Importer):
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20230831011155.1: *3* python_i.move_leading_blank_lines
-    def move_leading_blank_lines(self, parent: Position) -> None:
-        """
-        Move leading blank lines from one node to its previous sibling.
-        """
-        for p in parent.subtree():
-            if p.hasBack() and p.b.startswith('\n'):
-                back = p.back()
-                while p.b.startswith('\n'):
-                    p.b = p.b[1:]
-                    back.b = back.b + '\n'
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -350,7 +339,6 @@ class Python_Importer(Importer):
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
         self.adjust_at_others(parent)
-        self.move_leading_blank_lines(parent)
     #@-others
 #@-others
 
