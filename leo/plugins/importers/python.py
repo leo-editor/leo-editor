@@ -24,9 +24,9 @@ class Python_Importer(Importer):
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
-    async_def_pat = re.compile(r'\s*async\s+def\b\s*(\w+)\s*\(')
-    def_pat = re.compile(r'\s*def\b\s*(\w+)\s*\(')
-    class_pat = re.compile(r'\s*class\b\s*(\w+)')
+    async_def_pat = re.compile(r'\s*async\s+def\s+(\w+)\s*\(')
+    def_pat = re.compile(r'\s*def\s+(\w+)\s*\(')
+    class_pat = re.compile(r'\s*class\s+(\w+)')
 
     block_patterns: tuple = (
         ('class', class_pat),

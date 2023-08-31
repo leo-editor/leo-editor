@@ -22,8 +22,8 @@ class C_Importer(Importer):
     block_patterns = (
         ('class', re.compile(r'.*?\bclass\s+(\w+)\s*\{')),
         ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')),
-        ('namespace', re.compile(r'.*?\bnamespace\s*(\w+)?\s*\{')),
-        ('struct', re.compile(r'.*?\bstruct\s*(\w+)?\s*(:.*?)?\{')),
+        ('namespace', re.compile(r'.*?\bnamespace\s+(\w+)?\s*\{')),
+        ('struct', re.compile(r'.*?\bstruct\s+(\w+)?\s*(:.*?)?\{')),
     )
 
     #@+others
