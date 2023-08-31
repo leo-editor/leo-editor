@@ -3099,7 +3099,10 @@ class TestPython(BaseTestImporter):
             "'''\n",
             '    if 2: a = 2\n',
             "'''\n",
-            'i = 2\n'
+            'i = 2\n',
+            # #3517: f-strings.
+            # mypy/build.py line 430.
+            r"""plugin_error(f'Can\'t find plugin "{plugin_path}"')""" + '\n',
         ]
         expected_lines = [
             'i = 1 \n',
@@ -3113,7 +3116,8 @@ class TestPython(BaseTestImporter):
             '\n',
             '\n',
             '\n',
-            'i = 2\n'
+            'i = 2\n',
+            'plugin_error()\n',
         ]
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
@@ -3430,10 +3434,10 @@ class TestPython(BaseTestImporter):
             (1, 'class C1',
                     'class C1:\n'
                     '    """Class docstring"""\n'
+                    '\n'
                     '    @others\n'
             ),
             (2, 'C1.__init__',
-                    '\n'
                     'def __init__(self):\n'
                     '    pass\n'
             ),
@@ -3540,6 +3544,49 @@ class TestPython(BaseTestImporter):
                "    print('12')\n"
                '@language python\n'
                '@tabwidth -4\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
+    def test_nested_defs(self):
+        # See #3517
+
+        # A simplified version of code in mypy/build.py.
+        s = (
+        '''
+            def load_plugins_from_config(
+                options: Options, errors: Errors, stdout: TextIO
+            ) -> tuple[list[Plugin], dict[str, str]]:
+                """Load all configured plugins."""
+
+                snapshot: dict[str, str] = {}
+
+                def plugin_error(message: str) -> NoReturn:
+                    errors.report(line, 0, message)
+                    errors.raise_error(use_stdout=False)
+
+                custom_plugins: list[Plugin] = []
+        ''')
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'function: load_plugins_from_config',
+                'def load_plugins_from_config(\n'
+                '    options: Options, errors: Errors, stdout: TextIO\n'
+                ') -> tuple[list[Plugin], dict[str, str]]:\n'
+                '    """Load all configured plugins."""\n'
+                '\n'
+                '    snapshot: dict[str, str] = {}\n'
+                '\n'
+                '    def plugin_error(message: str) -> NoReturn:\n'
+                '        errors.report(line, 0, message)\n'
+                '        errors.raise_error(use_stdout=False)\n'
+                '\n'
+                '    custom_plugins: list[Plugin] = []\n'
             ),
         )
         self.new_run_test(s, expected_results)
