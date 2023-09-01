@@ -108,21 +108,26 @@ def delete_trace_statements(event: Event = None) -> None:
             g.es_print('Changed:', p.h)
         ins = 0  # Rescanning is essential.
         p.b = s[:i] + s[k:]
-#@+node:ekr.20180210160930.1: *3* @g.command('mark-first-parents')
-@g.command('mark-first-parents')
-def mark_first_parents(event: Event) -> list[Position]:
+#@+node:ekr.20180210160930.1: *3* @g.command('mark-node-and-parents')
+@g.command('mark-node-and-parents')  # Was mark-first-parents.
+def mark_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
-    c = event.get('c')
     changed: list[Position] = []
+    c = event.get('c')
     if not c:
         return changed
+    c.endEditing()
+    u = c.undoer
+    u.beforeChangeGroup(c.p, command='mark-parents')
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
+            bunch = u.beforeMark(parent,command='mark')
             parent.setMarked()
             parent.setDirty()
+            u.afterMark(parent, command='mark', bunch=bunch)
             changed.append(parent.copy())
     if changed:
-        # g.es("marked: " + ', '.join([z.h for z in changed]))
+        u.afterChangeGroup(c.p, undoType='mark-parents')
         c.setChanged()
         c.redraw()
     return changed
@@ -303,8 +308,8 @@ def show_clones(event: Event = None) -> None:
                 message = unl[i + 1 :]
             c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 
-#@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
-@g.command('unmark-first-parents')
+#@+node:ekr.20180210161001.1: *3* @g.command('unmark-node-and-parents')
+@g.command('unmark-node-and-parents')
 def unmark_first_parents(event: Event = None) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
