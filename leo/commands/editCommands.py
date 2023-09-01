@@ -1502,7 +1502,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             i = w.getInsertPoint()
             row, col = g.convertPythonIndexToRowCol(s, i)
             k.keyboardQuit()
-            k.setStatusLabel(f"Line {row}")
+            # To match line number in status area.
+            k.setStatusLabel(f"Line {row+1}")
     #@+node:ekr.20150514063305.250: *3* ec: insert & delete
     #@+node:ekr.20150514063305.251: *4* ec.addSpace/TabToLines & removeSpace/TabFromLines & helper
     @cmd('add-space-to-lines')
