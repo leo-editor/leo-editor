@@ -131,7 +131,6 @@ def mark_node_and_parents(event: Event) -> list[Position]:
         u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
-    u.afterChangeGroup(c.p, command)
     return changed
 #@+node:ekr.20230901111715.1: *3* @g.command('promote-section-definition')
 @g.command('promote-section-definition')
@@ -382,7 +381,6 @@ def unmark_node_and_parents(event: Event = None) -> list[Position]:
         u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
-    u.afterChangeGroup(c.p, command)
     return changed
 #@+node:ekr.20160514100029.1: ** class EditCommandsClass
 class EditCommandsClass(BaseEditCommandsClass):
