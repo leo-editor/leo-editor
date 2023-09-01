@@ -132,6 +132,56 @@ def mark_node_and_parents(event: Event) -> list[Position]:
         c.setChanged()
         c.redraw()
     return changed
+#@+node:ekr.20230901111715.1: *3* @g.command('promote-section-definition')
+@g.command('promote-section-definition')
+def promote_section_definition(event: Event) -> None:
+    """
+    c.p must be a section definition node and an ancestor must contain a reference.
+
+    Replace a section reference in an ancestor by c.p.b and delete c.p.
+    """
+    c = event.get('c')
+    tag = 'promote-section-definition'
+    if not c:
+        return
+    c.endEditing()
+    u = c.undoer
+    ref_s = h = c.p.h.strip()
+    if not (h.endswith('>>') and h.startswith('<<')):
+        g.es_print('Not a section definition:', c.p.h)
+        return
+    for parent in c.p.parents():
+        if ref_s in parent.b:
+            break
+    else:
+        g.es_print('Reference not found:', ref_s)
+        return
+
+    # Start the undo group.
+    ref_p = parent
+    u.beforeChangeGroup(c.p, command=tag)
+
+    # Change ref_p.b.
+    bunch1 = u.beforeChangeBody(ref_p)
+    new_ref_lines = []
+    for line in g.splitLines(ref_p.b):
+        if line.strip() == ref_s:
+            new_ref_lines.extend(g.splitLines(c.p.b))
+        else:
+            new_ref_lines.append(line)
+    ref_p.b = ''.join(new_ref_lines)
+    u.afterChangeBody(ref_p, command='change-body', bunch=bunch1)
+
+    # Delete and select ref_p.
+    bunch2 = u.beforeDeleteNode(c.p)
+    c.p.doDelete(ref_p)
+    u.afterDeleteNode(ref_p, command='delete-node', bunch=bunch2)
+    c.selectPosition(ref_p)
+
+    # Finish the group.
+    u.afterChangeGroup(c.p, undoType=tag)
+    c.setChanged()
+    c.redraw(ref_p)
 #@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
 @g.command('merge-node-with-next-node')
 def merge_node_with_next_node(event: Event = None) -> None:
