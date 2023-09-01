@@ -399,10 +399,10 @@ class Undoer:
                 g.trace("Position mismatch", g.callers())
         if u.redoing or u.undoing:
             return  # pragma: no cover
-        bunch = u.beads[u.bead]
         if not u.beads:  # pragma: no cover
             g.trace('oops: empty undo stack.')
             return
+        bunch = u.beads[u.bead]
         if bunch.kind == 'beforeGroup':
             bunch.kind = 'afterGroup'
         else:  # pragma: no cover
