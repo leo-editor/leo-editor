@@ -114,20 +114,21 @@ def mark_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
     changed: list[Position] = []
     c = event.get('c')
+    tag = 'mark-node-and-parents'
     if not c:
         return changed
     c.endEditing()
     u = c.undoer
-    u.beforeChangeGroup(c.p, command='mark-parents')
+    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
-            bunch = u.beforeMark(parent,command='mark')
+            bunch = u.beforeMark(parent, command='mark')
             parent.setMarked()
             parent.setDirty()
             u.afterMark(parent, command='mark', bunch=bunch)
             changed.append(parent.copy())
     if changed:
-        u.afterChangeGroup(c.p, undoType='mark-parents')
+        u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
     return changed
@@ -314,15 +315,20 @@ def unmark_first_parents(event: Event = None) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
     changed: list[Position] = []
+    tag = 'unmark-node-and-parents'
     if not c:
         return changed
+    u = c.undoer
+    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if parent.isMarked():
+            bunch = u.beforeMark(parent, command='unmark')
             parent.clearMarked()
             parent.setDirty()
+            u.afterMark(parent, command='unmark', bunch=bunch)
             changed.append(parent.copy())
     if changed:
-        # g.es("unmarked: " + ', '.join([z.h for z in changed]))
+        u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
     return changed
