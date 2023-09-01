@@ -116,7 +116,7 @@ def mark_first_parents(event: Event) -> list[Position]:
     changed: list[Position] = []
     if not c:
         return changed
-    command = 'mark-first-parents',
+    command = 'mark-first-parents'
     u = c.undoer
     u.beforeChangeGroup(c.p, command)
     undoType = 'Mark'
@@ -318,7 +318,7 @@ def unmark_first_parents(event: Event = None) -> list[Position]:
     changed: list[Position] = []
     if not c:
         return changed
-    command = 'unmark-first-parents',
+    command = 'unmark-first-parents'
     u = c.undoer
     u.beforeChangeGroup(c.p, command)
     undoType = 'Unmark'
