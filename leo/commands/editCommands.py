@@ -108,31 +108,81 @@ def delete_trace_statements(event: Event = None) -> None:
             g.es_print('Changed:', p.h)
         ins = 0  # Rescanning is essential.
         p.b = s[:i] + s[k:]
-#@+node:ekr.20180210160930.1: *3* @g.command('mark-first-parents')
-@g.command('mark-first-parents')
-def mark_first_parents(event: Event) -> list[Position]:
+#@+node:ekr.20180210160930.1: *3* @g.command('mark-node-and-parents')
+@g.command('mark-node-and-parents')  # Was mark-first-parents.
+def mark_node_and_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
-    c = event.get('c')
     changed: list[Position] = []
+    c = event.get('c')
+    tag = 'mark-node-and-parents'
     if not c:
         return changed
-    command = 'mark-first-parents'
+    c.endEditing()
     u = c.undoer
-    u.beforeChangeGroup(c.p, command)
-    undoType = 'Mark'
+    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
-            bunch = u.beforeMark(parent, undoType)
+            bunch = u.beforeMark(parent, command='mark')
             parent.setMarked()
             parent.setDirty()
-            u.afterMark(parent, undoType, bunch)
+            u.afterMark(parent, command='mark', bunch=bunch)
             changed.append(parent.copy())
     if changed:
-        # g.es("marked: " + ', '.join([z.h for z in changed]))
+        u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
     u.afterChangeGroup(c.p, command)
     return changed
+#@+node:ekr.20230901111715.1: *3* @g.command('promote-section-definition')
+@g.command('promote-section-definition')
+def promote_section_definition(event: Event) -> None:
+    """
+    c.p must be a section definition node and an ancestor must contain a reference.
+
+    Replace a section reference in an ancestor by c.p.b and delete c.p.
+    """
+    c = event.get('c')
+    tag = 'promote-section-definition'
+    if not c:
+        return
+    c.endEditing()
+    u = c.undoer
+    ref_s = h = c.p.h.strip()
+    if not (h.endswith('>>') and h.startswith('<<')):
+        g.es_print('Not a section definition:', c.p.h)
+        return
+    for parent in c.p.parents():
+        if ref_s in parent.b:
+            break
+    else:
+        g.es_print('Reference not found:', ref_s)
+        return
+
+    # Start the undo group.
+    ref_p = parent
+    u.beforeChangeGroup(c.p, command=tag)
+
+    # Change ref_p.b.
+    bunch1 = u.beforeChangeBody(ref_p)
+    new_ref_lines = []
+    for line in g.splitLines(ref_p.b):
+        if line.strip() == ref_s:
+            new_ref_lines.extend(g.splitLines(c.p.b))
+        else:
+            new_ref_lines.append(line)
+    ref_p.b = ''.join(new_ref_lines)
+    u.afterChangeBody(ref_p, command='change-body', bunch=bunch1)
+
+    # Delete and select ref_p.
+    bunch2 = u.beforeDeleteNode(c.p)
+    c.p.doDelete(ref_p)
+    u.afterDeleteNode(ref_p, command='delete-node', bunch=bunch2)
+    c.selectPosition(ref_p)
+
+    # Finish the group.
+    u.afterChangeGroup(c.p, undoType=tag)
+    c.setChanged()
+    c.redraw(ref_p)
 #@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
 @g.command('merge-node-with-next-node')
 def merge_node_with_next_node(event: Event = None) -> None:
@@ -310,27 +360,26 @@ def show_clones(event: Event = None) -> None:
                 message = unl[i + 1 :]
             c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 
-#@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
-@g.command('unmark-first-parents')
-def unmark_first_parents(event: Event = None) -> list[Position]:
+#@+node:ekr.20180210161001.1: *3* @g.command('unmark-node-and-parents')
+@g.command('unmark-node-and-parents')
+def unmark_node_and_parents(event: Event = None) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
     changed: list[Position] = []
+    tag = 'unmark-node-and-parents'
     if not c:
         return changed
-    command = 'unmark-first-parents'
     u = c.undoer
-    u.beforeChangeGroup(c.p, command)
-    undoType = 'Unmark'
+    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if parent.isMarked():
-            bunch = u.beforeMark(parent, undoType)
+            bunch = u.beforeMark(parent, command='unmark')
             parent.clearMarked()
             parent.setDirty()
-            u.afterMark(parent, undoType, bunch)
+            u.afterMark(parent, command='unmark', bunch=bunch)
             changed.append(parent.copy())
     if changed:
-        # g.es("unmarked: " + ', '.join([z.h for z in changed]))
+        u.afterChangeGroup(c.p, undoType=tag)
         c.setChanged()
         c.redraw()
     u.afterChangeGroup(c.p, command)
@@ -1516,7 +1565,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             i = w.getInsertPoint()
             row, col = g.convertPythonIndexToRowCol(s, i)
             k.keyboardQuit()
-            k.setStatusLabel(f"Line {row}")
+            # To match line number in status area.
+            k.setStatusLabel(f"Line {row+1}")
     #@+node:ekr.20150514063305.250: *3* ec: insert & delete
     #@+node:ekr.20150514063305.251: *4* ec.addSpace/TabToLines & removeSpace/TabFromLines & helper
     @cmd('add-space-to-lines')
