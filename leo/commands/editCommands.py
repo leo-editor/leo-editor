@@ -110,7 +110,7 @@ def delete_trace_statements(event: Event = None) -> None:
         p.b = s[:i] + s[k:]
 #@+node:ekr.20180210160930.1: *3* @g.command('mark-node-and-parents')
 @g.command('mark-node-and-parents')  # Was mark-first-parents.
-def mark_parents(event: Event) -> list[Position]:
+def mark_node_and_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
     changed: list[Position] = []
     c = event.get('c')
@@ -311,7 +311,7 @@ def show_clones(event: Event = None) -> None:
 
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-node-and-parents')
 @g.command('unmark-node-and-parents')
-def unmark_first_parents(event: Event = None) -> list[Position]:
+def unmark_node_and_parents(event: Event = None) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
     changed: list[Position] = []
