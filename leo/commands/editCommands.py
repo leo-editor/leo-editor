@@ -116,15 +116,22 @@ def mark_first_parents(event: Event) -> list[Position]:
     changed: list[Position] = []
     if not c:
         return changed
+    command = 'mark-first-parents',
+    u = c.undoer
+    u.beforeChangeGroup(c.p, command)
+    undoType = 'Mark'
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
+            bunch = u.beforeMark(parent, undoType)
             parent.setMarked()
             parent.setDirty()
+            u.afterMark(parent, undoType, bunch)
             changed.append(parent.copy())
     if changed:
         # g.es("marked: " + ', '.join([z.h for z in changed]))
         c.setChanged()
         c.redraw()
+    u.afterChangeGroup(c.p, command)
     return changed
 #@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
 @g.command('merge-node-with-next-node')
@@ -311,15 +318,22 @@ def unmark_first_parents(event: Event = None) -> list[Position]:
     changed: list[Position] = []
     if not c:
         return changed
+    command = 'unmark-first-parents',
+    u = c.undoer
+    u.beforeChangeGroup(c.p, command)
+    undoType = 'Unmark'
     for parent in c.p.self_and_parents():
         if parent.isMarked():
+            bunch = u.beforeMark(parent, undoType)
             parent.clearMarked()
             parent.setDirty()
+            u.afterMark(parent, undoType, bunch)
             changed.append(parent.copy())
     if changed:
         # g.es("unmarked: " + ', '.join([z.h for z in changed]))
         c.setChanged()
         c.redraw()
+    u.afterChangeGroup(c.p, command)
     return changed
 #@+node:ekr.20160514100029.1: ** class EditCommandsClass
 class EditCommandsClass(BaseEditCommandsClass):
