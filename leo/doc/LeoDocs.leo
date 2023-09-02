@@ -1647,6 +1647,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20230901233844.1"><vh>What's new in Leo 6.7.5</vh></v>
 <v t="ekr.20230709070852.1"><vh>What's new in Leo 6.7.4</vh></v>
 <v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
@@ -2514,8 +2515,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20230709070852.1"></v>
-<v t="ekr.20230703101804.1"></v>
+<v t="ekr.20230901233844.1"></v>
+<v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -32773,6 +32774,62 @@ unl:gnx://CheatSheet.leo#ekr.20131019184243.16685
 
 The "6.7.4 release notes" node in LeoDocs.leo.
 unl:gnx://LeoDocs.leo#ekr.20230703101804.1
+</t>
+<t tx="ekr.20230901233131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.5 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.5**
+
+- PRs #3515 and #3517: Significantly improve python importer.
+- PRs #3509 and #3511: Improve rust importer.
+
+**Other improvements**
+
+- PR #3525: Add promote-section-references command.
+- PR #3503: Fix bug involving back slashes in search patterns.
+- PR #3499: Retire the read-outline-only command.
+- Fix several other minor bugs.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.5 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.5+)
+- [6.7.5 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.5)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
+</t>
+<t tx="ekr.20230901233844.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3509`: https://github.com/leo-editor/leo-editor/pull/3509
+.. _`PR #3511`: https://github.com/leo-editor/leo-editor/pull/3511
+.. _`PR #3515`: https://github.com/leo-editor/leo-editor/pull/3515
+.. _`PR #3517`: https://github.com/leo-editor/leo-editor/pull/3517
+
+- `PR #3515`_ and `PR #3517`_: Significantly improve python importer.
+- `PR #3509`_ and `PR #3511`_: Improve rust importer.
+
+**Other improvements**
+
+.. _`PR #3525`: https://github.com/leo-editor/leo-editor/pull/3525
+.. _`PR #3503`: https://github.com/leo-editor/leo-editor/pull/3503
+.. _`PR #3499`: https://github.com/leo-editor/leo-editor/pull/3499
+
+- `PR #3525`_: Add promote-section-references command.
+- `PR #3503`_: Fix bug involving back slashes in search patterns.
+- `PR #3499`_: Retire the read-outline-only command.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
