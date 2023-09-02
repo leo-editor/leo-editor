@@ -1474,7 +1474,6 @@ def unmarkAll(self: Cmdr, event: Event = None) -> None:
     if changed:
         g.doHook("clear-all-marks", c=c, p=p)
         c.setChanged()
-    if changed:
         u.afterChangeGroup(current, undoType)
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
 #@+node:ekr.20031218072017.1767: *3* c_oc.demote
