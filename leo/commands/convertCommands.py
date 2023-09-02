@@ -1225,11 +1225,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c, undo_type = self.c, 'convert-unls'
         p1 = c.p.copy()
         u = c.undoer
-        u.beforeChangeGroup(p1, undo_type)
         n_changed, n_changed_nodes = 0, 0
         for p in c.all_unique_positions():
             changed, node_changed, result = False, False, []
-            bunch = u.beforeChangeBody(p)
             for line in g.splitLines(p.b):
                 m = self.old_unl_pat1.match(line) or self.old_unl_pat2.match(line)
                 if not m:
@@ -1241,6 +1239,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if not p2:
                     result.append(line)
                     continue
+                if not n_changed:
+                    u.beforeChangeGroup(p1, undo_type)
+                bunch = u.beforeChangeBody(p)
                 new_unl = f"{'unl'}:gnx:{p2.gnx}\n"
                 result.append(f"{prefix}{new_unl}")
                 if not node_changed:
