@@ -1442,6 +1442,7 @@ def markSubheads(self: Cmdr, event: Event = None) -> None:
         if not p.isMarked():
             if not changed:
                 u.beforeChangeGroup(current, undoType)
+            changed = True
             bunch = u.beforeMark(p, undoType)
             c.setMarked(p)  # Calls a hook.
             p.setDirty()
@@ -1458,8 +1459,6 @@ def unmarkAll(self: Cmdr, event: Event = None) -> None:
     if not current:
         return
     c.endEditing()
-    changed = False
-
     changed = False
     p = None  # To keep pylint happy.
     for p in c.all_unique_positions():
