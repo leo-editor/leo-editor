@@ -1189,16 +1189,20 @@ def markChangedHeadlines(self: Cmdr, event: Event = None) -> None:
     c, current, u = self, self.p, self.undoer
     undoType = 'Mark Changed'
     c.endEditing()
-    u.beforeChangeGroup(current, undoType)
+    changed = False
     for p in c.all_unique_positions():
         if p.isDirty() and not p.isMarked():
+            if not changed:
+                u.beforeChangeGroup(current, undoType)
+            changed = True
             bunch = u.beforeMark(p, undoType)
             # c.setMarked calls a hook.
             c.setMarked(p)
             p.setDirty()
             c.setChanged()
             u.afterMark(p, undoType, bunch)
-    u.afterChangeGroup(current, undoType)
+    if changed:
+        u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.blue('done')
 #@+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
@@ -1207,18 +1211,22 @@ def markChangedRoots(self: Cmdr, event: Event = None) -> None:
     c, current, u = self, self.p, self.undoer
     undoType = 'Mark Changed'
     c.endEditing()
-    u.beforeChangeGroup(current, undoType)
+    changed = False
     for p in c.all_unique_positions():
         if p.isDirty() and not p.isMarked():
             s = p.b
             flag, i = g.is_special(s, "@root")
             if flag:
+                if not changed:
+                    u.beforeChangeGroup(current, undoType)
+                changed = True
                 bunch = u.beforeMark(p, undoType)
                 c.setMarked(p)  # Calls a hook.
                 p.setDirty()
                 c.setChanged()
                 u.afterMark(p, undoType, bunch)
-    u.afterChangeGroup(current, undoType)
+    if changed:
+        u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.blue('done')
 #@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
@@ -1249,15 +1257,19 @@ def markSubheads(self: Cmdr, event: Event = None) -> None:
     if not current:
         return
     c.endEditing()
-    u.beforeChangeGroup(current, undoType)
+    changed = False
     for p in current.children():
         if not p.isMarked():
+            if not changed:
+                u.beforeChangeGroup(current, undoType)
+            changed = True
             bunch = u.beforeMark(p, undoType)
             c.setMarked(p)  # Calls a hook.
             p.setDirty()
             c.setChanged()
             u.afterMark(p, undoType, bunch)
-    u.afterChangeGroup(current, undoType)
+    if changed:
+        u.afterChangeGroup(current, undoType)
 #@+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
 @g.commander_command('unmark-all')
 def unmarkAll(self: Cmdr, event: Event = None) -> None:
@@ -1267,11 +1279,12 @@ def unmarkAll(self: Cmdr, event: Event = None) -> None:
     if not current:
         return
     c.endEditing()
-    u.beforeChangeGroup(current, undoType)
     changed = False
     p = None  # To keep pylint happy.
     for p in c.all_unique_positions():
         if p.isMarked():
+            if not changed:
+                u.beforeChangeGroup(current, undoType)
             bunch = u.beforeMark(p, undoType)
             # c.clearMarked(p) # Very slow: calls a hook.
             p.v.clearMarked()
@@ -1281,7 +1294,7 @@ def unmarkAll(self: Cmdr, event: Event = None) -> None:
     if changed:
         g.doHook("clear-all-marks", c=c, p=p)
         c.setChanged()
-    u.afterChangeGroup(current, undoType)
+        u.afterChangeGroup(current, undoType)
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
 #@+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')
