@@ -410,7 +410,7 @@ def editHeadline(self: Self, event: Event = None) -> tuple[Any, Any]:
         k.setEditingState()
         k.showStateAndMode(w=wrapper)
     return e, wrapper  # Neither of these is used by any caller.
-#@+node:ekr.20171123135625.23: ** c_ec.extract & helpers
+#@+node:ekr.20171123135625.23: ** c_ec.extract
 @g.commander_command('extract')
 def extract(self: Self, event: Event = None) -> None:
     #@+<< docstring for extract command >>
@@ -460,7 +460,7 @@ def extract(self: Self, event: Event = None) -> None:
     # Start the outer undo group.
     u.beforeChangeGroup(c.p, undoType)
     undoData = u.beforeInsertNode(c.p)
-    p = createLastChildNode(c, c.p, h, ''.join(b))
+    p = createFirstChildNode(c, c.p, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
     #
     # Start inner undo.
@@ -495,19 +495,19 @@ def extract(self: Self, event: Event = None) -> None:
 
 g.command_alias('extractSection', extract)
 g.command_alias('extractPythonMethod', extract)
-#@+node:ekr.20171123135625.20: *3* def createLastChildNode
-def createLastChildNode(c: Cmdr, parent: Position, headline: str, body: str) -> Position:
+#@+node:ekr.20171123135625.20: *3* function: createFirstChildNode
+def createFirstChildNode(c: Cmdr, parent: Position, headline: str, body: str) -> Position:
     """A helper function for the three extract commands."""
     # #1955: don't strip trailing lines.
     if not body:
         body = ""
-    p = parent.insertAsLastChild()
+    p = parent.insertAsNthChild(0)
     p.initHeadString(headline)
     p.setBodyString(body)
     p.setDirty()
     c.checkOutline()
     return p
-#@+node:ekr.20171123135625.24: *3* def extractDef
+#@+node:ekr.20171123135625.24: *3* function: extractDef
 extractDef_patterns = (
     re.compile(
     r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'),  # clojure definition
@@ -542,14 +542,14 @@ def extractDef(c: Cmdr, s: str) -> str:
         if m:
             return m.group(1)
     return ''
-#@+node:ekr.20171123135625.26: *3* def extractDef_find
+#@+node:ekr.20171123135625.26: *3* function: extractDef_find
 def extractDef_find(c: Cmdr, lines: list[str]) -> Optional[str]:
     for line in lines:
         def_h = extractDef(c, line.strip())
         if def_h:
             return def_h
     return None
-#@+node:ekr.20171123135625.25: *3* def extractRef
+#@+node:ekr.20171123135625.25: *3* function: extractRef
 def extractRef(c: Cmdr, s: str) -> str:
     """Return s if it starts with a section name."""
     i = s.find('<<')
@@ -561,7 +561,7 @@ def extractRef(c: Cmdr, s: str) -> str:
     if -1 < i < j:
         return s
     return ''
-#@+node:ekr.20171123135625.27: ** c_ec.extractSectionNames & helper
+#@+node:ekr.20171123135625.27: ** c_ec.extractSectionNames
 @g.commander_command('extract-names')
 def extractSectionNames(self: Self, event: Event = None) -> None:
     """
@@ -585,7 +585,7 @@ def extractSectionNames(self: Self, event: Event = None) -> None:
             if not found:
                 u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
-            p = createLastChildNode(c, current, name, None)
+            p = createFirstChildNode(c, current, name, None)
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.checkOutline()
@@ -600,7 +600,7 @@ def extractSectionNames(self: Self, event: Event = None) -> None:
     if w:
         w.setSelectionRange(i, j)
         w.setFocus()
-#@+node:ekr.20171123135625.28: *3* def findSectionName
+#@+node:ekr.20171123135625.28: *3* function: findSectionName
 def findSectionName(self: Self, s: str) -> Optional[str]:
     head1 = s.find("<<")
     if head1 > -1:
