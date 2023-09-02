@@ -1691,7 +1691,11 @@ def moveOutlineUp(self: Cmdr, event: Event = None) -> None:
 #@+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
 @g.commander_command('move-outline-to-first-child')
 def moveOutlineToFirstChild(self: Cmdr, event: Event = None) -> None:
-    """Move the selected node so that it is the first child of its parent."""
+    """
+    Move the selected node so that it is the first child of its parent.
+
+    Do nothing if a hoist is in effect.
+    """
     c, p, u = self, self.p, self.undoer
     if not p:
         return
@@ -1709,11 +1713,14 @@ def moveOutlineToFirstChild(self: Cmdr, event: Event = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To First Child', undoData)
     c.redraw(p)
-    c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
 @g.commander_command('move-outline-to-last-child')
 def moveOutlineToLastChild(self: Cmdr, event: Event = None) -> None:
-    """Move the selected node so that it is the first child of its parent."""
+    """
+    Move the selected node so that it is the last child of its parent.
+
+    Do nothing if a hoist is in effect.
+    """
     c, p, u = self, self.p, self.undoer
     if not p:
         return
@@ -1726,12 +1733,11 @@ def moveOutlineToLastChild(self: Cmdr, event: Event = None) -> None:
         return
     c.endEditing()
     undoData = u.beforeMoveNode(p)
-    p.moveToNthChildOf(parent, len(parent.v.children))
+    p.moveToNthChildOf(parent, len(parent.v.children) - 1)
     p.setDirty()
     c.setChanged()
     u.afterMoveNode(p, 'Move To Last Child', undoData)
     c.redraw(p)
-    c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
 def promote(self: Cmdr, event: Event = None, undoFlag: bool = True) -> None:
