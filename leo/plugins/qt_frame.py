@@ -3450,7 +3450,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         urls = md.urls()
         if not urls:
             return
-        c.undoer.beforeChangeGroup(c.p, undoType)
+        u.beforeChangeGroup(c.p, undoType)
         changed = False
         for z in urls:
             url = QtCore.QUrl(z)
