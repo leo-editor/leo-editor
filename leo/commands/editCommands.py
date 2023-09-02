@@ -112,16 +112,17 @@ def delete_trace_statements(event: Event = None) -> None:
 @g.command('mark-node-and-parents')  # Was mark-first-parents.
 def mark_node_and_parents(event: Event) -> list[Position]:
     """Mark the node and all its parents."""
-    changed: list[Position] = []
     c = event.get('c')
+    changed: list[Position] = []
     tag = 'mark-node-and-parents'
     if not c:
         return changed
     c.endEditing()
     u = c.undoer
-    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if not parent.isMarked():
+            if not changed:
+                u.beforeChangeGroup(c.p, command=tag)
             bunch = u.beforeMark(parent, command='mark')
             parent.setMarked()
             parent.setDirty()
@@ -369,9 +370,10 @@ def unmark_node_and_parents(event: Event = None) -> list[Position]:
     if not c:
         return changed
     u = c.undoer
-    u.beforeChangeGroup(c.p, command=tag)
     for parent in c.p.self_and_parents():
         if parent.isMarked():
+            if not changed:
+                u.beforeChangeGroup(c.p, command=tag)
             bunch = u.beforeMark(parent, command='unmark')
             parent.clearMarked()
             parent.setDirty()
@@ -1516,7 +1518,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not p:
             return
         url = p.get_UNL()
-        g.app.gui.replaceClipboardWith(url)
+        g.app.gui.replaceClipboardWith(c.p.gnx)
         print('gnx:', url)
         status_line = getattr(c.frame, "statusLine", None)
         if status_line:
