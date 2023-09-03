@@ -356,7 +356,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             parent.setHeadString(kind)
             for key in d:
                 p = d.get(key)
-                if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                if not kind.endswith(('.leo', '.leojs')) and p.isAnyAtFileNode():
                     # Don't make clones of @<file> nodes for wrapped files.
                     pass
                 elif p.v.context == c:
