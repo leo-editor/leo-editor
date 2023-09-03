@@ -3302,6 +3302,7 @@ class LoadManager:
             c.fileCommands.initIvars()
             # Closes the file.
             c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
+
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:
