@@ -729,7 +729,7 @@ class GitDiffController:
         # Finish.
         path = g.finalize_join(directory, fn)  # #1781: bug fix.
         c1 = c2 = None
-        if fn.endswith('.leo'):
+        if fn.endswith(('.leo', '.leojs')):
             c1 = self.make_leo_outline(fn, path, s1, rev1)
             c2 = self.make_leo_outline(fn, path, s2, rev2)
         else:
