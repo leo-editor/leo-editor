@@ -211,8 +211,11 @@ class ExternalFilesController:
         val = self.ask(c, path)
         if val in ('yes', 'yes-all'):
             # Do a complete restart of Leo.
-            g.es_print('restarting Leo...')
-            c.restartLeo()
+            # g.es_print('restarting Leo...')
+            # c.restartLeo()
+            g.es_print(f"reloading {path}")
+            g.app.loadManager.revertCommander(c)
+            
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
