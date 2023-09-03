@@ -211,8 +211,9 @@ class ExternalFilesController:
         val = self.ask(c, path)
         if val in ('yes', 'yes-all'):
             # Do a complete restart of Leo.
-            g.es_print('restarting Leo...')
-            c.restartLeo()
+            g.app.loadManager.revertCommander(c)
+            g.es_print(f"reloaded {path}")
+
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
@@ -509,9 +510,9 @@ class ExternalFilesController:
         is_external_file = not is_leo
         #
         # Create the message.
-        message1 = f"{g.splitLongFileName(path)} has changed outside Leo.\n"
+        message1 = f"{path}\nhas changed outside Leo.\n\n"
         if is_leo:
-            message2 = 'Restart Leo?'
+            message2 = 'Reload this outline?'
         elif p:
             message2 = f"Reload {p.h}?"
         else:
@@ -524,7 +525,7 @@ class ExternalFilesController:
         #
         # #1240: Note: This dialog prevents idle time.
         result = g.app.gui.runAskYesNoDialog(c,
-            'Overwrite the version in Leo?',
+            message2,
             message1 + message2,
             yes_all=is_external_file,
             no_all=is_external_file,

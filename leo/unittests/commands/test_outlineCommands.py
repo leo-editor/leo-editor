@@ -605,6 +605,65 @@ class TestOutlineCommands(LeoUnitTest):
         u.undo()
         result_children = [z.h for z in self.root_p.v.children]
         self.assertEqual(result_children, original_children)
+    #@+node:ekr.20230902053728.1: *3* TestOutlineCommands.test_move_outline_to_first_child
+    def test_move_outline_to_first_child(self):
+        # Setup.
+        c, u = self.c, self.c.undoer
+        root = self.root_p
+        assert root.h == 'root'
+        self.create_test_outline()
+        original_children = root.v.children[:]
+        last_child = root.lastChild()
+        assert last_child
+        last_gnx = last_child.gnx
+        # Move.
+        c.selectPosition(last_child)
+        c.moveOutlineToFirstChild()
+        # Tests.
+        assert c.checkOutline() == 0
+        first_child = root.firstChild()
+        assert first_child
+        first_gnx = first_child.gnx
+        assert first_gnx == last_gnx, (first_gnx, last_gnx)
+        u.undo()
+        assert c.checkOutline() == 0
+        assert root.v.children == original_children
+        u.redo()
+        assert c.checkOutline() == 0
+        u.undo()
+        assert c.checkOutline() == 0
+        assert root.v.children == original_children
+
+    #@+node:ekr.20230902053751.1: *3* TestOutlineCommands.test_move_outline_to_last_child
+    def test_move_outline_to_last_child(self):
+        # Setup.
+        c, u = self.c, self.c.undoer
+        root = self.root_p
+        assert root.h == 'root'
+        self.create_test_outline()
+        original_children = root.v.children[:]
+        first_child = root.firstChild()
+        assert first_child
+        first_gnx = first_child.gnx
+        # Move.
+        # c.selectPosition(first_child)
+        c.selectPosition(first_child)
+        c.moveOutlineToLastChild()
+        # Tests.
+        assert c.checkOutline() == 0
+        last_child = root.lastChild()
+        assert first_child
+        last_gnx = last_child.gnx
+        assert first_gnx == last_gnx, (first_gnx, last_gnx)
+        u.undo()
+        assert c.checkOutline() == 0
+        assert root.v.children == original_children
+        u.redo()
+        assert c.checkOutline() == 0
+        u.undo()
+        assert c.checkOutline() == 0
+        assert root.v.children == original_children
+
     #@-others
 #@-others
 #@-leo
