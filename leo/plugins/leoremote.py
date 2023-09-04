@@ -26,7 +26,7 @@ Example client::
     \""")
 
     # note how c persists between calls
-    pc.send('''c.k.simulateCommand('stickynote')''')
+    pc.send('''c.doCommandByName('stickynote')''')
 
 """
 #@-<< docstring >>

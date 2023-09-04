@@ -1370,7 +1370,7 @@ def todo_dec_pri(event: Event, direction: int=1) -> None:
 
     pri = c.cleo.setPri(pri)
     c.redraw()
-    # c.k.simulateCommand("todo-inc-pri")
+    # c.doCommandByName("todo-inc-pri")
 
 @g.command('todo-inc-pri')
 def todo_inc_pri(event: Event) -> None:

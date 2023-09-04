@@ -369,7 +369,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         c, s = self.c, None
         if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
-            c.k.simulateCommand(commandName)
+            c.doCommandByName(commandName)
         else:
             if commandName:
                 bindings = self.getBindingsForCommand(commandName)

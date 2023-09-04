@@ -52,7 +52,7 @@ class TestEditCommands(LeoUnitTest):
         i, j = toInt(i), toInt(j)
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
-        c.k.simulateCommand(command_name)
+        c.doCommandByName(command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
     #@+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
@@ -2334,7 +2334,7 @@ class TestEditCommands(LeoUnitTest):
         self.after_p.b = next_b
         c.selectPosition(self.before_p)
         # Delete 'before', select 'after'
-        c.k.simulateCommand('merge-node-with-next-node')
+        c.doCommandByName('merge-node-with-next-node')
         self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
@@ -2368,7 +2368,7 @@ class TestEditCommands(LeoUnitTest):
         self.after_p.b = next_b
         c.selectPosition(self.after_p)
         # Delete 'after', select 'before'
-        c.k.simulateCommand('merge-node-with-prev-node')
+        c.doCommandByName('merge-node-with-prev-node')
         self.assertEqual(c.p.h, 'before')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
@@ -4030,7 +4030,7 @@ class TestEditCommands(LeoUnitTest):
         c.bodyWantsFocus()
         w.setInsertPoint(2)
         c.outerUpdate()  # This fixed the problem.
-        c.k.simulateCommand('delete-char')
+        c.doCommandByName('delete-char')
         self.assertEqual(p.b, s[:-1])
         c.selectPosition(p.threadBack())
         c.selectPosition(p)

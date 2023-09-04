@@ -29,7 +29,7 @@ class pluginController:
     def __init__(self, c):
         self.c = c
         c.k.registerCommand('print-cp', self.print_cp)
-        script = "c.k.simulateCommand('print-cp')"
+        script = "c.doCommandByName('print-cp')"
         g.app.gui.makeScriptButton(c, script=script, buttonText='Print c & p', bg='red')
     #@+node:ekr.20060621124649: *3* print_cp
     def print_cp(self, event=None):
