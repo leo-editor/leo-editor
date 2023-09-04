@@ -3072,9 +3072,9 @@ class KeyHandlerClass:
     def simulateCommand(self, commandName: str, event: Event = None) -> Any:
         """
         Execute a Leo command by name.
-        
+
         This method is deprecated: Use c.doCommandByName instead.
-        
+
         This method will be retained for compatibility with existing scripts.
         """
         c = self.c
