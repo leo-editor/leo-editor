@@ -73,11 +73,11 @@ def lineScrollHelper(c: Cmdr, prefix1: str, prefix2: str, suffix: str) -> None:
     w = c.frame.body.wrapper
     ins = w.getInsertPoint()
     c.inCommand = False
-    c.k.simulateCommand(prefix1 + 'line' + suffix)
+    c.doCommandByName(prefix1 + 'line' + suffix)
     ins2 = w.getInsertPoint()
     # If the cursor didn't change, then go to beginning/end of line
     if ins == ins2:
-        c.k.simulateCommand(prefix2 + 'of-line' + suffix)
+        c.doCommandByName(prefix2 + 'of-line' + suffix)
 #@+node:ekr.20201129164455.1: **  Top-level commands
 #@+node:ekr.20180504180134.1: *3* @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')

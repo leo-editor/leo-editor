@@ -953,7 +953,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 if key_event.stroke:
                     cmd_name = self.d.get(key_event.stroke)
                     if cmd_name:
-                        self.c.k.simulateCommand(cmd_name)
+                        self.c.doCommandByName(cmd_name)
                         return True
                 # Do the normal processing.
                 return self.oldEvent(event)

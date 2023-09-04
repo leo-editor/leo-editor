@@ -361,7 +361,7 @@ class ScreenCastController:
         c = m.c
         # Named commands handle their own undo!
         # The undo handling in m.next should suffice.
-        c.k.simulateCommand(command_name)
+        c.doCommandByName(command_name)
         c.redraw()
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar

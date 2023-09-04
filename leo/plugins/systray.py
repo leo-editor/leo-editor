@@ -34,7 +34,7 @@ def createTrayIcon():
 
     def new_note():
         c = g.app.commanders()[0]
-        c.k.simulateCommand('stickynote-new')
+        c.doCommandByName('stickynote-new')
 
     g.trayIconMenu.addAction("New note", new_note)
     g.trayIcon = QtWidgets.QSystemTrayIcon()

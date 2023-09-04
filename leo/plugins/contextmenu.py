@@ -163,7 +163,7 @@ def configuredcommands_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
             # #2000: The log pane is a confusing special case.
             wrapper = getattr(w, 'wrapper', None) or getattr(w, 'leo_log_wrapper', None)  # #2000.
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
-            return lambda: c.k.simulateCommand(command_name, event=key_event)
+            return lambda: c.doCommandByName(command_name, event=key_event)
 
         configcmd_rclick_cb = create_callback(command_name)
         action.triggered.connect(configcmd_rclick_cb)
@@ -369,7 +369,7 @@ def pylint_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
     action = menu.addAction("Run Pylint")
 
     def pylint_rclick_cb(aBool: bool) -> None:
-        c.k.simulateCommand('pylint')
+        c.doCommandByName('pylint')
 
     action.triggered.connect(pylint_rclick_cb)
 #@+node:ekr.20140724211116.19256: ** Helpers

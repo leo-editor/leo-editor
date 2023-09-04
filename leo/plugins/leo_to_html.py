@@ -188,7 +188,7 @@ def createExportMenus(tag, keywords):
     ):
         c.frame.menu.insert('Export...', 3,
             label=item,
-            command=lambda c=c, cmd=cmd: c.k.simulateCommand(cmd)
+            command=lambda c=c, cmd=cmd: c.doCommandByName(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
 class pluginController:

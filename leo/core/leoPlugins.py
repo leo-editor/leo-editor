@@ -260,7 +260,7 @@ class BaseLeoPlugin:
                 raise NameError(f"setButton error, {commandName} is not a commandName")
         if color is None:
             color = 'grey'
-        script = f"c.k.simulateCommand('{self.commandName}')"
+        script = f"c.doCommandByName('{self.commandName}')"
         g.app.gui.makeScriptButton(
             self.c,
             args=None,

@@ -243,7 +243,7 @@ def show_unittest_failures(event: Event) -> None:
             it = nav.scon.addGeneric(pos.h, mkcb(pos, stack))
             it.setToolTip(stack)
 
-    c.k.simulateCommand('focus-to-nav')
+    c.doCommandByName('focus-to-nav')
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
 class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 

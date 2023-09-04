@@ -219,7 +219,7 @@ def onCreate(tag: str, keys: Any) -> None:
         sc.createIconButton(
             args = None,
             text = 'RPCalc',
-            command = lambda: c.k.simulateCommand('rpcalc-toggle'),
+            command = lambda: c.doCommandByName('rpcalc-toggle'),
             statusLine=None)
 #@+node:tom.20230424130102.2: **  altbasedialog
 #@+others
