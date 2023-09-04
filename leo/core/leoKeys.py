@@ -3069,13 +3069,10 @@ class KeyHandlerClass:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand
-    def simulateCommand(self, commandName: str, event: Event = None) -> None:
+    def simulateCommand(self, commandName: str, event: Event = None) -> Any:
         """Execute a Leo command by name."""
         c = self.c
-        if not event:
-            # Create a default key event.
-            event = g.app.gui.create_key_event(c)
-        c.doCommandByName(commandName, event)
+        return c.doCommandByName(commandName, event)
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(
         self,
