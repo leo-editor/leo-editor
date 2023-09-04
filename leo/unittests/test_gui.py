@@ -53,7 +53,7 @@ class TestQtGui(LeoUnitTest):
         # Test the commands.
         c = self.c
         for command in ('toggle-invisibles', 'hide-invisibles', 'show-invisibles'):
-            c.k.simulateCommand(command)
+            c.doCommandByName(command)
         option = QtGui.QTextOption()
         # Test the old code.
         if isQt6:

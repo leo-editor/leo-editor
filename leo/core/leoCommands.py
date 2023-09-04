@@ -2724,7 +2724,7 @@ class Commands:
             g.doHook("command2", c=c, p=p, label=command_name)
         return return_value
     #@+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: Any, event: Event) -> Any:
+    def doCommandByName(self, command_name: Any, event: Event = None) -> Any:
         """
         Execute one command, given the name of the command.
 
@@ -2733,6 +2733,10 @@ class Commands:
         Return the result, if any, of the command.
         """
         c = self
+        if not event:
+            # Create a default key event.
+            event = g.app.gui.create_key_event(c)
+
         # Get the command's function.
         command_func = c.commandsDict.get(command_name.replace('&', ''))
         if not command_func:

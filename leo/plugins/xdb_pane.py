@@ -126,13 +126,13 @@ if g.app.gui.guiName() == "qt":
             return QtGui.QIcon(g.app.gui.getImageImage(path))
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_break(self, checked):
-            self.c.k.simulateCommand('db-b')
+            self.c.doCommandByName('db-b')
 
         def debug_continue(self, checked):
-            self.c.k.simulateCommand('db-c')
+            self.c.doCommandByName('db-c')
 
         def debug_help(self, checked):
-            self.c.k.simulateCommand('db-h')
+            self.c.doCommandByName('db-h')
 
         def debug_input(self):
             xdb = getattr(g.app, 'xdb', None)
@@ -143,25 +143,25 @@ if g.app.gui.guiName() == "qt":
                 print('xdb not active')
 
         def debug_list(self, checked):
-            self.c.k.simulateCommand('db-l')
+            self.c.doCommandByName('db-l')
 
         def debug_next(self, checked):
-            self.c.k.simulateCommand('db-n')
+            self.c.doCommandByName('db-n')
 
         def debug_quit(self, *args):
-            self.c.k.simulateCommand('db-q')
+            self.c.doCommandByName('db-q')
 
         def debug_return(self, *args):
-            self.c.k.simulateCommand('db-r')
+            self.c.doCommandByName('db-r')
 
         def debug_step(self, *args):
-            self.c.k.simulateCommand('db-s')
+            self.c.doCommandByName('db-s')
 
         def debug_where(self, *args):
-            self.c.k.simulateCommand('db-w')
+            self.c.doCommandByName('db-w')
 
         def debug_xdb(self, *args):
-            self.c.k.simulateCommand('xdb')
+            self.c.doCommandByName('xdb')
         #@+node:ekr.20181006161938.1: *3* write & clear
         def clear(self):
             """Clear the output area."""

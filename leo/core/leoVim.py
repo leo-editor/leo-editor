@@ -2306,9 +2306,9 @@ class VimCommands:
             event = self.event
         if isinstance(o, (tuple, list)):
             for z in o:
-                self.c.k.simulateCommand(z, event=event)
+                self.c.doCommandByName(z, event=event)
         else:
-            self.c.k.simulateCommand(o, event=event)
+            self.c.doCommandByName(o, event=event)
     #@+node:ekr.20180424055522.1: *4* vc.do_trace
     def do_trace(self, blank_line: bool = False) -> None:
 

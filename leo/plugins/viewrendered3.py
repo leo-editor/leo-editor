@@ -1708,9 +1708,9 @@ def toggle_rendering_pane(event):
         else:
             vr3 = viewrendered_tab(event)
     else:
-        # c.k.simulateCommand('vr3-hide')  # Doesn't work
+        # c.doCommandByName('vr3-hide')  # Doesn't work
         # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.k.simulateCommand('vr3-hide'))
+        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
 def toggle_rendering_pane_tab(event):
@@ -1736,9 +1736,9 @@ def toggle_rendering_pane_tab(event):
         else:
             vr3 = viewrendered(event)
     else:
-        # c.k.simulateCommand('vr3-hide')  # Doesn't work
+        # c.doCommandByName('vr3-hide')  # Doesn't work
         # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.k.simulateCommand('vr3-hide'))
+        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
@@ -1829,7 +1829,7 @@ def open_with_layout(event):
             vr3.splitter.load_layout(c, layout)
     else:
         g.es('=== No splitter')
-    c.k.simulateCommand('vr3-update')
+    c.doCommandByName('vr3-update')
     c.bodyWantsFocusNow()
 
 #@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
@@ -2314,7 +2314,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
         def set_default_kind(kind):
             self.default_kind = kind
-            self.c.k.simulateCommand('vr3-update')
+            self.c.doCommandByName('vr3-update')
         #@+node:TomP.20200329223820.9: *5* function: vr3.set_freeze
         def set_freeze(checked):
             action = self.action_freeze
@@ -2353,7 +2353,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, action.isChecked())
-            self.c.k.simulateCommand('vr3-update')
+            self.c.doCommandByName('vr3-update')
         #@+node:TomP.20200329223820.12: *5* function: vr3.set_tree_lock
         def set_tree_lock(checked):
             action = self.action_lock_to_tree
@@ -2388,15 +2388,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         menu = QtWidgets.QMenu()
         _action = QAction('Plot 2D', self, checkable=False)
-        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-plot-2d'))
+        _action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
         menu.addAction(_action)
 
         _action = QAction('Help For Plot 2D', self, checkable=False)
-        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-help-plot-2d'))
+        _action.triggered.connect(lambda: c.doCommandByName('vr3-help-plot-2d'))
         menu.addAction(_action)
 
         _action = QAction('Reload', self, checkable=False)
-        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-update'))
+        _action.triggered.connect(lambda: c.doCommandByName('vr3-update'))
         menu.addAction(_action)
 
         _other_actions_button.setMenu(menu)
@@ -2405,17 +2405,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.14: *5* << vr3: finish toolbar >>
         _export_button = QtWidgets.QPushButton("Export")
         _export_button.setDefault(True)
-        _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
+        _export_button.clicked.connect(lambda: c.doCommandByName('vr3-export-rst-html'))
         _toolbar.addWidget(_export_button)
 
         # _reload_button = QtWidgets.QPushButton("Reload")
         # _reload_button.setDefault(True)
-        # _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
+        # _reload_button.clicked.connect(lambda: c.doCommandByName('vr3-update'))
         # _toolbar.addWidget(_reload_button)
 
         _execute_button = QtWidgets.QPushButton('Execute')
         _execute_button.setDefault(True)
-        _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
+        _execute_button.clicked.connect(lambda: c.doCommandByName('vr3-execute'))
         _toolbar.addWidget(_execute_button)
 
         _toolbar.addWidget(_other_actions_button)

@@ -53,7 +53,7 @@ action.  Manually opened editors are not affected.
 To make a button to toggle the editor on and off, use::
 
     @button rich
-      c.k.simulateCommand('cke-text-switch')
+      c.doCommandByName('cke-text-switch')
 
 """
 #@-<< docstring >>
