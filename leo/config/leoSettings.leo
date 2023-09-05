@@ -995,7 +995,6 @@
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
 <v t="ekr.20131213135427.21847"><vh>@item read-file-into-node</vh></v>
 <v t="ekr.20131213135427.21848"><vh>@item read-at-auto-nodes</vh></v>
 <v t="ekr.20131213135427.21849"><vh>@item read-at-file-nodes</vh></v>
@@ -4207,7 +4206,7 @@ move-lines-up               ! body = Keypad+Ctrl-UpArrow
 move-lines-down             ! body = Keypad+Ctrl-DnArrow
   
 goto-first-visible-node     = Alt-Home
-goto-last-sibling           = Alt-End
+goto-last-visible-node      = Alt-End
 #
 # Keypad variants...
 goto-first-visible-node     = Keypad+Alt-Home
@@ -5409,7 +5408,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21844">&amp;Compare Leo Files...</t>
 <t tx="ekr.20131213135427.21845"></t>
-<t tx="ekr.20131213135427.21846"></t>
 <t tx="ekr.20131213135427.21847"></t>
 <t tx="ekr.20131213135427.21848">Read @auto Nodes</t>
 <t tx="ekr.20131213135427.21849">Read @&lt;file&gt; Nodes</t>
@@ -5998,7 +5996,6 @@ quick-command                   = Ctrl-c
 re-search-backward              = None
 re-search-forward               = None
 read-at-file-nodes              = None
-read-outline-only               = None         # Removed Shift-Ctrl-R: not useful enough.
 redo                            = None         # Ctrl-Z not defined, so Shift-Ctrl-Z less useful.
 rectangle-clear                 = None
 rectangle-close                 = None
@@ -6440,7 +6437,6 @@ quick-command                       = None
 re-search-backward                  = None
 re-search-forward                   = None
 read-at-file-nodes                  = None
-read-outline-only                   = None
 rectangle-clear                     = None
 rectangle-close                     = None
 rectangle-delete                    = None
