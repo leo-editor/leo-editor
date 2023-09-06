@@ -32786,7 +32786,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Other improvements**
 
+- PR #3541: Use c.doCommandByName instead of c.k.simulateCommand.
+- PR #3538: Make file-diff-files undoable.
+- PR #3533: Reload outlines rather than restarting Leo.
+- PR #3531: Add move-outline-to-first-child &amp; move-outline-to-last-child commands.
+- PR #3528: Improve copy-gnx command.
 - PR #3525: Add promote-section-references command.
+- PR #3521: Improve what-line command.
+- PR #3519: Make the mark-node-and-parents and unmark-node-and-parents commands undoable.
 - PR #3503: Fix bug involving back slashes in search patterns.
 - PR #3499: Retire the read-outline-only command.
 - Fix several other minor bugs.
@@ -32823,11 +32830,25 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Other improvements**
 
+.. _`PR #3541`: https://github.com/leo-editor/leo-editor/pull/3541
+.. _`PR #3538`: https://github.com/leo-editor/leo-editor/pull/3538
+.. _`PR #3533`: https://github.com/leo-editor/leo-editor/pull/3533
+.. _`PR #3531`: https://github.com/leo-editor/leo-editor/pull/3531
+.. _`PR #3528`: https://github.com/leo-editor/leo-editor/pull/3528
 .. _`PR #3525`: https://github.com/leo-editor/leo-editor/pull/3525
+.. _`PR #3521`: https://github.com/leo-editor/leo-editor/pull/3521
+.. _`PR #3519`: https://github.com/leo-editor/leo-editor/pull/3519
 .. _`PR #3503`: https://github.com/leo-editor/leo-editor/pull/3503
 .. _`PR #3499`: https://github.com/leo-editor/leo-editor/pull/3499
 
+- `PR #3541`_: Use c.doCommandByName instead of c.k.simulateCommand.
+- `PR #3538`_: Make file-diff-files undoable.
+- `PR #3533`_: Reload outlines rather than restarting Leo.
+- `PR #3531`_: Add move-outline-to-first-child &amp; move-outline-to-last-child commands.
+- `PR #3528`_: Fix copy-gnx command.
 - `PR #3525`_: Add promote-section-references command.
+- `PR #3521`_: Improve what-line command.
+- `PR #3519`_: Make the mark-node-and-parents and unmark-node-and-parents commands undoable.
 - `PR #3503`_: Fix bug involving back slashes in search patterns.
 - `PR #3499`_: Retire the read-outline-only command.
 </t>
