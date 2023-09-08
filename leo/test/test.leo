@@ -73,14 +73,31 @@
 <v t="ekr.20230713145509.1"><vh>test of parse-body</vh></v>
 <v t="ekr.20230713173540.1"><vh>test of tree abbreviations</vh></v>
 <v t="ekr.20230714023025.1"><vh>script: diff-branches/revs (one file)</vh></v>
+<v t="ekr.20230906100141.3"><vh>pyscript code (requires VR3)</vh></v>
+<v t="ekr.20230906100141.4"><vh>--- nodes with various kinds of gnx</vh>
+<v t="ekr.20230906100141.5"><vh>test ksuid</vh></v>
+<v t="ekr.20230906100141.6"><vh>test uuid</vh></v>
+<v t="ekr.20230906100141.7"><vh>test legacy gnx</vh></v>
 </v>
-<v t="ekr.20230713144259.1"><vh>test of diff-marked-nodes</vh>
-<v t="ekr.20230713144317.1"><vh>node 1</vh>
-<v t="ekr.20230713144328.1"><vh>child 1</vh></v>
+<v t="ekr.20230906100141.8"><vh>script: change body font</vh></v>
+<v t="ekr.20230906100141.9"><vh>script: unchange body font</vh></v>
+<v t="ekr.20230906100141.11"><vh>--- colorizing</vh>
+<v t="ekr.20230906100141.12"><vh>colorizer test</vh>
+<v t="ekr.20230906100141.13"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20230713144405.1"><vh>node 1a</vh>
-<v t="ekr.20230713144405.2"><vh>child 1</vh></v>
+<v t="ekr.20230906100141.14"><vh>html/js test</vh></v>
+<v t="ekr.20230906100141.15"><vh>html/js test</vh></v>
+<v t="ekr.20230906100141.16"><vh>javascript test</vh></v>
+<v t="ekr.20230906100141.17"><vh>test of @language json</vh></v>
+<v t="ekr.20230906100141.18"><vh>test of @language md</vh></v>
+<v t="ekr.20230906100141.21"><vh>test of @language python</vh>
+<v t="ekr.20230906100141.22"><vh>&lt;&lt; exists &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20230906100141.21"></v>
+<v t="ekr.20230906100141.23"><vh>test of @language rest</vh></v>
+</v>
+<v t="ekr.20230906100141.24"><vh>script: asttokens</vh></v>
+<v t="ekr.20230906100141.25"><vh>QToolBar test</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1079,11 +1096,6 @@ unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20050831195449
 
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
-<t tx="ekr.20230713144259.1"></t>
-<t tx="ekr.20230713144317.1"># Node 1.</t>
-<t tx="ekr.20230713144328.1"># Child 1.</t>
-<t tx="ekr.20230713144405.1"># Node 1.</t>
-<t tx="ekr.20230713144405.2"># Child 1a.</t>
 <t tx="ekr.20230713145509.1">def spam():
     pass
 
@@ -1111,6 +1123,328 @@ efc.GitDiffController(c).diff_two_branches(
     branch2='ekr-3435-undo-for-refresh-from-disk', # new branch/rev
     fn='leo/core/leoGlobals.py',  # Don't use back slashes.
 )
+</t>
+<t tx="ekr.20230906100141.11"></t>
+<t tx="ekr.20230906100141.12">@language python
+
+# comment.
+
+&lt;&lt; undefined section &gt;&gt;
+
+&lt;&lt; defined section &gt;&gt;
+
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+- [6.6.3 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+)
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+
+# Link to wikipedia entry
+https://en.wikipedia.org/wiki/Leo_(text_editor)
+
+# unl://C:/Users/Edward Ream/ekr.leo#Recent
+
+# This node
+# gnx:ekr.20220418190130.1
+# Projects
+# gnx:ekr.20171027091130.1</t>
+<t tx="ekr.20230906100141.13">print('Hi')</t>
+<t tx="ekr.20230906100141.14">@language html
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;script&gt;
+// js comment
+for (let i = 0; i &lt; cars.length; i++) {
+  text += cars[i] + "&lt;br&gt;";
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p1&gt;
+&lt;-- html comment --&gt;
+This is a test.
+&lt;/body&gt;
+&lt;/html&gt;</t>
+<t tx="ekr.20230906100141.15">@language html
+
+&lt;script&gt;
+
+for (let i = 0; i &lt; cars.length; i++) {
+  text += cars[i] + "&lt;br&gt;";
+}
+
+&lt;/script&gt;</t>
+<t tx="ekr.20230906100141.16">@language javascript
+
+for (let i = 0; i &lt; cars.length; i++) {
+  text += cars[i] + "&lt;br&gt;";
+}
+</t>
+<t tx="ekr.20230906100141.17">@language json
+
+{
+  "leoHeader": {
+    "fileFormat": 2
+  },
+  "globals": {
+    "body_outline_ratio": 0.37926509186351703,
+    "body_secondary_ratio": 0.5978391356542617,
+    "globalWindowPosition": {
+      "height": 929,
+      "left": 510,
+      "top": 38,
+      "width": 841
+    }
+  },
+  "tnodes": {
+    "ekr.20201106041444.1": "",
+    "ekr.20220225070605.1": "# Trailing whitespace.\n\nunl://C:/Users/Edward Ream/ekr.leo#6.6-b2 checklist\n\n# Bare file name\n\nunl://C:/Users/Edward Ream/ekr.leo#\n\nOpens leoPy.leo\nunl://C:/leo.repo/leo-editor/leo/core/leoPy.leo#=== #2413: ctrl-click unl\nunl://C:/leo.repo/leo-editor/leo/core/leoPy.leo#g.findUNL &amp; helpers--&gt;function: full_match\n\nLocal\nunl://C:/Users/Edward Ream/ekr.leo#test: findUNL\n\n\n# Headline not found\n\nunl://C:/Users/Edward Ream/ekr.leo#xxx_yyy"
+  },
+  "uas": {
+    "ekr.20201106041444.1": "{\"annotate\": {\"priority\": 8, \"prisetdate\": \"2022-03-14\"}, \"icons\": [{\"type\": \"file\", \"file\": \"C:/leo.repo/leo-editor/leo/Icons/cleo/pri8.png\", \"relPath\": \"cleo/pri8.png\", \"where\": \"beforeHeadline\", \"yoffset\": 0, \"xoffset\": 2, \"xpad\": 1, \"on\": \"vnode\", \"cleoIcon\": \"1\"}]}"
+  },
+  "vnodes": [
+    {
+      "gnx": "ekr.20201106041444.1",
+      "vh": "Recent",
+      "status": 1024,
+      "children": [
+        {
+          "gnx": "ekr.20220225070605.1",
+          "vh": "test UNLs",
+          "status": 1024,
+          "children": []
+        }
+      ]
+    }
+  ]
+}</t>
+<t tx="ekr.20230906100141.18">@language md
+
+&lt;!-- comment --&gt;
+
+*Italic*
+
+**Bold**
+
+</t>
+<t tx="ekr.20230906100141.21">@language python
+
+def spam():
+    a = "abc"
+    # Test.
+    &lt;&lt; test &gt;&gt;
+    &lt;&lt; exists &gt;&gt;
+    # https://ethanschoonover.com/solarized/
+
+</t>
+<t tx="ekr.20230906100141.22"></t>
+<t tx="ekr.20230906100141.23">@language rest
+
+.. comment
+.. Should be `@font rest.comment2`
+
+**Bold**
+plain rest text.
+*Italics*
+
+</t>
+<t tx="ekr.20230906100141.24">import os
+import time
+t1 = time.process_time()
+filenames = (
+    'leoGlobals.py',
+    'leoNodes.py',
+)
+
+for filename in filenames:
+    path = g.finalize_join(g.app.loadDir, filename)
+    assert os.path.exists(path), path
+    if 0:  # Use leoAst.
+        import leo.core.leoAst as leoAst
+        d = {}
+        contents = leoAst.read_file(filename)
+        tokens = leoAst.make_tokens(contents)
+        d [path] = tokens
+    else:  # 0.77 sec.
+        import asttokens
+        d = {}
+        with open(path, 'r') as f:
+            source = f.read()
+        tokens = asttokens.ASTTokens(source, parse=True)
+        d [path] = tokens
+t2 = time.process_time()
+print(f"{(t2-t1):5.2f} sec")
+# g.printObj(d, tag=f"{(t2-t1):5.2f} sec")
+</t>
+<t tx="ekr.20230906100141.25"># g.cls()
+
+from leo.core.leoQt import QtWidgets
+# from leo.core.leoQt import QtCore
+
+assert isinstance(c.frame.top, QtWidgets.QMainWindow)
+
+# g.trace(c.frame.top)
+iconBar = c.frame.top.iconBar
+# g.trace(iconBar)
+
+# c.frame.top.addToolBarBreak(iconBar) ### QtCore.Qt.ToolBarArea.TopToolBarArea)
+
+toolBar2 = QtWidgets.QToolBar()
+c.frame.top.addToolBar(toolBar2)
+
+toolBar2.addWidget(QtWidgets.QPushButton("TEST"))</t>
+<t tx="ekr.20230906100141.3">&lt;html&gt;
+    &lt;head&gt;
+      &lt;link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" /&gt;
+      &lt;script defer src="https://pyscript.net/latest/pyscript.js"&gt;&lt;/script&gt;
+      &lt;style&gt;
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: .2;
+          }
+        }
+      &lt;/style&gt;
+    &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;h1&gt;Let's plot random numbers&lt;/h1&gt;
+    &lt;div id="plot"&gt;
+      &lt;div class="pulse" &gt;
+        &lt;p style='font-family: monospace sans-serif;'&gt;&lt;big&gt;&lt;big&gt;&lt;big&gt;&lt;big&gt;&amp;#10096;py&amp;#10097;&lt;/big&gt;&lt;/big&gt;&lt;/big&gt;&lt;/big&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;py-config&gt;
+      packages = [
+       "numpy",
+       "matplotlib"
+      ]
+    &lt;/py-config&gt;
+
+    &lt;py-script&gt;
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.random.randn(1000)
+y = np.random.randn(1000)
+
+fig, ax = plt.subplots()
+ax.scatter(x, y)
+pyscript.write('plot', fig)
+    &lt;/py-script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</t>
+<t tx="ekr.20230906100141.4"></t>
+<t tx="ekr.20230906100141.5">ksuid</t>
+<t tx="ekr.20230906100141.6">uuid</t>
+<t tx="ekr.20230906100141.7">Should be default gnx.</t>
+<t tx="ekr.20230906100141.8">@language python
+"""Change the body font of a node.
+
+Called when the selected node changes.  If the language directive 
+in effect is one of the specified ones, change the font family to
+one of the specified fonts.  Also change the font if the body
+contains lines near the start that begin with ":id:" or ":ref:".
+Otherwise change it back to the normal font."""
+
+NOSTYLE = 'LeoQTextBrowser {}'
+STYLE = ('LeoQTextBrowser {font-family: Verdana, "Sans-serif";'
+                           'font-size: 10pt;}')
+LANGS = ('@language rest', '@language md', '@language asciidoc',
+         '@language text', '@language plain')
+LANGTAGS = ('@rest', '@md', '@rst', '@adoc')
+TAGS = (':id:', ':ref:')
+
+def qualifies(b, h):
+    """See if we have a qualifying language or tag.
+
+    RETURNS    
+    -- True if headline h starts with one of the LANGTAGS.
+    -- True if body b has a line starting with a qualifying tag or
+        language directive.
+    -- -1 if body b has a line starting with "@language" but
+        the language is not a qualifying one.
+    -- False otherwise.
+    """
+    if h.startswith(LANGTAGS):
+        return True
+    lines = b[:300].splitlines()
+    lines = [l for l in lines if l.strip()]
+    for line in lines:
+        if line.startswith('@language'):
+            if line.startswith(LANGS):
+                return True
+            else:
+                return -1  # Tri-state logic; not a mistake
+        else:
+            if line.startswith(TAGS):
+                return True
+    return False
+
+def set_alt_body_font(tag, keys):
+    """Set body font if this node is one of the qualifying node kinds.
+
+    Looks up the tree until a qualifying node is found. Then sets the 
+    CSS style based on the qualified language or tag.
+    
+    Expected to be called by a hook procedure.
+    """
+    c = keys['c']
+    css = NOSTYLE
+    # Check if language or special tags qualify
+    for p in c.p.self_and_parents():
+        found = qualifies(p.b, p.h)
+        if found is True:
+            css = STYLE
+            break
+        elif found is not False:  # Tri-state logic!
+            break
+
+    editor = c.frame.body.wrapper.widget
+    editor.setStyleSheet(css)
+
+ud = g.user_dict
+ud['alt_body_font_proc'] = set_alt_body_font
+
+g.registerHandler('select3', ud['alt_body_font_proc'])
+</t>
+<t tx="ekr.20230906100141.9">@language python
+"""Stop Changing the body font of a node.
+
+Reverses the effect of the "change body font" script so that the body
+font no longer changes when focus moves to a text/rest/md/etc node.
+"""
+
+NOSTYLE = 'LeoQTextBrowser {}'
+
+def set_alt_body_font(tag, keys):
+    """Set body font back to the theme's font.
+    
+    Expected to be called by a hook procedure.
+    """
+    c = keys['c']
+    css = NOSTYLE
+    editor = c.frame.body.wrapper.widget
+    editor.setStyleSheet(css)
+
+ud = g.user_dict
+g.unregisterHandler('select3', ud['alt_body_font_proc'])
+
+ud['alt_body_font_proc'] = set_alt_body_font
+g.registerHandler('select3', ud['alt_body_font_proc'])
+
+
+
 </t>
 </tnodes>
 </leo_file>
