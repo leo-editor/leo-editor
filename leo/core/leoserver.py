@@ -337,7 +337,7 @@ class ServerExternalFilesController(ExternalFilesController):
         else:
             where = p.h
 
-        _is_leo = path.endswith(('.leo', '.db'))
+        _is_leo = path.endswith(('.leo', '.db', '.leojs'))
 
         if _is_leo:
             s = '\n'.join([
