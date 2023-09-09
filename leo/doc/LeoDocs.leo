@@ -32703,7 +32703,7 @@ Around this time Félix started a careful code review of *all* of Leo's core, in
 
 6.3 (November 6, 2020): ``leoAst.py``.
 
-.. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/bzqSwg44BQAJ
+.. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/GcaWR7ohBQAJ
 
 Sep 24, 2021: Félix releases leoInteg 1.0, with this `announcement`_.
 
