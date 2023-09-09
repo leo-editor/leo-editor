@@ -223,7 +223,7 @@
 <p>For example, suppose you want to print out the list of Leo’s commands. You might remember only that there are several related commands and that they all start with “print”. Just type <code class="docutils literal notranslate"><span class="pre">&lt;Alt-X&gt;pri&lt;Tab&gt;</span></code></p>
 <p>You will see <code class="docutils literal notranslate"><span class="pre">print-</span></code> in the minibuffer. This is the longest common prefix of all the command names that start with <code class="docutils literal notranslate"><span class="pre">pri</span></code>. The Completion tab in the log pane shows all the commands that start with <code class="docutils literal notranslate"><span class="pre">print-</span></code>.</p>
 <p>Now just type <code class="docutils literal notranslate"><span class="pre">c&lt;Tab&gt;</span></code> You will see the <code class="docutils literal notranslate"><span class="pre">print-commands</span></code> command in the minibuffer.</p>
-<p>Finally, <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code> executes the <code class="docutils literal notranslate"><span class="pre">print-commands</span></code> command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.</p>
+<p>Finally, <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code> executes the <code class="docutils literal notranslate"><span class="pre">print-commands</span></code> command. The output of the <code class="docutils literal notranslate"><span class="pre">print-commands</span></code> command appears in the commands tab, and focus returns to the body pane.</p>
 </section>
 <section id="filename-completion">
 <h3><a class="toc-backref" href="#id18" role="doc-backlink">Filename completion</a><a class="headerlink" href="#filename-completion" title="Permalink to this heading">¶</a></h3>
@@ -335,7 +335,7 @@
 <p>Start the find command by typing <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code>.</p>
 <p>But suppose you want to replace <code class="docutils literal notranslate"><span class="pre">def</span></code> with <code class="docutils literal notranslate"><span class="pre">foo</span></code>, instead of just finding <code class="docutils literal notranslate"><span class="pre">def</span></code>.</p>
 <p>Just type <code class="docutils literal notranslate"><span class="pre">&lt;Tab&gt;</span></code> before typing <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code>. Focus shifts to the text box labeled <code class="docutils literal notranslate"><span class="pre">Replace:</span></code>.</p>
-<p>Finally, type <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code> to start the find-next command. When Leo finds the next instance of <code class="docutils literal notranslate"><span class="pre">def</span></code>, it will select it.</p>
+<p>Finally, type <code class="docutils literal notranslate"><span class="pre">&lt;Return&gt;</span></code> to start the <code class="docutils literal notranslate"><span class="pre">find-next</span></code> command. When Leo finds the next instance of <code class="docutils literal notranslate"><span class="pre">def</span></code>, it will select it.</p>
 <p>You may now type any command.  The following are most useful:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Ctrl-minus</span> <span class="pre">(replace-then-find)</span></code> replaces the selected text.</p></li>
@@ -347,7 +347,7 @@
 <section id="formatting-text">
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">Formatting text</a><a class="headerlink" href="#formatting-text" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">rst3</span></code></dt><dd><p>Converts <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don’t have to change markup by hand. Search or “rst” in leoSettings.leo to see the pertinent settings.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">rst3</span></code></dt><dd><p>Converts <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> nodes to restructured text. This command automatically creates underlining for rST sections. To reorganize a document, just reorganize the corresponding Leo outline: you don’t have to change markup by hand. Search or “rst” in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> to see the pertinent settings.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">adoc</span></code></dt><dd><p>Converts <code class="docutils literal notranslate"><span class="pre">&#64;adoc</span></code> nodes to asciidoc text. This command automatically creates markup for asciidoctor sections. To reorganize a document, just reorganize the corresponding Leo outline: you don’t have to change markup by hand.</p>
 </dd>
@@ -357,7 +357,7 @@
 <h3><a class="toc-backref" href="#id27" role="doc-backlink">Undoing and redoing changes</a><a class="headerlink" href="#undoing-and-redoing-changes" title="Permalink to this heading">¶</a></h3>
 <p>Leo has unlimited undo–Leo remembers <em>all</em> changes you make to outline structure or the contents of any node since you restarted Leo.</p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Ctrl-Z</span> <span class="pre">(undo)</span></code></dt><dd><p>Undoes the last change. Another Ctrl-Z undoes the previous change, etc.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">Ctrl-Z</span> <span class="pre">(undo)</span></code></dt><dd><p>Undoes the last change. Another <code class="docutils literal notranslate"><span class="pre">Ctrl-Z</span></code> undoes the previous change, etc.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">Ctrl-Shift-Z</span> <span class="pre">(redo)</span></code></dt><dd><p>Undoes the effect of the last undo, etc.</p>
 </dd>
@@ -423,7 +423,7 @@ dubious. Default: None.</p>
 <section id="help-commands">
 <h3><a class="toc-backref" href="#id30" role="doc-backlink">Help commands</a><a class="headerlink" href="#help-commands" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">F1</span> <span class="pre">(help)</span></code></dt><dd><p>Shows a help message appears in the viewrendered pane. Alt-0 (vr-toggle) hides or shows this pane.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">F1</span> <span class="pre">(help)</span></code></dt><dd><p>Shows a help message appears in the viewrendered pane. <code class="docutils literal notranslate"><span class="pre">Alt-0</span></code> (<code class="docutils literal notranslate"><span class="pre">vr-toggle</span></code>) hides or shows this pane.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">F11</span> <span class="pre">(help-for-command)</span></code></dt><dd><p>Shows the documentation for any Leo command. <code class="docutils literal notranslate"><span class="pre">F11</span></code> prompts for the name of a Leo command in the minibuffer. Use tab completion to see the list of all commands that start with a given prefix.</p>
 </dd>
@@ -484,20 +484,20 @@ It should be an executable line.</p>
 </dl>
 <p>There are two additional commands:</p>
 <dl>
-<dt><code class="docutils literal notranslate"><span class="pre">db-again</span></code></dt><dd><p>Run the previous db-command.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">db-again</span></code></dt><dd><p>Run the previous <code class="docutils literal notranslate"><span class="pre">db-command</span></code>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">db-input</span></code></dt><dd><p>Prompt for any pdb command, then execute it.</p>
-<p>The db-input command allows you can enter any pdb command at all.
+<p>The <code class="docutils literal notranslate"><span class="pre">db-input</span></code> command allows you can enter any pdb command at all.
 For example: “print c”.</p>
 </dd>
 </dl>
 <p>But you don’t have to run these commands from the minibuffer, as discussed next.</p>
 <p><strong>Setting breakpoints in the gutter</strong></p>
-<p>When <code class="docutils literal notranslate"><span class="pre">&#64;bool</span> <span class="pre">use_gutter</span></code> is True, Leo shows a border in the body pane.  By default, the line-numbering.py plugin is enabled, and if so, the gutter shows correct line number in the external file.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">&#64;bool</span> <span class="pre">use_gutter</span></code> is True, Leo shows a border in the body pane.  By default, the <code class="docutils literal notranslate"><span class="pre">line-numbering.py</span></code> plugin is enabled, and if so, the gutter shows correct line number in the external file.</p>
 <p>After executing the xdb command, you can set a breakpoint on any executable line by clicking in the gutter to the right of the line number.  You can also set a breakpoint any time the debugger is stopped.</p>
-<p>Using the gutter is optional. You can also set breakpoints with the db-b command or by typing “d line-number” or “d file-name:line-number using the db-input command, or by using the Debug pane (see below)</p>
+<p>Using the gutter is optional. You can also set breakpoints with the <code class="docutils literal notranslate"><span class="pre">db-b</span></code> command or by typing <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">line-number</span></code> or <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">file-name:line-number</span></code> using the <code class="docutils literal notranslate"><span class="pre">db-input</span></code> command, or by using the Debug pane (see below)</p>
 <p><strong>The Debug pane</strong></p>
-<p>The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the db-input command.</p>
+<p>The xdb_pane.py plugin creates the Debug pane in the Log pane.  The pane contains buttons corresponding to all the commands listed above.  In addition, there is an input area in which you can enter pdb commands. This is a bit easier to use than the <code class="docutils literal notranslate"><span class="pre">db-input</span></code> command.</p>
 <p><strong>Settings</strong></p>
 <p>When <code class="docutils literal notranslate"><span class="pre">&#64;bool</span> <span class="pre">use_xdb_pane_output_area</span></code> is True, all debugger output is sent to an output area in the Debug pane. The default is True, so you need this setting only if you don’t want output set to the Debug pane.</p>
 </section>
@@ -511,7 +511,7 @@ For example: “print c”.</p>
 <p><strong>set-reference-file</strong> selects the reference .leo file corresponding to the local .leo file. It creates the separation node if it doesn’t exists, changing the .leo reference as needed.</p>
 <p><strong>read-ref-file</strong> reads the public part of this outline from the reference .leo file given in the separation node. <strong>Warning</strong>: This command <strong>deletes all nodes above separation node</strong>, recreating them from the reference file.</p>
 <p><strong>update-ref-file</strong> saves public part of this outline to reference .leo file.</p>
-<p>Developers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.</p>
+<p>Developers will typically execute the <code class="docutils literal notranslate"><span class="pre">read-ref-file</span></code> command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the <code class="docutils literal notranslate"><span class="pre">update-ref-file</span></code> command before doing a git commit that changes a reference .leo file.</p>
 </section>
 </section>
 <section id="all-other-commands">
@@ -584,7 +584,7 @@ For example: “print c”.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">escape</span></code></dt><dd><p>Enter watch escape mode.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">find-long-lines</span></code></dt><dd><p>Report lines longer than specified by:
-<code class="docutils literal notranslate"><span class="pre">&#64;bool</span></code> max-find-long-lines-length = 110</p>
+<code class="docutils literal notranslate"><span class="pre">&#64;bool</span> <span class="pre">max-find-long-lines-length</span> <span class="pre">=</span> <span class="pre">110</span></code></p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">find-missing-docstrings</span></code></dt><dd><p>Report python classes, functions and methods lacking python docstrings.
 Does not report nodes that are descendants of <code class="docutils literal notranslate"><span class="pre">&#64;nopylint</span></code>.</p>
@@ -824,7 +824,7 @@ Helpers defined in <code class="docutils literal notranslate"><span class="pre">
 </div>
 </li>
 </ol>
-<p>This is a safety feature: it allows scripting abbreviations to be enabled <em>without</em> enabling the (very dangerous in general) scripting-at-script-nodes setting.</p>
+<p>This is a safety feature: it allows scripting abbreviations to be enabled <em>without</em> enabling the (very dangerous in general) <code class="docutils literal notranslate"><span class="pre">scripting-at-script-nodes</span></code> setting.</p>
 <ol class="arabic simple" start="5">
 <li><p>Added a new example node: <code class="docutils literal notranslate"><span class="pre">&#64;data</span> <span class="pre">abbreviations</span></code> examples.  This contains
 several extremely useful scripts.</p></li>
@@ -1102,7 +1102,7 @@ several extremely useful scripts.</p></li>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">open-scripts-leo</span></code></dt><dd><p>Opens scripts.leo in a new tab or window.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">open-leoSettings-leo</span></code></dt><dd><p>Opens LeoSettings.leo in a new tab or window.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">open-leoSettings-leo</span></code></dt><dd><p>Opens <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> in a new tab or window.</p>
 </dd>
 </dl>
 <p><strong>Writing external files without saving the outline</strong>:</p>
@@ -1213,8 +1213,8 @@ several extremely useful scripts.</p></li>
 </dl>
 <p><strong>About open-with</strong>:</p>
 <ol class="arabic simple">
-<li><p>Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an <code class="docutils literal notranslate"><span class="pre">&#64;openwith</span></code> node in myLeoSettings.leo. See the documentation there.</p></li>
-<li><p>All open-with commands require that the corresponding <code class="docutils literal notranslate"><span class="pre">&#64;openwith</span></code> node correctly specifies an editor.</p></li>
+<li><p>Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an <code class="docutils literal notranslate"><span class="pre">&#64;openwith</span></code> node in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code>. See the documentation there.</p></li>
+<li><p>All <code class="docutils literal notranslate"><span class="pre">open-with</span></code> commands require that the corresponding <code class="docutils literal notranslate"><span class="pre">&#64;openwith</span></code> node correctly specifies an editor.</p></li>
 </ol>
 </section>
 <section id="creating-deleting-directories-files">
@@ -1682,7 +1682,7 @@ This is essentially an import of p.b.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">chapter-select-main</span></code></dt><dd><p>Selects the main chapter.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">chapter-select-&lt;chapter-name&gt;</span></code></dt><dd><p>Each <code class="docutils literal notranslate"><span class="pre">&#64;chapter</span></code> node in the outline creates a corresponding chapter-select command.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">chapter-select-&lt;chapter-name&gt;</span></code></dt><dd><p>Each <code class="docutils literal notranslate"><span class="pre">&#64;chapter</span></code> node in the outline creates a corresponding <code class="docutils literal notranslate"><span class="pre">chapter-select</span></code> command.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">chapter-next</span></code></dt><dd><p>Selects the next chapter.</p>
 </dd>
@@ -1951,7 +1951,7 @@ selected headline and its offspring.</p>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">open-local-settings</span></code></dt><dd><p>Select the <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> node in the present file, if any.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">open-myLeoSettings-leo</span></code></dt><dd><p>Open myLeoSettings.leo in a new window.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">open-myLeoSettings-leo</span></code></dt><dd><p>Open <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> in a new window.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">style-reload</span></code></dt><dd><p>Reloads all visual setting, but not themes.</p>
 <p><strong>Example</strong>: Change the <code class="docutils literal notranslate"><span class="pre">&#64;string</span> <span class="pre">font-size</span></code> setting, then do <code class="docutils literal notranslate"><span class="pre">style-reload</span></code> and see what happens.</p>
@@ -1997,18 +1997,18 @@ selected headline and its offspring.</p>
 </dd>
 </dl>
 <p>These commands skip any nodes for which <code class="docutils literal notranslate"><span class="pre">&#64;language</span> <span class="pre">python</span></code> (or <code class="docutils literal notranslate"><span class="pre">c</span></code>) is not in effect.</p>
-<p>The <strong>Python beautifier</strong> (beautify-tree and beautify-node) is <a class="reference external" href="https://peps.python.org/pep-0008/">PEP8</a> compliant. The beautifier will <em>just work</em> for most people.</p>
+<p>The <strong>Python beautifier</strong> (<code class="docutils literal notranslate"><span class="pre">beautify-tree</span></code> and <code class="docutils literal notranslate"><span class="pre">beautify-node</span></code>) is <a class="reference external" href="https://peps.python.org/pep-0008/">PEP8</a> compliant. The beautifier will <em>just work</em> for most people.</p>
 <p>The Python beautifier works only on syntactically correct code. It issues a warning and does nothing for syntactically incorrect code.</p>
 <section id="comparison-with-black">
 <h4><a class="toc-backref" href="#id95" role="doc-backlink">Comparison with Black</a><a class="headerlink" href="#comparison-with-black" title="Permalink to this heading">¶</a></h4>
-<p>Leo’s beautify command differs from <a class="reference external" href="https://github.com/psf/black">Black</a> as follows:</p>
+<p>Leo’s <code class="docutils literal notranslate"><span class="pre">beautify</span></code> command differs from <a class="reference external" href="https://github.com/psf/black">Black</a> as follows:</p>
 <ul class="simple">
-<li><p>beautify never changes Leo’s sentinel comments.</p></li>
-<li><p>beautify never splits or joints lines (with the default settings).
+<li><p><code class="docutils literal notranslate"><span class="pre">beautify</span></code> never changes Leo’s sentinel comments.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beautify</span></code> never splits or joints lines (with the default settings).
 Black sometimes inserts horrible line breaks.</p></li>
-<li><p>beautify never converts single-quote strings to double-quote strings.
-That is, beautify simulates Black’s –skip-string-normalization command-line option.</p></li>
-<li><p>beautify doesn’t insert extra blank lines at the end of nodes.
+<li><p><code class="docutils literal notranslate"><span class="pre">beautify</span></code> never converts single-quote strings to double-quote strings.
+That is, <code class="docutils literal notranslate"><span class="pre">beautify</span></code> simulates Black’s <code class="docutils literal notranslate"><span class="pre">--skip-string-normalization</span></code> command-line option.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beautify</span></code> doesn’t insert extra blank lines at the end of nodes.
 Technically, this is a pep8 violation, but these extra lines are not Leonine.</p></li>
 </ul>
 </section>
