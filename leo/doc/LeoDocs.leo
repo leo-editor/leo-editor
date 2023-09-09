@@ -450,6 +450,7 @@
 </v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
+<v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
 <v t="ekr.20230121110345.1"><vh>Script files</vh>
 <v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
@@ -976,7 +977,6 @@
 <v t="ekr.20171122090722.1"><vh>Style lines</vh></v>
 </v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
-<v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
 <v t="ekr.20050912125144.1"><vh>@rst html/plugins.html</vh>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
@@ -3792,13 +3792,13 @@ No corresponding Python properties exist for v.tempAttributes, so the correspond
 
 **Note**: Leo does *not* pickle members of inner dictionaries whose name (key) starts with str\_. The values of such members should be a Python string. This convention allows strings to appear in .leo files in a more readable format.
 
-Here is how Leo associates uA's with ``&lt;v&gt;`` elements in .leo files:
+Here is how Leo associates uA's with ``&lt;v&gt;`` elements in ``.leo`` files:
 
-- **Native xml attributes** are the attributes of ``&lt;v&gt;`` elements that are known (treated specially) by Leo's read/write code. The native attributes of ``&lt;v&gt;`` elements are a, t, vtag, tnodeList, marks, expanded and descendentTnodeUnknownAttributes. All other attributes of ``&lt;v&gt;`` and ``&lt;t&gt;`` elements are **foreign xml attributes**.
+- **Native xml attributes** are the attributes of ``&lt;v&gt;`` elements that are known (treated specially) by Leo's read/write code. The native attributes of ``&lt;v&gt;`` elements are ``a``, ``t``, ``vtag``, ``tnodeList``, ``marks``, ``expanded``, and ``descendentTnodeUnknownAttributes``. All other attributes of ``&lt;v&gt;`` and ``&lt;t&gt;`` elements are **foreign xml attributes**.
 
-- When reading a .leo file, Leo will create v.unknownAttributes ivars for any vnode whose corresponding ``&lt;v&gt;`` or ``&lt;t&gt;`` element contains a foreign xml attribute.
+- When reading a ``.leo`` file, Leo will create v.unknownAttributes ivars for any vnode whose corresponding ``&lt;v&gt;`` or ``&lt;t&gt;`` element contains a foreign xml attribute.
 
-- When writing a file, Leo will write foreign xml attributes in ``&lt;v&gt;`` elements if the corresponding vnode contains an unknownAttributes ivar.
+- When writing a ``.leo`` file, Leo will write foreign xml attributes in ``&lt;v&gt;`` elements if the corresponding vnode contains an unknownAttributes ivar.
 
 - Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
 </t>
@@ -6681,13 +6681,13 @@ It is easy to translate Leo's menu strings: simply create an ``@menus`` tree in 
 
 **New in Leo 4.4.8**: Leo now contains support for translating messages sent to Leo's log:
 
-- Rather than using an '_' function to denote strings to be translated, Leo's g.es and g.es_print functions translate "odd" (first, third, fifth) arguments, leaving "even" arguments untranslated. Keyword arguments, color, newline, etc. are never translated.
+- Rather than using an ``_`` function to denote strings to be translated, Leo's g.es and g.es_print functions translate "odd" (first, third, fifth) arguments, leaving "even" arguments untranslated. Keyword arguments, color, newline, etc. are never translated.
 
-- All calls to g.es and g.es_print in Leo's core follow this convention.
+- All calls to ``g.es`` and ``g.es_print`` in Leo's core follow this convention.
 
-- g.translateString does the actual translation using Python's `gettext`_ module.
+- ``g.translateString`` does the actual translation using Python's `gettext`_ module.
 
-- You can use the script in the node ``@button print g.es stats`` in scripts.leo to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's gettext module. (This script was also used to check that the proper arguments to g.es and g.es_print were translated.)
+- You can use the script in the node ``@button print g.es stats`` in ``scripts.leo`` to create catalogs of all scripts that need to be translated. Such catalogs are used by Python's ``gettext`` module. (This script was also used to check that the proper arguments to ``g.es`` and ``g.es_print`` were translated.)
 </t>
 <t tx="ekr.20080314081157.127"></t>
 <t tx="ekr.20080315115427.568">This series of releases featured hundreds of improvements.
@@ -6885,9 +6885,9 @@ In particular, d.get('path') returns the full, absolute path created by all @pat
 
 ``@menuat`` should occur in a ``@settings`` tree, but not as a descendant of a ``@menus`` tree. Its children are ``@menu`` and ``@item`` nodes as for the ``@menu`` setting.
 
-The ``@menuat`` setting has 2-3 parameters in its head text]::
+The ``@menuat`` setting has 2-3 parameters in its head text::
 
-    @menuat *&lt;path&gt;* *&lt;action&gt;* *[clipboard]*
+    @menuat &lt;path&gt; &lt;action&gt; [clipboard]
 
 The path argument specifies a **target** in the menu tree as defined by ``@menus`` and modified by earlier ``@menuat`` settings. The path takes the form::
 
@@ -6933,7 +6933,7 @@ You can specify modes with ``@mode`` nodes in ``leoSettings.leo``. ``@mode`` nod
 
 The form of this node is::
 
-    @mode *&lt;mode name&gt;*
+    @mode &lt;mode name&gt;
 
 The body text contains a list of shortcut specifiers. ``@mode`` nodes work just like ``@shortcuts`` nodes, but in addition they have the side effect of creating the ``enter-&lt;mode name&gt;-mode`` command.
 
@@ -6959,20 +6959,22 @@ With all these options it should be possible to emulate the keyboard behavior of
 </t>
 <t tx="ekr.20090116094356.2">When reading a .leo file, Leo looks for settings in default settings files first, then settings in personal settings files, and finally settings in local settings files.  The exact search order is:
 
-1. Default settings files::
+.. Can't mix list and literal blocks.
+
+**First**: Default settings files::
 
    configDir/leoSettings.leo
    homeDir/leoSettings.leo
    localDir/leoSettings.leo
 
-2. Personal settings files::
+**Second**: Personal settings files::
 
    configDir/myLeoSettings.leo
    homeDir/myLeoSettings.leo
    homeDir/&lt;machine-name&gt;LeoSettings.leo (note capitalization)
    localDir/myLeoSettings.leo
 
-3. Local settings files: the file being loaded.
+**Last**: Local settings files: the file being loaded.
 
 Settings that appear later in this list override settings that appear earlier in this list.  This happens on a setting-by-setting basis, *not* on a file-by-file basis.  In other words, each individual setting overrides only the *corresponding* setting in previously-read files.  Reading a setting file does *not* reset all previous settings. Note that the same file might appear several times in the search list. Leo detects such duplicate file names and only loads each settings file once. Leo remembers all the settings in settings files and does not reread those settings when reading another .leo file.
 
@@ -6982,7 +6984,7 @@ Settings that appear later in this list override settings that appear earlier in
 - Use a single ``myLeoSettings.leo`` files for personal defaults.
 - Use local settings sparingly.
 
-**Important**: it is good style to limit settings placed in ``myLeoSettings.leo`` to those settings that differ from default settings.
+*Note*: it is good style to limit settings placed in ``myLeoSettings.leo`` to those settings that differ from default settings.
 </t>
 <t tx="ekr.20090116094356.3">You should use special care when placing default or personal settings files in **local** directories, that is, directories other than homeDir, configDir or machineDir. In particular, the value of localDir can change when Leo reads additional files. This can result in Leo finding new default and personal settings files. The values of these newly-read settings files will, as always, override any previously-read settings.
 
@@ -7012,15 +7014,15 @@ plugins.
 To avoid confusion, I highly recommend following another kind of safe rule. We say that an ``@enabled-plugin`` node in file ``A.leo`` **covers** an ``@enabled-plugin`` node in file ``B.leo`` if all plugins specified in B's ``@enabled-plugins`` node appear A's ``@enabled-plugins`` node. The safe rule for plugins is::
 
   @enabled-plugin nodes in settings files in local directories
-  should cover ``@enabled-plugins`` nodes in all other settings files.
+  should cover @enabled-plugins nodes in all other settings files.
 </t>
 <t tx="ekr.20090116094356.9">Leo creates its menus from the ``@menu``, ``@item`` and ``@popup`` nodes in the ``@menus`` tree. Within ``@menus`` trees, ``@menu`` nodes create menus and ``@item`` nodes create menu items.
 
-The menu name always follows ``@menu``. If the menu name is 'Plugins', Leo will create the Plugins menu and populate the menu by calling the 'create-optional-menus' hook. This creates the Plugins menu as usual. Nested ``@menu`` nodes define submenus.
+The menu name always follows ``@menu``. If the menu name is 'Plugins', Leo will create the Plugins menu and populate the menu by calling the ``create-optional-menus`` hook. This creates the Plugins menu as usual. Nested ``@menu`` nodes define submenus.
 
 The command name follows ``@item``. If the body text of an ``@item`` node exists, this body text is the menu name. Otherwise, the menu name is the command name. However, if the command name starts with a ``*``, hyphens are removed from the menu name. Menu names and command names may contain a single ampersand (``&amp;``). If present, the following character is underlined in the name. If the command name in an ``@item`` node is just a hyphen (``-``), the item represents a menu separator.
 
-``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the contextmenu.py plugin. The children of this node should be ``@menu`` and ``@item`` nodes, used as with ``@menus``.
+``@popup &lt;widget-name&gt;`` creates a popup menu for use by the contextmenu.py plugin. The children of this node should be ``@menu`` and ``@item`` nodes, used as with ``@menus``.
 </t>
 <t tx="ekr.20090116130002.1">Settings files can be found in the following directories:
 
@@ -23397,17 +23399,17 @@ A **replacement line** must follow the rule line. Here are the valid forms::
     REPLACE-TAIL
     REPLACE-REST
     
-- REPLACE replaces the headline by the value of the substitution expression.  For example::
+- ``REPLACE`` replaces the headline by the value of the substitution expression.  For example::
 
     REPLACE \1
     
   matches replaces the headline by the first matched regex group.
 
-- REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.
+- ``REPLACE-HEAD`` replaces replace the headline by the text that precedes the matched text.
 
-- REPLACE-TAIL replaces the headline by the text that follows the matched text.
+- ``REPLACE-TAIL`` replaces the headline by the text that follows the matched text.
 
-- REPLACE-REST replaces the headline by everything except the matched text.
+- ``REPLACE-REST`` replaces the headline by everything except the matched text.
 </t>
 <t tx="ekr.20171122090722.1">Leo applies style lines only if they appear in a ruleset that matches a headline. Style lines do the following...
 
@@ -30135,13 +30137,13 @@ Fixed all known bugs.</t>
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 
 This section explains how to use **user filters** to alter the output of
-the rst3 command.
+the ``rst3`` command.
 
 **Background**
 
-The rst3 command converts ``@rst`` trees containing `reStructuredText`_ (rST)
+The ``rst3`` command converts ``@rst`` trees containing `reStructuredText`_ (rST)
 or `Sphinx`_ markup to an **intermediate string**. Depending on user
-options, rst3 will:
+options, ``rst3`` will:
 
 - write the intermediate string to an **intermediate file**.
 - send the intermediate string to `docutils`_ for conversion to HTML, PDF,
@@ -30152,10 +30154,10 @@ options, rst3 will:
 Plugins or scripts may define two functions: a **headline filter** and a
 **body filter**:
 
-- rst3 calls the body filter for all nodes except descendants of
+- ``rst3`` calls the body filter for all nodes except descendants of
   ``@rst-ignore`` or ``@rst-ignore-tree`` nodes.
 
-- rst3 calls the headline filter for all nodes except::
+- ``rst3`` calls the headline filter for all nodes except::
 
     rst-no-head nodes or
     descendants of @rst-ignore or @rst-ignore-tree nodes.
@@ -30201,10 +30203,10 @@ Folks, this might send a shiver down your spine. Both filters ignore all
 descendants of clones in the ``@rst`` tree. We have the effect of half clones,
 with no changes to Leo's core!
 
-Note: has_cloned_parent stops the scan at the ``@rst`` node itself, ensuring
-that the rst3 command includes "top-level" clones themselves.
+Note: ``has_cloned_parent`` stops the scan at the ``@rst`` node itself, ensuring
+that the ``rst3`` command includes "top-level" clones themselves.
 
-See leo/plugins/example_rst_filter.py for a complete example.
+See ``leo/plugins/example_rst_filter.py`` for a complete example.
 
 **Filters can do practically anything**
 
@@ -30224,7 +30226,7 @@ Moreover, filters can define special conventions, including:
 
 Plugins and scripts can define headline and body filters that alter the intermediate string.
 
-The leo/plugins/example_rst_filter.py plugin shows how to set up plugins that define custom filters.
+The ``leo/plugins/example_rst_filter.py`` plugin shows how to set up plugins that define custom filters.
 
 Filters have easy access to all data within the outline, including:
 

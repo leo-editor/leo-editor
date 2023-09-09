@@ -90,7 +90,6 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#translating-leo-s-menus-and-messages" id="id29">Translating Leo’s menus and messages</a></p></li>
-<li><p><a class="reference internal" href="#writing-new-importers" id="id30">Writing new importers</a></p></li>
 </ul>
 </nav>
 <section id="using-settings">
@@ -124,20 +123,20 @@
 <section id="search-order-for-settings-files">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Search order for settings files</a><a class="headerlink" href="#search-order-for-settings-files" title="Permalink to this heading">¶</a></h3>
 <p>When reading a .leo file, Leo looks for settings in default settings files first, then settings in personal settings files, and finally settings in local settings files.  The exact search order is:</p>
-<ol class="arabic">
-<li><p>Default settings files:</p>
-<p>configDir/leoSettings.leo
-homeDir/leoSettings.leo
-localDir/leoSettings.leo</p>
-</li>
-<li><p>Personal settings files:</p>
-<p>configDir/myLeoSettings.leo
-homeDir/myLeoSettings.leo
-homeDir/&lt;machine-name&gt;LeoSettings.leo (note capitalization)
-localDir/myLeoSettings.leo</p>
-</li>
-<li><p>Local settings files: the file being loaded.</p></li>
-</ol>
+<p><strong>First</strong>: Default settings files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">configDir</span><span class="o">/</span><span class="n">leoSettings</span><span class="o">.</span><span class="n">leo</span>
+<span class="n">homeDir</span><span class="o">/</span><span class="n">leoSettings</span><span class="o">.</span><span class="n">leo</span>
+<span class="n">localDir</span><span class="o">/</span><span class="n">leoSettings</span><span class="o">.</span><span class="n">leo</span>
+</pre></div>
+</div>
+<p><strong>Second</strong>: Personal settings files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">configDir</span><span class="o">/</span><span class="n">myLeoSettings</span><span class="o">.</span><span class="n">leo</span>
+<span class="n">homeDir</span><span class="o">/</span><span class="n">myLeoSettings</span><span class="o">.</span><span class="n">leo</span>
+<span class="n">homeDir</span><span class="o">/&lt;</span><span class="n">machine</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span><span class="n">LeoSettings</span><span class="o">.</span><span class="n">leo</span> <span class="p">(</span><span class="n">note</span> <span class="n">capitalization</span><span class="p">)</span>
+<span class="n">localDir</span><span class="o">/</span><span class="n">myLeoSettings</span><span class="o">.</span><span class="n">leo</span>
+</pre></div>
+</div>
+<p><strong>Last</strong>: Local settings files: the file being loaded.</p>
 <p>Settings that appear later in this list override settings that appear earlier in this list.  This happens on a setting-by-setting basis, <em>not</em> on a file-by-file basis.  In other words, each individual setting overrides only the <em>corresponding</em> setting in previously-read files.  Reading a setting file does <em>not</em> reset all previous settings. Note that the same file might appear several times in the search list. Leo detects such duplicate file names and only loads each settings file once. Leo remembers all the settings in settings files and does not reread those settings when reading another .leo file.</p>
 <p><strong>Caution</strong>: This search order offers almost too much flexibility. This can be confusing, even for power users. It’s important to choose the “simplest configuration scheme that could possibly work”.  Something like:</p>
 <ul class="simple">
@@ -145,7 +144,7 @@ localDir/myLeoSettings.leo</p>
 <li><p>Use a single <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> files for personal defaults.</p></li>
 <li><p>Use local settings sparingly.</p></li>
 </ul>
-<p><strong>Important</strong>: it is good style to limit settings placed in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> to those settings that differ from default settings.</p>
+<p><em>Note</em>: it is good style to limit settings placed in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> to those settings that differ from default settings.</p>
 </section>
 <section id="safe-rules-for-local-settings">
 <h3><a class="toc-backref" href="#id4" role="doc-backlink">Safe rules for local settings</a><a class="headerlink" href="#safe-rules-for-local-settings" title="Permalink to this heading">¶</a></h3>
@@ -254,8 +253,8 @@ have <em>already</em> been loaded and enabled, there is no way to disable previo
 loaded-and-enabled plugins. But local settings files can enable additional
 plugins.</p>
 <p>To avoid confusion, I highly recommend following another kind of safe rule. We say that an <code class="docutils literal notranslate"><span class="pre">&#64;enabled-plugin</span></code> node in file <code class="docutils literal notranslate"><span class="pre">A.leo</span></code> <strong>covers</strong> an <code class="docutils literal notranslate"><span class="pre">&#64;enabled-plugin</span></code> node in file <code class="docutils literal notranslate"><span class="pre">B.leo</span></code> if all plugins specified in B’s <code class="docutils literal notranslate"><span class="pre">&#64;enabled-plugins</span></code> node appear A’s <code class="docutils literal notranslate"><span class="pre">&#64;enabled-plugins</span></code> node. The safe rule for plugins is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@enabled-plugin nodes in settings files in local directories
-should cover ``@enabled-plugins`` nodes in all other settings files.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@enabled</span><span class="o">-</span><span class="n">plugin</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">settings</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">local</span> <span class="n">directories</span>
+<span class="n">should</span> <span class="n">cover</span> <span class="nd">@enabled</span><span class="o">-</span><span class="n">plugins</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="nb">all</span> <span class="n">other</span> <span class="n">settings</span> <span class="n">files</span><span class="o">.</span>
 </pre></div>
 </div>
 </section>
@@ -274,8 +273,8 @@ should cover ``@enabled-plugins`` nodes in all other settings files.
 <h4><a class="toc-backref" href="#id15" role="doc-backlink">&#64;menuat</a><a class="headerlink" href="#menuat" title="Permalink to this heading">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;menuat</span></code> modifies the menu tree created by <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code>. This allows settings in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> to change menus without copying the entire menu tree from <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code>. This ensures you don’t miss out when new things are added in the <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code>, as you would if you replaced the <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> with one in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;menuat</span></code> should occur in a <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> tree, but not as a descendant of a <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> tree. Its children are <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> nodes as for the <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> setting.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">&#64;menuat</span></code> setting has 2-3 parameters in its head text]:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@menuat</span> <span class="o">*&lt;</span><span class="n">path</span><span class="o">&gt;*</span> <span class="o">*&lt;</span><span class="n">action</span><span class="o">&gt;*</span> <span class="o">*</span><span class="p">[</span><span class="n">clipboard</span><span class="p">]</span><span class="o">*</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;menuat</span></code> setting has 2-3 parameters in its head text:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@menuat</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">action</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">clipboard</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>The path argument specifies a <strong>target</strong> in the menu tree as defined by <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> and modified by earlier <code class="docutils literal notranslate"><span class="pre">&#64;menuat</span></code> settings. The path takes the form:</p>
@@ -304,16 +303,16 @@ should cover ``@enabled-plugins`` nodes in all other settings files.
 <section id="menus">
 <h4><a class="toc-backref" href="#id16" role="doc-backlink">&#64;menus</a><a class="headerlink" href="#menus" title="Permalink to this heading">¶</a></h4>
 <p>Leo creates its menus from the <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;popup</span></code> nodes in the <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> tree. Within <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> trees, <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> nodes create menus and <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> nodes create menu items.</p>
-<p>The menu name always follows <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code>. If the menu name is ‘Plugins’, Leo will create the Plugins menu and populate the menu by calling the ‘create-optional-menus’ hook. This creates the Plugins menu as usual. Nested <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> nodes define submenus.</p>
+<p>The menu name always follows <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code>. If the menu name is ‘Plugins’, Leo will create the Plugins menu and populate the menu by calling the <code class="docutils literal notranslate"><span class="pre">create-optional-menus</span></code> hook. This creates the Plugins menu as usual. Nested <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> nodes define submenus.</p>
 <p>The command name follows <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code>. If the body text of an <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> node exists, this body text is the menu name. Otherwise, the menu name is the command name. However, if the command name starts with a <code class="docutils literal notranslate"><span class="pre">*</span></code>, hyphens are removed from the menu name. Menu names and command names may contain a single ampersand (<code class="docutils literal notranslate"><span class="pre">&amp;</span></code>). If present, the following character is underlined in the name. If the command name in an <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> node is just a hyphen (<code class="docutils literal notranslate"><span class="pre">-</span></code>), the item represents a menu separator.</p>
-<p><code class="docutils literal notranslate"><span class="pre">&#64;popup</span></code> <em>&lt;widget-name&gt;</em> creates a popup menu for use by the contextmenu.py plugin. The children of this node should be <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> nodes, used as with <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;popup</span> <span class="pre">&lt;widget-name&gt;</span></code> creates a popup menu for use by the contextmenu.py plugin. The children of this node should be <code class="docutils literal notranslate"><span class="pre">&#64;menu</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;item</span></code> nodes, used as with <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code>.</p>
 </section>
 <section id="mode">
 <h4><a class="toc-backref" href="#id17" role="doc-backlink">&#64;mode</a><a class="headerlink" href="#mode" title="Permalink to this heading">¶</a></h4>
 <p>Leo allows you to specify input modes. You enter mode x with the <code class="docutils literal notranslate"><span class="pre">enter-x-mode</span></code> command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.</p>
 <p>You can specify modes with <code class="docutils literal notranslate"><span class="pre">&#64;mode</span></code> nodes in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code>. <code class="docutils literal notranslate"><span class="pre">&#64;mode</span></code> nodes work just like <code class="docutils literal notranslate"><span class="pre">&#64;shortcuts</span></code> nodes, but in addition they have the side effect of creating the enter-&lt;mode name&gt;-mode command.</p>
 <p>The form of this node is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@mode</span> <span class="o">*&lt;</span><span class="n">mode</span> <span class="n">name</span><span class="o">&gt;*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@mode</span> <span class="o">&lt;</span><span class="n">mode</span> <span class="n">name</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>The body text contains a list of shortcut specifiers. <code class="docutils literal notranslate"><span class="pre">&#64;mode</span></code> nodes work just like <code class="docutils literal notranslate"><span class="pre">&#64;shortcuts</span></code> nodes, but in addition they have the side effect of creating the <code class="docutils literal notranslate"><span class="pre">enter-&lt;mode</span> <span class="pre">name&gt;-mode</span></code> command.</p>
@@ -365,11 +364,11 @@ Leo script to execute when the user selects the menu item.</p>
 <section id="customizing-the-rst3-command">
 <h2><a class="toc-backref" href="#id21" role="doc-backlink">Customizing the rst3 command</a><a class="headerlink" href="#customizing-the-rst3-command" title="Permalink to this heading">¶</a></h2>
 <p>This section explains how to use <strong>user filters</strong> to alter the output of
-the rst3 command.</p>
+the <code class="docutils literal notranslate"><span class="pre">rst3</span></code> command.</p>
 <p><strong>Background</strong></p>
-<p>The rst3 command converts <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> trees containing <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> (rST)
+<p>The <code class="docutils literal notranslate"><span class="pre">rst3</span></code> command converts <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> trees containing <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> (rST)
 or <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> markup to an <strong>intermediate string</strong>. Depending on user
-options, rst3 will:</p>
+options, <code class="docutils literal notranslate"><span class="pre">rst3</span></code> will:</p>
 <ul class="simple">
 <li><p>write the intermediate string to an <strong>intermediate file</strong>.</p></li>
 <li><p>send the intermediate string to <a class="reference external" href="http://docutils.sourceforge.net">docutils</a> for conversion to HTML, PDF,
@@ -379,9 +378,9 @@ options, rst3 will:</p>
 <p>Plugins or scripts may define two functions: a <strong>headline filter</strong> and a
 <strong>body filter</strong>:</p>
 <ul>
-<li><p>rst3 calls the body filter for all nodes except descendants of
+<li><p><code class="docutils literal notranslate"><span class="pre">rst3</span></code> calls the body filter for all nodes except descendants of
 <code class="docutils literal notranslate"><span class="pre">&#64;rst-ignore</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;rst-ignore-tree</span></code> nodes.</p></li>
-<li><p>rst3 calls the headline filter for all nodes except:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">rst3</span></code> calls the headline filter for all nodes except:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rst</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">head</span> <span class="n">nodes</span> <span class="ow">or</span>
 <span class="n">descendants</span> <span class="n">of</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span> <span class="ow">or</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span><span class="o">-</span><span class="n">tree</span> <span class="n">nodes</span><span class="o">.</span>
 </pre></div>
@@ -427,9 +426,9 @@ That is, within any <code class="docutils literal notranslate"><span class="pre"
 <p>Folks, this might send a shiver down your spine. Both filters ignore all
 descendants of clones in the <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> tree. We have the effect of half clones,
 with no changes to Leo’s core!</p>
-<p>Note: has_cloned_parent stops the scan at the <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> node itself, ensuring
-that the rst3 command includes “top-level” clones themselves.</p>
-<p>See leo/plugins/example_rst_filter.py for a complete example.</p>
+<p>Note: <code class="docutils literal notranslate"><span class="pre">has_cloned_parent</span></code> stops the scan at the <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> node itself, ensuring
+that the <code class="docutils literal notranslate"><span class="pre">rst3</span></code> command includes “top-level” clones themselves.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">leo/plugins/example_rst_filter.py</span></code> for a complete example.</p>
 <p><strong>Filters can do practically anything</strong></p>
 <p>Filters can use the data in p.b, p.h, p.u, or p.gnx, but filters are not <em>limited</em> to the data in p. The has_cloned_parent filter shows that filters can access:</p>
 <ul class="simple">
@@ -444,7 +443,7 @@ that the rst3 command includes “top-level” clones themselves.</p>
 </ul>
 <p><strong>Summary</strong></p>
 <p>Plugins and scripts can define headline and body filters that alter the intermediate string.</p>
-<p>The leo/plugins/example_rst_filter.py plugin shows how to set up plugins that define custom filters.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">leo/plugins/example_rst_filter.py</span></code> plugin shows how to set up plugins that define custom filters.</p>
 <p>Filters have easy access to all data within the outline, including:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">c.rstCommands.root</span></code>, the <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> node containing p.</p></li>
@@ -530,11 +529,11 @@ that the rst3 command includes “top-level” clones themselves.</p>
 </div>
 <p><strong>Important</strong>: All members of inner dictionaries should be picklable: Leo uses Python’s Pickle module to encode all values in these dictionaries. Leo will discard any attributes that can not be pickled. This should not be a major problem to plugins. For example, instead of putting a tnode into these dictionaries, a plugin could put the tnode’s gnx (a string) in the dictionary.</p>
 <p><strong>Note</strong>: Leo does <em>not</em> pickle members of inner dictionaries whose name (key) starts with str_. The values of such members should be a Python string. This convention allows strings to appear in .leo files in a more readable format.</p>
-<p>Here is how Leo associates uA’s with <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements in .leo files:</p>
+<p>Here is how Leo associates uA’s with <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements in <code class="docutils literal notranslate"><span class="pre">.leo</span></code> files:</p>
 <ul class="simple">
-<li><p><strong>Native xml attributes</strong> are the attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements that are known (treated specially) by Leo’s read/write code. The native attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements are a, t, vtag, tnodeList, marks, expanded and descendentTnodeUnknownAttributes. All other attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;t&gt;</span></code> elements are <strong>foreign xml attributes</strong>.</p></li>
-<li><p>When reading a .leo file, Leo will create v.unknownAttributes ivars for any vnode whose corresponding <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;t&gt;</span></code> element contains a foreign xml attribute.</p></li>
-<li><p>When writing a file, Leo will write foreign xml attributes in <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements if the corresponding vnode contains an unknownAttributes ivar.</p></li>
+<li><p><strong>Native xml attributes</strong> are the attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements that are known (treated specially) by Leo’s read/write code. The native attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements are <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">t</span></code>, <code class="docutils literal notranslate"><span class="pre">vtag</span></code>, <code class="docutils literal notranslate"><span class="pre">tnodeList</span></code>, <code class="docutils literal notranslate"><span class="pre">marks</span></code>, <code class="docutils literal notranslate"><span class="pre">expanded</span></code>, and <code class="docutils literal notranslate"><span class="pre">descendentTnodeUnknownAttributes</span></code>. All other attributes of <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;t&gt;</span></code> elements are <strong>foreign xml attributes</strong>.</p></li>
+<li><p>When reading a <code class="docutils literal notranslate"><span class="pre">.leo</span></code> file, Leo will create v.unknownAttributes ivars for any vnode whose corresponding <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;t&gt;</span></code> element contains a foreign xml attribute.</p></li>
+<li><p>When writing a <code class="docutils literal notranslate"><span class="pre">.leo</span></code> file, Leo will write foreign xml attributes in <code class="docutils literal notranslate"><span class="pre">&lt;v&gt;</span></code> elements if the corresponding vnode contains an unknownAttributes ivar.</p></li>
 <li><p>Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.</p></li>
 </ul>
 </section>
@@ -604,15 +603,15 @@ REPLACE …\1\2
 </pre></div>
 </div>
 <ul>
-<li><p>REPLACE replaces the headline by the value of the substitution expression.  For example:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">REPLACE</span></code> replaces the headline by the value of the substitution expression.  For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REPLACE</span> \<span class="mi">1</span>
 </pre></div>
 </div>
 <p>matches replaces the headline by the first matched regex group.</p>
 </li>
-<li><p>REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.</p></li>
-<li><p>REPLACE-TAIL replaces the headline by the text that follows the matched text.</p></li>
-<li><p>REPLACE-REST replaces the headline by everything except the matched text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REPLACE-HEAD</span></code> replaces replace the headline by the text that precedes the matched text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REPLACE-TAIL</span></code> replaces the headline by the text that follows the matched text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REPLACE-REST</span></code> replaces the headline by everything except the matched text.</p></li>
 </ul>
 </section>
 <section id="style-lines">
@@ -652,53 +651,11 @@ REPLACE …\1\2
 <p>It is easy to translate Leo’s menu strings: simply create an <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> tree in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> or <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> that contains the translated menu names.</p>
 <p><strong>New in Leo 4.4.8</strong>: Leo now contains support for translating messages sent to Leo’s log:</p>
 <ul class="simple">
-<li><p>Rather than using an ‘_’ function to denote strings to be translated, Leo’s g.es and g.es_print functions translate “odd” (first, third, fifth) arguments, leaving “even” arguments untranslated. Keyword arguments, color, newline, etc. are never translated.</p></li>
-<li><p>All calls to g.es and g.es_print in Leo’s core follow this convention.</p></li>
-<li><p>g.translateString does the actual translation using Python’s <a class="reference external" href="http://docs.python.org/lib/module-gettext.html">gettext</a> module.</p></li>
-<li><p>You can use the script in the node <code class="docutils literal notranslate"><span class="pre">&#64;button</span> <span class="pre">print</span> <span class="pre">g.es</span> <span class="pre">stats</span></code> in scripts.leo to create catalogs of all scripts that need to be translated. Such catalogs are used by Python’s gettext module. (This script was also used to check that the proper arguments to g.es and g.es_print were translated.)</p></li>
+<li><p>Rather than using an <code class="docutils literal notranslate"><span class="pre">_</span></code> function to denote strings to be translated, Leo’s g.es and g.es_print functions translate “odd” (first, third, fifth) arguments, leaving “even” arguments untranslated. Keyword arguments, color, newline, etc. are never translated.</p></li>
+<li><p>All calls to <code class="docutils literal notranslate"><span class="pre">g.es</span></code> and <code class="docutils literal notranslate"><span class="pre">g.es_print</span></code> in Leo’s core follow this convention.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g.translateString</span></code> does the actual translation using Python’s <a class="reference external" href="http://docs.python.org/lib/module-gettext.html">gettext</a> module.</p></li>
+<li><p>You can use the script in the node <code class="docutils literal notranslate"><span class="pre">&#64;button</span> <span class="pre">print</span> <span class="pre">g.es</span> <span class="pre">stats</span></code> in <code class="docutils literal notranslate"><span class="pre">scripts.leo</span></code> to create catalogs of all scripts that need to be translated. Such catalogs are used by Python’s <code class="docutils literal notranslate"><span class="pre">gettext</span></code> module. (This script was also used to check that the proper arguments to <code class="docutils literal notranslate"><span class="pre">g.es</span></code> and <code class="docutils literal notranslate"><span class="pre">g.es_print</span></code> were translated.)</p></li>
 </ul>
-</section>
-<section id="writing-new-importers">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">Writing new importers</a><a class="headerlink" href="#writing-new-importers" title="Permalink to this heading">¶</a></h2>
-<p>This section describes the process of creating an importer for a new language. There are a set of “importers” in leoImport.py, all based on the baseScannerClass class. You can define your own importer by creating a subclass. This shouldn’t be too difficult: baseScannerClass is supposed to do almost all the work. With luck, your subclass might be very simple, as with class cScanner.</p>
-<p><strong>Important</strong> As I write this, I realize that I remember very little about the code, but I do remember its general organization and the process of creating a new importer. The following should be all you need to write any importer.</p>
-<p>This base class has three main parts:</p>
-<ol class="arabic simple">
-<li><p>The “parser” that recognizes where nodes begin and end.</p></li>
-<li><p>The “code generator” the actually creates the imported nodes.</p></li>
-<li><p>Checking code that ensures that the imported code is equivalent to the original code.</p></li>
-</ol>
-<p>You should never have to change the code generators or the checking code. Confine your attention to the parser.</p>
-<p>The parser thinks it is looking for classes, and within classes, method definitions.  Your job is to tell the parser how to do this. Let’s look at part of the ctor for baseScannerClass for clues:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># May be overridden in subclasses.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">anonymousClasses</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># For Delphi Pascal interfaces.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockCommentDelim1</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockCommentDelim2</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockCommentDelim1_2</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockCommentDelim2_2</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockDelim1</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockDelim2</span> <span class="o">=</span> <span class="s1">&#39;}&#39;</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">blockDelim2Cruft</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Stuff that can follow .blockDelim2.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">classTags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">,]</span> <span class="c1"># tags that start a tag.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">functionTags</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">hasClasses</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">hasFunctions</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">lineCommentDelim</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">lineCommentDelim2</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">outerBlockDelim1</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">outerBlockDelim2</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">outerBlockEndsDecls</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">sigHeadExtraTokens</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Extra tokens valid in head of signature.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">sigFailTokens</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># A list of strings that abort a signature when seen in a tail.</span>
-    <span class="c1"># For example, &#39;;&#39; and &#39;=&#39; in C.</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">strict</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># True if leading whitespace is very significant.</span>
-</pre></div>
-</div>
-<p>Yes, this looks like gibberish. I do <em>not</em> remember what all these things do in detail, although obviously the names mean something. What I <em>do</em> remember is that these ivars control the operation of the startsFunction and startsClass methods and their helpers (especially startsHelper) and the methods that call them, scan and scanHelper. Most of these methods have a trace var that will enable tracing during importing.</p>
-<p>So the strategy is simple: study startsHelper in detail, set the ivars above to make startsHelper do what you want, and trace until things work as you want.</p>
-<p>There is one more detail. Sometimes the ivars above are not sufficient to get the job done. In that case, subclasses will override various methods of the parser, but <em>not</em> the code generator. If indentation is important, you will want to look at the Python importer. Notice that it overrides skipCodeBlock, called by startsHelper.</p>
-<p>That’s about it. It would be pointless to give you more details, because those details would lead you <em>away</em> from the process you need to follow. Having said that, feel free to ask further questions. I’ll be glad to answer them.</p>
 </section>
 </section>
 
