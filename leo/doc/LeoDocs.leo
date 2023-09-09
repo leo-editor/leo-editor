@@ -32713,14 +32713,22 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20230908140206.569">This "fallow" period prepared contained important performance improvements and paved the way for leoInteg.
 
+Leo 5.4: October 22, 2016. The clone-find commands.
+
 Leo 5.5: March 23, 2017. A bug fix made syntax coloring 20x faster!
     
-Leo 5.6: September 25, 2017. Added the cursesGui2.py plugin. This plugin contained the p_to_ap and ap_to_p functions that became crucial parts of leoInteg.
+Leo 5.6: September 25, 2017.
+
+- Added the git-diff command.
+- Added the cursesGui2.py plugin. This plugin contained the p_to_ap and
+  ap_to_p functions that became crucial parts of leoInteg.
     
 Leo 5.8: October 1, 2018. Replace caching with Vitalije's super-fast new read code.
     
 Leo 5.9: May 1, 2019. Add LeoWapp: Leo in a browser.</t>
-<t tx="ekr.20230908152641.1">Leo 6.1: November 8, 2019. This release contained the dawn of leoInteg: integration of Leo with VS code. leoInteg and leoJS are the future of Leo. All later releases contain support for leoInteg and leoJS.
+<t tx="ekr.20230908152641.1">August, 2020: edreamleo's first PR. Iirc, Félix encouraged me to use PRs for all significant code changes.
+
+Leo 6.1: November 8, 2019. This release contained the dawn of leoInteg: integration of Leo with VS code. leoInteg and leoJS are the future of Leo. All later releases contain support for leoInteg and leoJS.
 
 6.2: March 27, 2020. The rise of f-strings in Leo.
 
