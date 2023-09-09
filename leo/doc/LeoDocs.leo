@@ -1571,7 +1571,10 @@
 <v t="ekr.20101025080245.6089"><vh>2010: 4.8: New sentinels &amp; recovery nodes</vh></v>
 <v t="ekr.20131008041326.16253"><vh>2011: 4.9: The end of Tk, autocompleter, vr pane</vh></v>
 <v t="ekr.20150312013449.4"><vh>2014: 5.0 Vim mode, plays well with others</vh></v>
-<v t="ekr.20150220200101.2"><vh>2015: 5.1 @clean</vh></v>
+<v t="ekr.20150220200101.2"><vh>2015: 5.1 @clean</vh>
+<v t="ekr.20230909073504.2"><vh>Steve Zatz: in praise of @clean</vh></v>
+<v t="ekr.20230909073504.3"><vh>EKR: Why @clean is so important</vh></v>
+</v>
 <v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to leoInteg</vh></v>
 <v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 and beyond: supporting leoInteg</vh></v>
 </v>
@@ -4629,7 +4632,7 @@ Leo 4.2 forms the **great divide** in Leo's internal data structures. Before 4.2
 
 Leo 4.3 introduced settings files. These files replaced config.txt and made settings completely extensible and flexible. This release also introduced the ill-fated settings pane. It was soon retired because it inhibited development.
 
-- Add the ``PluginsManager`` plugin. Thankyou Paul Patterson!
+- Add the ``PluginsManager`` plugin. Thank you Paul Patterson!
 - Predefine ``c``, ``g`` and ``p`` in scripts and ``@test`` nodes
 - Add the ``rst3`` plugin.
 </t>
@@ -17565,8 +17568,15 @@ inserts or deletes nodes. The user is responsible for creating nodes to
 hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.
 </t>
-<t tx="ekr.20150220200101.2">Leo 5.1 (April 16, 2015): Add ``@clean``, one of the most important developments in Leo's history.
-The Mulder/Ream update algorithm puts ``@clean`` on a completely sound footing.
+<t tx="ekr.20150220200101.2">Leo 5.1 (April 16, 2015) added ``@clean`` and the Mulder/Ream update algorithm.
+
+In February 2015 I realized that the ``@shadow`` algorithm could be used to update ``@clean`` (aka @nosent) files. This inspired me to simplify the ``@shadow`` update algorithm. The Mulder/Ream algorithm emerged several days later.
+
+Thinking of using Leo as a diff program *might* have been the line of thought that lead to ``@clean``. It turned my attention to the ``@shadow`` algorithm, and that may have been enough to see that the algorithm could get sentinels from the ``.leo`` file instead of hidden shadow files.
+
+I'll probably never be able to recreate a clearer picture of how the Aha came to be. That's the nature of big Aha's: they obliterate previous ways of thought so completely that it's hard to remember the time before the Aha.
+
+The following paragraphs explain why ``@clean`` is one of the most important developments in Leo's history.
 </t>
 <t tx="ekr.20150222035621.5"></t>
 <t tx="ekr.20150225133846.7">def doDiff(self):
@@ -32664,43 +32674,74 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #3503`_: Fix bug involving back slashes in search patterns.
 - `PR #3499`_: Retire the read-outline-only command.
 </t>
-<t tx="ekr.20230908140206.569">This "fallow" period prepared contained important performance improvements and paved the way for leoInteg.
+<t tx="ekr.20230908140206.569">This "fallow" period prepared contained important performance improvements and paved the way for ``leoInteg``.
 
-An acknowledgment is appropriate here. About this time, Vitalije Milosevic (Виталије Милошевић) insisted that Leo's code could be improved by removing kwargs. Yes, doing so requires duplicating code, but the resulting simplicity is almost always significant. In many cases, the simplifications ripple throughout Leo's codebase. These simplifictaions continue to the present day.
+An acknowledgment is appropriate here. About this time, Vitalije Milosevic (Виталије Милошевић) insisted that Leo's code could be improved by removing kwargs. Yes, doing so requires duplicating code, but the resulting simplicity is almost always significant. In many cases, the simplifications ripple throughout Leo's codebase. These simplifications continue to the present day.
 
 Vitalije also suggested that local helper functions would also improve Leo's code. I use this pattern less often, but it too has its place.
 
-Leo 5.4: October 22, 2016. The clone-find commands.
+Leo 5.4 (October 22, 2016): Add ``clone-find`` commands.
 
-Leo 5.5: March 23, 2017. A bug fix made syntax coloring 20x faster!
+Leo 5.5 (March 23, 2017): A bug fix made syntax coloring 20x faster!
     
-Leo 5.6: September 25, 2017:
+Leo 5.6 (September 25, 2017):
 
-- Add the git-diff command.
-- Add the cursesGui2.py plugin. This plugin contained the p_to_ap and
-  ap_to_p functions that became crucial parts of leoInteg.
+- Add the ``git-diff`` command.
+- Add the ``cursesGui2.py`` plugin. This plugin contained the ``p_to_ap`` and
+  ``ap_to_p`` functions that became crucial parts of ``leoInteg``.
     
-Leo 5.8: October 1, 2018. Replace caching with Vitalije's super-fast new read code.
+Leo 5.8 (October 1, 2018): Replace caching with Vitalije's super-fast read code.
     
-Leo 5.9: May 1, 2019. Add LeoWapp: Leo in a browser.</t>
+Leo 5.9 (May 1, 2019): Add ``LeoWapp.py``, Leo in a browser.</t>
 <t tx="ekr.20230908152641.1">August, 2020: edreamleo's first PR. Félix Malboeuf encouraged me to use PRs for all significant code changes.
 
-Leo 6.1: November 8, 2019. This release contained the dawn of leoInteg: integration of Leo with VS code. leoInteg and leoJS are the future of Leo. All later releases contain support for leoInteg and leoJS.
+Leo 6.1 (November 8, 2019): This release contained the dawn of ``leoInteg``: integration of Leo with VS code. ``leoInteg`` and ``leoJS`` are the future of Leo. All later releases contain support for ``leoInteg`` and ``leoJS``.
 
 Around this time Félix started a careful code review of *all* of Leo's core, including many plugins. This ongoing review found many "quirps" and some larger bugs.
 
-6.2: March 27, 2020. The rise of f-strings in Leo.
+6.2 (March 27, 2020): The rise of f-strings in Leo. How did I ever live without them?
 
-6.3: November 6, 2020. leoAst.py.
+6.3 (November 6, 2020): ``leoAst.py``.
     
-6.5: October 22, 2021. Removed @test/@suite, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* @test made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use "traditional" unit test based on python's unittest module.
+6.5: (October 22, 2021): Removed ``@test/@suite``, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* ``@test`` made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use python's ``unittest`` module.
 
-6.7.0: September 26, 2022. Fully annotate Leo's core files and important plugins.
+6.7.0 (September 26, 2022): Fully annotate Leo's core files and important plugins.
 
-6.7.4: August 17, 2023. A spectacular collapse in the importer architecture. The Aha! Use **guide lines** to make parsing incoming lines easier.
+6.7.4 (August 17, 2023) A spectacular collapse in the importer architecture. The Aha! Use **guide lines** to make parsing incoming lines easier.
 </t>
 <t tx="ekr.20230909063921.1"></t>
 <t tx="ekr.20230909063947.1"></t>
+<t tx="ekr.20230909073504.2">I just want to provide my own thoughts about the importance of @clean. I look at the posts in this group a fair amount because I find the discussion interesting but I had abandoned leo as a day-to-day tool principally because of the sentinels in @file nodes. Even for solo projects, I just found them visually unappealing and beyond that occasionally confusing when I went to edit files with external editors. I would sometimes start a project in leo, particularly if it was based on code I developed in the past using leo, and then would use the old @nosent to save a version of the code without sentinels and then use my external editor of choice and not use leo at all. I missed many of the features of leo but just couldn't get over the sentinel issue.
+
+@clean really seems to solve all the issues that I had. In particular--and somehow this point doesn't seem to me to have been emphasized enough--it seems to fully support organizer nodes. They are one of the great things about leo--it's happy to guess initially at what the structure of your program is but it's completely up to you to determine the structure and the ability to do things like break up long methods, group like methods, group menu actions in GUI code, etc etc is one of the very cool things about leo. My limited but growing experience with @clean's handling of external changes has been mainly with incremental (as opposed to more sweeping) code changes, and the assignment of new lines is reasonable and you can always fix them it quickly if you don't like how external changes have been handled.
+
+There have been some posts about the recovered nodes, comparing the old and new nodes where there were external changes. I think it's genius. As opposed to hoping that leo has correctly incorporated external changes, it's all there in case you want to take a closer look. Without this, I would just not have the confidence that external changes were being applied correctly and while you can always do a git diff, I am not looking to do that every time I change a file externally especially if I am not at the point where I am about to do a commit.
+
+There has been some discussion of @auto v. @clean. Preference is obviously a matter of taste. I will say that for me the fact that node headlines are unaffected by external file changes is a feature not a problem since I place notes in the headlines that I want preserved when I edit files externally. Yes, if the node headlines are the method names then they won't be updated if an external edit changes a method name but this was true of @file as well.
+
+The ability to work on projects with people who don't have leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with leo sentinels (unless the potential cloner is a leo loyalist). The one downside to no sentinels--there is no evidence that leo is being used but I think that raises the broader question of marketing leo, which I certainly believe will be aided significantly by being able to take advantage of leo without sentinels in external files.
+</t>
+<t tx="ekr.20230909073504.3">.. _`recursive import script`: scripting-miscellany.html#recursive-import-script
+.. _git: http://git-scm.com/
+
+``@clean`` is the long-sought breakthrough that just might allow Leo to "go viral". For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
+
+I have just realized how inconvenient sentinels might be for my *own* work flow.  This was a shocking revelation. To illustrate, here is an excerpt from the programming tutorial:
+
+When I study other people's code I do the following:
+
+- Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
+ 
+- Use an `recursive import script`_ to create the desired @clean nodes.
+
+- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
+
+- Use `git`_ diff to ensure that no important changes have been made while importing the nodes.
+
+- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code. Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
+
+In short, I have just now realized how badly sentinels interfered with git diffs.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
