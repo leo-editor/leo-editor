@@ -2562,7 +2562,7 @@ In Python it is very easy to write a script that will blindly execute other scri
 
     # Warning: extremely dangerous code
 
-    # Execute the body text of all nodes that start with `@script`.
+    # Execute the body text of all nodes that start with ``@script``.
     def onLoadFile():
         for p in c.all_positions():
             h = p.h.lower()
@@ -11156,7 +11156,7 @@ In short, Leo will never support features that encourage cross-outline clones.</
     for p in c2.all_positions():
         g.es(p.h)
 </t>
-<t tx="ekr.20110531155858.20564">See the node `@data qt-gui-plugin-style-sheet` in your theme file or `myLeoSettings.leo`.
+<t tx="ekr.20110531155858.20564">See the node ``@data qt-gui-plugin-style-sheet`` in your theme file or ``myLeoSettings.leo``.
 </t>
 <t tx="ekr.20110601105631.19349">
 </t>
@@ -22253,7 +22253,8 @@ This script creates a node containing today's date in the body text::
             g.es(line.rstrip())
 </t>
 <t tx="ekr.20170313151821.1">See The "What's new in this file" node in scripts.leo for details.</t>
-<t tx="ekr.20170313152439.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. This reduces screen space. The setting: `@bool tree-declutter = True` enables decluttering. The setting, `@data tree-declutter-patterns` should contain patterns like::
+<t tx="ekr.20170313152439.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. This reduces screen space. The setting: ``@bool tree-declutter = True`` enables decluttering.
+The setting, ``@data tree-declutter-patterns`` should contain patterns like::
 
     # remove @clean and use an icon
     RULE ^@clean (.*)
@@ -22279,7 +22280,7 @@ This script creates a node containing today's date in the body text::
 <t tx="ekr.20170314060847.1">.. index::
     pair: @file node; Tutorial
 
-An **@file node** is a node whose headline starts with `@file` followed by a path to an external file::
+An **@file node** is a node whose headline starts with ``@file`` followed by a path to an external file::
 
     @file leoNodes.py
     @file ../../notes.txt
@@ -24269,8 +24270,8 @@ See the `abbreviations tutorial`_ for more details.
 </t>
 <t tx="ekr.20180126061429.12">.. _`@button nodes`: tutorial-basics.html#button-and-command-nodes
 
-`@button nodes`_ create commands. For example, `@button my-command` creates
-the `my-command` button and the `my-command` command. Within `@button`
+`@button nodes`_ create commands. For example, ``@button my-command`` creates
+the `my-command` button and the `my-command` command. Within ``@button``
 scripts, c.p is the presently selected outline node.
 **@button nodes bring scripts to data**.
 </t>
@@ -24316,7 +24317,7 @@ example::
 You must `launch Leo from a console window`_.
 </t>
 <t tx="ekr.20180126061429.2">You can have a personal shortcut to run a script while developing it. For
-example: put `@key=Alt-4` in the headline. If your script grows to several
+example: put ``@key=Alt-4`` in the headline. If your script grows to several
 subnodes, you won't have to select the top node every time you wish to run
 the script. Just press your universal shortcut.</t>
 <t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console. g.trace shows
@@ -24357,7 +24358,7 @@ Here is a common pattern for @file nodes for python files::
     @others</t>
 <t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of
 contents to the console. You can then copy the text from the console to
-your document. The selected outline node should be an `@auto-md` node.</t>
+your document. The selected outline node should be an ``@auto-md`` node.</t>
 <t tx="ekr.20180126061429.6">.. _`pyflakes`: https://pypi.python.org/pypi/pyflakes
 
 `pyflakes`_ is a superb programming tool. It checks python files almost instantly.
@@ -24371,7 +24372,7 @@ raise a dialog if pyflakes finds any errors::
 <t tx="ekr.20180126061429.7">The @nobeautify directive suppresses beautification of the node in which it appears.</t>
 <t tx="ekr.20180126061429.8">.. _`pylint`: https://www.pylint.org/
 
-Leo's pylint command runs `pylint`_ on all `@&lt;file&gt;` nodes in the selected trees.
+Leo's pylint command runs `pylint`_ on all ``@&lt;file&gt;`` nodes in the selected trees.
 Pylint runs in the background, so you can continue to use Leo while pylint runs.
 </t>
 <t tx="ekr.20180126061429.9">.. _`rst3 command`: tutorial-rst3.html
@@ -25283,7 +25284,7 @@ But they do know the secret of programming: **Simple processes, endlessly repeat
 
 For any project you want to know what files exist.  When studying other people's code I use a recursive import script https://github.com/leo-editor/leo-editor/issues/846 to create a tree of files. The goal is just to have a *vague* understanding of what files are involved. Don't even think about remember details.
 
-It's even easier with Leo.  LeoPy.py contains Leo's sources.  Peruse this outline, seeing what `@file` nodes it contains.
+It's even easier with Leo.  LeoPy.py contains Leo's sources.  Peruse this outline, seeing what ``@file`` nodes it contains.
 
 *Don't make a big deal about this step*. It should just take 5 or 10 minutes. Look *only* at files that interest you. In those files you will probably want to look briefly at the top-level classes in the files that interest you. You will likely repeat this step many times, adding a little to your understanding each time.
 
@@ -28672,7 +28673,7 @@ You can use clones. For example::
     
 where `my-shared-settings` node is cloned from the @file subtree.
 
-Quite often I use some script to combine some nodes, process them and generate some output file. And such script I put in a node with the following headline: `@button n-save @key=Ctrl-s`. Then whenever I open this outline and whenever I hit Ctrl-s to save the outline, this script is executed. Of course I put in this script `c.save()` call and on every save my files are regenerated. 
+Quite often I use some script to combine some nodes, process them and generate some output file. And such script I put in a node with the following headline: ``@button n-save @key=Ctrl-s``. Then whenever I open this outline and whenever I hit Ctrl-s to save the outline, this script is executed. Of course I put in this script `c.save()` call and on every save my files are regenerated. 
 
 When working for a web I often use Coffeescript, some html template generators like Pug, Sass for generating css files, ... Now all of these command line tools have watching mode where they watch folders for file changes and whenever source file is changed they regenerate the output file. But then you also need to run some packaging tool to bundle all generated files. Instead of watching for file changes, my script bound to Ctrl-s regenerate source files in memory and without saving them execute suitable tool only on changed sources and produced outputs bundle in the final file. This makes the whole process much faster.
 
@@ -30354,10 +30355,10 @@ Add c.general_script_helper.</t>
 - If c.p is any kind of @&lt;file&gt; node, the script file is the corresponding external file.
   Otherwise, the script file is a temp file.
   
-- The `@data exec-script-commands` setting tells how to invoke the appropriate language processor.
+- The ``@data exec-script-commands`` setting tells how to invoke the appropriate language processor.
   See the setting for more details.
   
-- The `@data exec-script-patterns` settings describes error messages so that Leo can create
+- The ``@data exec-script-patterns`` settings describes error messages so that Leo can create
   clickable links to errors.  See the setting for more details.
 
 - This command is a thin wrapper around the c.general_script_helper method.
@@ -30529,7 +30530,7 @@ are typescript type names.</t>
   Remove leoTest.py.
 - Many code-level cleanups.</t>
 <t tx="ekr.20211014165743.1">- leoTest2.py create temporary Leo applications and outlines for unit tests.
-- Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
+- Remove ``@test``, ``@suite``, unitTest.leo and leoTest.py.</t>
 <t tx="ekr.20211105051031.1">Leo https://leo-editor.github.io/leo-editor/ 6.6 final is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6/).
@@ -30538,7 +30539,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.6**
 
-- Replaced `@raw` and `@end_raw` with `@section-delims`.
+- Replaced ``@raw`` and ``@end_raw`` with ``@section-delims``.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to the python-to-typescript command.
 - Improved python importer.
@@ -30878,7 +30879,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 Commands:
 
-- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- PR #3031: Add ``check-nodes`` command. It helps keep ``@clean`` files in sync.
 - PR #3056: Leo's beautify command is now PEP8 compliant.
 - PR #3140: Run pylint on node.
 - PR #3166: Add the `execute-external-file` command.
@@ -31019,7 +31020,7 @@ Commands:
 .. _`PR #3140`: https://github.com/leo-editor/leo-editor/pull/3140
 .. _`PR #3166`: https://github.com/leo-editor/leo-editor/pull/3166
 
-- `PR #3031`_: Add `check-nodes` command. It helps keep `@clean` files in sync.
+- `PR #3031`_: Add `check-nodes` command. It helps keep ``@clean`` files in sync.
 - `PR #3056`_: Leo's beautify command is now PEP8 compliant.
 - `PR #3140`_: Run pylint on node.
 - `PR #3166`_: Add the `execute-external-file` command.
@@ -31032,11 +31033,11 @@ Settings and features:
 .. _`PR #3053`: https://github.com/leo-editor/leo-editor/pull/3053
 .. _`PR #3132`: https://github.com/leo-editor/leo-editor/pull/3132
 
-- `PR #2979`_: Add `@bool run-flake8-on-write` setting.
-- `PR #2983`_: Add `--black-sentinels` command-line option.
-- `PR #3038`_: Add `@string rst3-action` setting.
-- `PR #3053`_: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
-- `PR #3132`_: Add `@bool rst3-remove-leo-directives` setting.
+- `PR #2979`_: Add ``@bool run-flake8-on-write`` setting.
+- `PR #2983`_: Add ``--black-sentinels`` command-line option.
+- `PR #3038`_: Add ``@string rst3-action`` setting.
+- `PR #3053`_: Add ``@string gxn-kind`` setting: Support gnxs formatted as UUIDs.
+- `PR #3132`_: Add ``@bool rst3-remove-leo-directives`` setting.
 
 Bugs
 
@@ -32351,7 +32352,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.3**
 
-- PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+- PR #3260: Improved and safer handling of paths in ``@&lt;file&gt;`` nodes.
             Leo supports Python's standard os.path expansions.
             Leo no longer supports {{python-expression}} in headlines.
             
@@ -32394,7 +32395,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20230409053106.1">.. _`PR #3260`: https://github.com/leo-editor/leo-editor/pull/3260
 
-- `PR #3260`_:  Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+- `PR #3260`_:  Improved and safer handling of paths in ``@&lt;file&gt;`` nodes.
   Leo supports Python's standard os.path expansions.
   Leo no longer supports {{python-expression}} in headlines.
             
@@ -32441,7 +32442,7 @@ Leo syntax colors clickable links in the body pane. They have four forms:
    When running these tools *outside of* Leo, copying an error message from
    the *console* to Leo's log pane will create clickable links in the log
    pane. Control-clicking these links will select the proper node and line
-   provided the outline contains an ``@&lt;file&gt;;`` node for file mentioned in
+   provided the outline contains an ``@&lt;file&gt;`` node for file mentioned in
    the error message.
 
 2. UNLs based on gnxs (global node indices):
@@ -32915,7 +32916,7 @@ Leo and Asciidoctor
 
 **New with Leo 6.1**
 
-The Leo `@adoc` directive and the `adoc` command need either **Asciidoc3** or **Asciidoctor** tool installed and in PATH.Asciidoctor is probably the best of the two to use.
+The Leo ``@adoc`` directive and the ``adoc`` command need either **Asciidoc3** or **Asciidoctor** tool installed and in PATH.Asciidoctor is probably the best of the two to use.
 
 **Linux:** use your system package manager or ruby `gem install asciidoctor`. More info at https://asciidoctor.org/#installation
 
@@ -32976,7 +32977,7 @@ See `Running Leo`_ for how to run Leo after installing it.
   
 - Document any new commands with a proper docstring. This allows the minibuffer command `help-for-command` to provide help for the command.
   
-- In `leo/doc/sphinx-docs/sphinxDocs.leo`, to the node `@file leo.plugins.rst`, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`). This allows the API docs to be automatically updated::
+- In ``leo/doc/sphinx-docs/sphinxDocs.leo``, to the node ``@file leo.plugins.rst``, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`). This allows the API docs to be automatically updated::
 
     :mod:`ipython` Module
     ---------------------
