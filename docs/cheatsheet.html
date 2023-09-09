@@ -114,6 +114,7 @@
 <li><p><a class="reference internal" href="#architecture" id="id42">Architecture</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="#clickable-links" id="id43">Clickable links</a></p></li>
 </ul>
 </nav>
 <section id="key-bindings">
@@ -1053,6 +1054,19 @@ the script again will insert three more:</p>
 <p><strong>Important</strong>: The general organization of these classes have changed hardly at all in Leo’s 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but <em>that’s an internal implementation detail of the class itself</em>.  This is the crucial design principle that allows Leo’s code to remain stable.  <em>Classes do not know or meddle in the internal details of other classes</em>.  As a result, nobody, including EKR, needs to remember internal details.</p>
 </section>
 </section>
+<section id="clickable-links">
+<h2><a class="toc-backref" href="#id43" role="doc-backlink">Clickable links</a><a class="headerlink" href="#clickable-links" title="Permalink to this heading">¶</a></h2>
+<p>Leo syntax colors clickable links in the body pane. For example:</p>
+<p>Leo’s home page: <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p>
+<p>The status area shows the UNL (<em>Universal Node Locator</em>) for each node.</p>
+<p>Control-clicking a UNL will take you to its target node, even if the target is in another Leo file!
+gnx-based UNLs won’t break even if you move or rename the target node.</p>
+<p>Try these examples!</p>
+<p>The “Key bindings” node in this file:
+unl:gnx://CheatSheet.leo#ekr.20131019184243.16685</p>
+<p>The “6.7.4 release notes” node in LeoDocs.leo.
+unl:gnx://LeoDocs.leo#ekr.20230703101804.1</p>
+</section>
 </section>
 
 
@@ -1112,7 +1126,7 @@ the script again will insert three more:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on July 10, 2023.
+      Last updated on July 17, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
