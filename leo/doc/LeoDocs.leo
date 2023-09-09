@@ -1537,6 +1537,7 @@
 </v>
 <v t="ekr.20150312080344.67"><vh>History of Leo</vh>
 <v t="ekr.20150312080344.68"><vh>@rst html/history.html</vh>
+<v t="ekr.20230909063921.1"><vh>The Early Days</vh>
 <v t="ekr.20050902105852"><vh>1995: Beginnings</vh></v>
 <v t="ekr.20050902105852.1"><vh>1996: Breakthroughs</vh></v>
 <v t="ekr.20050902105852.2"><vh>1996-1998: Apple and YellowBox</vh></v>
@@ -1562,6 +1563,8 @@
 <v t="ekr.20050902105852.11"><vh>2004: 4.2: generators, uA's the end of sync problems, shared tnodes</vh></v>
 <v t="ekr.20050902105852.12"><vh>2005: 4.3: @settings trees, plugins manager, predefined c, g, p</vh></v>
 <v t="ekr.20060629083935"><vh>2006: 4.4: The minibuffer, key bindings autocompletion, multiple log panes</vh></v>
+</v>
+<v t="ekr.20230909063947.1"><vh>Later developments</vh>
 <v t="ekr.20080315115427.568"><vh>2006-2008: 4.4.x: Hundreds of improvements</vh></v>
 <v t="ekr.20101025080245.6086"><vh>2009: 4.6: Qt gui, @edit, @auto-rst</vh></v>
 <v t="ekr.20101025080245.6087"><vh>2010: 4.7: The one node world &amp; Python 3k</vh></v>
@@ -1571,6 +1574,7 @@
 <v t="ekr.20150220200101.2"><vh>2015: 5.1 @clean</vh></v>
 <v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to leoInteg</vh></v>
 <v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 and beyond: supporting leoInteg</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
@@ -17984,7 +17988,7 @@ This chapter discusses the most important milestones in history of Leo and summa
 One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
 
 .. contents:: Contents
-    :depth: 3
+    :depth: 2
     :local:
 
 </t>
@@ -32713,6 +32717,10 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20230908140206.569">This "fallow" period prepared contained important performance improvements and paved the way for leoInteg.
 
+An acknowledgment is appropriate here. About this time, Vitalije Milosevic (Виталије Милошевић) insisted that Leo's code could be improved by removing kwargs. Yes, doing so requires duplicating code, but the resulting simplicity is almost always significant. In many cases, the simplifications ripple throughout Leo's codebase. These simplifictaions continue to the present day.
+
+Vitalije also suggested that local helper functions would also improve Leo's code. I use this pattern less often, but it too has its place.
+
 Leo 5.4: October 22, 2016. The clone-find commands.
 
 Leo 5.5: March 23, 2017. A bug fix made syntax coloring 20x faster!
@@ -32726,20 +32734,24 @@ Leo 5.6: September 25, 2017.
 Leo 5.8: October 1, 2018. Replace caching with Vitalije's super-fast new read code.
     
 Leo 5.9: May 1, 2019. Add LeoWapp: Leo in a browser.</t>
-<t tx="ekr.20230908152641.1">August, 2020: edreamleo's first PR. Iirc, Félix encouraged me to use PRs for all significant code changes.
+<t tx="ekr.20230908152641.1">August, 2020: edreamleo's first PR. Félix Malboeuf encouraged me to use PRs for all significant code changes.
 
 Leo 6.1: November 8, 2019. This release contained the dawn of leoInteg: integration of Leo with VS code. leoInteg and leoJS are the future of Leo. All later releases contain support for leoInteg and leoJS.
+
+Around this time Félix started a careful code review of *all* of Leo's core, including many plugins. This ongoing review found many "quirps" and some larger bugs.
 
 6.2: March 27, 2020. The rise of f-strings in Leo.
 
 6.3: November 6, 2020. leoAst.py.
     
-6.5: October 22, 2021. Replace @test/@suite with leoTest2.py.
+6.5: October 22, 2021. Removed @test/@suite, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* @test made unit testing! The `create_app` function in leoTest2.py allows Leo to use "traditional" unit test based on python's unittest module.
 
 6.7.0: September 26, 2022. Fully annotate Leo's core files and important plugins.
 
 6.7.4: August 17, 2023. A spectacular collapse in the importer architecture. The Aha! Use **guide lines** to make parsing incoming lines easier.
 </t>
+<t tx="ekr.20230909063921.1"></t>
+<t tx="ekr.20230909063947.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
