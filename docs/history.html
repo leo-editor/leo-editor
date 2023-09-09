@@ -195,16 +195,14 @@
 <section id="leo-3-x-continuous-improvement">
 <h3><a class="toc-backref" href="#id9" role="doc-backlink">2002: Leo 3.x: Continuous improvement</a><a class="headerlink" href="#leo-3-x-continuous-improvement" title="Permalink to this heading">¶</a></h3>
 <p>I spent 2002 taking advantages of Python’s tremendous power and safety. Many improvements were at last easy enough to do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Nested</span> <span class="nd">@others</span> <span class="n">directives</span> <span class="n">appeared</span> <span class="ow">in</span> <span class="mf">3.2</span><span class="o">.</span>
-<span class="n">Unicode</span> <span class="n">support</span> <span class="n">started</span> <span class="ow">in</span> <span class="mf">3.3</span><span class="o">.</span>
-<span class="nd">@first</span> <span class="ow">and</span> <span class="nd">@last</span> <span class="n">appeared</span> <span class="ow">in</span> <span class="mf">3.7</span>
-<span class="nd">@asis</span> <span class="ow">and</span> <span class="nd">@nosent</span> <span class="n">appeared</span> <span class="ow">in</span> <span class="mf">3.8</span><span class="o">.</span>
-<span class="n">Incremental</span> <span class="n">syntax</span> <span class="n">coloring</span> <span class="ow">and</span> <span class="n">incremental</span> <span class="n">undo</span> <span class="n">appeared</span> <span class="ow">in</span> <span class="mf">3.9</span><span class="o">.</span>
-<span class="n">Paul</span> <span class="n">Paterson</span> <span class="n">created</span> <span class="n">Leo</span><span class="s1">&#39;s plugin architecture sometime during this period.</span>
-<span class="mf">3.12</span> <span class="n">fixed</span> <span class="n">a</span> <span class="n">huge</span> <span class="n">memory</span> <span class="n">leak</span><span class="o">.</span>
-<span class="mf">3.12</span> <span class="n">Final</span><span class="p">,</span> <span class="n">the</span> <span class="n">last</span> <span class="mf">3.</span><span class="n">x</span> <span class="n">version</span><span class="p">,</span> <span class="n">appeared</span> <span class="n">July</span> <span class="mi">17</span><span class="p">,</span> <span class="mf">2003.</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Leo 3.2: Add nested <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives.</p></li>
+<li><p>Leo 3.3: Add unicode support.</p></li>
+<li><p>Leo 3.7: Add <code class="docutils literal notranslate"><span class="pre">&#64;first</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;last</span></code> directives.</p></li>
+<li><p>Leo 3.8: Add <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> directives.</p></li>
+<li><p>Leo 3.9: Add incremental syntax coloring and incremental undo.</p></li>
+</ul>
+<p>Paul Paterson plugin architecture appeared sometime during this period.</p>
 </section>
 <section id="sourceforge-new-energy">
 <h3><a class="toc-backref" href="#id10" role="doc-backlink">2003: SourceForge: new energy</a><a class="headerlink" href="#sourceforge-new-energy" title="Permalink to this heading">¶</a></h3>
@@ -218,13 +216,13 @@
 <p>This was a time of intense design work trying to improve error recovery scheme used while reading external files. In the summer of 2003 I realized that orphan and &#64;ignore’d nodes must be prohibited in &#64;file trees. With this restriction, Leo could finally recreate &#64;file trees in outlines using <strong>only</strong> the information in external files. This made the read code much more robust, and eliminated all the previous unworkable error recovery schemes. At last Leo was on a completely firm foundation.</p>
 <p>Leo’s read code now writes a message to the log pane whenever it sees that the body text in the external file does not match the body text in the outline. These messages do not indicate errors, only that the body text has been changed outside of Leo.</p>
 <p>Leo’s read code now warns if any non-empty node is unvisited. This check, and the check that headlines match pretty much guarantees that out-of-sync outlines will generate errors. Thus, there is no need a gnx timestamp in &#64;+leo sentinels!</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">Added</span> <span class="n">support</span> <span class="k">for</span> <span class="n">uA</span><span class="s1">&#39;s</span>
-<span class="o">-</span> <span class="n">Eliminated</span> <span class="n">child</span> <span class="n">indices</span><span class="p">,</span> <span class="n">extraneous</span> <span class="n">blank</span> <span class="n">lines</span> <span class="ow">and</span> <span class="nd">@body</span> <span class="n">sentinels</span>
-<span class="o">-</span> <span class="n">Eliminated</span> <span class="nd">@node</span> <span class="n">sentinels</span>
-<span class="o">-</span> <span class="n">New</span> <span class="nd">@nl</span> <span class="ow">and</span> <span class="nd">@nonl</span> <span class="n">sentinels</span>
-<span class="o">-</span> <span class="n">Read</span> <span class="n">errors</span> <span class="n">leave</span> <span class="n">the</span> <span class="n">outline</span> <span class="n">completely</span> <span class="n">unchanged</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Add support for uA’s.</p></li>
+<li><p>Eliminate child indices, extraneous blank lines and &#64;body sentinels.</p></li>
+<li><p>Eliminate &#64;node sentinels.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">&#64;nl</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nonl</span></code> sentinels.</p></li>
+<li><p>Read errors leave the outline completely unchanged.</p></li>
+</ul>
 </section>
 <section id="the-debut-of-gnx-s">
 <h3><a class="toc-backref" href="#id12" role="doc-backlink">2004: 4.1: The debut of gnx’s</a><a class="headerlink" href="#the-debut-of-gnx-s" title="Permalink to this heading">¶</a></h3>
@@ -239,49 +237,39 @@
 <p>Leo 4.2 eliminated worries about consistency of outlines and external files: Leo recreates all essential information from &#64;thin files, so <em>there is nothing left in the .leo file to get out of sync</em>. Thin external files use gnx’s extensively. This simplifies the file format and makes thin external files more cvs friendly.</p>
 <p>Leo 4.2 forms the <strong>great divide</strong> in Leo’s internal data structures. Before 4.2, Leo every node in the outline had its own vnode. This was a big performance problem: clone operations had to traverse the entire outline!</p>
 <p>4.2 represents clones by sharing subtrees. Kent Tenney and Bernhard Mulder made absolutely crucial contributions. Kent pointed out that it is a tnode, not a vnode that must form the root of the shared data. Bernhard showed that iterators avoid creating huge numbers of positions.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">debut</span> <span class="n">of</span> <span class="nd">@all</span><span class="p">,</span> <span class="nd">@test</span> <span class="ow">and</span> <span class="nd">@suite</span>
-<span class="n">The</span> <span class="n">mod_scripting</span> <span class="n">plugin</span> <span class="n">creates</span> <span class="n">script</span> <span class="n">buttons</span>
-<span class="n">A</span> <span class="n">much</span> <span class="n">faster</span> <span class="ow">and</span> <span class="n">more</span> <span class="n">robust</span> <span class="n">spell</span> <span class="n">checker</span> <span class="n">plugin</span>
-<span class="n">Leo</span> <span class="n">saves</span> <span class="n">t</span><span class="o">.</span><span class="n">unknownAttributes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">root</span> <span class="n">nodes</span> <span class="n">of</span> <span class="nd">@thin</span> <span class="n">trees</span>
-<span class="n">New</span> <span class="n">iterators</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;test</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;suite</span></code>.</p></li>
+<li><p>Add mod_scripting plugin.</p></li>
+<li><p>Add new generators.</p></li>
+</ul>
 </section>
 <section id="settings-trees-plugins-manager-predefined-c-g-p">
 <h3><a class="toc-backref" href="#id14" role="doc-backlink">2005: 4.3: &#64;settings trees, plugins manager, predefined c, g, p</a><a class="headerlink" href="#settings-trees-plugins-manager-predefined-c-g-p" title="Permalink to this heading">¶</a></h3>
 <p>Leo 4.3: May 23, 2005. Leo 4.3.3: September 17, 2005.</p>
 <p>Leo 4.3 introduced settings files. These files replaced config.txt and made settings completely extensible and flexible. This release also introduced the ill-fated settings pane. It was soon retired because it inhibited development.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="n">stores</span> <span class="n">recent</span> <span class="n">files</span> <span class="ow">in</span> <span class="o">.</span><span class="n">leoRecentFiles</span><span class="o">.</span><span class="n">txt</span> <span class="n">files</span>
-<span class="n">Added</span> <span class="n">PluginsManager</span> <span class="n">plugin</span>
-<span class="n">Support</span> <span class="k">for</span> <span class="n">extensions</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">leo</span><span class="o">/</span><span class="n">extensions</span> <span class="n">directory</span>
-<span class="n">Leo</span> <span class="n">predefines</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">and</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">scripts</span> <span class="ow">and</span> <span class="nd">@test</span> <span class="n">nodes</span>
-</pre></div>
-</div>
-<p>Leo 4.3.3:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">the</span> <span class="n">rst3</span> <span class="n">plugin</span><span class="o">.</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">PluginsManager</span></code> plugin.</p></li>
+<li><p>Predefine <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">g</span></code> and <code class="docutils literal notranslate"><span class="pre">p</span></code> in scripts and &#64;test nodes</p></li>
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">rst3</span></code> plugin.</p></li>
+</ul>
 </section>
 <section id="the-minibuffer-key-bindings-autocompletion-multiple-log-panes">
 <h3><a class="toc-backref" href="#id15" role="doc-backlink">2006: 4.4: The minibuffer, key bindings autocompletion, multiple log panes</a><a class="headerlink" href="#the-minibuffer-key-bindings-autocompletion-multiple-log-panes" title="Permalink to this heading">¶</a></h3>
 <p>Leo 4.4: May 11, 2006.</p>
 <p>Leo 4.4 completed a year-long effort to incorporate an Emacs-style minibuffer and related commands into Leo. Leo 4.4 also featured many improvements in how keys are bound to commands, including per-pane bindings and user-defined key-binding modes. These features allow users to emulate Emacs, Vim, or any other editor. They also make it easy to use Leo without a mouse.</p>
 <p>This release created many Emacs-like commands, including cursor and screen movement, basic character, word and paragraph manipulation, and commands to manipulate buffers, the kill ring, regions and rectangles. Much of the work started with a prototype by LeoUser (B.H).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">tabbed</span> <span class="n">log</span> <span class="n">pane</span>
-<span class="n">Autocompletion</span> <span class="ow">and</span> <span class="n">calltips</span>
-<span class="nd">@mode</span> <span class="n">nodes</span>
-<span class="n">The</span> <span class="o">**</span><span class="n">New</span> <span class="n">World</span> <span class="n">Order</span><span class="o">**</span><span class="p">:</span> <span class="n">drawing</span> <span class="n">happens</span> <span class="n">immediately</span><span class="p">,</span> <span class="ow">not</span> <span class="n">at</span> <span class="n">idle</span> <span class="n">time</span>
-<span class="n">The</span> <span class="o">**</span><span class="n">Newer</span> <span class="n">World</span> <span class="n">Order</span><span class="o">**</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">endUpdate</span> <span class="ow">is</span> <span class="n">equivalent</span> <span class="n">to</span> <span class="n">c</span><span class="o">.</span><span class="n">redraw_now</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>The <strong>New World Order</strong>: drawing happens immediately, not at idle time.</p></li>
+<li><p>The <strong>Newer World Order</strong>: c.endUpdate is equivalent to c.redraw_now.</p></li>
+<li><p>Add a tabbed log pane.</p></li>
+<li><p>Add autocompletion and calltips.</p></li>
+</ul>
 <p>Development on long-delayed projects accelerated after 4.4 final went out the door:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Syntax</span> <span class="n">coloring</span> <span class="n">controlled</span> <span class="n">using</span> <span class="n">jEdit</span><span class="s1">&#39;s xml language-description files</span>
-<span class="n">Support</span> <span class="k">for</span> <span class="n">debugging</span> <span class="n">scripts</span> <span class="n">using</span> <span class="n">external</span> <span class="n">debuggers</span>
-<span class="n">Leo</span><span class="s1">&#39;s vnodes and tnodes can support ZODB</span>
-<span class="n">Using</span> <span class="n">pymacs</span> <span class="n">to</span> <span class="n">write</span> <span class="n">Leo</span> <span class="n">scripts</span> <span class="n">within</span> <span class="n">Emacs</span>
-<span class="n">Added</span> <span class="n">the</span> <span class="n">leoBridge</span> <span class="n">module</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Syntax coloring controlled using jEdit’s xml language-description files</p></li>
+<li><p>The pymacs bridge supports writing Leo scripts within Emacs.</p></li>
+<li><p>Add the leoBridge module.</p></li>
+</ul>
 </section>
 </section>
 <section id="later-developments">
@@ -290,31 +278,31 @@
 <h3><a class="toc-backref" href="#id17" role="doc-backlink">2006-2008: 4.4.x: Hundreds of improvements</a><a class="headerlink" href="#x-hundreds-of-improvements" title="Permalink to this heading">¶</a></h3>
 <p>This series of releases featured hundreds of improvements.</p>
 <p>Leo 4.4.1: August 30, 2006:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">new</span> <span class="n">colorizer</span> <span class="n">plugin</span> <span class="n">controlled</span> <span class="n">by</span> <span class="n">jEdit</span> <span class="n">language</span> <span class="n">description</span> <span class="n">files</span>
-<span class="n">Added</span> <span class="n">the</span> <span class="n">shadow</span> <span class="n">files</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">a</span> <span class="n">precursor</span> <span class="n">to</span> <span class="nd">@shadow</span>
-<span class="n">Added</span> <span class="n">support</span> <span class="k">for</span> <span class="n">multiple</span> <span class="n">editors</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">body</span> <span class="n">pane</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Add new colorizer plugin controlled by jEdit language description files</p></li>
+<li><p>Add the shadow files plugin, a precursor to &#64;shadow</p></li>
+<li><p>Add support for multiple editors in the body pane</p></li>
+</ul>
 <p>Leo 4.4.2.1: October 29, 2006:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">leoPymacs</span> <span class="n">module</span><span class="p">,</span> <span class="n">a</span> <span class="n">bridge</span> <span class="n">to</span> <span class="n">Emacs</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Add</span> <span class="n">leoPymacs</span> <span class="n">module</span><span class="p">,</span> <span class="n">a</span> <span class="n">bridge</span> <span class="n">to</span> <span class="n">Emacs</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Leo 4.4.3: June 26, 2006. Leo 4.4.3.1: July 3, 2006.</p>
 <p>The <strong>big reorg</strong> made the vnode and tnode classes completely independent of the rest of Leo:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">chapters</span>
-<span class="n">Added</span> <span class="n">zipped</span> <span class="o">.</span><span class="n">leo</span> <span class="n">files</span>
-<span class="n">Added</span> <span class="n">a</span> <span class="n">leoBridge</span> <span class="n">module</span>
-<span class="n">Added</span> <span class="n">spell</span> <span class="n">checking</span> <span class="k">with</span> <span class="n">aspell</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Add</span> <span class="n">chapters</span>
+<span class="n">Add</span> <span class="n">zipped</span> <span class="o">.</span><span class="n">leo</span> <span class="n">files</span>
+<span class="n">Add</span> <span class="n">a</span> <span class="n">leoBridge</span> <span class="n">module</span>
+<span class="n">Add</span> <span class="n">spell</span> <span class="n">checking</span> <span class="k">with</span> <span class="n">aspell</span>
 </pre></div>
 </div>
 <p>Leo 4.4.4: November 2, 2007:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="nd">@auto</span>
-<span class="n">Added</span> <span class="nd">@menus</span> <span class="n">trees</span>
-<span class="n">Added</span> <span class="nd">@buttons</span> <span class="n">trees</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Add</span> <span class="nd">@auto</span>
+<span class="n">Add</span> <span class="nd">@menus</span> <span class="n">trees</span>
+<span class="n">Add</span> <span class="nd">@buttons</span> <span class="n">trees</span>
 </pre></div>
 </div>
 <p>Leo 4.4.7: February 18, 2008:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">ipython</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">a</span> <span class="n">collaboration</span> <span class="n">between</span> <span class="n">EKR</span> <span class="ow">and</span> <span class="n">Ville</span> <span class="n">M</span><span class="o">.</span> <span class="n">Vainio</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Add</span> <span class="n">ipython</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">a</span> <span class="n">collaboration</span> <span class="n">between</span> <span class="n">EKR</span> <span class="ow">and</span> <span class="n">Ville</span> <span class="n">M</span><span class="o">.</span> <span class="n">Vainio</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Leo 4.4.8: April 6, 2008:</p>
@@ -324,11 +312,11 @@
 </section>
 <section id="qt-gui-edit-auto-rst">
 <h3><a class="toc-backref" href="#id18" role="doc-backlink">2009: 4.6: Qt gui, &#64;edit, &#64;auto-rst</a><a class="headerlink" href="#qt-gui-edit-auto-rst" title="Permalink to this heading">¶</a></h3>
-<p>Leo 4.6: July 15, 2009. Leo 4.6.1:  July 30, 2009:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="n">used</span> <span class="n">Qt</span> <span class="n">interface</span> <span class="n">by</span> <span class="n">default</span><span class="o">.</span>
-<span class="n">Added</span> <span class="nd">@auto</span><span class="o">-</span><span class="n">rst</span> <span class="ow">and</span> <span class="nd">@edit</span>
-</pre></div>
-</div>
+<p>Leo 4.6: July 15, 2009. Leo 4.6.1: July 30, 2009.</p>
+<ul class="simple">
+<li><p>Use Qt interface by default.</p></li>
+<li><p>Add &#64;auto-rst and &#64;edit</p></li>
+</ul>
 </section>
 <section id="the-one-node-world-python-3k">
 <h3><a class="toc-backref" href="#id19" role="doc-backlink">2010: 4.7: The one node world &amp; Python 3k</a><a class="headerlink" href="#the-one-node-world-python-3k" title="Permalink to this heading">¶</a></h3>
@@ -372,10 +360,10 @@ The Mulder/Ream update algorithm puts &#64;clean on a completely sound footing.<
 <p>Vitalije also suggested that local helper functions would also improve Leo’s code. I use this pattern less often, but it too has its place.</p>
 <p>Leo 5.4: October 22, 2016. The clone-find commands.</p>
 <p>Leo 5.5: March 23, 2017. A bug fix made syntax coloring 20x faster!</p>
-<p>Leo 5.6: September 25, 2017.</p>
+<p>Leo 5.6: September 25, 2017:</p>
 <ul class="simple">
-<li><p>Added the git-diff command.</p></li>
-<li><p>Added the cursesGui2.py plugin. This plugin contained the p_to_ap and
+<li><p>Add the git-diff command.</p></li>
+<li><p>Add the cursesGui2.py plugin. This plugin contained the p_to_ap and
 ap_to_p functions that became crucial parts of leoInteg.</p></li>
 </ul>
 <p>Leo 5.8: October 1, 2018. Replace caching with Vitalije’s super-fast new read code.</p>
@@ -388,7 +376,7 @@ ap_to_p functions that became crucial parts of leoInteg.</p></li>
 <p>Around this time Félix started a careful code review of <em>all</em> of Leo’s core, including many plugins. This ongoing review found many “quirps” and some larger bugs.</p>
 <p>6.2: March 27, 2020. The rise of f-strings in Leo.</p>
 <p>6.3: November 6, 2020. leoAst.py.</p>
-<p>6.5: October 22, 2021. Removed &#64;test/&#64;suite, fixing the biggest mistake I ever made with Leo. It was shocking how much <em>harder</em> &#64;test made unit testing! The <cite>create_app</cite> function in leoTest2.py allows Leo to use “traditional” unit test based on python’s unittest module.</p>
+<p>6.5: October 22, 2021. Removed &#64;test/&#64;suite, fixing the biggest mistake I ever made with Leo. It was shocking how much <em>harder</em> &#64;test made unit testing! The <code class="docutils literal notranslate"><span class="pre">create_app</span></code> function in leoTest2.py allows Leo to use “traditional” unit test based on python’s unittest module.</p>
 <p>6.7.0: September 26, 2022. Fully annotate Leo’s core files and important plugins.</p>
 <p>6.7.4: August 17, 2023. A spectacular collapse in the importer architecture. The Aha! Use <strong>guide lines</strong> to make parsing incoming lines easier.</p>
 </section>

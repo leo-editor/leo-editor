@@ -2507,6 +2507,7 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
+<v t="ekr.20150312080344.68"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4620,28 +4621,17 @@ Leo 4.2 forms the **great divide** in Leo's internal data structures. Before 4.2
 
 4.2 represents clones by sharing subtrees. Kent Tenney and Bernhard Mulder made absolutely crucial contributions. Kent pointed out that it is a tnode, not a vnode that must form the root of the shared data. Bernhard showed that iterators avoid creating huge numbers of positions.
 
-::
 
-    The debut of @all, @test and @suite
-    The mod_scripting plugin creates script buttons
-    A much faster and more robust spell checker plugin
-    Leo saves t.unknownAttributes in the root nodes of @thin trees
-    New iterators</t>
+- Add ``@all``, ``@test`` and ``@suite``.
+- Add mod_scripting plugin.
+- Add new generators.</t>
 <t tx="ekr.20050902105852.12">Leo 4.3: May 23, 2005. Leo 4.3.3: September 17, 2005.
 
 Leo 4.3 introduced settings files. These files replaced config.txt and made settings completely extensible and flexible. This release also introduced the ill-fated settings pane. It was soon retired because it inhibited development.
 
-::
-
-    Leo stores recent files in .leoRecentFiles.txt files
-    Added PluginsManager plugin
-    Support for extensions in the leo/extensions directory
-    Leo predefines c, g and p in scripts and @test nodes
-    
-Leo 4.3.3::
-
-    Added the rst3 plugin.
-
+- Add the ``PluginsManager`` plugin.
+- Predefine ``c``, ``g`` and ``p`` in scripts and @test nodes
+- Add the ``rst3`` plugin.
 </t>
 <t tx="ekr.20050902105852.2">Throughout 1996 I created a version of Leo on the Macintosh in plain C and the native Mac Toolbox. This was a poor choice; I wasted a huge amount of time programming with these primitive tools. However, this effort convinced me that Leo was a great way to program.
 
@@ -4666,16 +4656,15 @@ I wrote the white papers around this time. Python solved *all* my programming pr
 </t>
 <t tx="ekr.20050902105852.7">The biggest surprise in Leo's history was the realization it is **much** easier to untangle files derived from @file. Indeed, the old tangle code created all sorts of problems that just disappear when using @file. The new Python version of Leo became fully operational in early 2002. It was probably about this time that I chose noweb as Leo's preferred markup language. My decision not to support noweb's escape sequences made Leo's read code much more robust.
 </t>
-<t tx="ekr.20050902105852.8">I spent 2002 taking advantages of Python's tremendous power and safety. Many improvements were at last easy enough to do::
+<t tx="ekr.20050902105852.8">I spent 2002 taking advantages of Python's tremendous power and safety. Many improvements were at last easy enough to do:
 
-    Nested @others directives appeared in 3.2.
-    Unicode support started in 3.3.
-    @first and @last appeared in 3.7
-    @asis and @nosent appeared in 3.8.
-    Incremental syntax coloring and incremental undo appeared in 3.9.
-    Paul Paterson created Leo's plugin architecture sometime during this period.
-    3.12 fixed a huge memory leak.
-    3.12 Final, the last 3.x version, appeared July 17, 2003.
+- Leo 3.2: Add nested ``@others`` directives.
+- Leo 3.3: Add unicode support.
+- Leo 3.7: Add ``@first`` and ``@last`` directives.
+- Leo 3.8: Add ``@asis`` and ``@nosent`` directives.
+- Leo 3.9: Add incremental syntax coloring and incremental undo.
+
+Paul Paterson plugin architecture appeared sometime during this period.
 </t>
 <t tx="ekr.20050902105852.9">4.0 final: October 17, 2003.
 
@@ -4689,13 +4678,11 @@ Leo's read code now writes a message to the log pane whenever it sees that the b
 
 Leo's read code now warns if any non-empty node is unvisited. This check, and the check that headlines match pretty much guarantees that out-of-sync outlines will generate errors. Thus, there is no need a gnx timestamp in @+leo sentinels!
 
-::
-
-    - Added support for uA's
-    - Eliminated child indices, extraneous blank lines and @body sentinels
-    - Eliminated @node sentinels
-    - New @nl and @nonl sentinels
-    - Read errors leave the outline completely unchanged
+- Add support for uA's.
+- Eliminate child indices, extraneous blank lines and @body sentinels.
+- Eliminate @node sentinels.
+- Add ``@nl`` and ``@nonl`` sentinels.
+- Read errors leave the outline completely unchanged.
 </t>
 <t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks)::
 
@@ -5716,21 +5703,16 @@ Leo 4.4 completed a year-long effort to incorporate an Emacs-style minibuffer an
 
 This release created many Emacs-like commands, including cursor and screen movement, basic character, word and paragraph manipulation, and commands to manipulate buffers, the kill ring, regions and rectangles. Much of the work started with a prototype by LeoUser (B.H).
 
-::
+- The **New World Order**: drawing happens immediately, not at idle time.
+- The **Newer World Order**: c.endUpdate is equivalent to c.redraw_now.
+- Add a tabbed log pane.
+- Add autocompletion and calltips.
 
-    A tabbed log pane
-    Autocompletion and calltips
-    @mode nodes
-    The **New World Order**: drawing happens immediately, not at idle time
-    The **Newer World Order**: c.endUpdate is equivalent to c.redraw_now
+Development on long-delayed projects accelerated after 4.4 final went out the door:
 
-Development on long-delayed projects accelerated after 4.4 final went out the door::
-
-    Syntax coloring controlled using jEdit's xml language-description files
-    Support for debugging scripts using external debuggers
-    Leo's vnodes and tnodes can support ZODB
-    Using pymacs to write Leo scripts within Emacs
-    Added the leoBridge module
+- Syntax coloring controlled using jEdit's xml language-description files
+- The pymacs bridge supports writing Leo scripts within Emacs.
+- Add the leoBridge module.
 </t>
 <t tx="ekr.20060805094325">You can 'revert' to old key bindings as follows:
 
@@ -6714,34 +6696,34 @@ It is easy to translate Leo's menu strings: simply create an @menus tree in leoS
 <t tx="ekr.20080314081157.127"></t>
 <t tx="ekr.20080315115427.568">This series of releases featured hundreds of improvements.
 
-Leo 4.4.1: August 30, 2006::
+Leo 4.4.1: August 30, 2006:
 
-    Added new colorizer plugin controlled by jEdit language description files
-    Added the shadow files plugin, a precursor to @shadow
-    Added support for multiple editors in the body pane
+- Add new colorizer plugin controlled by jEdit language description files
+- Add the shadow files plugin, a precursor to @shadow
+- Add support for multiple editors in the body pane
 
 Leo 4.4.2.1: October 29, 2006::
 
-    Added leoPymacs module, a bridge to Emacs.
+    Add leoPymacs module, a bridge to Emacs.
     
 Leo 4.4.3: June 26, 2006. Leo 4.4.3.1: July 3, 2006.
 
 The **big reorg** made the vnode and tnode classes completely independent of the rest of Leo::
 
-    Added chapters
-    Added zipped .leo files
-    Added a leoBridge module
-    Added spell checking with aspell
+    Add chapters
+    Add zipped .leo files
+    Add a leoBridge module
+    Add spell checking with aspell
     
 Leo 4.4.4: November 2, 2007::
 
-    Added @auto
-    Added @menus trees
-    Added @buttons trees
+    Add @auto
+    Add @menus trees
+    Add @buttons trees
     
 Leo 4.4.7: February 18, 2008::
 
-    Added ipython plugin, a collaboration between EKR and Ville M. Vainio.
+    Add ipython plugin, a collaboration between EKR and Ville M. Vainio.
 
 Leo 4.4.8: April 6, 2008::
 
@@ -8863,10 +8845,10 @@ What's New in Leo
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
 <t tx="ekr.20101025080245.5805"></t>
-<t tx="ekr.20101025080245.6086">Leo 4.6: July 15, 2009. Leo 4.6.1:  July 30, 2009::
+<t tx="ekr.20101025080245.6086">Leo 4.6: July 15, 2009. Leo 4.6.1: July 30, 2009.
 
-    Leo used Qt interface by default.
-    Added @auto-rst and @edit
+- Use Qt interface by default.
+- Add @auto-rst and @edit
 </t>
 <t tx="ekr.20101025080245.6087">Leo 4.7: February 23, 2010. Leo 4.7.1: February 26, 2010.
 
@@ -32725,10 +32707,10 @@ Leo 5.4: October 22, 2016. The clone-find commands.
 
 Leo 5.5: March 23, 2017. A bug fix made syntax coloring 20x faster!
     
-Leo 5.6: September 25, 2017.
+Leo 5.6: September 25, 2017:
 
-- Added the git-diff command.
-- Added the cursesGui2.py plugin. This plugin contained the p_to_ap and
+- Add the git-diff command.
+- Add the cursesGui2.py plugin. This plugin contained the p_to_ap and
   ap_to_p functions that became crucial parts of leoInteg.
     
 Leo 5.8: October 1, 2018. Replace caching with Vitalije's super-fast new read code.
@@ -32744,7 +32726,7 @@ Around this time Félix started a careful code review of *all* of Leo's core, in
 
 6.3: November 6, 2020. leoAst.py.
     
-6.5: October 22, 2021. Removed @test/@suite, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* @test made unit testing! The `create_app` function in leoTest2.py allows Leo to use "traditional" unit test based on python's unittest module.
+6.5: October 22, 2021. Removed @test/@suite, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* @test made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use "traditional" unit test based on python's unittest module.
 
 6.7.0: September 26, 2022. Fully annotate Leo's core files and important plugins.
 
