@@ -4605,13 +4605,13 @@ March 5, 1996, is the most important date in Leo's history. While returning from
 
 I hacked a translator called M2C which allowed me to use MORE to write real code. I would write code in MORE, copy the text to the clipboard in MORE format, then run M2C, which would convert the outline into C code. This process was useful, if clumsy. I called the language used in the outline SWEB, for simplified CWEB. Much later Leo started supporting the noweb language.
 </t>
-<t tx="ekr.20050902105852.10">Leo 4.1: February 20, 2004.
+<t tx="ekr.20050902105852.10">Leo 4.1, February 20, 2004.
 
 This release reorganized the code base to support gui's other than tkinter.
 
 Leo first used gnx's (global node indices) as a foolproof way of associating nodes in .leo files with nodes in external files. At the time, there was still intense discussions about protecting the logical consistency of outlines. @thin was later to solve all those problems, but nobody knew that then.
 </t>
-<t tx="ekr.20050902105852.11">Leo 4.2: September 20, 2004.
+<t tx="ekr.20050902105852.11">Leo 4.2, September 20, 2004.
 
 This is one of the most significant dates in Leo's history. There were so many significant changes that it is hard to remember what Leo was like before it.
 
@@ -4623,14 +4623,14 @@ Leo 4.2 forms the **great divide** in Leo's internal data structures. Before 4.2
 
 
 - Add ``@all``, ``@test`` and ``@suite``.
-- Add mod_scripting plugin.
+- Add ``mod_scripting`` plugin.
 - Add new generators.</t>
-<t tx="ekr.20050902105852.12">Leo 4.3: May 23, 2005. Leo 4.3.3: September 17, 2005.
+<t tx="ekr.20050902105852.12">Leo 4.3 (May 23, 2005) and Leo 4.3.3 (September 17, 2005):
 
 Leo 4.3 introduced settings files. These files replaced config.txt and made settings completely extensible and flexible. This release also introduced the ill-fated settings pane. It was soon retired because it inhibited development.
 
-- Add the ``PluginsManager`` plugin.
-- Predefine ``c``, ``g`` and ``p`` in scripts and @test nodes
+- Add the ``PluginsManager`` plugin. Thankyou Paul Patterson!
+- Predefine ``c``, ``g`` and ``p`` in scripts and ``@test`` nodes
 - Add the ``rst3`` plugin.
 </t>
 <t tx="ekr.20050902105852.2">Throughout 1996 I created a version of Leo on the Macintosh in plain C and the native Mac Toolbox. This was a poor choice; I wasted a huge amount of time programming with these primitive tools. However, this effort convinced me that Leo was a great way to program.
@@ -4663,8 +4663,6 @@ I wrote the white papers around this time. Python solved *all* my programming pr
 - Leo 3.7: Add ``@first`` and ``@last`` directives.
 - Leo 3.8: Add ``@asis`` and ``@nosent`` directives.
 - Leo 3.9: Add incremental syntax coloring and incremental undo.
-
-Paul Paterson plugin architecture appeared sometime during this period.
 </t>
 <t tx="ekr.20050902105852.9">4.0 final: October 17, 2003.
 
@@ -5697,23 +5695,18 @@ The rest of this chapters discusses topics related specifically to plugins.
         @string trace_bindings_filter
         @string trace_bindings_pane_filter
 </t>
-<t tx="ekr.20060629083935">Leo 4.4: May 11, 2006.
+<t tx="ekr.20060629083935">Leo 4.4, May 11, 2006:
 
 Leo 4.4 completed a year-long effort to incorporate an Emacs-style minibuffer and related commands into Leo. Leo 4.4 also featured many improvements in how keys are bound to commands, including per-pane bindings and user-defined key-binding modes. These features allow users to emulate Emacs, Vim, or any other editor. They also make it easy to use Leo without a mouse.
 
 This release created many Emacs-like commands, including cursor and screen movement, basic character, word and paragraph manipulation, and commands to manipulate buffers, the kill ring, regions and rectangles. Much of the work started with a prototype by LeoUser (B.H).
 
 - The **New World Order**: drawing happens immediately, not at idle time.
-- The **Newer World Order**: c.endUpdate is equivalent to c.redraw_now.
+- The **Newer World Order**: c.endUpdate is equivalent to ``c.redraw_now``.
 - Add a tabbed log pane.
 - Add autocompletion and calltips.
 
-Development on long-delayed projects accelerated after 4.4 final went out the door:
-
-- Syntax coloring controlled using jEdit's xml language-description files
-- The pymacs bridge supports writing Leo scripts within Emacs.
-- Add the leoBridge module.
-</t>
+Development on long-delayed projects accelerated after 4.4.</t>
 <t tx="ekr.20060805094325">You can 'revert' to old key bindings as follows:
 
 1. Open leoSettings.leo.
@@ -6696,38 +6689,21 @@ It is easy to translate Leo's menu strings: simply create an @menus tree in leoS
 <t tx="ekr.20080314081157.127"></t>
 <t tx="ekr.20080315115427.568">This series of releases featured hundreds of improvements.
 
-Leo 4.4.1: August 30, 2006:
+Leo 4.4.1 (August 30, 2006) and Leo 4.4.2.1 (October 29, 2006):
 
-- Add new colorizer plugin controlled by jEdit language description files
-- Add the shadow files plugin, a precursor to @shadow
-- Add support for multiple editors in the body pane
-
-Leo 4.4.2.1: October 29, 2006::
-
-    Add leoPymacs module, a bridge to Emacs.
+- Add a new colorizer controlled by jEdit language description files.
+- Add the `leoPymacs` module, allowing Leonine scripts within Emacs.
     
-Leo 4.4.3: June 26, 2006. Leo 4.4.3.1: July 3, 2006.
+Leo 4.4.3 (June 26, 2006) and Leo 4.4.3.1 (July 3, 2006):
 
-The **big reorg** made the vnode and tnode classes completely independent of the rest of Leo::
-
-    Add chapters
-    Add zipped .leo files
-    Add a leoBridge module
-    Add spell checking with aspell
+- The **big reorg** made the vnode and tnode classes completely independent of the rest of Leo.
+- Add chapters, the ``leoBridge`` module, and spell checking.
     
-Leo 4.4.4: November 2, 2007::
-
-    Add @auto
-    Add @menus trees
-    Add @buttons trees
+Leo 4.4.4 (November 2, 2007): Add ``@auto``, ``menus`` and ``buttons``.
     
-Leo 4.4.7: February 18, 2008::
+Leo 4.4.7 (February 18, 2008): Add the ``ipython`` plugin, a collaboration between EKR and Ville M. Vainio.
 
-    Add ipython plugin, a collaboration between EKR and Ville M. Vainio.
-
-Leo 4.4.8: April 6, 2008::
-
-    Leo's discussion is now hosted by Google Groups
+Leo 4.4.8 (April 6, 2008): Host Leo's forum on Google Groups.
 </t>
 <t tx="ekr.20080411111008.1">Leo ignores any subtree of an @settings tree whose headline starts with @ignore.
 
@@ -8845,10 +8821,10 @@ What's New in Leo
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
 <t tx="ekr.20101025080245.5805"></t>
-<t tx="ekr.20101025080245.6086">Leo 4.6: July 15, 2009. Leo 4.6.1: July 30, 2009.
+<t tx="ekr.20101025080245.6086">Leo 4.6 (July 15, 2009) and Leo 4.6.1 (July 30, 2009):
 
-- Use Qt interface by default.
-- Add @auto-rst and @edit
+- Use Qt by default.
+- Add ``@auto-rst`` and ``@edit``.
 </t>
 <t tx="ekr.20101025080245.6087">Leo 4.7: February 23, 2010. Leo 4.7.1: February 26, 2010.
 
@@ -8856,12 +8832,10 @@ Leo 4.7 accomplishes something I long thought to be impossible: the unification 
 
 This was one of the most significant developments in Leo's history. At last the endless confusion between vnodes and tnodes is gone. At the most fundamental level, Leo's data structures are as simple as possible. This makes them as general and as powerful as possible!
 
-::
-
-    A single code base runs on both Python 2 and 3
-    Automatically converts from old-style to new-style sentinels
+- A single code base runs on both Python 2 and 3.
+- Leo automatically converts from old-style to new-style sentinels.
 </t>
-<t tx="ekr.20101025080245.6089">Leo 4.8: November 26, 2010.
+<t tx="ekr.20101025080245.6089">Leo 4.8 (November 26, 2010):
 
 This release simplified Leo's sentinels as much as possible. This version also added "Resurrected" and "Recovered" nodes. These nodes protect against data loss, and also implicitly warn when unusual data-changing events occur. Creating this scheme was yet another chapter in the epic saga of error recovery in Leo.</t>
 <t tx="ekr.20101026082911.5538">The update algorithm guarantees *only* that writing an updated @clean outline will generate the updated **public** file.  **Ambiguous lines** could be placed either at the end of one node or the beginning of the following nodes. The update algorithm *guesses* that such lines should be placed at the end of the previous node.
@@ -14881,11 +14855,7 @@ CheatSheet.leo contains an expanded version of the example used in this tutorial
     :local:
 
 </t>
-<t tx="ekr.20131008041326.16253">Leo 4.9: June 21, 2011::
-
-    Use the Qt gui
-    Completed the Autocompleter
-    The rendering pane can now display movies, html, svg images, etc.
+<t tx="ekr.20131008041326.16253">Leo 4.9 (June 21, 2011): The rendering pane can now display movies, html, svg images, etc.
 </t>
 <t tx="ekr.20131008041326.16341">##########
 Appendices
@@ -17595,10 +17565,8 @@ inserts or deletes nodes. The user is responsible for creating nodes to
 hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.
 </t>
-<t tx="ekr.20150220200101.2">Leo 5.1: April 16, 2015.
-
-This release added @clean, one of the most important developments in Leo's history.
-The Mulder/Ream update algorithm puts @clean on a completely sound footing.
+<t tx="ekr.20150220200101.2">Leo 5.1 (April 16, 2015): Add ``@clean``, one of the most important developments in Leo's history.
+The Mulder/Ream update algorithm puts ``@clean`` on a completely sound footing.
 </t>
 <t tx="ekr.20150222035621.5"></t>
 <t tx="ekr.20150225133846.7">def doDiff(self):
@@ -17639,9 +17607,8 @@ It's really that simple, but here are some consequences:
     Added g.getLanguageAtPosition. Should have been done long ago.</t>
 <t tx="ekr.20150311123850.56">@clean is a long-sought breakthrough. For the first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
 </t>
-<t tx="ekr.20150312013449.4">Leo 5.0: November 24, 2014.
-
-Leo now stores "ephemeral" or position-related data *in vnodes*. This was a completely new idea in Leo's history!</t>
+<t tx="ekr.20150312013449.4">Leo 5.0 (November 24, 2014): Leo now stores "ephemeral" or position-related data *in vnodes*. This was a completely new idea in Leo's history!
+</t>
 <t tx="ekr.20150312080344.12">Leo's Gui code is built on wrapper and widget classes. A **widget** is an actual Qt widget. A **wrapper** is an object whose API hides the details of the underlying gui **text** widgets. Leo's core code usually uses wrappers, not raw widgets.
 
 There is a back door for special cases. All wrapper classes define an official ``widget`` ivar (instance variable), so core or plugin code can gain access to the real Qt widget using ``wrapper.widget``. Searching for ``wrapper.widget`` should find all gui-dependent snippets of code in Leo's core.
