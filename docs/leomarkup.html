@@ -47,8 +47,8 @@
             
   <section id="leo-s-markup-language">
 <h1>Leo’s Markup Language<a class="headerlink" href="#leo-s-markup-language" title="Permalink to this heading">¶</a></h1>
-<p id="index-0">Leo’s <strong>markup</strong> tells Leo how to create external files from &#64;file trees. Markup may appear in any body text, and <em>must</em> appear in the body of the &#64;file node itself.</p>
-<p>There are two kinds of markup: <strong>section references</strong> (&lt;&lt; this is my section &gt;&gt;) and the <strong>&#64;others</strong> directive. Section references refer to <strong>named nodes</strong>, nodes whose <em>headlines</em> look like a section reference. &#64;others refers to all <em>other</em> (unnamed) nodes. Here is the body text of a typical &#64;file node for a python file:</p>
+<p id="index-0">Leo’s <strong>markup</strong> tells Leo how to create external files from <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> trees. Markup may appear in any body text, and <em>must</em> appear in the body of the <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> node itself.</p>
+<p>There are two kinds of markup: <strong>section references</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span> <span class="pre">this</span> <span class="pre">is</span> <span class="pre">my</span> <span class="pre">section</span> <span class="pre">&gt;&gt;</span></code>) and the <strong>&#64;others</strong> directive. Section references refer to <strong>named nodes</strong>, nodes whose <em>headlines</em> look like a section reference. <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> refers to all <em>other</em> (unnamed) nodes. Here is the body text of a typical <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> node for a python file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;whatever.py&#39;&#39;&#39;</span>
 <span class="o">&lt;&lt;</span> <span class="n">imports</span> <span class="o">&gt;&gt;</span>
@@ -58,14 +58,14 @@
 <span class="nd">@tabwidth</span> <span class="o">-</span><span class="mi">4</span>
 </pre></div>
 </div>
-<p>A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions and data.</p>
+<p>A child node must define the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span> <span class="pre">imports</span> <span class="pre">&gt;&gt;</span></code> node. Other children will typically define classes, methods, functions and data.</p>
 <p>When writing this file, Leo writes the first two lines:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&#39;&#39;&#39;whatever.py&#39;&#39;&#39;</span>
 </pre></div>
 </div>
-<p>followed by the <em>body text</em> of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all <em>other</em> nodes, in outline order, followed by the comment <em># That’s all, folks</em>.</p>
-<p>Leo’s markup applies to scripts as well as external files. Leo’s execute-script command <strong>composes</strong> the script from the selected node, using Leo’s markup. For example: this body text defines the top-level part of a script:</p>
+<p>followed by the <em>body text</em> of the <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span> <span class="pre">imports</span> <span class="pre">&gt;&gt;</span></code> node, followed by the body text of all <em>other</em> nodes, in outline order, followed by the comment <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">That's</span> <span class="pre">all,</span> <span class="pre">folks</span></code>.</p>
+<p>Leo’s markup applies to scripts as well as external files. Leo’s <code class="docutils literal notranslate"><span class="pre">execute-script</span></code> command <strong>composes</strong> the script from the selected node, using Leo’s markup. For example: this body text defines the top-level part of a script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;My script&#39;&#39;&#39;</span>
 <span class="o">&lt;&lt;</span> <span class="n">imports</span> <span class="o">&gt;&gt;</span>
 <span class="k">class</span> <span class="nc">Controller</span><span class="p">:</span>
@@ -135,7 +135,7 @@ See <a class="reference external" href="FAQ.html#what-about-code-that-looks-like
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on July 10, 2023.
+      Last updated on September 09, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
