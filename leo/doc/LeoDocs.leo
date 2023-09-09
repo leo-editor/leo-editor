@@ -2510,7 +2510,6 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
-<v t="ekr.20150312080344.68"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -9016,17 +9015,17 @@ controller(c).run()
 <t tx="ekr.20101113063552.9398" str_atime="1376413523.0">.. Complete as of Leo 5.5.
 
 ``active_path.py``
-    Synchronizes @path nodes with folders.
+    Synchronizes ``@path`` nodes with folders.
 ``bookmarks.py``
     Manages bookmarks using a separate pane.
 ``add_directives.py``
-    Allows users to define new @directives.
+    Allows users to define new ``@``directives.
 ``at_folder.py``
-    Synchronizes @folder nodes with folders.
+    Synchronizes ``@folder`` nodes with folders.
 ``at_produce.py``
-    Executes commands in nodes whose body text starts with @produce.
+    Executes commands in nodes whose body text starts with ``@produce``.
 ``at_view.py``
-    Adds support for @clip, @view and @strip nodes.
+    Adds support for ``@clip``, ``@view`` and ``@strip`` nodes.
 ``attrib_edit.py``
     Edits user attributes in a Qt frame.
 ``backlink.py``
@@ -9073,8 +9072,8 @@ controller(c).run()
 ``expfolder.py``
     Adds @expfolder nodes that represent folders in the file system.
 ``FileActions.py``
-    Defines actions taken when double-clicking on @&lt;file&gt; nodes and
-    supports @file-ref nodes.
+    Defines actions taken when double-clicking on ``@&lt;file&gt;`` nodes and
+    supports ``@file-ref`` nodes.
 ``ftp.py``
     Supports uploading of files via ftp.
 ``geotag.py``
@@ -9087,12 +9086,12 @@ controller(c).run()
 ``import_cisco_config.py``
     Allows the user to import Cisco configuration files.
 ``initinclass.py``
-    Modifies the Python @auto importer so that the importer
-    puts the __init__ method (ctor) into the body of the class node.
+    Modifies the Python ``@auto`` importer so that the importer
+    puts the ``__init__`` method (ctor) into the body of the class node.
 ``interact.py``
     Adds buttons so Leo can interact with command line environments.
 ``jinjarender.py``
-    Renders @jinja nodes.
+    Renders ``@jinja`` nodes.
 ``leofeeds.py``
     Reads from rss, atom or other sources.
 ``leo_interface.py``
@@ -9100,7 +9099,7 @@ controller(c).run()
 ``leo_pdf.py``
     This NOT a Leo plugin: this is a docutils writer for .pdf files.
 ``leo_to_html.py``
-    Converts a leo outline to an html web page.**.
+    Converts a leo outline to an html web page.
 ``leo_to_rtf.py``
     Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
     loaded into Microsoft Word and formatted as a proper outline.
@@ -9117,7 +9116,7 @@ controller(c).run()
 ``leomylyn.py``
     Provides a "Mylyn" like experience for Leo.
 ``leoOPML.py``
-    Read and write .leo files in OPML.
+    Read and write ``.leo`` files in OPML.
 ``leoremote.py``
     Remote control for Leo.
 ``leoscreen.py``
@@ -9144,7 +9143,7 @@ controller(c).run()
     Allows Leo to read a complete directory tree into a Leo outline. Converts
     directories into headlines and puts the list of file names into bodies.
 ``mod_scripting.py``
-    Creates script buttons and @button, @command, @plugin and @script nodes.
+    Creates script buttons and ``@button``, ``@command``, ``@plugin`` and ``@script`` nodes.
 ``mod_timestamp.py``
     Timestamps all save operations to show when they occur.
 ``multifile.py``
@@ -9152,7 +9151,7 @@ controller(c).run()
 ``nav_qt.py``
     Adds "Back" and "Forward" buttons (Qt only).
 ``niceNosent.py``
-    Ensures that all descendants of @file-nosent nodes end
+    Ensures that all descendants of ``@file-nosent nodes`` end
     with exactly one newline, replaces all tabs with spaces, and
     adds a newline before class and functions in the derived file.
 ``nodeActions.py``
@@ -9162,7 +9161,7 @@ controller(c).run()
 ``nodeTags.py``
     Provides node tagging capabilities to Leo.
 ``nodewatch.py``
-    Adds scriptable @nodewatch nodes.
+    Adds scriptable ``@nodewatch`` nodes.
 ``notebook.py``
     Adds a QML notebook.
 ``open_shell.py``
@@ -9187,7 +9186,7 @@ controller(c).run()
 ``quit_leo.py``
     Shows how to force Leo to quit.
 ``read_only_nodes.py``
-    Creates and updates @read-only nodes.
+    Creates and updates ``@read-only`` nodes.
 ``redirect_to_log.py``
     Sends all output to the log pane.
 ``richtext.py``
@@ -9207,7 +9206,7 @@ controller(c).run()
 ``setHomeDirectory.py``
     Sets g.app.homeDir to a hard-coded path.
 ``sftp.py``
-    Adds @edit-like functionality for remote files over SFTP.
+    Adds ``@edit``-like functionality for remote files over SFTP.
 ``slideshow.py``
     Support slideshows in Leo outlines.
 ``spydershell.py``
@@ -9239,8 +9238,8 @@ controller(c).run()
     Creates a window for *live* rendering of rst, html, etc.
     This plugin uses docutils, http://docutils.sourceforge.net/,
     to do the rendering, so installing docutils is recommended.
-    Supports @graphics-script, @image, @html, @movie and @svg nodes.
-``viewrendered2.py``
+    Supports ``@graphics-script``, ``@image``, ``@html``, ``@movie`` and ``@svg`` nodes.
+``viewrendered3.py``
     An alternate/enhanced version of viewrendered.py.
 ``vim.py``
     Enables two-way communication with VIM.
@@ -9249,7 +9248,7 @@ controller(c).run()
 ``word_count.py``
     Counts characters, words, lines, and paragraphs in the body pane.
 ``word_export.py``
-    Adds the Plugins\:Word Export\:Export menu item to format and export
+    Adds the ``Plugins\:Word Export\:Export`` menu item to format and export
     the selected outline to a Word document, starting Word if necessary.
 ``xemacs.py``
     Allows you to edit nodes in emacs/xemacs.
@@ -10756,7 +10755,7 @@ The output from the command is **always** stored in a new node added as the firs
 
 Both the new child nodes and the updated body text of single-line commands are timestamped.
 
-For the `bash` button the execution directory is either the directory containing the `.leo` file, or any other path as specified by ancestor `@path` nodes.
+For the `bash` button the execution directory is either the directory containing the `.leo` file, or any other path as specified by ancestor ``@path`` nodes.
 
 Currently the `psql` button just connects to the default database.  ";" is required at the end of SQL statements.
 
@@ -14523,7 +14522,7 @@ Preliminaries
    license
 
 </t>
-<t tx="ekr.20131008041326.16080">Do *not* nest any @rst nodes.</t>
+<t tx="ekr.20131008041326.16080">.. Do *not* nest any @rst nodes.</t>
 <t tx="ekr.20131008041326.16082">.. |---| unicode:: U+02015
    :trim:
 
@@ -30149,18 +30148,18 @@ Plugins or scripts may define two functions: a **headline filter** and a
 **body filter**:
 
 - rst3 calls the body filter for all nodes except descendants of
-  `@rst-ignore` or `@rst-ignore-tree` nodes.
+  ``@rst-ignore`` or ``@rst-ignore-tree`` nodes.
 
 - rst3 calls the headline filter for all nodes except:
-    - `rst-no-head` nodes or
-    - descendants of `@rst-ignore` or `@rst-ignore-tree` nodes.
+    - ``rst-no-head`` nodes or
+    - descendants of ``@rst-ignore`` or ``@rst-ignore-tree`` nodes.
     
 - plugins or scripts register filters as follows::
 
     c.rstCommands.register_body_filter(body_filter)
     c.rstCommands.register_headline_filter(headline_filter)
     
-- The signature of all filters is `filter-name (c, p)` where c and p are
+- The signature of all filters is ``filter-name (c, p)`` where c and p are
   defined as usual.
   
 **Example filters**
@@ -30208,7 +30207,7 @@ Filters can use the data in p.b, p.h, p.u, or p.gnx, but filters are not *limite
 - Any ancestor or descendant of node p.
 - Any data accessible from c, that is, *all* the data in the outline, including cached data!
 
-Indeed, has_cloned_parent gets the current `@rst` node using `root = c.rstCommands.root`.
+Indeed, has_cloned_parent gets the current ``@rst`` node using ``root = c.rstCommands.root``.
 
 Moreover, filters can define special conventions, including:
 
@@ -30223,7 +30222,7 @@ The leo/plugins/example_rst_filter.py plugin shows how to set up plugins that de
 
 Filters have easy access to all data within the outline, including:
 
-- c.rstCommands.root, the `@rst` node containing p.
+- c.rstCommands.root, the ``@rst`` node containing p.
 - All ancestors or descendants of p.
 - All data contained *anywhere* in the outline.
 
@@ -32442,25 +32441,25 @@ Leo syntax colors clickable links in the body pane. They have four forms:
    When running these tools *outside of* Leo, copying an error message from
    the *console* to Leo's log pane will create clickable links in the log
    pane. Control-clicking these links will select the proper node and line
-   provided the outline contains an `@&lt;file&gt;;` node for file mentioned in
+   provided the outline contains an ``@&lt;file&gt;;`` node for file mentioned in
    the error message.
 
 2. UNLs based on gnxs (global node indices):
 
-   Links of the form `unl:gnx:` + `//outline#gnx` open the given
+   Links of the form ``unl:gnx:`` + ``//outline#gnx`` open the given
    outline and select the first outline node with the given gnx. These UNLs
    will work as long as the node exists anywhere in the outline.
 
-   *Note*: `outline` is optional. It can be an absolute path name or
-   a relative path name resolved using `@data unl-path-prefixes`.
+   *Note*: ``outline`` is optional. It can be an absolute path name or
+   a relative path name resolved using ``@data unl-path-prefixes``.
 
 3. Leo's headline-based UNLs, as shown in the status pane:
 
-   Headline-based UNLs consist of `unl://` + `//outline#headline-list`
-   where headline-list is a list of headlines separated by `--&gt;`.
+   Headline-based UNLs consist of ``unl://`` + ``//outline#headline-list``
+   where headline-list is a list of headlines separated by ``--&gt;``.
 
-   *Note*: `outline` is optional. It can be an absolute path name or
-   a relative path name resolved using `@data unl-path-prefixes`.
+   *Note*: ``outline`` is optional. It can be an absolute path name or
+   a relative path name resolved using ``@data unl-path-prefixes``.
 
 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
 
