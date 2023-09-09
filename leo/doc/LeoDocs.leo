@@ -17944,7 +17944,7 @@ History of Leo
 
 This chapter discusses the most important milestones in history of Leo and summarizes each of Leo's public releases.  The focus is on the *important* and *interesting* developments.  It is not a chronicle of every change made to Leo.
 
-One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
+One of Leo's most important developments, ``@button``, came directly from e's ``dyna_menu`` plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
 
 .. contents:: Contents
     :depth: 2
@@ -32702,8 +32702,24 @@ Around this time Félix started a careful code review of *all* of Leo's core, in
 6.2 (March 27, 2020): The rise of f-strings in Leo. How did I ever live without them?
 
 6.3 (November 6, 2020): ``leoAst.py``.
+
+.. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/bzqSwg44BQAJ
+
+Sep 24, 2021: Félix releases leoInteg 1.0, with this `announcement`_.
+
+This is one of the most important dates in Leo's history:
+
+- leoInteg promises to make millions of people aware of Leo.
+  One click in `vs-code` installs `leoInteg`.
+- `leoJS` will allow Leo to run in a browser!
+- `leoInteg` brings all of `vs-code`'s features to Leo. For example, there
+  are several vim-emulator modes for `vs-code`, each much better than Leo's vim mode.
+
+Leo on vs-code means that Leo will live on. Nothing lasts forever, but when IDE's become obsolete, the replacement might build on `vs-code` and Leo. That's pretty close to immortality in my book.
     
 6.5: (October 22, 2021): Removed ``@test/@suite``, fixing the biggest mistake I ever made with Leo. It was shocking how much *harder* ``@test`` made unit testing! The ``create_app`` function in leoTest2.py allows Leo to use python's ``unittest`` module.
+
+
 
 6.7.0 (September 26, 2022): Fully annotate Leo's core files and important plugins.
 
