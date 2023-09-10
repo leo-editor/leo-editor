@@ -1409,7 +1409,8 @@ class FileCommands:
                 ' '.join(x.gnx for x in v.children),
                 ' '.join(x.gnx for x in v.parents),
                 v.iconVal,
-                v.statusBits,
+                # #3550: Clear the dirty bit.
+                v.statusBits & ~v.dirtyBit,
                 dump_u(v)
             )
 
@@ -1467,6 +1468,7 @@ class FileCommands:
             '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn: Any, rows: Any) -> None:
+        """Called only from fc.exportToSqlite."""
         conn.executemany(
             '''insert into vnodes
             (gnx, head, body, children, parents,
