@@ -1301,6 +1301,7 @@ class FileCommands:
             if c.fileName().endswith('.db'):
                 # position is already selected
                 return
+        else:
             if c.sqlite_connection:
                 # position is already selected
                 return
