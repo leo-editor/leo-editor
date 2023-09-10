@@ -961,37 +961,6 @@ class FileCommands:
         t2 = time.time()
         g.es(f"read outline in {t2 - t1:2.2f} seconds")
         return v, c.frame.ratio
-    #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile (** closes files except db.conn)
-    def openLeoFile(self,
-        theFile: Any,
-        fileName: str,
-        *,
-        readAtFileNodesFlag: bool = True,
-        silent: bool = False,
-    ) -> VNode:
-        """
-        Open a Leo file.
-
-        readAtFileNodesFlag: False when reading settings files.
-        silent:              True when creating hidden commanders.
-
-        Close theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-        """
-        c, frame = self.c, self.c.frame
-        # Set c.openDirectory
-        theDir = g.os_path_dirname(fileName)
-        if theDir:
-            c.openDirectory = c.frame.openDirectory = theDir
-        # Get the file.
-        self.gnxDict = {}  # #1437
-        v, ratio = self.getLeoFile(
-            theFile, fileName,
-            readAtFileNodesFlag=readAtFileNodesFlag,
-            silent=silent,
-        )
-        if v:
-            frame.resizePanesToRatio(ratio, frame.secondary_ratio)
-        return v
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Optional[Position]:
         """
