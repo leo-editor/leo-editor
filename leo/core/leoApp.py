@@ -3067,9 +3067,8 @@ class LoadManager:
         For second read, the settings for the file are *exactly* previousSettings.
         """
         lm = self
-        # Pre-checks.
         if not fn:
-            return None
+            return None  # Should not happen.
 
         # Disable the log.
         g.app.setLog(None)
