@@ -903,7 +903,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
     def getLeoFile(
         self,
-        theFile: Any,
+        theFile: Any,  # An open file or a sqlite.connection.
         fileName: str,
         readAtFileNodesFlag: bool = True,
         silent: bool = False,
@@ -1068,6 +1068,7 @@ class FileCommands:
 
         This method follows behavior of readSaxFile.
         """
+        # Called only from fc.getLeoFile.
 
         c, fc = self.c, self
         sql = '''select gnx, head,
