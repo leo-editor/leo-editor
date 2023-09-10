@@ -1444,9 +1444,6 @@ class FileCommands:
             ok = True
         except sqlite3.Error as e:
             g.internalError(e)
-        finally:
-            conn.commit()
-            conn.close()
         return ok
     #@+node:vitalije.20170705075107.1: *6* fc.decodePosition
     def decodePosition(self, s: str) -> Position:
