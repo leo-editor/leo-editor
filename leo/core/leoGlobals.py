@@ -60,6 +60,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
+#@+<< leoGlobals switch >>
+#@+node:ekr.20230910100127.1: ** << leoGlobals switch >>
+new_db = False
+if new_db:
+    print('')
+    print('*** new_db = True ***')
+#@-<< leoGlobals switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'

@@ -7,7 +7,7 @@ from collections.abc import Callable
 import importlib
 import io
 import os
-### import sqlite3
+import sqlite3
 import subprocess
 import string
 import sys
@@ -3078,11 +3078,12 @@ class LoadManager:
         g.doHook('open0')
         # Open the file before the open1 hook.
         theFile = lm.openAnyLeoFile(fn)
-
-        ###
-        # if isinstance(theFile, sqlite3.Connection):
-            # # This commander is associated with sqlite db.
-            # c.sqlite_connection = theFile
+        if g.new_db:  ###
+            pass
+        else:
+            if isinstance(theFile, sqlite3.Connection):
+                # This commander is associated with sqlite db.
+                c.sqlite_connection = theFile
         # Enable the log and do the open1 hook.
         g.app.unlockLog()
         c.frame.log.enable(True)

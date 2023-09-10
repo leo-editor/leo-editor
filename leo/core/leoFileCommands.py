@@ -1116,7 +1116,7 @@ class FileCommands:
         p = fc.decodePosition(encp)
         c.setCurrentPosition(p)
         return rootChildren[0]
-    #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
+    #@+node:vitalije.20170815162307.1: *6* fc.initNewDb ***
     def initNewDb(self, conn: Any) -> VNode:
         """ Initializes tables and returns None"""
         c, fc = self.c, self
@@ -1125,7 +1125,10 @@ class FileCommands:
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
-        ### c.sqlite_connection = conn
+        if g.new_db:  ###
+            pass
+        else:
+            c.sqlite_connection = conn
         fc.exportToSqlite(c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
@@ -1290,10 +1293,13 @@ class FileCommands:
     def setPositionsFromVnodes(self) -> None:
 
         c, root = self.c, self.c.rootPosition()
-        ### if c.sqlite_connection:
-        if c.fileName().endswith('.db'):
-            # position is already selected
-            return
+        if g.new_db:  ###
+            if c.fileName().endswith('.db'):
+                # position is already selected
+                return
+            if c.sqlite_connection:
+                # position is already selected
+                return
         current, str_pos = None, None
         if c.mFileName:
             str_pos = c.db.get('current_position')
@@ -1319,10 +1325,12 @@ class FileCommands:
             g.app.commander_cacher.save(c, fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
-                ###
-                # if c.sqlite_connection:
-                    # c.sqlite_connection.close()
-                    # c.sqlite_connection = None
+                if g.new_db:  ###
+                    pass
+                else:
+                    if c.sqlite_connection:
+                        c.sqlite_connection.close()
+                        c.sqlite_connection = None
                 ok = self.write_Leo_file(fileName)
             if ok:
                 if not silent:
@@ -1340,10 +1348,12 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            ###
-                # if c.sqlite_connection:
-                    # c.sqlite_connection.close()
-                    # c.sqlite_connection = None
+            if g.new_db:  ###
+                pass
+            else:
+                if c.sqlite_connection:
+                    c.sqlite_connection.close()
+                    c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.save(c, fileName)
             # Disable path-changed messages in writeAllHelper.
@@ -1362,10 +1372,12 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            ###
-            # if c.sqlite_connection:
-                # c.sqlite_connection.close()
-                # c.sqlite_connection = None
+            if g.new_db:  ###
+                pass
+            else:
+                if c.sqlite_connection:
+                    c.sqlite_connection.close()
+                    c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.commit()  # Commit, but don't save file name.
             # Disable path-changed messages in writeAllHelper.
@@ -1383,11 +1395,12 @@ class FileCommands:
         """Dump all vnodes to sqlite database. Returns True on success."""
         c, fc = self.c, self
 
-        ###
-        # if c.sqlite_connection is None:
-            # c.sqlite_connection = sqlite3.connect(fileName, isolation_level='DEFERRED')
-        # conn = c.sqlite_connection
-        conn = sqlite3.connect(fileName, isolation_level='DEFERRED')
+        if g.new_db:  ###
+            conn = sqlite3.connect(fileName, isolation_level='DEFERRED')
+        else:
+            if c.sqlite_connection is None:
+                c.sqlite_connection = sqlite3.connect(fileName, isolation_level='DEFERRED')
+            conn = c.sqlite_connection
 
         def dump_u(v: VNode) -> bytes:
             try:
@@ -1417,9 +1430,12 @@ class FileCommands:
             fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_nodes()))
             fc.exportGeomToSqlite(conn)
             fc.exportHashesToSqlite(conn)
-            ### conn.commit()
-            ### conn.close()
-            ### c.sqlite_connection = None
+            conn.commit()
+            conn.close()
+            if g.new_db:  ###
+                pass
+            else:
+                c.sqlite_connection = None
             ok = True
         except sqlite3.Error as e:
             g.internalError(e)
