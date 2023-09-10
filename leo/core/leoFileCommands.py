@@ -900,7 +900,7 @@ class FileCommands:
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
-    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
+    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (to be deleted)
     def getLeoFile(
         self,
         theFile: Any,  # An open file or a sqlite.connection.
@@ -963,11 +963,7 @@ class FileCommands:
         return v, c.frame.ratio
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Optional[Position]:
-        """
-        Read all external files in the outline.
-
-        A helper for fc.getLeoFile.
-        """
+        """Read all external files in the outline."""
         c, fc = self.c, self
         c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
@@ -1037,8 +1033,6 @@ class FileCommands:
 
         This method follows behavior of readSaxFile.
         """
-        # Called only from fc.getLeoFile.
-
         c, fc = self.c, self
         sql = '''select gnx, head,
              body,

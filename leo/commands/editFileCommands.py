@@ -1471,13 +1471,14 @@ class GitDiffController:
                 if v1.h != v2.h or v1.b != v2.b:
                     changed[key] = (v1, v2)
         return added, deleted, changed
-    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
+    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline (only call to fc.getLeoFile)
     def make_leo_outline(self, fn: str, path: str, s: str, rev: str) -> Cmdr:
         """Create a hidden temp outline for the .leo file in s."""
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
+        ######
         hidden_c.fileCommands.getLeoFile(
             theFile=io.StringIO(initial_value=s),
             fileName=path,
