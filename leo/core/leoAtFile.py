@@ -2916,7 +2916,6 @@ class AtFile:
 
         See #50: https://github.com/leo-editor/leo-editor/issues/50
         """
-        c = self.c
         efc = g.app.externalFilesController
         if p.isAtNoSentFileNode():
             # No danger of overwriting a file: It was never read.
@@ -2927,14 +2926,8 @@ class AtFile:
             return False
 
         # Prompt if the external file is newer.
-        if efc:
-            # Like c.checkFileTimeStamp.
-            if c.sqlite_connection and c.mFileName == fn:
-                # sqlite database file is never actually overwritten by Leo,
-                # so do *not* check its timestamp.
-                pass
-            elif efc.has_changed(fn):
-                return True
+        if efc and efc.has_changed(fn):
+            return True
 
         if hasattr(p.v, 'at_read'):
             # Fix bug #50: body text lost switching @file to @auto-rst

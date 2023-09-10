@@ -32,7 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
     from leo.core.leoIPython import InternalIPKernel
-    from leo.core.leoNodes import NodeIndices, Position, VNode
+    from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import PluginsManager
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -3260,34 +3260,6 @@ class LoadManager:
             if not g.unitTesting:
                 g.error("can not open:", fn)
             return None
-    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile (to be deleted)
-    def readOpenedLeoFile(self,
-        c: Cmdr,
-        fn: str,
-        readAtFileNodesFlag: bool,
-        theFile: Any,
-    ) -> Optional[VNode]:
-        """
-        Call c.fileCommands.openLeoFile to open some kind of Leo file.
-
-        the_file: An open file, which is a StringIO file for zipped files.
-
-        Note: g.app.log is not inited here.
-        """
-        # New in Leo 4.10: The open1 event does not allow an override of the init logic.
-        assert theFile
-
-        # Read the file. Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-        v = c.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
-        if not v:
-            # #970: Never close Leo here.
-            return None
-
-        # Set the directories.
-        if not c.openDirectory:
-            theDir = g.finalize(g.os_path_dirname(fn))
-            c.openDirectory = c.frame.openDirectory = theDir
-        return v
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c: Cmdr) -> None:
         """Revert c to the previously saved contents."""
