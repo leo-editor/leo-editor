@@ -3051,7 +3051,7 @@ class LoadManager:
         lm.createMenu(c)
         lm.finishOpen(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (rewrite)
     def openFileByName(self,
         fn: str,
         gui: Optional[LeoGui],
@@ -3067,41 +3067,57 @@ class LoadManager:
         For second read, the settings for the file are *exactly* previousSettings.
         """
         lm = self
+        # Pre-checks.
+        if not fn:
+            return None
+            
+
+        ###
+        # if not os.path.exists(fn):
+            # g.trace('**** does not exist', fn)
+            # return None
+
         # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
+
         # Create the a commander for the .leo file.
-        c = g.app.newCommander(
-            fileName=fn,
-            gui=gui,
-            previousSettings=previousSettings,
-        )
+        c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
+
         g.doHook('open0')
-        # Open the file before the open1 hook.
-        theFile = lm.openAnyLeoFile(fn)
-        if g.new_db:  ###
-            pass
-        else:
-            if isinstance(theFile, sqlite3.Connection):
-                # This commander is associated with sqlite db.
-                c.sqlite_connection = theFile
-        # Enable the log and do the open1 hook.
-        g.app.unlockLog()
-        c.frame.log.enable(True)
-        # Create the outline.
-        g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
-        if theFile:
-            # Some kind of existing Leo file.
-            readAtFileNodesFlag = bool(previousSettings)
-            # Read the Leo file.
-            ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
-            if not ok:
-                return None
-        else:
-            # Not a any kind of Leo file. Create a wrapper .leo file.
+
+        if not lm.isLeoFile(fn):
             c = lm.initWrapperLeoFile(c, fn)  # #2489
             g.doHook("new", old_c=old_c, c=c, new_c=c)  # #2489.
+            g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+
+            # Complete the inits.
+            g.app.writeWaitingLog(c)
+            c.setLog()
+            lm.createMenu(c, fn)
+            lm.finishOpen(c)
+            return c
+
+        ### Similar logic to lm.openAnyLeoFile.
+
+        ### ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
+
+        # Read the outline, but only if it exists.
+        if os.path.exists(fn):
+            readAtFileNodesFlag = bool(previousSettings)
+            if fn.endswith('.db'):
+                ok = c.fileCommands.getLeoDBFileByName(fn, readAtFileNodesFlag)
+            else:
+                ok = c.fileCommands.getLeoFileByName(fn, readAtFileNodesFlag)
+            if not ok:
+                g.trace('**** not loaded', fn)  ###
+                return None
+
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+
         # Complete the inits.
         g.app.writeWaitingLog(c)
         c.setLog()
@@ -3220,17 +3236,14 @@ class LoadManager:
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
         return bool(fn and zipfile.is_zipfile(fn))
-    #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
+    #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile (to be deleted)
     def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
         lm = self
-        if g.new_db:  ###
-            pass
-        else:
-            if fn.endswith('.db'):
-                conn = sqlite3.connect(fn)
-                g.trace('conn', conn)  ###
-                return conn
+        if fn.endswith('.db'):
+            conn = sqlite3.connect(fn)
+            g.trace('conn', conn)  ###
+            return conn
         if not fn:
             return None
         if not os.path.exists(fn):
@@ -3279,7 +3292,7 @@ class LoadManager:
             if not g.unitTesting:
                 g.error("can not open:", fn)
             return None
-    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
+    #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile (to be deleted)
     def readOpenedLeoFile(self,
         c: Cmdr,
         fn: str,

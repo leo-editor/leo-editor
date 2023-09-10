@@ -3599,11 +3599,18 @@ def createHiddenCommander(fn: str) -> Cmdr:
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
     fc = c.fileCommands
-    theFile = g.app.loadManager.openAnyLeoFile(fn)
-    if theFile:
-        # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-        fc.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
-        return c
+    lm = g.app.loadManager
+
+    if 1:  ### New
+        c = lm.openFileByName(fn, gui=g.app.nullGui)
+        # old_c: Optional[Cmdr],
+        # previousSettings: "PreviousSettings",
+    else:  ### Legacy
+        theFile = g.app.loadManager.openAnyLeoFile(fn)
+        if theFile:
+            # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
+            fc.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
+            return c
     return None
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr = None) -> str:

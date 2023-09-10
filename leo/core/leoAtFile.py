@@ -756,6 +756,7 @@ class AtFile:
             with open(fileName, 'rb') as f:
                 s = f.read()
         except IOError:  # pragma: no cover
+            g.trace('****')  ###
             at.error(f"can not open {fileName}")
         except Exception:  # pragma: no cover
             at.error(f"Exception reading {fileName}")
