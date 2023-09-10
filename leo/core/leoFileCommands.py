@@ -1405,7 +1405,8 @@ class FileCommands:
                 ' '.join(x.gnx for x in v.children),
                 ' '.join(x.gnx for x in v.parents),
                 v.iconVal,
-                v.statusBits,
+                # #3550: Clear the dirty bit.
+                v.statusBits & ~v.dirtyBit,
                 dump_u(v)
             )
 
