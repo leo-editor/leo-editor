@@ -2109,13 +2109,14 @@ class LoadManager:
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
         c = g.app.newCommander(fn)
+        fc = c.fileCommands
         frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            ok = c.fileCommands.openLeoFile(theFile, fn,
-                    readAtFileNodesFlag=False, silent=True)  # closes theFile.
+            # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
+            ok = fc.openLeoFile(theFile, fn, readAtFileNodesFlag=False, silent=True)
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -3223,9 +3224,13 @@ class LoadManager:
     def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
         lm = self
-        ###
-        # if fn.endswith('.db'):
-            # return sqlite3.connect(fn)
+        if g.new_db:  ###
+            pass
+        else:
+            if fn.endswith('.db'):
+                conn = sqlite3.connect(fn)
+                g.trace('conn', conn)  ###
+                return conn
         if not fn:
             return None
         if not os.path.exists(fn):
@@ -3236,6 +3241,7 @@ class LoadManager:
             theFile = lm.openZipFile(fn)
         else:
             theFile = lm.openLeoFile(fn)
+        ###
         # else:
             # theFile = None
         return theFile
@@ -3279,7 +3285,7 @@ class LoadManager:
         fn: str,
         readAtFileNodesFlag: bool,
         theFile: Any,
-    ) -> VNode:
+    ) -> Optional[VNode]:
         """
         Call c.fileCommands.openLeoFile to open some kind of Leo file.
 
@@ -3289,16 +3295,17 @@ class LoadManager:
         """
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
-        # Read and close the file.
-        v = c.fileCommands.openLeoFile(
-            theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
-        if v:
-            if not c.openDirectory:
-                theDir = g.finalize(g.os_path_dirname(fn))
-                c.openDirectory = c.frame.openDirectory = theDir
-        else:
+
+        # Read the file. Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
+        v = c.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
+        if not v:
             # #970: Never close Leo here.
-            g.app.closeLeoWindow(c.frame, finish_quit=False)
+            return None
+
+        # Set the directories.
+        if not c.openDirectory:
+            theDir = g.finalize(g.os_path_dirname(fn))
+            c.openDirectory = c.frame.openDirectory = theDir
         return v
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c: Cmdr) -> None:

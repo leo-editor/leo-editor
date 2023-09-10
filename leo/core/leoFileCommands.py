@@ -910,8 +910,9 @@ class FileCommands:
         checkOpenFiles: bool = True,
     ) -> tuple[VNode, float]:
         """
-            Read a .leo file.
-            The caller should follow this with a call to c.redraw().
+        Read a .leo file. The caller should follow this with a call to c.redraw().
+
+        This method closes theFile unless theFile is a sqlite3.Connection.
         """
         fc, c = self, self.c
         t1 = time.time()
@@ -960,10 +961,11 @@ class FileCommands:
         t2 = time.time()
         g.es(f"read outline in {t2 - t1:2.2f} seconds")
         return v, c.frame.ratio
-    #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
+    #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile (** closes files except db.conn)
     def openLeoFile(self,
         theFile: Any,
         fileName: str,
+        *,
         readAtFileNodesFlag: bool = True,
         silent: bool = False,
     ) -> VNode:
@@ -972,6 +974,8 @@ class FileCommands:
 
         readAtFileNodesFlag: False when reading settings files.
         silent:              True when creating hidden commanders.
+
+        Close theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
         """
         c, frame = self.c, self.c.frame
         # Set c.openDirectory
