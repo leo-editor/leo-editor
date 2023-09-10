@@ -7,7 +7,7 @@ from collections.abc import Callable
 import importlib
 import io
 import os
-import sqlite3
+### import sqlite3
 import subprocess
 import string
 import sys
@@ -3078,9 +3078,11 @@ class LoadManager:
         g.doHook('open0')
         # Open the file before the open1 hook.
         theFile = lm.openAnyLeoFile(fn)
-        if isinstance(theFile, sqlite3.Connection):
-            # This commander is associated with sqlite db.
-            c.sqlite_connection = theFile
+
+        ###
+        # if isinstance(theFile, sqlite3.Connection):
+            # # This commander is associated with sqlite db.
+            # c.sqlite_connection = theFile
         # Enable the log and do the open1 hook.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3220,15 +3222,21 @@ class LoadManager:
     def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
         lm = self
-        if fn.endswith('.db'):
-            return sqlite3.connect(fn)
-        if lm.isLeoFile(fn) and g.os_path_exists(fn):
-            if lm.isZippedFile(fn):
-                theFile = lm.openZipFile(fn)
-            else:
-                theFile = lm.openLeoFile(fn)
+        ###
+        # if fn.endswith('.db'):
+            # return sqlite3.connect(fn)
+        if not fn:
+            return None
+        if not os.path.exists(fn):
+            return None
+        if not lm.isLeoFile(fn):
+            return None
+        if lm.isZippedFile(fn):
+            theFile = lm.openZipFile(fn)
         else:
-            theFile = None
+            theFile = lm.openLeoFile(fn)
+        # else:
+            # theFile = None
         return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
     def openLeoFile(self, fn: str) -> Any:
