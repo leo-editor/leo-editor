@@ -7,7 +7,6 @@ from collections.abc import Callable
 import importlib
 import io
 import os
-import sqlite3
 import subprocess
 import string
 import sys
@@ -2099,18 +2098,13 @@ class LoadManager:
             return None
         if not lm.isLeoFile(fn):
             return None
-        ###  # legacy
-            # theFile = lm.openAnyLeoFile(fn)
-            # if not theFile:
-                # return None  # Fix #843.
         if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {os.path.normpath(fn)}"
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
-            # A useful trace.
-            # g.trace('%20s' % g.shortFileName(fn), g.callers(3))
+
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2121,8 +2115,6 @@ class LoadManager:
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-            ### ok = fc.openLeoFile(theFile, fn, readAtFileNodesFlag=False, silent=True)
             if fn.endswith('.db'):
                 ok = fc.getLeoDBFileByName(fn, readAtFileNodesFlag=False)
             else:
@@ -3234,29 +3226,6 @@ class LoadManager:
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
         return bool(fn and zipfile.is_zipfile(fn))
-    #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile (to be deleted)
-    def openAnyLeoFile(self, fn: str) -> Any:
-        """Open a .leo, .leojs or .db file."""
-        lm = self
-        g.trace(g.callers())
-        if fn.endswith('.db'):
-            conn = sqlite3.connect(fn)
-            g.trace('conn', conn)  ###
-            return conn
-        if not fn:
-            return None
-        if not os.path.exists(fn):
-            return None
-        if not lm.isLeoFile(fn):
-            return None
-        if lm.isZippedFile(fn):
-            theFile = lm.openZipFile(fn)
-        else:
-            theFile = lm.openLeoFile(fn)
-        ###
-        # else:
-            # theFile = None
-        return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
     def openLeoFile(self, fn: str) -> Any:
         """Open the file for reading."""
@@ -3340,14 +3309,6 @@ class LoadManager:
             ok = fc.getLeoFileByName(fn, readAtFileNodesFlag=True)
         if not ok:
             g.error(f"Revert failed: {fn!r}")
-
-        ###
-        # theFile = lm.openAnyLeoFile(fn)
-        # if theFile:
-            # c.fileCommands.initIvars()
-            # # Closes the file.
-            # c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
-
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:

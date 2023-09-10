@@ -3,7 +3,6 @@
 """Tests of leoApp.py"""
 import os
 import sys
-import zipfile
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 #@+others
@@ -59,28 +58,6 @@ class TestApp(LeoUnitTest):
         for ext in ext_d:
             lang = ext_d.get(ext)
             assert lang in lang_d, lang
-    #@+node:ekr.20210909194336.3: *3* TestApp.test_lm_openAnyLeoFile
-    def test_lm_openAnyLeoFile(self):
-        lm = g.app.loadManager
-        # Create a zip file for testing.
-        s = 'this is a test file'
-        testDir = g.os_path_join(g.app.loadDir, '..', 'test')
-        assert g.os_path_exists(testDir), testDir
-        path = g.finalize_join(testDir, 'testzip.zip')
-        if os.path.exists(path):
-            os.remove(path)  # pragma: no cover
-        f = zipfile.ZipFile(path, 'x')
-        assert f, path
-        try:
-            f.writestr('leo-zip-file', s)
-            f.close()
-            # Open the file, and get the contents.
-            f = lm.openAnyLeoFile(path)
-            s2 = f.read()
-            f.close()
-        finally:
-            os.remove(path)
-        self.assertEqual(s, s2)
     #@+node:ekr.20210909194336.4: *3* TestApp.test_rfm_writeRecentFilesFileHelper
     def test_rfm_writeRecentFilesFileHelper(self):
         fn = 'ффф.leo'

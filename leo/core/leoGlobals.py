@@ -60,13 +60,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
-#@+<< leoGlobals switch >>
-#@+node:ekr.20230910100127.1: ** << leoGlobals switch >>
-new_db = True
-if new_db:
-    print('')
-    print('*** new_db = True ***')
-#@-<< leoGlobals switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
@@ -3598,19 +3591,10 @@ def createHiddenCommander(fn: str) -> Cmdr:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
-    fc = c.fileCommands
     lm = g.app.loadManager
+    c = lm.openFileByName(fn, gui=g.app.nullGui)
+    return c
 
-    if 1:  ### New
-        c = lm.openFileByName(fn, gui=g.app.nullGui)
-        return c
-    else:  ### Legacy
-        theFile = g.app.loadManager.openAnyLeoFile(fn)
-        if theFile:
-            # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-            fc.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
-            return c
-    return None
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr = None) -> str:
     conf = c.config if c else g.app.config
