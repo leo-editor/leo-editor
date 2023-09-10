@@ -2092,11 +2092,17 @@ class LoadManager:
         The caller must init the c.config object.
         """
         lm = self
+        ### New tests.
         if not fn:
             return None
-        theFile = lm.openAnyLeoFile(fn)
-        if not theFile:
-            return None  # Fix #843.
+        if not os.path.exists(fn):
+            return None
+        if not lm.isLeoFile(fn):
+            return None
+        ###  # legacy
+            # theFile = lm.openAnyLeoFile(fn)
+            # if not theFile:
+                # return None  # Fix #843.
         if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {os.path.normpath(fn)}"
@@ -2116,7 +2122,11 @@ class LoadManager:
         g.app.openingSettingsFile = True
         try:
             # Closes theFile (via fc.getLeoFile) unless theFile is a sqlite3.Connection.
-            ok = fc.openLeoFile(theFile, fn, readAtFileNodesFlag=False, silent=True)
+            ### ok = fc.openLeoFile(theFile, fn, readAtFileNodesFlag=False, silent=True)
+            if fn.endswith('.db'):
+                ok = fc.getLeoDBFileByName(fn, readAtFileNodesFlag=False)
+            else:
+                ok = fc.getLeoFileByName(fn, readAtFileNodesFlag=False)
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -3228,6 +3238,7 @@ class LoadManager:
     def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
         lm = self
+        g.trace(g.callers())
         if fn.endswith('.db'):
             conn = sqlite3.connect(fn)
             g.trace('conn', conn)  ###
@@ -3312,13 +3323,30 @@ class LoadManager:
     def revertCommander(self, c: Cmdr) -> None:
         """Revert c to the previously saved contents."""
         lm = self
+        fc = c.fileCommands
         fn = c.mFileName
+        if not fn:
+            return
+        if not os.path.exists(fn):
+            return
+        if not lm.isLeoFile(fn):
+            return
+
         # Re-read the file.
-        theFile = lm.openAnyLeoFile(fn)
-        if theFile:
-            c.fileCommands.initIvars()
-            # Closes the file.
-            c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
+        c.fileCommands.initIvars()
+        if fn.endswith('.db'):
+            ok = fc.getLeoDBFileByName(fn, readAtFileNodesFlag=True)
+        else:
+            ok = fc.getLeoFileByName(fn, readAtFileNodesFlag=True)
+        if not ok:
+            g.error(f"Revert failed: {fn!r}")
+
+        ###
+        # theFile = lm.openAnyLeoFile(fn)
+        # if theFile:
+            # c.fileCommands.initIvars()
+            # # Closes the file.
+            # c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
 
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings

@@ -62,7 +62,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< leoGlobals annotations >>
 #@+<< leoGlobals switch >>
 #@+node:ekr.20230910100127.1: ** << leoGlobals switch >>
-new_db = False
+new_db = True
 if new_db:
     print('')
     print('*** new_db = True ***')
@@ -3603,8 +3603,7 @@ def createHiddenCommander(fn: str) -> Cmdr:
 
     if 1:  ### New
         c = lm.openFileByName(fn, gui=g.app.nullGui)
-        # old_c: Optional[Cmdr],
-        # previousSettings: "PreviousSettings",
+        return c
     else:  ### Legacy
         theFile = g.app.loadManager.openAnyLeoFile(fn)
         if theFile:
