@@ -3226,17 +3226,6 @@ class LoadManager:
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
         return bool(fn and zipfile.is_zipfile(fn))
-    #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
-    def openLeoFile(self, fn: str) -> Any:
-        """Open the file for reading."""
-        try:
-            theFile = open(fn, 'rb')
-            return theFile
-        except IOError:
-            # Do not use string + here: it will fail for non-ascii strings!
-            if not g.unitTesting:
-                g.error("can not open:", fn)
-            return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
     def openZipFile(self, fn: str) -> Any:
         """
