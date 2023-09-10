@@ -3070,12 +3070,6 @@ class LoadManager:
         # Pre-checks.
         if not fn:
             return None
-            
-
-        ###
-        # if not os.path.exists(fn):
-            # g.trace('**** does not exist', fn)
-            # return None
 
         # Disable the log.
         g.app.setLog(None)
@@ -3086,21 +3080,23 @@ class LoadManager:
 
         g.doHook('open0')
 
-        if not lm.isLeoFile(fn):
-            c = lm.initWrapperLeoFile(c, fn)  # #2489
-            g.doHook("new", old_c=old_c, c=c, new_c=c)  # #2489.
-            g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
-
-            # Complete the inits.
+        def complete_inits(c: Cmdr) -> None:
+            """Do common completion tasks."""
+            g.app.unlockLog()
+            c.frame.log.enable(True)
             g.app.writeWaitingLog(c)
             c.setLog()
             lm.createMenu(c, fn)
             lm.finishOpen(c)
+
+        if not lm.isLeoFile(fn):
+            # Handle a wrapper file.
+            c = lm.initWrapperLeoFile(c, fn)  # #2489
+            # Finish.
+            g.doHook("new", old_c=old_c, c=c, new_c=c)  # #2489.
+            g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+            complete_inits(c)
             return c
-
-        ### Similar logic to lm.openAnyLeoFile.
-
-        ### ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
 
         # Read the outline, but only if it exists.
         if os.path.exists(fn):
@@ -3110,19 +3106,12 @@ class LoadManager:
             else:
                 ok = c.fileCommands.getLeoFileByName(fn, readAtFileNodesFlag)
             if not ok:
-                g.trace('**** not loaded', fn)  ###
                 return None
 
-        g.app.unlockLog()
-        c.frame.log.enable(True)
+        # Finish.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
-
-        # Complete the inits.
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        lm.createMenu(c, fn)
-        lm.finishOpen(c)
+        complete_inits(c)
         return c
     #@+node:ekr.20120223062418.10405: *6* LM.createMenu
     def createMenu(self, c: Cmdr, fn: str = None) -> None:
