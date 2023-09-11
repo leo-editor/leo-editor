@@ -1390,7 +1390,7 @@ class LeoApp:
             # another Leo may have been killed prematurely.
             # Put the file on the global list.
             # A dialog will warn the user such files later.
-            g.printObj(aList, tag=f"app.checkForOpenFile: {c.fileName()}")  ###
+            g.printObj(aList, tag=f"app.checkForOpenFile: g.app.db.get{tag}: {c.fileName()}")  ###
             fn = os.path.normpath(fn)
             if fn not in g.app.already_open_files:
                 g.es('may be open in another Leo:', color='red')
