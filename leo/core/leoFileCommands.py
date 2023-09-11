@@ -900,6 +900,16 @@ class FileCommands:
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
+    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
+    def getAnyLeoFileByName(self, path: str, *, readAtFileNodesFlag: bool = True) -> bool:
+        """Open any kind of Leo file."""
+        c = self.c
+        fc = c.fileCommands
+        if path.endswith('.db'):
+            ok = fc.getLeoDBFileByName(path, readAtFileNodesFlag)
+        else:
+            ok = fc.getLeoFileByName(path, readAtFileNodesFlag)
+        return ok
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (to be deleted)
     def getLeoFile(
         self,
@@ -1117,12 +1127,9 @@ class FileCommands:
     #@+node:ekr.20230910154358.1: *5* fc.getLeoDBFileByName (**new)
     def getLeoDBFileByName(
         self,
-        ### theFile: Any,  # An open file or a sqlite.connection.
         fileName: str,
         readAtFileNodesFlag: bool = True,
-        ### silent: bool = False,
-        ### checkOpenFiles: bool = True,
-    ) -> bool:  ### tuple[VNode, float]:
+    ) -> bool:
         """
         Open, read, and close a .db file.
 
@@ -1166,7 +1173,7 @@ class FileCommands:
             if conn:
                 conn.close()
             c.loading = False  # reenable c.changed
-    #@+node:ekr.20230910160254.1: *5* fc.getLeoFileByName (**new)
+    #@+node:ekr.20230910160254.1: *5* fc.getLeoFileByName
     def getLeoFileByName(
         self,
         fileName: str,

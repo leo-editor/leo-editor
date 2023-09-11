@@ -2113,12 +2113,9 @@ class LoadManager:
         frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
-        g.app.openingSettingsFile = True
         try:
-            if fn.endswith('.db'):
-                ok = fc.getLeoDBFileByName(fn, readAtFileNodesFlag=False)
-            else:
-                ok = fc.getLeoFileByName(fn, readAtFileNodesFlag=False)
+            g.app.openingSettingsFile = True
+            ok = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=False)
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -3053,7 +3050,7 @@ class LoadManager:
         lm.createMenu(c)
         lm.finishOpen(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (rewrite)
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self,
         fn: str,
         gui: Optional[LeoGui],
@@ -3101,11 +3098,7 @@ class LoadManager:
 
         # Read the outline, but only if it exists.
         if os.path.exists(fn):
-            readAtFileNodesFlag = bool(previousSettings)
-            if fn.endswith('.db'):
-                ok = c.fileCommands.getLeoDBFileByName(fn, readAtFileNodesFlag)
-            else:
-                ok = c.fileCommands.getLeoFileByName(fn, readAtFileNodesFlag)
+            ok = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
             if not ok:
                 return None
 
@@ -3264,10 +3257,7 @@ class LoadManager:
 
         # Re-read the file.
         c.fileCommands.initIvars()
-        if fn.endswith('.db'):
-            ok = fc.getLeoDBFileByName(fn, readAtFileNodesFlag=True)
-        else:
-            ok = fc.getLeoFileByName(fn, readAtFileNodesFlag=True)
+        ok = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
         if not ok:
             g.error(f"Revert failed: {fn!r}")
     #@-others
