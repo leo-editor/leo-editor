@@ -901,7 +901,12 @@ class FileCommands:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
-    def getAnyLeoFileByName(self, path: str, *, readAtFileNodesFlag: bool = True) -> Optional[VNode]:
+    def getAnyLeoFileByName(self,
+        path: str,
+        *,
+        checkOpenFiles: bool = True,
+        readAtFileNodesFlag: bool = True,
+    ) -> Optional[VNode]:
         """Open any kind of Leo file."""
         c = self.c
         fc = c.fileCommands
@@ -912,6 +917,8 @@ class FileCommands:
             v = fc._getLeoFileByName(path, readAtFileNodesFlag)
         if v:
             c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+            if checkOpenFiles:
+                g.app.checkForOpenFile(c, path)
         return v
     #@+node:ekr.20230910154358.1: *6* fc._getLeoDBFileByName
     def _getLeoDBFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
@@ -977,10 +984,6 @@ class FileCommands:
         recoveryNode = None
         try:
             c.loading = True
-            ### if not silent and checkOpenFiles:
-            ### Don't check for open file when reverting.
-
-            ### g.app.checkForOpenFile(c, path)  ########### ???
 
             # Open, read and close the file.
             try:
@@ -1019,67 +1022,6 @@ class FileCommands:
         finally:
             # Never put a return in a finally clause.
             c.loading = False  # reenable c.changed
-    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (to be deleted)
-    def getLeoFile(
-        self,
-        theFile: Any,  # An open file or a sqlite.connection.
-        fileName: str,
-        readAtFileNodesFlag: bool = True,
-        silent: bool = False,
-        checkOpenFiles: bool = True,
-    ) -> tuple[VNode, float]:
-        """
-        Read a .leo file. The caller should follow this with a call to c.redraw().
-
-        This method closes theFile unless theFile is a sqlite3.Connection.
-        """
-        fc, c = self, self.c
-        t1 = time.time()
-        c.clearChanged()  # May be set when reading @file nodes.
-        fc.warnOnReadOnlyFiles(fileName)
-        fc.checking = False
-        fc.mFileName = c.mFileName
-        fc.initReadIvars()
-        recoveryNode = None
-        try:
-            c.loading = True  # disable c.changed
-            if not silent and checkOpenFiles:
-                # Don't check for open file when reverting.
-                g.app.checkForOpenFile(c, fileName)
-            # Read the .leo file and create the outline.
-            if fileName.endswith('.db'):
-                v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
-            elif fileName.endswith('.leojs'):
-                v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
-                if v:
-                    c.hiddenRootNode = v
-            else:
-                v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
-                if v:
-                    c.hiddenRootNode = v
-            if v:
-                c.setFileTimeStamp(fileName)
-                if readAtFileNodesFlag:
-                    recoveryNode = fc.readExternalFiles()
-        finally:
-            # lastTopLevel is a better fallback, imo.
-            p = recoveryNode or c.p or c.lastTopLevel()
-            c.selectPosition(p)
-            # Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            c.redraw_later()
-            c.checkOutline()  # Must be called *after* ni.end_holding.
-            c.loading = False  # reenable c.changed
-            if not isinstance(theFile, sqlite3.Connection):
-                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
-                # Leo holding directory/file handles after file close?
-                theFile.close()
-        if c.changed:
-            fc.propagateDirtyNodes()
-        fc.initReadIvars()
-        t2 = time.time()
-        g.es(f"read outline in {t2 - t1:2.2f} seconds")
-        return v, c.frame.ratio
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Optional[Position]:
         """Read all external files in the outline."""

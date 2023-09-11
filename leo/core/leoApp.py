@@ -229,7 +229,6 @@ class LeoApp:
         self.initComplete = False  # True: late bindings are not allowed.
         self.initStyleFlag = False  # True: setQtStyle called.
         self.killed = False  # True: we are about to destroy the root window.
-        self.openingSettingsFile = False  # True, opening a settings file.
         self.preReadFlag = False  # True: we are pre-reading a settings file.
         self.quitting = False  # True: quitting.  Locks out some events.
         self.quit_after_load = False  # True: quit immediately after loading.  For unit a unit test.
@@ -2097,13 +2096,9 @@ class LoadManager:
         The caller must init the c.config object.
         """
         lm = self
-        ### New tests.
-        if not path:
+        if not (path and os.path.exists(path) and lm.isLeoFile(path)):
             return None
-        if not os.path.exists(path):
-            return None
-        if not lm.isLeoFile(path):
-            return None
+
         if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {os.path.normpath(path)}"
@@ -2120,12 +2115,10 @@ class LoadManager:
         try:
             frame.log.enable(False)
             g.app.lockLog()
-            g.app.openingSettingsFile = True
-            v = fc.getAnyLeoFileByName(path, readAtFileNodesFlag=False)
+            v = fc.getAnyLeoFileByName(path, checkOpenFiles=False, readAtFileNodesFlag=False)
             return c if v else None
         finally:
             # Never put a return in a finally clause.
-            g.app.openingSettingsFile = False
             g.app.unlockLog()
             c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
             g.app.gui = oldGui
