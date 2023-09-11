@@ -392,7 +392,7 @@ class Importer:
             for line in lines:
                 stripped_line = line.lstrip()
                 if stripped_line:  # Skip empty lines
-                    lws_list.append(len(line[: -len(stripped_line)]))
+                    lws_list.append(len(line) - len(stripped_line))
         n = min(lws_list) if lws_list else 0
         ws_char = ' ' if self.tab_width < 1 else '\t'
         return ws_char * n
