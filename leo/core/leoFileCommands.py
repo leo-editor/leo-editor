@@ -1786,7 +1786,6 @@ class FileCommands:
         try:
             f = open(fileName, 'wb')  # Must write bytes.
         except Exception:
-            g.trace('****')  ###
             g.es(f"can not open {fileName}")
             return False
         self.mFileName = fileName

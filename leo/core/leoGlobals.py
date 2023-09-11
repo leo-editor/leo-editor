@@ -3590,7 +3590,6 @@ def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
 def createHiddenCommander(path: str) -> Cmdr:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
-    g.trace(path)  ###
     c = Commands(path, gui=g.app.nullGui)
     lm = g.app.loadManager
     c = lm.openFileByName(path, gui=g.app.nullGui)
