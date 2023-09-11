@@ -900,16 +900,122 @@ class FileCommands:
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
-    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
-    def getAnyLeoFileByName(self, path: str, *, readAtFileNodesFlag: bool = True) -> bool:
+    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName **improve
+    def getAnyLeoFileByName(self, path: str, *, readAtFileNodesFlag: bool = True) -> Optional[VNode]:
         """Open any kind of Leo file."""
         c = self.c
         fc = c.fileCommands
+        self.gnxDict = {}  # #1437
         if path.endswith('.db'):
-            ok = fc.getLeoDBFileByName(path, readAtFileNodesFlag)
+            v = fc._getLeoDBFileByName(path, readAtFileNodesFlag)
         else:
-            ok = fc.getLeoFileByName(path, readAtFileNodesFlag)
-        return ok
+            v = fc._getLeoFileByName(path, readAtFileNodesFlag)
+        if v:
+            c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+        return v
+    #@+node:ekr.20230910154358.1: *6* fc._getLeoDBFileByName
+    def _getLeoDBFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
+        """
+        Open, read, and close a .db file.
+
+        The caller should follow this with a call to c.redraw().
+        """
+        fc, c = self, self.c
+        t1 = time.time()
+        c.clearChanged()  # May be set when reading @file nodes.
+        fc.warnOnReadOnlyFiles(path)
+        fc.checking = False
+        fc.mFileName = c.mFileName
+        fc.initReadIvars()
+        recoveryNode = None
+        conn = None
+        try:
+            c.loading = True  # disable c.changed
+            g.app.checkForOpenFile(c, path)  ### Experimental.
+            conn = sqlite3.connect(path)
+            v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn)
+            if not v:
+                return None
+
+            # Set timestamp and recovery node.
+            c.setFileTimeStamp(path)
+            if readAtFileNodesFlag:
+                recoveryNode = fc.readExternalFiles()
+
+            # lastTopLevel is a better fallback, imo.
+            p = recoveryNode or c.p or c.lastTopLevel()
+            c.selectPosition(p)
+            # Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
+            c.redraw_later()
+            c.checkOutline()  # Must be called *after* ni.end_holding.
+            if c.changed:
+                fc.propagateDirtyNodes()
+            fc.initReadIvars()
+            t2 = time.time()
+            g.es(f"read outline in {t2 - t1:2.2f} seconds")
+            return v
+        finally:
+            if conn:
+                conn.close()
+            c.loading = False  # reenable c.changed
+    #@+node:ekr.20230910160254.1: *6* fc._getLeoFileByName
+    def _getLeoFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
+        """
+        Open, read, and close a .leo or .leojs file.
+
+        The caller should follow this with a call to c.redraw().
+        """
+        fc, c = self, self.c
+        t1 = time.time()
+        c.clearChanged()  # May be set when reading @file nodes.
+        fc.warnOnReadOnlyFiles(path)
+        fc.checking = False
+        fc.mFileName = c.mFileName
+        fc.initReadIvars()
+        recoveryNode = None
+        try:
+            c.loading = True
+            ### if not silent and checkOpenFiles:
+            ### Don't check for open file when reverting.
+            g.app.checkForOpenFile(c, path)
+
+            # Open, read and close the file.
+            try:
+                with open(path, 'rb') as theFile:
+                    if path.endswith('.leojs'):
+                        v = FastRead(c, self.gnxDict).readJsonFile(theFile, path)
+                    else:
+                        v = FastRead(c, self.gnxDict).readFile(theFile, path)
+            except IOError as e:
+                if not g.unitTesting:
+                    g.trace(e)
+                    g.error("can not open:", path)
+                return None
+            if not v:
+                return None
+
+            # Finish loading.
+            c.hiddenRootNode = v
+            c.setFileTimeStamp(path)
+            if readAtFileNodesFlag:
+                recoveryNode = fc.readExternalFiles()
+
+            # lastTopLevel is a better fallback, imo.
+            p = recoveryNode or c.p or c.lastTopLevel()
+            c.selectPosition(p)
+            # Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
+            c.redraw_later()
+            c.checkOutline()  # Must be called *after* ni.end_holding.
+            if c.changed:
+                fc.propagateDirtyNodes()
+            fc.initReadIvars()
+            t2 = time.time()
+            g.es(f"read outline in {t2 - t1:2.2f} seconds")
+            return v
+        finally:
+            c.loading = False  # reenable c.changed
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (to be deleted)
     def getLeoFile(
         self,
@@ -1124,116 +1230,6 @@ class FileCommands:
         except sqlite3.OperationalError:
             pass
         return geom
-    #@+node:ekr.20230910154358.1: *5* fc.getLeoDBFileByName
-    def getLeoDBFileByName(
-        self,
-        fileName: str,
-        readAtFileNodesFlag: bool = True,
-    ) -> bool:
-        """
-        Open, read, and close a .db file.
-
-        The caller should follow this with a call to c.redraw().
-        """
-        fc, c = self, self.c
-        t1 = time.time()
-        c.clearChanged()  # May be set when reading @file nodes.
-        fc.warnOnReadOnlyFiles(fileName)
-        fc.checking = False
-        fc.mFileName = c.mFileName
-        fc.initReadIvars()
-        recoveryNode = None
-        conn = None
-        try:
-            c.loading = True  # disable c.changed
-            g.app.checkForOpenFile(c, fileName)  ### Experimental.
-            conn = sqlite3.connect(fileName)
-            v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn)
-            if not v:
-                return False
-            # Set timestamp and recovery node.
-            c.setFileTimeStamp(fileName)
-            if readAtFileNodesFlag:
-                recoveryNode = fc.readExternalFiles()
-
-            # lastTopLevel is a better fallback, imo.
-            p = recoveryNode or c.p or c.lastTopLevel()
-            c.selectPosition(p)
-            # Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            c.redraw_later()
-            c.checkOutline()  # Must be called *after* ni.end_holding.
-            if c.changed:
-                fc.propagateDirtyNodes()
-            fc.initReadIvars()
-            t2 = time.time()
-            g.es(f"read outline in {t2 - t1:2.2f} seconds")
-            return True
-        finally:
-            if conn:
-                conn.close()
-            c.loading = False  # reenable c.changed
-    #@+node:ekr.20230910160254.1: *5* fc.getLeoFileByName
-    def getLeoFileByName(
-        self,
-        fileName: str,
-        readAtFileNodesFlag: bool = True,
-    ) -> bool:  ###tuple[VNode, float]:
-        """
-        Open, read, and close a .leo or .leojs file.
-
-        The caller should follow this with a call to c.redraw().
-        """
-        fc, c = self, self.c
-        t1 = time.time()
-        c.clearChanged()  # May be set when reading @file nodes.
-        fc.warnOnReadOnlyFiles(fileName)
-        fc.checking = False
-        fc.mFileName = c.mFileName
-        fc.initReadIvars()
-        recoveryNode = None
-        try:
-            c.loading = True
-            ### if not silent and checkOpenFiles:
-            ### Don't check for open file when reverting.
-            g.app.checkForOpenFile(c, fileName)
-
-            # Open, read and close the file.
-            try:
-                with open(fileName, 'rb') as theFile:
-                    if fileName.endswith('.leojs'):
-                        v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
-                    else:
-                        v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
-            except IOError as e:
-                if not g.unitTesting:
-                    g.trace(e)
-                    g.error("can not open:", fileName)
-                return False
-            if not v:
-                return False
-
-            # Finish loading.
-            c.hiddenRootNode = v
-            c.setFileTimeStamp(fileName)
-            if readAtFileNodesFlag:
-                recoveryNode = fc.readExternalFiles()
-
-            # lastTopLevel is a better fallback, imo.
-            p = recoveryNode or c.p or c.lastTopLevel()
-            c.selectPosition(p)
-            # Delay the second redraw until idle time.
-            # This causes a slight flash, but corrects a hangnail.
-            c.redraw_later()
-            c.checkOutline()  # Must be called *after* ni.end_holding.
-            if c.changed:
-                fc.propagateDirtyNodes()
-            fc.initReadIvars()
-            t2 = time.time()
-            g.es(f"read outline in {t2 - t1:2.2f} seconds")
-            return True
-        finally:
-            c.loading = False  # reenable c.changed
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition

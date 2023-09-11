@@ -2090,7 +2090,7 @@ class LoadManager:
                 result.add_to_list(commandName, bi)
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
-    def openSettingsFile(self, fn: str) -> Optional[Cmdr]:
+    def openSettingsFile(self, path: str) -> Optional[Cmdr]:
         """
         Open a settings file with a null gui.  Return the commander.
 
@@ -2098,15 +2098,15 @@ class LoadManager:
         """
         lm = self
         ### New tests.
-        if not fn:
+        if not path:
             return None
-        if not os.path.exists(fn):
+        if not os.path.exists(path):
             return None
-        if not lm.isLeoFile(fn):
+        if not lm.isLeoFile(path):
             return None
         if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
-            s = f"reading settings in {os.path.normpath(fn)}"
+            s = f"reading settings in {os.path.normpath(path)}"
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
@@ -2114,18 +2114,20 @@ class LoadManager:
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
-        c = g.app.newCommander(fn)
+        c = g.app.newCommander(path)
         fc = c.fileCommands
         frame = c.frame
         frame.log.enable(False)
         g.app.lockLog()
         try:
             g.app.openingSettingsFile = True
-            ok = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=False)
+            ok = fc.getAnyLeoFileByName(path, readAtFileNodesFlag=False)
+            if not ok:
+                return None
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
-        c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
+        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
         return c if ok else None
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
