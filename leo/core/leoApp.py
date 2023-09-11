@@ -2117,19 +2117,18 @@ class LoadManager:
         c = g.app.newCommander(path)
         fc = c.fileCommands
         frame = c.frame
-        frame.log.enable(False)
-        g.app.lockLog()
         try:
+            frame.log.enable(False)
+            g.app.lockLog()
             g.app.openingSettingsFile = True
-            ok = fc.getAnyLeoFileByName(path, readAtFileNodesFlag=False)
-            if not ok:
-                return None
+            v = fc.getAnyLeoFileByName(path, readAtFileNodesFlag=False)
+            return c if v else None
         finally:
+            # Never put a return in a finally clause.
             g.app.openingSettingsFile = False
-        g.app.unlockLog()
-        c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
-        g.app.gui = oldGui
-        return c if ok else None
+            g.app.unlockLog()
+            c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+            g.app.gui = oldGui
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self) -> None:
         """
@@ -3106,8 +3105,8 @@ class LoadManager:
 
         # Read the outline, but only if it exists.
         if os.path.exists(fn):
-            ok = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
-            if not ok:
+            v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
+            if not v:
                 return None
 
         # Finish.
@@ -3265,8 +3264,8 @@ class LoadManager:
 
         # Re-read the file.
         c.fileCommands.initIvars()
-        ok = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
-        if not ok:
+        v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
+        if not v:
             g.error(f"Revert failed: {fn!r}")
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings

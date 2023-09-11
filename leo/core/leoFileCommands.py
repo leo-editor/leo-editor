@@ -900,7 +900,7 @@ class FileCommands:
             if 'gnx' in g.app.debug:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
-    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName **improve
+    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
     def getAnyLeoFileByName(self, path: str, *, readAtFileNodesFlag: bool = True) -> Optional[VNode]:
         """Open any kind of Leo file."""
         c = self.c
@@ -956,6 +956,7 @@ class FileCommands:
             g.es(f"read outline in {t2 - t1:2.2f} seconds")
             return v
         finally:
+            # Never put a return in a finally clause.
             if conn:
                 conn.close()
             c.loading = False  # reenable c.changed
@@ -978,7 +979,8 @@ class FileCommands:
             c.loading = True
             ### if not silent and checkOpenFiles:
             ### Don't check for open file when reverting.
-            g.app.checkForOpenFile(c, path)
+
+            g.app.checkForOpenFile(c, path)  ########### ???
 
             # Open, read and close the file.
             try:
@@ -1015,6 +1017,7 @@ class FileCommands:
             g.es(f"read outline in {t2 - t1:2.2f} seconds")
             return v
         finally:
+            # Never put a return in a finally clause.
             c.loading = False  # reenable c.changed
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (to be deleted)
     def getLeoFile(
@@ -1418,8 +1421,8 @@ class FileCommands:
             self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.save(c, fileName)
             # Disable path-changed messages in writeAllHelper.
-            c.ignoreChangedPaths = True
             try:
+                c.ignoreChangedPaths = True
                 if self.write_Leo_file(fileName):
                     c.clearChanged()  # Clears all dirty bits.
                     self.putSavedMessage(fileName)
@@ -1437,8 +1440,8 @@ class FileCommands:
             g.app.commander_cacher.commit()  # Commit, but don't save file name.
 
             # Disable path-changed messages in writeAllHelper.
-            c.ignoreChangedPaths = True
             try:
+                c.ignoreChangedPaths = True
                 self.write_Leo_file(fileName)
             finally:
                 c.ignoreChangedPaths = False
