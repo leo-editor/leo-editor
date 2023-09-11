@@ -980,7 +980,7 @@ class FileCommands:
             ### if not silent and checkOpenFiles:
             ### Don't check for open file when reverting.
 
-            g.app.checkForOpenFile(c, path)  ########### ???
+            ### g.app.checkForOpenFile(c, path)  ########### ???
 
             # Open, read and close the file.
             try:

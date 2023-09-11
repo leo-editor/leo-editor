@@ -6,7 +6,6 @@
 from __future__ import annotations
 from collections.abc import Callable
 import difflib
-import io
 import os
 import re
 from typing import Optional, TYPE_CHECKING
@@ -1478,14 +1477,16 @@ class GitDiffController:
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
+        fc = hidden_c.fileCommands
         ######
-        hidden_c.fileCommands.getLeoFile(
-            theFile=io.StringIO(initial_value=s),
-            fileName=path,
-            readAtFileNodesFlag=False,
-            silent=False,
-            checkOpenFiles=False,
-        )
+        # fc.getLeoFile(
+            # theFile=io.StringIO(initial_value=s),
+            # fileName=path,
+            # readAtFileNodesFlag=False,
+            # silent=False,
+            # checkOpenFiles=False,
+        # )
+        fc.getAnyLeoFileByName(path, readAtFileNodesFlag=False)
         return hidden_c
     #@-others
 #@-others
