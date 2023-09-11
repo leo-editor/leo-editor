@@ -938,7 +938,6 @@ class FileCommands:
         conn = None
         try:
             c.loading = True  # disable c.changed
-            g.app.checkForOpenFile(c, path)  ### Experimental.
             conn = sqlite3.connect(path)
             v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn)
             if not v:
