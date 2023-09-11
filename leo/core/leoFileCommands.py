@@ -1124,7 +1124,7 @@ class FileCommands:
         except sqlite3.OperationalError:
             pass
         return geom
-    #@+node:ekr.20230910154358.1: *5* fc.getLeoDBFileByName (**new)
+    #@+node:ekr.20230910154358.1: *5* fc.getLeoDBFileByName
     def getLeoDBFileByName(
         self,
         fileName: str,

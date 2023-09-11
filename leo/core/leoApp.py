@@ -1384,17 +1384,21 @@ class LeoApp:
             return
         # #1519: check os.path.exists.
         aList = g.app.db.get(tag) or []  # A list of normalized file names.
-        g.trace(c.fileName())  ###
         if any(os.path.exists(z) and os.path.samefile(z, fn) for z in aList):
             # The file may be open in another copy of Leo, or not:
             # another Leo may have been killed prematurely.
             # Put the file on the global list.
             # A dialog will warn the user such files later.
-            g.printObj(aList, tag=f"app.checkForOpenFile: g.app.db.get{tag}: {c.fileName()}")  ###
+
+            g.trace(len(aList), c.fileName())  ###
+            ### g.printObj(aList, tag=f"app.checkForOpenFile: g.app.db.get{tag}: {c.fileName()}")  ###
+
             fn = os.path.normpath(fn)
             if fn not in g.app.already_open_files:
-                g.es('may be open in another Leo:', color='red')
+                g.es('May be open in another Leo:', color='red')
                 g.es(fn)
+                g.trace(g.callers(6))  ###
+                print(f"May be open in another Leo: {fn}")
                 g.app.already_open_files.append(fn)
         else:
             g.app.rememberOpenFile(fn)
