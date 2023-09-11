@@ -2084,19 +2084,19 @@ class LoadManager:
                 result.add_to_list(commandName, bi)
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
-    def openSettingsFile(self, path: str) -> Optional[Cmdr]:
+    def openSettingsFile(self, fn: str) -> Optional[Cmdr]:
         """
         Open a settings file with a null gui.  Return the commander.
 
         The caller must init the c.config object.
         """
         lm = self
-        if not (path and os.path.exists(path) and lm.isLeoFile(path)):
+        if not (fn and os.path.exists(fn) and lm.isLeoFile(fn)):
             return None
 
         if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
-            s = f"reading settings in {os.path.normpath(path)}"
+            s = f"reading settings in {os.path.normpath(fn)}"
             if 'startup' in g.app.debug:
                 print(s)
             g.es(s, color='blue')
@@ -2104,18 +2104,18 @@ class LoadManager:
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
-        c = g.app.newCommander(path)
+        c = g.app.newCommander(fn)
         fc = c.fileCommands
         frame = c.frame
         try:
             frame.log.enable(False)
             g.app.lockLog()
-            v = fc.getAnyLeoFileByName(path, checkOpenFiles=False, readAtFileNodesFlag=False)
+            v = fc.getAnyLeoFileByName(fn, checkOpenFiles=False, readAtFileNodesFlag=False)
             return c if v else None
         finally:
             # Never put a return in a finally clause.
             g.app.unlockLog()
-            c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+            c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
             g.app.gui = oldGui
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self) -> None:
