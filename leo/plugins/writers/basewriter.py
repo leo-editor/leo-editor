@@ -35,6 +35,9 @@ class BaseWriter:
         # Like at.putSentinel.
         at.os('%s@+node:%s%s' % (delim, s, delim2))
         at.onl()
+    #@+node:ekr.20230913032143.1: ** basewriter.write
+    def write(self, root: Position) -> None:
+        raise NotImplementedError('must be overridden in subclasses')
     #@-others
 
 #@@language python
