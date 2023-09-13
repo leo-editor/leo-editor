@@ -889,7 +889,7 @@ class TestTOG(BaseTest):
     def test_backslashes(self):
         # leoGlobals.py.
         contents = r'''\
-    class SherlockTracer:
+    class TestClass:
         """before\\after"""
     '''
         self.make_data(contents)
