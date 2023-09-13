@@ -50,8 +50,6 @@ class Importer:
     # May be overridden in subclasses.
     allow_preamble = False
     block_patterns: tuple = tuple()
-    level_up_ch = '{'
-    level_down_ch = '}'
     string_list: list[str] = ['"', "'"]
 
     #@+others

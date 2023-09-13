@@ -749,63 +749,6 @@ class TestCSharp(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
     #@-others
-#@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
-class TestCText(BaseTestImporter):
-
-    ext = '.ctext'  # A made-up extension for unit tests.
-
-    #@+others
-    #@+node:ekr.20220811091538.1: *3* TestCText.test_importer
-    def test_importer(self):
-
-        # From the CText_Importer docstring.
-        # Note that '#' is the delim for unit tests.
-        s = """
-        Leading text in root node of subtree
-
-        Etc. etc.
-
-        ### A level one node #####################################
-
-        This would be the text in this level one node.
-
-        And this.
-
-        ### Another level one node ###############################
-
-        Another one
-
-        #### A level 2 node ######################################
-
-        See what we did there - one more '#' - this is a subnode.
-        """
-        # Round-tripping is not guaranteed.
-        expected_results = (
-            (0, '', # Ignore the first headline.
-                    'Leading text in root node of subtree\n'
-                    '\n'
-                    'Etc. etc.\n'
-                    '\n'
-            ),
-            (1, 'A level one node',
-                    '\n'
-                    'This would be the text in this level one node.\n'
-                    '\n'
-                    'And this.\n'
-                    '\n'
-            ),
-            (1, 'Another level one node',
-                    '\n'
-                    'Another one\n'
-                    '\n'
-            ),
-            (2, 'A level 2 node',
-                    '\n'
-                    "See what we did there - one more '#' - this is a subnode.\n"
-            ),
-        )
-        self.new_run_test(s, expected_results)
-    #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython(BaseTestImporter):
 
