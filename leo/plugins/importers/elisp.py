@@ -17,8 +17,6 @@ class Elisp_Importer(Importer):
     """The importer for the elisp language."""
 
     language = 'lisp'
-    level_up_ch = '('
-    level_down_ch = ')'
 
     block_patterns = (
         # ( defun name
