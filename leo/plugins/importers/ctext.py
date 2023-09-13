@@ -53,7 +53,6 @@ class CText_Importer(Importer):
         ft = c.importCommands.fileType.lower()
         cchar = (
             '#' if g.unitTesting else
-            '%' if ft == '.sql' else
             '-' if ft == '.sql' else
             '/' if ft == '.js' else '#'
         )

@@ -14,11 +14,9 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
 class Elisp_Importer(Importer):
-    """The importer for the elisp lanuage."""
+    """The importer for the elisp language."""
 
     language = 'lisp'
-    level_up_ch = '('
-    level_down_ch = ')'
 
     block_patterns = (
         # ( defun name

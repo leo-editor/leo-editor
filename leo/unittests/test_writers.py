@@ -3,7 +3,6 @@
 """Tests of leo/plugins/writers"""
 import textwrap
 from leo.core.leoTest2 import LeoUnitTest
-from leo.plugins.writers.ctext import CTextWriter
 from leo.plugins.writers.dart import DartWriter
 from leo.plugins.writers.leo_rst import RstWriter
 from leo.plugins.writers.treepad import TreePad_Writer
@@ -36,19 +35,6 @@ class TestBaseWriter(BaseTestWriter):
             for delim1, delim2 in table:
                 at.outputList = []
                 x.put_node_sentinel(p, delim1, delim2)
-    #@-others
-#@+node:ekr.20220812144913.1: ** class TestCTextWriter(BaseTestWriter)
-class TestCTextWriter (BaseTestWriter):
-    """Test cases for the ctext writer plugin."""
-    #@+others
-    #@+node:ekr.20220812144243.1: *3* TestCTextWriter.test_1
-    def test_1(self):
-
-        c, root = self.c, self.c.p
-        child = root.insertAsLastChild()
-        child.h = 'h'
-        x = CTextWriter(c)
-        x.write(root)
     #@-others
 #@+node:ekr.20220812175240.1: ** class TestDartWriter(BaseTestWriter)
 class TestDartWriter(BaseTestWriter):
