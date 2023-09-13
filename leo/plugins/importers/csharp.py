@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer(Importer)
 class Csharp_Importer(C_Importer):
-    """The importer for the csharp lanuage."""
+    """The importer for the csharp language."""
 
     language = 'csharp'
 #@-others
