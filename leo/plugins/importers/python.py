@@ -85,7 +85,7 @@ class Python_Importer(Importer):
             """
             Skip the remainder of a string.
 
-            Sring ends:       return ('', i)
+            String ends:      return ('', i)
             String continues: return (delim, len(line))
             """
             if delim not in line:

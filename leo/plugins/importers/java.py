@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer(Importer)
 class Java_Importer(Importer):
-    """The importer for the java lanuage."""
+    """The importer for the java language."""
 
     language = 'java'
 

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161124034614.2: ** class Otl_Importer(Importer)
 class Otl_Importer(Importer):
-    """The importer for the otl lanuage."""
+    """The importer for the otl language."""
 
     language = 'otl'
 

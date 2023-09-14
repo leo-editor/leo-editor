@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer(Importer)
 class Dart_Importer(Importer):
-    """The importer for the dart lanuage."""
+    """The importer for the dart language."""
 
     language = 'dart'
 
