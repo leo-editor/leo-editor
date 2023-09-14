@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer(Importer)
 class Org_Importer(Importer):
-    """The importer for the org lanuage."""
+    """The importer for the org language."""
 
     language = 'org'
 
