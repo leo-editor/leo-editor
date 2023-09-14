@@ -2510,7 +2510,6 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
-<v t="ekr.20131008041326.16080"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32703,13 +32702,15 @@ Leo 5.8 (October 1, 2018): Replace caching with Vitalije's super-fast read code.
 Leo 5.9 (May 1, 2019): Add ``LeoWapp.py``, Leo in a browser.</t>
 <t tx="ekr.20230908152641.1">August, 2020: edreamleo's first PR. Félix Malboeuf encouraged me to use PRs for all significant code changes.
 
-Leo 6.1 (November 8, 2019): This release contained the dawn of ``leoInteg``: integration of Leo with VS code. ``leoInteg`` and ``leoJS`` are the future of Leo. All later releases contain support for ``leoInteg`` and ``leoJS``.
-
 Around this time Félix started a careful code review of *all* of Leo's core, including many plugins. This ongoing review found many "quirps" and some larger bugs.
 
 6.2 (March 27, 2020): The rise of f-strings in Leo. How did I ever live without them?
 
 6.3 (November 6, 2020): ``leoAst.py``.
+
+June 21, 2021: The dawn of ``leoInteg``: The first commit by Félix Malboeuf for leoserver.py, a stand-alone server for Leo.
+
+6.4 (September 20, 2021): The first release supporting ``leoInteg``: integration of Leo with VS code. ``leoInteg`` and ``leoJS`` are the future of Leo. All later releases contain support for ``leoInteg`` and ``leoJS``. This was the first release containing leoserver.py.
 
 .. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/GcaWR7ohBQAJ
 
