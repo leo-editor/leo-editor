@@ -252,6 +252,18 @@ class TestCommands(LeoUnitTest):
         # s = w.getAllText()
         # w.setInsertPoint(len(s))
         c.insertBodyTime()
+    #@+node:ekr.20230914004418.1: *3* TestCommands.test_c_insertTraces
+    def test_c_insertTraces(self):
+
+        import re
+        c = self.c
+        path = r'C:\Repos\ekr-mypy2\mypy\nodes.py'
+        g.trace(c.fileName())
+        c.insertTraces(
+            path = path,
+            pattern = re.compile(r'def (accept)'),
+            statement = 'g.trace(g.callers())',
+        )
     #@+node:ekr.20210906075242.15: *3* TestCommands.test_c_markSubheads
     def test_c_markSubheads(self):
         c = self.c

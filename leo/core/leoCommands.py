@@ -4347,7 +4347,55 @@ class Commands:
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()  # This is essential.
-    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
+    #@+node:ekr.20230913235155.1: *3* c.Scripts
+    #@+node:ekr.20230913235205.1: *4* c.insertTraces
+    def insertTraces(self, *, path: str, pattern: re.Pattern, statement: str) -> None:
+        """
+        Insert trace statements into the given file for functions/methods whose
+        names match the given pattern.
+
+        path:       A full path to a file.
+        pattern:    A compiled regex matching names of functions/methods.
+        statement:  The inserted statement. Regex replacements are valid.
+        """
+        c = self
+        Block = tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
+
+        # g.printObj(sys.path, tag='sys.path')
+
+        # Let the python importer do most of the heavy lifting.
+        from leo.plugins.importers.python import Python_Importer
+        python_importer = Python_Importer(c)
+
+        # Define helper functions.
+        #@+others
+        #@+node:ekr.20230914002103.1: *5* function: get_lines
+        def get_lines(path: str) -> list[str]:
+            try:
+                with open(path, 'r') as f:
+                    contents = f.read()
+                    return g.splitLines(contents)
+            except Exception:
+                return None
+        #@+node:ekr.20230913235937.1: *5* function: insert_all_traces
+        def insert_all_traces() -> None:
+            """The top-level function."""
+            lines = get_lines(path)
+            if not lines:
+                return
+            guide_lines = python_importer.make_guide_lines(lines)
+            python_importer.guide_lines = guide_lines
+            # g.printObj(guide_lines, tag='guide_lines')
+            blocks: list[Block] = python_importer.find_blocks(0, len(lines))
+            assert blocks  ### Temp.
+            # g.printObj(blocks, tag='blocks')
+        #@-others
+
+        try:
+            insert_all_traces()
+        finally:
+            c.redraw()
+    #@+node:ekr.20130823083943.12559: *4* c.recursiveImport
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
@@ -4360,7 +4408,7 @@ class Commands:
         verbose: bool = True,
     ) -> None:
         #@+<< docstring >>
-        #@+node:ekr.20130823083943.12614: *4* << docstring >>
+        #@+node:ekr.20130823083943.12614: *5* << docstring >>
         """
         Recursively import all python files in a directory and clean the results.
 
