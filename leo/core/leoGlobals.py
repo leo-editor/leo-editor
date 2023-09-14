@@ -5518,7 +5518,7 @@ def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
         return val.filename, val.lineno
     #
     # Data is a list of tuples, one per stack entry.
-    # Tupls have the form (filename,lineNumber,functionName,text).
+    # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
         item = data[-1]  # Get the item at the top of the stack.
@@ -5545,7 +5545,7 @@ def goto_last_exception(c: Cmdr) -> None:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError(*args: Any) -> None:
-    """Report a serious interal error in Leo."""
+    """Report a serious internal error in Leo."""
     callers = g.callers(20).split(',')
     caller = callers[-1]
     g.error('\nInternal Leo error in', caller)
@@ -6584,7 +6584,7 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     #
     # Rewritten to fix #1071.
     if g.unitTesting:
-        return s  # Regretable, but necessary.
+        return s  # Regrettable, but necessary.
     #
     # Return s if no @language in effect. Should never happen.
     language = g.scanForAtLanguage(c, p)
