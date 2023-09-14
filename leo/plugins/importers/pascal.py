@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer(Importer)
 class Pascal_Importer(Importer):
-    """The importer for the pascal lanuage."""
+    """The importer for the pascal language."""
 
     language = 'pascal'
 

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
 class Markdown_Importer(Importer):
-    """The importer for the markdown lanuage."""
+    """The importer for the markdown language."""
 
     language = 'md'
 

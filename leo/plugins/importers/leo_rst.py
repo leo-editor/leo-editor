@@ -20,7 +20,7 @@ underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 #@+others
 #@+node:ekr.20161127192007.2: ** class Rst_Importer(Importer)
 class Rst_Importer(Importer):
-    """The importer for the rst lanuage."""
+    """The importer for the rst language."""
 
     language = 'rest'
 

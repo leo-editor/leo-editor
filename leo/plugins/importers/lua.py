@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer(Importer)
 class Lua_Importer(Importer):
-    """The importer for the lua lanuage."""
+    """The importer for the lua language."""
 
     language = 'lua'
 
