@@ -26,7 +26,7 @@ class Importer:
     Many importers only define `block_patterns` and `language` class ivars.
 
     Analyzing **guide lines** (lines without comments and strings)
-    grealtly simplifies this class and all of Leo's importers.
+    greatly simplifies this class and all of Leo's importers.
 
     Subclasses may override the following methods to recognize blocks:
 
@@ -171,7 +171,7 @@ class Importer:
 
         Return the index of end of the block.
         i: The index of the (guide) line *following* the start of the block.
-        i2: The inedex last (guide) line to be scanned.
+        i2: The index last (guide) line to be scanned.
 
         This method assumes that that '{' and '}' delimit blocks.
         Subclasses may override this method as necessary.

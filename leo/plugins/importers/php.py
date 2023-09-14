@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer(Importer)
 class Php_Importer(Importer):
-    """The importer for the php lanuage."""
+    """The importer for the php language."""
 
     language = 'php'
 #@-others

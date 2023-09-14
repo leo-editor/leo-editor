@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20170615153639.3: ** class Tcl_Importer(Importer)
 class Tcl_Importer(Importer):
-    """The importer for the tcl lanuage."""
+    """The importer for the tcl language."""
 
     language = 'tcl'
 

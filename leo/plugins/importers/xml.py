@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 #@+others
 #@+node:ekr.20161121204146.3: ** class Xml_Importer(Importer)
 class Xml_Importer(Importer):
-    """The importer for the xml lanuage."""
+    """The importer for the xml language."""
 
     language = 'xml'
     minimum_block_size = 2  # Helps handle one-line elements.
