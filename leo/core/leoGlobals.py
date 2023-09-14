@@ -3190,7 +3190,7 @@ def get_files_in_directory(directory: str, kinds: list = None, recursive: bool =
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 def getBaseDirectory(c: Cmdr) -> str:
     """
-    This function is deprectated.
+    This function is deprecated.
 
     Previously it convert '!' or '.' to proper directory references using
     @string relative-path-base-directory.
@@ -5971,7 +5971,7 @@ def finalize(path: str) -> str:
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
-    # Convert backslashes to forward slashes, regradless of platform.
+    # Convert backslashes to forward slashes, regardless of platform.
     path = g.os_path_normslashes(path)
     return path
 
@@ -6000,7 +6000,7 @@ def finalize_join(*args: Any) -> str:
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
-    # Convert backslashes to forward slashes, regradless of platform.
+    # Convert backslashes to forward slashes, regardless of platform.
     path = g.os_path_normslashes(path)
     return path
 
@@ -6231,7 +6231,7 @@ def os_startfile(fname: str) -> None:
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c: Cmdr, root: Position = None, useHeadlines: bool = False) -> list:
-    """Creates a list describing a node and all its descendents"""
+    """Creates a list describing a node and all its descendants"""
     if not root:
         root = c.rootPosition()
     v = root
@@ -6430,7 +6430,7 @@ def executeFile(filename: str, options: str = '') -> None:
     if not os.access(filename, os.R_OK):
         return
     fdir, fname = g.os_path_split(filename)
-    # New in Leo 4.10: alway use subprocess.
+    # New in Leo 4.10: always use subprocess.
 
     def subprocess_wrapper(cmdlst: str) -> tuple:
 
@@ -6690,7 +6690,7 @@ def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: 
         return True
     if s2.startswith(('@+others', '@+<<')):
         #@verbatim
-        # @others and section references are visibible everywhere.
+        # @others and section references are visible everywhere.
         return True
     # Not visible anywhere. For example, @+leo, @-leo, @-others, @+node, @-node.
     return True

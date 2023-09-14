@@ -405,7 +405,7 @@ class VimCommands:
             if c.config.getBool('vim-trainer-mode', default=False):
                 self.toggle_vim_trainer_mode()
     #@+node:ekr.20140803220119.18103: *4* vc.init helpers
-    # Every ivar of this class must be initied in exactly one init helper.
+    # Every ivar of this class must be inited in exactly one init helper.
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
     def init_dot_ivars(self) -> None:
         """Init all dot-related ivars."""
@@ -1366,7 +1366,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140808173212.18070: *5* vc.vim_pound
     def vim_pound(self) -> None:
-        """Find previous occurance of word under the cursor."""
+        """Find previous occurrence of word under the cursor."""
         # ec = self.c.editCommands
         w = self.w
         if self.is_text_wrapper(w):
@@ -1461,7 +1461,7 @@ class VimCommands:
             self.quit()
     #@+node:ekr.20140810210411.18239: *5* vc.vim_star
     def vim_star(self) -> None:
-        """Find previous occurance of word under the cursor."""
+        """Find previous occurrence of word under the cursor."""
         # ec = self.c.editCommands
         w = self.w
         if self.is_text_wrapper(w):

@@ -377,7 +377,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = enchant.Dict(language)
             except Exception:
                 d = {}
-        # Commen exit, for traces.
+        # Common exit, for traces.
         return d
 
     #@+node:ekr.20150514063305.515: *3* spell.ignore

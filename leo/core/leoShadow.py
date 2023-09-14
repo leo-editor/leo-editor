@@ -215,7 +215,7 @@ class ShadowController:
         """
         The Mulder update algorithm, revised by EKR.
 
-        Use the diff between the old and new public lines to insperse sentinels
+        Use the diff between the old and new public lines to intersperse sentinels
         from old_private_lines into the result.
 
         The algorithm never deletes or rearranges sentinels. However, verbatim

@@ -33,7 +33,7 @@ will return None.
 #@-<< leoColor docstring >>
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
-# Names should be lower case, without spaces or special characteres.
+# Names should be lower case, without spaces or special characters.
 # See BaseColorizer.normalize().
 leo_color_database = {
     # leo colors

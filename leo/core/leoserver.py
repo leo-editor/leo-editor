@@ -101,7 +101,7 @@ class SetEncoder(json.JSONEncoder):
         # Sets become basic javascript arrays
         if isinstance(obj, set):
             return list(obj)
-        # Leo Positions get converted with same simple algo as p_to_ap
+        # Leo Positions get converted with same simple algorithm as p_to_ap
         if isinstance(obj, Position):
             stack = [{'gnx': v.gnx, 'childIndex': childIndex}
                 for (v, childIndex) in obj.stack]
@@ -4867,7 +4867,7 @@ class LeoServer:
             selRange = gui_w.getSelectionRange()
             return selRange
         except Exception:
-            print("Error retrieving current focussed widget selection range.")
+            print("Error retrieving current focused widget selection range.")
             return 0, 0
     #@+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x: Any) -> bool:

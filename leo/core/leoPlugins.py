@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< leoPlugins imports & annotations >>
 
 # Define modules that may be enabled by default
-# but that mignt not load because imports may fail.
+# but that might not load because imports may fail.
 optional_modules = [
     'leo.plugins.livecode',
     'leo.plugins.cursesGui2',
