@@ -767,6 +767,13 @@ class SpellTabHandler:
                 k1 = ins + start - 1
                 if k1 >= 0 and s[k1].isdigit():
                     continue
+                # Special case: \n and \t delimit words.
+                #               It seems impossible to do this in the regex.
+                if word.startswith(('t', 'n')) and k1 >= 0 and s[k1] == '\\':
+                    word = word[1:]
+                    start += 1
+                    if not word:
+                        continue
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue

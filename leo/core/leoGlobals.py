@@ -4001,10 +4001,13 @@ def match_word(s: str, i: int, pattern: str) -> bool:
     # Using a regex is surprisingly tricky.
     if pattern is None:
         return False
-    if i > 0 and g.isWordChar(s[i - 1]):  # Bug fix: 2017/06/01.
-        return False
     j = len(pattern)
     if j == 0:
+        return False
+    # Special case: \t or \n delimit words!
+    if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'tn':
+        return True
+    if i > 0 and g.isWordChar(s[i - 1]):
         return False
     if s.find(pattern, i, i + j) != i:
         return False
