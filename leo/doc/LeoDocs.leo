@@ -924,7 +924,6 @@
 <v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
 <v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
 <v t="ekr.20180126184230.1"><vh>Use Ctrl-P (repeat-complex-command) to avoid key bindings</vh></v>
-<v t="ekr.20220218121757.1"><vh>Ctrl-click urls and unls</vh></v>
 </v>
 <v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
 <v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
@@ -2255,7 +2254,6 @@
 <v t="ekr.20170707034853.66"><vh>Improved caching</vh></v>
 <v t="ekr.20170707034853.67"><vh>Improved operation of command history</vh></v>
 <v t="ekr.20170707034853.68"><vh>Indicate branch in Window title</vh></v>
-<v t="ekr.20170707034853.69"><vh>Restored importer;; abbreviation</vh></v>
 <v t="ekr.20170707034853.70"><vh>VR renders LaTex (python 2 only)</vh></v>
 </v>
 <v t="ekr.20170707034853.74"><vh>settings &amp; command-line arguments</vh>
@@ -22694,7 +22692,7 @@ Simplified signon logic and g.pr.
 
 Reverted leo_h.force_rehighlight.
 
-d4f481 on ​2017-04-28 06:34:10.
+​2017-04-28 06:34:10.
 
 leoColorizer.py:
 - Inserted force_rehighlight
@@ -22994,11 +22992,6 @@ Added submenus to Windows menu. This significantly simplifies and clarifies the 
 <t tx="ekr.20170707034853.67">The first UP-arrow to gives the previous command, the next up-arrow gives the next command, etc.
 </t>
 <t tx="ekr.20170707034853.68">Changed g.computeWindowTitle.
-</t>
-<t tx="ekr.20170707034853.69">55b2037ac3a: 2016-11-22 06:33:17 Removed importer;; abbreviation(!!)
-
-
-Restored the abbreviation from f10fa02b8cb681, the previous commit.
 </t>
 <t tx="ekr.20170707034853.7">https://github.com/leo-editor/leo-editor/issues/385
 </t>
@@ -23621,7 +23614,7 @@ The compile node has something like this::
     
     repository_dir = os.path.abspath(os.curdir)
     
-    # The system commands should be run from the folder containing the tex/cls/clo/bib files.
+    # Run the system commands from the folder containing the tex, cls, clo, or bib files.
     working_dir = os.path.join(repository_dir, 'myproject')
     os.chdir(working_dir)
     
@@ -30602,21 +30595,6 @@ The leo/plugins/example_rst_filter.py shows how to define and register these fil
     
 will select this node in LeoDocs.leo.
 </t>
-<t tx="ekr.20220218121757.1">Clicking a url, such as https://leo-editor.github.io/leo-editor/ will open the link in your default browser.
-
-Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
-UNL's have the form:
-
-
-    ``unl://``
-    Full path of a .leo file
-    List of ancestor nodes, separated by ``--&gt;``,
-  
-For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
-
-    ``unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html``
-
-Moving or renaming nodes may (partially) break UNL's.</t>
 <t tx="ekr.20220401072939.1">Leo https://leo-editor.github.io/leo-editor/ 6.6.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6.1/).

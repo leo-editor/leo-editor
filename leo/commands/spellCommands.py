@@ -767,12 +767,12 @@ class SpellTabHandler:
 
                 # Strip leading and trailing underscores.
                 # sc.process_word throw ValueError otherwise.
-                while word and word.startswith('_'):
+                while word and word.startswith(('_', '`')):
                     word = word[1:]
                     start += 1
                 if not word:
                     continue
-                while word and word.endswith('_'):
+                while word and word.endswith(('_', '`')):
                     word = word[:-1]
                 if not word:
                     continue
@@ -784,9 +784,14 @@ class SpellTabHandler:
                     parts = [z for z in parts if z]  # Handle '__'.
                     for i, part in enumerate(parts):
                         if not self.re_part.match(part):
-                            word = '_'.join(parts[:i])
+                            word = '_'.join(parts[:i]).replace('__', '_')
                             if not word:
                                 continue
+                else:
+                    parts = [word]
+                    if not self.re_part.match(word):
+                        # g.trace('Skip non-word', repr(word))
+                        continue
 
                 # Ignore the word if numbers precede or follow it.
                 # Seems difficult to do this in the regex itself.
@@ -810,6 +815,18 @@ class SpellTabHandler:
                     if not word:
                         continue
 
+                # Don't check short words.
+                if len(word) < 3:
+                    # g.trace('Skip short word', repr(word))
+                    continue
+
+                # Ignore all words in lines containing http.
+                i, j = g.getLine(s, ins + start)
+                line = s[i:j]
+                if 'http' in line:
+                    # g.trace(f"Skip url {word:>20} {line[:50]!r}")
+                    continue
+
                 # Last checks.
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
@@ -824,7 +841,7 @@ class SpellTabHandler:
                 try:
                     alts: list[str] = sc.process_word(word)
                 except ValueError:
-                    g.trace('Fail:', repr(word))
+                    g.printObj(parts, tag=f"Fail: word: {word!r}")
                     continue
                 if alts:
                     self.currentWord = word
