@@ -776,11 +776,12 @@ class SpellTabHandler:
                     word = word[:-1]
                 if not word:
                     continue
-                    
+
                 # Make sure the spell checker won't throw ValueError.
                 if '_' in word:
                     # Only check up to those parts containing word characters.
                     parts = word.split('_')
+                    parts = [z for z in parts if z]  # Handle '__'.
                     for i, part in enumerate(parts):
                         if not self.re_part.match(part):
                             word = '_'.join(parts[:i])
