@@ -3997,22 +3997,30 @@ def match_ignoring_case(s1: str, s2: str) -> bool:
     return bool(s1 and s2 and s1.lower() == s2.lower())
 #@+node:ekr.20031218072017.3184: *4* g.match_word & g.match_words
 def match_word(s: str, i: int, pattern: str) -> bool:
-
+    """Return True if s[i] starts a word."""
     # Using a regex is surprisingly tricky.
+
+    # Check the pattern and set j.
     if pattern is None:
         return False
     j = len(pattern)
     if j == 0:
         return False
+
+    # Check the start of the word.
     # Special case: \t or \n delimit words!
     if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'tn':
         return True
     if i > 0 and g.isWordChar(s[i - 1]):
         return False
+
+    # Check that the pattern matches.
     if s.find(pattern, i, i + j) != i:
         return False
     if i + j >= len(s):
         return True
+
+    # Check the end of the word.
     ch = s[i + j]
     return not g.isWordChar(ch)
 
