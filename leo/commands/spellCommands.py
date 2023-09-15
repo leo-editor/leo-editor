@@ -681,9 +681,6 @@ class SpellTabHandler:
         self.c = c
         self.body = c.frame.body
         self.currentWord: str = None
-        # Don't include underscores in words. It just complicates things.
-        # [^\W\d_] means any unicode char except underscore or digit.
-        self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
         self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
         # A text widget for scanning. Must have a parent frame.
@@ -703,7 +700,7 @@ class SpellTabHandler:
             # g.es_print('No main dictionary')
             self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
-    #@+node:ekr.20150514063305.503: *4* add (spellTab)
+    #@+node:ekr.20150514063305.503: *4* SpellTabHandler.add
     def add(self, event: Event = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
@@ -711,7 +708,7 @@ class SpellTabHandler:
             if w:
                 self.spellController.add(w)
                 self.tab.onFindButton()
-    #@+node:ekr.20150514063305.504: *4* change (spellTab)
+    #@+node:ekr.20150514063305.504: *4* SpellTabHandler.change
     def change(self, event: Event = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
@@ -743,7 +740,15 @@ class SpellTabHandler:
         c.invalidateFocus()
         c.bodyWantsFocus()
         return False
-    #@+node:ekr.20150514063305.505: *4* find & helper
+    #@+node:ekr.20150514063305.505: *4* SpellTabHandler.find & helper
+    # Create a pattern that matches words, including contractions.
+
+    # Do *not* include underscores in words. The spell checker will barf!
+
+    # [^\W\d_] means any unicode char except underscore or digit.
+
+    re_word = re.compile(r"([^\W\d_]+(['`][^\W\d_]{1,2})?)", flags=re.UNICODE)
+
     def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
         if not self.loaded:
@@ -803,7 +808,7 @@ class SpellTabHandler:
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return
-    #@+node:ekr.20160415033936.1: *5* showMisspelled
+    #@+node:ekr.20160415033936.1: *5* SpellTabHandler.showMisspelled
     def showMisspelled(self, p: Position) -> None:
         """Show the position p, contracting the tree as needed."""
         c = self.c
@@ -821,10 +826,10 @@ class SpellTabHandler:
             c.redraw(p)
         else:
             c.selectPosition(p)
-    #@+node:ekr.20150514063305.508: *4* hide
+    #@+node:ekr.20150514063305.508: *4* SpellTabHandler.hide
     def hide(self, event: Event = None) -> None:
         self.c.frame.log.selectTab('Log')
-    #@+node:ekr.20150514063305.509: *4* ignore
+    #@+node:ekr.20150514063305.509: *4* SpellTabHandler.ignore
     def ignore(self, event: Event = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
