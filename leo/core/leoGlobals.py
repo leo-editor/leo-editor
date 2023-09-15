@@ -4008,8 +4008,8 @@ def match_word(s: str, i: int, pattern: str) -> bool:
         return False
 
     # Check the start of the word.
-    # Special case: \t or \n delimit words!
-    if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'tn':
+    # Special cases: \b or \t or \n delimit words!
+    if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'bnt':
         return True
     if i > 0 and g.isWordChar(s[i - 1]):
         return False
