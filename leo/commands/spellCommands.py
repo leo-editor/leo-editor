@@ -798,7 +798,7 @@ class SpellTabHandler:
                     i = word.find("'")
                     if i > -1 and i + 3 < len(word):
                         # The supposed contraction ends with more than 2 characters.
-                        g.trace('too-long contraction', repr(word))  ### Temp.
+                        # g.trace('too-long contraction', repr(word))
                         continue
 
                 # Last checks.
