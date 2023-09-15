@@ -32665,7 +32665,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 **Other improvements**
 
 .. _`PR #3560`: https://github.com/leo-editor/leo-editor/pull/3560
-.. _`PR #3550`: https://github.com/leo-editor/leo-editor/pull/3552
+.. _`PR #3552`: https://github.com/leo-editor/leo-editor/pull/3552
 .. _`PR #3541`: https://github.com/leo-editor/leo-editor/pull/3541
 .. _`PR #3538`: https://github.com/leo-editor/leo-editor/pull/3538
 .. _`PR #3533`: https://github.com/leo-editor/leo-editor/pull/3533
