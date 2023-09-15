@@ -2713,7 +2713,7 @@ if QtGui:
             """
             # Modified by EKR.
             # These lines cause unbounded recursion.
-                # code, html = next(self._formatter._format_lines([(token, u'dummy')]))
+                # code, html = next(self._formatter._format_lines([(token, 'dummy')]))
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
