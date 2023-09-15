@@ -772,14 +772,16 @@ class SpellTabHandler:
                 if word in self.seen:
                     continue
                 n += 1
+
                 # Ignore the word if numbers precede or follow it.
                 # Seems difficult to do this in the regex itself.
                 k1 = ins + start - 1
                 if k1 >= 0 and s[k1].isdigit():
                     continue
-                # Special case: \n and \t delimit words.
+
+                # Special case: \b, \n, and \t delimit words.
                 #               It seems impossible to do this in the regex.
-                if word.startswith(('t', 'n')) and k1 >= 0 and s[k1] == '\\':
+                if word.startswith(('b', 'n', 't')) and k1 >= 0 and s[k1] == '\\':
                     word = word[1:]
                     start += 1
                     if not word:
