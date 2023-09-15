@@ -820,12 +820,14 @@ class SpellTabHandler:
                     # g.trace('Skip short word', repr(word))
                     continue
 
-                # Ignore all words in lines containing http.
-                i, j = g.getLine(s, ins + start)
-                line = s[i:j]
-                if 'http' in line:
-                    # g.trace(f"Skip url {word:>20} {line[:50]!r}")
-                    continue
+                # Ignore non-alpha words in lines containing http.
+                if not word.isalpha():
+                    # g.trace(f"Check non-alpah http word: {word!r}")
+                    i, j = g.getLine(s, ins + start)
+                    line = s[i:j]
+                    if 'http' in line:
+                        # g.trace(f"Skip url {word:>20} {line[:50]!r}")
+                        continue
 
                 # Last checks.
                 k2 = ins + start + len(word)
