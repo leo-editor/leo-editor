@@ -476,7 +476,7 @@ class Commands:
     idle_focus_count = 0
 
     def idle_focus_helper(self, tag: str, keys: Any) -> None:
-        """An idle-tme handler that ensures that focus is *somewhere*."""
+        """An idle-time handler that ensures that focus is *somewhere*."""
         trace = 'focus' in g.app.debug
         trace_inactive_focus = False  # Too disruptive for --trace-focus
         trace_in_dialog = False  # Not useful enough for --trace-focus
@@ -3720,7 +3720,7 @@ class Commands:
         """
         Navigate to the next headline starting with ch = event.char.
         If ch is uppercase, search all headlines; otherwise search only visible headlines.
-        This is modelled on Windows explorer.
+        This is modeled on Windows explorer.
         """
         if not event or not event.char or not event.char.isalnum():
             return

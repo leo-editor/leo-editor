@@ -299,7 +299,7 @@ class BaseColorizer:
         https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
         assumes that QTextEdit's have only a single font(!).
 
-        This method probabably only works probably if the body text contains
+        This method probably only works probably if the body text contains
         a single @language directive, and it may not work properly even then.
         """
         c, widget = self.c, self.widget
@@ -645,7 +645,7 @@ class BaseColorizer:
         # This setting is used only in the LeoHighlighter class
         style_name = c.config.getString('pygments-style-name') or 'default'
         # Report everything if we are tracing.
-        show('@bool use-pytments-styles', self.use_pygments_styles)
+        show('@bool use-pygments-styles', self.use_pygments_styles)
         show('@string pygments-style-name', style_name)
         # Report changes to @bool use-pygments-style
         if self.prev_use_styles is None:
@@ -886,7 +886,7 @@ class JEditColorizer(BaseColorizer):
         self.after_doc_language: str = None
         self.initialStateNumber = -1
         self.old_v: VNode = None
-        self.nextState = 1  # Dont use 0.
+        self.nextState = 1  # Don't use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.prev: tuple[int, int, str] = None
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
@@ -906,7 +906,7 @@ class JEditColorizer(BaseColorizer):
         self.initialStateNumber = self.setInitialStateNumber()
         #
         # Fix #389. Do *not* change these.
-            # self.nextState = 1 # Dont use 0.
+            # self.nextState = 1 # Don't use 0.
             # self.stateDict = {}
             # self.stateNameDict = {}
             # self.restartDict = {}
@@ -922,7 +922,7 @@ class JEditColorizer(BaseColorizer):
         assert self.language, g.callers(8)
         self.old_v = v
         self.n2languageDict = {-1: self.language}
-        self.nextState = 1  # Dont use 0.
+        self.nextState = 1  # Don't use 0.
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
@@ -1580,7 +1580,7 @@ class JEditColorizer(BaseColorizer):
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
         # New in Leo 5.5: optionally colorize doc parts using reStructuredText
         if c.config.getBool('color-doc-parts-as-rest'):
-            # Switch langauges.
+            # Switch languages.
             self.after_doc_language = self.language
             self.language = 'rest'
             self.clearState()
@@ -1596,7 +1596,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18603: *6* jedit.restartDocPart
     def restartDocPart(self, s: str) -> int:
         """
-        Restarter for @ and @ contructs.
+        Restarter for @ and @ constructs.
         Continue until an @c, @code or @language at the start of the line.
         """
         for tag in ('@c', '@code', '@language'):
@@ -2034,7 +2034,7 @@ class JEditColorizer(BaseColorizer):
         at_word_start: bool = False,
         delegate: str = '',
     ) -> int:
-        """Succeed if s[:] mathces seq."""
+        """Succeed if s[:] matches seq."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
             j = i
         elif at_whitespace_end and i != g.skip_ws(s, 0):
@@ -2250,7 +2250,7 @@ class JEditColorizer(BaseColorizer):
 
             def span(s: str) -> int:
                 return self.restart_match_span(s, kind,
-                    # Must be kword arguments.
+                    # Must be keyword arguments.
                     delegate=delegate,
                     end=end,
                     exclude_match=exclude_match,
@@ -2260,7 +2260,7 @@ class JEditColorizer(BaseColorizer):
                 )
 
             self.setRestart(span,
-                # Must be kword arguments.
+                # Must be keyword arguments.
                 delegate=delegate,
                 end=end,
                 kind=kind,
@@ -2344,7 +2344,7 @@ class JEditColorizer(BaseColorizer):
         """
         Match the tex s[i:].
 
-        (Conventional) acro names are a backslashe followed by either:
+        (Conventional) macro names are a backslash followed by either:
         1. One or more ascii letters, or
         2. Exactly one character, of any kind.
         """
@@ -2637,7 +2637,7 @@ if QtGui:
 
         All actual syntax coloring is done in the highlighter class.
 
-        Used by both the JeditColorizer and PYgmentsColorizer classes.
+        Used by both the JeditColorizer and PygmentsColorizer classes.
         """
         # This is c.frame.body.colorizer.highlighter
         #@+others
@@ -2713,7 +2713,7 @@ if QtGui:
             """
             # Modified by EKR.
             # These lines cause unbounded recursion.
-                # code, html = next(self._formatter._format_lines([(token, u'dummy')]))
+                # code, html = next(self._formatter._format_lines([(token, 'dummy')]))
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
@@ -2852,7 +2852,7 @@ class PygmentsColorizer(BaseColorizer):
         # Tables and setTag assume lower-case.
         r = repr(token).lstrip('Token.').lstrip('Literal.').lower()
         if r == 'name':
-            # Avoid a colision with existing Leo tag.
+            # Avoid a collision with existing Leo tag.
             r = 'name.pygments'
         return r
 
@@ -3247,7 +3247,7 @@ if pygments:
         """
         Split ``text`` into (tokentype, text) pairs.
 
-        Monkeypatched to store the final stack on the object itself.
+        Monkey patched to store the final stack on the object itself.
 
         The `text` parameter this gets passed is only the current line, so to
         highlight things like multiline strings correctly, we need to retrieve

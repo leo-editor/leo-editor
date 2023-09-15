@@ -63,7 +63,7 @@ def check_nodes(event: Event) -> None:
     Especially useful when using @clean nodes in a collaborative
     environment. Leo's @clean update algorithm will update @clean nodes
     when others have added, deleted or moved code, but the update algorithm
-    won't assign changed code to the optimal nodes. This script highligts
+    won't assign changed code to the optimal nodes. This script highlights
     nodes that needed attention.
 
     Settings: You can customize the behavior of this command with @data nodes:
@@ -79,7 +79,7 @@ def check_nodes(event: Event) -> None:
 
     - @data check-nodes-ok-prefixes
 
-      The body ot the @data node contains a list of strings, one per line.
+      The body of the @data node contains a list of strings, one per line.
       Headlines starting with any of these strings are not considered dubious.
       The defaults ignore top-level @<file> nodes and marker nodes::
 
@@ -90,7 +90,7 @@ def check_nodes(event: Event) -> None:
 
     - @data check-nodes-suppressions
 
-      The body ot the @data node contains a list of strings, one per line.
+      The body of the @data node contains a list of strings, one per line.
       Headlines that match these suppressions *exactly* are not considered dubious.
       Default: None.
     """

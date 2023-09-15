@@ -772,7 +772,7 @@ class LeoApp:
             "pl1"           : "pl1",
             "plain"         : "txt",
             "plsql"         : "sql", # qt02537 2005-05-27
-            # "pop11"       : "p", # Conflicts with pascall.
+            # "pop11"       : "p", # Conflicts with pascal.
             "postscript"    : "ps",
             "povray"        : "pov",
             "prolog"        : "pro",
@@ -1945,7 +1945,7 @@ class LoadManager:
         isLeoSettings = fn and g.shortFileName(fn).lower() == 'leosettings.leo'
         exists = g.os_path_exists(fn)
         if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
-            # Open the file usinging a null gui.
+            # Open the file using a null gui.
             try:
                 g.app.preReadFlag = True
                 c = lm.openSettingsFile(fn)
@@ -2146,7 +2146,7 @@ class LoadManager:
         lm.globalSettingsDict = settings_d
         lm.globalBindingsDict = bindings_d
         # Add settings from --theme or @string theme-name files.
-        # This must be done *after* reading myLeoSettigns.leo.
+        # This must be done *after* reading myLeoSettings.leo.
         lm.theme_path = lm.computeThemeFilePath()
         if lm.theme_path and lm.theme_path != LoadManager.LM_NOTHEME_FLAG:
             lm.theme_c = lm.openSettingsFile(lm.theme_path)
@@ -2356,7 +2356,7 @@ class LoadManager:
             c = self.openEmptyLeoFile(gui=g.app.gui, old_c=None)
             c.rootPosition().h = 'Workbook'
         else:
-            # Open the workboook or create an empty file.
+            # Open the workbook or create an empty file.
             c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
             if not exists:
                 c.rootPosition().h = 'Workbook'
@@ -2979,7 +2979,7 @@ class LoadManager:
             return False
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
     def loadLocalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Optional[Cmdr]:
-        """Completely read a file, creating the corresonding outline.
+        """Completely read a file, creating the corresponding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
         the first time with a NullGui to discover settings,
@@ -2987,7 +2987,7 @@ class LoadManager:
 
         2. If fn is an external file:
         get settings from the leoSettings.leo and myLeoSetting.leo, then
-        create a "wrapper" outline continain an @file node for the external file.
+        create a "wrapper" outline containing an @file node for the external file.
 
         3. If fn is empty:
         get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
@@ -3398,7 +3398,7 @@ class RecentFilesManager:
                         # acts as a flag for the need to create the menu
                     c.add_command(menu.getMenu(baseName), label=dirName,
                         command=recentFilesCallback, underline=0)
-                else:  # single occurence, no submenu
+                else:  # single occurrence, no submenu
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else:  # original behavior
@@ -3426,7 +3426,7 @@ class RecentFilesManager:
         c.selectPosition(p1)
         c.redraw()
         c.bodyWantsFocusNow()
-        g.es('edit list and run write-rff to save recentFiles')
+        g.es('edit list and run write-edited-recent-files to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
     def getRecentFiles(self) -> list[str]:
         # Fix #299: Leo loads a deleted file.
@@ -3559,7 +3559,7 @@ class RecentFilesManager:
     def writeEditedRecentFiles(self, c: Cmdr) -> None:
         """
         Write content of "edit_headline" node as recentFiles and recreates
-        menues.
+        menus.
         """
         p, rf = c.p, self
         p = g.findNodeAnywhere(c, self.edit_headline)

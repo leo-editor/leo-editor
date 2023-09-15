@@ -33,7 +33,7 @@ class NodeHistory:
         c = self.c
         if g.unitTesting or not self.beadList:
             return
-        print(f"NodeHisory.beadList: {c.shortFileName()}:")
+        print(f"NodeHistory.beadList: {c.shortFileName()}:")
         for i, data in enumerate(self.beadList):
             p, chapter = data
             p_s = p.h if p else 'no p'

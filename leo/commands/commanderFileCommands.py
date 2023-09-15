@@ -205,7 +205,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
-    # Supress redraws until later.
+    # Suppress redraws until later.
     g.app.disable_redraw = True
     # Send all log messages to the new frame.
     g.app.setLog(None)

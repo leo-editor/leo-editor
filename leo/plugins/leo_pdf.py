@@ -939,7 +939,7 @@ if docutils:  # NOQA
                 'footnote_refs'
                 'footnotes'
                 'id_start'
-                'ids'  # keys are sectinon names, values are section objects or reference objects.
+                'ids'  # keys are section names, values are section objects or reference objects.
                 'indirect_targets'
                 'nameids'  # This might be what we want: keys are section names, values are munged names.
                 # 'nametypes'

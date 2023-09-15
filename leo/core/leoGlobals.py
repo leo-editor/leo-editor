@@ -3189,7 +3189,7 @@ def get_files_in_directory(directory: str, kinds: list = None, recursive: bool =
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
 def getBaseDirectory(c: Cmdr) -> str:
     """
-    This function is deprectated.
+    This function is deprecated.
 
     Previously it convert '!' or '.' to proper directory references using
     @string relative-path-base-directory.
@@ -3996,19 +3996,30 @@ def match_ignoring_case(s1: str, s2: str) -> bool:
     return bool(s1 and s2 and s1.lower() == s2.lower())
 #@+node:ekr.20031218072017.3184: *4* g.match_word & g.match_words
 def match_word(s: str, i: int, pattern: str) -> bool:
-
+    """Return True if s[i] starts a word."""
     # Using a regex is surprisingly tricky.
+
+    # Check the pattern and set j.
     if pattern is None:
-        return False
-    if i > 0 and g.isWordChar(s[i - 1]):  # Bug fix: 2017/06/01.
         return False
     j = len(pattern)
     if j == 0:
         return False
+
+    # Check the start of the word.
+    # Special cases: \b or \t or \n delimit words!
+    if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'bnt':
+        return True
+    if i > 0 and g.isWordChar(s[i - 1]):
+        return False
+
+    # Check that the pattern matches.
     if s.find(pattern, i, i + j) != i:
         return False
     if i + j >= len(s):
         return True
+
+    # Check the end of the word.
     ch = s[i + j]
     return not g.isWordChar(ch)
 
@@ -5517,7 +5528,7 @@ def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
         return val.filename, val.lineno
     #
     # Data is a list of tuples, one per stack entry.
-    # Tupls have the form (filename,lineNumber,functionName,text).
+    # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
         item = data[-1]  # Get the item at the top of the stack.
@@ -5544,7 +5555,7 @@ def goto_last_exception(c: Cmdr) -> None:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError(*args: Any) -> None:
-    """Report a serious interal error in Leo."""
+    """Report a serious internal error in Leo."""
     callers = g.callers(20).split(',')
     caller = callers[-1]
     g.error('\nInternal Leo error in', caller)
@@ -5970,7 +5981,7 @@ def finalize(path: str) -> str:
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
-    # Convert backslashes to forward slashes, regradless of platform.
+    # Convert backslashes to forward slashes, regardless of platform.
     path = g.os_path_normslashes(path)
     return path
 
@@ -5999,7 +6010,7 @@ def finalize_join(*args: Any) -> str:
     path = os.path.abspath(path)
     path = os.path.normpath(path)
 
-    # Convert backslashes to forward slashes, regradless of platform.
+    # Convert backslashes to forward slashes, regardless of platform.
     path = g.os_path_normslashes(path)
     return path
 
@@ -6230,7 +6241,7 @@ def os_startfile(fname: str) -> None:
 #@+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 #@+node:ekr.20031218072017.822: *3* g.createTopologyList
 def createTopologyList(c: Cmdr, root: Position = None, useHeadlines: bool = False) -> list:
-    """Creates a list describing a node and all its descendents"""
+    """Creates a list describing a node and all its descendants"""
     if not root:
         root = c.rootPosition()
     v = root
@@ -6429,7 +6440,7 @@ def executeFile(filename: str, options: str = '') -> None:
     if not os.access(filename, os.R_OK):
         return
     fdir, fname = g.os_path_split(filename)
-    # New in Leo 4.10: alway use subprocess.
+    # New in Leo 4.10: always use subprocess.
 
     def subprocess_wrapper(cmdlst: str) -> tuple:
 
@@ -6583,7 +6594,7 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     #
     # Rewritten to fix #1071.
     if g.unitTesting:
-        return s  # Regretable, but necessary.
+        return s  # Regrettable, but necessary.
     #
     # Return s if no @language in effect. Should never happen.
     language = g.scanForAtLanguage(c, p)
@@ -6689,7 +6700,7 @@ def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: 
         return True
     if s2.startswith(('@+others', '@+<<')):
         #@verbatim
-        # @others and section references are visibible everywhere.
+        # @others and section references are visible everywhere.
         return True
     # Not visible anywhere. For example, @+leo, @-leo, @-others, @+node, @-node.
     return True

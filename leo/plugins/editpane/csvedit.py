@@ -77,7 +77,7 @@ class ListTable(QtCore.QAbstractTableModel):
         if delim is None:
             delim = DEFAULTDELIM
 
-        # look for seperator not in text
+        # look for separator not in text
         sep_i = 0
         while SEPS[sep_i] in text and sep_i < len(SEPS) - 1:
             sep_i += 1
@@ -141,7 +141,7 @@ class ListTable(QtCore.QAbstractTableModel):
     #@+node:ekr.20211210174103.9: *3* get_text
     def get_text(self):
 
-        # look for seperator not in text
+        # look for separator not in text
         sep_i = 0
         tmp = ''.join([''.join(i) for i in self._data])
         while SEPS[sep_i] in tmp and sep_i < len(SEPS) - 1:

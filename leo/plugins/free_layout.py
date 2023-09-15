@@ -120,7 +120,7 @@ class FreeLayoutController:
           (tree, body, log-window-tabs) and
 
         - tag the log-window-tabs widget as the place to put widgets
-          from free-laout panes which are closed
+          from free-layout panes which are closed
 
         - register this FreeLayoutController as a provider of menu items
           for NestedSplitter
@@ -238,7 +238,7 @@ class FreeLayoutController:
         - `reloading`: True if this is not the initial load, see below
 
         When called from the `after-create-leo-frame2` hook this defaults
-        to False.  When called from the `resotre-layout` command, this is set
+        to False.  When called from the `restore-layout` command, this is set
         True, and the layout the outline had *when first loaded* is restored.
         Useful if you want to temporarily switch to a different layout and then
         back, without having to remember the original layouts name.

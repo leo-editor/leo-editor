@@ -1425,7 +1425,7 @@ class Fstringify:
         """
         Return False if any backslash appears with an {} expression.
 
-        Tokens is a list of lokens on the RHS.
+        Tokens is a list of tokens on the RHS.
         """
         count = 0
         for z in tokens:
@@ -1666,7 +1666,7 @@ class Orange:
     Orange is the new black.
 
     This is a predominantly a *token-based* beautifier. However,
-    organge.do_op, orange.colon, and orange.possible_unary_op use the parse
+    orange.do_op, orange.colon, and orange.possible_unary_op use the parse
     tree to provide context that would otherwise be difficult to deduce.
     """
     # This switch is really a comment. It will always be false.
@@ -2975,7 +2975,7 @@ class TokenOrderGenerator:
                     f"    callers: {g.callers()}")
         # Assign newlines to the previous statement node, if any.
         if token.kind in ('newline', 'nl'):
-            # Set an *auxillary* link for the split/join logic.
+            # Set an *auxiliary* link for the split/join logic.
             # Do *not* set token.node!
             token.statement_node = self.last_statement_node
             return
@@ -3146,7 +3146,7 @@ class TokenOrderGenerator:
     def do_keyword(self, node: Node) -> None:  # pragma: no cover
         """A keyword arg in an ast.Call."""
         # This should never be called.
-        # tog.hande_call_arguments calls self.visit(kwarg_arg.value) instead.
+        # tog.handle_call_arguments calls self.visit(kwarg_arg.value) instead.
         filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"

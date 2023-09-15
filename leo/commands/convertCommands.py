@@ -238,7 +238,7 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.146: *5* replace
     def replace(self, lines: list[str], findString: str, changeString: str) -> None:
         """
-        Replaces all occurances of findString by changeString.
+        Replaces all occurrences of findString by changeString.
         changeString may be the empty string, but not None.
         """
         if not findString:
@@ -325,7 +325,7 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.150: *5* safe_replace
     def safe_replace(self, lines: list[str], findString: str, changeString: str) -> None:
         """
-        Replaces occurances of findString by changeString,
+        Replaces occurrences of findString by changeString,
         but only outside of C comments and strings.
         changeString may be the empty string, but not None.
         """
@@ -1093,7 +1093,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if self.is_string_or_comment(body, i):
                     j = self.skip_string_or_comment(body, i)
                 elif ch in '{};':
-                    # Look ahead ofr '{'
+                    # Look ahead for '{'
                     j += 1
                     while True:
                         k = j
@@ -2153,7 +2153,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Suppression table.
             # Missing elements are likely to cause this method to generate '= ='.
             table = (
-                ',',  # Tuple assignment or  mutli-line argument lists.
+                ',',  # Tuple assignment or  multi-line argument lists.
                 '*',  # A converted docstring.
                 '`',  # f-string.
                 '//',  # Comment.
@@ -2635,7 +2635,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.is_string_or_comment(body, i):
                         j = self.skip_string_or_comment(body, i)
                     elif ch in '{};':
-                        # Look ahead ofr '{'
+                        # Look ahead for '{'
                         j += 1
                         while True:
                             k = j

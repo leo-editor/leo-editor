@@ -664,7 +664,7 @@ class LeoQtGui(leoGui.LeoGui):
         callback: Callable=None,
         buttons: list[str]=None,
     ) -> tuple[str, dict]:
-        """Dispay a modal TkPropertiesDialog"""
+        """Display a modal TkPropertiesDialog"""
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
@@ -830,7 +830,7 @@ class LeoQtGui(leoGui.LeoGui):
         w_name = w and w.objectName()
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
-        # #1273: add teest on c.vim_mode.
+        # #1273: add test on c.vim_mode.
         if c.exists and c.vim_mode and c.vimCommands and not self.active and not g.app.killed:
             c.vimCommands.on_activate()
         self.active = True  # Used only by c.idle_focus_helper.
@@ -1375,12 +1375,12 @@ class LeoQtGui(leoGui.LeoGui):
         splash = None
         for fn in (
             'SplashScreen.svg',  # Leo's licensed .svg logo.
-            'Leosplash.GIF',  # Leo's public domain bitmaped image.
+            'Leosplash.GIF',  # Leo's public domain bitmapped image.
         ):
             path = g.finalize_join(g.app.loadDir, '..', 'Icons', fn)
             if g.os_path_exists(path):
                 if fn.endswith('svg'):
-                    # Convert SVG to un-pixelated pixmap
+                    # Convert SVG to un-pixilated pixmap
                     renderer = QSvgRenderer(path)
                     size = renderer.defaultSize()
                     svg_height, svg_width = size.height(), size.width()
@@ -1598,7 +1598,7 @@ class StyleClassManager:
     def update_view(self, w: Wrapper) -> None:
         """update_view - Make Qt apply w's style
 
-        :param QWidgit w: widgit to style
+        :param QWidgit w: widget to style
         """
 
         w.setStyleSheet("/* */")  # forces visual update
@@ -1826,7 +1826,7 @@ class StyleSheetManager:
                 w = self.get_master_widget(top)
             w.setStyleSheet(sheet)
     #@+node:ekr.20180316091943.1: *3* ssm.Stylesheet
-    # Computations on stylesheets themeselves.
+    # Computations on stylesheets themselves.
     #@+node:ekr.20140915062551.19510: *4* ssm.expand_css_constants & helpers
     css_warning_given = False  # For do_pass.
 
@@ -1916,7 +1916,7 @@ class StyleSheetManager:
             if value:
                 # Partial fix for #780.
                 try:
-                    # Don't replace shorter constants occuring in larger.
+                    # Don't replace shorter constants occurring in larger.
                     sheet = re.sub(
                         const + "(?![-A-Za-z0-9_])",
                         value,
