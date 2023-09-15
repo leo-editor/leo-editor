@@ -32610,11 +32610,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.5**
 
+- PR #3568: Improve word-oriented finds and improve Leo's spell checker.
 - PRs #3515 and #3517: Significantly improve python importer.
 - PRs #3509 and #3511: Improve rust importer.
 
 **Other improvements**
 
+- PR #3560: Retire the g.SherlockTracer class.
+- PR #3552: Clear dirty bits when writing sqLite DBs.
 - PR #3541: Use c.doCommandByName instead of c.k.simulateCommand.
 - PR #3538: Make file-diff-files undoable.
 - PR #3533: Reload outlines rather than restarting Leo.
@@ -32653,12 +32656,16 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #3511`: https://github.com/leo-editor/leo-editor/pull/3511
 .. _`PR #3515`: https://github.com/leo-editor/leo-editor/pull/3515
 .. _`PR #3517`: https://github.com/leo-editor/leo-editor/pull/3517
+.. _`PR #3568`: https://github.com/leo-editor/leo-editor/pull/3568
 
+- `PR #3568`_: Improve word-oriented finds and improve Leo's spell checker.
 - `PR #3515`_ and `PR #3517`_: Significantly improve python importer.
 - `PR #3509`_ and `PR #3511`_: Improve rust importer.
 
 **Other improvements**
 
+.. _`PR #3560`: https://github.com/leo-editor/leo-editor/pull/3560
+.. _`PR #3550`: https://github.com/leo-editor/leo-editor/pull/3552
 .. _`PR #3541`: https://github.com/leo-editor/leo-editor/pull/3541
 .. _`PR #3538`: https://github.com/leo-editor/leo-editor/pull/3538
 .. _`PR #3533`: https://github.com/leo-editor/leo-editor/pull/3533
@@ -32670,6 +32677,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #3503`: https://github.com/leo-editor/leo-editor/pull/3503
 .. _`PR #3499`: https://github.com/leo-editor/leo-editor/pull/3499
 
+- `PR #3560`_: Retire the g.SherlockTracer class.
+- `PR #3552`_: Clear dirty bits when writing sqLite DBs.
 - `PR #3541`_: Use c.doCommandByName instead of c.k.simulateCommand.
 - `PR #3538`_: Make file-diff-files undoable.
 - `PR #3533`_: Reload outlines rather than restarting Leo.
