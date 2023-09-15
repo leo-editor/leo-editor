@@ -796,15 +796,18 @@ class SpellTabHandler:
                     i = word.find("'")
                     if i > -1 and i + 2 < len(word):
                         # The supposed contraction ends with more than 2 characters.
-                        g.trace('too-long contraction', repr(word))
+                        g.trace('too-long contraction', repr(word))  ### Temp.
                         continue
 
-                # Last check.
+                # Last checks.
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
+                if '_' in word:
+                    g.trace('Can not happen: underscore in word', repr(word))
+                    continue
 
-                # Look up the word! It must not contain an underscore!
+                # Look up the word!
                 alts: list[str] = sc.process_word(word)
                 if alts:
                     self.currentWord = word
