@@ -343,7 +343,7 @@ class RemoveDuplicates:
         starting_directory=None,  # Starting directory for file dialog if no path given.
     ):
         """
-        Preprecess the files and show the first duplicates.
+        Preprocess the files and show the first duplicates.
         Return True if any duplicates were found.
         """
         # Init ivars.

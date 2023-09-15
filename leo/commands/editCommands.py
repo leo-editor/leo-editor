@@ -2299,7 +2299,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.indentBody(event)
             return
         tab_width = c.getTabWidth(p)
-        # Get the preceeding characters.
+        # Get the preceding characters.
         s = w.getAllText()
         start, end = g.getLine(s, i)
         after = s[i:end]

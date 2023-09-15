@@ -1093,7 +1093,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if self.is_string_or_comment(body, i):
                     j = self.skip_string_or_comment(body, i)
                 elif ch in '{};':
-                    # Look ahead ofr '{'
+                    # Look ahead for '{'
                     j += 1
                     while True:
                         k = j
@@ -2153,7 +2153,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Suppression table.
             # Missing elements are likely to cause this method to generate '= ='.
             table = (
-                ',',  # Tuple assignment or  mutli-line argument lists.
+                ',',  # Tuple assignment or  multi-line argument lists.
                 '*',  # A converted docstring.
                 '`',  # f-string.
                 '//',  # Comment.
@@ -2635,7 +2635,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.is_string_or_comment(body, i):
                         j = self.skip_string_or_comment(body, i)
                     elif ch in '{};':
-                        # Look ahead ofr '{'
+                        # Look ahead for '{'
                         j += 1
                         while True:
                             k = j
