@@ -794,7 +794,7 @@ class SpellTabHandler:
                 else:
                     # A special case to handle non-fstring contractions.
                     i = word.find("'")
-                    if i > -1 and i + 2 < len(word):
+                    if i > -1 and i + 3 < len(word):
                         # The supposed contraction ends with more than 2 characters.
                         g.trace('too-long contraction', repr(word))  ### Temp.
                         continue
