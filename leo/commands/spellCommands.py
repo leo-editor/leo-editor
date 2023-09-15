@@ -377,7 +377,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = enchant.Dict(language)
             except Exception:
                 d = {}
-        # Commen exit, for traces.
+        # Common exit, for traces.
         return d
 
     #@+node:ekr.20150514063305.515: *3* spell.ignore
@@ -681,9 +681,6 @@ class SpellTabHandler:
         self.c = c
         self.body = c.frame.body
         self.currentWord: str = None
-        # Don't include underscores in words. It just complicates things.
-        # [^\W\d_] means any unicode char except underscore or digit.
-        self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
         self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
         # A text widget for scanning. Must have a parent frame.
@@ -703,7 +700,7 @@ class SpellTabHandler:
             # g.es_print('No main dictionary')
             self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
-    #@+node:ekr.20150514063305.503: *4* add (spellTab)
+    #@+node:ekr.20150514063305.503: *4* SpellTabHandler.add
     def add(self, event: Event = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
@@ -711,7 +708,7 @@ class SpellTabHandler:
             if w:
                 self.spellController.add(w)
                 self.tab.onFindButton()
-    #@+node:ekr.20150514063305.504: *4* change (spellTab)
+    #@+node:ekr.20150514063305.504: *4* SpellTabHandler.change
     def change(self, event: Event = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
@@ -743,34 +740,92 @@ class SpellTabHandler:
         c.invalidateFocus()
         c.bodyWantsFocus()
         return False
-    #@+node:ekr.20150514063305.505: *4* find & helper
+    #@+node:ekr.20150514063305.505: *4* SpellTabHandler.find & helper
+    # Create a pattern that matches words, including contractions.
+
+    # The following pattern below is only approximate!
+    # The find method checks and modifies its results.
+
+    re_word = re.compile(r"(\w+(['`]\w+)?)", flags=re.UNICODE)
+    re_part = re.compile(r'[a-zA-z]+')
+
     def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
         if not self.loaded:
             return
-        c, n, p = self.c, 0, self.c.p
+        c, p = self.c, self.c.p
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)
         s = w.getAllText().rstrip()
         ins = w.getInsertPoint()
-        # New in Leo 5.3: use regex to find words.
         last_p = p.copy()
         while True:
+            # Note: despite the tests below, finditer is a crucial speed boost.
             for m in self.re_word.finditer(s[ins:]):
                 start, word = m.start(0), m.group(0)
-                if word in self.seen:
+
+                # Strip leading and trailing underscores.
+                # sc.process_word throw ValueError otherwise.
+                while word and word.startswith('_'):
+                    word = word[1:]
+                    start += 1
+                if not word:
                     continue
-                n += 1
+                while word and word.endswith('_'):
+                    word = word[:-1]
+                if not word:
+                    continue
+
+                # Make sure the spell checker won't throw ValueError.
+                if '_' in word:
+                    # Only check up to those parts containing word characters.
+                    parts = word.split('_')
+                    parts = [z for z in parts if z]  # Handle '__'.
+                    for i, part in enumerate(parts):
+                        if not self.re_part.match(part):
+                            word = '_'.join(parts[:i])
+                            if not word:
+                                continue
+
                 # Ignore the word if numbers precede or follow it.
                 # Seems difficult to do this in the regex itself.
                 k1 = ins + start - 1
                 if k1 >= 0 and s[k1].isdigit():
                     continue
+
+                # Special case: \b, \n, and \t delimit words.
+                #               It's hard to test for this in the regex.
+                if word.startswith(('b', 'n', 't')) and k1 >= 0 and s[k1] == '\\':
+                    word = word[1:]
+                    start += 1
+                    if not word:
+                        continue
+
+                # Special case: f-strings delimited by single quotes.
+                #               Don't bother testing for the obsolete u'xxx' syntax.
+                if word.startswith("f'"):
+                    word = word[2:]
+                    start += 2
+                    if not word:
+                        continue
+
+                # Last checks.
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
-                alts: list[str] = sc.process_word(word)
+                if word.startswith('_') or word.endswith('_'):
+                    g.trace('Can not happen: underscore in word', repr(word))
+                    continue
+                if word in self.seen:
+                    continue
+
+                # Look up the word!
+                try:
+                    alts: list[str] = sc.process_word(word)
+                except ValueError:
+                    g.trace('Fail:', repr(word))
+                    continue
                 if alts:
                     self.currentWord = word
                     i = ins + start
@@ -783,6 +838,7 @@ class SpellTabHandler:
                     k = g.see_more_lines(s, j, 4)
                     w.see(k)
                     return
+                # Don't add misspellings.
                 self.seen.add(word)
             # No more misspellings in p
             p.moveToThreadNext()
@@ -796,7 +852,7 @@ class SpellTabHandler:
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return
-    #@+node:ekr.20160415033936.1: *5* showMisspelled
+    #@+node:ekr.20160415033936.1: *5* SpellTabHandler.showMisspelled
     def showMisspelled(self, p: Position) -> None:
         """Show the position p, contracting the tree as needed."""
         c = self.c
@@ -814,10 +870,10 @@ class SpellTabHandler:
             c.redraw(p)
         else:
             c.selectPosition(p)
-    #@+node:ekr.20150514063305.508: *4* hide
+    #@+node:ekr.20150514063305.508: *4* SpellTabHandler.hide
     def hide(self, event: Event = None) -> None:
         self.c.frame.log.selectTab('Log')
-    #@+node:ekr.20150514063305.509: *4* ignore
+    #@+node:ekr.20150514063305.509: *4* SpellTabHandler.ignore
     def ignore(self, event: Event = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:

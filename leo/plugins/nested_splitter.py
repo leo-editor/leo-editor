@@ -69,7 +69,7 @@ class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
 class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
     """When a new pane is opened in a nested splitter layout, this widget
-    presents a button, labled 'Action', which provides a popup menu
+    presents a button, labeled 'Action', which provides a popup menu
     for the user to select what to do in the new pane"""
     #@+others
     #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
@@ -407,7 +407,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             # actual splitters, current and future
             root._splitterClickedArgs = []  # save for future added splitters
         for args in root._splitterClickedArgs:
-            # apply any .connect() calls that occured earlier
+            # apply any .connect() calls that occurred earlier
             self._splitterClickedSignal.connect(*args)
 
         self.root = root
@@ -528,7 +528,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             orient == vertical and side in ('above', 'below')
         ):
             # easy case, just insert the new thing, what,
-            # either side of old, in existng splitter
+            # either side of old, in existing splitter
             if side in ('right-of', 'below'):
                 pos += 1
             layout['splitter'].insert(pos, what)
@@ -606,7 +606,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                     break
     #@+node:ekr.20110605121601.17973: *3* ns.contains
     def contains(self, widget):
-        """check if widget is a descendent of self"""
+        """check if widget is a descendant of self"""
         for i in range(self.count()):
             if widget == self.widget(i):
                 return True
@@ -640,7 +640,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
           if the neighbours are not NestedSplitters, i.e.
           [ns0, ns1] or [None, ns1] or [ns0, None] or [None, None]
         count
-          the pair of nested counts of widgets / spliters around the handle
+          the pair of nested counts of widgets / splitters around the handle
         """
         widget = [self.widget(index - 1), self.widget(index)]
         neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
@@ -678,7 +678,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         return w
     #@+node:ekr.20110605121601.17976: *3* ns.invalid_swap
     def invalid_swap(self, w0, w1):
-        """check for swap violating hierachy"""
+        """check for swap violating hierarchy"""
         return (
             w0 == w1 or
             isinstance(w0, NestedSplitter) and w0.contains(w1) or
@@ -836,7 +836,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             self.setSizes(sizes)
     #@+node:ekr.20110605121601.17983: *3* ns.rotate
     def rotate(self, descending=False):
-        """Change orientation - current rotates entire hierachy, doing less
+        """Change orientation - current rotates entire hierarchy, doing less
         is visually confusing because you end up with nested splitters with
         the same orientation - avoiding that would mean doing rotation by
         inserting out widgets into our ancestors, etc.
@@ -848,7 +848,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                 i.setOrientation(Orientation.Vertical)
     #@+node:vitalije.20170713085342.1: *3* ns.rotateOne
     def rotateOne(self, index):
-        """Change orientation - only of splithandle at index."""
+        """Change orientation - only of splitter handle at index."""
         psp = self.parent()
         if self.count() == 2 and isinstance(psp, NestedSplitter):
             i = psp.indexOf(self)

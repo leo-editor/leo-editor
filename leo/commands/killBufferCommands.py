@@ -353,7 +353,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                     w.delete(i2, k)
                     i = i2
             w.insert(i, s)
-            # Fix bug 1099035: Leo yank and kill behaviour not quite the same as emacs.
+            # Fix bug 1099035: Leo yank and kill behavior not quite the same as emacs.
             # w.setSelectionRange(i,i+len(s),insert=i+len(s))
             w.setInsertPoint(i + len(s))
             self.lastYankP = current.copy()

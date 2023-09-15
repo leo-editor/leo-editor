@@ -1476,7 +1476,7 @@ class AtFile:
             #
             # Bug fix: Leo 4.5.1:
             # use x.markerFromFileName to force the delim to match
-            # what is used in x.propegate changes.
+            # what is used in x.propagate_changes.
             marker = x.markerFromFileName(full_path)
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
             if g.unitTesting:

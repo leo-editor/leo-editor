@@ -72,7 +72,7 @@ def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
 
     Scripts may invoke the adoc command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.adoc_command(event=event)
 
     This @button node runs the adoc command and coverts all results to .html::
@@ -131,7 +131,7 @@ def pandoc_command(event: Event, verbose: bool = True) -> File_List:
 
     Scripts may invoke the adoc command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.pandoc_command(event=event)
 
     This @button node runs the adoc command and coverts all results to .html::
@@ -190,7 +190,7 @@ def sphinx_command(event: Event, verbose: bool = True) -> File_List:
 
     Scripts may invoke the sphinx command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.sphinx_command(event=event)
 
     This @button node runs the sphinx command and coverts all results to .html::
@@ -320,7 +320,7 @@ class MarkupCommands:
     #@+node:ekr.20191007053522.1: *4* markup.compute_opath
     def compute_opath(self, i_path: str) -> str:
         """
-        Neither asciidoctor nor pandoc handles extra extentions well.
+        Neither asciidoctor nor pandoc handles extra extensions well.
         """
         c = self.c
         for _i in range(3):

@@ -467,7 +467,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             re.escape(c.abbrev_subst_end),
         ))
         changed = False
-        # Perform at most one scripting substition.
+        # Perform at most one scripting substitution.
         m = pattern.match(p.h)
         if m:
             content = m.group(2)

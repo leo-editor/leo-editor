@@ -246,7 +246,7 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-REST':
                 s = (text[:m.start()] + text[m.end() :]).strip()
 
-            # 's' is string when 'cmd' is recognised
+            # 's' is string when 'cmd' is recognized
             # and is None otherwise
             if isinstance(s, str):
                 # Save the operation
@@ -693,7 +693,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if not p:
             self.error('no p')
             return
-        # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
+        # 2014/02/21: generate headdlick1/2 instead of icondclick1/2.
         if g.doHook("headdclick1", c=c, p=p, event=None) is None:
             c.frame.tree.OnIconDoubleClick(p)  # Call the base class method.
         g.doHook("headclick2", c=c, p=p, event=None)

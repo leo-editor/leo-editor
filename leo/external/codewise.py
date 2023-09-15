@@ -78,7 +78,7 @@ FUNCTION, the most important one, contains functions/methods, along with CLASS
  used to give calltips, or used as a regexp to find the method from file
  quickly.
 
-You can browse the data by installing sqlitebrovser and doing 'sqlitebrowser
+You can browse the data by installing sqlitebrowser and doing 'sqlitebrowser
 ~/codewise.db'
 
 If you know the class name you want to find the methods for,
@@ -117,7 +117,7 @@ codewise m MyClass
  Show all methods in MyClass
 
 codewise f PREFIX
- Show all symbols (also nonmember functiosn) starting with PREFIX.
+ Show all symbols (also nonmember functions) starting with PREFIX.
  PREFIX can be omitted to get a list of all symbols
 
 codewise parseall

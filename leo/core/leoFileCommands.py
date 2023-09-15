@@ -1011,7 +1011,7 @@ class FileCommands:
         recoveryNode = fc.handleNodeConflicts()
         #
         # Do this after reading external files.
-        # The descendent nodes won't exist unless we have read
+        # The descendant nodes won't exist unless we have read
         # the @thin nodes!
         fc.restoreDescendentAttributes()
         fc.setPositionsFromVnodes()
@@ -1865,7 +1865,7 @@ class FileCommands:
     #@+node:ekr.20080805071954.2: *5* fc.putDescendentVnodeUas & helper
     def putDescendentVnodeUas(self, p: Position) -> str:
         """
-        Return the a uA field for descendent VNode attributes,
+        Return the a uA field for descendant VNode attributes,
         suitable for reconstituting uA's for anonymous vnodes.
         """
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.

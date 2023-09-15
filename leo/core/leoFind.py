@@ -2394,18 +2394,7 @@ class LeoFind:
     def _inner_search_match_word(self, s: str, i: int, pattern: str) -> bool:
         """Do a whole-word search."""
         pattern = self.replace_back_slashes(pattern)
-        if not s or not pattern or not g.match(s, i, pattern):
-            return False
-        pat1, pat2 = pattern[0], pattern[-1]
-        n = len(pattern)
-        ch1 = s[i - 1] if 0 <= i - 1 < len(s) else '.'
-        ch2 = s[i + n] if 0 <= i + n < len(s) else '.'
-        isWordPat1 = g.isWordChar(pat1)
-        isWordPat2 = g.isWordChar(pat2)
-        isWordCh1 = g.isWordChar(ch1)
-        isWordCh2 = g.isWordChar(ch2)
-        inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
-        return not inWord
+        return bool(s and pattern and g.match_word(s, i, pattern))
     #@+node:ekr.20210110073117.46: *5* find._inner_search_plain
     def _inner_search_plain(self,
         s: str,

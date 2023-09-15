@@ -88,7 +88,7 @@ def unit_test(raise_on_fail=True):
         'FunctionType', 'NamedExpr', 'TypeIgnore',
     ]
     aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
+        # Remove base class.
     aList = [z for z in aList if not z.startswith('_') and not z in remove]
     # Now test them.
     traverser = CoffeeScriptTraverser(controller=None)
@@ -222,7 +222,7 @@ class CoffeeScriptTraverser:
         self.last_node = sync.last_node
         self.leading_lines = sync.leading_lines
         self.leading_string = sync.leading_string
-        self.tokens_for_statment = sync.tokens_for_statement
+        self.tokens_for_statement = sync.tokens_for_statement
         self.trailing_comment = sync.trailing_comment
         self.trailing_comment_at_lineno = sync.trailing_comment_at_lineno
         # Compute the result.

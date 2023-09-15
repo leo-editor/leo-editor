@@ -368,7 +368,7 @@ class AutoCompleterClass:
 
         Evaluates s using eval(s,namespace)
 
-        Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+        Assuming the text is of the form NAME.NAME....[NAME], and can be evaluated in
         the namespace, it will be evaluated and its attributes (as revealed by
         dir()) are used as possible completions.
 

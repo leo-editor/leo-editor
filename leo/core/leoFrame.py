@@ -414,7 +414,7 @@ class LeoBody:
     def deleteEditor(self, event: Event = None) -> None:
         """Delete the presently selected body text editor."""
         c = self.c
-        w = c.frame.body.wapper
+        w = c.frame.body.wrapper
         d = self.editorWrappers
         if len(list(d.keys())) == 1:
             return
@@ -786,7 +786,7 @@ class LeoFrame:
     def promptForSave(self) -> bool:
         """
         Prompt the user to save changes.
-        Return True if the user vetos the quit or save operation.
+        Return True if the user vetoes the quit or save operation.
         """
         c = self.c
         theType = "quitting?" if g.app.quitting else "closing?"

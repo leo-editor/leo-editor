@@ -1075,7 +1075,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         self.image = QtGui.QImage(g.app.gui.getImageImage(
             g.finalize_join(g.app.loadDir,
             '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
-        self.highest_line = 0  # The highest line that is currently visibile.
+        self.highest_line = 0  # The highest line that is currently visible.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets: list[tuple[int, Any]] = []
         self.setObjectName('gutter')
@@ -1789,7 +1789,7 @@ class QTextEditWrapper(QTextMixin):
     def pageUpDown(self, op: Any, moveMode: Any) -> None:
         """
         The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
-        and not externally accessible. Since Leo has its own keyhandling
+        and not externally accessible. Since Leo has its own key handling
         functionality, this code emulates the QTextEdit paging. This is a
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
@@ -1952,7 +1952,7 @@ class QTextEditWrapper(QTextMixin):
         v.scrollBarSpot = w.verticalScrollBar().value()
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self, pos: int) -> None:
-        """Set the position of the horizonatl scrollbar."""
+        """Set the position of the horizontal scrollbar."""
         if pos is not None:
             w = self.widget
             sb = w.horizontalScrollBar()
