@@ -759,9 +759,9 @@ class SpellTabHandler:
         c.selectPosition(p)
         s = w.getAllText().rstrip()
         ins = w.getInsertPoint()
-        # New in Leo 5.3: use regex to find words.
         last_p = p.copy()
         while True:
+            # Note: despite the tests below, finditer is a crucial speed boost.
             for m in self.re_word.finditer(s[ins:]):
                 start, word = m.start(0), m.group(0)
 
@@ -838,6 +838,7 @@ class SpellTabHandler:
                     k = g.see_more_lines(s, j, 4)
                     w.see(k)
                     return
+                # Don't add misspellings.
                 self.seen.add(word)
             # No more misspellings in p
             p.moveToThreadNext()
