@@ -743,22 +743,17 @@ class SpellTabHandler:
     #@+node:ekr.20150514063305.505: *4* SpellTabHandler.find & helper
     # Create a pattern that matches words, including contractions.
 
-    # Do *not* include underscores in words. The spell checker will barf!
+    # The following pattern below is only approximate!
+    # The find method checks and modifies its results.
 
-    # The pattern below doesn't limit the length of contractions
-    # because f-strings starting with a single quote looks like a contraction.
-
-    # Special cases below handle the details.
-
-    # [^\W\d_] means any unicode char except underscore or digit.
-
-    re_word = re.compile(r"([^\W\d_]+(['`][^\W\d_]+)?)", flags=re.UNICODE)
+    re_word = re.compile(r"(\w+(['`]\w+)?)", flags=re.UNICODE)
+    re_part = re.compile(r'[a-zA-z]+')
 
     def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
         if not self.loaded:
             return
-        c, n, p = self.c, 0, self.c.p
+        c, p = self.c, self.c.p
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)
@@ -769,9 +764,28 @@ class SpellTabHandler:
         while True:
             for m in self.re_word.finditer(s[ins:]):
                 start, word = m.start(0), m.group(0)
-                if word in self.seen:
+
+                # Strip leading and trailing underscores.
+                # sc.process_word throw ValueError otherwise.
+                while word and word.startswith('_'):
+                    word = word[1:]
+                    start += 1
+                if not word:
                     continue
-                n += 1
+                while word and word.endswith('_'):
+                    word = word[:-1]
+                if not word:
+                    continue
+                    
+                # Make sure the spell checker won't throw ValueError.
+                if '_' in word:
+                    # Only check up to those parts containing word characters.
+                    parts = word.split('_')
+                    for i, part in enumerate(parts):
+                        if not self.re_part.match(part):
+                            word = '_'.join(parts[:i])
+                            if not word:
+                                continue
 
                 # Ignore the word if numbers precede or follow it.
                 # Seems difficult to do this in the regex itself.
@@ -780,7 +794,7 @@ class SpellTabHandler:
                     continue
 
                 # Special case: \b, \n, and \t delimit words.
-                #               It seems impossible to do this in the regex.
+                #               It's hard to test for this in the regex.
                 if word.startswith(('b', 'n', 't')) and k1 >= 0 and s[k1] == '\\':
                     word = word[1:]
                     start += 1
@@ -788,29 +802,29 @@ class SpellTabHandler:
                         continue
 
                 # Special case: f-strings delimited by single quotes.
+                #               Don't bother testing for the obsolute u'xxx' syntax.
                 if word.startswith("f'"):
                     word = word[2:]
                     start += 2
                     if not word:
-                        continue
-                else:
-                    # A special case to handle non-fstring contractions.
-                    i = word.find("'")
-                    if i > -1 and i + 3 < len(word):
-                        # The supposed contraction ends with more than 2 characters.
-                        # g.trace('too-long contraction', repr(word))
                         continue
 
                 # Last checks.
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
-                if '_' in word:
+                if word.startswith('_') or word.endswith('_'):
                     g.trace('Can not happen: underscore in word', repr(word))
+                    continue
+                if word in self.seen:
                     continue
 
                 # Look up the word!
-                alts: list[str] = sc.process_word(word)
+                try:
+                    alts: list[str] = sc.process_word(word)
+                except ValueError:
+                    g.trace('Fail:', repr(word))
+                    continue
                 if alts:
                     self.currentWord = word
                     i = ins + start
