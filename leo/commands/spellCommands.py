@@ -803,7 +803,7 @@ class SpellTabHandler:
                         continue
 
                 # Special case: f-strings delimited by single quotes.
-                #               Don't bother testing for the obsolute u'xxx' syntax.
+                #               Don't bother testing for the obsolete u'xxx' syntax.
                 if word.startswith("f'"):
                     word = word[2:]
                     start += 2
