@@ -69,7 +69,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
 #@+node:tbrown.20171028115504.10: ** class LEP_PlainTextEditB
 class LEP_PlainTextEditB(LEP_PlainTextEdit):
     """LEP_PlainTextEditB - copy of LEP_PlainTextEdit with different
-    background color to test multiple edtitors
+    background color to test multiple editors
     """
     lep_name = "Plain Text Edit 'B'"
     #@+others
