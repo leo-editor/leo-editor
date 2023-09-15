@@ -820,7 +820,7 @@ class SpellTabHandler:
                     # g.trace('Skip short word', repr(word))
                     continue
 
-                # Ignore non-alpha words in lines containing http.
+                # Ignore all words in lines containing http.
                 i, j = g.getLine(s, ins + start)
                 line = s[i:j]
                 if 'http' in line:
