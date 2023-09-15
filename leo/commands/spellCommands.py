@@ -745,9 +745,14 @@ class SpellTabHandler:
 
     # Do *not* include underscores in words. The spell checker will barf!
 
+    # The pattern below doesn't limit the length of contractions
+    # because f-strings starting with a single quote looks like a contraction.
+
+    # Special cases below handle the details.
+
     # [^\W\d_] means any unicode char except underscore or digit.
 
-    re_word = re.compile(r"([^\W\d_]+(['`][^\W\d_]{1,2})?)", flags=re.UNICODE)
+    re_word = re.compile(r"([^\W\d_]+(['`][^\W\d_]+)?)", flags=re.UNICODE)
 
     def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
@@ -779,9 +784,30 @@ class SpellTabHandler:
                     start += 1
                     if not word:
                         continue
+
+                # Special case: f-strings delimited by single quotes.
+                if word.startswith("f'"):
+                    word = word[2:]
+                    start += 2
+                    if not word:
+                        continue
+                else:
+                    # A special case to handle non-fstring contractions.
+                    i = word.find("'")
+                    if i > -1 and i + 2 < len(word):
+                        # The supposed contraction ends with more than 2 characters.
+                        g.trace('too-long contraction', repr(word))  ### Temp.
+                        continue
+
+                # Last checks.
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
+                if '_' in word:
+                    g.trace('Can not happen: underscore in word', repr(word))
+                    continue
+
+                # Look up the word!
                 alts: list[str] = sc.process_word(word)
                 if alts:
                     self.currentWord = word
