@@ -822,7 +822,7 @@ class SpellTabHandler:
 
                 # Ignore non-alpha words in lines containing http.
                 if not word.isalpha():
-                    # g.trace(f"Check non-alpah http word: {word!r}")
+                    # g.trace(f"Check non-alpha http word: {word!r}")
                     i, j = g.getLine(s, ins + start)
                     line = s[i:j]
                     if 'http' in line:
