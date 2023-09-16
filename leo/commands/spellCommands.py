@@ -644,8 +644,7 @@ class SpellTabHandler:
     #@+node:ekr.20150514063305.501: *3* SpellTabHandler.__init__
     def __init__(self, c: Cmdr, tabName: Any) -> None:
         """Ctor for SpellTabHandler class."""
-        if g.app.gui.isNullGui:
-            return
+        # New in Leo 6.7.5: This class works in a null gui.
         self.c = c
         self.body = c.frame.body
         self.currentWord: str = None
@@ -734,6 +733,8 @@ class SpellTabHandler:
             for m in self.re_word.finditer(s[ins:]):
                 start, word = m.start(0), m.group(0)
 
+                g.trace(start, word)  ###
+
                 # Strip leading and trailing underscores.
                 # sc.process_word throw ValueError otherwise.
                 while word and word.startswith(('_', '`')):
@@ -811,6 +812,7 @@ class SpellTabHandler:
 
                 # Look up word and alt_word.
                 try:
+                    # Note: sc.process_word munges the word!
                     alts: list[str] = sc.process_word(word)
 
                     # Look up the alternate word if the word was not found.

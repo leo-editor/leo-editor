@@ -1864,7 +1864,7 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 #@@nobeautify
 
 tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
-tracing_vars: dict[int, list] = {}  # Keys are id's, values are names of ivars.
+tracing_vars: dict[int, list[str]] = {}  # Keys are id's, values are names of ivars.
 # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
 tracing_signatures: dict[str, Any] = {}
 
@@ -1910,7 +1910,7 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag: str, ivars: list[Any]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, tag: str, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
         tracing_tags [id(self)] = tag
         if isinstance(ivars, str):
             ivars = [ivars]
