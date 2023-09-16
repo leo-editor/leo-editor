@@ -72,7 +72,7 @@ class TestSpellCommands(LeoUnitTest):
         for line, expected in table:
             p.b = line + '\n'
             result = handler.find()
-            assert result == expected, (result, expected)
+            assert result == expected, (repr(result), repr(expected))
     #@-others
 #@-others
 #@-leo
