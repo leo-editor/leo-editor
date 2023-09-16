@@ -2060,7 +2060,7 @@ class Orange:
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
             # '^','~','*','**','&','|','/','//',
             # Pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priority(ies).
+            # consider adding whitespace around the operators with the lowest priorities.
             self.blank()
             self.add_token('op', val)
             self.blank()
