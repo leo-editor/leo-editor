@@ -1207,7 +1207,7 @@ class GlobalConfigManager:
         self.default_derived_file_encoding = 'utf-8'
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
-        self.menusList: list[Any] = []  # pbc.doMenu comment: likely buggy.
+        self.menusList: list[Any] = []
         self.menusFileName = ''
         self.modeCommandsDict: dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
         self.panes = None
