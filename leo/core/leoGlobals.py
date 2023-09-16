@@ -1864,11 +1864,6 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 #@@nobeautify
 
 tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
-### tracing_vars: dict[int, list[str]] = {}  # Keys are id's, values are names of ivars.
-
-# Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
-tracing_signatures: dict[str, Any] = {}  # Trace the callers once.
-
 class NullObject:
     """An object that does nothing, and does it very well."""
     def __init__(self, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
@@ -1950,19 +1945,13 @@ class TracingNullObject:
 def null_object_print(id_: int, kind: Any, *args: Any) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
+    callers_s = ','.join(callers[:-1])
     s = f"{kind}.{tag}"
-    signature = f"{s}:{callers}"
-    if 1:  # Always print.
-        if args:
-            args_s = ', '.join([repr(z) for z in args])
-            g.pr(f"{s:40} {callers}\n\t\t\targs: {args_s}")
-        else:
-            g.pr(f"{s:40} {callers}")
-    elif signature not in tracing_signatures:
-        # Print each signature once.
-        tracing_signatures[signature] = True
-        g.pr(f"{s:40} {callers}")
+    if args:
+        args_s = ', '.join([repr(z) for z in args])
+        g.pr(f"{s:40} {callers_s}\n\t\t\targs: {args_s}")
+    else:
+        g.pr(f"{s:40} {callers_s}")
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
