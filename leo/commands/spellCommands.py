@@ -34,10 +34,6 @@ class BaseSpellWrapper:
     # pylint: disable=no-member
     # Subclasses set self.c and self.d
     #@+others
-    #@+node:ekr.20180207071114.3: *3* spell.add
-    def add(self, word: str) -> None:
-        """Add a word to the user dictionary."""
-        self.d.add(word)
     #@+node:ekr.20150514063305.513: *3* spell.clean_dict
     def clean_dict(self, fn: str) -> None:
         if g.os_path_exists(fn):
@@ -74,59 +70,35 @@ class BaseSpellWrapper:
         except Exception:
             g.error(f"unexpected error creating: {fn}")
             g.es_exception()
-    #@+node:ekr.20180207072351.1: *3* spell.find_user_dict
-    def find_user_dict(self) -> str:
-        """Return the full path to the local dictionary."""
-        c = self.c
-        join = g.finalize_join
-        table = (
-            # Settings first.
-            c.config.getString('enchant-local-dictionary'),
-            # #108: then the .leo directory.
-            join(g.app.homeDir, '.leo', 'spellpyx.txt'),
-            # The plugins directory as a last resort.
-            join(g.app.loadDir, "..", "plugins", 'spellpyx.txt'),
-        )
-        for path in table:
-            if g.os_path_exists(path):
-                return path
-        g.es_print('Creating ~/.leo/spellpyx.txt')
-        # #1453: Return the default path.
-        return join(g.app.homeDir, '.leo', 'spellpyx.txt')
+    #@+node:ekr.20180207074613.1: *3* spell.default_dict
+    def default_dict(self, language: Any) -> dict[str, str]:
+
+        try:
+            return enchant.Dict(language)
+        except Exception:
+            return {}
+    #@+node:ekr.20180207073536.1: *3* spell.create_dict_from_file
+    def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
+
+        try:
+            return enchant.DictWithPWL(language, fn)
+        except Exception:
+            return {}
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word: str) -> None:
 
         self.d.add_to_session(word)
-    #@+node:ekr.20150514063305.517: *3* spell.process_word
-    def process_word(self, word: str) -> list[str]:
-        """
-        Check the word. Return None if the word is properly spelled.
-        Otherwise, return a list of alternatives.
-        """
-        d = self.d
-        if not d:
-            return None
-        if d.check(word):
-            return None
-        # Speed doesn't matter here. The more we find, the more convenient.
-        # Remove all digits.
-        word = ''.join([i for i in word if not i.isdigit()])
-        if d.check(word) or d.check(word.lower()):
-            return None
-        if word.find('_') > -1:
-            # Snake case.
-            words = word.split('_')
-            for word2 in words:
-                if not d.check(word2) and not d.check(word2.lower()):
-                    return d.suggest(word)
-            return None
-        words = g.unCamel(word)
-        if words:
-            for word2 in words:
-                if not d.check(word2) and not d.check(word2.lower()):
-                    return d.suggest(word)
-            return None
-        return d.suggest(word)
+    #@+node:ekr.20180209142310.1: *3* spell.show_info
+    def show_info(self) -> None:
+
+        g.es_print('pyenchant spell checker')
+        g.es_print(f"user dictionary:   {self.find_user_dict()}")
+        try:
+            aList = enchant.list_dicts()
+            aList2 = [a for a, b in aList]
+            g.es_print(f"main dictionaries: {', '.join(aList2)}")
+        except Exception:
+            g.es_exception()
     #@-others
 #@+node:ekr.20180207075606.1: ** class DefaultDict
 class DefaultDict:
@@ -309,6 +281,8 @@ class DefaultWrapper(BaseSpellWrapper):
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
     """A wrapper class for PyEnchant spell checker"""
+    # Contains all methods referencing self.c and self.d
+
     #@+others
     #@+node:ekr.20150514063305.511: *3* enchant. __init__
     def __init__(self, c: Cmdr) -> None:
@@ -319,20 +293,29 @@ class EnchantWrapper(BaseSpellWrapper):
         fn = self.find_user_dict()
         self.d: dict[str, str] = self.open_dict_file(fn)
         g.app.spellDict = self.d
-    #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
-    def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
-
-        try:
-            return enchant.DictWithPWL(language, fn)
-        except Exception:
-            return {}
-    #@+node:ekr.20180207074613.1: *3* enchant.default_dict
-    def default_dict(self, language: Any) -> dict[str, str]:
-
-        try:
-            return enchant.Dict(language)
-        except Exception:
-            return {}
+    #@+node:ekr.20180207071114.3: *3* enchant.add
+    def add(self, word: str) -> None:
+        """Add a word to the user dictionary."""
+        self.d.add(word)
+    #@+node:ekr.20180207072351.1: *3* enchant.find_user_dict
+    def find_user_dict(self) -> str:
+        """Return the full path to the local dictionary."""
+        c = self.c
+        join = g.finalize_join
+        table = (
+            # Settings first.
+            c.config.getString('enchant-local-dictionary'),
+            # #108: then the .leo directory.
+            join(g.app.homeDir, '.leo', 'spellpyx.txt'),
+            # The plugins directory as a last resort.
+            join(g.app.loadDir, "..", "plugins", 'spellpyx.txt'),
+        )
+        for path in table:
+            if g.os_path_exists(path):
+                return path
+        g.es_print('Creating ~/.leo/spellpyx.txt')
+        # #1453: Return the default path.
+        return join(g.app.homeDir, '.leo', 'spellpyx.txt')
     #@+node:ekr.20180207072846.1: *3* enchant.init_language
     def init_language(self) -> None:
         """Init self.language."""
@@ -380,11 +363,7 @@ class EnchantWrapper(BaseSpellWrapper):
         # Common exit, for traces.
         return d
 
-    #@+node:ekr.20150514063305.515: *3* spell.ignore
-    def ignore(self, word: str) -> None:
-
-        self.d.add_to_session(word)
-    #@+node:ekr.20150514063305.517: *3* spell.process_word
+    #@+node:ekr.20150514063305.517: *3* enchant.process_word
     def process_word(self, word: str) -> list[str]:
         """
         Check the word. Return None if the word is properly spelled.
@@ -414,17 +393,6 @@ class EnchantWrapper(BaseSpellWrapper):
                     return d.suggest(word)
             return None
         return d.suggest(word)
-    #@+node:ekr.20180209142310.1: *3* spell.show_info
-    def show_info(self) -> None:
-
-        g.es_print('pyenchant spell checker')
-        g.es_print(f"user dictionary:   {self.find_user_dict()}")
-        try:
-            aList = enchant.list_dicts()
-            aList2 = [a for a, b in aList]
-            g.es_print(f"main dictionaries: {', '.join(aList2)}")
-        except Exception:
-            g.es_exception()
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
 class SpellCommandsClass(BaseEditCommandsClass):

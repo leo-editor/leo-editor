@@ -20,8 +20,22 @@ class TestSpellCommands(LeoUnitTest):
     #@+node:ekr.20230916141635.3: *3* TestSpellCommands.test_SpellTabHandler_find
     def test_SpellTabHandler_find(self):
 
-        # g.trace('***')
-        pass
+        c = self.c
+
+        # Create test classes.
+        class TestEnchantWrapper:
+
+            def __init__(self, c):
+                self.c = c
+                self.language = 'en_US'
+                self.d: dict[str, str] = {}
+                g.app.spellDict = self.d
+
+        x = TestEnchantWrapper(c)
+        if 0:
+            g.trace(x)
+
+
     #@-others
 #@-others
 #@-leo
